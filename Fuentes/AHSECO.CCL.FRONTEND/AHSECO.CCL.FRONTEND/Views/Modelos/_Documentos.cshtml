@@ -1,0 +1,36 @@
+﻿<div class="box-inner">
+    <div class="box-header well">
+        <h2 class="header_titulo"><i class="fa fa-file-text" aria-hidden="true"></i> Carga de documentos</h2>
+    </div>
+    <div class="box-content">
+        <div class="table-responsive">
+            <table id="tblDocumentosCargados" class="table table-striped table-bordered responsive" style="width:100%;">
+                <colgroup>
+                    <col style="width: 15%;" />
+                    <col style="width: 50px;" />
+                    <col style="width: 15%;" />
+                    <col style="width: 15%;" />
+                    <col style="width: 20%;" />
+                    <col style="width: 100px;" />
+                </colgroup>
+                <thead style="background-color:#F2F2F2;">
+                    <tr>
+                        <!--<th style="text-align: center; font-weight: bold;">Tipo de documento</!--th>-->
+                        <th style="text-align: center; font-weight: bold;">Tipo Documento</th>
+                        <th style="text-align: center; font-weight: bold;">Nombre Documento</th>
+                        <th style="text-align: center; font-weight: bold;">Usuario</th>
+                        <th style="text-align: center; font-weight: bold;">Perfil</th>
+                        <th style="text-align: center; font-weight: bold;">Fecha carga</th>
+                        <th style="text-align: center; font-weight: bold;">Acci&oacute;n</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyDocAdjuntos">
+                    <tr id="NoExisteRegDoc"><td colspan="6" style="text-align:center">No existen documentos adjuntos</td></tr>
+                </tbody>
+            </table>
+                <div class="pull-right">
+                    <button type="button" class="btn btn-danger btn-sm" id="btnAgregarDocumento" tabindex="20"><i class="fa fa-file" aria-hidden="true"></i>&nbsp;Agregar</button>
+                </div>
+        </div>
+    </div>
+</div>

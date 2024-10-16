@@ -1,0 +1,74 @@
+﻿
+@{
+    ViewBag.Title = "Opciones del Sistema";
+}
+
+<div class="container-fluid" style="margin-right: 15px;">
+    <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
+    <div class="box-inner">
+        <div class="box-header well" data-original-title="">
+            <h2><i class="glyphicon glyphicon-list"></i> Mantenimiento de Sistema</h2>
+        </div>
+        <div class="box-content">
+            <div id="treeMenu"></div>
+        </div>
+    </div>
+</div>
+
+<!--Modal para agregar o editar nodo.-->
+<div class="modal fade" id="modalOpcion" tabindex="-1" role="dialog" aria-labelledby="titleModalNodo" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="tituloModal">Nueva Opci&oacute;n </h4>
+            </div>
+            <div class="modal-body">
+                <form id="frmOpcion">
+                    <div class="form-group">
+                        <input type="hidden" id="hdnId" />
+                        <input type="hidden" id="hdnPadre" />
+                        <label for="cmbTipoOpcion">Tipo de Opci&oacute;n</label>
+                        <select class="form-control input-sm" style="width:100%;" id="cmbTipoOpcion">
+                            <option value="M">Menu</option>
+                            <option value="O">Objeto</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="txtCodigo">Codigo</label>
+                        <input class="form-control input-sm" type="text" id="txtCodigo" maxlength="50" />
+                    </div>
+                    <div class="form-group">
+                        <label for="txtNombre">Nombre</label>
+                        <input class="form-control input-sm" type="text" id="txtNombre" maxlength="50" />
+                    </div>
+                    <div class="form-group">
+                        <label for="txtDescripcion">Descripci&oacute;n</label>
+                        <textarea class="form-control input-sm" rows="2" maxlength="200" id="txtDescripcion"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="txtUrl">Url</label>
+                        <input class="form-control input-sm" type="text" id="txtUrl" maxlength="512" />
+                    </div>
+                    <div class="form-group">
+                        <label for="txtIconoNodo">Icono:</label>
+                        <input class="form-control input-sm" type="text" id="txtIcono" maxlength="50" />
+                    </div>
+                    <div class="form-group">
+                        <label for="chkHabilitado">Habilitado</label>
+                        <input type="checkbox" class="form-check-input" id="chkHabilitado">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary btn-sm" type="button" id="btnGuardar">Guardar</button>
+                <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnCerrar">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript" src="~/resources/plugins/jstree/jstree.min.js"></script>
+    <script type="text/javascript" src="~/resources/js/app/seguridad/opciones/opciones.js"></script>
+}

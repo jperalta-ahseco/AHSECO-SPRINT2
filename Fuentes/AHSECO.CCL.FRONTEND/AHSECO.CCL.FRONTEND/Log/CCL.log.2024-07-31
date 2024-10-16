@@ -1,0 +1,500 @@
+31-07 16:56:54 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Home'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Home' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.HomeController
+AHSECO.CCL.FRONTEND.Controllers.HomeController
+31-07 16:56:54 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:54 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:54 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:55 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:55 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:55 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:55 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:55 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:55 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:55 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:55 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:55 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:55 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:55 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:55 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:55 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:55 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:55 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:55 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:56 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:56 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:56 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:57 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:57 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:57 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:57 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:57 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:57 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:57 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:57 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:57 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:57 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:57 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:57 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:57 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:57 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:57 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:57 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:56:57 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:02 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:02 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:02 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:02 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:02 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:03 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:03 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:03 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:03 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:03 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:03 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:03 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:03 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:03 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:03 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:03 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:03 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:03 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:03 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:03 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:33 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:33 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:33 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:33 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:33 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:33 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:34 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:34 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:34 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:34 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:34 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:34 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:34 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:34 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:34 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:34 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:34 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:34 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:34 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:34 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:52 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:52 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:52 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:52 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:52 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:52 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:52 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:52 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:52 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:52 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:52 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:52 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:52 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:52 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:52 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:52 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:52 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:52 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:52 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController
+31-07 16:57:52 ERROR LOGAuditoria - ERROR: Se encontraron varios tipos que coinciden con el controlador 'Error'. Esto puede ocurrir si la ruta que atiende esta solicitud ('{controller}/{action}/{id}') no especifica espacios de nombres para buscar un controlador que coincida con la solicitud. En tal caso, registre esta ruta llamando a una sobrecarga del método 'MapRoute' que use un parámetro 'namespaces'.
+
+La solicitud de 'Error' encontró los siguientes controladores coincidentes:
+SENCICO.CCL.FRONTEND.Controllers.ErrorController
+AHSECO.CCL.FRONTEND.Controllers.ErrorController

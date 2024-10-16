@@ -1,0 +1,15 @@
+21-09 15:40:09 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.EmpleadosBL.ListarEmpleados:: Procedure or function USP_CONSULTA_EMPLEADOS has too many arguments specified.
+21-09 15:40:53 ERROR LOGAuditoria - ERROR: El valor no puede ser nulo.
+Nombre del parámetro: source
+21-09 15:44:49 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.EmpleadosBL.ListarEmpleados:: Procedure or function USP_CONSULTA_EMPLEADOS has too many arguments specified.
+21-09 15:45:43 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.EmpleadosBL.ListarEmpleados:: Procedure or function USP_CONSULTA_EMPLEADOS has too many arguments specified.
+21-09 15:50:45 ERROR LOGAuditoria - ERROR: El valor no puede ser nulo.
+Nombre del parámetro: source
+21-09 15:50:48 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.EmpleadosBL.ListarEmpleados:: Procedure or function USP_CONSULTA_EMPLEADOS has too many arguments specified.
+21-09 15:52:15 ERROR LOGAuditoria - ERROR: El valor no puede ser nulo.
+Nombre del parámetro: source
+21-09 15:52:38 ERROR LOGAuditoria - ERROR: La secuencia no contiene ningún elemento coincidente
+21-09 15:53:33 ERROR LOGAuditoria - ERROR: La secuencia no contiene ningún elemento coincidente
+21-09 16:01:26 ERROR LOGAuditoria - ERROR: La secuencia no contiene ningún elemento coincidente
+21-09 16:01:50 ERROR LOGAuditoria - ERROR: La secuencia no contiene ningún elemento coincidente
+21-09 16:01:58 ERROR LOGAuditoria - ERROR: No se encuentra un método de acción público 'LogOff' en el controlador 'AHSECO.CCL.FRONTEND.Controllers.AccountController'.

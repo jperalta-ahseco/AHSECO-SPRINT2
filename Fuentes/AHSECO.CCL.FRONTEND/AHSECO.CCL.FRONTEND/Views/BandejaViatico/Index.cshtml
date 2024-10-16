@@ -1,0 +1,220 @@
+@using AHSECO.CCL.FRONTEND.Core;
+@model AHSECO.CCL.BE.ViaticosDTO
+@{
+    ViewBag.Title = "Solicitud de Viáticos";
+    ViewBag.CodigoProceso = "4";
+}
+<input type="hidden" id="codProceso" value="@ViewBag.CodigoProceso" />
+<input type="hidden" id="usuario" value="@ViewBag.Usuario" />
+<input type="hidden" id="Editar" value="@ViewBag.BtnEditar" />
+<input type="hidden" id="Ver" value="@ViewBag.BtnVer" />
+<input type="hidden" id="Anular" value="@ViewBag.BtnAnular" />
+<input type="hidden" id="NombreRol" value="@ViewBag.RolUsuario" />
+<input type="hidden" id="CodigoAreaUsuario" value="@ViewBag.CodigoArea" />
+<div class="container-fluid" style="margin-right: 15px;">
+    <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
+    <div class="box-inner">
+        <div class="box-header well" data-original-title="">
+            <h2><i class="glyphicon glyphicon-list"></i> Bandeja de Solicitud de Viáticos</h2>
+        </div>
+        <div class="box-content">
+            <form id="formBandejaViaticos" method="post">
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtFechaInicio">Fecha Inicio:</label>
+                        <div class="input-group date">
+                            <input type="text" class="form-control input-sm" id="dateFecIni" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
+                            <span class="input-group-addon input-sm" id="openRegFecIni">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtFechaFinal">Fecha Final:</label>
+                        <div class="input-group date">
+                            <input type="text" class="form-control input-sm" id="dateFecFin" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
+                            <span class="input-group-addon input-sm" id="openRegFecFin">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="cmbestado">Estado:</label>
+                            <select class="form-control select2 input-sm" style="width:100%;" id="cmbestado">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="cmbempresa">Empresa:</label>
+                            <select class="form-control select2 input-sm" style="width:100%;" id="cmbempresa"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="cmbarea">&Aacute;rea:</label>
+                            <select class="form-control select2 input-sm" style="width:100%;" id="cmbarea"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="cmbcargo">Cargo:</label>
+                            <select class="form-control select2 input-sm" style="width:100%;" id="cmbcargo"></select>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtCodigo">N&uacute;mero de Solicitud:</label>
+                        <div class="form-group">
+                            <input placeholder="Ingresar Código de Viático" maxlength="100" type="text" class="form-control input-sm" id="txtCodigo" value="" onkeypress="return valideKey(event);">
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="cmbencardado">Encargado:</label>
+                            <select class="form-control select2 input-sm" style="width:100%;" id="cmbencardado"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="txtCodUbigeo">Lugar de Destino:</label>
+                            <div class="form-group">
+                                <input placeholder="Ingresar Lugar de Destino" maxlength="200" type="text" class="form-control input-sm" id="txtCodUbigeo" value="">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row container-fluid">
+                    <div class="text-right">
+                        <span id="hidden_fields"></span>
+                        <button class="btn btn-primary btn-sm" type="button" id="btnBuscar" style="display:@ViewBag.BtnBuscar"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;Buscar</button>
+                        <a class="btn btn-info btn-sm" type="button" id="btnExportar" style="display: @ViewBag.BtnExportar" href="BandejaViatico/ExportarViaticos"><i class="fa fa-table" aria-hidden="true"></i>&nbsp;Exportar</a>
+                        <button class="btn btn-primary btn-sm " type="button" id="btnImprimirPdF" style="display: @ViewBag.BtnImprimir"><i class="fa fa-print" aria-hidden="true"></i>&nbsp;Generaci&oacute;n de Boletas</button>
+                        <button class="btn btn-primary btn-sm " type="button" id="btnEnvApr" style="display: @ViewBag.BtnEnvApr"><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;Enviar Aprobaci&oacute;n</button>
+                        <button class="btn btn-primary btn-sm " type="button" id="btnAprobar" style="display: @ViewBag.BtnAprobar"><i class="fa fa-user-plus" aria-hidden="true"></i>&nbsp;Aprobar</button>
+                        <button class="btn btn-primary btn-sm " type="button" id="btnNuevo" style="display: @ViewBag.BtnNuevo"><i class="fa fa-file" aria-hidden="true"></i>&nbsp;Nuevo</button>
+                    </div>
+                </div>
+
+            </form>
+            <div class="table-responsive">
+                <table id="tablaViaticos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                    <thead>
+                        <tr>
+                            <th style="text-align: center;"><center><input type="checkbox" id="checkAll" value="x" /></center></th>
+                            <th style="text-align: center;">N° Solicitud</th>
+                            <th style="text-align: center;">Fecha Vi&aacute;tico</th>
+                            <th style="text-align: center;" width="10%">Empresa</th>
+                            <th style="text-align: center;" width="10%">&Aacute;rea</th>
+                            <th style="text-align: center;" width="10%">Cargo</th>
+                            <th style="text-align: center;" width="10%">Nombre Encargado</th>
+                            <th style="text-align: center;" width="15%">Lugar Destino</th>
+                            <th style="text-align: center;" width="10%">Estado</th>
+                            <th style="text-align: center;" width="15%">Acciones</th>
+
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <br />
+            <br />
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="modalAnular" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="tituloModalAnular">Anulaci&oacute;n de vi&aacute;tico:</h4>
+            </div>
+            <div class="modal-body">
+                <form id="formObservacion">
+                    <div class="row container-fluid">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <input type="hidden" id="hdnObservacionId" />
+                                <label for="txtObservacion">Motivo</label>
+                                <textarea class="form-control" rows="5" maxlength="1000" id="txtObservacion" placeholder="Ingrese el motivo de la anulación del viático"></textarea>
+                                <input type="hidden" id="codViaticoAnulado" value="0" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-warning btn-sm pull-left" type="button" data-dismiss="modal">Cerrar</button>
+                <button class="btn btn-danger btn-sm" type="button" id="btnAnular">Anular</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalImprimir" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="tituloModalImprimir">Generaci&oacute;n de Boletas:</h4>
+            </div>
+            <div class="modal-body">
+                <form id="formObservacion">
+                    <div class="row container-fluid">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <iframe id="reporteViatico" style="width:100%; height:600px;" frameborder="0" scrolling="yes">
+
+
+                                </iframe>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-warning btn-sm pull-left" type="button" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $('#checkAll').click(function () {
+        $('input:checkbox').prop('checked', this.checked);
+    });
+
+
+
+    function valideKey(evt) {
+
+        // code is the decimal ASCII representation of the pressed key.
+        var code = (evt.which) ? evt.which : evt.keyCode;
+
+        if (code == 8) { // backspace.
+            return true;
+        } else if (code >= 48 && code <= 57) { // is a number.
+            return true;
+        } else { // other keys.
+            return false;
+        }
+    }
+</script>
+
+
+@section scripts{
+    <script type="text/javascript" src="~/resources/js/app/viaticos/bandejaviaticos.js"></script>
+
+}

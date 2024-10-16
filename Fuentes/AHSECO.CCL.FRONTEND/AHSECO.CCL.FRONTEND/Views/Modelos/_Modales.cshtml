@@ -1,0 +1,93 @@
+﻿<!-- Modal carga documentos -->
+<div class="modal fade" id="modalCargaDocumento" tabindex="-1" role="dialog" aria-labelledby="titleModal"
+     aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Cargar documento</h4>
+            </div>
+            <div class="modal-body">
+                <form id="formDocumento">
+                    <div class="row container-fluid">
+                        <div class="col-md-6" style="display: block;">
+                            <div class="form-group">
+                                <input type="hidden" id="hdnDocumentoCargadoId" />
+                                <label for="cmbTipoDocumentoCarga">Tipo de documento</label>
+                                <select class="form-control select2 input-sm" style="width:100%;" id="cmbTipoDocumentoCarga"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-6" style="display: none;">
+                            <div class="form-group">
+                                <label for="cmbDocumentoCarga">Documento</label>
+                                <select class="form-control select2 input-sm" style="width:100%;" id="cmbDocumentoCarga"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-12" style="display: none;">
+                            <div class="form-group">
+                                <label for="txtDescripcionDocumentoCarga">Descripci&oacute;n</label>
+                                <input type="text" class="form-control" placeholder="Descripción del documento" maxlength="100" id="txtDescripcionDocumentoCarga" />
+                            </div>
+                        </div>
+                        <div class=" col-md-12">
+                            @*<div id="objCargaArchivo">Cargar Archivo</div>*@
+                            <button class="btn btn-danger btn-sm" type="button" id="btnAdjuntarDocumento"><i class="fa fa-folder" aria-hidden="true"></i>&nbsp;Cargar Archivo</button>
+                            <b><label id="lblNombreArchivo" value=""></label></b>
+                            <input type="file" class="btn btn-danger btn-sm" id="fileCargaDocumentoSustento" value="Cargar Adjunto" style="display:none;"><br />
+                            <span style="font-size:10px;color:gray">Archivos permitidos: .xls,.xlsx,.pdf,.doc,.docx</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-warning btn-sm pull-left" type="button" data-dismiss="modal">Cerrar</button>
+                <button class="btn btn-danger btn-sm" type="button" id="btnCargarDocumento">Cargar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal observaciones -->
+<div class="modal fade" id="modalObservacion" tabindex="-1" role="dialog" aria-labelledby="titleModal"
+     aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="tituloModalObservacion"></h4>
+            </div>
+            <div class="modal-body">
+                <form id="formObservacion">
+                    <div class="row container-fluid">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <input type="hidden" id="hdnObservacionId" />
+                                <label for="txtObservacion">Observaci&oacute;n</label>
+                                <textarea class="form-control" rows="5" maxlength="4000" id="txtObservacion" placeholder="Ingrese sus observaciones o comentarios"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-12" id="grpAuditoriaObservacion">
+                            <hr />
+                            <div class="form-group col-md-6 col-sm-12">
+                                <label for="lblUsuarioCreacionObservacion">Registrado por</label>
+                                <label class="form-control input-sm" id="lblUsuarioCreacionObservacion" disabled></label>
+                            </div>
+                            <div class="form-group col-md-6 col-sm-12">
+                                <label for="lblFechaCreacionObservacion">Fecha registro</label>
+                                <label class="form-control input-sm" id="lblFechaCreacionObservacion" disabled></label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-warning btn-sm pull-left" type="button" data-dismiss="modal"><i class="fa fa-times"></i> Cerrar</button>
+                <button class="btn btn-danger btn-sm" type="button" id="btnGuardarObservacionReq"><i class="fa fa-save"></i> Grabar Observacion</button>
+            </div>
+        </div>
+    </div>
+</div>

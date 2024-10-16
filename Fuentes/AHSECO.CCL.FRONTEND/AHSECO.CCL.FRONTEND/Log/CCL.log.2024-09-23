@@ -1,0 +1,11 @@
+23-09 07:54:33 ERROR LOGAuditoria - ERROR: La secuencia no contiene ningún elemento coincidente
+23-09 07:55:07 ERROR LOGAuditoria - ERROR: La secuencia no contiene ningún elemento coincidente
+23-09 07:56:22 ERROR LOGAuditoria - ERROR: La secuencia no contiene ningún elemento coincidente
+23-09 10:45:01 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.AutorizacionBL.Autenticar:: Usuario y/o password incorrectos.
+23-09 11:18:05 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240923111805
+23-09 11:20:14 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240923112014
+23-09 12:18:04 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240923121804
+23-09 12:18:20 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240923121820
+23-09 12:19:33 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.ViaticosBL.ValidarViaticos:: Could not find stored procedure 'USP_VALIDA_VIATICOS'.
+23-09 12:24:00 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.AutorizacionBL.Autenticar:: Usuario y/o password incorrectos.
+23-09 12:24:26 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240923122426

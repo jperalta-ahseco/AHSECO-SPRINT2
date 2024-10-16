@@ -1,0 +1,71 @@
+﻿@{
+    ViewBag.Title = "Busqueda Clientes";
+}
+
+<div class="modal-dialog modal-lg container-fluid" role="document">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <!-- Modal content header -->
+        <div class="modal-header box-header well well-sm" style="padding-bottom: 30px;">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="tituloModal">@ViewBag.Title</h4>
+        </div>
+        <!-- Modal content body -->
+        <div class="modal-body d-flex justify-content-center" align-items-center>
+            <form id="formRegistro" class="d-flex flex-row">
+                <div class="row container-fluid d-flex justify-content-center">
+                    <div class="row container-fluid">
+                        <div class="col-md-3 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label for="txtRuc">R.U.C:</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <input placeholder="Ingresar RUC" maxlength="11" type="text" class="form-control input-sm" id="txtRuc" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="col-md-3 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label for="txtNomEmpresa">Nombre de Empresa:</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <input placeholder="Ingresar Nombre de Empresa" type="text" class="form-control input-sm" id="txtNomEmpresa" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <button class="btn btn-primary btn-sm" type="button" id="btnBuscarClientes"><i class="fa fa-search" aria-hidden="true"></i>  Buscar</button>
+                        <span id="hidden_fields"></span>
+                    </div>
+                    <br />
+                    <div class="table-responsive">
+                        <table id="tblClientes" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th style="text-align: center; width: 20%; padding-bottom: 10px;">R.U.C</th>
+                                    <th style="text-align: center; width: 50%">Nombre Empresa</th>
+                                    <th style="text-align: center; width: 20%; padding-bottom: 10px;" >Categor&iacute;a</th>
+                                    <th style="text-align: center; width: 20%; padding-bottom: 10px;">Departamento</th>
+                                    <th style="text-align: center; width: 20%; padding-bottom: 10px;">Provincia</th>
+                                    <th style="text-align: center; width: 20%; padding-bottom: 10px;">Distrito</th>
+                                    <th style="text-align: center; width: 20%; padding-bottom: 10px;">Sector</th>
+                                    <th style="text-align: center; width: 20%; padding-bottom: 10px;">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                <br />
+            </form>
+        </div>
+    </div>
+</div>

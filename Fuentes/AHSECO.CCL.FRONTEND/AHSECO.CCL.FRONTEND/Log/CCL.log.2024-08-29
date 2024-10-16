@@ -1,0 +1,2 @@
+29-08 09:25:36 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/BandejaInstalacionTecnica' o no implementa IController.
+29-08 13:07:46 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/Ubigeo/ObtenerUbigeo' o no implementa IController.

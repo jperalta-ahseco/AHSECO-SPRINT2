@@ -1,0 +1,152 @@
+﻿@{
+    ViewBag.Title = "Sistema de Gestión Interna";
+
+}
+@using System.Collections;
+@using AHSECO.CCL.FRONTEND.Core;
+@{
+
+    string header = VariableSesion.getCadena("Header");
+    string cadenaMenu = VariableSesion.getMenu() ?? "";
+    if (!string.IsNullOrEmpty(cadenaMenu)) {
+        cadenaMenu = cadenaMenu.Replace("~", Url.Content("~/"));
+    }
+
+
+
+    List<AHSECO.CCL.FRONTEND.Models.PermisosModel> objListaPer = VariableSesion.getListaPermisos("listaPermisos");
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>@ViewBag.Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Quality Gardian SAC" />
+    <meta name="author" content="Quality Guardians SAC" />
+    <!-- Grupo de Referencia de Estilos -->
+    <link href="~/resources/css/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/resources/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/resources/css/bootstrap-cerulean.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/resources/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/resources/css/charisma-app.css" rel="stylesheet" type="text/css" />
+    <link href="~/resources/css/portal.css" rel="stylesheet" type="text/css" />
+    <link href="~/resources/css/colorbox.css" rel="stylesheet" type="text/css" />
+    <link href="~/resources/css/jquery.iphone.toggle.css" rel="stylesheet" type="text/css" />
+    <link href="~/resources/css/chosen.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/resources/plugins/dataTables/css/dataTables.bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/resources/plugins/dataTables/css/select.dataTables.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/resources/css/select2.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/resources/css/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/resources/plugins/jQueryUploadFile/uploadfile.css" rel="stylesheet" type="text/css" />
+    <link href="~/resources/css/Site.css" rel="stylesheet" type="text/css" />
+
+
+    <link rel="stylesheet" href="~/resources/plugins/jstree/themes/default/style.min.css" />
+    <link rel="stylesheet" href="~/resources/plugins/jstree/themes/default-dark/style.min.css" />
+    <script src="~/resources/js/librerias/modernizr-2.8.3.js" type="text/javascript"></script>
+    <script src="~/resources/js/app/uploadFile.js"></script>
+    <script src="~/resources/js/librerias/jquery-1.7.2.min.js"></script>
+    <script src="~/resources/plugins/jQueryUploadFile/jquery.min.js"></script>
+    <script src="~/resources/plugins/jQueryUploadFile/jquery.uploadfile.min.js"></script>
+    <!-- Grupo de Referencia de favicon -->
+    <link rel="shortcut icon" href="~/resources/img/favicon.ico" />
+
+
+</head>
+<body>
+    @Html.Raw(header)
+    <div class="ch-container">
+        <header class="main-header" style="height:130px;">
+            <!-- Sidebar toggle button-->
+            <div style="background-color:#000000; height:15px;">&nbsp;</div>
+        <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+            <span>&nbsp;</span>
+        </a>
+        <div style=" position: absolute;">
+           &nbsp; <img src="~/resources/img/logo.png" style="width:200px;height:80px;" />
+        </div>
+            @{Html.RenderPartial("_LayoutMenuUserAccount");}
+        </header>
+        <div id="idMenuBar" class="col-sm-3 col-lg-3">
+            <div class="sidebar-nav">
+                <div class="nav-canvas">
+                    <div class="nav-sm nav nav-stacked">
+                    </div>
+
+                    @Html.Raw(cadenaMenu)
+                </div>
+            </div>
+        </div>
+        <!--Contenido-->
+        <div id="content" class="col-sm-9 col-lg-9">
+            @RenderBody()
+            <br />
+            <br />
+        </div>
+    </div>
+    
+    <div class="simpleModal">
+    </div>
+    <!-- Modal messages -->
+    <div class="modal fade" id="modalMessage" tabindex="-1" role="dialog" aria-labelledby="titleModalMessage"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document" id="dialogModalMessage">
+            <div class="modal-content">
+                <div class="modal-header" id="headerModalMessage">
+                    <button type="button" class="close" aria-label="Close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="titleModalMessage"></h4>
+                </div>
+                <div class="modal-body" id="bodyModalMessage">
+                </div>
+                <div class="modal-footer" id="footerModalMessage">
+                    <button type="button" class="btn btn-outline btn-sm pull-left" data-dismiss="modal" id="btnCancelModalMessage"></button>
+                    <button type="button" class="btn btn-outline btn-sm" data-dismiss="modal" id="btnAcceptModalMessage"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Loading -->
+    <div class="modal fade" id="modalLoading" tabindex="-2" role="dialog" aria-labelledby="titleModalLoading"
+         aria-hidden="true">
+        <div class="app-loading" role="document">
+            <i class="fa fa-refresh fa-spin fa-3x fa-fw" aria-hidden="true"></i>
+            <h4 id="messageLoading">
+                Procesando, por favor espere...
+            </h4>
+        </div>
+    </div>
+    <!-- Grupo de Referencia de Scripts -->
+    <script type="text/javascript" src="~/resources/js/librerias/jquery.min.js"></script>
+    <!--script type="text/javascript" src="~/resources/js/librerias/jquery-ui-1.12.1.min.js"></script-->
+    <script type="text/javascript" src="~/resources/js/librerias/bootstrap.min.js"></script>
+    <script type="text/javascript" src="~/resources/js/librerias/jquery.cookie.js"></script>
+    <script type="text/javascript" src="~/resources/js/librerias/chosen.jquery.min.js"></script>
+    <script type="text/javascript" src="~/resources/js/librerias/multiselect.min.js"></script>
+    <script type="text/javascript" src="~/resources/js/librerias/select2.full.min.js"></script>
+    <script type="text/javascript" src="~/resources/js/librerias/es.js"></script>
+    <script type="text/javascript" src="~/resources/js/librerias/bootstrap-datepicker.min.js?v1.0"></script>
+    <script type="text/javascript" src="~/resources/js/librerias/bootstrap-datepicker.es.min.js"></script>
+    <script type="text/javascript" src="~/resources/js/librerias/jquery.colorbox-min.js"></script>
+    <script type="text/javascript" src="~/resources/js/librerias/jquery.raty.min.js"></script>
+    <script type="text/javascript" src="~/resources/js/librerias/jquery.iphone.toggle.js"></script>
+    <script type="text/javascript" src="~/resources/js/librerias/jquery.autogrow-textarea.js"></script>
+    <script type="text/javascript" src="~/resources/js/librerias/jquery.history.js"></script>
+    <script type="text/javascript" src="~/resources/js/librerias/jquery.form.js"></script>
+    <script type="text/javascript" src="~/resources/js/librerias/moment.min.js"></script>
+    <script type="text/javascript" src="~/resources/js/librerias/moment-precise-range.js"></script>
+    <script type="text/javascript" src="~/resources/js/librerias/funciones.js"></script>
+    <script type="text/javascript" src="~/resources/plugins/dataTables/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="~/resources/plugins/dataTables/js/dataTables.bootstrap.min.js"></script>
+    <script type="text/javascript" src="~/resources/plugins/dataTables/js/dataTables.select.min.js"></script>
+    <script type="text/javascript" src="~/resources/plugins/jQueryUploadFile/jquery.uploadfile.min.js"></script>
+    <script type="text/javascript" src="~/resources/js/librerias/charisma.js"></script>
+    <script type="text/javascript">
+        var baseSiteUrl = '@Url.Content("~/")';
+    </script>
+
+    <script type="text/javascript" src="~/resources/js/app/app.js"></script>
+    @RenderSection("scripts", false)
+</body>
+</html>

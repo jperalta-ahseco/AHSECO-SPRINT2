@@ -1,0 +1,161 @@
+﻿@{
+    ViewBag.Title = "Modificacion de Contactos";
+}
+
+<div class="modal-dialog modal-lg container-fluid" role="document">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <!-- Modal content header -->
+        <div class="modal-header box-header well well-sm" style="padding-bottom: 30px;">
+            <h4 class="modal-title" id="tituloContactoBandeja">@ViewBag.Title</h4>
+        </div>
+        <!-- Modal content body -->
+        <div class="modal-body d-flex justify-content-center" align-items-center>
+            <form id="formRegistro" class="d-flex flex-row">
+                <div class="row container-fluid d-flex justify-content-center">
+                    <div class="row container-fluid">
+                        <div><input hidden id="txtidContacto"></div>
+                        <div class="col-md-5 col-sm-9">
+                            <div class="form-group">
+                                <label for="cmbTipDocContacto">Tip. de Documento.:</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-7 col-xs-12">
+                            <div class="form-group">
+                                <select class="form-control select2 input-sm" style="width:100%;" id="cmbTipDocContacto" data-selected="">
+                                    <option></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="col-md-5 col-sm-12">
+                            <div class="form-group">
+                                <label class="control-label" for="txtNumContacto">N&uacute; de Doc.:</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <div class="form-group">
+
+                                <input maxlength="12" placeholder="Número de Documento" type="text" class="form-control input-sm" id="txtNumContacto" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="col-md-5 col-sm-12">
+                            <div class="form-group">
+
+                                <label class="control-label" for="txtNomContacto">Nombres y Apellidos:</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <input maxlength="150" placeholder="Nombres y Apellidos" type="text" class="form-control input-sm" id="txtNomContacto" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="col-md-5 col-sm-12">
+                            <div class="form-group">
+
+                                <label class="control-label" for="txtEstablecimiento">Establecimiento:</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <input maxlength="150" placeholder="Ingresar Establecimiento" type="text" class="form-control input-sm" id="txtEstablecimiento" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="col-md-5 col-sm-12">
+                            <div class="form-group">
+
+                                <label class="control-label" for="txtAreaContacto">Area de Contacto: </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <input maxlength="100" placeholder="Ingresar Área de Contacto" type="text" class="form-control input-sm" id="txtAreaContacto" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="col-md-5 col-sm-12">
+                            <div class="form-group">
+                                <label class="control-label" for="txtContactoTelefono">Tel&eacute;fono 1:</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <input maxlength="150" placeholder="Ingresar Telefono" type="text" class="form-control input-sm" id="txtContactoTelefono" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="col-md-5 col-sm-12">
+                            <div class="form-group">
+                                <label class="control-label" for="txtContactoTelefono2">Tel&eacute;fono 2:</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <input maxlength="150" placeholder="Ingresar Telefono" type="text" class="form-control input-sm" id="txtContactoTelefono2" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="col-md-5 col-sm-12">
+                            <div class="form-group">
+
+                                <label class="control-label" for="txtContactoCorreo">Correo:</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <input maxlength="35" placeholder="Ingresar Correo" type="text" class="form-control input-sm" id="txtContactoCorreo" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="col-md-5 col-sm-12">
+                            <div class="form-group">
+
+                                <label class="control-label" for="txtCargoContacto">Cargo:</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <input maxlength="50" placeholder="Ingresar Cargo" type="text" class="form-control input-sm" id="txtCargoContacto" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="col-md-5 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label for="cmbEstadoContacto">Estado:</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <select class="form-control select2 input-sm" style="width:100%;" id="cmbEstadoContacto">
+                                    <option selected value="1">ACTIVO</option>
+                                    <option selected value="0">INACTIVO</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right" style="bottom: 10px; position: absolute; right: 10px ">
+                        <button class="btn btn-primary btn-sm" type="button" id="btnCerrar"><i class="fa fa-times" aria-hidden="true"></i> Cerrar</button>
+                        <button class="btn btn-success btn-sm" type="button" id="btnAgregarNuevoContacto"><i class="fa fa-plus" aria-hidden="true"></i>Agregar</button>
+                        <button class="btn btn-success btn-sm" type="button" id="btnAgregarContacto"><i class="fa fa-plus" aria-hidden="true"></i>Agregar</button>
+                        <button class="btn btn-success btn-sm" type="button" id="btnLimpiar"><i class="fa fa-trash" aria-hidden="true"></i>Limpiar</button>
+                        <button class="btn btn-success btn-sm" type="button" id="btnActualizarContacto"><i class="fa fa-wrench" aria-hidden="true"></i> Actualizar Contacto</button>
+                    </div>
+                    <br />
+                </div>
+                <br />
+            </form>
+        </div>
+    </div>
+</div>

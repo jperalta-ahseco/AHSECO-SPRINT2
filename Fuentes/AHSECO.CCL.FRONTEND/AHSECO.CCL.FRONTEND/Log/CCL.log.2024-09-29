@@ -1,0 +1,8 @@
+29-09 19:16:59 ERROR LOGAuditoria - ERROR: La secuencia no contiene ningún elemento coincidente
+29-09 19:18:29 ERROR LOGAuditoria - ERROR: La secuencia no contiene ningún elemento coincidente
+29-09 19:38:09 ERROR LOGAuditoria - ERROR: No se pudo encontrar el archivo 'D:\temp\202409\VIA20240929192045.xlsx'.
+29-09 19:41:04 ERROR LOGAuditoria - ERROR: No se pudo encontrar el archivo 'D:\temp\202409\VIA20240929192045.xlsx'.
+29-09 20:06:58 ERROR LOGAuditoria - ERROR: No se pudo encontrar el archivo 'D:\temp\202409\VIA20240929192756.xlsx'.
+29-09 20:07:54 ERROR LOGAuditoria - ERROR: No se encuentra un método de acción público 'DownloadDocumento' en el controlador 'AHSECO.CCL.FRONTEND.Controllers.Viaticos.BandejaViaticoController'.
+29-09 20:08:52 ERROR LOGAuditoria - ERROR: No se encuentra un método de acción público 'DownloadDocumento' en el controlador 'AHSECO.CCL.FRONTEND.Controllers.Viaticos.BandejaViaticoController'.
+29-09 20:18:36 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.AutorizacionBL.Autenticar:: Usuario y/o password incorrectos.

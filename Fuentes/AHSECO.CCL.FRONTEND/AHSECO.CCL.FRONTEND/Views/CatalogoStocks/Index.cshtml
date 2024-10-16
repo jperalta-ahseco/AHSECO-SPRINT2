@@ -1,0 +1,121 @@
+﻿
+@{
+    ViewBag.Title = "Consulta Stocks";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<input type="hidden" id="NombreRol" value=""/>
+<div class="container-fluid" style="margin-right: 15px;">
+    <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
+  
+    <div class="box-inner">
+        <div class="box-header well" data-original-title="">
+            <h2><i class="glyphicon glyphicon-list"></i> Cat&aacute;logo de Stocks</h2>
+        </div>
+        <div class="box-content">
+            <form id="formStocks">
+                <div class="row container-fluid">
+
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtProducto">C&oacute;digo de Producto:</label>
+                        <div class="form-group">
+                            <div class="input-group input-sm col-md-10">
+                                <input placeholder="Ingresar Codigo Producto" maxlength="10" type="text" class="form-control input-sm" id="txtProducto" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtDescripcion">Descripci&oacute;n de Producto:</label>
+                        <div class="form-group">
+                            <div class="input-group input-sm col-md-10">
+                                <input placeholder="Ingresar Descripción de Producto" maxlength="250" type="text" class="form-control input-sm" id="txtDescripcion" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtFabrica">C&oacute;digo de F&aacute;brica:</label>
+                        <div class="form-group">
+                            <div class="input-group input-sm col-md-10">
+                                <input placeholder="Ingresar Código Fabrica" maxlength="8" type="text" class="form-control input-sm" id="txtFabrica" value="">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <label for="cmbAlmacen">Almacen :</label>
+                        <div class="input-group input-sm col-md-10">
+                            <select aria-hide="false" id="cmbAlmacen" type="text" class="input form-control input-sm">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtCodMarca">Marca:</label>
+                        <div class="input-group input-sm col-md-10">
+                            <select aria-hide="false" id="cmbMarca" type="text" class="input form-control input-sm">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtMarca">Familia:</label>
+                        <div class="input-group input-sm col-md-10">
+                            <select aria-hide="false" id="cmbFamilia" type="text" class="input form-control input-sm">
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtMarca">Unidad Medida:</label>
+                        <div class="input-group input-sm col-md-10">
+                            <select aria-hide="false" id="cmbUnidadMedida" type="text" class="input form-control input-sm">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        &nbsp;
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        &nbsp;
+                    </div>
+                </div>
+                    <div class="row container-fluid">
+                        <div class="text-right">
+                            <button class="btn btn-primary btn-sm" type="button" id="btnBuscar"><i class="fa fa-search"></i> Buscar</button>
+                            <span id="hidden_fields"></span>
+                            <a class="btn btn-info btn-sm " type="button" id="btnExportar" href="CatalogoStocks/ExportarStocks"><i class=" fa fa-table"></i> Exportar</a>
+                        </div>
+                    </div>
+
+            </form>
+
+            <br />
+            <div class="table-responsive">
+                <table id="tblStocks" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                    <thead>
+                        <tr >
+                            @if (ViewData["ListaStocks"] != null)
+                            {
+                                var cabeceras= ViewData["ListaStocks"] as IEnumerable<string>;
+
+                                foreach(var cabecera in cabeceras)
+                                {
+                                    <th style="text-align:center;">@cabecera</th>
+                                }
+                             }
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+    <script src="~/resources/js/app/consultas/consultaStocks/consultaStocks.js"></script>
+}

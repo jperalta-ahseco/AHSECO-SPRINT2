@@ -1,0 +1,17 @@
+04-09 11:23:21 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/[object Object]' o no implementa IController.
+04-09 11:23:24 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/[object Object]' o no implementa IController.
+04-09 11:23:33 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/[object Object]' o no implementa IController.
+04-09 11:23:34 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/[object Object]' o no implementa IController.
+04-09 11:23:34 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/[object Object]' o no implementa IController.
+04-09 11:23:37 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/[object Object]' o no implementa IController.
+04-09 11:23:37 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/[object Object]' o no implementa IController.
+04-09 11:23:37 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/[object Object]' o no implementa IController.
+04-09 11:23:38 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/[object Object]' o no implementa IController.
+04-09 16:26:01 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/MantenimientosGenerales/ObtenerDetalles' o no implementa IController.
+04-09 16:30:49 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/MantenimientosGenerales/ObtenerDetalles' o no implementa IController.
+04-09 16:31:10 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/MantenimientosGenerales/ObtenerDetalles' o no implementa IController.
+04-09 16:31:44 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/MantenimientosGenerales/ObtenerDetalles' o no implementa IController.
+04-09 16:33:55 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/MantenimientosGenerales/ObtenerDetalles' o no implementa IController.
+04-09 16:34:16 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/MantenimientosGenerales/ObtenerDetalles' o no implementa IController.
+04-09 16:47:16 ERROR LOGAuditoria - ERROR: No se encuentra un método de acción público 'ActualzarContacto' en el controlador 'AHSECO.CCL.FRONTEND.Controllers.Mantenimientos.BandejaClienteController'.
+04-09 16:48:49 ERROR LOGAuditoria - ERROR: No se encuentra un método de acción público 'ActualzarContacto' en el controlador 'AHSECO.CCL.FRONTEND.Controllers.Mantenimientos.BandejaClienteController'.

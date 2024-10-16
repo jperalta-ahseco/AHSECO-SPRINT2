@@ -1,0 +1,356 @@
+@using AHSECO.CCL.FRONTEND.Core;
+@{
+    ViewBag.Title = "Solicitud de Viáticos";
+   // Layout = "~/Views/Shared/_layout.cshtml";
+
+}
+
+<div class="container-fluid" style="margin-right: 15px;">
+    <input type="hidden" id="codigoEstado" value="" />
+    <input type="hidden" id="codigoViatico" value="0" />
+    <input type="hidden" id="codigoWorkflow" value="0" />
+    <input type="hidden" id="rolUsuario" value="@ViewBag.RolUsuario">
+    <input type="hidden" id="codigoArea" value="@ViewBag.CodigoArea">
+    <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
+    <div class="box-inner">
+        <div class="box-header well" data-original-title="">
+            <h2><i class="glyphicon glyphicon-list"></i> <label id="lblDescripcionTitulo" value=""></label></h2>
+
+        </div>
+        <div class="box-content">
+            <form id="formRegistroViaticos">
+                <input type="hidden" id="contador" value="0" />
+                <input type="hidden" id="contadordoc" value="0" />
+                <div class="row container-fluid">
+                    <div class="col-md-6 col-sm-12 pull-left">
+                        <b><font color="black"><h5><label id="lblNroSolicitud" value=""></label></h5></font></b>
+                    </div>
+                    <div class="col-md-6 col-sm-12 pull-right" style="text-align:right;">
+                        <b><font color="red"><h5><label id="lblDescripcionEstado" value=""></label></h5></font></b>
+                    </div>
+                </div>
+                    <div class="row container-fluid">
+                        <div class="col-md-6 col-sm-12">
+                            <label for="txtFechaInicio">Fecha Vi&aacute;tico:</label>
+                            <div class="input-group date" id="fecViaEdit">
+                                <input type="text" class="form-control input-sm" id="dateFecVia" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10" tabindex="1" onchange="disabledEnviarContabilidad();">
+                                <span class="input-group-addon input-sm" id="openFecViatico">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
+                            </div>
+                            <div class="form-group" id="fecViaVer">
+                                <label id="fecViaLabel"></label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <label for="txtCliente">Cliente:</label>
+                                <div class="form-group" id="clienteEdit">
+                                    <input placeholder="Ingresar Cliente" maxlength="200" type="text" class="form-control input-sm" id="txtCliente" value="" tabindex="2" onchange="disabledEnviarContabilidad();">
+                                </div>
+                                <div class="form-group" id="clienteVer">
+                                    <label id="clienteLabel"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="col-md-6 col-sm-12">
+                            <label for="cmbempresa">Empresa:</label>
+                            <div class="form-group" id="empresaEdit">
+                                <select class="form-control select2 input-sm" style="width:100%;" id="cmbempresa" tabindex="3" onchange="disabledEnviarContabilidad();"></select>
+                            </div>
+                            <div class="form-group" id="empresaVer">
+                                <label id="empresaLabel"></label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <label for="txtMotivo">Motivo:</label>
+                            <div class="form-group" id="motivoEdit">
+                                <input placeholder="Ingresar Motivo" maxlength="150" type="text" class="form-control input-sm" id="txtMotivo" value="" tabindex="4" onchange="disabledEnviarContabilidad();">
+                            </div>
+                            <div class="form-group" id="motivoVer">
+                                <label id="motivoaLabel"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="col-md-6 col-sm-12">
+                            <label for="cmbarea">&Aacute;rea:</label>
+                            <div class="form-group" id="areaEdit">
+
+                                <select class="form-control select2 input-sm" style="width:100%;" id="cmbarea" tabindex="5" onchange="disabledEnviarContabilidad();"></select>
+                            </div>
+                            <div class="form-group" id="areaVer">
+                                <label id="areaLabel"></label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <label for="txtDestino">Lugar Destino:</label>
+                            <div class="form-group" id="lugarEdit">
+                                <input placeholder="Ingresar Lugar de Destino" maxlength="200" type="text" class="form-control input-sm" id="txtDestino" value="" tabindex="6" onchange="disabledEnviarContabilidad();">
+                            </div>
+                            <div class="form-group" id="lugarVer">
+                                <label id="lugarLabel"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="col-md-6 col-sm-12">
+                            <label for="cmbcargo">Cargo:</label>
+                            <div class="form-group" id="cargoEdit">
+                                <select class="form-control select2 input-sm" style="width:100%;" id="cmbcargo" tabindex="7" onchange="disabledEnviarContabilidad();"></select>
+                            </div>
+                            <div class="form-group" id="cargoVer">
+                                <label id="cargoLabel"></label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <label for="txtDias">N° D&iacute;as de Viaje:</label>
+                            <div class="form-group" id="diasEdit">
+                                <input placeholder="Ingresar Dias" maxlength="150" type="text" class="form-control input-sm" id="txtDias" value="" tabindex="8" onchange="disabledEnviarContabilidad();">
+                            </div>
+                            <div class="form-group" id="diasVer">
+                                <label id="diasLabel"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="col-md-6 col-sm-12">
+                            <label for="cmbencargado">Encargado:</label>
+                            <div class="form-group" id="encargadoEdit">
+                                <select class="form-control select2 input-sm" style="width:100%;" id="cmbencargado" tabindex="9" onchange="disabledEnviarContabilidad();"></select>
+                            </div>
+                            <div class="form-group" id="encargadoVer">
+                                <label id="encargadoLabel"></label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <label for="txtFechaAbono">Fecha de Abono:</label>
+                            <div class="input-group date" id="fechaAbonoEdit">
+                                <input type="text" class="form-control input-sm" id="dateFecAbo" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10" disabled="disabled" tabindex="10">
+                                <span class="input-group-addon input-sm" id="openFecAbono">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
+                            </div>
+                            <div class="form-group" id="fechaAbonoVer">
+                                <label id="fechaAbonoLabel"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="text-right">
+                            <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnAbonar"><i class="fa fa-money" aria-hidden="true" tabindex="11"></i>&nbsp;Abonar</button>
+                            <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnEnviarContabilidad"><i class="fa fa-user" aria-hidden="true" tabindex="12"></i>&nbsp;Enviar a Contabilidad</button>
+                            <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnGuardarViatico"><i class="fa fa-floppy-o" aria-hidden="true" tabindex="13"></i>&nbsp;Guardar</button>
+                            <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegresar" tabindex="14"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Regresar</button>
+                        </div>
+                    </div>
+</form>
+
+
+            <ul class="nav nav-tabs" style="padding-top: 5px;">
+                <li class="active" id="tabDetalle">
+                    <a href="#navDetalleViatico" data-toggle="tab" style="font-weight:bold; color:Gray;" tabindex="19">Detalle Vi&aacute;tico</a>
+                </li>
+                <li class="" id="tabAdjuntos">
+                    <a href="#navDocumentos" data-toggle="tab" style="font-weight:bold; color:Gray;" tabindex="20">Adjunto de Documentos</a>
+                </li>
+                <li class="" id="tabSeguimiento">
+                    <a href="#navSeguimiento" data-toggle="tab" style="font-weight:bold; color:Gray;" tabindex="21">Seguimiento</a>
+                </li>
+            </ul>
+            <div class="tab-content" style="padding-top: 5px;">
+                <div id="navDetalleViatico" class="tab-pane fade in active">
+                    <div class="box-inner">
+                        <div class="box-header well">
+                            <h2 class="header_titulo">Detalle de Vi&aacute;tico:</h2>
+                        </div>
+                        <div class="row container-fluid">
+                            <div class="col-md-12 col-sm-12">
+                                <div class="modal-footer">
+                                    <button class="btn btn-primary btn-sm" type="button" id="btnAbrirDetalleViatico" data-toggle="modal" data-target="#modalDetalleViatico"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Agregar Detalle</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-content">
+                            <div class="table-responsive">
+                                <table id="tablaDetalleViatico" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: center; width:10%">Secci&oacute;n</th>
+                                            <th style="text-align: center; width:10%">Tipo</th>
+                                            <th style="text-align: center; width:20%">Concepto</th>
+                                            <th style="text-align: center; width:25%">Detalle</th>
+                                            <th style="text-align: center; width:5%">Cantidad</th>
+                                            <th style="text-align: center; width:5%">V. Unit.</th>
+                                            <th style="text-align: center; width:5%">Monto</th>
+                                            <th style="text-align: center; width:20%">Acciones</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr id="NoExisteReg"><td colspan="8" style="text-align:center">No existen registros</td></tr>
+                                    </tbody>
+                                </table>
+                                <div class="pull-right">
+                                    <label for="TotalMontoDetalle">Total (S/.):</label>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control input-sm" id="TotalMontoDetalle" value="0.00" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="navDocumentos" class="tab-pane fade">
+                    @{
+                        Html.RenderPartial("~/Views/Modelos/_Documentos.cshtml");
+                    }
+                </div>
+                <div id="navSeguimiento" class="tab-pane fade">
+                    @{
+                        Html.RenderPartial("~/Views/Modelos/_Seguimiento.cshtml");
+                    }
+                </div>
+            </div>
+
+            <form id="formObservacion">
+                <div class="row container-fluid">
+                    <div class="col-md-12 col-sm-12">
+                        <label for="txtObservacion">Observaci&oacute;n:</label>
+                        <div class="form-group">
+                            <textarea class="form-control" rows="5" maxlength="1000" id="txtObservacion" disabled="disabled"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de finalización -->
+<!-- Modal -->
+
+@{
+    Html.RenderPartial("~/Views/Modelos/_Modales.cshtml");
+}
+
+<div class="modal fade" id="modalDetalleViatico" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <input type="hidden" id="codDetalleViatico" value="" />
+
+    <div class="modal-dialog modal-lg container-fluid" role="document">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <!-- Modal content header -->
+            <div class="modal-header box-header well well-large">
+                <h5 class="modal-title" id="tituloModal"><b>Registro Detalle Vi&aacute;tico:</b></h5>
+            </div>
+            <!-- Modal content body -->
+            <div class="modal-body d-flex justify-content-center" align-items-center>
+                <form id="formRegistroDetalleViatico" class="d-flex flex-row">
+                    <div class="row container-fluid d-flex justify-content-center">
+
+
+                        <!--1ra fila:-->
+                        <div class="row container-fluid">
+                            <div class="col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label for="cmbTipo">Secci&oacute;n:</label>
+                                    <select class="form-control select2 input-sm" style="width:100%;" id="cmbTipo"></select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                &nbsp;
+                            </div>
+
+                        </div>
+                        <!--2da fila:-->
+                        <div class="row container-fluid">
+                            <div class="col-md-12 col-sm-12">
+                                <div class="form-group">
+                                    <label for="txtTipo">Tipo:</label>
+                                    <input placeholder="Ingresar Tipo" maxlength="100" type="text" class="form-control input-sm" id="txtTipo" value="">
+                                </div>
+                            </div>
+                        </div>
+                        <!--3ra fila:-->
+                        <div class="row container-fluid">
+                            <div class="col-md-12 col-sm-12">
+                                <label for="txtConcepto">Concepto:</label>
+                                <div class="form-group">
+                                    <input placeholder="Ingresar Concepto" maxlength="100" type="text" class="form-control input-sm" id="txtConcepto" value="">
+                                </div>
+                            </div>
+                        </div>
+                        <!--4ta fila:-->
+                        <div class="row container-fluid">
+                            <div class="col-md-12 col-sm-12">
+                                <label for="txtDetalle">Detalle:</label>
+                                <div class="form-group">
+                                    <input placeholder="Ingresar Detalle" maxlength="100" type="text" class="form-control input-sm" id="txtDetalle" value="">
+                                </div>
+                            </div>
+                        </div>
+                        <!--5ta fila:-->
+                        <div class="row container-fluid">
+                            <div class="col-md-4 col-sm-12">
+                                <label for="txtCantidad">Cantidad:</label>
+                                <div class="form-group">
+                                    <input maxlength="7" type="text" class="form-control input-sm" id="txtCantidad" value="0" onkeyup="multiplicar();" onkeypress="if (isNaN(String.fromCharCode(event.keyCode))) return false;">
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <label for="txtValorUnit">Valor Unitario(S/.):</label>
+                                <div class="form-group">
+                                    <input type="text" class="form-control input-sm" id="txtValorUnit" maxlength="9" value="0.00" onkeyup="multiplicar();" onchange="(function(el){el.value=parseFloat(el.value).toFixed(2);})(this)" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" />
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <label for="txtMonto">Monto(S/.):</label>
+                                <div class="form-group">
+                                    <input maxlength="100" type="text" class="form-control input-sm" id="txtMonto" value="0.00" disabled="disabled">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- Modal content footer -->
+            <div class="modal-footer">
+                <button class="btn btn-default btn-sm pull-left" type="button" data-dismiss="modal" id="btnCerrarDetalle"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Cerrar</button>
+                <button class="btn btn-primary btn-sm" type="button" id="btnAddDetalle"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Agregar Detalle</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    function disabledEnviarContabilidad() {
+        $("#btnEnviarContabilidad").prop("disabled", true);
+    }
+
+    function multiplicar() {
+        var total = 0;
+        var cantidad = $("#txtCantidad").val();
+        var valor_uni = $("#txtValorUnit").val();
+        if (cantidad == "" || cantidad == 'NaN') {
+            $("#txtCantidad").val('0');
+            cantidad = 0;
+        }
+        if (valor_uni == "" || valor_uni == 'NaN') {
+            $("#txtValorUnit").val('0.00');
+            valor_uni = 0;
+        }
+        cantidad = parseInt($("#txtCantidad").val())
+        valor_uni = parseFloat($("#txtValorUnit").val())
+        total = cantidad * valor_uni;
+        $("#txtMonto").val(total.toFixed(2));
+    }
+
+</script>
+
+@section scripts{
+    <script type="text/javascript" src="~/resources/js/app/viaticos/registroviaticos.js"></script>
+
+}

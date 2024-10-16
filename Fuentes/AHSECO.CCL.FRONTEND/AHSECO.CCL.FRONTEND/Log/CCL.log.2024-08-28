@@ -1,0 +1,52 @@
+28-08 08:40:35 ERROR LOGAuditoria - ERROR: No se encuentra un método de acción público 'ObtenerOrganizaciones' en el controlador 'AHSECO.CCL.FRONTEND.Controllers.SeguridadJerarquiaController'.
+28-08 08:40:35 ERROR LOGAuditoria - ERROR: No se encuentra un método de acción público 'ObtenerOrganizaciones' en el controlador 'AHSECO.CCL.FRONTEND.Controllers.SeguridadJerarquiaController'.
+28-08 08:56:01 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.PerfilBL.GuardarPermisos:: Invalid column name 'ASO_ID'.
+Transaction count after EXECUTE indicates a mismatching number of BEGIN and COMMIT statements. Previous count = 0, current count = 1.
+28-08 08:58:23 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.PerfilBL.GuardarPermisos:: Invalid column name 'ASO_ID'.
+Transaction count after EXECUTE indicates a mismatching number of BEGIN and COMMIT statements. Previous count = 0, current count = 1.
+28-08 09:10:38 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.PerfilBL.GuardarPermisos:: Invalid column name 'PERFIL_ID'.
+Invalid column name 'OPCION_ID'.
+Invalid column name 'AUDIT_USR'.
+Transaction count after EXECUTE indicates a mismatching number of BEGIN and COMMIT statements. Previous count = 0, current count = 1.
+28-08 10:15:57 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.PerfilBL.GuardarPermisos:: Invalid column name 'PERFIL_ID'.
+Invalid column name 'OPCION_ID'.
+Invalid column name 'AUDIT_USR'.
+Transaction count after EXECUTE indicates a mismatching number of BEGIN and COMMIT statements. Previous count = 0, current count = 1.
+28-08 10:17:34 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.PerfilBL.GuardarPermisos:: Invalid column name 'AUDIT_USR'.
+Transaction count after EXECUTE indicates a mismatching number of BEGIN and COMMIT statements. Previous count = 0, current count = 1.
+28-08 10:18:11 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.PerfilBL.GuardarPermisos:: Invalid column name 'PERFIL_ID'.
+Transaction count after EXECUTE indicates a mismatching number of BEGIN and COMMIT statements. Previous count = 0, current count = 1.
+28-08 10:31:11 ERROR LOGAuditoria - ERROR: No se encuentra un método de acción público 'ObtenerOrganizaciones' en el controlador 'AHSECO.CCL.FRONTEND.Controllers.SeguridadJerarquiaController'.
+28-08 10:31:12 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/Utiles/ObtenerTiposDocumentos' o no implementa IController.
+28-08 10:46:41 ERROR LOGAuditoria - ERROR: No se encuentra un método de acción público 'ObtenerOrganizaciones' en el controlador 'AHSECO.CCL.FRONTEND.Controllers.SeguridadJerarquiaController'.
+28-08 10:46:41 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/Utiles/ObtenerTiposDocumentos' o no implementa IController.
+28-08 11:07:28 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/Utiles/ObtenerTiposDocumentos' o no implementa IController.
+28-08 11:07:29 ERROR LOGAuditoria - ERROR: No se encuentra un método de acción público 'ObtenerOrganizaciones' en el controlador 'AHSECO.CCL.FRONTEND.Controllers.SeguridadJerarquiaController'.
+28-08 11:07:41 ERROR LOGAuditoria - ERROR: No se encuentra un método de acción público 'ObtenerOrganizaciones' en el controlador 'AHSECO.CCL.FRONTEND.Controllers.SeguridadJerarquiaController'.
+28-08 11:07:42 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/Utiles/ObtenerTiposDocumentos' o no implementa IController.
+28-08 11:11:49 ERROR LOGAuditoria - ERROR: No se encuentra un método de acción público 'ObtenerOrganizaciones' en el controlador 'AHSECO.CCL.FRONTEND.Controllers.SeguridadJerarquiaController'.
+28-08 11:26:12 ERROR LOGAuditoria - ERROR: No se encuentra un método de acción público 'ObtenerOrganizaciones' en el controlador 'AHSECO.CCL.FRONTEND.Controllers.SeguridadJerarquiaController'.
+28-08 14:40:02 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.AutorizacionBL.Autenticar:: Usuario y/o password incorrectos.
+28-08 14:40:08 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.AutorizacionBL.Autenticar:: Usuario y/o password incorrectos.
+28-08 14:42:08 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.AutorizacionBL.Autenticar:: Usuario y/o password incorrectos.
+28-08 15:06:55 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.UsuarioBL.Insertar:: Could not find stored procedure 'USP_INS_SEGURIDAD_USUARIO'.
+28-08 15:16:43 ERROR LOGAuditoria - ERROR: El campo de formulario antifalsificación "__RequestVerificationToken" no está presente.
+28-08 15:17:14 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.AutorizacionBL.Autenticar:: Usuario y/o password incorrectos.
+28-08 15:17:48 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.AutorizacionBL.Autenticar:: Usuario y/o password incorrectos.
+28-08 15:17:57 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.AutorizacionBL.Autenticar:: Usuario y/o password incorrectos.
+28-08 15:18:07 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.AutorizacionBL.Autenticar:: Usuario y/o password incorrectos.
+28-08 15:19:06 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.AutorizacionBL.Autenticar:: Usuario y/o password incorrectos.
+28-08 15:37:25 ERROR LOGAuditoria - ERROR: El campo de formulario antifalsificación "__RequestVerificationToken" no está presente.
+28-08 15:49:38 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.AutorizacionBL.Autenticar:: Usuario y/o password incorrectos.
+28-08 15:50:46 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.AutorizacionBL.Autenticar:: El servidor no es funcional.
+
+28-08 15:51:03 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.AutorizacionBL.Autenticar:: El servidor no es funcional.
+
+28-08 16:11:18 ERROR LOGAuditoria - ERROR: No se puede utilizar .. inicial para salir por encima del directorio superior.
+28-08 16:44:20 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.AutorizacionBL.Autenticar:: El servidor no es funcional.
+
+28-08 16:47:25 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.AutorizacionBL.Autenticar:: El servidor no es funcional.
+
+28-08 16:49:09 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/AsignacionTerritorial' o no implementa IController.
+28-08 16:49:11 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/BandejaVentas' o no implementa IController.
+28-08 16:49:12 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/PrestaciónAccesorios' o no implementa IController.

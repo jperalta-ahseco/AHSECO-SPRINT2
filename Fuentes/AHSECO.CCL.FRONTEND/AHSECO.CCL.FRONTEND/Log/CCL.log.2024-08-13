@@ -1,0 +1,6 @@
+13-08 12:53:35 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.UsuarioPerfilBL.Obtener:: Could not find stored procedure 'SPRCCL_SEL_SEGURIDAD_USUARIO_PERFIL'.
+13-08 17:27:01 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.PerfilBL.GuardarPermisos:: Invalid column name 'CSO_ID'.
+Invalid column name 'CSO_OPCION_ID'.
+Invalid column name 'CSO_ID'.
+Invalid column name 'CSP_PERFIL_ID'.
+Transaction count after EXECUTE indicates a mismatching number of BEGIN and COMMIT statements. Previous count = 0, current count = 1.

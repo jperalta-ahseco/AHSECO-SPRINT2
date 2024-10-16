@@ -1,0 +1,9 @@
+USE [DB_AHSECO]
+GO
+
+DECLARE @ID INT
+
+SELECT @ID=ID FROM TBM_SEGURIDAD_OPCION WHERE NOMBRE='Mantenimientos';
+
+INSERT INTO TBM_SEGURIDAD_OPCION VALUES ('M',NULL,'Servicios','Servicios','~BandejaServicios',2,90,@ID,'fa fa-briefcase',1,'system',GETDATE(),'192.168.1.6',NULL,NULL,NULL)
+

@@ -1,0 +1,58 @@
+18-09 04:49:06 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.ViaticosBL.ListarViaticos:: Procedure or function USP_SEL_VIATICOS has too many arguments specified.
+18-09 05:12:15 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/R' o no implementa IController.
+18-09 05:18:43 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918051843.pdf
+18-09 05:21:46 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918052146.pdf
+18-09 05:23:37 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918052337.pdf
+18-09 05:25:17 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918052517.pdf
+18-09 05:25:36 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918052536.pdf
+18-09 05:26:38 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918052638.pdf
+18-09 05:27:02 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918052702.pdf
+18-09 05:28:17 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918052817.pdf
+18-09 05:30:37 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918053037.pdf
+18-09 05:30:56 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918053056.pdf
+18-09 05:36:41 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918053641.pdf
+18-09 05:40:23 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918054022.pdf
+18-09 05:40:46 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.DocumentosBL.MantenimientoDocumentos:: Could not find stored procedure 'USP_MANT_DOCUMENTOS'.
+18-09 05:44:50 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918054450.pdf
+18-09 08:25:14 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BD.ConnectionManager.GetConnectionStringAhseco::La sección de la configuración no puede contener un CDATA o elemento de texto. (D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.FRONTEND\AHSECO.CCL.FRONTEND\web.config line 12)
+18-09 08:25:14 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.AutorizacionBL.Autenticar:: La sección de la configuración no puede contener un CDATA o elemento de texto. (D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.FRONTEND\AHSECO.CCL.FRONTEND\web.config line 12)
+18-09 09:09:04 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.ViaticosBL.ListarViaticos:: Incorrect syntax near 'A'.
+18-09 09:10:59 ERROR LOGAuditoria - ERROR: El diccionario de parámetros contiene una entrada NULL para el parámetro 'codArea' del tipo que no acepta valores NULL 'System.Int32' del método 'System.Web.Mvc.JsonResult GrupoFiltrosViaticos(System.String, Int32)' en 'AHSECO.CCL.FRONTEND.Controllers.Viaticos.BandejaViaticoController'. Un parámetro opcional debe ser un tipo de referencia, un tipo que acepte valores NULL o debe declararse como parámetro opcional.
+Nombre del parámetro: parameters
+18-09 09:17:05 ERROR LOGAuditoria - ERROR: El diccionario de parámetros contiene una entrada NULL para el parámetro 'codArea' del tipo que no acepta valores NULL 'System.Int32' del método 'System.Web.Mvc.JsonResult GrupoFiltrosViaticos(System.String, Int32)' en 'AHSECO.CCL.FRONTEND.Controllers.Viaticos.BandejaViaticoController'. Un parámetro opcional debe ser un tipo de referencia, un tipo que acepte valores NULL o debe declararse como parámetro opcional.
+Nombre del parámetro: parameters
+18-09 09:18:56 ERROR LOGAuditoria - ERROR: El diccionario de parámetros contiene una entrada NULL para el parámetro 'codArea' del tipo que no acepta valores NULL 'System.Int32' del método 'System.Web.Mvc.JsonResult GrupoFiltrosViaticos(System.String, Int32)' en 'AHSECO.CCL.FRONTEND.Controllers.Viaticos.BandejaViaticoController'. Un parámetro opcional debe ser un tipo de referencia, un tipo que acepte valores NULL o debe declararse como parámetro opcional.
+Nombre del parámetro: parameters
+18-09 09:19:16 ERROR LOGAuditoria - ERROR: El diccionario de parámetros contiene una entrada NULL para el parámetro 'codArea' del tipo que no acepta valores NULL 'System.Int32' del método 'System.Web.Mvc.JsonResult GrupoFiltrosViaticos(System.String, Int32)' en 'AHSECO.CCL.FRONTEND.Controllers.Viaticos.BandejaViaticoController'. Un parámetro opcional debe ser un tipo de referencia, un tipo que acepte valores NULL o debe declararse como parámetro opcional.
+Nombre del parámetro: parameters
+18-09 12:39:36 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918123936.pdf
+18-09 12:40:38 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918124038.pdf
+18-09 12:41:02 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918124102.pdf
+18-09 12:41:27 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918124127.pdf
+18-09 12:41:38 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918124138.pdf
+18-09 12:44:29 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918124429.pdf
+18-09 12:47:16 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918124716.pdf
+18-09 12:59:47 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.ViaticosBL.VerViaticos:: La conversión especificada no es válida.
+18-09 13:00:11 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.ViaticosBL.VerViaticos:: La conversión especificada no es válida.
+18-09 13:02:55 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.ViaticosBL.VerViaticos:: La conversión especificada no es válida.
+18-09 13:13:16 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918131316.pdf
+18-09 13:16:29 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918131629.pdf
+18-09 13:17:22 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918131722.pdf
+18-09 13:17:44 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918131744.pdf
+18-09 13:18:40 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918131840.pdf
+18-09 13:20:16 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918132016.pdf
+18-09 13:20:30 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918132030.pdf
+18-09 13:21:42 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918132142.pdf
+18-09 13:21:59 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918132159.pdf
+18-09 13:23:15 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918132315.pdf
+18-09 13:25:00 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918132500.pdf
+18-09 13:25:55 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918132555.pdf
+18-09 13:26:29 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918132629.pdf
+18-09 13:27:51 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918132751.pdf
+18-09 13:28:44 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918132844.pdf
+18-09 13:29:09 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918132909.pdf
+18-09 13:29:45 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918132945.pdf
+18-09 13:32:21 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918133221.pdf
+18-09 16:09:34 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918160933.pdf
+18-09 17:28:38 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918172838.pdf
+18-09 17:29:31 ERROR LOGAuditoria - ERROR: Llego imprimir----------::202409VIA20240918172931.pdf

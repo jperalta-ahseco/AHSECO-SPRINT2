@@ -1,0 +1,75 @@
+﻿
+@{ 
+    ViewBag.Title = "Búsqueda de Jefes";
+}
+<div class="modal-dialog modal-lg container-fluid" role="document">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <!-- Modal content header -->
+        <div class="modal-header box-header well well-lg " style="height:50px">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="tituloModal"><i class="fa fa-search"></i> @ViewBag.Title</h4>
+        </div>
+        <br />
+        <br />
+        <!-- Modal content body -->
+        <div class="modal-body d-flex justify-content-center" align-items-center>
+            <form id="formBusquedaEmpleados" class="d-flex flex-row">
+                <div class="row container-fluid d-flex justify-content-center">             
+                    <div class="row container-fluid">
+                        <!--Número de Documento de Empleado-->
+                        <div class="col-md-5 col-xs-10 ">
+                            <div class="col-md-10 col-sm-12">
+                                <div class="form-group col-sm-12">
+                                    <label for="txtNumDocJefe">N&uacute;mero de Documento:</label>
+                                </div>
+                            </div>
+                            <div class="col-md-7 col-sm-12">
+                                <div class="form-group">
+                                    <input class="form-control select2 input-sm" style="width:100%;" id="txtNumDocJefe" maxlength="12" placeholder="Ingrese Número de Documento" tabindex="1"/>
+                                </div>
+                            </div>
+                        </div>
+                        <!--Nombre Empleado-->
+                        <div class="col-md-5 col-xs-10">
+                            <div class=" col-md-10 col-sm-12">
+                                <div class="form-group col-sm-12">
+                                    <label for="txtNombreJefe">Nombre Empleado:</label>
+                                </div>
+                            </div>
+                            <div class="col-md-7 col-sm-12">
+                                <div class="form-group">
+                                    <input class="form-control select2 input-sm" style="width:100%;" id="txtNombreJefe" maxlength="40" placeholder="Ingrese Nombre Empleado" tabindex="2" />
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                </div>
+                <br />
+                <div class="row container-fluid">
+                    <div class="text-right">
+                        <button class="btn btn-sm btn-primary" id="btnBuscarJefe"><i class="fa fa-search"></i> Buscar</button>
+                    </div>
+                       
+                </div>
+             
+            </form>
+          
+            <div class="table-responsive">
+                <table id="tblJefe" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                    <thead>
+                        <tr>
+                            <th style="text-align:center" width="25%">N&uacute;mero de Documento</th>
+                            <th style="text-align: center; width:50%">Nombre Empleado</th>
+                            <th style="text-align:center;width:25%">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+       
+    </div>
+</div>

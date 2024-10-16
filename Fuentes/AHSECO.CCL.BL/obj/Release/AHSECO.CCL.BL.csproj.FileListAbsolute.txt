@@ -1,0 +1,76 @@
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BL\bin\Release\AHSECO.CCL.BL.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BL\bin\Release\AHSECO.CCL.BL.pdb
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BL\bin\Release\AHSECO.CCL.BD.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BL\bin\Release\AHSECO.CCL.BE.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BL\bin\Release\AHSECO.CCL.COMUN.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BL\bin\Release\Dapper.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BL\bin\Release\log4net.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BL\bin\Release\NPOI.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BL\bin\Release\NPOI.OOXML.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BL\bin\Release\BCrypt.Net-Next.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BL\bin\Release\ICSharpCode.SharpZipLib.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BL\bin\Release\NPOI.OpenXmlFormats.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BL\bin\Release\NPOI.OpenXml4Net.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BL\bin\Release\AHSECO.CCL.BD.pdb
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BL\bin\Release\AHSECO.CCL.BE.pdb
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BL\bin\Release\AHSECO.CCL.COMUN.pdb
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BL\bin\Release\NPOI.xml
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BL\bin\Release\BCrypt.Net-Next.xml
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BL\obj\Release\AHSECO.CCL.BL.csproj.AssemblyReference.cache
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BL\obj\Release\AHSECO.CCL.BL.csproj.CoreCompileInputs.cache
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BL\obj\Release\AHSECO.C.335A5158.Up2Date
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BL\obj\Release\AHSECO.CCL.BL.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BL\obj\Release\AHSECO.CCL.BL.pdb
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\AHSECO.CCL.BL.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\AHSECO.CCL.BL.pdb
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\AHSECO.CCL.BD.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\AHSECO.CCL.BE.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\AHSECO.CCL.COMUN.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\Dapper.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\log4net.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\NPOI.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\NPOI.OOXML.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\BCrypt.Net-Next.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\ICSharpCode.SharpZipLib.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\NPOI.OpenXmlFormats.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\NPOI.OpenXml4Net.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\AHSECO.CCL.BD.pdb
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\AHSECO.CCL.BE.pdb
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\AHSECO.CCL.COMUN.pdb
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\NPOI.xml
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\BCrypt.Net-Next.xml
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\obj\Release\AHSECO.CCL.BL.csproj.AssemblyReference.cache
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\obj\Release\AHSECO.CCL.BL.csproj.CoreCompileInputs.cache
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\obj\Release\AHSECO.C.335A5158.Up2Date
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\obj\Release\AHSECO.CCL.BL.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\obj\Release\AHSECO.CCL.BL.pdb
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\Npgsql.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\System.Memory.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\Microsoft.Bcl.HashCode.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\Microsoft.Bcl.AsyncInterfaces.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\System.Threading.Tasks.Extensions.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\Microsoft.Extensions.Logging.Abstractions.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\System.Threading.Channels.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\System.Diagnostics.DiagnosticSource.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\System.Text.Json.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\System.Buffers.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\System.Collections.Immutable.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\System.Runtime.CompilerServices.Unsafe.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\System.Numerics.Vectors.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\System.ValueTuple.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\System.Text.Encodings.Web.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\AHSECO.CCL.BD.dll.config
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\Npgsql.xml
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\System.Memory.xml
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\Microsoft.Bcl.HashCode.xml
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\Microsoft.Bcl.AsyncInterfaces.xml
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\System.Threading.Tasks.Extensions.xml
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\Microsoft.Extensions.Logging.Abstractions.xml
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\System.Threading.Channels.xml
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\System.Diagnostics.DiagnosticSource.xml
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\System.Buffers.xml
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\System.Collections.Immutable.xml
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\System.Runtime.CompilerServices.Unsafe.xml
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\System.Numerics.Vectors.xml
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BL\bin\Release\Microsoft.Extensions.DependencyInjection.Abstractions.xml

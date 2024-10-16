@@ -1,0 +1,89 @@
+﻿
+@{
+    ViewBag.Title = "Perfiles";
+}
+
+<div class="container-fluid" style="margin-right: 15px;">
+    <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
+    <div class="box-inner">
+        <div class="box-header well" data-original-title="">
+            <h2><i class="glyphicon glyphicon-list"></i> Mantenimiento de Perfiles</h2>
+        </div>
+        <div class="box-content">
+            <form class="form-horizontal" id="frmPerfilMain">
+                <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#modalPerfiles" id="btnNuevo"><i class="fa fa-plus" aria-hidden="true"></i> Agregar Nuevo</button>
+                <button type="button" class="btn btn-info btn-sm" id="btnExportar" href="SeguridadPerfil/ExportarPerfiles"><i class="fa fa-table" aria-hidden="true"></i> Exportar</button>
+            </form>
+            <br />
+            <div class="table-responsive">
+                <table id="tblPerfiles" class="table table-bordered table-striped table-hover table-condensed" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Descripci&oacute;n</th>
+                            <th style="text-align: center;" width="60px">Habilitado</th>
+                            <th style="text-align: center;" width="60px">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal Perfil-->
+<div class="modal fade" id="modalPerfiles" tabindex="-1" role="dialog" aria-labelledby="titleModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="titleModal">Perfil</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <form id="frmPerfil" class="container-fluid">
+                        <div class="form-group">
+                            <input type="hidden" id="hdnIdPerfil" />
+                            <label for="txtDescripcion">Descripci&oacute;n</label>
+                            <input class="form-control input-sm" type="text" id="txtDescripcion" maxlength="50" />
+                        </div>
+                        <div class="form-group">
+                            <label for="chkHabilitado">Habilitado</label>
+                            <input type="checkbox" class="form-check-input" id="chkHabilitado">
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary btn-sm" type="button" id="btnGuardar">Guardar</button>
+                <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnCerrar">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal Permisos-->
+<div class="modal fade" id="modalPermisos" tabindex="-1" role="dialog" aria-labelledby="titleModalMenu" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="titleModalMenu">Permisos del Perfil</h4>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="hdnIdPerfilPermisos" />
+                <div id="treeMenu"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary btn-sm" type="button" id="btnGuardarPermisos">Guardar</button>
+                <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnCerrarPermisos">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript" src="~/resources/plugins/jstree/jstree.min.js"></script>
+    <script src="~/resources/js/app/seguridad/perfil/perfil.js"></script>
+}

@@ -1,0 +1,94 @@
+﻿@using AHSECO.CCL.FRONTEND.Core;
+@{
+    ViewBag.Title = "Selección de Productos";
+    var numSol = VariableSesion.getCadena("numSol");
+
+}
+
+<div class="modal-dialog modal-lg container-fluid" role="document" style="width:90%">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <!-- Modal content header -->
+        <div class="modal-header box-header well well-sm" style="padding-bottom: 30px;">
+            @if (numSol == null)
+            {
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            }
+            <h4 class="modal-title" id="tituloModal"><i class="fa fa-cubes"></i> @ViewBag.Title</h4>
+        </div>
+        <!-- Modal content body -->
+        <div class="modal-body d-flex justify-content-center" align-items-center>
+            <form id="formRegistro" class="d-flex flex-row">
+                <div class="row container-fluid d-flex justify-content-center">
+                    <div class="row container-fluid">
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtNomProducto">Nombre de Producto: </label>
+                            <div class="form-group">
+                                <input placeholder="Ingresar nombre de producto" type="text" class="form-control input-sm" id="txtNomProducto" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-7 col-xs-12">
+                            <label for="cmbFamilia">Tipo de Producto: </label>
+                            <div class="form-group">
+                                <select class="form-control select2 input-sm" style="width:100%;" id="cmbFamilia" data-selected="">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtCodProducto">C&oacute;digo Producto: </label>
+                            <div class="form-group">
+                                <input placeholder="Ingresar código de producto" type="text" class="form-control input-sm" id="txtCodProducto" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="col-md-4 col-sm-12">
+                            <label for="cmbTipoMedida">Tipo de Medida: </label>
+                            <div class="form-group">
+                                <select class="form-control select2 input-sm" style="width:100%;" id="cmbTipoMedida" data-selected="">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="cmbMarca">Marca: </label>
+                            <div class="form-group">
+                                <select class="form-control select2 input-sm" style="width:100%;" id="cmbMarca" data-selected="">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <button class="btn btn-primary btn-sm" type="button" id="btnBuscarProductos"><i class="fa fa-search" aria-hidden="true"></i>  Buscar</button>
+                        @if (numSol != null)
+                        {
+                            <button class="btn btn-danger btn-sm" type="button" id="btnCerrarRegistraProd"><i class="fa fa-times" aria-hidden="true"></i>  Cerrar</button>
+                        }
+                        <span id="hidden_fields"></span>
+                    </div>
+                    <br />
+                    <div class="table-responsive">
+                        <table id="tblProductos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center; width:10%">Cod.Producto</th>
+                                    <th style="text-align:center; width:10%">Tip.Producto</th>
+                                    <th style="text-align:center; width:35%">Descripcion</th>
+                                    <th style="text-align:center; width:10%">Stock Disponible</th>
+                                    <th style="text-align:center; width:5%">Precio de Referencia</th>
+                                    <th style="text-align:center; width:10%">Unidad Medida</th>
+                                    <th style="text-align:center; width:20%">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <br />
+            </form>
+        </div>
+    </div>
+</div>
+

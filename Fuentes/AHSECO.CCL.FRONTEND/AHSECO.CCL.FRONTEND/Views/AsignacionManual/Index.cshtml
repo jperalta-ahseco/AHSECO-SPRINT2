@@ -1,0 +1,121 @@
+﻿
+@{
+    ViewBag.Title = "Asignacion de Clientes Manual";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" style="margin-right: 15px;">
+    <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
+    <div class="box-inner">
+        <div class="box-header well" data-original-title="">
+            <h2><i class="glyphicon glyphicon-list"></i> Asignaci&oacute;n de Clientes Manual</h2>
+        </div>
+        <div class="box-content">
+            <form id="formMantAsignacion">
+                <div class="row container-fluid">
+                    <div class="col-md-2 col-sm-4 col-xs-12">
+                        <div class="form-group">
+                            <label for="txtCliente">Cliente:</label>
+                        </div>
+                    </div>
+                    <div class="col-md-5 col-sm-12">
+                        <div class="form-group">
+                            <div class="input-group input-group-sm date">
+                                <input placeholder="--Todos--" disabled maxlength="6" type="text" class="form-control input-sm" id="txtCliente" value="" aria-describedby="sizing-addon3" />
+                                <span style="cursor:pointer" class="input-group-addon input-sm" id="searchCliente" data-toggle="modal" data-target="#modalBusquedaClientes">
+                                    <i class="fa fa-search"></i>
+                                </span>
+                                <span style="cursor:pointer" class="input-group-addon input-sm" id="deleteCliente" data-toggle="modal">
+                                    <i class="fa fa-trash"></i>
+                                </span>
+                                <input type="hidden" id="txtCodCliente" value="" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row container-fluid">
+                    <div class="row container-fluid">
+                        <div class="col-md-2 col-sm-12">
+                            <div class="form-group col-sm-12">
+                                <label for="cmbAsesorVenta">Asesor de Ventas: </label>
+                            </div>
+                        </div>
+                        <div class="col-md-5 col-sm-12">
+                            <div class="form-group col-sm-12">
+                                <select class="form-control select2 input-sm " style="width:100%;" id="cmbAsesorVenta" data-selected="" tabindex="-1" aria-hidden="true"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <button class="btn btn-success " type="button" id="btnAsignar"><i class="fa fa-handshake-o" aria-hidden="true"></i> Asignar</button>
+                    <button class="btn btn-primary" type="button" id="btnBuscar"><i class="fa fa-search"></i> Buscar</button>
+                    <span id="hidden_fields"></span>
+                    <a class="btn btn-info " type="button" id="btnExportar" href="AsignacionManual/GenerarReporte"><i class="fa fa-table" aria-hidden="true"></i> Exportar</a>
+                </div>
+            </form>
+
+            <br />
+            <div class="table-responsive">
+                <table id="tblAsignacion" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th style="text-align: center; width: 5%;">Todos: <input class="form-check-input" type="checkbox" value="" id="checkSeleccionarTodos"></th>
+                            <th style="text-align: center; width:20%">RUC</th>
+                            <th style="text-align: center; width:20%">Nombre de Empresa</th>
+                            <th style="text-align: center; width:20%">Asesor</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modalAsignacion" tabindex="-1" role="dialog" aria-labelledby="titleModal" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="tituloModal">Asignac&iacute;on Manual</h4>
+            </div>
+            <div class="modal-body">
+                <form id="frmAsignacion" class="container-fluid row">
+                    <div class="row container-fluid">
+                        <div class="row container-fluid">
+                            <div class="col-md-2 col-sm-12">
+                                <div class="form-group col-sm-12">
+                                    <label for="cmbAsigAsesorVenta">Asignar a: </label>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12">
+                                <div class="form-group col-sm-12">
+                                    <select class="form-control select2 input-sm " style="width:100%;" id="cmbAsigAsesorVenta" data-selected="" tabindex="-1" aria-hidden="true"></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary btn-sm" type="button" id="btnEjecutarAsignacion"><i class="fa fa-check-circle" aria-hidden="true"></i> Ejecutar Asignac&iacute;on</button>
+                <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnCerrar"><i class="fa fa-times-circle" aria-hidden="true"></i> Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalBusquedaClientes" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    @{
+        Html.RenderPartial("_BusquedaClientes");
+    }
+</div>
+@section scripts{
+    <script type="text/javascript" src="~/resources/js/app/AsignacionTerritorial/AsignacionTerritorial.js"></script>
+}
+

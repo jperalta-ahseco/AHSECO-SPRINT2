@@ -1,0 +1,101 @@
+﻿
+@{
+    ViewBag.Title = "Consulta De Precios";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<div class="container-fluid" style="margin-right: 15px;">
+    <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
+
+    <div class="box-inner">
+        <div class="box-header well" data-original-title="">
+            <h2><i class="glyphicon glyphicon-list"></i> Cat&aacute;logo de Precios</h2>
+        </div>
+        <div class="box-content">
+            <form id="formPrecios">
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtCodProducto">C&oacute;digo de Producto:</label>
+                        <div class="form-group">
+                            <div class="input-group input-sm col-md-10">
+                                <input placeholder="Ingresar Código Producto" maxlength="25" type="text" class="form-control input-sm" id="txtCodProducto" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtNombreProducto">Nombre de Producto:</label>
+                        <div class="form-group">
+                            <div class="input-group input-sm col-md-10">
+                                <input placeholder="Ingresar Nombre de Producto" maxlength="250" type="text" class="form-control input-sm" id="txtNombreProducto" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="cmbTipoMedida">Tipo de Medida :</label>
+                        <div class="input-group input-sm col-md-10">
+                            <select aria-hide="false" id="cmbTipoMedida" type="text" class="input form-control input-sm">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtFamilia">Familia:</label>
+                        <div class="input-group input-sm col-md-10">
+                            <select aria-hide="false" id="cmbFamilia" type="text" class="input form-control input-sm">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtMarca">Marca:</label>
+                        <div class="input-group input-sm col-md-10">
+                            <select aria-hide="false" id="cmbMarca" type="text" class="input form-control input-sm">
+                            </select>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="text-right">
+                    <button class="btn btn-primary btn-sm" type="button" id="btnBuscar"><i class="fa fa-search"></i> Buscar</button>
+                    <span id="hidden_fields"></span>
+                    <a class="btn btn-info btn-sm " type="button" id="btnExportar" href="CatalogoPrecios/ExportarPrecios"><i class=" fa fa-table"></i> Exportar</a>
+                </div>
+
+            </form>
+
+            <br />
+            <div class="table-responsive">
+                <table id="tblPrecios" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                    <thead>
+                        <tr>
+                            @if (ViewData["ListaPrecios"] != null)
+                            {
+                                var cabeceras = ViewData["ListaPrecios"] as IEnumerable<string>;
+
+                                foreach (var cabecera in cabeceras)
+                                {
+                                    <th>
+                                        <div style="text-align:center">
+                                            @cabecera
+                                        </div>
+                                    </th>
+                                }
+                            }
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script src="~/resources/js/app/consultas/consultaPrecios/consultaPrecios.js"></script>
+}

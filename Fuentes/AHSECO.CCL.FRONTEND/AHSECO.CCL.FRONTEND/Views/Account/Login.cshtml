@@ -1,0 +1,130 @@
+﻿@{
+    Layout = null;
+    ViewBag.Title = "AHSECO PERU S.A.";
+    var errorSummary = ViewData.ModelState.Values.SelectMany(m => m.Errors);
+}
+
+@model AHSECO.CCL.FRONTEND.Models.LoginViewModel
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Quality Gardian SAC" />
+    <meta name="author" content="Quality Guardians SAC" />
+    <!-- Grupo de Referencia de Estilos -->
+    <link href="~/resources/css/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/resources/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/resources/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <script src="~/resources/js/librerias/modernizr-2.8.3.js" type="text/javascript"></script>
+    <!-- Grupo de Referencia de favicon -->
+    <link rel="shortcut icon" href="~/resources/img/favicon.ico" />
+</head>
+<body style="background-image: url('../../resources/img/Background.png'); background-repeat: no-repeat; background-size:cover; background-attachment:fixed;">
+    <div class="container-fluid">
+        <div class="col-md-4 col-sm-12">
+            <div class="form-group">
+                &nbsp;
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <div class="form-group">
+                &nbsp;
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <div class="form-group">
+                &nbsp;
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid"  style="height:250px;">
+        <div class="col-md-4 col-sm-12">
+            <div class="form-group">
+                &nbsp;
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <div class="form-group">
+                &nbsp;
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <div class="form-group">
+                &nbsp;
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container-fluid">
+
+        <div class="col-md-4 col-sm-12">
+            <div class="form-group">
+                &nbsp;
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-12">
+            <div class="form-group">
+                &nbsp;
+            </div>
+        </div>
+        <div class="col-sm-4 col-xs-12 bsp-box-login">
+            @if (errorSummary.Any())
+            {
+                <br />
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <ul>
+                        @foreach (var item in errorSummary)
+                        {
+                            <li>@item.ErrorMessage</li>
+                        }
+                    </ul>
+                </div>
+            }
+            @using (Html.BeginForm("Login", "Account", new { returnURl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form", role = "role" }))
+            {
+                @Html.AntiForgeryToken()
+                <h3>Iniciar sesi&oacute;n</h3>
+                <hr />
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.UserName)
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="fa fa-user" aria-hidden="true"></i>
+                        </span>
+                        @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", placeholder = "Nombre de usuario" })
+                    </div>
+                    @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Password)
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="fa fa-lock" aria-hidden="true"></i>
+                        </span>
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Contraseña" })
+                    </div>
+                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Ingresar" class="btn btn-info" style="width:100%;" />
+                </div>
+            }
+        </div>
+    </div>
+
+
+    <!-- Grupo de Referencia de Scripts -->
+    <script type="text/javascript" src="~/resources/js/librerias/jquery.min.js"></script>
+    <!--script type="text/javascript" src="~/resources/js/librerias/jquery-ui-1.12.1.min.js"></script-->
+    <script type="text/javascript" src="~/resources/js/librerias/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        var baseSiteUrl = '@Url.Content("~/")';
+    </script>
+</body>
+</html>

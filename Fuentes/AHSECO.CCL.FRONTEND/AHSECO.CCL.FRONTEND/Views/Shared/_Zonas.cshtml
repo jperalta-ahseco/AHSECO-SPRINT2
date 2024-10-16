@@ -1,0 +1,41 @@
+﻿<!-- Modal dialog -->
+<div class="modal-dialog modal-sm" role="document">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <!-- Modal content header -->
+        <div class="modal-header">
+            <h4 class="modal-title well well-sm" style="width:90%" id="tituloZona"><i class="glyphicon glyphicon-cog"></i>Creaci&oacute;n de Zonas</h4>
+        </div>
+        <!-- Modal content body -->
+        <div class="modal-body">
+            <form id="formZonas" style="display:flex;justify-content:end;flex-direction:column">
+                <div class="row container-fluid">
+                    <!--Descripción-->
+                    <div class="col-md-10 col-sm-12">
+                        <label for="txtDescripcion">Descripcion: </label>
+                        <div class="form-group">
+                            <input type="hidden" id="hdnIdZona" />
+                            <input placeholder="Ingresar Descripción" maxlength ="200" type="text" class="form-control input-sm" id="txtDescripcion" value="">
+                        </div>
+                    </div>
+                </div>
+                <div class="row container-fluid">
+                    <!---------Estado--------->
+                    <div class="form-group col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <label id="lblHabilitado" for="chkHabilitado">Habilitado</label>
+                            <input type="checkbox" class="form-check-input" id="chkHabilitado">
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <!-- Modal content footer -->
+        <div class="modal-footer">
+            <button class="btn btn-default btn-sm pull-left" type="button" data-dismiss="modal" id="btnCerrar">Cerrar</button>
+            <button class="btn btn-primary btn-sm" type="submit" id="btnActualizarZonas">Actualizar</button>
+            <button class="btn btn-primary btn-sm" type="submit" id="btnGrabarZonas">Grabar</button>
+        </div>
+    </div>
+</div>

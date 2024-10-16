@@ -1,0 +1,68 @@
+﻿@using AHSECO.CCL.FRONTEND.Core;
+@using AHSECO.CCL.BE.Mantenimiento;
+
+@{
+    ViewBag.Title = "Bandeja de Solicitudes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var cliente = VariableSesion.getObject("VENTA_CLIENTE") as ClienteDTO;
+    var nombreRol = VariableSesion.getCadena("VENTA_NOMBRE_ROL");
+}
+
+<input type="hidden" id="idCliente" value="@cliente.ID" />
+
+
+<div class="container-fluid" style="margin-right: 15px;">
+    <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
+    <div class="box-inner">
+        <div class="box-header well" data-original-title="">
+            <h2><i class="fa fa-user-circle-o" aria-hidden="true"></i> Cliente: @cliente.NomEmpresa</h2>
+        </div>
+        <div class="box-content">
+            <form id="formMantCliente">
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtSolicitud">N&uacute;mero de Solicitud: </label>
+                        <div class="form-group">
+                            <input placeholder="Ingresar Solicitud" type="text" class="form-control input-sm" id="txtSolicitud" value="">
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="cmbEstado">Estado: </label>
+                            <select class="form-control select2 input-sm" style="width:100%;" id="cmbEstado" tabindex="6"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <button class="btn btn-primary btn-sm" type="button" id="btnBuscar"><i class="fa fa-search"></i> Buscar</button>
+                    @if (nombreRol == "SGI_VENTA_ASESOR")
+                    {
+                        <button class="btn btn-success btn-sm" type="button" id="btnNuevo"><i class="fa fa-plus"></i> Nuevo</button>
+                    }
+                    <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegresar" tabindex="14"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Regresar</button>
+                </div>
+            </form>
+            <br />
+            <div class="table-responsive">
+                <table id="tblSolicitudes" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th style="text-align: center; width:5%;">N°Solicitud</th>
+                            <th style="text-align: center; width:10%;">Flujo</th>
+                            <th style="text-align: center; width:15%;">Fecha de Solicitud</th>
+                            <th style="text-align: center; width:25%;">Tipo de Solicitud</th>
+                            <th style="text-align: center; width:10%;">Estado</th>
+                            <th style="text-align: center; width:15%;">Registrado por:</th>
+                            <th style="text-align: center; width:60%;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script type="text/javascript" src="~/resources/js/app/ventas/bandejaSolicitudes.js"></script>
+}

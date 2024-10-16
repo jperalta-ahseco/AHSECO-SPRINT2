@@ -1,0 +1,4 @@
+27-08 08:47:41 ERROR LOGAuditoria - ERROR: No se puede convertir implícitamente el tipo 'string' en 'long'.
+27-08 13:48:47 ERROR LOGAuditoria - ERROR: No se puede convertir implícitamente el tipo 'string' en 'int'.
+27-08 13:49:39 ERROR LOGAuditoria - ERROR: No se puede convertir implícitamente el tipo 'string' en 'int'.
+27-08 15:07:45 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/BandejaCliente' o no implementa IController.

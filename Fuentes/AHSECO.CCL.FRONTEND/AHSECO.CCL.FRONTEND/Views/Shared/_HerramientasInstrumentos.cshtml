@@ -1,0 +1,87 @@
+﻿@using AHSECO.CCL.BE;
+@using AHSECO.CCL.FRONTEND.Core;
+@using AHSECO.CCL.FRONTEND.Controllers;
+@using Newtonsoft.Json;
+@{
+    ViewBag.Title = "_HerramientasInstrumentos";
+    var tipoProceso = VariableSesion.getCadena("tipoProceso");
+    int codigoServicio = int.Parse(VariableSesion.getCadena("codigoServicio"));
+    var instrumentos = VariableSesion.getCadena("instrumentos");
+    var herramientas = VariableSesion.getCadena("herramientas");
+    var herramientasEspeciales = VariableSesion.getCadena("herramientasEspeciales");
+}
+
+<div class="box-inner">
+    <div class="box-header well">
+        <h2>Herramientas e Instrumentos</h2>
+    </div>
+    <div class="box-content">
+        <div class="row container-fluid">
+            <div class="col-md-12 col-sm-12">
+                <label for="txtInstrumentos">Instrumentos:</label>
+                <div class="form-group">
+                    @if (codigoServicio > 0)
+                    {
+                        if (tipoProceso == "U")
+                        {
+                            <textarea placeholder="Ingrese Instrumentos" type="text" class="form-control input-sm" id="txtInstrumentos" value="@instrumentos"></textarea>
+                        }
+                        else if (tipoProceso == "V")
+                        {
+                            <textarea placeholder="Ingrese Instrumentos" type="text" class="form-control input-sm" id="txtInstrumentos" disabled value="@instrumentos"></textarea>
+                        }
+                    }
+                    else
+                    {
+                        <textarea placeholder="Ingrese Instrumentos" type="text" class="form-control input-sm" id="txtInstrumentos" value=""></textarea>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class=" row container-fluid">
+            <div class="col-md-12 col-sm-12">
+                <label for="txtHerramientas">Herramientas Comunes:</label>
+                <div class="form-group">
+                    @if (codigoServicio > 0)
+                    {
+                        if (tipoProceso == "U")
+                        {
+                            <textarea placeholder="Ingrese Herramientas Comunes" type="text" class="form-control input-sm" id="txtHerramientas" value="@instrumentos"></textarea>
+                        }
+                        else if (tipoProceso == "V")
+                        {
+                            <textarea placeholder="Ingrese Herramientas Comunes" type="text" class="form-control input-sm" id="txtHerramientas" disabled value="@instrumentos"></textarea>
+                        }
+                    }
+                    else
+                    {
+                        <textarea placeholder="Ingrese Herramientas Comunes" type="text" class="form-control input-sm" id="txtHerramientas" value=""></textarea>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class=" row container-fluid">
+            <div class="col-md-12 col-sm-12">
+                <label for="txtHerramientasComunes">Herramientas Especiales:</label>
+                <div class="form-group">
+                    @if (codigoServicio > 0)
+                    {
+                        if (tipoProceso == "U")
+                        {
+                            <textarea placeholder="Ingrese Herramientas Especiales" type="text" class="form-control input-sm" id="txtHerramientasEspeciales" value="@herramientasEspeciales"></textarea>
+                        }
+                        else if (tipoProceso == "V")
+                        {
+                            <textarea placeholder="Ingrese Herramientas Especiales" type="text" class="form-control input-sm" id="txtHerramientasEspeciales" disabled value="@herramientasEspeciales"></textarea>
+                        }
+                    }
+                    else
+                    {
+                        <textarea placeholder="Ingrese Herramientas Especiales" type="text" class="form-control input-sm" id="txtHerramientasEspeciales" value=""></textarea>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

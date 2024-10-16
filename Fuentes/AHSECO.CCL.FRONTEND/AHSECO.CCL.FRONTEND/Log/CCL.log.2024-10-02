@@ -1,0 +1,2 @@
+02-10 13:55:22 ERROR LOGAuditoria - ERROR: No se puede convertir implícitamente el tipo 'int' en 'string'.
+02-10 17:12:42 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.DatosGeneralesBL.ObtenerParametro::Conversion failed when converting the nvarchar value 'X0001' to data type int.

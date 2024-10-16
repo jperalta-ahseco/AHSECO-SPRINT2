@@ -1,0 +1,100 @@
+﻿
+@{
+    ViewBag.Title = "Mantenimiento de Asesor de Ventas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" style="margin-right: 15px;">
+    <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
+    <div class="box-inner">
+        <div class="box-header well" data-original-title="">
+            <h2><i class="glyphicon glyphicon-list"></i> Bandeja de Asesor de Ventas</h2>
+        </div>
+        <div class="box-content">
+            <form id="formAsesorVenta">
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtFechaInicio">Fecha Inicio:</label>
+                        <div class="input-group date">
+                            <input type="text" class="form-control input-sm" id="dateFecIni" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
+                            <span class="input-group-addon input-sm" id="openRegFecIni">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtFechaFinal">Fecha Final:</label>
+                        <div class="input-group date">
+                            <input type="text" class="form-control input-sm" id="dateFecFin" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
+                            <span class="input-group-addon input-sm" id="openRegFecFin">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="cmbestado">Estado:</label>
+                            <select class="form-control select2 input-sm" style="width:100%;" id="cmbestado">
+                          
+
+                            </select>
+                        </div>
+                    </div>
+
+
+
+                </div>
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtNombres">Nombres:</label>
+                        <div class="form-group">
+                            <input placeholder="Ingresar Nombre" maxlength="100" type="text" class="form-control input-sm" id="txtNombreAsesorVenta" value="">
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtApePat">Apellido Paterno:</label>
+                        <div class="form-group">
+                            <input placeholder="Ingresar Apellido Paterno" maxlength="100" type="text" class="form-control input-sm" id="txtApePat" value="">
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtApeMat">Apellido Materno:</label>
+                        <div class="form-group">
+                            <input placeholder="Ingresar Apellido Materno" maxlength="100" type="text" class="form-control input-sm" id="txtApeMat" value="">
+                        </div>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <button class="btn btn-success btn-sm" type="button" id="btnNuevo"><i class="fa fa-plus"></i> Agregar Nuevo</button>
+                    <button class="btn btn-primary btn-sm" type="button" id="btnBuscar"><i class="fa fa-search"></i> Buscar</button>
+                    <span id="hidden_fields"></span>
+                    <a class="btn btn-info btn-sm" type="button" id="btnExportar" href="BandejaAsesorVenta/ExportarAsesores"><i class="fa fa-table"></i> Exportar</a>
+
+                </div>
+            </form>
+
+            <br />
+            <div class="table-responsive">
+                <table id="tblAsesorVenta" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                    <thead>
+                        <tr>
+                             <th style="text-align:center" width="20%">ID</th>
+                            <th style="text-align: center; width:25%">Nombre Completo</th>
+                            <th style="text-align: center; width:10%">T&eacute;lefono</th>
+                            <th style="text-align: center; width:25%">Correo</th>
+                            <th style="text-align: center; width:20%">Estado</th>
+                          
+                            <th style="text-align:center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript" src="~/resources/js/app/mantenimientos/asesorventa/bandejaAsesor.js"></script>
+}

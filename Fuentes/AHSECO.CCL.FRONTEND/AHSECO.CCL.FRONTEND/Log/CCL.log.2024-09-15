@@ -1,0 +1,11 @@
+15-09 08:22:14 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.ViaticosBL.MantenimientoCabeceraViaticos:: Desbordamiento de SqlDateTime. Debe estar entre 1/1/1753 12:00:00 AM y 12/31/9999 11:59:59 PM.
+15-09 08:26:17 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.ViaticosBL.MantenimientoCabeceraViaticos:: Desbordamiento de SqlDateTime. Debe estar entre 1/1/1753 12:00:00 AM y 12/31/9999 11:59:59 PM.
+15-09 08:32:28 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.ViaticosBL.MantenimientoCabeceraViaticos:: Desbordamiento de SqlDateTime. Debe estar entre 1/1/1753 12:00:00 AM y 12/31/9999 11:59:59 PM.
+15-09 13:57:06 ERROR LOGAuditoria - ERROR: El token antifalsificación proporcionado se diseñó para un usuario basado en notificaciones distinto del usuario actual.
+15-09 13:57:18 ERROR LOGAuditoria - ERROR: El token antifalsificación proporcionado se diseñó para un usuario basado en notificaciones distinto del usuario actual.
+15-09 16:06:57 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.ViaticosBL.MantenimientoCabeceraViaticos:: Desbordamiento de SqlDateTime. Debe estar entre 1/1/1753 12:00:00 AM y 12/31/9999 11:59:59 PM.
+15-09 18:24:51 ERROR LOGAuditoria - ERROR: No se encuentra un método de acción público 'AbonarViatico' en el controlador 'AHSECO.CCL.FRONTEND.Controllers.Viaticos.RegistrarViaticoController'.
+15-09 18:25:41 ERROR LOGAuditoria - ERROR: No se encuentra un método de acción público 'AbonarViatico' en el controlador 'AHSECO.CCL.FRONTEND.Controllers.Viaticos.RegistrarViaticoController'.
+15-09 22:00:49 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/VerReporte' o no implementa IController.
+15-09 22:03:34 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/VerReporte' o no implementa IController.
+15-09 22:05:28 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/VerReporte' o no implementa IController.

@@ -1,0 +1,11 @@
+03-09 08:46:41 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.EmpleadosBL.ListarEmpleados:: Desbordamiento de SqlDateTime. Debe estar entre 1/1/1753 12:00:00 AM y 12/31/9999 11:59:59 PM.
+03-09 08:47:43 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.EmpleadosBL.ListarEmpleados:: Desbordamiento de SqlDateTime. Debe estar entre 1/1/1753 12:00:00 AM y 12/31/9999 11:59:59 PM.
+03-09 08:47:54 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.EmpleadosBL.ListarEmpleados:: Desbordamiento de SqlDateTime. Debe estar entre 1/1/1753 12:00:00 AM y 12/31/9999 11:59:59 PM.
+03-09 08:48:55 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.EmpleadosBL.ListarEmpleados:: Desbordamiento de SqlDateTime. Debe estar entre 1/1/1753 12:00:00 AM y 12/31/9999 11:59:59 PM.
+03-09 09:11:14 ERROR LOGAuditoria - ERROR: No se puede convertir implícitamente el tipo 'bool' en 'int'.
+03-09 09:13:23 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.EmpleadosBL.ListarEmpleados:: Must declare the scalar variable "@FECINI".
+03-09 09:13:53 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.EmpleadosBL.ListarEmpleados:: Must declare the scalar variable "@FECINI".
+03-09 09:16:15 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.EmpleadosBL.ListarEmpleados:: Must declare the scalar variable "@FECINI".
+03-09 09:16:47 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.EmpleadosBL.ListarEmpleados:: Must declare the scalar variable "@FECINI".
+03-09 16:27:11 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/MantenimientosGenerales/ObtenerCabeceras' o no implementa IController.
+03-09 16:45:38 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/RegistrarConvenio' o no implementa IController.

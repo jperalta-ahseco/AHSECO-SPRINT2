@@ -1,0 +1,16 @@
+25-08 11:09:01 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/BandejaViatico' o no implementa IController.
+25-08 11:15:47 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/BandejaViatico' o no implementa IController.
+25-08 11:18:21 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/BandejaViatico' o no implementa IController.
+25-08 11:19:01 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/BandejaViatico' o no implementa IController.
+25-08 11:29:46 ERROR LOGAuditoria - ERROR: No se puede realizar enlace en tiempo de ejecución en una referencia NULL.
+25-08 11:40:33 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/Convenio/obtenerestados' o no implementa IController.
+25-08 11:40:36 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/Convenio/obtenermodalidad' o no implementa IController.
+25-08 11:40:36 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/Convenio/obtenerCentrosEvaluacion' o no implementa IController.
+25-08 15:14:53 ERROR LOGAuditoria - ERROR: Referencia a objeto no establecida como instancia de un objeto.
+25-08 15:15:21 ERROR LOGAuditoria - ERROR: Referencia a objeto no establecida como instancia de un objeto.
+25-08 15:22:10 ERROR LOGAuditoria - ERROR: Referencia a objeto no establecida como instancia de un objeto.
+25-08 15:41:07 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/PrestaciónAccesorios' o no implementa IController.
+25-08 21:13:36 ERROR LOGAuditoria - ERROR: Referencia a objeto no establecida como instancia de un objeto.
+25-08 21:14:40 ERROR LOGAuditoria - ERROR: Referencia a objeto no establecida como instancia de un objeto.
+25-08 21:17:29 ERROR LOGAuditoria - ERROR: Primitivo JSON no válido: CodigoViatico.
+25-08 21:19:32 ERROR LOGAuditoria - ERROR: Primitivo JSON no válido: CodigoViatico.

@@ -1,0 +1,138 @@
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\bin\Debug\AHSECO.CCL.BD.dll
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\bin\Debug\AHSECO.CCL.BD.pdb
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\bin\Debug\AHSECO.CCL.BE.dll
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\bin\Debug\AHSECO.CCL.COMUN.dll
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\bin\Debug\Dapper.dll
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\bin\Debug\Microsoft.QualityTools.Testing.Fakes.dll
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\bin\Debug\log4net.dll
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\bin\Debug\NPOI.dll
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\bin\Debug\NPOI.OOXML.dll
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\bin\Debug\BCrypt.Net-Next.dll
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\bin\Debug\ICSharpCode.SharpZipLib.dll
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\bin\Debug\NPOI.OpenXmlFormats.dll
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\bin\Debug\NPOI.OpenXml4Net.dll
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\bin\Debug\AHSECO.CCL.BE.pdb
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\bin\Debug\AHSECO.CCL.COMUN.pdb
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\bin\Debug\NPOI.xml
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\bin\Debug\BCrypt.Net-Next.xml
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\bin\Debug\cs\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\bin\Debug\de\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\bin\Debug\es\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\bin\Debug\fr\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\bin\Debug\it\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\bin\Debug\ja\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\bin\Debug\ko\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\bin\Debug\pl\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\bin\Debug\pt-BR\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\bin\Debug\ru\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\bin\Debug\tr\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\bin\Debug\zh-Hans\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\bin\Debug\zh-Hant\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\obj\Debug\AHSECO.CCL.BD.csproj.AssemblyReference.cache
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\obj\Debug\AHSECO.CCL.BD.csproj.CoreCompileInputs.cache
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\obj\Debug\AHSECO.C.335A5260.Up2Date
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\obj\Debug\AHSECO.CCL.BD.dll
+D:\AHSECO\Fuentes\AHSECO\AHSECO.CCL.BD\obj\Debug\AHSECO.CCL.BD.pdb
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\bin\Debug\AHSECO.CCL.BD.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\bin\Debug\AHSECO.CCL.BD.pdb
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\bin\Debug\AHSECO.CCL.BE.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\bin\Debug\AHSECO.CCL.COMUN.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\bin\Debug\Dapper.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\bin\Debug\Microsoft.QualityTools.Testing.Fakes.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\bin\Debug\log4net.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\bin\Debug\NPOI.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\bin\Debug\NPOI.OOXML.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\bin\Debug\BCrypt.Net-Next.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\bin\Debug\ICSharpCode.SharpZipLib.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\bin\Debug\NPOI.OpenXmlFormats.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\bin\Debug\NPOI.OpenXml4Net.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\bin\Debug\AHSECO.CCL.BE.pdb
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\bin\Debug\AHSECO.CCL.COMUN.pdb
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\bin\Debug\NPOI.xml
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\bin\Debug\BCrypt.Net-Next.xml
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\bin\Debug\cs\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\bin\Debug\de\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\bin\Debug\es\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\bin\Debug\fr\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\bin\Debug\it\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\bin\Debug\ja\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\bin\Debug\ko\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\bin\Debug\pl\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\bin\Debug\pt-BR\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\bin\Debug\ru\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\bin\Debug\tr\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\bin\Debug\zh-Hans\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\bin\Debug\zh-Hant\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\obj\Debug\AHSECO.CCL.BD.csproj.AssemblyReference.cache
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\obj\Debug\AHSECO.CCL.BD.csproj.CoreCompileInputs.cache
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\obj\Debug\AHSECO.C.335A5260.Up2Date
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\obj\Debug\AHSECO.CCL.BD.dll
+D:\Ahseco - Repository\ahr-dg-202408\Fuentes\AHSECO.CCL.BD\obj\Debug\AHSECO.CCL.BD.pdb
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\AHSECO.CCL.BD.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\AHSECO.CCL.BD.pdb
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\AHSECO.CCL.BE.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\AHSECO.CCL.COMUN.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\Dapper.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\Microsoft.QualityTools.Testing.Fakes.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\log4net.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\NPOI.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\NPOI.OOXML.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\BCrypt.Net-Next.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\ICSharpCode.SharpZipLib.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\NPOI.OpenXmlFormats.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\NPOI.OpenXml4Net.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\AHSECO.CCL.BE.pdb
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\AHSECO.CCL.COMUN.pdb
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\NPOI.xml
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\BCrypt.Net-Next.xml
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\cs\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\de\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\es\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\fr\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\it\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\ja\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\ko\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\pl\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\pt-BR\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\ru\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\tr\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\zh-Hans\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\zh-Hant\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\obj\Debug\AHSECO.CCL.BD.csproj.AssemblyReference.cache
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\obj\Debug\AHSECO.CCL.BD.csproj.CoreCompileInputs.cache
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\obj\Debug\AHSECO.C.335A5260.Up2Date
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\obj\Debug\AHSECO.CCL.BD.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\obj\Debug\AHSECO.CCL.BD.pdb
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\AHSECO.CCL.BD.dll.config
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\Microsoft.Bcl.AsyncInterfaces.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\Microsoft.Bcl.HashCode.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\Microsoft.Extensions.Logging.Abstractions.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\Npgsql.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\System.Buffers.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\System.Collections.Immutable.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\System.Diagnostics.DiagnosticSource.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\System.Memory.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\System.Numerics.Vectors.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\System.Text.Encodings.Web.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\System.Text.Json.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\System.Threading.Channels.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\System.Threading.Tasks.Extensions.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\System.ValueTuple.dll
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\Microsoft.Bcl.AsyncInterfaces.xml
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\Microsoft.Bcl.HashCode.xml
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\Microsoft.Extensions.DependencyInjection.Abstractions.xml
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\Microsoft.Extensions.Logging.Abstractions.xml
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\Npgsql.xml
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\System.Buffers.xml
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\System.Collections.Immutable.xml
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\System.Diagnostics.DiagnosticSource.xml
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\System.Memory.xml
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\System.Numerics.Vectors.xml
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\System.Text.Encodings.Web.xml
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\System.Text.Json.xml
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\System.Threading.Channels.xml
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\System.Threading.Tasks.Extensions.xml
+D:\Ahseco - Repository\ahr-dg-202408\SPRINT 2\Fuentes\AHSECO.CCL.BD\bin\Debug\System.ValueTuple.xml

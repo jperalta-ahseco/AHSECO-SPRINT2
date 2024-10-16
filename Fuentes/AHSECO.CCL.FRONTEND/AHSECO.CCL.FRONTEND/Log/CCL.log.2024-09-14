@@ -1,0 +1,3 @@
+14-09 15:55:19 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.ProcesosBL.InsertarWorkflow:: Could not find stored procedure 'USP_CREAR_WORKFLOW'.
+14-09 15:59:15 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.ProcesosBL.InsertarWorkflow:: Could not find stored procedure 'USP_CREAR_WORKFLOW'.
+14-09 16:01:14 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.ProcesosBL.InsertarWorkflow:: Could not find stored procedure 'USP_CREAR_WORKFLOW'.

@@ -1,0 +1,120 @@
+﻿
+@{
+    ViewBag.Title = "EditarCliente";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" style="margin-right: 15px;">
+    <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
+    <div class="box-inner">
+        <div class="box-header well" data-original-title="">
+            <h2><i class="glyphicon glyphicon-list"></i>Editar Clientes</h2>
+        </div>
+        <div class="box-content">
+            <form id="formMantCliente">
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtRuc">R.U.C:</label>
+                        <div class="form-group">
+                            <input disabled required maxlength=11 placeholder="Ingresar RUC" type="text" class="form-control input-sm" id="txtRuc" value="">
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtNomEmpresa">Nombre Empresa:</label>
+                        <div class="form-group">
+                            <input placeholder="Nombre de Empresa" type="text" class="form-control input-sm" id="txtNomEmpresa" value="">
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="cmbEstado">Estado:</label>
+                        <div class="form-group">
+                            <select class="form-control select2 input-sm" style="width:100%;" id="cmbEstado">
+                                <option value="1">ACTIVO</option>
+                                <option value="0">INACTIVO</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <label class="control-label" for="txtTelfono">Tel&eacute;fono:</label>
+                        <div class="form-group">
+                            <input placeholder="Ingresar Telefono" type="text" class="form-control input-sm" id="txtTelefono" value="">
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label class="control-label" for="txtCorreo">Correo:</label>
+                        <div class="form-group">
+                            <input placeholder="Ingresar Correo" type="text" class="form-control input-sm" id="txtCorreo" value="">
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label class="control-label" for="txtCorreo">Sector de Cliente:</label>
+                        <div class="form-group">
+                            <input placeholder="Ingresar Sector" type="text" class="form-control input-sm" id="txtSector" value="">
+                        </div>
+                    </div>
+                </div>
+                <div class="row container-fluid">
+                    <input type="hidden" id="txtCodUbicacion" value="" />
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtUbigeo">Ubicaci&oacute;n:</label>
+                        <div class="form-group">
+                            <div class="input-group input-group-sm date">
+                                <input disabled maxlength="6" type="text" class="form-control input-sm" id="txtUbicacion" value="" aria-describedby="sizing-addon3" />
+                                <span style="cursor:pointer" class="input-group-addon input-sm" id="searchUbigeo" data-toggle="modal" data-target="#modalUbigeo">
+                                    <i class="fa fa-search"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label class="control-label" for="txtDireccion">Direcci&oacute;n Fiscal:</label>
+                        <div class="form-group">
+                            <input placeholder="Ingresar Direccion" type="text" class="form-control input-sm" id="txtDireccion" value="">
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="cmbCategoria">Categor&iacute;a:</label>
+                        <div class="form-group">
+                            <select class="form-control select2 input-sm " style="width:100%;" id="cmbCategoria" data-selected="" tabindex="-1" aria-hidden="true"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row container-fluid">
+                    <div class="col-md-2 col-sm-12">
+                        <label>Editar Contactos</label>
+                        <div class="form-group">
+                            <div class="input-group input-group-sm date">
+                                <a data-toggle="modal" data-target="#modalContacto" id="btnAbreEditaContacto" class="btn btn-default btn-sm" title="Editar Contacto"><i class="fa fa-users" aria-hidden="true"> Editar Contactos</i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <button class="btn btn-success " type="button" id="btnActualizar">Actualizar</button>
+                    <button class="btn btn-success " type="button" id="btnRegresarEditar"><i class="fa fa-sort-desc" aria-hidden="true"></i> Salir</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div data-backdrop="static" data-keyboard="false" class="modal fade" id="modalUbigeo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    @{
+        Html.RenderPartial("_Ubigeo");
+    }
+</div>
+
+
+<div class="modal fade" id="modalContacto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    @{
+        Html.RenderPartial("_Contactos");
+    }
+</div>
+
+
+
+@section scripts{
+    <script type="text/javascript" src="~/resources/js/app/mantenimientos/cliente/manipularCliente.js"></script>
+}

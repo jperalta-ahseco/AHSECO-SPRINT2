@@ -1,0 +1,128 @@
+﻿<div class="modal fade" id="modalAcreditacion" tabindex="-1" role="dialog" aria-labelledby="titleModal"
+     aria-hidden="true" data-keyboard="false" data-backdrop="static">
+
+    <!-- Modal dialog -->
+    <div class="modal-dialog modal-lg" role="document">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <!-- Modal content header -->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="tituloModalAcreditacion">Registro de Acreditación</h4>
+            </div>
+            <!-- Modal content body -->
+            <div class="modal-body">
+                <form id="formRegistro">
+                    <div class="row container-fluid">
+                        <div class="col-md-2 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label for="lblCodigo">C&oacute;digo</label>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-12">
+                            <div class="form-group">
+                                <input type="text" class="form-control input-sm" id="ptxtAcredCodigo" readonly="readonly">
+                                <input type="hidden" class="form-control input-sm" id="ptxtAcredTipoRegistro">
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-4 col-xs-12" id="divModalidad">
+                            <div class="form-group">
+                                <label for="lblModalidad" id="lblModalidad">Modalidad</label>
+                            </div>
+                        </div>
+                        <div class="col-md-5 col-sm-12" id="divTxtModalidad">
+                            <div class="form-group">
+                                <label class="form-control input-sm" id="ptxtAcredModalidad" />
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="col-md-2 col-sm-12">
+                            <div class="form-group">
+                                <label for="" id="lblEntidadConvenio">Centros de Evaluaci&oacute;n</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2  col-xs-12">
+                            <div class="form-group">
+                                <label for="lblNroDocumento">Ruc</label>
+                                <label class="form-control input-sm" id="ptxtAcredNroDocumento" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-5 col-sm-12">
+                            <div class="form-group">
+                                <label for="txtRazonSocial">Razón Social</label>
+                                <label class="form-control input-sm" id="ptxtAcredRazonSocial" />
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="col-md-2 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label for="lblvigencia">Vigencia:</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2 col-sm-4 col-xs-12">
+
+                            <div class="form-group">
+                                <label for="ptxtFechaInicio">Fecha Inicio</label>
+                                <div class="input-group date">
+                                    <label class="form-control input-sm" id="ptxtAcredFechaInicio" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label for="ptxtFechaFinal" id="plblAcredFechaFinal">Fecha Final</label>
+                                <div class="input-group date">
+                                    <label class="form-control input-sm" id="ptxtAcredFechaFinal" />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row container-fluid">
+                        <div class="col-md-12 col-sm-12">
+                            <label for="tablaDocumentos" class="form-group pull-left">Documentos</label>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="tablaDocumentos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: center; width:40%">Tipo Documento</th>
+                                    <th style="text-align: center; width:40%">Nombre</th>
+                                    <th style="text-align: center; width:10%"></th>
+
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="row container-fluid" id="lblFooter" style="display:none">
+                        <div class="col-md-7 col-sm-12">
+                            El convenio quedará PENDIENTE DE ACTIVAR
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- Modal content footer -->
+            <div class="modal-footer">
+                <button class="btn btn-default btn-sm pull-left" type="button" data-dismiss="modal" id="btnCerrar">Cerrar</button>
+                <button class="btn btn-primary btn-sm" type="button" id="btnGrabarDocumentos">Grabar</button>
+            </div>
+        </div>
+    </div>
+</div>
