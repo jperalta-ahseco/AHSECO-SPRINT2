@@ -221,5 +221,12 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Mantenimientos
             outStream.Close();
             Response.End();
         }
+
+        //public JsonResult FiltroServicios()
+        //{
+        //    var servicios = new ServiciosBL();
+        //    var result = servicios.FiltroServicios();
+        //    return Json(result);
+        //}
     }
 }

@@ -15,6 +15,8 @@ namespace AHSECO.CCL.BD
     public class ViaticosBD
     {
         CCLog Log;
+        //comentario 
+        //otro comentario
 
         public ViaticosBD() : this(new CCLog())
         {
