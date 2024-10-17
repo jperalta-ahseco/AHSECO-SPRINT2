@@ -46,7 +46,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Consultas
             return Json(stocks);
         }
 
-        public void ExportarCargos(StockDTO stockDTO)
+        public void ExportarStocks(StockDTO stockDTO)
         {
             var stockBL = new ConsultaStocksBL();
             var listaStocks = stockBL.ObtenerStock(stockDTO).Result.ToList();
