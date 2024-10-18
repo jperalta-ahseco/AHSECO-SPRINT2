@@ -1,3 +1,0 @@
-06-09 08:59:36 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/BandejaVentas' o no implementa IController.
-06-09 14:24:05 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.AutorizacionBL.Autenticar:: Usuario y/o password incorrectos.
-06-09 14:24:16 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.AutorizacionBL.Autenticar:: Usuario y/o password incorrectos.
