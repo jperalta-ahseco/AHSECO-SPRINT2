@@ -28,7 +28,7 @@
 
     function ObtenerFiltrosStocks() {
         var method = "POST";
-        var url = "CatalogoPrecios/FiltrosStocks";
+        var url = "CatalogoStocks/FiltrosStocks";   
         var objParam = '';
         var fnDoneCallback = function (data) {
 
@@ -48,7 +48,13 @@
             var filters4 = {};
             filters4.placeholder = "-- Todos --";
             filters4.allowClear = false;
-            app.llenarComboMultiResult($cmbTipoMedida, data.Result.Medidas, null, 0, "--Todos--", filters4);
+            app.llenarComboMultiResult($cmbUnidadMedida, data.Result.Medidas, null, 0, "--Todos--", filters4);
+
+            //Cargar combo de almacenes:
+            var filters5 = {};
+            filters5.placeholder = "-- Todos --";
+            filters5.allowClear = false;
+            app.llenarComboMultiResult($cmbAlmacen, data.Result.Almacenes, null, 0, "--Todos--", filters5);
 
         }
         return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, mensajes.obteniendoFiltros);
@@ -56,23 +62,24 @@
 
 
     function btnExportarClick(e) {
-        var self = $(this);
+        var self = jQuery(this);
         var href = self.attr("href");
+        e.preventDefault();
 
         var cant = $tblStocks.DataTable().rows().data().length;
 
-        if (cant === 0) {
-            app.message.error("Reporte de Stocks", "La búsqueda no produjo resultados", "Aceptar");
-            return false;
-        }
-        $("#hidden_fields");
+            if (cant === 0) {
+                app.message.error("Reporte de Stocks", "La búsqueda no produjo resultados", "Aceptar");
+                return false;
+            }
+            $("#hidden_fields").empty();
         $("<input>", { type: "hidden", name: "CodigoProducto", value: $txtProducto.val() }).appendTo("#hidden_fields");
-
-        $("<input>", { type: "hidden", name: "UnidadMedida", value: $txtFabrica.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "DescripcionProducto", value: $txtDescripcion.val().trim() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "CodigoFabrica", value: $txtFabrica.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "CodigoAlmacen", value: $cmbAlmacen.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "Marca", value: $cmbMarca.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "Familia", value: $cmbFamilia.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "CodigoMarca", value: $cmbMarca.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "CodigoFamilia", value: $cmbFamilia.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "UnidadMedida", value: $cmbUnidadMedida.val() }).appendTo("#hidden_fields");
         $formStocks.attr("action", href);
         $formStocks.submit();
     }
@@ -178,7 +185,7 @@
         var columnDefs = [
             {
                 targets: [0],
-                visible: false
+                visible: true
             }
         ];
         var filters = {

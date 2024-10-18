@@ -1,8 +1,0 @@
-11-09 09:18:13 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.ViaticosBL.ListarViaticos:: Invalid column name 'COD_TECNICO'.
-Invalid column name 'COD_TECNICO'.
-11-09 13:55:31 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.ViaticosBL.MantenimientoDetalleViaticos:: Cannot insert the value NULL into column 'TIPO', table 'DB_AHSECO.dbo.TBD_VIATICOS'; column does not allow nulls. INSERT fails.
-The statement has been terminated.
-11-09 14:39:20 ERROR LOGAuditoria - ERROR: No se encuentra el controlador de la ruta de acceso '/CatalogoPrecios' o no implementa IController.
-11-09 15:38:22 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.ViaticosBL.VerViaticos:: Error de lectura porque no hay datos.
-11-09 15:39:11 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.ViaticosBL.VerViaticos:: Error de lectura porque no hay datos.
-11-09 15:39:52 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.ViaticosBL.VerViaticos:: Error de lectura porque no hay datos.

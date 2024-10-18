@@ -7,7 +7,7 @@
     var $cmbFamilia = $("#cmbFamilia");
 
     /**Formulario */
-    var $formPrecios = $("#formPrecios");
+    var $formPrecios = $('#formPrecios');
     /**Tablas */
     var $tblPrecios = $("#tblPrecios");
     /**Botones */
@@ -78,17 +78,18 @@
         }
         return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, mensajes.BuscandoPrecios);
     }
-    function btnExportarClick() {
-        var self = $(this);
-        var href = self.attr("href");
+    function btnExportarClick(e) {
+        var self = jQuery(this);
+        var href = self.attr('href');
+        e.preventDefault();
 
-        var cant = $tblStocks.DataTable().rows().data().length;
-
-        if (cant === 0) {
-            app.message.error("Reporte de Precios", "La búsqueda no produjo resultados", "Aceptar");
-            return false;
-        }
-        $("#hidden_fields");
+        var cant = $tblPrecios.DataTable().rows().data().length;
+            
+            if (cant === 0) {
+                app.message.error("Reporte de Precios", "La búsqueda no produjo resultados", "Aceptar");
+                return false;
+            }
+        $("#hidden_fields").empty();
         $("<input>", { type: "hidden", name: "CodigoProducto", value: $txtCodProducto.val().trim() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "NombreProducto", value: $txtNombreProducto.val().trim() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "UnidadMedida", value: $cmbTipoMedida.val() == null ? '0' : $cmbTipoMedida.val() }).appendTo("#hidden_fields");
@@ -155,9 +156,6 @@
 
 
         app.llenarTabla($tblPrecios, data, columns, columnDefs, "#tblPrecios", null, null, filters);
-    }
-    function btnExportarClick() {
-
     }
 
 })(window.jQuery, window, document);
