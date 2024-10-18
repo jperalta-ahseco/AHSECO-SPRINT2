@@ -1,9 +1,0 @@
-01-10 14:25:10 ERROR LOGAuditoria - ERROR: No se encuentra un método de acción público 'LogOff' en el controlador 'AHSECO.CCL.FRONTEND.Controllers.AccountController'.
-01-10 15:01:57 ERROR LOGAuditoria - ERROR: Referencia a objeto no establecida como instancia de un objeto.
-01-10 15:03:04 ERROR LOGAuditoria - ERROR: Referencia a objeto no establecida como instancia de un objeto.
-01-10 16:05:13 ERROR LOGAuditoria - ERROR: IDX10653: The encryption algorithm 'HS256' requires a key size of at least '128' bits. Key '[PII of type 'Microsoft.IdentityModel.Tokens.SymmetricSecurityKey' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]', is of size: '80'.
-Nombre del parámetro: key
-01-10 16:06:50 ERROR LOGAuditoria - ERROR: IDX10653: The encryption algorithm 'HS256' requires a key size of at least '128' bits. Key '[PII of type 'Microsoft.IdentityModel.Tokens.SymmetricSecurityKey' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]', is of size: '80'.
-Nombre del parámetro: key
-01-10 16:08:57 ERROR LOGAuditoria - ERROR: IDX10653: The encryption algorithm 'HS256' requires a key size of at least '128' bits. Key '[PII of type 'Microsoft.IdentityModel.Tokens.SymmetricSecurityKey' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]', is of size: '80'.
-Nombre del parámetro: key

@@ -1,6 +1,0 @@
-08-10 18:06:43 ERROR LOGAuditoria - ERROR: Referencia a objeto no establecida como instancia de un objeto.
-08-10 18:07:02 ERROR LOGAuditoria - ERROR: Referencia a objeto no establecida como instancia de un objeto.
-08-10 18:18:47 ERROR LOGAuditoria - ERROR: Referencia a objeto no establecida como instancia de un objeto.
-08-10 18:19:54 ERROR LOGAuditoria - ERROR: Referencia a objeto no establecida como instancia de un objeto.
-08-10 18:34:00 ERROR LOGAuditoria - ERROR: Referencia a objeto no establecida como instancia de un objeto.
-08-10 18:43:18 ERROR LOGAuditoria - ERROR: AHSECO.CCL.BL.AsignacionManual.AsignacionManualBL.Mantenimiento::Could not find stored procedure 'USP_MANT_ASIG_CLIENTE_ASESOR'.
