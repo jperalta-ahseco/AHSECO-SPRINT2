@@ -184,7 +184,7 @@
             {
                 data: "PrecioReferencial",
                 render: function (data) {
-                    return '<center>' + data + '</center>';
+                    return '<center>' + data.toFixed(2) + '</center>';
                 }
             }
         ]
