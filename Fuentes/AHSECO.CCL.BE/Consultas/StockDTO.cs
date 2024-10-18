@@ -26,5 +26,7 @@ namespace AHSECO.CCL.BE
         public string NombreFamilia { get; set; }
         public int NumeroPaginas {  get; set; }
         public int Pagina { get; set; }
+        public decimal PrecioReferencial { get; set; }
+
     }
 }

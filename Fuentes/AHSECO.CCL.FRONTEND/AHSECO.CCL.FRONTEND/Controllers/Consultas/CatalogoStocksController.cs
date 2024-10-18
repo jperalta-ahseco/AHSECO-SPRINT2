@@ -33,7 +33,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Consultas
                 "Lote",
                 "Fec.Ven",
                 "Stock",
-                "Stock Disponible"
+                "Stock Disponible",
+                "Precio Referencia"
             };
             ViewData["ListaStocks"] = listaStocks;
             return View();

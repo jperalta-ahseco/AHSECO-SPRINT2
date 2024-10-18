@@ -57,6 +57,7 @@ namespace AHSECO.CCL.BD.Consulta
                         NombreMarca = i.Single(d => d.Key.Equals("DESMARCA")).Value.Parse<string>(),
                         CodigoFamilia = i.Single(d => d.Key.Equals("CODFAMILIA")).Value.Parse<string>(),
                         NombreFamilia = i.Single(d => d.Key.Equals("DESFAMILIA")).Value.Parse<string>(),
+                        PrecioReferencial = i.Single(d => d.Key.Equals("PRECIOREFERENCIA")).Value.Parse<decimal>()
                     });
                 return result;
             }
