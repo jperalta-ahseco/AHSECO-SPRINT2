@@ -181,6 +181,12 @@
                     return '<center>' + data + '</center>';
                 }
             },
+            {
+                data: "PrecioReferencial",
+                render: function (data) {
+                    return '<center>' + data + '</center>';
+                }
+            }
         ]
         var columnDefs = [
             {

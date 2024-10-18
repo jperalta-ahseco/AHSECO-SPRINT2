@@ -169,6 +169,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Consultas
             cell.SetCellValue("Stock Disponible");
 
 
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
+            cell.SetCellValue("Precio Referencial");
+
             #endregion
 
 
@@ -222,6 +226,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Consultas
 
                 cell = row.CreateCell(cellnum++);
                 cell.SetCellValue(item.StockDisponible.ToString("0.00"));
+
+                cell = row.CreateCell(cellnum++);
+                cell.SetCellValue(item.PrecioReferencial.ToString("0.00"));
             }
 
             var filename = "REPORTE_CATALOGO_STOCKS" + DateTime.Now.ToString("ddMMyyyyHHmmss") + ".xls";
