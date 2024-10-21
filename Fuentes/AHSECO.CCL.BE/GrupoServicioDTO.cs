@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace AHSECO.CCL.BE
 {
-    public class FiltrosServiciosDTO
+    public class GrupoServicioDTO
     {
-        public List<ComboDTO> Equipos { get; set; }
-        public List<ComboDTO> TipServicio { get; set; }
+        public ServicioDTO CabeceraServicio {  get; set; }   
+        public List<DetalleServicioDTO> servicios { get; set; }
     }
 }

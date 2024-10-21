@@ -7,19 +7,24 @@
     ViewBag.Title = "Mantenimiento de Servicios";
     Layout = "~/Views/Shared/_Layout.cshtml";
     string tipoProceso = VariableSesion.getCadena("tipoProceso");
-    int codigoServicio = int.Parse(VariableSesion.getCadena("codigoServicio"));
-    var equipo = VariableSesion.getCadena("equipo");
-    var marca = VariableSesion.getCadena("marca");
-    var modelo = VariableSesion.getCadena("modelo");
-    var precioPreventivo = VariableSesion.getCadena("precioPreventivo");
-    var precioCapacitacion = VariableSesion.getCadena("precioCapacitacion");
-    var precioActualizacion = VariableSesion.getCadena("precioActualizacion");
+    var codigoServicio = VariableSesion.getCadena("codigoServicio");
+
+    var esconder = false;
+    if (tipoProceso == "V")
+    {
+        esconder = true;
+    }
+
 }
+
+<input hidden id="txtTipoIngreso" value="@tipoProceso"/>
+<input hidden id="txtCodigoServicio" value="@codigoServicio"/>
+
 <div class="container-fluid" style="margin-right: 15px;">
     <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
     <div class="box-inner">
         <div class="box-header well" data-original-title="">
-            @if (codigoServicio > 0)
+            @if (codigoServicio != "0")
             {
                 if (tipoProceso == "U")
                 {
@@ -39,98 +44,90 @@
             <form id="formServicio">
                 <!--Primera Fila-->
                 <div class="row container-fluid">
-                    <div class="col-md-4 col-sm-6">
+                    <div class="col-md-6 col-sm-6">
                         <label for="cmbTipoServicio">Tipo de Servicio:</label>
-                        <select class="form-control select2 input-sm" style="width:100%;" id="cmbTipoServicio" tabindex="1"></select>
+                        <select @(esconder ? "disabled" : "")  class="form-control select2 input-sm" style="width:100%;" id="cmbTipoServicio" tabindex="1"></select>
                     </div>
-                    <div class="col-md-4 col-sm-6">
+                    <div class="col-md-6 col-sm-6">
                         <label for="cmbEquipo">Equipo:</label>
-                        <select class="form-control select2 input-sm" style="width:100%;" id="cmbEquipo" tabindex="2"></select>
-                    </div>
-                    <div class="col-md-4 col-sm-12">
-                        <label for="cmbMarca">Marca:</label>
-                        <select class="form-control select2 input-sm" style="width:100%;" id="cmbMarca" tabindex="3"></select>
+                        <select @(esconder ? "disabled" : "") class="form-control select2 input-sm" style="width:100%;" id="cmbEquipo" tabindex="2"></select>
                     </div>
                 </div>
                 <br />
                 <!--Segunda Fila-->
                 <div class="row container-fluid">
-                    <div class="col-md-8 col-sm-12">
-                        <label for="cmbModelo">Modelo:</label>
-                        <select class="form-control select2 input-sm" style="width:100%;" id="cmbModelo" tabindex="4"></select>
+                    <div class="col-md-6 col-sm-12">
+                        <label for="txtModelo">Modelo:</label>
+                        <div class="form-group">
+                            <input @(esconder ? "disabled" : "") placeholder="Ingrese Modelo" type="text" class="form-control input-sm" id="txtModelo" maxlength="75" value="">
+                        </div>
                     </div>
-                    <div class="col-md-4 col-sm-12">
-                        <label for="cmbEstado">Estado:</label>
-                        <select class="form-control select2 input-sm" style="width:100%;" id="cmbEstado" tabindex="5"></select>
+                    <div class="col-md-6 col-sm-12">
+                        <label for="txtMarca">Marca:</label>
+                        <input @(esconder ? "disabled" : "") placeholder="Ingrese Marca" type="text" class="form-control input-sm" id="txtMarca" maxlength="75" value="">
                     </div>
                 </div>
                 <br />
                 <div class="row container-fluid">
-                    <div class="col-md-4 col-sm-12">
-                        <label for="txtPrecioPreventivo">Precio Preventivo:</label>
-                        <div class="form-group">
-                            @if (precioPreventivo.Length > 0)
-                            {
-                                if (tipoProceso == "U")
-                                {
-                                    <input placeholder="Ingrese Precio Preventivo" type="text" class="form-control input-sm" id="txtPrecioPreventivo" tabindex="6" value="S./@precioPreventivo">
-                                }
-                                else if (tipoProceso == "V")
-                                {
-                                    <input placeholder="Ingrese Precio Preventivo" type="text" class="form-control input-sm" id="txtPrecioPreventivo" tabindex="6" disabled value="S./@precioPreventivo">
-                                }
-                            }
-                            else
-                            {
-                                <input placeholder="Ingrese Precio Preventivo" type="text" class="form-control input-sm" id="txtPrecioPreventivo" tabindex="6" value="">
-                            }
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-sm-12">
-                        <label for="txtPrecioCapacitacion">Precio Capacitaci&oacute;n:</label>
-                        <div class="form-group">
-                            @if (precioCapacitacion.Length > 0)
-                            {
-                                if (tipoProceso == "U")
-                                {
-                                    <input placeholder="Ingrese Precio de Capacitación" type="text" class="form-control input-sm" id="txtPrecioCapacitacion" tabindex="7" value="S./@precioCapacitacion">
-                                }
-                                else if (tipoProceso == "V")
-                                {
-                                    <input placeholder="Ingrese Precio de Capacitación" type="text" class="form-control input-sm" id="txtPrecioCapacitacion" disabled tabindex="7" value="S./@precioCapacitacion">
-                                }
-                            }
-                            else
-                            {
-                                <input placeholder="Ingrese Precio de Capacitación" type="text" class="form-control input-sm" id="txtPrecioCapacitacion" value="" tabindex="7">
-                            }
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-sm-12">
+                    <div class="col-md-6 col-sm-12">
                         <label for="txtPrecioAct">Precio Actualizaci&oacute;n de Software:</label>
                         <div class="form-group">
-                            @if (precioActualizacion.Length > 0)
-                            {
-                                if (tipoProceso == "U")
-                                {
-                                    <input placeholder="Ingrese Precio de Actualización de Software" type="text" class="form-control input-sm" id="txtPrecioAct" tabindex="8" value="S./@precioActualizacion">
-                                }
-                                else if (tipoProceso == "V")
-                                {
-                                    <input placeholder="Ingrese Precio de Actualización de Software" type="text" class="form-control input-sm" id="txtPrecioAct" disabled tabindex="8" value="S./@precioActualizacion">
-                                }
-                            }
-                            else
-                            {
-                                <input placeholder="Ingrese Precio de Actualización de Software" type="text" class="form-control input-sm" id="txtPrecioAct" value="" tabindex="8">
-                            }
+                            <input @(esconder ? "disabled" : "") placeholder="Ingrese Precio de Actualización de Software" type="text" class="form-control input-sm" id="txtPrecioAct" value="" tabindex="8">
                         </div>
                     </div>
-
+                    <div class="col-md-6 col-sm-12">
+                        <label for="txtPrecioPreventivo">Precio Preventivo:</label>
+                        <div class="form-group">
+                            <input @(esconder ? "disabled" : "") placeholder="Ingrese Precio Preventivo" type="text" class="form-control input-sm" id="txtPrecioPreventivo" tabindex="6" value="">
+                        </div>
+                    </div>
                 </div>
+                <div class="row container-fluid">
+                    <div class="col-md-6 col-sm-12">
+                        <label for="txtPrecioCapacitacion">Precio Capacitaci&oacute;n:</label>
+                        <div class="form-group">
+                            <input @(esconder ? "disabled" : "") placeholder="Ingrese Precio de Capacitación" type="text" class="form-control input-sm" id="txtPrecioCapacitacion" value="" tabindex="7">
+                        </div>
+                    </div>
+                    @if (codigoServicio == "0")
+                    {
+                        <div class="col-md-6 col-sm-12">
+                            <label for="cmbEstado">Estado:</label>
+                            <select disabled class="form-control select2 input-sm" style="width:100%;" id="cmbEstado" tabindex="5"></select>
+                        </div>
+                    }
+                    else
+                    {
+                        if (tipoProceso == "U")
+                        {
+                            <div class="col-md-6 col-sm-12">
+                                <label for="cmbEstado">Estado:</label>
+                                <select class="form-control select2 input-sm" style="width:100%;" id="cmbEstado" tabindex="5"></select>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-md-6 col-sm-12">
+                                <label for="cmbEstado">Estado:</label>
+                                <select disabled class="form-control select2 input-sm" style="width:100%;" id="cmbEstado" tabindex="5"></select>
+                            </div>
+                        }
+                    }
+                </div>
+
                 <br />
                 <div class="text-right">
-                    <button class="btn btn-success btn-sm " type="button" id="btnGuardar"><i class="fa fa-floppy-o"></i> Guardar</button>
+                    @if (codigoServicio == "0")
+                    {
+                        <button class="btn btn-success btn-sm " type="button" id="btnGuardar"><i class="fa fa-save"></i> Guardar</button>
+                    }
+                    else
+                    {
+                        if (tipoProceso == "U")
+                            {
+                            <button class="btn btn-success btn-sm " type="button" id="btnActualizar"><i class="fa fa-floppy-o"></i> Actualizar</button>
+                            }
+                    }
                     <button class="btn btn-primary btn-sm" type="button" id="btnCancelar"><i class="fa fa-undo"></i> Regresar</button>
                 </div>
                <br />
@@ -151,11 +148,14 @@
                             <h2 class="header_titulo">Detalle de Servicio:</h2>
                         </div>
                         <div class="row container-fluid">
+                            @if (tipoProceso != "V")
+                            {
                             <div class="col-md-12 col-sm-12">
                                 <div class="modal-footer">
                                     <button class="btn btn-primary btn-sm" type="button" id="btnAbrirModalServicio" data-toggle="modal" data-target="#modalDetalleServicio"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Agregar Detalle</button>
                                 </div>
                             </div>
+                            }
                         </div>
                         <div class="box-content">
                             <div class="table-responsive">
@@ -165,7 +165,6 @@
                                             <th style="text-align:center">N°</th>
                                             <th style="text-align:center">Descripci&oacute;n</th>
                                             <th style="text-align: center; width:20%">Acciones</th>
-
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -189,12 +188,99 @@
     </div>
    
 </div>
+
+<script>
+    $(document).ready(function () {
+
+
+
+        $('#txtPrecioAct').on('input', function () {
+            let value = $(this).val();
+
+            // Expresión regular para validar números con hasta 2 decimales
+            const regex = /^\d*\.?\d{0,2}$/;
+
+            // Permitir solo valores válidos
+            if (value === '' || regex.test(value)) {
+                // Guarda el valor actual como anterior
+                $(this).data('previous', value);
+            } else {
+                // Si no es un número válido, restaura el valor anterior
+                $(this).val($(this).data('previous'));
+            }
+        });
+
+        $('#txtPrecioAct').on('blur', function () {
+            let value = $(this).val();
+            if (value) {
+                // Formatea el valor al perder el foco
+                const parsedValue = parseFloat(value).toFixed(2);
+                $(this).val(parsedValue);
+            }
+        });
+
+
+        $('#txtPrecioPreventivo').on('input', function () {
+            let value = $(this).val();
+
+            // Expresión regular para validar números con hasta 2 decimales
+            const regex = /^\d*\.?\d{0,2}$/;
+
+            // Permitir solo valores válidos
+            if (value === '' || regex.test(value)) {
+                // Guarda el valor actual como anterior
+                $(this).data('previous', value);
+            } else {
+                // Si no es un número válido, restaura el valor anterior
+                $(this).val($(this).data('previous'));
+            }
+        });
+
+        $('#txtPrecioPreventivo').on('blur', function () {
+            let value = $(this).val();
+            if (value) {
+                // Formatea el valor al perder el foco
+                const parsedValue = parseFloat(value).toFixed(2);
+                $(this).val(parsedValue);
+            }
+        });
+
+
+        $('#txtPrecioCapacitacion').on('input', function () {
+            let value = $(this).val();
+
+            // Expresión regular para validar números con hasta 2 decimales
+            const regex = /^\d*\.?\d{0,2}$/;
+
+            // Permitir solo valores válidos
+            if (value === '' || regex.test(value)) {
+                // Guarda el valor actual como anterior
+                $(this).data('previous', value);
+            } else {
+                // Si no es un número válido, restaura el valor anterior
+                $(this).val($(this).data('previous'));
+            }
+        });
+
+        $('#txtPrecioCapacitacion').on('blur', function () {
+            let value = $(this).val();
+            if (value) {
+                // Formatea el valor al perder el foco
+                const parsedValue = parseFloat(value).toFixed(2);
+                $(this).val(parsedValue);
+            }
+        });
+
+
+    });
+</script>
+
 <div class="modal fade" id="modalDetalleServicio" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     @{
         Html.RenderPartial("_DetalleServicio");
     }
 </div>
+
 @section scripts{
-    <script src="~/resources/js/app/mantenimientos/servicios/maniupularServicio.js"></script>
-    <script src="~/resources/js/app/mantenimientos/servicios/bandejaServicios.js"></script>
+    <script src="~/resources/js/app/mantenimientos/servicios/manipularServicios.js"></script>
 }

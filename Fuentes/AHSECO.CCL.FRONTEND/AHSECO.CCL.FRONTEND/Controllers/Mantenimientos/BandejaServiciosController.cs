@@ -4,6 +4,7 @@ using AHSECO.CCL.FRONTEND.Core;
 using AHSECO.CCL.FRONTEND.Identity;
 using NPOI.HSSF.UserModel;
 using NPOI.HSSF.Util;
+using NPOI.POIFS.FileSystem;
 using NPOI.SS.UserModel;
 using System;
 using System.IO;
@@ -15,27 +16,20 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Mantenimientos
     {
         public ActionResult Index()
         {
+            VariableSesion.setCadena("tipoProceso", "");
+            VariableSesion.setCadena("codigoServicio", "0");
             return View();
         }
         public ActionResult RegistroServicio()
         {
             return View();
         }
-        public JsonResult ObtenerServiciosDos(string tipoProceso,int codigoServicio,string equipo,string marca,string modelo,string precioPreventivo,string precioCapacitacion,string precioActualizacion,string instrumentos,string herramientas,string herramientasEspeciales)
+        public JsonResult SetDatosServicios(string codServicio, string tipoProceso)
         {
             try
             {
                 VariableSesion.setCadena("tipoProceso", tipoProceso.ToString());
-                VariableSesion.setCadena("codigoServicio",codigoServicio.ToString());
-                VariableSesion.setCadena("equipo", equipo.ToString());
-                VariableSesion.setCadena("marca",marca.ToString());
-                VariableSesion.setCadena("modelo",modelo.ToString());
-                VariableSesion.setCadena("precioPreventivo", precioPreventivo.ToString());
-                VariableSesion.setCadena("precioCapacitacion", precioCapacitacion.ToString());
-                VariableSesion.setCadena("precioActualizacion", precioActualizacion.ToString());
-                VariableSesion.setCadena("instrumentos",instrumentos.ToString());
-                VariableSesion.setCadena("herramientas",herramientas.ToString());
-                VariableSesion.setCadena("herramientasEspeciales",herramientasEspeciales.ToString());
+                VariableSesion.setCadena("codigoServicio", codServicio.ToString());
                 return Json(new 
                 { 
                     Status = 1                
@@ -49,11 +43,63 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Mantenimientos
                 });
             }
         }
-        public bool MantenimientoServicios(ServicioDTO servicioDTO)
+        public JsonResult RegistraServiciosMain(GrupoServicioDTO grupoServicioDTO)
+        {
+            var respuesta = new RespuestaDTO();
+            var servicioBL = new ServiciosBL();
+            grupoServicioDTO.CabeceraServicio.TipoProceso = "I";
+            grupoServicioDTO.CabeceraServicio.UsuarioRegistra = User.ObtenerUsuario();
+            var mainCabecera = servicioBL.MantenimientoServicios(grupoServicioDTO.CabeceraServicio);
+
+            if(grupoServicioDTO.servicios != null )
+            {
+                foreach(var detalle in grupoServicioDTO.servicios)
+                {
+                    detalle.Id_Servicio = mainCabecera.Result.Codigo;
+                    detalle.TipoProceso = "I";
+                    detalle.UsuarioRegistra = User.ObtenerUsuario();
+                    var resultDetalle = servicioBL.MantenimientoDetalleServicio(detalle);
+
+                    if (resultDetalle.Result.Codigo == 0)
+                    {
+                        return Json(new
+                        {
+                            Status = 0,
+                            Mensaje = resultDetalle.Result.Mensaje
+                        });
+                    };
+                };
+            };
+            return Json(new {
+                Status= 1, 
+                Mensaje = mainCabecera.Result.Mensaje
+            });
+        }
+
+        public JsonResult MantenimientoServicios(ServicioDTO serviciosDTO)
+        {
+
+            var servicioBL = new ServiciosBL();
+            serviciosDTO.UsuarioRegistra = User.ObtenerUsuario();
+            var result = servicioBL.MantenimientoServicios(serviciosDTO);
+            return Json(result);
+        }
+
+        public JsonResult MantenimientoDetalleServicio(DetalleServicioDTO detalle)
         {
             var servicioBL = new ServiciosBL();
-            return true;
+            detalle.UsuarioRegistra = User.ObtenerUsuario();
+            var result = servicioBL.MantenimientoDetalleServicio(detalle);
+            return Json(result);
         }
+
+        public JsonResult GetFullService(string CodServicio)
+        {
+            var serviciosBL = new ServiciosBL();    
+            var result = serviciosBL.GetFullService(CodServicio);
+            return Json(result);
+        }
+
         public JsonResult ObtenerServicios(ServicioDTO servicioDTO)
         {
             var servicioBL = new ServiciosBL();
@@ -186,13 +232,13 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Mantenimientos
                 cell.SetCellValue(item.TipoServicio);
 
                 cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.PrecioPreventivo);
+                cell.SetCellValue(item.PrecioPreventivo.ToString());
 
                 cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.PrecioCapacitacion);
+                cell.SetCellValue(item.PrecioCapacitacion.ToString());
 
                 cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.PrecioActualizacion);
+                cell.SetCellValue(item.PrecioActualizacion.ToString());
 
                 cell = row.CreateCell(cellnum++);
                 cell.SetCellValue(item.Instrumentos);
@@ -204,7 +250,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Mantenimientos
                 cell.SetCellValue(item.HerramientasEspeciales);
 
                 cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.Estado);
+                cell.SetCellValue((item.Estado == "1") ? "ACTIVO" : "INACTIVO");
             }
 
             for (var i = 0; i < 21; i++)
@@ -222,11 +268,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Mantenimientos
             Response.End();
         }
 
-        //public JsonResult FiltroServicios()
-        //{
-        //    var servicios = new ServiciosBL();
-        //    var result = servicios.FiltroServicios();
-        //    return Json(result);
-        //}
+        public JsonResult FiltroServicios()
+        {
+            var servicios = new ServiciosBL();
+            var result = servicios.FiltroServicios();
+            return Json(result);
+        }
     }
 }

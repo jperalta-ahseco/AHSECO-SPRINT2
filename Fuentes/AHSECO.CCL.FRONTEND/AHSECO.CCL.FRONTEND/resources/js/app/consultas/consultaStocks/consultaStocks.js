@@ -186,6 +186,12 @@
                 render: function (data) {
                     return '<center>' + data.toFixed(2) + '</center>';
                 }
+            },
+            {
+                data: "Moneda",
+                render: function (data) {
+                    return '<center>' + data + '</center>';
+                }
             }
         ]
         var columnDefs = [
