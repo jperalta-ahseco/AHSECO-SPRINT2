@@ -44,11 +44,13 @@
     <Compile Include="AsignacionManual\ClientevsAsesorDTO.cs" />
     <Compile Include="Consultas\PrecioDTO.cs" />
     <Compile Include="Consultas\StockDTO.cs" />
+    <Compile Include="DetalleServicioDTO.cs" />
     <Compile Include="FiltroGrupoEmpledosDTO.cs" />
     <Compile Include="FiltroPlantillaDTO.cs" />
     <Compile Include="FiltroGrupoSolicitudVentaDTO.cs" />
     <Compile Include="FiltrosServiciosDTO.cs" />
     <Compile Include="Filtros\FiltroGrupoViaticosDTO.cs" />
+    <Compile Include="GrupoServicioDTO.cs" />
     <Compile Include="PlantillaCorreoDTO.cs" />
     <Compile Include="ComboDTO.cs" />
     <Compile Include="CargoDTO.cs" />
