@@ -11,6 +11,8 @@
     var $btnAgregarDocumento = $('#btnAgregarDocumento');
     var $btnAgregarObservacion = $('#btnAgregarObservacion');
     var $contadordoc = $("#contadordoc");
+    var $idWorkFlow = $("#idWorkFlow");
+    var $idCotizacion = $("#idCotizacion");
     /*Modales*/
     var $modalObservacion = $('#modalObservacion'); 
     var $modalCargaDocumento = $('#modalCargaDocumento');
@@ -61,6 +63,7 @@
     var $btnRegresar = $("#btnRegresar");
     var $btnActualizar = $('#btnActualizar');
     var $servicios = $('#servicios');
+    var $cmbempresa = $("#cmbempresa");
     /*Sección Cotización*/
     var $tblDetalleCotizacion = $('#tblDetalleCotizacion');
     var $cmbTipMoneda = $('#cmbTipMoneda');
@@ -74,8 +77,6 @@
     //var $txtCostoEnvio = $('#txtCostoEnvio');
     var $openRegdateCotizacion = $('#openRegdateCotizacion');
     var $btnRegistrarCotizacion = $('#btnRegistrarCotizacion');
-    var $btnEliminarCotizacion = $('#btnEliminarCotizacion');
-    var $btnEditarCotizacion = $('#btnEditarCotizacion');
     /*Seccion Contacto*/
     var $btnAñadir = $('#btnAñadir');
     var $agregarContacto = $('#agregarContacto');
@@ -149,7 +150,7 @@
         solicitud.itemMant = [];
         solicitud.itemTransporte = [];
         solicitud.nuevoContacto = false;
-        cargaCombos()
+        cargaCombos();
         ObtenerFiltrosPrecios();
         CargarTipoDocumento(4); //Tipo de Proceso "Ventas"
         cargarDatosSolicitud();
@@ -178,8 +179,6 @@
         $btnBuscarProductos.click(ConsultaProductosClick);
         $btnGrabarDetalle.click($GrabarDetalle);
         //$btnAgregarDetalle.click(ConsultaProductosClick);
-        $btnEliminarCotizacion.click(EliminarCotizacion); //pendiente
-        $btnEditarCotizacion.click(EditarCotizacion); //pendiente
         $btnGuardarObservacionReq.click(GuardarObservacionReqClick);
         $btnRegistrarCotizacion.click(registrarCotizacion);
         $btnAñadirProductos.click(añadirProductos);
@@ -324,6 +323,7 @@
         }
         return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, mensajes.obteniendoFiltros);
     }
+
     function VerServicios() {
         var tipo = $('select[id="cmbTipo"] option:selected').text()
        // por el momento utilizaremos el nombre, cuando se cambie, utilizaremos el ID.......
@@ -334,6 +334,7 @@
             $servicios.hide ();
         }
     };
+
     function crearTablaProductos() {
 
         var table;
@@ -364,6 +365,7 @@
             return '<div>Información adicional para </div>'; // Aquí puedes agregar más información
         };
     }
+
     function cargaCombos() {
         method = "POST";
         url = "BandejaSolicitudesVentas/GrupoSolicitudVentaFiltro"
@@ -382,6 +384,7 @@
             app.llenarComboMultiResult($cmbTipo, data.Result.TipoSol, null, "", "", filters);
             app.llenarComboMultiResult($cmbMedioContacto, data.Result.MedioContacto, null, "", "", filters);
             app.llenarComboMultiResult($cmbTipoPago, data.Result.FormPago, null, "", "", filters);
+            app.llenarComboMultiResult($cmbempresa, data.Result.Empresas, null, "", "", filters);
         };
 
         var fnFailCallback = function () {
@@ -922,11 +925,26 @@
     }
     function btnEliminarSolClick() {
 
-    };
-    function EditarCotizacion() {
+        var method = "POST";
+        var url = "BandejaSolicitudesVentas/CancelarSolicitud"
+        var objSolicitud = {
+            Id_Solicitud: $numeroSolicitud.val()
+        };
+        objParam = JSON.stringify(objSolicitud);
 
-    };
-    function EliminarCotizacion() {
+        function redirect() {
+            app.redirectTo("BandejaSolicitudesVentas");
+        };
+
+        var fnDoneCallBack = function () {
+            app.message.success("Ventas", "Se canceló la solicitud correctamente.", "Aceptar", redirect);
+        };
+
+        var fnFailCallBack = function () {
+            app.message.error("Validación", "Error al cancelar la solicitud.");
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
 
     };
 
@@ -1092,7 +1110,7 @@
             return;
         };
 
-        if (cmbTipoPago.val() === "" || $cmbTipoPago.val() == undefined || $cmbTipoPago.val() == null) {
+        if ($cmbTipoPago.val() === "" || $cmbTipoPago.val() == undefined || $cmbTipoPago.val() == null) {
             app.message.error("Validación", "Debe de seleccionar la forma de pago.");
             return;
         };
@@ -1111,17 +1129,49 @@
             app.message.error("Validación", "Debe de ingresar el periodo de garantía.");
             return;
         };
-        /*
-        if ($txtCostoEnvio.val().trim() === "" || $txtCostoEnvio.val().trim().length <= 0 || $txtCostoEnvio.val().trim() == null) {
-            app.message.error("Validación", "Debe de ingresar los costos de envío.");
-            return;
-        };*/
 
-        if (solicitud.nuevoContacto == false) {
-        }
-
-        else if (solicitud.nuevoContacto == true) {
+        //if ($txtCostoEnvio.val().trim() === "" || $txtCostoEnvio.val().trim().length <= 0 || $txtCostoEnvio.val().trim() == null) {
+        //    app.message.error("Validación", "Debe de ingresar los costos de envío.");
+        //    return;
+        //};
+        
+        method = "POST";
+        url = "BandejaSolicitudesVentas/RegistraCotizacionVenta"
+        objCotizacion = {
+            IdCotizacion: $idCotizacion.val(),
+            IdSolicitud: $numeroSolicitud.val(),
+            IdWorkFlow: $idWorkFlow.val(),
+            IdContacto: $txtCodContacto.val(),
+            NombreContacto: $nombreContacto.val(),
+            AreaContacto: $txtAreaContacto.val(),
+            TelefonoContacto: $txtTelefono.val(),
+            EmailContacto: $txtCorreo.val(),
+            PlazoEntrega: $txtPlazoEntrega.val(),
+            FormaPago: $cmbTipoPago.val(),
+            Moneda: $cmbTipMoneda.val(),
+            Vigencia: $txtVigencia.val(),
+            Garantia: $cmbGarantia.val(),
+            Observacion: $txtObs.val(),
+            Estado: "A"
         };
+
+        objParam = JSON.stringify(objCotizacion);
+
+        var fnDoneCallBackSol = function (data) {
+            $idCotizacion.val(data.Cotizacion.IdCotizacion);
+            $btnRegistrarCotizacion.attr("style", "display:none");
+            app.message.success("Registro Realizado", "Se grabó satisfactoriamente el registro.", "Aceptar", null);
+        };
+
+        var fnFailCallBackSol = function (Mensaje) {
+            app.message.error("Validación", Mensaje);
+            return;
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBackSol, fnFailCallBackSol, null, null);
+
+        return;
+
     };
     function btnEditarSolClick() {
         var btnEditr = document.getElementById("btnEditarSol");
@@ -1202,32 +1252,38 @@
             return
         };
 
+        if ($cmbempresa.val() === "") {
+            app.message.error("Validación", "Debe de escoger la empresa que emite la solicitud.");
+            return;
+        };
+        
         method = "POST";
         url = "BandejaSolicitudesVentas/RegistraSolicitudes"
         objSolicitud = {
             Solicitud: {
-                IsTipoProceso:  "I",
-                Id_Solicitud:   "",
-                Id_Flujo:       $cmbFlujo.val(),
-                Fecha_Sol:      $dateSolicitud.val(),
-                Tipo_Sol:       $cmbTipo.val(),
-                Cod_MedioCont:  $cmbMedioContacto.val(),
-                IdCliente:      $idCliente.val(),
-                RUC:            $hdnRUC.val(),
-                RazonSocial:    $nomEmpresa.val(),
-                AsesorVenta:    $Asesor.val(),
-                Estado:         "REG"
+                IsTipoProceso: "I",
+                Id_Solicitud: "",
+                Id_Flujo: $cmbFlujo.val(),
+                Fecha_Sol: $dateSolicitud.val(),
+                Tipo_Sol: $cmbTipo.val(),
+                Cod_MedioCont: $cmbMedioContacto.val(),
+                IdCliente: $idCliente.val(),
+                RUC: $hdnRUC.val(),
+                RazonSocial: $nomEmpresa.val(),
+                AsesorVenta: $Asesor.val(),
+                Cod_Empresa: $cmbempresa.val(),
+                Estado: "SREG"
             },
             Observaciones: solicitud.observaciones,
             Adjuntos: adjuntos
         };
 
         objParam = JSON.stringify(objSolicitud);
-
         
-
         var fnSi = function () {
             var fnDoneCallBack = function (data) {
+
+                $idWorkFlow.val(data.Solicitud.Id_WorkFlow);
 
                 function redirect() {
                     location.reload();
@@ -1239,6 +1295,8 @@
                     Id_WorkFlow: data.Solicitud.Id_WorkFlow,
                     Id_Solicitud: data.Solicitud.Id_Solicitud,
                     Estado: data.Solicitud.Estado,
+                    nomEstado: data.Solicitud.nomEstado,
+                    abrevEstado: data.Solicitud.abrevEstado,
                     Tipo_Sol: data.Solicitud.Tipo_Sol,
                     Id_Flujo: data.Solicitud.Id_Flujo
                 };
@@ -1782,6 +1840,7 @@
                 $cmbFlujo.val(data.Result.Solicitud.Id_Flujo).trigger("change.select2");
                 $cmbTipo.val(data.Result.Solicitud.Tipo_Sol).trigger("change.select2");
                 $cmbMedioContacto.val(data.Result.Solicitud.Cod_MedioCont).trigger("change.select2");
+                $cmbempresa.val(data.Result.Solicitud.Cod_Empresa).trigger("change.select2");
                 $dateSolicitud.val(data.Result.Solicitud.Fecha_Sol);
 
                     

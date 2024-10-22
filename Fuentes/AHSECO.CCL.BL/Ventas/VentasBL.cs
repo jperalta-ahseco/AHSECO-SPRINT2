@@ -40,6 +40,34 @@ namespace AHSECO.CCL.BL.Ventas
             }
         }
 
+        public ResponseDTO<IEnumerable<CotizacionDTO>> ObtenerCotizacionVenta(CotizacionDTO cotizacionDTO)
+        {
+            try
+            {
+                var result = Repository.ObtenerCotizacionVenta(cotizacionDTO);
+                return new ResponseDTO<IEnumerable<CotizacionDTO>>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceInfo(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<IEnumerable<CotizacionDTO>>(ex);
+            }
+        }
+
+        public ResponseDTO<IEnumerable<CotizacionDetalleDTO>> ObtenerCotizacionVentaDetalle(CotizacionDetalleDTO cotizacionDetDTO)
+        {
+            try
+            {
+                var result = Repository.ObtenerCotizacionVentaDetalle(cotizacionDetDTO);
+                return new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceInfo(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(ex);
+            }
+        }
+
         public ResponseDTO<RespuestaDTO> MantenimientoSolicitudes(SolicitudDTO solicitudDTO)
         {
 
@@ -124,5 +152,20 @@ namespace AHSECO.CCL.BL.Ventas
                 return new ResponseDTO<FiltroGrupoSolicitudVentaDTO>(ex);
             };
         }
+
+        public ResponseDTO<bool> ActualizarSolicitudEstado(SolicitudDTO solicitudDTO)
+        {
+            try
+            {
+                var result = Repository.ActualizarSolicitudEstado(solicitudDTO);
+                return new ResponseDTO<bool>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + ":: " + ex.Message);
+                return new ResponseDTO<bool>(ex);
+            }
+        }
+
     }
 }

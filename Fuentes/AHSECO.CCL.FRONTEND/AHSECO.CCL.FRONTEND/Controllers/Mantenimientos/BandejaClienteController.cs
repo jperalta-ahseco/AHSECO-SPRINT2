@@ -242,7 +242,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Mantenimientos
                 cell.SetCellValue(item.Correo);
 
                 cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.NumContacto);
+                if (item.NumContacto.HasValue) cell.SetCellValue(item.NumContacto.Value);
 
                 cell = row.CreateCell(cellnum++);
                 cell.SetCellValue(item.UbigeoDepartamento.Descripcion);

@@ -2,6 +2,7 @@
 using AHSECO.CCL.BE.Ventas;
 using AHSECO.CCL.COMUN;
 using Dapper;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -19,6 +20,7 @@ namespace AHSECO.CCL.BD.Ventas
         {
             Log = log;
         }
+
         public IEnumerable<SolicitudDTO> ObtenerSolicitudes(SolicitudDTO solicitudDTO)
         {
             Log.TraceInfo(Utilidades.GetCaller());
@@ -38,13 +40,15 @@ namespace AHSECO.CCL.BD.Ventas
                     .Select(i => new SolicitudDTO
                     {
                         Id_Solicitud = i.Single(d => d.Key.Equals("ID_SOLICITUD")).Value.Parse<long>(),
+                        Id_WorkFlow = i.Single(d => d.Key.Equals("ID_WORKFLOW")).Value.Parse<long>(),
                         nomFlujo = i.Single(d => d.Key.Equals("FLUJO")).Value.Parse<string>(),
                         Id_Flujo = i.Single(d => d.Key.Equals("CODFLUJO")).Value.Parse<int>(), 
                         NomTipoSol = i.Single(d => d.Key.Equals("TIPO")).Value.Parse<string>(),
                         Tipo_Sol = i.Single(d => d.Key.Equals("CODTIPOSOL")).Value.Parse<string>(),
                         Fecha_Sol = i.Single(d => d.Key.Equals("FECHA_SOL")).Value.Parse<string>(),
-                        nomEstado = i.Single(d => d.Key.Equals("ESTADO")).Value.Parse<string>(),
-                        Id_WorkFlow = i.Single(d => d.Key.Equals("ID_WORKFLOW")).Value.Parse<long>(),
+                        Estado = i.Single(d => d.Key.Equals("ESTADO")).Value.Parse<string>(),
+                        nomEstado = Utilidades.Parse<string>(i.Single(d => d.Key.Equals("NOM_ESTADO")).Value),
+                        abrevEstado = Utilidades.Parse<string>(i.Single(d => d.Key.Equals("ABREV_ESTADO")).Value),
                         Cod_MedioCont = i.Single(d => d.Key.Equals("COD_MEDIOCONT")).Value.Parse<string>(),
                         IdCliente = i.Single(d => d.Key.Equals("IDCLIENTE")).Value.Parse<int>(),
                         RUC = i.Single(d => d.Key.Equals("RUC")).Value.Parse<string>(),
@@ -56,7 +60,98 @@ namespace AHSECO.CCL.BD.Ventas
                 return result;
             };
         }
-        
+
+        public IEnumerable<CotizacionDTO> ObtenerCotizacionVenta(CotizacionDTO cotizacionDTO)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+
+            using (var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+                var parameters = new DynamicParameters();
+                parameters.Add("pId_Cotizacion", cotizacionDTO.IdCotizacion,DbType.Int32,ParameterDirection.Input);
+                parameters.Add("pId_Solicitud", cotizacionDTO.IdSolicitud, DbType.Int32, ParameterDirection.Input);
+                if (cotizacionDTO.FecCotizacion.HasValue)
+                {
+                    parameters.Add("pFec_Cotizacion", cotizacionDTO.FecCotizacion.Value, DbType.DateTime, ParameterDirection.Input);
+                }
+                else
+                {
+                    parameters.Add("pFec_Cotizacion", DBNull.Value, DbType.DateTime, ParameterDirection.Input);
+                }
+                parameters.Add("pEstado", cotizacionDTO.Estado, DbType.String, ParameterDirection.Input);
+
+                var result = connection.Query(
+                    sql: "USP_SEL_COTIZACIONVENTA",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new CotizacionDTO
+                    {
+                        IdCotizacion = i.Single(d => d.Key.Equals("ID_COTIZACION")).Value.Parse<int>(),
+                        IdSolicitud = i.Single(d => d.Key.Equals("ID_SOLICITUD")).Value.Parse<int>(),
+                        FecCotizacion = i.Single(d => d.Key.Equals("FEC_COTIZACION")).Value.Parse<DateTime>(),
+                        IdContacto = Utilidades.Parse<int?>(i.Single(d => d.Key.Equals("IDCONTACTO")).Value),
+                        NombreContacto = i.Single(d => d.Key.Equals("NOMBRECONTACTO")).Value.Parse<string>(),
+                        AreaContacto = i.Single(d => d.Key.Equals("AREACONTACTO")).Value.Parse<string>(),
+                        TelefonoContacto = i.Single(d => d.Key.Equals("TELEFONOCONTACTO")).Value.Parse<string>(),
+                        EmailContacto = i.Single(d => d.Key.Equals("EMAILCONTACTO")).Value.Parse<string>(),
+                        PlazoEntrega = i.Single(d => d.Key.Equals("PLAZOENTREGA")).Value.Parse<string>(),
+                        FormaPago = i.Single(d => d.Key.Equals("FORMAPAGO")).Value.Parse<string>(),
+                        Moneda = i.Single(d => d.Key.Equals("MONEDA")).Value.Parse<string>(),
+                        Vigencia = i.Single(d => d.Key.Equals("VIGENCIA")).Value.Parse<string>(),
+                        Garantia = i.Single(d => d.Key.Equals("GARANTIA")).Value.Parse<string>(),
+                        Observacion = Utilidades.Parse<string>(i.Single(d => d.Key.Equals("OBSERVACION")).Value),
+                        Estado = i.Single(d => d.Key.Equals("ESTADO")).Value.Parse<string>(),
+                        UsuarioRegistra = i.Single(d => d.Key.Equals("USR_REG")).Value.Parse<string>(),
+                        FechaRegistro = i.Single(d => d.Key.Equals("FEC_REG")).Value.Parse<DateTime>(),
+                        UsuarioModifica = Utilidades.Parse<string>(i.Single(d => d.Key.Equals("USR_MOD")).Value),
+                        FechaModifica = Utilidades.Parse<DateTime>(i.Single(d => d.Key.Equals("FEC_MOD")).Value)
+                    });
+
+                connection.Close();
+                return result;
+            };
+        }
+
+        public IEnumerable<CotizacionDetalleDTO> ObtenerCotizacionVentaDetalle(CotizacionDetalleDTO cotizaciondetDTO)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+
+            using (var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+                var parameters = new DynamicParameters();
+                parameters.Add("pId_Cotizacion", cotizaciondetDTO.IdCotizacion, DbType.Int32, ParameterDirection.Input);
+
+                var result = connection.Query(
+                    sql: "USP_SEL_COTIZACIONVENTADETALLE",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new CotizacionDetalleDTO
+                    {
+                        Id = i.Single(d => d.Key.Equals("ID")).Value.Parse<int>(),
+                        IdCotizacion = i.Single(d => d.Key.Equals("ID_COTIZACION")).Value.Parse<int>(),
+                        NroItem = i.Single(d => d.Key.Equals("NROITEM")).Value.Parse<int>(),
+                        TipoItem = i.Single(d => d.Key.Equals("TIPOITEM")).Value.Parse<string>(),
+                        CodItem = i.Single(d => d.Key.Equals("CODITEM")).Value.Parse<string>(),
+                        Descripcion = i.Single(d => d.Key.Equals("DESCRIPCION")).Value.Parse<string>(),
+                        Stock = i.Single(d => d.Key.Equals("STOCK")).Value.Parse<int>(),
+                        Unidad = i.Single(d => d.Key.Equals("UNIDAD")).Value.Parse<string>(),
+                        Cantidad = i.Single(d => d.Key.Equals("CANTIDAD")).Value.Parse<int>(),
+                        CostoFOB = i.Single(d => d.Key.Equals("COSTOFOB")).Value.Parse<decimal>(),
+                        VentaUnitaria = i.Single(d => d.Key.Equals("VVENTAUNI")).Value.Parse<decimal>(),
+                        VentaTotalSinIGV = i.Single(d => d.Key.Equals("VVTOTALSIGV")).Value.Parse<decimal>(),
+                        PorcentajeGanancia = i.Single(d => d.Key.Equals("PORCGANANCIA")).Value.Parse<decimal>(),
+                        VentaTotalConGanacia = i.Single(d => d.Key.Equals("VVTOTALCGAN")).Value.Parse<decimal>()
+                    });
+
+                connection.Close();
+                return result;
+            };
+        }
+
         public RespuestaDTO MantenimientoSolicitudes(SolicitudDTO solicitudDTO)
         {
             Log.TraceInfo(Utilidades.GetCaller());
@@ -77,6 +172,7 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("IsRAZONSOCIAL", solicitudDTO.RazonSocial);
                 parameters.Add("IsASESORVENTA", solicitudDTO.AsesorVenta);
                 parameters.Add("IsESTADO", solicitudDTO.Estado);
+                parameters.Add("IsCOD_EMPRESA", solicitudDTO.Cod_Empresa);
                 parameters.Add("isUsrEjecuta", solicitudDTO.UsuarioRegistra);
                 parameters.Add("isIP_Ejecuta", solicitudDTO.IpMaquinaRegistro);
 
@@ -107,6 +203,8 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("isIdCotizacion", cotizacion.IdCotizacion);
                 parameters.Add("isID_SOLICITUD", cotizacion.IdSolicitud);
                 parameters.Add("isFEC_COTIZACION", cotizacion.FecCotizacion);
+                if (cotizacion.IdContacto.HasValue) { parameters.Add("isIDCONTACTO", cotizacion.IdContacto.Value); }
+                else { parameters.Add("isIDCONTACTO", DBNull.Value); }
                 parameters.Add("isNOMBRECONTACTO", cotizacion.NombreContacto);
                 parameters.Add("isAREACONTACTO", cotizacion.AreaContacto);
                 parameters.Add("isTELEFONOCONTACTO", cotizacion.TelefonoContacto);
@@ -239,7 +337,8 @@ namespace AHSECO.CCL.BD.Ventas
                         IdCliente = reader.IsDBNull(reader.GetOrdinal("IDCLIENTE")) ? 0 : reader.GetInt32(reader.GetOrdinal("IDCLIENTE")),
                         RUC = reader.IsDBNull(reader.GetOrdinal("RUC")) ? "" : reader.GetString(reader.GetOrdinal("RUC")),
                         RazonSocial = reader.IsDBNull(reader.GetOrdinal("RAZONSOCIAL")) ? "" : reader.GetString(reader.GetOrdinal("RAZONSOCIAL")),
-                        AsesorVenta = reader.IsDBNull(reader.GetOrdinal("ASESORVENTA")) ? "" : reader.GetString(reader.GetOrdinal("ASESORVENTA"))
+                        AsesorVenta = reader.IsDBNull(reader.GetOrdinal("ASESORVENTA")) ? "" : reader.GetString(reader.GetOrdinal("ASESORVENTA")),
+                        Cod_Empresa = reader.IsDBNull(reader.GetOrdinal("COD_EMPRESA")) ? "" : reader.GetString(reader.GetOrdinal("COD_EMPRESA"))
                     };
 
                     reader.NextResult();
@@ -400,15 +499,53 @@ namespace AHSECO.CCL.BD.Ventas
                         _formPago.Add(pago);
                     };
 
+                    reader.NextResult();
+                    List<ComboDTO> _empresas = new List<ComboDTO>();
+                    while (reader.Read())
+                    {
+                        var emp = new ComboDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("CODEMPRESA")) ? "" : reader.GetString(reader.GetOrdinal("CODEMPRESA")),
+                            Text = reader.IsDBNull(reader.GetOrdinal("RAZONSOCIAL")) ? "" : reader.GetString(reader.GetOrdinal("RAZONSOCIAL"))
+                        };
+                        _empresas.Add(emp);
+                    };
+
                     result.Flujos = _flujos;
                     result.TipoSol = _tipoSol;
                     result.MedioContacto = _medioContacto;
                     result.TipoMoneda = _tipMoneda;
                     result.Garantias = _garantias;
                     result.FormPago = _formPago;
+                    result.Empresas = _empresas;
                 };
                 return result;
             };
+        }
+
+        public bool ActualizarSolicitudEstado(SolicitudDTO solicitudDTO)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using (var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+                var parameters = new DynamicParameters();
+
+                parameters.Add("isIdSolicitud", solicitudDTO.Id_Solicitud);
+                parameters.Add("isESTADO", solicitudDTO.Estado);
+                parameters.Add("isUsuarioModifica", solicitudDTO.UsuarioModifica);
+                parameters.Add("isIpMaqModifica", solicitudDTO.IpMaquinaModifica);
+
+                var result = connection.Execute
+                (
+                    sql: "USP_UPD_SOLICITUDVENTA_ESTADO",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure
+                );
+
+                connection.Close();
+                return true;
+            }
         }
 
     }
