@@ -286,9 +286,10 @@
     };
 
     function $btnImprimirCotizacion_click() {
-        console.log("entro");
+
+        var codigo = $idCotizacion.val();
         method = 'POST';
-        url = 'BandejaHistorialCotizacion/GenerarCotizacion?codCotizacion=5';
+        url = 'BandejaHistorialCotizacion/GenerarCotizacion?codCotizacion=' + codigo;
 
         objParam ='';
 
