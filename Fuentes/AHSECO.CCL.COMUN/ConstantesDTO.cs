@@ -28,6 +28,26 @@ namespace AHSECO.CCL.COMUN
 
         public static string AplicacionExterna = "Aplicación Externa";
 
+        public struct Procesos
+        {
+            public struct Ventas
+            {
+                public static int ID { get { return 1; } }
+            }
+            public struct PostVenta
+            {
+                public static int ID { get { return 2; } }
+            }
+            public struct ServicioTecnio
+            {
+                public static int ID { get { return 3; } }
+            }
+            public struct Viaticos
+            {
+                public static int ID { get { return 4; } }
+            }
+        }
+
         public struct CotizacionVenta
         {
             public struct TipoProceso

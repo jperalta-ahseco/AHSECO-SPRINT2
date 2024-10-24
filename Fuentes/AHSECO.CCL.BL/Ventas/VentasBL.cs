@@ -167,5 +167,19 @@ namespace AHSECO.CCL.BL.Ventas
             }
         }
 
+        public ResponseDTO<IEnumerable<ProcesoEstadoDTO>> ObtenerEstadosProcesos(ProcesoEstadoDTO procestDTO)
+        {
+            try
+            {
+                var result = Repository.ObtenerEstadosProcesos(procestDTO);
+                return new ResponseDTO<IEnumerable<ProcesoEstadoDTO>>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceInfo(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<IEnumerable<ProcesoEstadoDTO>>(ex);
+            }
+        }
+
     }
 }

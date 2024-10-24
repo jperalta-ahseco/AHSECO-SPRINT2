@@ -151,7 +151,7 @@
         solicitud.itemTransporte = [];
         solicitud.nuevoContacto = false;
         cargaCombos();
-        ObtenerFiltrosPrecios();
+        cotvtadet.ObtenerFiltrosPrecios();
         CargarTipoDocumento(4); //Tipo de Proceso "Ventas"
         cargarDatosSolicitud();
         $dateSolicitud.datepicker({
@@ -299,7 +299,10 @@
     function ObtenerFiltrosPrecios() {
         var method = "POST";
         var url = "CatalogoPrecios/FiltrosPrecios";
-        var objParam = '';
+        var oValores = {
+            CodTipoSol: $cmbTipo.val()
+        };
+        var objParam = JSON.stringify(oValores);
         var fnDoneCallback = function (data) {
 
             //Cargar combo de marcas:
@@ -605,8 +608,8 @@
         method = "POST";
         url = "CatalogoPrecios/ObtenerPrecios";
         var objPrecio = {
-            CodigoProducto: $txtCodProducto.val().trim(),
-            NombreProducto: $txtNomProducto.val().trim(),
+            CodigoProducto: $txtCodProducto.val(),
+            NombreProducto: $txtNomProducto.val(),
             UnidadMedida: $cmbTipoMedida.val(),
             CodigoFamilia: $cmbFamilia.val(),
             CodigoMarca: $cmbMarca.val(),
@@ -1157,10 +1160,14 @@
 
         objParam = JSON.stringify(objCotizacion);
 
+        function redirect() {
+            app.redirectTo("BandejaSolicitudesVentas/SolicitudVenta");
+        };
+
         var fnDoneCallBackSol = function (data) {
             $idCotizacion.val(data.Cotizacion.IdCotizacion);
             $btnRegistrarCotizacion.attr("style", "display:none");
-            app.message.success("Registro Realizado", "Se grabó satisfactoriamente el registro.", "Aceptar", null);
+            app.message.success("Registro Realizado", "Se grabó satisfactoriamente el registro.", "Aceptar", redirect);
         };
 
         var fnFailCallBackSol = function (Mensaje) {
@@ -1843,7 +1850,8 @@
                 $cmbempresa.val(data.Result.Solicitud.Cod_Empresa).trigger("change.select2");
                 $dateSolicitud.val(data.Result.Solicitud.Fecha_Sol);
 
-                    
+                cotvtadet.RecargarFiltroFamilia();
+
                 solicitud.detalleSolicitud.push({
                     flujo: data.Result.Solicitud.Id_Flujo,
                     TipoSol: data.Result.Solicitud.Tipo_Sol,

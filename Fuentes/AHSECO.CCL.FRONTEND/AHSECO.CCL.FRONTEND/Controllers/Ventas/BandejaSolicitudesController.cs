@@ -29,6 +29,7 @@ using NPOI.OpenXmlFormats.Dml;
 using System.ComponentModel.Design;
 using System.IO;
 using AHSECO.CCL.BL.Mantenimientos;
+using AHSECO.CCL.BL.Consulta;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 {
@@ -95,20 +96,45 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.IdCotizacion = 0;
             ViewBag.IdContacto = 0;
             ViewBag.Observacion = ConstantesDTO.CotizacionVenta.Observaciones.Msj01;
+            ViewBag.PermitirCancelarCot = false;
+            ViewBag.VerTabCotDet = false;
+            ViewBag.PermitirAgregarCotDet = false;
+            ViewBag.PermitirNuevoCot = false;
+
+            ViewBag.ListaSeleccionados = new List<CotizacionDetalleDTO>();
 
             if (numSol != null)
             {
+                var rptaSoli = ventasBL.ObtenerSolicitudes(new SolicitudDTO() { Id_Solicitud = int.Parse(numSol) });
+                var soli = rptaSoli.Result.First();
+                ViewBag.EstadoSolicitud = soli.Estado;
+
+                var rptaEst = ventasBL.ObtenerEstadosProcesos(new ProcesoEstadoDTO
+                { IdProceso = ConstantesDTO.Procesos.Ventas.ID, CodigoEstado = soli.Estado });
+
+                if (rptaEst.Result.Any()) { VariableSesion.setCadena("estadoAbrev", rptaEst.Result.First().AbreviaturaEstado); }
+
+                if (soli.Estado != ConstantesDTO.EstadosProcesos.ProcesoVenta.CotSinVenta)
+                {
+                    ViewBag.PermitirCancelarCot = true;
+                }
+
+                if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Registrado || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnCotizacion)
+                {
+                    ViewBag.PermitirAgregarCotDet = true;
+                    ViewBag.PermitirNuevoCot = true;
+                }
+
                 var rptaCotizacion = ventasBL.ObtenerCotizacionVenta(new CotizacionDTO() { IdSolicitud = int.Parse(numSol), 
                     Estado = ConstantesDTO.CotizacionVenta.Estados.Activo });
+
                 if (rptaCotizacion.Result.Any())
                 {
+                    ViewBag.VerTabCotDet = true;
                     var oCotizacion = rptaCotizacion.Result.First();
                     ViewBag.IdCotizacion = oCotizacion.IdCotizacion;
                     ViewBag.NombreContacto = oCotizacion.NombreContacto;
-                    if (oCotizacion.FecCotizacion.HasValue)
-                    {
-                        ViewBag.FechaCotizacion = oCotizacion.FecCotizacion.Value.ToString("dd/MM/yyyy");
-                    }
+                    if (oCotizacion.FecCotizacion.HasValue) { ViewBag.FechaCotizacion = oCotizacion.FecCotizacion.Value.ToString("dd/MM/yyyy"); }
                     ViewBag.PlazoEntrega = oCotizacion.PlazoEntrega;
                     ViewBag.FormaPago = oCotizacion.FormaPago;
                     ViewBag.Moneda = oCotizacion.Moneda;
@@ -194,6 +220,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 solicitudVentaGrupoDTO.Solicitud.Id_WorkFlow = rpta.Result;
                 solicitudVentaGrupoDTO.Solicitud.UsuarioRegistra = User.ObtenerUsuario();
                 solicitudVentaGrupoDTO.Solicitud.IpMaquinaRegistro = User.ObtenerIP();
+                solicitudVentaGrupoDTO.Solicitud.Estado = ConstantesDTO.EstadosProcesos.ProcesoVenta.Registrado;
 
                 //Registra Main Solicitudes
                 var mainSolicitudes = ventasBL.MantenimientoSolicitudes(solicitudVentaGrupoDTO.Solicitud);
@@ -250,15 +277,12 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             }
             catch (Exception ex)
             {
-                //result.Codigo = 0;
-                //result.Mensaje = ex.Message.ToString();
                 return Json(new
                 {
                     Status = 0,
                     Mensaje = ex.Message,
                 });
             }
-            //return Json(new ResponseDTO<RespuestaDTO>(result));
             
         }
 
@@ -277,10 +301,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             solicitudVentaGrupoDTO.Solicitud.Id_WorkFlow = rpta.Result;
             solicitudVentaGrupoDTO.Solicitud.UsuarioRegistra = User.ObtenerUsuario();
 
-
             //RegistraCabecera de cotizacion
             solicitudVentaGrupoDTO.CabeceraCotizacion.UsuarioRegistra = User.ObtenerUsuario();
             var cabeceraCotizacion = ventasBL.MantenimientoCotizacion(solicitudVentaGrupoDTO.CabeceraCotizacion);
+
             //Registra detalles de cotizacion
             foreach (var detalle in solicitudVentaGrupoDTO.DetalleCotizacion)
             {
@@ -289,8 +313,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                 var resultDetalle = ventasBL.MantenimientoCotizacionDetalle(detalle);
             };
-            //Registra documentos
 
+            //Registra documentos
             foreach (var documento in solicitudVentaGrupoDTO.Adjuntos)
             {
                 documento.Accion = "I";
@@ -312,6 +336,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                 var resultObservacion = ventasBL.MantenimientoObservaciones(observacion);
             }
+
             return Json( new { casa = "hola"});
         }
 
@@ -527,6 +552,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 ventasBL.ActualizarSolicitudEstado(new SolicitudDTO() { Id_Solicitud = cotizacionDTO.IdSolicitud, 
                     Estado = ConstantesDTO.EstadosProcesos.ProcesoVenta.EnCotizacion });
 
+                var rptaEst = ventasBL.ObtenerEstadosProcesos(new ProcesoEstadoDTO
+                { IdProceso = ConstantesDTO.Procesos.Ventas.ID, CodigoEstado = ConstantesDTO.EstadosProcesos.ProcesoVenta.EnCotizacion });
+
+                if (rptaEst.Result.Any()) { VariableSesion.setCadena("estadoAbrev", rptaEst.Result.First().AbreviaturaEstado); }
+
                 ViewBag.EstadoSolicitud = ConstantesDTO.EstadosProcesos.ProcesoVenta.EnCotizacion;
                 ViewBag.IdCotizacion = resultCV.Result.Codigo;
 
@@ -575,5 +605,33 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             }
             catch (Exception ex) { return Json(new { Status = 0, Mensaje = ex.Message }); }
         }
+
+        [HttpPost]
+        public JsonResult AgregarItemCotDet(CotizacionDetalleDTO Item)
+        {
+            try
+            {
+                var consultaPreciosBL = new ConsultaPrecioBL();
+                var respPrecios = consultaPreciosBL.ObtenerPrecios(new PrecioDTO { CodigoProducto = Item.CodItem });
+
+                List<CotizacionDetalleDTO> lstItems = new List<CotizacionDetalleDTO>();
+                if(ViewBag.ListaSeleccionados != null) { lstItems = ViewBag.ListaSeleccionados; }
+                if (respPrecios.Result.Any())
+                {
+                    var objPrecio = respPrecios.Result.First();
+                    var select = new CotizacionDetalleDTO();
+                    select.CodItem = objPrecio.CodigoProducto;
+                    select.Descripcion = objPrecio.NombreProducto;
+                    lstItems.Add(select);
+                }
+                ViewBag.ListaSeleccionados = lstItems;
+
+                var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems);
+
+                return Json(response);
+            }
+            catch (Exception ex) { return Json(new { Status = 0, Mensaje = ex.Message }); }
+        }
+
     }
 }

@@ -11,6 +11,7 @@
     var numSol = VariableSesion.getCadena("numSol");
     var estadoSol = VariableSesion.getCadena("estadoSol");
     var estadoAbrev = VariableSesion.getCadena("estadoAbrev");
+    if (estadoAbrev != null) { estadoAbrev = estadoAbrev.ToUpper(); }
     var tipoSol = VariableSesion.getCadena("tipoSol");
     var idflujo = VariableSesion.getCadena("idFlujo");
     var idWorkFlow = VariableSesion.getCadena("idWorkFlow");
@@ -65,7 +66,7 @@
                         <div class="row container-fluid">
                             <div class="text-right">
                                 <!--- Aquí tendremos que controlar-->
-                                <label for="txtRuc">ESTADO: @estadoAbrev</label>
+                                <label>ESTADO: <span id="spanEstadoSol">@estadoAbrev</span></label>
                             </div>
                         </div>
                     }
@@ -145,8 +146,7 @@
                             {
                                 if (numSol != null)
                                 {
-                                    <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnEditarSol" tabindex="14"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;Editar</button>
-                                    <button class="btn btn-danger btn-sm" type="button" data-dismiss="modal" id="btnEliminarSol" tabindex="14"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;Cancelar Solicitud</button>
+                                    <button style="@(ViewBag.PermitirCancelarCot ? "" : "display:none")" class="btn btn-danger btn-sm" type="button" data-dismiss="modal" id="btnEliminarSol" tabindex="14"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;Cancelar Solicitud</button>
                                 }
                                 else
                                 {
@@ -238,7 +238,7 @@
                                                             <div class="col-md-6 col-sm-12">
                                                                 <label for="dateCotizacion">Fecha Cotizaci&oacute;n: </label>
                                                                 <div class="input-group date">
-                                                                    <input @(ViewBag.disabled ? "disabled" : "") type="text" class="form-control input-sm" id="dateCotizacion" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10" value="@ViewBag.FechaCotizacion">
+                                                                    <input @(ViewBag.IdCotizacion > 0 ? "disabled" : "") type="text" class="form-control input-sm" id="dateCotizacion" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10" value="@ViewBag.FechaCotizacion">
                                                                     <span class="input-group-addon input-sm" id="openRegdateCotizacion">
                                                                         <i class="fa fa-calendar"></i>
                                                                     </span>
@@ -247,7 +247,7 @@
                                                             <div class="col-md-6 col-sm-7 col-xs-12">
                                                                 <label for="txtVigencia">Vigencia Cotizaci&oacute;n: </label>
                                                                 <div class="form-group">
-                                                                    <input @(ViewBag.disabled ? "disabled" : "") placeholder="Ingresar número de días" type="text" class="form-control input-sm" id="txtVigencia" value="@ViewBag.Vigencia">
+                                                                    <input @(ViewBag.IdCotizacion > 0 ? "disabled" : "") placeholder="Ingresar número de días" type="text" class="form-control input-sm" id="txtVigencia" value="@ViewBag.Vigencia">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -256,13 +256,13 @@
                                                             <div class="col-md-6 col-sm-12">
                                                                 <label for="txtPlazoEntrega">Plazo Entrega: </label>
                                                                 <div class="form-group">
-                                                                    <input @(ViewBag.disabled ? "disabled" : "") placeholder="Ingresar número de días" type="text" class="form-control input-sm" id="txtPlazoEntrega" value="@ViewBag.PlazoEntrega">
+                                                                    <input @(ViewBag.IdCotizacion > 0 ? "disabled" : "") placeholder="Ingresar número de días" type="text" class="form-control input-sm" id="txtPlazoEntrega" value="@ViewBag.PlazoEntrega">
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-6 col-sm-12">
                                                                 <label for="cmbGarantia">Garant&iacute;a: </label>
                                                                 <div class="form-group">
-                                                                    <select @(ViewBag.disabled ? "disabled" : "") class="form-control select2 input-sm" style="width:100%;" id="cmbGarantia" data-selected="@ViewBag.Garantia">
+                                                                    <select @(ViewBag.IdCotizacion > 0 ? "disabled" : "") class="form-control select2 input-sm" style="width:100%;" id="cmbGarantia" data-selected="@ViewBag.Garantia">
                                                                     </select>
                                                                 </div>
                                                             </div>
@@ -271,14 +271,14 @@
                                                             <div class="col-md-6 col-sm-12">
                                                                 <label for="cmbTipoPago">Forma de Pago: </label>
                                                                 <div class="form-group">
-                                                                    <select @(ViewBag.disabled ? "disabled" : "") class="form-control select2 input-sm" style="width:100%;" id="cmbTipoPago" data-selected="@ViewBag.FormaPago">
+                                                                    <select @(ViewBag.IdCotizacion > 0 ? "disabled" : "") class="form-control select2 input-sm" style="width:100%;" id="cmbTipoPago" data-selected="@ViewBag.FormaPago">
                                                                     </select>
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-6 col-sm-12">
                                                                 <label for="txtObs">Observaci&oacute;n: </label>
                                                                 <div class="form-group">
-                                                                    <input @(ViewBag.disabled ? "disabled" : "") placeholder="Ingresar observación" type="text" class="form-control input-sm" id="txtObs" value="@ViewBag.Observacion">
+                                                                    <input @(ViewBag.IdCotizacion > 0 ? "disabled" : "") placeholder="Ingresar observación" type="text" class="form-control input-sm" id="txtObs" value="@ViewBag.Observacion">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -287,7 +287,7 @@
                                                             <div class="col-md-6 col-sm-12">
                                                                 <label for="cmbTipMoneda">Moneda: </label>
                                                                 <div class="form-group">
-                                                                    <select @(ViewBag.disabled ? "disabled" : "") class="form-control select2 input-sm" style="width:100%;" id="cmbTipMoneda" data-selected="@ViewBag.Moneda">
+                                                                    <select @(ViewBag.IdCotizacion > 0 ? "disabled" : "") class="form-control select2 input-sm" style="width:100%;" id="cmbTipMoneda" data-selected="@ViewBag.Moneda">
                                                                     </select>
                                                                 </div>
                                                             </div>
@@ -304,19 +304,23 @@
                                                     </div>
                                                 </div>
                                                 <br />
-                                                <div class="box-inner">
+                                                <div class="box-inner" style="@(ViewBag.VerTabCotDet ? "" : "display:none")">
                                                     <div class="box-header well" data-original-title="">
                                                         <div style="display: flex;justify-content: space-between;">
                                                             <h2><i class="fa fa-list" aria-hidden="true"></i> Detalle</h2>
                                                         </div>
                                                     </div>
                                                     <div class="box-content">
-                                                        @if (numSol != null)
-                                                        {
-                                                            <div class="text-right">
+                                                        <div class="text-right">
+                                                            @if (ViewBag.PermitirAgregarCotDet == true)
+                                                            {
                                                                 <button class="btn btn-default btn-sm" type="button" data-target="#modalDetalleProductos" data-toggle="modal" id="btnAgregarDetalle" tabindex="14"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar Detalle</button>
-                                                            </div>
-                                                        }
+                                                            }
+                                                            @if (ViewBag.PermitirNuevoCot == true)
+                                                            {
+                                                                <button class="btn btn-default btn-sm" type="button" id="btnNuevoCot" tabindex="15"><i class="fa fa-newspaper-o" aria-hidden="true"></i>&nbsp; Nueva Cotización</button>
+                                                            }
+                                                        </div>
                                                         <br />
                                                         <ul class="nav nav-tabs" style="padding-top: 5px;">
                                                             <li class="" id="tabDetalleProducto">
@@ -429,7 +433,7 @@
                                         </form>
                                     </div>
                                 </div>
-                                <div class="panel panel-default" style="border-color: #07bc58;">
+                                <div class="panel panel-default" style="@(ViewBag.VerTabCotDet ? "" : "display:none");border-color: #07bc58;">
                                     <div class="panel-heading" role="tab" id="heading2183316" style="background-color: #07bc5833;">
                                         <h5 class="panel-title">
                                             <a role="button" data-toggle="collapse" class="accordion-arrow-toggle collapsed" href="#collapse2183316" aria-expanded="true" aria-controls="collapse2183316"><i class="fa fa-money" aria-hidden="true"></i> VENTA</a>
@@ -551,10 +555,11 @@
 
 <div class="modal fade" id="modalDetalleProductos" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     @{
-        Html.RenderPartial("_DetalleProducto");
+        Html.RenderPartial("_SolicitudDetCot");
     }
 </div>
 
 @section scripts{
     <script type="text/javascript" src="~/resources/js/app/ventas/solicitud.js"></script>
+    <script type="text/javascript" src="~/resources/js/app/ventas/cotvtadetalle.js"></script>
 }

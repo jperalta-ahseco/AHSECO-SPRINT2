@@ -548,5 +548,40 @@ namespace AHSECO.CCL.BD.Ventas
             }
         }
 
+        public IEnumerable<ProcesoEstadoDTO> ObtenerEstadosProcesos(ProcesoEstadoDTO procestDTO)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+
+            using (var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+                var parameters = new DynamicParameters();
+                parameters.Add("pID", procestDTO.Id, DbType.Int32, ParameterDirection.Input);
+                parameters.Add("pIDPROCESO", procestDTO.IdProceso, DbType.Int32, ParameterDirection.Input);
+                parameters.Add("pCODESTADO", procestDTO.CodigoEstado, DbType.String, ParameterDirection.Input);
+
+                var result = connection.Query(
+                    sql: "USP_SEL_PROCESOESTADOS",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new ProcesoEstadoDTO
+                    {
+                        Id = i.Single(d => d.Key.Equals("ID")).Value.Parse<int>(),
+                        Proceso = new ProcesoDTO() { 
+                            CodigoProceso = i.Single(d => d.Key.Equals("ID_PROCESO")).Value.Parse<int>(),
+                            NombreProceso = i.Single(d => d.Key.Equals("NOMPROCESO")).Value.Parse<string>()
+                        },
+                        CodigoEstado = i.Single(d => d.Key.Equals("COD_ESTADO")).Value.Parse<string>(),
+                        NombreEstado = i.Single(d => d.Key.Equals("NOM_ESTADO")).Value.Parse<string>(),
+                        AbreviaturaEstado = i.Single(d => d.Key.Equals("ABREV_ESTADO")).Value.Parse<string>(),
+                        Habilitado = i.Single(d => d.Key.Equals("HABILITADO")).Value.Parse<bool>()
+                    });
+
+                connection.Close();
+                return result;
+            };
+        }
+
     }
 }

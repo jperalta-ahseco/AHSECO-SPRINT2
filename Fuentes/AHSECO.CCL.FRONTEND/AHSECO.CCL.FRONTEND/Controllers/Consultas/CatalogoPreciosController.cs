@@ -1,4 +1,5 @@
 ﻿using AHSECO.CCL.BE;
+using AHSECO.CCL.BL;
 using AHSECO.CCL.BL.Consulta;
 using AHSECO.CCL.FRONTEND.Identity;
 using AHSECO.CCL.FRONTEND.Security;
@@ -39,10 +40,32 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Consultas
             return Json(listaPrecios);
         }
 
-        public JsonResult FiltrosPrecios()
+        public JsonResult FiltrosPrecios(string CodTipoSol)
         {
             var consultaPreciosBL = new ConsultaPrecioBL();
             var filtros = consultaPreciosBL.FiltrosPrecios();
+            filtros.Result.TodasFamilias = "";
+            if (!string.IsNullOrEmpty(CodTipoSol))
+            {
+                if (filtros.Result.Familias != null)
+                {
+                    var datggenBL = new DatosGeneralesBL();
+                    var rptadg = datggenBL.Obtener(new DatosGeneralesDetalleDTO { Dominio = "TIPOSOLVT" });
+                    if (rptadg.Result.Any(x => x.CodValor1 == CodTipoSol))
+                    {
+                        var oTipoSol = rptadg.Result.First(x => x.CodValor1 == CodTipoSol);
+                        if (!string.IsNullOrEmpty(oTipoSol.Valor3))
+                        {
+                            var lstFamilias = oTipoSol.Valor3.Split(';').ToList();
+                            if (filtros.Result.Familias.Any())
+                            {
+                                filtros.Result.Familias = filtros.Result.Familias.Where(x => lstFamilias.Any(y => y == x.Id.Trim())).ToList();
+                                filtros.Result.TodasFamilias = string.Join(";", lstFamilias.ToArray());
+                            }
+                        }
+                    }
+                }
+            }
             return Json(filtros);
         }
 

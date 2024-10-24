@@ -10,6 +10,7 @@ namespace AHSECO.CCL.BE.Filtros
     {
         public List<ComboDTO> Marcas { get; set; }
         public List<ComboDTO> Familias { get; set; }
+        public string TodasFamilias { get; set; }
         public List<ComboDTO> Medidas { get; set; }
         public List<ComboDTO> Almacenes { get; set; }
 
