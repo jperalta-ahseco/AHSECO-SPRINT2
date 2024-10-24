@@ -11,19 +11,19 @@ namespace AHSECO.CCL.FRONTEND.Reporte
     public class ReporteConexion
     {
 
-        public static CrystalDecisions.Shared.ConnectionInfo getConexion()
-        {
+        //public static CrystalDecisions.Shared.ConnectionInfo getConexion()
+        //{
 
-            var strcon = new System.Data.SqlClient.SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["AhsecoConnection"].ConnectionString);
+        //    var strcon = new System.Data.SqlClient.SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["AhsecoConnection"].ConnectionString);
 
-            CrystalDecisions.Shared.ConnectionInfo infocon = new CrystalDecisions.Shared.ConnectionInfo();
+        //    CrystalDecisions.Shared.ConnectionInfo infocon = new CrystalDecisions.Shared.ConnectionInfo();
 
-            infocon.ServerName = strcon.DataSource;
-            infocon.DatabaseName = strcon.InitialCatalog;
-            infocon.IntegratedSecurity = strcon.IntegratedSecurity;
+        //    infocon.ServerName = strcon.DataSource;
+        //    infocon.DatabaseName = strcon.InitialCatalog;
+        //    infocon.IntegratedSecurity = strcon.IntegratedSecurity;
 
-            return infocon;
-        }
+        //    return infocon;
+        //}
 
         public static string getConnection()
         {
