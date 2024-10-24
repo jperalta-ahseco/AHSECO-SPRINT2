@@ -583,5 +583,124 @@ namespace AHSECO.CCL.BD.Ventas
             };
         }
 
+
+		public IEnumerable<HistorialCotizacionCabeceraDTO> ListarHistorialCotizacion(long codCotizacion, long codSolicitud)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+
+            using (var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+                var parameters = new DynamicParameters();
+                parameters.Add("pId_Cotizacion", codCotizacion);
+                parameters.Add("pId_Solicitud", codSolicitud);
+
+                var result = connection.Query(
+                    sql: "USP_CONSULTA_HISTORIALCOTIZACION",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new HistorialCotizacionCabeceraDTO
+                    {
+                        IdCotizacion = i.Single(d => d.Key.Equals("ID_COTIZACION")).Value.Parse<long>(),
+                        IdSolicitud = i.Single(d => d.Key.Equals("ID_SOLICITUD")).Value.Parse<long>(),
+                        FecCotizacion = i.Single(d => d.Key.Equals("FEC_COTIZACION")).Value.Parse<string>(),
+                        NombreContacto = i.Single(d => d.Key.Equals("NOMBRECONTACTO")).Value.Parse<string>(),
+                        AreaContacto = i.Single(d => d.Key.Equals("AREACONTACTO")).Value.Parse<string>(),
+                        TelefonoContacto = i.Single(d => d.Key.Equals("TELEFONOCONTACTO")).Value.Parse<string>(),
+                        EmailContacto = i.Single(d => d.Key.Equals("EMAILCONTACTO")).Value.Parse<string>(),
+                        PlazoEntrega = i.Single(d => d.Key.Equals("PLAZOENTREGA")).Value.Parse<string>(),
+                        FormaPago = i.Single(d => d.Key.Equals("FORMAPAGO")).Value.Parse<string>(),
+                        Moneda = i.Single(d => d.Key.Equals("MONEDA")).Value.Parse<string>(),
+                        Vigencia = i.Single(d => d.Key.Equals("VIGENCIA")).Value.Parse<string>(),
+                        Garantia = i.Single(d => d.Key.Equals("GARANTIA")).Value.Parse<string>(),
+                        Estado = i.Single(d => d.Key.Equals("ESTADO")).Value.Parse<string>(),
+                        UsuarioRegistro = i.Single(d => d.Key.Equals("USR_REG")).Value.Parse<string>(),
+                        FechaRegistroFormat = i.Single(d => d.Key.Equals("FEC_REG")).Value.Parse<string>(),
+                        UsuarioModifica = i.Single(d => d.Key.Equals("USR_MOD")).Value.Parse<string>(),
+                        FechaModificacionFormat = i.Single(d => d.Key.Equals("FEC_MOD")).Value.Parse<string>()
+                    });
+
+                return result;
+            };
+        }
+
+
+        public DocumentoCotizacionDTO ConsultaCotizacionCliente(long codCotizacion)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using (var connection = Factory.ConnectionSingle())
+            {
+
+                var parameters = new DynamicParameters();
+                parameters.Add("COD_COTIZACION", codCotizacion);
+                SqlCommand command;
+                var result = new DocumentoCotizacionDTO();
+                string query = "exec USP_CREAR_COTIZACIONCLIENTE @COD_COTIZACION=" +  codCotizacion.ToString();
+                connection.Open();
+                command = new SqlCommand(query, connection);
+
+
+                using (var reader = command.ExecuteReader())
+                {
+                    reader.Read();
+                    DocumentoCabCotizacionDTO _cabeceraCotizacion = new DocumentoCabCotizacionDTO()
+                    {
+                        RutaImagen = reader.IsDBNull(reader.GetOrdinal("RUTAIMAGEN")) ? "" : reader.GetString(reader.GetOrdinal("RUTAIMAGEN")),
+                        NumeroCotizacion = reader.IsDBNull(reader.GetOrdinal("NUM_COTIZACION")) ? "" : reader.GetString(reader.GetOrdinal("NUM_COTIZACION")),
+                        Encabezado = reader.IsDBNull(reader.GetOrdinal("ENCABEZADO")) ? "" : reader.GetString(reader.GetOrdinal("ENCABEZADO")),
+                        Ruc = reader.IsDBNull(reader.GetOrdinal("RUC")) ? "" : reader.GetString(reader.GetOrdinal("RUC")),
+                        Fecha = reader.IsDBNull(reader.GetOrdinal("FECHA")) ? "" : reader.GetString(reader.GetOrdinal("FECHA")),
+                        RazonSocial = reader.IsDBNull(reader.GetOrdinal("RAZONSOCIAL")) ? "" : reader.GetString(reader.GetOrdinal("RAZONSOCIAL")),
+                        NombreContacto = reader.IsDBNull(reader.GetOrdinal("NOMBRECONTACTO")) ? "" : reader.GetString(reader.GetOrdinal("NOMBRECONTACTO")),
+                        AreaContacto = reader.IsDBNull(reader.GetOrdinal("AREA")) ? "" : reader.GetString(reader.GetOrdinal("AREA")),
+                        TelefonoContacto = reader.IsDBNull(reader.GetOrdinal("TELEFONO")) ? "" : reader.GetString(reader.GetOrdinal("TELEFONO")),
+                        EmailContacto = reader.IsDBNull(reader.GetOrdinal("CORREO")) ? "" : reader.GetString(reader.GetOrdinal("CORREO")),
+                        PlazoEntrega = reader.IsDBNull(reader.GetOrdinal("PLAZOENTREGA")) ? "" : reader.GetString(reader.GetOrdinal("PLAZOENTREGA")),
+                        FormaPago = reader.IsDBNull(reader.GetOrdinal("FORMAPAGO")) ? "" : reader.GetString(reader.GetOrdinal("FORMAPAGO")),
+                        Moneda = reader.IsDBNull(reader.GetOrdinal("MONEDA")) ? "" : reader.GetString(reader.GetOrdinal("MONEDA")),
+                        Vigencia = reader.IsDBNull(reader.GetOrdinal("VIGENCIA")) ? "" : reader.GetString(reader.GetOrdinal("VIGENCIA")),
+                        Garantia = reader.IsDBNull(reader.GetOrdinal("GARANTIA")) ? "" : reader.GetString(reader.GetOrdinal("GARANTIA")),
+                        Observacion = reader.IsDBNull(reader.GetOrdinal("OBSERVACION")) ? "" : reader.GetString(reader.GetOrdinal("OBSERVACION")),
+                        Contrato = reader.IsDBNull(reader.GetOrdinal("CONTRATO")) ? "" : reader.GetString(reader.GetOrdinal("CONTRATO")),
+                        NombreVendedor = reader.IsDBNull(reader.GetOrdinal("NOMBREVENDEDOR")) ? "" : reader.GetString(reader.GetOrdinal("NOMBREVENDEDOR")),
+                        TelefonoVendedor = reader.IsDBNull(reader.GetOrdinal("TELEFONOVENDEDOR")) ? "" : reader.GetString(reader.GetOrdinal("TELEFONOVENDEDOR")),
+                        EmailVendedor = reader.IsDBNull(reader.GetOrdinal("CORREOVENDEDOR")) ? "" : reader.GetString(reader.GetOrdinal("CORREOVENDEDOR")),
+                        Pie = reader.IsDBNull(reader.GetOrdinal("PIE")) ? "" : reader.GetString(reader.GetOrdinal("PIE")),
+                        Subtotal = reader.IsDBNull(reader.GetOrdinal("SUBTOTAL")) ? "" : reader.GetString(reader.GetOrdinal("SUBTOTAL")),
+                        Igv = reader.IsDBNull(reader.GetOrdinal("IGV")) ? "" : reader.GetString(reader.GetOrdinal("IGV")),
+                        Total = reader.IsDBNull(reader.GetOrdinal("TOTAL")) ? "" : reader.GetString(reader.GetOrdinal("TOTAL"))
+                    };
+
+                    result.DocumentoCabecera = _cabeceraCotizacion;
+
+                    reader.NextResult();
+
+                    List<DocumentoDetCotizacionDTO> _listadetalleCotizacion = new List<DocumentoDetCotizacionDTO>();
+
+                    while (reader.Read())
+                    {
+                        var detalle = new DocumentoDetCotizacionDTO()
+                        {
+                            NumeroItem = reader.IsDBNull(reader.GetOrdinal("NROITEM")) ? "" : reader.GetString(reader.GetOrdinal("NROITEM")),
+                            Catalogo = reader.IsDBNull(reader.GetOrdinal("CATALOGO")) ? "" : reader.GetString(reader.GetOrdinal("CATALOGO")),
+                            Descripcion = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION")),
+                            Unidad = reader.IsDBNull(reader.GetOrdinal("UNIDAD")) ? "" : reader.GetString(reader.GetOrdinal("UNIDAD")),
+                            Cantidad = reader.IsDBNull(reader.GetOrdinal("CANTIDAD")) ? "" : reader.GetString(reader.GetOrdinal("CANTIDAD")),
+                            PrecioUnitario = reader.IsDBNull(reader.GetOrdinal("PRECIOUNITARIO")) ? "" : reader.GetString(reader.GetOrdinal("PRECIOUNITARIO")),
+                            Total = reader.IsDBNull(reader.GetOrdinal("TOTAL")) ? "" : reader.GetString(reader.GetOrdinal("TOTAL"))
+                        };
+                        _listadetalleCotizacion.Add(detalle);
+                    }
+
+                    result.DocumentoDetalle = _listadetalleCotizacion;
+                    result.NroItems = _listadetalleCotizacion.Count();
+
+                }
+
+                return result;
+
+            }
+        }
     }
 }

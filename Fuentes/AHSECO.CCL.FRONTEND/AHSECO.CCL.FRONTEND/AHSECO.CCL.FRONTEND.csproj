@@ -339,8 +339,10 @@
     <Compile Include="Controllers\Seguridad\SeguridadPerfilController.cs" />
     <Compile Include="Controllers\Seguridad\SeguridadUsuarioController.cs" />
     <Compile Include="Controllers\Seguridad\SeguridadUsuarioPerfilController.cs" />
+    <Compile Include="Controllers\ServicioTecnico\BandejaInstalacionTecnica\BandejaInstalacionTecnicaController.cs" />
     <Compile Include="Controllers\UbigeoController.cs" />
     <Compile Include="Controllers\UtilesController.cs" />
+    <Compile Include="Controllers\Ventas\BandejaHistorialCotizacionController.cs" />
     <Compile Include="Controllers\Ventas\BandejaSolicitudesController.cs" />
     <Compile Include="Controllers\Ventas\BandejaVentasController.cs" />
     <Compile Include="Controllers\Viaticos\BandejaViaticoController.cs" />
@@ -524,6 +526,8 @@
     <Content Include="resources\js\app\seguridad\usuarioPerfil\usuarioPerfil.js" />
     <Content Include="resources\js\app\seguridad\usuario\changePassword.js" />
     <Content Include="resources\js\app\seguridad\usuario\usuario.js" />
+    <Content Include="resources\js\app\ServicioTecnico\BandejaInstalacionTecnica\bandejaInstalacionTecnica.js" />
+    <Content Include="resources\js\app\ServicioTecnico\BandejaInstalacionTecnica\registroInstalacionTecnica.js" />
     <Content Include="resources\js\app\ubigeo\ubigeo.js" />
     <Content Include="resources\js\app\uploadFile.js" />
     <Content Include="resources\js\app\ventas\bandejaSolicitudes.js" />
@@ -928,6 +932,10 @@
     <Content Include="Views\BandejaServicios\RegistroServicio.cshtml" />
     <Content Include="Views\Shared\_HerramientasInstrumentos.cshtml" />
     <Content Include="Views\BandejaSolicitudesVentas\_SolicitudDetCot.cshtml" />
+    <Content Include="Views\Shared\_AsignacionTecnico.cshtml" />
+    <Content Include="Views\Shared\_BandejaHistorialCotizacion.cshtml" />
+    <Content Include="Views\Shared\_BusquedaSolicitud.cshtml" />
+    <Content Include="Views\Shared\_DetalleServicio.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\css\font\" />

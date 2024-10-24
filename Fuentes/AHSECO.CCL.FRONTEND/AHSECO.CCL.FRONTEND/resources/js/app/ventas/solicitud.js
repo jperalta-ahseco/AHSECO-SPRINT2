@@ -44,6 +44,9 @@
     var $btnGuardarObservacionReq = $('#btnGuardarObservacionReq');
     var $btnGuardarObservacion = $('#btnGuardarObservacion');
     var $btnAdjuntarDocumento = $("#btnAdjuntarDocumento");
+    var $tblHistorial = $("#tablaHistorial");
+    var $txtCodCotizacion = $("#txtCodCotizacion");
+    var $btnImprimirCotizacion = $("#btnImprimirCotizacion");
 
 
     /*Sección Solicitud*/
@@ -118,6 +121,8 @@
     var $txtCodProducto = $('#txtCodProducto');
     var $txtNomProducto = $('#txtNomProducto');
     var $bodyProductosSelect = $('#bodyProductosSelect');
+    var $btnHistorial = $("#btnHistorial");
+    var $btnBuscarHistorial = $("#btnBuscarHistorial");
 
     var mensajes = {
         consultaContactos: "Consultando contactos, por favor espere....",
@@ -129,7 +134,9 @@
         registraSolicitud: "Realizando el registro de la solicitud, por favor espere...",
         consultandoDetalleSolicitud: "Consultano el detalle de la solicitud, por favor espere....",
         guardandoObservacion: "Realizando el registro la observación, por favor espere....",
-        BuscandoPrecios: "Buscando Precios, por favor espere...."
+        BuscandoPrecios: "Buscando Precios, por favor espere....",
+        BuscandoHistorial: "Buscando Historial de cotizaciones, por favor espere....",
+        GenerarCotizacion: "Realizando la generación de la cotización, por favor espere..."
     };
 
     $(Initialize);
@@ -194,6 +201,9 @@
         $btnRegistrar.click($btnRegistrarClick);
         $btnCargarDocumento.click($btnCargarDocumento_click);
         $btnAdjuntarDocumento.click($adjuntarDocumento_click);
+        $btnHistorial.click($btnHistorial_click);
+        $btnBuscarHistorial.click($btnHistorial_click);
+        $btnImprimirCotizacion.click($btnImprimirCotizacion_click);
         inicializarBotonesCantidad();
         //crearTablaProductos();
         $('#tblConsultaProductos tbody').on('click', 'td #btnAñadirChild', function () {
@@ -274,6 +284,109 @@
         });
         // Función para dar formato a la fila hija
     };
+
+    function $btnImprimirCotizacion_click() {
+        console.log("entro");
+        method = 'POST';
+        url = 'BandejaHistorialCotizacion/GenerarCotizacion?codCotizacion=5';
+
+        objParam ='';
+
+        var fnDoneCallBack = function (data) {
+            //app.abrirVentana("BandejaViatico/ExportarFile?url=" + data.Archivo);
+            //app.message.success("Viáticos", "Se generó el documento correctamente.")
+        }
+        var fnFailCallBack = function () {
+
+        }
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, mensajes.GenerarCotizacion);
+    }
+
+    function $btnHistorial_click() {
+        var filtrosDTO = {};
+        filtrosDTO.IdCotizacion = $txtCodCotizacion.val() == ""  ? 0 : $txtCodCotizacion.val()
+        filtrosDTO.IdSolicitud = $numeroSolicitud.val();
+        var method = "POST";
+        var url = "BandejaHistorialCotizacion/ListarBandejaHistorialCotizacion";
+
+        var objParam = JSON.stringify(filtrosDTO);
+        var fnDoneCallback = function (data) {
+            cargarTablaHist(data);
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, mensajes.BuscandoHistorial);
+    }
+
+    function cargarTablaHist(data) {
+        var columns = [
+            {
+                data: "IdCotizacion",
+                render: function (data, type, row) {
+                    return ("000000" + data).substring(("000000" + data).length - 6, ("000000" + data).length);
+                }
+            },
+            {
+                data: "FecCotizacion", render: function (data) {
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "NombreContacto", render: function (data) {
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "PlazoEntrega", render: function (data) {
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "FormaPago", render: function (data) {
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "Moneda", render: function (data) {
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "UsuarioRegistro", render: function (data) {
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "FechaRegistroFormat", render: function (data) {
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "IdCotizacion",
+                render: function (data, type, row) {
+                    var ver = '<a id="btnVer" class="btn btn-info btn-xs" title="Ver" href="javascript:solicitud.verHistorial(' + data + ')"><i class="fa fa-eye" aria-hidden="true"></i></a>';
+                    return '<center>' + ver + '</center>';
+                },
+            }
+
+        ];
+        var columnDefs = [
+            {
+                targets: [0],
+                visible: true
+            }
+        ];
+        var filters = {
+            dataTableSearching: false,
+            dataTablePageLength: 10
+        };
+        app.llenarTabla($tblHistorial, data, columns, columnDefs, "#tablaHistorial", null, null, filters);
+    }
+
+    function verHistorial(codCotizacion) {
+        console.log(codCotizacion);
+    }
+
     function detalleHijo(id) {
         var tr = $(this).closest('tr');
         var row = $('#tblConsultaProductos').dataTable().api().row(tr);
@@ -1938,6 +2051,7 @@
         adicionarCantidad: adicionarCantidad,
         reducirCantidad: reducirCantidad,
         eliminarProducttemp: eliminarProducttemp,
-        detalleHijo: detalleHijo
+        detalleHijo: detalleHijo,
+        verHistorial: verHistorial
     }
 })(window.jQuery, window, document);

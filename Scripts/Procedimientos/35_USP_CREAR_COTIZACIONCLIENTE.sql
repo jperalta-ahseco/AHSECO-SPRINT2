@@ -58,23 +58,24 @@ SET NOCOUNT ON;
 
 	SET  @NUM_COTIZACION= 'PC'+RIGHT('0000000'+CAST(@COD_COTIZACION AS VARCHAR),7)
 
-	SET @ENCABEZADO='R.U.C.: 20100162238\r\n'
-	SET @ENCABEZADO=@ENCABEZADO+'Av. Máximo Abril N°524 Urb. Santa Beatriz\r\nJesús María – Lima\r\n'
-	SET @ENCABEZADO=@ENCABEZADO+'Sucursal: Av. Arenales N°500 – Jesús María - Lima\r\nTeléfono: (511) 433 7227 / 433 6372\r\n'
+	SET @ENCABEZADO='R.U.C.: 20100162238'+ CHAR(13) + CHAR(10) 
+	SET @ENCABEZADO=@ENCABEZADO+'Av. Máximo Abril N°524 Urb. Santa Beatriz\r\nJesús María – Lima'+ CHAR(13) + CHAR(10) 
+	SET @ENCABEZADO=@ENCABEZADO+'Sucursal: Av. Arenales N°500 – Jesús María - Lima\r\nTeléfono: (511) 433 7227 / 433 6372'+ CHAR(13) + CHAR(10) 
 	SET @ENCABEZADO=@ENCABEZADO+'Email: ventas@ahsecoperu.com / www.ahsecoperu.com.pe';
 
 	SET @OBSERVACION='Precios Incluyen IGV.'
 
-	SET @CONTRATO='*INSTALACION Y VERIFICACIÓN OPERACIONAL:\r\n'
-	SET @CONTRATO= @CONTRATO+'La empresa se responsabiliza por la instalación y puesta en marcha del equipo ofertado.\r\n\r\n'
-	SET @CONTRATO= @CONTRATO+'**ASESORÍA, CAPACITACIÓN Y POST VENTA:\r\n'
-	SET @CONTRATO= @CONTRATO+'Brindar la respectiva capacitación al personal usuario designado que se encargará de la operación del equipo ofrecido.\r\n\r\n'
-	SET @CONTRATO= @CONTRATO+'***GARANTÍA Y SOPORTE TÉCNICO:\r\nLa empresa ofrece una Garantía Comercial de 12 meses\r\n'
-	SET @CONTRATO= @CONTRATO+'Mantenimiento Preventivo dentro de la Garantía Comercial: 1 mantenimiento anual\r\n\r\n'
+	SET @CONTRATO='*INSTALACION Y VERIFICACIÓN OPERACIONAL:'+ CHAR(13) + CHAR(10) 
+	SET @CONTRATO= @CONTRATO+'La empresa se responsabiliza por la instalación y puesta en marcha del equipo ofertado.'+ CHAR(13) + CHAR(10) + CHAR(13) + CHAR(10) 
+	SET @CONTRATO= @CONTRATO+'**ASESORÍA, CAPACITACIÓN Y POST VENTA:'+ CHAR(13) + CHAR(10) 
+	SET @CONTRATO= @CONTRATO+'Brindar la respectiva capacitación al personal usuario designado que se encargará de la operación del equipo ofrecido.'+ CHAR(13) + CHAR(10) + CHAR(13) + CHAR(10) 
+	SET @CONTRATO= @CONTRATO+'***GARANTÍA Y SOPORTE TÉCNICO:'+ CHAR(13) + CHAR(10) 
+	SET @CONTRATO= @CONTRATO+'La empresa ofrece una Garantía Comercial de 12 meses'+ CHAR(13) + CHAR(10) 
+	SET @CONTRATO= @CONTRATO+'Mantenimiento Preventivo dentro de la Garantía Comercial: 1 mantenimiento anual'+ CHAR(13) + CHAR(10) + CHAR(13) + CHAR(10) 
 	SET @CONTRATO= @CONTRATO+'“AHSECO PERÚ SA Garantiza el stock de Repuestos Originales, así como Servicio Técnico y de Mantenimiento”'
 
-	SET @PIE='El envío de los productos es de manera gratuita a partir de Facturas de US$ 200.00, solo en ciudad de Lima y para clientes finales. \r\n'
-	SET @PIE=@PIE+'El equipo se entrega en sus instalaciones en un primer piso, no incluye traslado interno al punto de instalación, el usuario deberá contar con personal para ubicación final del equipo sobre la mesa de trabajo. \r\n'
+	SET @PIE='El envío de los productos es de manera gratuita a partir de Facturas de US$ 200.00, solo en ciudad de Lima y para clientes finales.'+ CHAR(13) + CHAR(10) 
+	SET @PIE=@PIE+'El equipo se entrega en sus instalaciones en un primer piso, no incluye traslado interno al punto de instalación, el usuario deberá contar con personal para ubicación final del equipo sobre la mesa de trabajo.'+ CHAR(13) + CHAR(10) 
 	SET @PIE=@PIE+'Los envíos a provincia por intermedio de agencia corren a cuenta y riesgo del cliente, AHSECO PERÚ S.A. no se hace responsable cualquier problema que resulte del envío.'
 
 

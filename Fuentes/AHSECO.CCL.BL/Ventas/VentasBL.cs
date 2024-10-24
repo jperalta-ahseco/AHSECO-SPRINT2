@@ -180,6 +180,34 @@ namespace AHSECO.CCL.BL.Ventas
                 return new ResponseDTO<IEnumerable<ProcesoEstadoDTO>>(ex);
             }
         }
+		
+		public ResponseDTO<IEnumerable<HistorialCotizacionCabeceraDTO>> ListarHistorialCotizacion(long codCotizacion, long codSolicitud)
+        {
+            try
+            {
+                var result = Repository.ListarHistorialCotizacion(codCotizacion, codSolicitud);
+                return new ResponseDTO<IEnumerable<HistorialCotizacionCabeceraDTO>>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + ":: " + ex.Message);
+                return new ResponseDTO<IEnumerable<HistorialCotizacionCabeceraDTO>>(ex);
+            };
+        }
+
+        public ResponseDTO<DocumentoCotizacionDTO> ConsultaCotizacionCliente(long codCotizacion)
+        {
+            try
+            {
+                var result = Repository.ConsultaCotizacionCliente(codCotizacion);
+                return new ResponseDTO<DocumentoCotizacionDTO>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + ":: " + ex.Message);
+                return new ResponseDTO<DocumentoCotizacionDTO>(ex);
+            };
+        }
 
     }
 }
