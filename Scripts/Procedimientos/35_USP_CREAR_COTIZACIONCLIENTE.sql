@@ -16,7 +16,7 @@ BEGIN
 				   @TELEFONOCONTACTO VARCHAR(50),@EMAILCONTACTO VARCHAR(75),@PLAZOENTREGA VARCHAR(100),@FORMAPAGO VARCHAR(100),
 				   @MONEDA VARCHAR(50),@VIGENCIA VARCHAR(50),@GARANTIA VARCHAR(100),@OBSERVACION VARCHAR(100),
 				   @CONTRATO VARCHAR(MAX),@USUARIO VARCHAR(50),@NUMDOCUSU VARCHAR(12),@NOMBREVENDEDOR VARCHAR(200),
-				   @TELEFONOVENDEDOR VARCHAR(75),@CORREOVENDEDOR VARCHAR(75),@PIE VARCHAR(MAX)
+				   @TELEFONOVENDEDOR VARCHAR(75),@CORREOVENDEDOR VARCHAR(75),@PIE VARCHAR(MAX),@NUMITEMS INT
 
 	SELECT @COD_SOLICITUD=A.ID_SOLICITUD,
 	@NOMBRECONTACTO =A.NOMBRECONTACTO,
@@ -75,6 +75,12 @@ BEGIN
 	SET @PIE=@PIE+'El equipo se entrega en sus instalaciones en un primer piso, no incluye traslado interno al punto de instalación, el usuario deberá contar con personal para ubicación final del equipo sobre la mesa de trabajo. \r\n'
 	SET @PIE=@PIE+'Los envíos a provincia por intermedio de agencia corren a cuenta y riesgo del cliente, AHSECO PERÚ S.A. no se hace responsable cualquier problema que resulte del envío.'
 
+
+	SELECT @NUMITEMS=COUNT(1)
+				FROM TBD_COTIZACIONVENTA WITH(NOLOCK)
+				WHERE ID_COTIZACION =@COD_COTIZACION AND TIPOITEM='PROD';
+
+
 	--DATOS A MOSTRAR CABECERA
 	SELECT @RUTAIMAGEN RUTAIMAGEN,
 				  @NUM_COTIZACION  NUM_COTIZACION,
@@ -99,7 +105,8 @@ BEGIN
 				  @PIE PIE,
 				  'S/. 60.00' SUBTOTAL,
 				  'S/. 10.80' IGV,
-				  'S/. 70.80' TOTAL
+				  'S/. 70.80' TOTAL,
+				  @NUMITEMS NUMITEMS
 
 
 				SELECT NROITEM,
