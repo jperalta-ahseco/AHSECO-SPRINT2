@@ -2,6 +2,8 @@
     ViewBag.Title = "Asignación de Técnicos";
 }
 
+<input hidden id="hdnIdProduct"/>
+
 <div class="modal-dialog modal-lg container-fluid" role="document">
     <!-- Modal content -->
     <div class="modal-content" id="modalContent">
@@ -10,43 +12,60 @@
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
-            <h4 class="modal-title" id="tituloModal">@ViewBag.Title</h4>
+            <h4 class="modal-title" id="tituloModal"><i class="fa fa-handshake-o" aria-hidden="true"></i> @ViewBag.Title</h4>
         </div>
         <!-- Modal content body -->
         <div class="modal-body d-flex justify-content-center" align-items-center>
             <form id="formRegistro" class="d-flex flex-row">
                 <div class="row container-fluid d-flex justify-content-center">
-                    <div class="row container-fluid">
-                    </div>
-                    <div class="row container-fluid">
-                    </div>
                     <div class="text-right">
-                        <button class="btn btn-primary btn-sm" type="button" id="btnBuscarContactos"><i class="fa fa-search"></i> Buscar</button>
-                        <span id="hidden_fields"></span>
-                        <button class="btn btn-primary btn-sm" type="button" id="btnAñadir" data-toggle="modal" data-target="#modalModificarContacto"><i class="fa fa-plus"></i> Agregar Contacto</button>
-                        <button class="btn btn-success btn-sm" type="button" id="btnLimpiarTodo"><i class="fa fa-trash-o" aria-hidden="true"></i>Limpiar Todo</button>
+                        <button class="btn btn-primary btn-sm" type="button" id="btnRegistrarTecnico"><i class="fa fa-handshake-o"></i> Asignar</button>
+                        <button class="btn btn-default btn-sm" type="button" id="btnEditarTecnico"><i class="fa fa-pencil"></i> Editar</button>
                     </div>
-                    <br />
-                    <div class="table-responsive">
-                        <table id="tblContactos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
-                            <thead>
-                                <tr>
-                                    <th>Id</th>
-                                    <th style="text-align: center; width:20%">Tip. de Doc.</th>
-                                    <th style="text-align: center; width:20%">N&uacute;m. de Doc.</th>
-                                    <th style="text-align: center; width:20%">Nombres y Apellidos</th>
-                                    <th style="text-align: center; width: 20%; padding-bottom: 20px;">Establecimiento</th>
-                                    <th style="text-align: center; width: 20%; padding-bottom: 20px;">Area Contacto</th>
-                                    <th style="text-align: center; width:20%">Tel&eacute;fono 1</th>
-                                    <th style="text-align: center; width:20%">Tel&eacute;fono 2</th>
-                                    <th style="text-align: center; width: 20%; padding-bottom: 20px;">Cargo</th>
-                                    <th style="text-align: center; width: 20%; padding-bottom: 20px;">Correo</th>
-                                    <th style="text-align: center; width: 20%; padding-bottom: 20px;">Estado</th>
-                                    <th style="padding-bottom: 20px;"><center>Acciones</center></th>
-                                </tr>
-                            </thead>
-                            <tbody id="contenidoTabla"></tbody>
-                        </table>
+                    <div class="row container-fluid">
+                        <div class="col-md-6 col-sm-12">
+                            <label for="txtNombreTecnico">Nombre Completo: </label>
+                            <div class="form-group">
+                                <div class="input-group input-group-sm date">
+                                    <input type="text" class="form-control input-sm" id="txtNombreTecnico" value="" placeholder="--Ingrese Nombre del Técnico--" aria-describedby="sizing-addon3" disabled="disabled" />
+                                    <span style="cursor:pointer" class="input-group-addon input-sm" id="searchTecnico" title="Buscar Tecnico" data-toggle="modal" data-target="#modalTecnicos">
+                                        <i class="fa fa-search"></i>
+                                    </span>
+                                    <span style="cursor:pointer" class="input-group-addon input-sm" id="agregarTecnico" title="Agregar Tecnico" data-toggle="modal">
+                                        <i class="fa fa-plus"></i>
+                                    </span>
+                                    <input type="hidden" id="txtCodTecnico" value="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="col-md-6 col-sm-12">
+                            <label for="txtDNI">D.N.I: </label>
+                            <div class="form-group">
+                                <input placeholder="--Ingresar DNI---" disabled type="text" class="form-control input-sm" id="txtDNI" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <label for="txtTelefono">Tel&eacute;fono:</label>
+                            <div class="form-group">
+                                <input placeholder="--Ingresar Teléfono---" disabled type="text" class="form-control input-sm" id="txtTelefono" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="col-md-6 col-sm-12">
+                            <label for="txtCorreo">Correo: </label>
+                            <div class="form-group">
+                                <input placeholder="--Ingresar Correo---" disabled type="text" class="form-control input-sm" id="txtCorreo" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <label for="txtZona">Zona: </label>
+                            <div class="form-group">
+                                <input placeholder="--Ingresar Zona---" disabled type="text" class="form-control input-sm" id="txtZona" value="">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <br />

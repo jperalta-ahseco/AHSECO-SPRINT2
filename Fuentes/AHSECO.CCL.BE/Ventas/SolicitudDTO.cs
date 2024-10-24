@@ -15,6 +15,7 @@ namespace AHSECO.CCL.BE.Ventas
         public string NomTipoSol { get; set; }
         public string Cod_MedioCont { get; set; }
         public int IdCliente { get; set; }
+        public string Ubigeo { get; set; }
         public string RUC { get; set; }
         public string RazonSocial { get; set; }
         public string AsesorVenta { get; set; }
@@ -23,5 +24,6 @@ namespace AHSECO.CCL.BE.Ventas
         public string nomEstado { get; set; }
         public string abrevEstado { get; set; }
         public string Cod_Empresa { get; set; }
+        public  string Nom_Empresa { get; set; }
     }
 }

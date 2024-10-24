@@ -90,7 +90,10 @@
             var filters = {};
             filters.placeholder = "-- Todos --";
             filters.allowClear = false;
-            app.llenarCombo($cmbVendedor, resultado, null, 0, "-- Todos --", filters);
+            //app.llenarCombo($cmbVendedor, resultado, null, 0, "-- Todos --", filters);
+            //app.llenarComboMultiResult($cmbVendedor, resultado)
+            app.llenarComboMultiResult($cmbVendedor, resultado, null, 0, "-- Todos --", filters);
+
         }
         app.llamarAjax(method, url, objParams, fnDoneCallback, null, null, null);
     }

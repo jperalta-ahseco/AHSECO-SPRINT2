@@ -8,7 +8,21 @@
     var $btnRegresar = $('#btnRegresar');
     var $lblUsuarioCreacionObservacion = $('#lblUsuarioCreacionObservacion');
     var $lblFechaCreacionObservacion = $('#lblFechaCreacionObservacion');
-    var $btnRegistrar = $('#btnRegistrar');
+    var $btnRegistrarReq = $('#btnRegistrarReq');
+    var $txtSolVenta = $('#txtSolVenta');
+    var $txtEmpresa = $('#txtEmpresa');
+    var $txtTipVenta = $('#txtTipVenta');
+    var $txtRuc = $('#txtRuc');
+    var $txtNomEmpresa = $('#txtNomEmpresa');
+    var $txtUbigeo = $('#txtUbigeo');
+    var $txtAsesor = $('#txtAsesor');
+    var $cmbDestino = $('#cmbDestino');
+    var $dateSolicitud = $('#dateSolicitud');
+    var $openRegdateSolicitud = $('#openRegdateSolicitud');
+    var $tblMainProducts = $('#tblMainProducts');
+    var $hdnIdProduct = $('#hdnIdProduct');
+
+
     var $searchSolVenta = $('#searchSolVenta'); 
     var mensajes = {
         procesandoUbigeo: "Cargando Ubigeo, por favor espere...."
@@ -17,6 +31,8 @@
     /*Modales*/
     var $modalObservacion = $('#modalObservacion');
     var $modalCargaDocumento = $('#modalCargaDocumento');
+    var $modalSolicitud = $('#modalSolicitud');
+    var $modalAsignacion = $('#modalAsignacion');
     $(Initializer);
 
     /*Modales Observacion*/
@@ -48,19 +64,106 @@
     var $txtSolicitud = $('#txtSolicitud');
     var $cmbClienteSol = $('#cmbClienteSol');
 
+
+    /*Modal Tecnicos*/
+    var $agregarTecnico = $('#agregarTecnico');
+    var $btnRegistrarTecnico = $('#btnRegistrarTecnico');
+    var $btnEditarTecnico = $('#btnEditarTecnico');
+    var $searchTecnico = $('#searchTecnico');
+    var $txtNombreTecnico = $('#txtNombreTecnico');
+    var $txtCodTecnico = $('#txtCodTecnico');
+    var $txtDNI = $('#txtDNI');
+    var $txtTelefono = $('#txtTelefono');
+    var $txtCorreo = $('#txtCorreo');
+    var $txtZona = $('#txtZona');
+
+    let productos = [];
+    let destinos_select = [];
+    let observaciones = []
     function Initializer() {
         ObtenerFiltrosInstalacion();
+        Promise.all([ObtenerDepartamentos()]).then(() => {
+            if ($estadoReq.val() != "") {
+                $cmbDestino.val(destinos_select).trigger("change.select2");
+            };
+        }).catch((error) => {
+            app.message.error("Error", "No se cargaron los datos de listados de la bandeja.");
+        });
+
+        //ObtenerDepartamentos();
         $btnRegresar.click(btnRegresarClick);
+        $openRegdateSolicitud.click($openRegdateSolicitud_click);
+        $dateSolicitud.datepicker({
+            viewMode: 0,
+            minViewMode: 0,
+            format: 'dd/mm/yyyy'
+        });
+        //$dateSolicitud.datepicker().on("changeDate", changeDateFechaInicialRegFecIni);
         registroInstalacionTec.contadorObservaciones = 0;
         registroInstalacionTec.observaciones = [];
         $btnAgregarObservacion.click($modalObservacionClick);
         $btnGuardarObservacionReq.click(GuardarObservacionReqClick);
         $btnAgregarDocumento.click($modalCargaDocumentoClick);
         $btnCargarDocumento.click($btnCargarDocumento_click);
-        $btnRegistrar.click(RegistrarRequerimiento);
+        $btnRegistrarReq.click(RegistrarRequerimiento);
         $btnBuscarSolicitud.click(BuscarSolicitudes);
         $searchSolVenta.click(BuscarSolicitudes);
+        $agregarTecnico.click(AgregarTecnicoExterno);
+        $dateSolicitud.val(hoy());
         CargarTipoDocumento(4); //Cambiar a tipo de proceso Instalación Técnica.
+    };
+
+    function $openRegdateSolicitud_click() {
+        $dateSolicitud.focus();
+    };
+
+    function RegistrarRequerimiento() {
+        if ($txtSolVenta.val() == "" || $txtSolVenta.val() == null || isNaN($txtSolVenta.val()) || $txtSolVenta.val().trim().length == 0) {
+            app.message.error("Validación", "Debe de seleccionar la solicitud de venta.")
+            return;
+        };
+        if ($txtEmpresa.val() == "" || $txtEmpresa.val() == null  || $txtEmpresa.val().trim().length == 0) {
+            app.message.error("Validación", "El nombre de empresa está vacío, seleccione nuevamente la solicitud de venta.")
+            return;
+        };
+        if ($txtTipVenta.val() == "" || $txtTipVenta.val() == null  || $txtTipVenta.val().trim().length == 0) {
+            app.message.error("Validación", "El campo tipo de venta está vacío, seleccione nuevamente la solicitud de venta.")
+            return;
+        };
+        if ($txtRuc.val() == "" || $txtRuc.val() == null || isNaN($txtRuc.val()) || $txtRuc.val().trim().length == 0) {
+            app.message.error("Validación", "El campo RUC está vacío, seleccione nuevamente la solicitud de venta.")
+            return;
+        };
+        if ($txtNomEmpresa.val() == "" || $txtNomEmpresa.val() == null || $txtNomEmpresa.val().trim().length == 0) {
+            app.message.error("Validación", "El campo Empresa está vacío, seleccione nuevamente la solicitud de venta.")
+            return;
+        };
+        if ($txtUbigeo.val() == "" || $txtUbigeo.val() == null || $txtUbigeo.val().trim().length == 0) {
+            app.message.error("Validación", "El campo del Ubigeo está vacío, seleccione nuevamente la solicitud de venta.")
+            return;
+        };
+        if (destinos_select == null) {
+            app.message.error("Validación", "Debe de seleccionar por lo menos un destino.")
+            return;
+        };
+        if (destinos_select.length == 0 || destinos_select == null) {
+            app.message.error("Validación", "Debe de seleccionar por lo menos un destino.")
+            return;
+        };
+        if ($dateSolicitud.val() == "" || $dateSolicitud.val() == null || $dateSolicitud.val().trim().length == 0) {
+            app.message.error("Validación", "Debe de ingresar la fecha máxima de la solicitud.")
+            return;
+        };
+        /*
+        if ($txtRuc.val() == "" || $txtRuc.val() == null || isNaN($txtRuc.val()) || $txtRuc.val().trim().length == 0) {
+
+        };
+        if ($txtRuc.val() == "" || $txtRuc.val() == null || isNaN($txtRuc.val()) || $txtRuc.val().trim().length == 0) {
+
+        };*/
+        var method = "POST";
+        var url = ""
+
     };
 
     function BuscarSolicitudes() {
@@ -74,25 +177,171 @@
         objBuscar = {
             IdCliente: $cmbClienteSol.val() == "" || $cmbClienteSol.val() == 0 ? 0 : $cmbClienteSol.val(),
             Id_Solicitud: $txtSolicitud.val() == "" || $txtSolicitud.val() == 0 ? 0 : $txtSolicitud.val(),
-            Estado: 'SREG', //Cambiar estado según lo requieran
+            Estado: 'REG', //Cambiar estado según lo requieran
             Tipo_Sol: "TSOL05"
         };
 
         objParam = JSON.stringify(objBuscar);
 
         var fnDoneCallBack = function (data) {
-
             cargarTablaSolicitudes(data);
-        }
+        };
 
         var fnFailCallBack = function () {
-        }
+        };
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null)
     };
 
     function seleccionarSolicitud(id) {
-        
+        method = "POST";
+        url = "BandejaInstalacionTecnica/ObtenerDetalleSolicitud"
+        objBuscar = {
+            id: id
+        };
+
+        objParam = JSON.stringify(objBuscar);
+
+        var fnDoneCallBack = function (data) {
+            cargarCabecera(data.Result.Solicitud)
+            cargarBandejaProductos(data.Result.DetalleCotizacion)
+            $modalSolicitud.modal('toggle');
+            $cmbDestino.prop('disabled', false);
+            $dateSolicitud.prop('disabled', false);
+        };
+
+        var fnFailCallBack = function () {
+            app.message.error("Validación", "Error al obtener el detalle de la solicitud");
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null)
+    };
+
+    function cargarCabecera(solicitud) {
+        $txtSolVenta.val(solicitud.Id_Solicitud);
+        $txtEmpresa.val(solicitud.Nom_Empresa);
+        $txtTipVenta.val(solicitud.nomFlujo);
+        $txtRuc.val(solicitud.RUC);
+        $txtNomEmpresa.val(solicitud.RazonSocial);
+        $txtUbigeo.val(solicitud.Ubigeo);
+        $txtAsesor.val(solicitud.AsesorVenta);
+    };
+
+    function ObtenerDepartamentos() {
+        var method = "POST";
+        var url = "Ubigeo/ObtenerUbigeo";
+        var ubigeoObj = {}
+
+        var objParam = JSON.stringify(ubigeoObj);
+        var fnDoneCallback = function (data) {
+
+            var resultado = { Result: [] };
+
+            for (let i = 0; i < data.Result.length; i++) {
+                var departamento = {
+                    Id: data.Result[i].CodDepartamento,
+                    Text: data.Result[i].NombreDepartamento,
+                }
+                resultado.Result.push(departamento);
+            }
+
+            resultado.Result = resultado.Result.reduce((acumulador, itemActual) => {
+                // Verificar si el Id ya está en el acumulador
+                if (!acumulador.some(item => item.Id === itemActual.Id)) {
+                    acumulador.push(itemActual);
+                }
+                return acumulador;
+            }, []);
+
+            var filters = {};
+            filters.placeholder = "-- Seleccione --";
+            filters.allowClear = true;
+            llenarComboMultiCheck($cmbDestino, resultado, null, "00", "<--Todos-->", filters);
+        }
+        var fnFailCallback = function () {
+            app.mensajes.error("Error", "No se ejecutó correctamente la carga de departamentos")
+        }
+        return app.llamarAjax(method, url, objParam, fnDoneCallback, fnFailCallback, null, mensajes.procesandoUbigeo)
+
+    }
+
+    function llenarComboMultiCheck(selector, data) {
+        selector.select2({
+            placeholder: " Seleccionar Destinos",
+            allowClear: true,
+            data: $.map(data.Result, function (obj, i) {
+                if (obj.Id != null && obj.Text != null) {
+                    return {
+                        id: obj.Id,
+                        text: obj.Text
+                    };
+                } else {
+                    return null;
+                }
+            })
+        });
+        selector.on('change', function () {
+            destinos_select = $(this).val();
+        });
+    };
+
+    function cargarBandejaProductos(detalleProductos) {
+        productos = detalleProductos;
+        var data = {}
+        data.Result = [];
+        data.Result = detalleProductos;
+        var columns = [
+            {
+                data: "Id",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "Descripcion",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }   
+            },
+            {
+                data: "Cantidad",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            }
+        ];
+
+        var columnDefs = [
+            {
+                targets: [0],
+                visible: false
+            }
+        ];
+
+
+        var rowCallback = function (row, data, index) {
+            // Asignar un ID único basado en el índice de datos o algún identificador único
+            //function visualizar() {
+            //    console.log("hola");
+            //};
+
+            $(row).attr('id', 'row' + index);
+            //$(row).attr('onclick', 'visualizar()');
+        };
+
+        app.llenarTabla($tblMainProducts, data, columns, columnDefs, "#tblMainProducts", rowCallback);
+    };
+
+    function AgregarTecnicoExterno() {
+        $txtNombreTecnico.prop('disabled',false)
+        $txtDNI.prop('disabled',false)
+        $txtTelefono.prop('disabled',false)
+        $txtCorreo.prop('disabled',false)
+        $txtZona.prop('disabled',false)
+    };
+    function asignarTecnico(id) {
+        $modalAsignacion.modal('toggle');
+        $hdnIdProduct.val(id);
     };
     function ObtenerFiltrosInstalacion() {
         method = "POST";
@@ -130,9 +379,6 @@
         }
     };
 
-    function RegistrarRequerimiento() {
-
-    };
     function $btnCargarDocumento_click() {
         if ($cmbTipoDocumentoCarga.val() == 0 || $cmbTipoDocumentoCarga.val() == "" || $cmbTipoDocumentoCarga.val() == null) {
             app.message.error('Validación', 'Debe seleccionar el tipo de documento', 'Aceptar', null);
@@ -211,8 +457,8 @@
                                 }
                             );
                             var html = '<div class="text-center">';
-                            html += ' <a class="btn btn-default btn-xs" title="Eliminar"  href="javascript:solicitud.eliminarDocumento(' + data.Result.Codigo + ')"><i class="fa fa-ban" aria-hidden="true"></i></a>';
-                            html += ' <a class="btn btn-default btn-xs" title="Descargar"  href="javascript:solicitud.download(' + data.Result.Codigo + ')"><i class="fa fa-download" aria-hidden="true"></i></a>&nbsp;';
+                            html += ' <a class="btn btn-default btn-xs" title="Eliminar"  href="javascript:registroInstalacionTec.eliminarDocumento(' + data.Result.Codigo + ')"><i class="fa fa-ban" aria-hidden="true"></i></a>';
+                            html += ' <a class="btn btn-default btn-xs" title="Descargar"  href="javascript:registroInstalacionTec.download(' + data.Result.Codigo + ')"><i class="fa fa-download" aria-hidden="true"></i></a>&nbsp;';
                             html += '</div>';
 
 
@@ -253,7 +499,7 @@
                     });
 
                     var html = '<div class="text-center">';
-                    html += ' <a class="btn btn-default btn-xs" title="Eliminar"  href="javascript:solicitud.eliminarDocTemp(' + cont + ')"><i class="fa fa-ban" aria-hidden="true"></i></a>';
+                    html += ' <a class="btn btn-default btn-xs" title="Eliminar"  href="javascript:registroInstalacionTec.eliminarDocTemp(' + cont + ')"><i class="fa fa-ban" aria-hidden="true"></i></a>';
                     html += '</div>';
 
 
@@ -310,9 +556,9 @@
             var fnDoneCallBack = function () {
                 app.message.success("Ventas", "Se realizó el registro de la observación correctamente.");
 
-                solicitud.contadorObservaciones += 1;
+                registroInstalacionTec.contadorObservaciones += 1;
 
-                solicitud.observaciones.push(
+                registroInstalacionTec.observaciones.push(
                     {
                         TipoProceso: "I",
                         Observacion: $txtObservacion.val(),
@@ -321,13 +567,13 @@
                         Estado_Instancia: $estadoReq.val
                     }
                 );
-                var nuevoTr = "<tr id=row" + solicitud.contadorObservaciones + ">" +
+                var nuevoTr = "<tr id=row" + registroInstalacionTec.contadorObservaciones + ">" +
                     "<th style='text-align: center;'>" + $nombreusuario.val() + "</th>" +
                     "<th style='text-align: center;'>" + $perfilnombre.val() + "</th>" +
                     "<th style='text-align: center;'>" + hoy() + "</th>" +
                     "<th style='text-align: center;'>" + objObservacion.Observacion + "</th>" +
                     "<th style='text-align: center;'>" +
-                    "<a id='btnEliminarObs' class='btn btn-default btn-xs' title='Eliminar' href='javascript: solicitud.eliminarObsTmp(" + solicitud.contadorObservaciones + ")' > <i class='fa fa-trash' aria-hidden='true'></i></a>" +
+                    "<a id='btnEliminarObs' class='btn btn-default btn-xs' title='Eliminar' href='javascript: registroInstalacionTec.eliminarObsTmp(" + registroInstalacionTec.contadorObservaciones + ")' > <i class='fa fa-trash' aria-hidden='true'></i></a>" +
                     "</th> " +
                     "</tr>";
                 $tblObservaciones.append(nuevoTr);
@@ -341,9 +587,9 @@
             app.llamarAjax(method, url, objParamObs, fnDoneCallBack, fnFailCallBack, null, mensajes.guardandoObservacion);
         }
         else {
-            solicitud.contadorObservaciones += 1;
+            registroInstalacionTec.contadorObservaciones += 1;
 
-            solicitud.observaciones.push({
+            registroInstalacionTec.observaciones.push({
                 //Id_WorkFlow: $codigoWorkflow.val(),
                 TipoProceso: "I",
                 Estado_Instancia: "REG",
@@ -351,13 +597,13 @@
                 Nombre_Usuario: $nombreusuario.val(),
                 Perfil_Usuario: $perfilnombre.val()
             })
-            var nuevoTr = "<tr id=row" + solicitud.contadorObservaciones + ">" +
+            var nuevoTr = "<tr id=row" + registroInstalacionTec.contadorObservaciones + ">" +
                 "<th style='text-align: center;'>" + $nombreusuario.val() + "</th>" +
                 "<th style='text-align: center;'>" + $perfilnombre.val() + "</th>" +
                 "<th style='text-align: center;'>" + hoy() + "</th>" +
                 "<th style='text-align: center;'>" + $txtObservacion.val() + "</th>" +
                 "<th style='text-align: center;'>" +
-                "<a id='btnEliminarObs' class='btn btn-default btn-xs' title='Eliminar' href='javascript: solicitud.eliminarObsTmp(" + solicitud.contadorObservaciones + ")' ><i class='fa fa-trash' aria-hidden='true'></i></a>" +
+                "<a id='btnEliminarObs' class='btn btn-default btn-xs' title='Eliminar' href='javascript: registroInstalacionTec.eliminarObsTmp(" + registroInstalacionTec.contadorObservaciones + ")' ><i class='fa fa-trash' aria-hidden='true'></i></a>" +
                 "</th> " +
                 "</tr>";
             $tblObservaciones.append(nuevoTr);
@@ -383,13 +629,13 @@
     function eliminarObsTmp(idObs) {
         var fnSi = function () {
 
-            solicitud.contadorObservaciones -= 1
+            registroInstalacionTec.contadorObservaciones -= 1
 
-            solicitud.observaciones = solicitud.observaciones.filter(observacion => observacion.Id !== Number(idObs));
+            registroInstalacionTec.observaciones = registroInstalacionTec.observaciones.filter(observacion => observacion.Id !== Number(idObs));
 
             $("#row" + idObs).remove();
 
-            if (solicitud.contadorObservaciones == 0) {
+            if (registroInstalacionTec.contadorObservaciones == 0) {
                 $NoExisteRegObs.show();
             };
 
@@ -502,8 +748,7 @@
             {
                 data: "Id_Solicitud",
                 render: function (data, type, row) {
-                    var detalle = "'" + row.Id_WorkFlow + "','" + row.Id_Solicitud + "','" + row.nomEstado + "','" + row.Tipo_Sol + "','" + row.Id_Flujo + "'";
-                    var seleccionar = '<a id="btnSeleccionar" class="btn btn-primary btn-xs" title="Seleccionar" href="javascript: bandejaSolicitudes.seleccionarSolicitud(' + detalle + ')"><i class="fa fa-plus" aria-hidden="true"></i> Seleccionar</a>';
+                    var seleccionar = '<a id="btnSeleccionar" class="btn btn-primary btn-xs" title="Seleccionar" href="javascript: registroInstalacionTec.seleccionarSolicitud(' + row.Id_Solicitud + ')"><i class="fa fa-plus" aria-hidden="true"></i> Seleccionar</a>';
                     return '<center>' + seleccionar + '</center>';
                 }
             }
@@ -526,9 +771,12 @@
 
 
     return {
+        //visualizar: visualizar,
         eliminarObsTmp: eliminarObsTmp,
         eliminarDocumento: eliminarDocumento,
         download: download,
-        seleccionarSolicitud: seleccionarSolicitud
+        seleccionarSolicitud: seleccionarSolicitud,
+        asignarTecnico: asignarTecnico
+
     }
 })(window.jQuery, window, document);

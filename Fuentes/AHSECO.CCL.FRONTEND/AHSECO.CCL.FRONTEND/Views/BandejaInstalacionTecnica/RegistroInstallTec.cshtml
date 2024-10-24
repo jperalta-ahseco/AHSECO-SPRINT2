@@ -4,9 +4,9 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<input hidden id="numeroReq" value=""/>
-<input hidden id="codigoWorkflow" value=""/>
-<input hidden id="estadoReq" value=""/>
+<input hidden id="numeroReq" value="" />
+<input hidden id="codigoWorkflow" value="" />
+<input hidden id="estadoReq" value="" />
 
 <div class="container-fluid">
     <h4><i class="fa fa-wrench" aria-hidden="true"></i> @ViewBag.Title</h4>
@@ -75,7 +75,7 @@
                         <div class="col-md-4 col-sm-12">
                             <label for="cmbDestino">Destino :</label>
                             <div class="form-group">
-                                <select disabled class="form-control select2 input-sm" style="width:100%;" id="cmbDestino" data-selected="">
+                                <select multiple disabled class="form-control select2 input-sm" style="width:100%;" id="cmbDestino" data-selected="">
                                 </select>
                             </div>
                         </div>
@@ -120,7 +120,7 @@
                     <br />
                     <div class="row container-fluid">
                         <div class="text-right">
-                            <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnRegistrar" tabindex="14"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Registrar</button>
+                            <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnRegistrarReq" tabindex="14"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Registrar</button>
                             <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegresar" tabindex="14"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Regresar</button>
                         </div>
                     </div>
@@ -143,25 +143,19 @@
                     <div id="navDetalleSolicitud" class="tab-pane fade in active">
                         <div class="panel-group" id="accordion7401210" role="tablist" aria-multiselectable="false">
                             <div class="box-content">
-                                <table id="tblMainProducts" class="table table-hover table-condensed table-striped table-bordered" width="100%">
-                                    <thead>
-                                        <tr>
-                                            <th>Id</th>
-                                            <th style="text-align: center; width:5%;">Cantidad</th>
-                                            <th style="text-align: center; width:10%;">Descripci&oacute;n</th>
-                                            <th style="text-align: center; width:10%;">Modelo</th>
-                                            <th style="text-align: center; width:10%;">Serie</th>
-                                            <th style="text-align: center; width:10%;">Acci&oacute;n</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr id="NoRegMainProd"><td colspan="9"><center>No existen productos añadidos</center></td></tr>
-                                    </tbody>
-                                </table>
-                                <div class="row container-fluid">
-                                    <div class="text-right">
-                                        <button class="btn btn-default btn-sm" type="button" id=""><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Editar</button><!--Controlar por estado de la solicitud.-->
-                                    </div>
+                                <div class="table-responsive">
+                                    <table id="tblMainProducts" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                        <thead>
+                                            <tr>
+                                                @for (var i = 0; i < @ViewBag.cabecera.Length; i++)
+                                                {
+                                                    <th style="text-align:center; width:5%">@ViewBag.cabecera[i]</th>
+                                                }
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -187,10 +181,18 @@
     </div>
 </div>
 
-
 @{
     Html.RenderPartial("~/Views/Modelos/_Modales.cshtml");
 }
+
+
+
+<div class="modal fade" id="modalAsignacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_AsignacionTecnico");
+    }
+</div>
+
 
 <div class="modal fade" id="modalSolicitud" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     @{
