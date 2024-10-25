@@ -294,8 +294,8 @@
         objParam ='';
 
         var fnDoneCallBack = function (data) {
-            //app.abrirVentana("BandejaViatico/ExportarFile?url=" + data.Archivo);
-            //app.message.success("Viáticos", "Se generó el documento correctamente.")
+            app.abrirVentana("BandejaHistorialCotizacion/ExportarFile?nombreDoc=" + data.Archivo);
+            app.message.success("Ventas", "Se generó la cotización correctamente.")
         }
         var fnFailCallBack = function () {
 

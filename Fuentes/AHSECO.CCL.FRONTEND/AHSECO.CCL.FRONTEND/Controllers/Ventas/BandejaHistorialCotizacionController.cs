@@ -11,6 +11,8 @@ using Microsoft.Office.Interop.Word;
 using NPOI.Util;
 using System.Runtime.InteropServices;
 using System.Configuration;
+using System.IO;
+using System.Web;
 
 
 namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
@@ -611,8 +613,19 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             return Json(new
             {
                 Status = 1,
-                Archivo = ruta_file
+                Archivo = nombre
             });
+        }
+
+        public FileResult ExportarFile(string nombreDoc)
+        {
+            string url = ConfigurationManager.AppSettings.Get("RutaCotizacionVenta");
+            string ruta = url + nombreDoc;
+
+            var fileName = Path.GetFileName(nombreDoc);
+            var contentType = MimeMapping.GetMimeMapping(fileName); //determina el tipo de documento que se envía. 
+
+            return File(ruta, contentType, nombreDoc);
         }
 
 

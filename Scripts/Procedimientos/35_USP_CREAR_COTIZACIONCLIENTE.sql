@@ -59,8 +59,10 @@ SET NOCOUNT ON;
 	SET  @NUM_COTIZACION= 'PC'+RIGHT('0000000'+CAST(@COD_COTIZACION AS VARCHAR),7)
 
 	SET @ENCABEZADO='R.U.C.: 20100162238'+ CHAR(13) + CHAR(10) 
-	SET @ENCABEZADO=@ENCABEZADO+'Av. Máximo Abril N°524 Urb. Santa Beatriz\r\nJesús María – Lima'+ CHAR(13) + CHAR(10) 
-	SET @ENCABEZADO=@ENCABEZADO+'Sucursal: Av. Arenales N°500 – Jesús María - Lima\r\nTeléfono: (511) 433 7227 / 433 6372'+ CHAR(13) + CHAR(10) 
+	SET @ENCABEZADO=@ENCABEZADO+'Av. Máximo Abril N°524 Urb. Santa Beatriz'+ CHAR(13) + CHAR(10) 
+	SET @ENCABEZADO=@ENCABEZADO+'Jesús María – Lima'+ CHAR(13) + CHAR(10) 
+	SET @ENCABEZADO=@ENCABEZADO+'Sucursal: Av. Arenales N°500 – Jesús María - Lima'+ CHAR(13) + CHAR(10) 
+	SET @ENCABEZADO=@ENCABEZADO+'Teléfono: (511) 433 7227 / 433 6372'+ CHAR(13) + CHAR(10) 
 	SET @ENCABEZADO=@ENCABEZADO+'Email: ventas@ahsecoperu.com / www.ahsecoperu.com.pe';
 
 	SET @OBSERVACION='Precios Incluyen IGV.'
