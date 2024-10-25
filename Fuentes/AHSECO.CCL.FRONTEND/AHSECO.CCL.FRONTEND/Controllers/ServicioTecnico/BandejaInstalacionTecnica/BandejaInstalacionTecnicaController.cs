@@ -79,34 +79,34 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
                 grupoInstalacionTecnicaDTO.CabeceraInstalacion.UsuarioRegistra = User.ObtenerUsuario();
 
                 //Registra Main Solicitudes
-                var mainSolicitudes = instalacionTecnicaBL.MantenimientoSolicitudes(solicitudVentaGrupoDTO.Solicitud);
+                //var mainSolicitudes = instalacionTecnicaBL.MantenimientoSolicitudes(solicitudVentaGrupoDTO.Solicitud);
 
-                //Registra documentos
-                if (solicitudVentaGrupoDTO.Adjuntos != null)
-                {
-                    foreach (var documento in solicitudVentaGrupoDTO.Adjuntos)
-                    {
-                        documento.Accion = "I";
-                        documento.CodigoWorkFlow = rpta.Result;
-                        documento.NombreUsuario = User.ObtenerNombresCompletos();
-                        documento.NombrePerfil = User.ObtenerPerfil();
-                        documento.UsuarioRegistra = User.ObtenerUsuario();
-                        documentosBL.MantenimientoDocumentos(documento);
-                    };
-                };
+                ////Registra documentos
+                //if (solicitudVentaGrupoDTO.Adjuntos != null)
+                //{
+                //    foreach (var documento in solicitudVentaGrupoDTO.Adjuntos)
+                //    {
+                //        documento.Accion = "I";
+                //        documento.CodigoWorkFlow = rpta.Result;
+                //        documento.NombreUsuario = User.ObtenerNombresCompletos();
+                //        documento.NombrePerfil = User.ObtenerPerfil();
+                //        documento.UsuarioRegistra = User.ObtenerUsuario();
+                //        documentosBL.MantenimientoDocumentos(documento);
+                //    };
+                //};
 
-                if (solicitudVentaGrupoDTO.Observaciones != null)
-                {
-                    foreach (var observacion in solicitudVentaGrupoDTO.Observaciones)
-                    {
-                        observacion.Id_WorkFlow = rpta.Result;
-                        observacion.Nombre_Usuario = User.ObtenerUsuario();
-                        observacion.UsuarioRegistra = User.ObtenerUsuario();
-                        observacion.Perfil_Usuario = User.ObtenerPerfil();
+                //if (solicitudVentaGrupoDTO.Observaciones != null)
+                //{
+                //    foreach (var observacion in solicitudVentaGrupoDTO.Observaciones)
+                //    {
+                //        observacion.Id_WorkFlow = rpta.Result;
+                //        observacion.Nombre_Usuario = User.ObtenerUsuario();
+                //        observacion.UsuarioRegistra = User.ObtenerUsuario();
+                //        observacion.Perfil_Usuario = User.ObtenerPerfil();
 
-                        var resultObservacion = ventasBL.MantenimientoObservaciones(observacion);
-                    };
-                };
+                //        var resultObservacion = ventasBL.MantenimientoObservaciones(observacion);
+                //    };
+                //};
 
                 //Se realiza el registro de seguimiento de workflow:
                 var log = new FiltroWorkflowLogDTO();
@@ -123,10 +123,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
                     Status = 1,
                     Solicitud = new SolicitudDTO()
                     {
-                        Id_Solicitud = mainSolicitudes.Result.Codigo,
-                        Estado = solicitudVentaGrupoDTO.Solicitud.Estado,
-                        Tipo_Sol = solicitudVentaGrupoDTO.Solicitud.Tipo_Sol,
-                        Id_Flujo = solicitudVentaGrupoDTO.Solicitud.Id_Flujo,
+                        //Id_Solicitud = mainSolicitudes.Result.Codigo,
+                        //Estado = solicitudVentaGrupoDTO.Solicitud.Estado,
+                        //Tipo_Sol = solicitudVentaGrupoDTO.Solicitud.Tipo_Sol,
+                        //Id_Flujo = solicitudVentaGrupoDTO.Solicitud.Id_Flujo,
                         Id_WorkFlow = rpta.Result
                     }
                 });

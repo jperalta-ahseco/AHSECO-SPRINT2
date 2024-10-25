@@ -331,22 +331,22 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                     };
                     reader.NextResult();
 
-                    List<CotizacionDetalleDTO> _detalleCotizacion = new List<CotizacionDetalleDTO>();
-                    while (reader.Read())
-                    {
-                        var cotDetalle = new CotizacionDetalleDTO()
-                        {
-                            Id = reader.IsDBNull(reader.GetOrdinal("ID")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID")),
-                            NroItem = reader.IsDBNull(reader.GetOrdinal("NROITEM")) ? 0 : reader.GetInt32(reader.GetOrdinal("NROITEM")),
-                            TipoItem = reader.IsDBNull(reader.GetOrdinal("TIPOITEM")) ? "" : reader.GetString(reader.GetOrdinal("TIPOITEM")),
-                            Cantidad = reader.IsDBNull(reader.GetOrdinal("CANTIDAD")) ? 0 : reader.GetInt32(reader.GetOrdinal("CANTIDAD")),
-                            Descripcion = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION")),
-                        };
-                        _detalleCotizacion.Add(cotDetalle);
-                    }
+                    //List<CotizacionDetalleDTO> _detalleCotizacion = new List<CotizacionDetalleDTO>();
+                    //while (reader.Read())
+                    //{
+                    //    var cotDetalle = new CotizacionDetalleDTO()
+                    //    {
+                    //        Id = reader.IsDBNull(reader.GetOrdinal("ID")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID")),
+                    //        NroItem = reader.IsDBNull(reader.GetOrdinal("NROITEM")) ? 0 : reader.GetInt32(reader.GetOrdinal("NROITEM")),
+                    //        TipoItem = reader.IsDBNull(reader.GetOrdinal("TIPOITEM")) ? "" : reader.GetString(reader.GetOrdinal("TIPOITEM")),
+                    //        Cantidad = reader.IsDBNull(reader.GetOrdinal("CANTIDAD")) ? 0 : reader.GetInt32(reader.GetOrdinal("CANTIDAD")),
+                    //        Descripcion = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION")),
+                    //    };
+                    //    _detalleCotizacion.Add(cotDetalle);
+                    //}
 
-                    result.Solicitud = solicitud;
-                    result.DetalleCotizacion = _detalleCotizacion;
+                    //result.Solicitud = solicitud;
+                    //result.DetalleCotizacion = _detalleCotizacion;
                     connection.Close();
                 }
                 return result;

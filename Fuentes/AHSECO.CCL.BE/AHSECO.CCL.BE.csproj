@@ -68,6 +68,10 @@
     <Compile Include="Reportes\UsuarioAuditoriaDTO.cs" />
     <Compile Include="ReportParamsDTO.cs" />
     <Compile Include="ServicioDTO.cs" />
+    <Compile Include="ServicioTecnico\BandejaInstalacionTecnica\GrupoInstalacionTecnicaDTO.cs" />
+    <Compile Include="ServicioTecnico\BandejaInstalacionTecnica\InstalacionTecnicaDetalleDTO.cs" />
+    <Compile Include="ServicioTecnico\BandejaInstalacionTecnica\InstalacionTecnicaDTO.cs" />
+    <Compile Include="ServicioTecnico\BandejaInstalacionTecnica\TecnicoInstalacionDTO.cs" />
     <Compile Include="Ventas\CotizacionDetalleDTO.cs" />
     <Compile Include="Ventas\CotizacionDTO.cs" />
     <Compile Include="Ventas\DetalleCotizacionDTO.cs" />
