@@ -79,9 +79,6 @@ SET NOCOUNT ON;
 	SET @PIE=@PIE+'Los envíos a provincia por intermedio de agencia corren a cuenta y riesgo del cliente, AHSECO PERÚ S.A. no se hace responsable cualquier problema que resulte del envío.'
 
 
-
-
-
 	--DATOS A MOSTRAR CABECERA
 	SELECT @RUTAIMAGEN RUTAIMAGEN,
 				  @NUM_COTIZACION  NUM_COTIZACION,
@@ -118,5 +115,6 @@ SET NOCOUNT ON;
 							'S/. 30.00' TOTAL 
 				FROM TBD_COTIZACIONVENTA WITH(NOLOCK)
 				WHERE ID_COTIZACION =@COD_COTIZACION AND TIPOITEM='PROD';
+
 
 END
