@@ -42,7 +42,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             // Crear una nueva aplicación de Word
             Application wordApp = new Application();
-            wordApp.Visible = true;
+            wordApp.Visible = false;
 
 
             // Crear un nuevo documento
@@ -77,7 +77,19 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     #region Encabezado
                     // Combinando celdas en la primera fila
                     table.Cell(1, 1).Merge(table.Cell(2, 2));
-                    table.Cell(1, 1).Range.Text = "Logo";
+
+                    var url1 = new Uri(HttpContext.Request.Url, Url.Content(cotizacion.Result.DocumentoCabecera.RutaImagen));
+                    var imageLogo = url1.AbsoluteUri;
+                    // Insertar la imagen
+                    InlineShape inlineShape = table.Cell(1, 1).Range.InlineShapes.AddPicture(imageLogo, LinkToFile: false, SaveWithDocument: true);
+
+                    // Opcional: Ajustar el tamaño de la imagen
+                    inlineShape.Width = 150; // Ajustar el ancho
+                    inlineShape.Height = 80; // Ajustar el alto
+
+                    // Opcional: Centrar la imagen en la celda
+                    inlineShape.Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+
                     table.Cell(1, 1).Width = 150;
 
                     table.Cell(1, 2).Merge(table.Cell(2, 4));
