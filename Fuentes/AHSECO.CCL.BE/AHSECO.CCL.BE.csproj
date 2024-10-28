@@ -75,6 +75,9 @@
     <Compile Include="Ventas\CotizacionDetalleDTO.cs" />
     <Compile Include="Ventas\CotizacionDTO.cs" />
     <Compile Include="Ventas\DetalleCotizacionDTO.cs" />
+    <Compile Include="Ventas\GuiaDTO.cs" />
+    <Compile Include="Ventas\GuiaDetDTO.cs" />
+    <Compile Include="Ventas\GuiaCabDTO.cs" />
     <Compile Include="Ventas\DocumentoCabCotizacionDTO.cs" />
     <Compile Include="Ventas\DocumentoCotizacionDTO.cs" />
     <Compile Include="Ventas\DocumentoDetCotizacionDTO.cs" />

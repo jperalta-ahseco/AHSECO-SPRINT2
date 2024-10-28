@@ -386,14 +386,14 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                             TipoItem = reader.IsDBNull(reader.GetOrdinal("TIPOITEM")) ? "" : reader.GetString(reader.GetOrdinal("TIPOITEM")),
                             Cantidad = reader.IsDBNull(reader.GetOrdinal("CANTIDAD")) ? 0 : reader.GetInt32(reader.GetOrdinal("CANTIDAD")),
                             Descripcion = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION")),
-                            Marca = reader.IsDBNull(reader.GetOrdinal("DESMARCA")) ? "" : reader.GetString(reader.GetOrdinal("DESMARCA")),
-                            Serie = reader.IsDBNull(reader.GetOrdinal("LOTESERIE")) ? "" : reader.GetString(reader.GetOrdinal("LOTESERIE")),
+                           // Marca = reader.IsDBNull(reader.GetOrdinal("DESMARCA")) ? "" : reader.GetString(reader.GetOrdinal("DESMARCA")),
+                           // Serie = reader.IsDBNull(reader.GetOrdinal("LOTESERIE")) ? "" : reader.GetString(reader.GetOrdinal("LOTESERIE")),
                         };
                         _detalleCotizacion.Add(cotDetalle);
                     }
 
                     result.Solicitud = solicitud;
-                    result.DetalleCotizacion = _detalleCotizacion;
+                    //result.DetalleCotizacion = _detalleCotizacion;
                     connection.Close();
                 }
                 return result;
