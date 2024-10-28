@@ -8,15 +8,16 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica
 {
     public class TecnicoInstalacionDTO : CamposAuditoriaDTO
     {
-        public long ID { get; set; }
-        public long ID_DETALLE { get; set; }
-        public int COD_TECNICO { get; set; }
-        public string NOMBRETECNICO { get; set; }
-        public string DOCUMENTO { get; set; }
-        public string CORREO { get; set; }
-        public string TELEFONO { get; set; }
-        public string ZONA { get; set; }
-        public string TIPOTECNICO { get; set; }
-        public bool ESTADO { get; set; }
+        public string TipoProceso { get; set; }
+        public long Id { get; set; }
+        public long Id_Detalle { get; set; }
+        public int Cod_Tecnico { get; set; }
+        public string NombreTecnico { get; set; }
+        public string Documento { get; set; }
+        public string Correo { get; set; }
+        public string Telefono { get; set; }
+        public string Zona { get; set; }
+        public string TipoTecnico { get; set; }
+        public bool Estado { get; set; }
     }
 }

@@ -19,7 +19,7 @@ namespace AHSECO.CCL.BL.ServicioTecnico.BandejaInstalacionTecnica
         private CCLog Log;
 
         public InstalacionTecnicaBL() : this(new InstalacionTecnicaBD(), new CCLog())
-        {}
+        { }
 
         public InstalacionTecnicaBL(InstalacionTecnicaBD instalacionTecnicaBD, CCLog log)
         {
@@ -34,9 +34,9 @@ namespace AHSECO.CCL.BL.ServicioTecnico.BandejaInstalacionTecnica
                 var result = Repository.ObtenerFiltrosInstalacion();
                 return new ResponseDTO<FiltroInstalacionTecnica>(result);
             }
-            catch (Exception ex) 
-            { 
-                Log.TraceError(Utilidades.GetCaller()+ "::"+  ex.Message);
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
                 return new ResponseDTO<FiltroInstalacionTecnica>(ex);
             };
         }
@@ -76,7 +76,7 @@ namespace AHSECO.CCL.BL.ServicioTecnico.BandejaInstalacionTecnica
                 var result = Repository.ObtenerDetalleSolicitud(id);
                 return new ResponseDTO<SolicitudVentaGrupoDTO>(result);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
                 return new ResponseDTO<SolicitudVentaGrupoDTO>(ex);
@@ -88,14 +88,55 @@ namespace AHSECO.CCL.BL.ServicioTecnico.BandejaInstalacionTecnica
             try
             {
                 var result = Repository.MantInstalacion(instalacion);
-                return new ResponseDTO<RespuestaDTO>(result);   
+                return new ResponseDTO<RespuestaDTO>(result);
             }
             catch (Exception ex)
             {
-                Log.TraceError (Utilidades.GetCaller() + "::" + ex.Message);
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
                 return new ResponseDTO<RespuestaDTO>(ex);
             }
         }
 
+        public ResponseDTO<RespuestaDTO> MantInstalacionTecnicaDetalle(InstalacionTecnicaDetalleDTO detalle)
+        {
+            try
+            {
+                var result = Repository.MantInstalacionTecnicaDetalle(detalle);
+                return new ResponseDTO<RespuestaDTO>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller()   + "::" + ex.Message);
+                return new ResponseDTO<RespuestaDTO> (ex);
+            }
+        }
+
+
+        public ResponseDTO<RespuestaDTO> MantTecnicoxDetalle(TecnicoInstalacionDTO tecnico)
+        {
+            try
+            {
+                var result = Repository.MantTecnicoxDetalle(tecnico);
+                return new ResponseDTO<RespuestaDTO>(result);
+            }
+            catch(Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller()+"::" + ex.Message);
+                return new ResponseDTO<RespuestaDTO>(ex);
+            }
+        }
+        public ResponseDTO<IEnumerable<InstalacionTecnicaDTO>> ObtenerInstalacionesTec(InstalacionTecnicaDTO instalacion)
+        {
+            try
+            {
+                var result = Repository.ObtenerInstalacionesTec(instalacion);
+                return new ResponseDTO<IEnumerable<InstalacionTecnicaDTO>> (result);
+            }
+            catch(Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() +"::" + ex.Message);
+                return new ResponseDTO<IEnumerable<InstalacionTecnicaDTO>>(ex);
+            }
+        }
     }
 }

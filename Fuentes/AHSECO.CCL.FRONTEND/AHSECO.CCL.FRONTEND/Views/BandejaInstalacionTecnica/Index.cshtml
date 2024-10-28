@@ -32,22 +32,22 @@
                         </div>
                     </div>
                     <div class="col-md-4 col-sm-12">
-                        <label for="cmbempresa">Empresa:</label>
-                        <div class="form-group" id="empresaEdit">
-                            <select class="form-control select2 input-sm" style="width:100%;" id="cmbempresa" tabindex="3"></select>
+                        <label for="txtNumReq">N° Requerimiento:</label>
+                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                            <input class="form-control input-sm" type="text" id="txtNumReq" placeholder="Ingresar el número de Requerimiento" />
                         </div>
                     </div>
                 </div>
                 <div class="row container-fluid">
                     <div class="col-md-4 col-sm-12">
-                        <label for="txtTipDoc">Estado:</label>
+                        <label for="cmbCliente">Cliente:</label>
                         <div class="input-group col-sm-12 col-md-12 col-lg-12">
-                            <select aria-hide="false" id="cmbEstado" type="text" class="input form-control input-sm">
+                            <select aria-hide="false" id="cmbCliente" type="text" class="input form-control input-sm">
                             </select>
                         </div>
                     </div>
                     <div class="col-md-4 col-sm-12">
-                        <label for="txtUbicacion">Ubicaci&oacute;n:</label>
+                        <label for="txtUbicacion">Destino:</label>
                         <div class="form-group">
                             <div class="input-group input-group-sm date">
                                 <input disabled maxlength="6" type="text" class="form-control input-sm" id="txtUbicacion" value="" aria-describedby="sizing-addon3" />
@@ -67,16 +67,16 @@
                 </div>
                 <div class="row container-fluid">
                     <div class="col-md-4 col-sm-12">
-                        <label for="cmbCliente">Cliente:</label>
+                        <label for="txtTipDoc">Estado:</label>
                         <div class="input-group col-sm-12 col-md-12 col-lg-12">
-                            <select aria-hide="false" id="cmbCliente" type="text" class="input form-control input-sm">
+                            <select aria-hide="false" id="cmbEstado" type="text" class="input form-control input-sm">
                             </select>
                         </div>
                     </div>
                     <div class="col-md-4 col-sm-12">
-                        <label for="txtNumReq">N° Requerimiento:</label>
-                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
-                            <input class="form-control input-sm" type="text" id="txtNumReq" placeholder="Ingresar el número de Requerimiento" />
+                        <label for="cmbempresa">Empresa:</label>
+                        <div class="form-group" id="empresaEdit">
+                            <select class="form-control select2 input-sm" style="width:100%;" id="cmbempresa" tabindex="3"></select>
                         </div>
                     </div>
                     <div class="col-md-4 col-sm-12">
@@ -109,6 +109,15 @@
                     </div>
                 </div>
                 <br />
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtNumFianza">N° Fianza:</label>
+                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                            <input class="form-control input-sm" type="text" id="txtNumFianza" placeholder="Ingresar el número de fianza" />
+                        </div>
+                    </div>
+                </div>
+                <br />
                 <div class="text-right">
                     <button class="btn btn-primary btn-sm" type="button" id="btnBuscar"><i class="fa fa-search"></i> Buscar</button>
                     <span id="hidden_fields"></span>
@@ -123,21 +132,17 @@
                     <thead>
                         <tr>
                             <th>ID_REQ</th>
-                            <th style="text-align: center; width:20%;padding-bottom: 20px;">Fecha Requerimiento</th>
-                            <th style="text-align: center; width:20%;padding-bottom: 10px;">Fecha Instalac&iacute;on</th>
-                            <th style="text-align: center; width:20%;padding-bottom: 10px;">Entidad</th>
-                            <th style="text-align: center; width:50px;padding-bottom: 20px;">Instituci&oacute;n</th>
-                            <th style="text-align: center; width:20%;padding-bottom: 10px;">Proceso</th>
-                            <th style="text-align: center; width:20%;padding-bottom: 20px;">Destino</th>
-                            <th style="text-align: center; width:20%;padding-bottom: 20px;">Ubicaci&oacute;n</th>
-                            <th style="text-align: center; width: 20%; padding-bottom: 10px;">Fecha M&aacute;xima</th>
-                            <th style="text-align: center; width: 20%; padding-bottom: 20px;">Vendedor</th>
-                            <th style="text-align: center; width: 20%; padding-bottom: 20px;">T&eacute;cnico</th>
-                            <th style="text-align: center; width: 20%; padding-bottom: 20px;">Observaci&oacute;n</th>
-                            <th style="text-align: center; width: 20%; padding-bottom: 20px;">Status</th>
-                            <th style="text-align: center; width: 20%; padding-bottom: 20px;">Tipo</th>
+                            <th style="text-align: center; width:20%;padding-bottom: 10px;">Num. Solicitud</th>
+                            <th style="text-align: center; width:50px;padding-bottom: 20px;">R.U.C</th>
+                            <th style="text-align: center; width:20%;padding-bottom: 10px;">Nombre Empresa</th>
+                            <th style="text-align: center; width:20%;padding-bottom: 20px;">Ubicación de Empresa</th>
+                            <th style="text-align: center; width:20%;padding-bottom: 20px;">Tipo de Venta</th>
+                            <th style="text-align: center; width: 20%; padding-bottom: 10px;">Vendedor</th>
+                            <th style="text-align: center; width: 20%; padding-bottom: 20px;">Empresa</th>
+                            <th style="text-align: center; width: 20%; padding-bottom: 20px;">Fecha M&aacute;xima</th>
+                            <th style="text-align: center; width: 20%; padding-bottom: 20px;">Destino</th>
+                            <th style="text-align: center; width: 20%; padding-bottom: 20px;">Estado</th>
                             <th></th>
-                            <th style="text-align: center; width: 20%; padding-bottom: 20px;">Raz&oacute;n</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
