@@ -659,11 +659,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         [HttpPost]
         public JsonResult ExportarDocumentosVentas(string tipo, long codSolicitud)
         {
-            // var viaticosBL = new ViaticosBL();
-            //var listaViaticos = viaticosBL.ListarViaticos(filtroViaticosDTO).Result.ToList();
+            var ventasBL = new VentasBL();
+            var datosGuia = ventasBL.ConsultaGuia(codSolicitud,tipo).Result;
 
             var hssfworkbook = new HSSFWorkbook();
-            ISheet sh = hssfworkbook.CreateSheet("Guía de Pedidos");
+            ISheet sh = hssfworkbook.CreateSheet(datosGuia.GuiaCabecera.Titulo);
 
             //Se define ancho de columnas:
             sh.SetColumnWidth(0, 12 * 256);
@@ -720,17 +720,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             var style = hssfworkbook.CreateCellStyle();
             style.SetFont(fontbold);
-            //style.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
-            //style.BorderTop = NPOI.SS.UserModel.BorderStyle.None;
-            //style.BorderRight = NPOI.SS.UserModel.BorderStyle.None;
-            //style.BorderLeft = NPOI.SS.UserModel.BorderStyle.None;
-            //style.FillForegroundColor = HSSFColor.Red.Index;
-            //style.FillPattern = FillPattern.SolidForeground;
+
 
             var style2 = hssfworkbook.CreateCellStyle();
             style2.SetFont(fontbold2);
             style2.Alignment = HorizontalAlignment.Center;
-           // style2.VerticalAlignment = NPOI.SS.UserModel.VerticalAlign.Middle;
 
             var style3 = hssfworkbook.CreateCellStyle();
             style3.SetFont(fontbold3);
@@ -754,7 +748,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             style6.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
             style6.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
             style6.Alignment = HorizontalAlignment.Right;
-            // style5.FillPattern = FillPattern.SolidForeground;
 
             var style7 = hssfworkbook.CreateCellStyle();
             style7.SetFont(fontbold);
@@ -861,10 +854,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             // Leer la imagen
             int pictureIndex;
-            //var url1 = new Uri(HttpContext.Request.Url, Url.Content("~/resources/img/RAZ1.png"));
-            //var imagePath = url1.AbsoluteUri;
+            var url1 = new Uri(HttpContext.Request.Url, Url.Content(datosGuia.GuiaCabecera.RutaImagen));
+            var imagePath = url1.AbsoluteUri;
 
-            string imagePath = @"C:\ruta\RAZ1.png";
+            //string imagePath = @"C:\ruta\RAZ1.png";
 
             using (FileStream fs2 = new FileStream(imagePath, FileMode.Open, FileAccess.Read))
             {
@@ -895,7 +888,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             cell = row.CreateCell(7);
             cell.CellStyle = style3;
-            cell.SetCellValue("18/06/2024");
+            cell.SetCellValue(datosGuia.GuiaCabecera.FechaOrdenCompra);
 
             cell = row.CreateCell(10);
             cell.CellStyle = style;
@@ -911,7 +904,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             cell = row.CreateCell(14);
             cell.CellStyle = style2;
-            cell.SetCellValue("GUIA DE PEDIDO");
+            cell.SetCellValue(datosGuia.GuiaCabecera.Titulo);
 
 
             row = sh.CreateRow(rownum++);
@@ -923,7 +916,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             cell = row.CreateCell(7);
             cell.CellStyle = style3;
-            cell.SetCellValue("90 DÍAS");
+            cell.SetCellValue(datosGuia.GuiaCabecera.PlazoEntrega);
 
             cell = row.CreateCell(10);
             cell.CellStyle = style;
@@ -969,7 +962,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             cell = row.CreateCell(7);
             cell.CellStyle = style3;
-            cell.SetCellValue("NATHALY ALTAMIRANO");
+            cell.SetCellValue(datosGuia.GuiaCabecera.NombreVendedor);
 
 
             cell = row.CreateCell(13);
@@ -1004,7 +997,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             cell = row.CreateCell(2);
             cell.CellStyle = style3;
-            cell.SetCellValue("RELES SRL.");
+            cell.SetCellValue(datosGuia.GuiaCabecera.VendidoA);
 
             cell = row.CreateCell(9);
             cell.CellStyle = style;
@@ -1012,7 +1005,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             cell = row.CreateCell(11);
             cell.CellStyle = style3;
-            cell.SetCellValue("RELES SRL.");
+            cell.SetCellValue(datosGuia.GuiaCabecera.EnviadoA);
 
             row = sh.CreateRow(rownum++);
 
@@ -1022,7 +1015,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             cell = row.CreateCell(2);
             cell.CellStyle = style3;
-            cell.SetCellValue("20101420753");
+            cell.SetCellValue(datosGuia.GuiaCabecera.Ruc);
 
             cell = row.CreateCell(9);
             cell.CellStyle = style;
@@ -1030,7 +1023,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             cell = row.CreateCell(11);
             cell.CellStyle = style3;
-            cell.SetCellValue("20101420753");
+            cell.SetCellValue(datosGuia.GuiaCabecera.Ruc);
 
             row = sh.CreateRow(rownum++);
 
@@ -1040,7 +1033,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             cell = row.CreateCell(2);
             cell.CellStyle = style3;
-            cell.SetCellValue("Jr.Pomabamba 774 Breña");
+            cell.SetCellValue(datosGuia.GuiaCabecera.Direccion);
 
             cell = row.CreateCell(9);
             cell.CellStyle = style;
@@ -1048,7 +1041,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             cell = row.CreateCell(11);
             cell.CellStyle = style3;
-            cell.SetCellValue("Jr.Pomabamba 774 Breña");
+            cell.SetCellValue(datosGuia.GuiaCabecera.Direccion);
 
             row = sh.CreateRow(rownum++);
 
@@ -1058,7 +1051,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             cell = row.CreateCell(2);
             cell.CellStyle = style3;
-            cell.SetCellValue("LIMA");
+            cell.SetCellValue(datosGuia.GuiaCabecera.Ciudad);
 
             cell = row.CreateCell(9);
             cell.CellStyle = style;
@@ -1066,7 +1059,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             cell = row.CreateCell(11);
             cell.CellStyle = style3;
-            cell.SetCellValue("LIMA");
+            cell.SetCellValue(datosGuia.GuiaCabecera.Ciudad);
 
             row = sh.CreateRow(rownum++);
 
@@ -1076,7 +1069,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             cell = row.CreateCell(2);
             cell.CellStyle = style3;
-            cell.SetCellValue("OC00000947");
+            cell.SetCellValue(datosGuia.GuiaCabecera.NumeroOrdenCompra);
 
             cell = row.CreateCell(9);
             cell.CellStyle = style;
