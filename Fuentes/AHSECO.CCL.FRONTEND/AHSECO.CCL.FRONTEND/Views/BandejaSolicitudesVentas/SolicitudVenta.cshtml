@@ -438,11 +438,146 @@
                                 <div class="panel panel-default" style="@(ViewBag.VerTabCotDet ? "" : "display:none");border-color: #07bc58;">
                                     <div class="panel-heading" role="tab" id="heading2183316" style="background-color: #07bc5833;">
                                         <h5 class="panel-title">
-                                            <a role="button" data-toggle="collapse" class="accordion-arrow-toggle collapsed" href="#collapse2183316" aria-expanded="true" aria-controls="collapse2183316"><i class="fa fa-money" aria-hidden="true"></i> VENTA</a>
+                                            <a role="button" data-toggle="collapse" class="accordion-arrow-toggle collapsed" href="#collapse2183316" aria-expanded="true" aria-controls="collapse2183316"><i class="fa fa-money" aria-hidden="true"></i> GESTI&Oacute;N DE VENTA</a>
                                         </h5>
                                     </div>
                                     <div id="collapse2183316" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading2183316">
-                                        <div class="panel-body">Lorem ipsum dolor sic amet!</div>
+                                        <form id="formGestionVenta">
+                                            <div class="box-content">
+                                                <div class="row container-fluid">
+                                                    <div class="col-md-4 col-sm-12">
+                                                        <label for="txtNroOrdenCompra">N° Orden de Compra: </label>
+                                                        <div class="form-group">
+                                                            <input placeholder="Ingresar número de orden de compra" type="text" class="form-control input-sm" id="txtNroOrdenCompra">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 col-sm-12">
+                                                        <label for="dateOrdenCompra">Fecha Orden de Compra: </label>
+                                                        <div class="input-group date">
+                                                            <input type="text" class="form-control input-sm" id="dateOrdenCompra" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
+                                                            <span class="input-group-addon input-sm" id="openRegdateOrdenCompra">
+                                                                <i class="fa fa-calendar"></i>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 col-sm-12">
+                                                        <label for="txtFechaEntregaMax">Fecha Entrega M&aacute;xima: </label>
+                                                        <div class="form-group">
+                                                            <input type="text" class="form-control input-sm" id="txtFechaEntregaMax" disabled>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row container-fluid">
+                                                    <div class="text-right">
+                                                        <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnEnviarGuia"><i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar Guia</button>
+                                                        <button class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnGuiaBO"><i class="fa fa-file" aria-hidden="true" tabindex="111"></i>&nbsp;Generar Gu&iacute;a de BO</button>
+                                                        <button class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnGuiaPedido"><i class="fa fa-file" aria-hidden="true" tabindex="112"></i>&nbsp;Generar Gu&iacute;a de Pedido</button>
+                                                        <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnAprobarGestion" tabindex="113"><i class="fa fa-handshake-o" aria-hidden="true"></i>&nbsp;Aprobar</button>
+                                                        <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnObservarGestion" tabindex="114"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Observar</button>
+                                                        <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnGuardarGestion" tabindex="115"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar</button>
+                                                        <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnFinalizarVenta" tabindex="116"><i class="fa fa-window-close" aria-hidden="true"></i>&nbsp;Finalizar Venta</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="box-content">
+                                                <ul class="nav nav-tabs" style="padding-top: 5px;">
+                                                    <li class="" id="tabConStock">
+                                                        <a href="#navConStock" data-toggle="tab" style="font-weight:bold; color:black;" tabindex="220"><i class="fa fa-cubes" aria-hidden="true"></i> Con Stock</a>
+                                                    </li>
+                                                    <li class="" id="tabSinStock">
+                                                        <a href="#navSinStock" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="221"><i class="fa fa-wrench" aria-hidden="true"></i> Sin Stock</a>
+                                                    </li>
+                                                </ul>
+
+
+                                                <div class="tab-content">
+                                                    <div id="navConStock" class="tab-pane fade in active">
+                                                        <div class="row container-fluid">
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <label for="dateEntregaPedidoCE">Fecha de Entrega de Pedido: </label>
+                                                                <div class="input-group date">
+                                                                    <input type="text" class="form-control input-sm" id="dateEntregaPedidoCE" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
+                                                                    <span class="input-group-addon input-sm" id="opendateEntregaPedidoCE">
+                                                                        <i class="fa fa-calendar"></i>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <label for="txtNumeroFacturaCE">N° de Factura: </label>
+                                                                <div class="form-group">
+                                                                    <input type="text" class="form-control input-sm" id="txtNumeroFacturaCE" placeholder="Ingresar Número de Factura">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row container-fluid">
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <label for="txtNumeroGuiaRemisionCE">N° de Gu&iacute;a de Remisi&oacute;n: </label>
+                                                                <div class="form-group">
+                                                                    <input type="text" class="form-control input-sm" id="txtNumeroGuiaRemisionCE" placeholder="Ingresar N° Guia de Remisión">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <label for="txtNumeroSerieCE">N° de Serie: </label>
+                                                                <div class="form-group">
+                                                                    <input type="text" class="form-control input-sm" id="txtNumeroSerieCE" placeholder="Ingresar Número de Serie">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div id="navSinStock" class="tab-pane fade">
+                                                        <div class="row container-fluid">
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <label for="txtCodigoPedidoSE">C&oacute;digo de Pedido: </label>
+                                                                <div class="form-group">
+                                                                    <input type="text" class="form-control input-sm" id="txtCodigoPedidoSE" placeholder="Ingresar Código de Pedido">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <label for="dateIngresoAlmacenSE">Fecha de Ingreso de Almacen: </label>
+                                                                <div class="input-group date">
+                                                                    <input type="text" class="form-control input-sm" id="dateIngresoAlmacenSE" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
+                                                                    <span class="input-group-addon input-sm" id="opendateIngresoAlmacenSE">
+                                                                        <i class="fa fa-calendar"></i>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row container-fluid">
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <label for="dateEntregaPedidoSE">Fecha de Entrega de Pedido: </label>
+                                                                <div class="input-group date">
+                                                                    <input type="text" class="form-control input-sm" id="dateEntregaPedidoSE" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
+                                                                    <span class="input-group-addon input-sm" id="opendateEntregaPedidoSE">
+                                                                        <i class="fa fa-calendar"></i>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <label for="txtNumeroFacturaSE">N° de Factura: </label>
+                                                                <div class="form-group">
+                                                                    <input type="text" class="form-control input-sm" id="txtNumeroFacturaSE" placeholder="Ingresar Número de Factura">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row container-fluid">
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <label for="txtNumeroGuiaRemisionSE">N° de Gu&iacute;a de Remisi&oacute;n: </label>
+                                                                <div class="form-group">
+                                                                    <input type="text" class="form-control input-sm" id="txtNumeroGuiaRemisionSE" placeholder="Ingresar N° Guia de Remisión">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <label for="txtNumeroSerieSE">N° de Serie: </label>
+                                                                <div class="form-group">
+                                                                    <input type="text" class="form-control input-sm" id="txtNumeroSerieSE" placeholder="Ingresar Número de Serie">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </form>
                                     </div>
                                 </div>
                             </div>

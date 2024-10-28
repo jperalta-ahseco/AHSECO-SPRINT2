@@ -59,8 +59,10 @@ SET NOCOUNT ON;
 	SET  @NUM_COTIZACION= 'PC'+RIGHT('0000000'+CAST(@COD_COTIZACION AS VARCHAR),7)
 
 	SET @ENCABEZADO='R.U.C.: 20100162238'+ CHAR(13) + CHAR(10) 
-	SET @ENCABEZADO=@ENCABEZADO+'Av. Máximo Abril N°524 Urb. Santa Beatriz\r\nJesús María – Lima'+ CHAR(13) + CHAR(10) 
-	SET @ENCABEZADO=@ENCABEZADO+'Sucursal: Av. Arenales N°500 – Jesús María - Lima\r\nTeléfono: (511) 433 7227 / 433 6372'+ CHAR(13) + CHAR(10) 
+	SET @ENCABEZADO=@ENCABEZADO+'Av. Máximo Abril N°524 Urb. Santa Beatriz'+ CHAR(13) + CHAR(10) 
+	SET @ENCABEZADO=@ENCABEZADO+'Jesús María – Lima'+ CHAR(13) + CHAR(10) 
+	SET @ENCABEZADO=@ENCABEZADO+'Sucursal: Av. Arenales N°500 – Jesús María - Lima'+ CHAR(13) + CHAR(10) 
+	SET @ENCABEZADO=@ENCABEZADO+'Teléfono: (511) 433 7227 / 433 6372'+ CHAR(13) + CHAR(10) 
 	SET @ENCABEZADO=@ENCABEZADO+'Email: ventas@ahsecoperu.com / www.ahsecoperu.com.pe';
 
 	SET @OBSERVACION='Precios Incluyen IGV.'
@@ -77,9 +79,6 @@ SET NOCOUNT ON;
 	SET @PIE='El envío de los productos es de manera gratuita a partir de Facturas de US$ 200.00, solo en ciudad de Lima y para clientes finales.'+ CHAR(13) + CHAR(10) 
 	SET @PIE=@PIE+'El equipo se entrega en sus instalaciones en un primer piso, no incluye traslado interno al punto de instalación, el usuario deberá contar con personal para ubicación final del equipo sobre la mesa de trabajo.'+ CHAR(13) + CHAR(10) 
 	SET @PIE=@PIE+'Los envíos a provincia por intermedio de agencia corren a cuenta y riesgo del cliente, AHSECO PERÚ S.A. no se hace responsable cualquier problema que resulte del envío.'
-
-
-
 
 
 	--DATOS A MOSTRAR CABECERA
@@ -118,5 +117,6 @@ SET NOCOUNT ON;
 							'S/. 30.00' TOTAL 
 				FROM TBD_COTIZACIONVENTA WITH(NOLOCK)
 				WHERE ID_COTIZACION =@COD_COTIZACION AND TIPOITEM='PROD';
+
 
 END

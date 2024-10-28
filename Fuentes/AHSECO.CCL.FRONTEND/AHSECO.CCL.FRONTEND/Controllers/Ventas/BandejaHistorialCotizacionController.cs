@@ -11,6 +11,14 @@ using Microsoft.Office.Interop.Word;
 using NPOI.Util;
 using System.Runtime.InteropServices;
 using System.Configuration;
+using System.IO;
+using System.Web;
+using AHSECO.CCL.BE;
+using AHSECO.CCL.BL;
+using NPOI.HSSF.UserModel;
+using NPOI.HSSF.Util;
+using NPOI.SS.UserModel;
+using System.Web.UI.WebControls;
 
 
 namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
@@ -40,7 +48,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             // Crear una nueva aplicación de Word
             Application wordApp = new Application();
-            wordApp.Visible = true;
+            wordApp.Visible = false;
 
 
             // Crear un nuevo documento
@@ -69,13 +77,25 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     int numCols = 7;
 
                     // Agregar una tabla al documento
-                    Table table = doc.Tables.Add(doc.Range(0, 0), numRows, numCols);
+                    Microsoft.Office.Interop.Word.Table table = doc.Tables.Add(doc.Range(0, 0), numRows, numCols);
                     table.Borders.Enable = 0; // Habilitar bordes
 
                     #region Encabezado
                     // Combinando celdas en la primera fila
                     table.Cell(1, 1).Merge(table.Cell(2, 2));
-                    table.Cell(1, 1).Range.Text = "Logo";
+
+                    var url1 = new Uri(HttpContext.Request.Url, Url.Content(cotizacion.Result.DocumentoCabecera.RutaImagen));
+                    var imageLogo = url1.AbsoluteUri;
+                    // Insertar la imagen
+                    InlineShape inlineShape = table.Cell(1, 1).Range.InlineShapes.AddPicture(imageLogo, LinkToFile: false, SaveWithDocument: true);
+
+                    // Opcional: Ajustar el tamaño de la imagen
+                    inlineShape.Width = 150; // Ajustar el ancho
+                    inlineShape.Height = 80; // Ajustar el alto
+
+                    // Opcional: Centrar la imagen en la celda
+                    inlineShape.Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+
                     table.Cell(1, 1).Width = 150;
 
                     table.Cell(1, 2).Merge(table.Cell(2, 4));
@@ -611,10 +631,1181 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             return Json(new
             {
                 Status = 1,
-                Archivo = ruta_file
+                Archivo = nombre
             });
         }
 
+        public FileResult ExportarFile(string nombreDoc)
+        {
+            string url = ConfigurationManager.AppSettings.Get("RutaCotizacionVenta");
+            string ruta = url + nombreDoc;
+
+            var fileName = Path.GetFileName(nombreDoc);
+            var contentType = MimeMapping.GetMimeMapping(fileName); //determina el tipo de documento que se envía. 
+
+            return File(ruta, contentType, nombreDoc);
+        }
+
+
+        private static byte[] ReadFully(Stream input)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                input.CopyTo(ms);
+                return ms.ToArray();
+            }
+        }
+
+        [HttpPost]
+        public JsonResult ExportarDocumentosVentas(string tipo, long codSolicitud)
+        {
+            // var viaticosBL = new ViaticosBL();
+            //var listaViaticos = viaticosBL.ListarViaticos(filtroViaticosDTO).Result.ToList();
+
+            var hssfworkbook = new HSSFWorkbook();
+            ISheet sh = hssfworkbook.CreateSheet("Guía de Pedidos");
+
+            //Se define ancho de columnas:
+            sh.SetColumnWidth(0, 12 * 256);
+            sh.SetColumnWidth(1, 8 * 256);
+            sh.SetColumnWidth(2, 8 * 256);
+            sh.SetColumnWidth(3, 7 * 256);
+            sh.SetColumnWidth(4, 12 * 256);
+            sh.SetColumnWidth(5, 9 * 256);
+            sh.SetColumnWidth(6, 17 * 256);
+            sh.SetColumnWidth(7, 5 * 256);
+            sh.SetColumnWidth(8, 5 * 256);
+            sh.SetColumnWidth(9, 5 * 256);
+            sh.SetColumnWidth(10, 5 * 256);
+            sh.SetColumnWidth(11, 6 * 256);
+            sh.SetColumnWidth(12, 9 * 256);
+            sh.SetColumnWidth(13, 12 * 256);
+            sh.SetColumnWidth(14, 9 * 256);
+            sh.SetColumnWidth(15, 8 * 256);
+            sh.SetColumnWidth(16, 8 * 256);
+            sh.SetColumnWidth(17, 9 * 256);
+            sh.SetColumnWidth(18, 9 * 256);
+
+            // Creacion del estilo
+            var fontbold = hssfworkbook.CreateFont();
+            //fontbold.Boldweight = (short)FontBoldWeight.Bold;
+            fontbold.Color = HSSFColor.Black.Index;
+            fontbold.FontHeightInPoints = 9;
+            fontbold.FontName = "Arial Narrow";
+
+            var fontbold2 = hssfworkbook.CreateFont();
+            fontbold2.Boldweight = (short)FontBoldWeight.Bold;
+            fontbold2.Color = HSSFColor.Black.Index;
+            fontbold2.FontHeightInPoints = 20;
+            fontbold2.FontName = "Arial Narrow";
+
+            var fontbold3 = hssfworkbook.CreateFont();
+            fontbold3.Boldweight = (short)FontBoldWeight.Bold;
+            fontbold3.Color = HSSFColor.Blue.Index;
+            fontbold3.FontHeightInPoints = 9;
+            fontbold3.FontName = "Arial Narrow";
+
+            var fontbold4 = hssfworkbook.CreateFont();
+            fontbold4.Boldweight = (short)FontBoldWeight.Bold;
+            fontbold4.Color = HSSFColor.Red.Index;
+            fontbold4.FontHeightInPoints = 9;
+            fontbold4.FontName = "Arial Narrow";
+
+            var fontbold5 = hssfworkbook.CreateFont();
+            fontbold5.Boldweight = (short)FontBoldWeight.Bold;
+            fontbold5.Color = HSSFColor.Black.Index;
+            fontbold5.FontHeightInPoints = 9;
+            fontbold5.FontName = "Arial Narrow";
+
+
+            var style = hssfworkbook.CreateCellStyle();
+            style.SetFont(fontbold);
+            //style.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+            //style.BorderTop = NPOI.SS.UserModel.BorderStyle.None;
+            //style.BorderRight = NPOI.SS.UserModel.BorderStyle.None;
+            //style.BorderLeft = NPOI.SS.UserModel.BorderStyle.None;
+            //style.FillForegroundColor = HSSFColor.Red.Index;
+            //style.FillPattern = FillPattern.SolidForeground;
+
+            var style2 = hssfworkbook.CreateCellStyle();
+            style2.SetFont(fontbold2);
+            style2.Alignment = HorizontalAlignment.Center;
+           // style2.VerticalAlignment = NPOI.SS.UserModel.VerticalAlign.Middle;
+
+            var style3 = hssfworkbook.CreateCellStyle();
+            style3.SetFont(fontbold3);
+
+            var style4 = hssfworkbook.CreateCellStyle();
+            style4.SetFont(fontbold4);
+
+
+            var style5 = hssfworkbook.CreateCellStyle();
+            style5.SetFont(fontbold5);
+            style5.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+            style5.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+            style5.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+            style5.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+            style5.WrapText = true;
+
+            var style6 = hssfworkbook.CreateCellStyle();
+            style6.SetFont(fontbold5);
+            style6.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+            style6.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+            style6.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+            style6.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+            style6.Alignment = HorizontalAlignment.Right;
+            // style5.FillPattern = FillPattern.SolidForeground;
+
+            var style7 = hssfworkbook.CreateCellStyle();
+            style7.SetFont(fontbold);
+            style7.Alignment = HorizontalAlignment.Center;
+
+            var style8= hssfworkbook.CreateCellStyle();
+            style8.SetFont(fontbold5);
+            style8.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+            style8.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+            style8.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+            style8.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+            style8.FillForegroundColor = HSSFColor.BlueGrey.Index; //color de fondo
+            style8.FillPattern = FillPattern.SolidForeground; // Relleno sólido
+
+            var style9 = hssfworkbook.CreateCellStyle();
+            style9.SetFont(fontbold5);
+            style9.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+            style9.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+            style9.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+            style9.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+            style9.Alignment = HorizontalAlignment.Center;
+
+
+
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(0, 3, 0, 5)); //1ra fila, ult fila, 1ra col, ult col
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(0, 0, 7, 9));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(1, 1, 7, 9));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(2, 2, 7, 9));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(3, 3, 7, 10));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(0, 0, 10, 11));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(1, 1, 10, 11));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(2, 2, 10, 11));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(0, 2, 14, 18));
+
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(4, 4, 0, 1));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(4, 4, 2, 8));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(4, 4, 9, 10));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(4, 4, 11, 17));
+
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(5, 5, 0, 1));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(5, 5, 2, 8));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(5, 5, 9, 10));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(5, 5, 11, 17));
+
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(6, 6, 0, 1));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(6, 6, 2, 8));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(6, 6, 9, 10));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(6, 6, 11, 17));
+
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(7, 7, 0, 1));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(7, 7, 2, 8));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(7, 7, 9, 10));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(7, 7, 11, 17));
+
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(8, 8, 0, 1));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(8, 8, 2, 8));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(8, 8, 9, 10));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(8, 8, 11, 15));
+
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(9, 9, 0, 15));
+
+            //detalle: cabecera
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(10, 10, 5, 11));
+
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(11, 11, 5, 11));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(12, 12, 5, 11));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(13, 13, 5, 11));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(14, 14, 5, 11));
+
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(15, 15, 5, 11));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(16, 16, 5, 11));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(17, 17, 5, 11));
+
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(18, 18, 0, 2));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(18, 18, 3, 12));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(18, 18, 16, 17));
+
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(19, 19, 0, 2));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(19, 19, 3, 4));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(19, 19, 5, 6));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(19, 19, 7, 10));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(19, 19, 11, 12));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(19, 19, 13, 14));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(19, 19, 15, 18));
+
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(20, 20, 0, 3));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(20, 20, 4, 6));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(20, 20, 7, 9));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(20, 20, 10, 12));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(20, 20, 13, 14));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(20, 21, 15, 18));
+
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(21, 21, 0, 3));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(21, 21, 4, 6));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(21, 21, 7, 9));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(21, 21, 10, 12));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(21, 21, 13, 14));
+
+
+            int rownum = 0;
+            int cellnum = 0;
+            IRow row = sh.CreateRow(rownum++);
+            NPOI.SS.UserModel.ICell cell;
+
+            // Leer la imagen
+            int pictureIndex;
+            //var url1 = new Uri(HttpContext.Request.Url, Url.Content("~/resources/img/RAZ1.png"));
+            //var imagePath = url1.AbsoluteUri;
+
+            string imagePath = @"C:\ruta\RAZ1.png";
+
+            using (FileStream fs2 = new FileStream(imagePath, FileMode.Open, FileAccess.Read))
+            {
+                // Agregar la imagen al libro de trabajo
+                pictureIndex = hssfworkbook.AddPicture(ReadFully(fs2), PictureType.PNG);
+            }
+
+            // Crear un objeto de dibujo
+            IDrawing drawing = sh.CreateDrawingPatriarch();
+
+            // Crear un ancla para la imagen
+            IClientAnchor anchor = drawing.CreateAnchor(0, 0, 0, 0, 0, 0, 6, 4); // (col1, row1, col2, row2)
+
+            // Insertar la imagen en la celda
+            drawing.CreatePicture(anchor, pictureIndex);
+
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
+            //cell.SetCellValue("LOGO");
+
+
+
+
+            cell = row.CreateCell(6);
+            row.Height = 20 * 20;
+            cell.CellStyle = style;
+            cell.SetCellValue("FECHA DE OC");
+
+            cell = row.CreateCell(7);
+            cell.CellStyle = style3;
+            cell.SetCellValue("18/06/2024");
+
+            cell = row.CreateCell(10);
+            cell.CellStyle = style;
+            cell.SetCellValue("BACK ORDERS");
+
+            cell = row.CreateCell(12);
+            cell.CellStyle = style3;
+            cell.SetCellValue("X");
+
+            cell = row.CreateCell(13);
+            cell.CellStyle = style;
+            cell.SetCellValue("N°");
+
+            cell = row.CreateCell(14);
+            cell.CellStyle = style2;
+            cell.SetCellValue("GUIA DE PEDIDO");
+
+
+            row = sh.CreateRow(rownum++);
+
+            cell = row.CreateCell(6);
+            row.Height = 20 * 20;
+            cell.CellStyle = style;
+            cell.SetCellValue("TIEMPO DE ENTREGA");
+
+            cell = row.CreateCell(7);
+            cell.CellStyle = style3;
+            cell.SetCellValue("90 DÍAS");
+
+            cell = row.CreateCell(10);
+            cell.CellStyle = style;
+            cell.SetCellValue("COMPLETE");
+
+            cell = row.CreateCell(12);
+            cell.CellStyle = style;
+            cell.SetCellValue("");
+
+            cell = row.CreateCell(13);
+            cell.CellStyle = style;
+            cell.SetCellValue("DE");
+
+            row = sh.CreateRow(rownum++);
+
+            cell = row.CreateCell(6);
+            row.Height = 20 * 20;
+            cell.CellStyle = style;
+            cell.SetCellValue("FECHA DE ENTREGA");
+
+            cell = row.CreateCell(7);
+            cell.CellStyle = style;
+            cell.SetCellValue("");
+
+            cell = row.CreateCell(10);
+            cell.CellStyle = style;
+            cell.SetCellValue("BACK ORDERS");
+
+            cell = row.CreateCell(12);
+            cell.CellStyle = style;
+            cell.SetCellValue("");
+
+            cell = row.CreateCell(13);
+            cell.CellStyle = style;
+            cell.SetCellValue("GUIA");
+
+            row = sh.CreateRow(rownum++);
+
+            cell = row.CreateCell(6);
+            row.Height = 20 * 20;
+            cell.CellStyle = style;
+            cell.SetCellValue("VENDEDOR");
+
+            cell = row.CreateCell(7);
+            cell.CellStyle = style3;
+            cell.SetCellValue("NATHALY ALTAMIRANO");
+
+
+            cell = row.CreateCell(13);
+            cell.CellStyle = style;
+            cell.SetCellValue("PAG. N°");
+
+            cell = row.CreateCell(14);
+            cell.CellStyle = style4;
+            cell.SetCellValue("01");
+
+            cell = row.CreateCell(15);
+            cell.CellStyle = style;
+            cell.SetCellValue("DE");
+
+            cell = row.CreateCell(16);
+            cell.CellStyle = style4;
+            cell.SetCellValue("01");
+
+            cell = row.CreateCell(17);
+            cell.CellStyle = style;
+            cell.SetCellValue("PAGS.");
+
+            cell = row.CreateCell(18);
+            cell.CellStyle = style4;
+            cell.SetCellValue("01");
+
+            row = sh.CreateRow(rownum++);
+
+            cell = row.CreateCell(0);
+            cell.CellStyle = style;
+            cell.SetCellValue("VENDIDO A");
+
+            cell = row.CreateCell(2);
+            cell.CellStyle = style3;
+            cell.SetCellValue("RELES SRL.");
+
+            cell = row.CreateCell(9);
+            cell.CellStyle = style;
+            cell.SetCellValue("ENVIADO A");
+
+            cell = row.CreateCell(11);
+            cell.CellStyle = style3;
+            cell.SetCellValue("RELES SRL.");
+
+            row = sh.CreateRow(rownum++);
+
+            cell = row.CreateCell(0);
+            cell.CellStyle = style;
+            cell.SetCellValue("RUC");
+
+            cell = row.CreateCell(2);
+            cell.CellStyle = style3;
+            cell.SetCellValue("20101420753");
+
+            cell = row.CreateCell(9);
+            cell.CellStyle = style;
+            cell.SetCellValue("RUC");
+
+            cell = row.CreateCell(11);
+            cell.CellStyle = style3;
+            cell.SetCellValue("20101420753");
+
+            row = sh.CreateRow(rownum++);
+
+            cell = row.CreateCell(0);
+            cell.CellStyle = style;
+            cell.SetCellValue("DIRECCION");
+
+            cell = row.CreateCell(2);
+            cell.CellStyle = style3;
+            cell.SetCellValue("Jr.Pomabamba 774 Breña");
+
+            cell = row.CreateCell(9);
+            cell.CellStyle = style;
+            cell.SetCellValue("DIRECCION");
+
+            cell = row.CreateCell(11);
+            cell.CellStyle = style3;
+            cell.SetCellValue("Jr.Pomabamba 774 Breña");
+
+            row = sh.CreateRow(rownum++);
+
+            cell = row.CreateCell(0);
+            cell.CellStyle = style;
+            cell.SetCellValue("CIUDAD");
+
+            cell = row.CreateCell(2);
+            cell.CellStyle = style3;
+            cell.SetCellValue("LIMA");
+
+            cell = row.CreateCell(9);
+            cell.CellStyle = style;
+            cell.SetCellValue("CIUDAD");
+
+            cell = row.CreateCell(11);
+            cell.CellStyle = style3;
+            cell.SetCellValue("LIMA");
+
+            row = sh.CreateRow(rownum++);
+
+            cell = row.CreateCell(0);
+            cell.CellStyle = style;
+            cell.SetCellValue("N° ORDEN CLIENTE");
+
+            cell = row.CreateCell(2);
+            cell.CellStyle = style3;
+            cell.SetCellValue("OC00000947");
+
+            cell = row.CreateCell(9);
+            cell.CellStyle = style;
+            cell.SetCellValue("REGISTRO N°");
+
+
+            //detalle:
+            int rownum2 = 10;
+            row = sh.CreateRow(rownum2++);
+
+            cell = row.CreateCell(0);
+            cell.CellStyle = style5;
+            cell.SetCellValue("Descargado");
+
+            cell = row.CreateCell(1);
+            cell.CellStyle = style5;
+            cell.SetCellValue("Pendiente");
+
+            cell = row.CreateCell(2);
+            cell.CellStyle = style5;
+            cell.SetCellValue("Cantidad");
+
+            cell = row.CreateCell(3);
+            cell.CellStyle = style5;
+            cell.SetCellValue("Unidad");
+
+            cell = row.CreateCell(4);
+            cell.CellStyle = style5;
+            cell.SetCellValue("N° de Catálogo");
+
+            cell = row.CreateCell(5);
+            cell.CellStyle = style5;
+            cell.SetCellValue("DESCRIPCION");
+
+            cell = row.CreateCell(6);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(7);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(8);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(9);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(10);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(11);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(12);
+            cell.CellStyle = style5;
+            cell.SetCellValue("Valor Unit. De Venta");
+
+            cell = row.CreateCell(13);
+            cell.CellStyle = style5;
+            cell.SetCellValue("Total Valor de Venta");
+
+            cell = row.CreateCell(14);
+            cell.CellStyle = style5;
+            cell.SetCellValue("Precio Kardex");
+
+            cell = row.CreateCell(15);
+            cell.CellStyle = style5;
+            cell.SetCellValue("Total Kardex");
+
+            cell = row.CreateCell(16);
+            cell.CellStyle = style5;
+            cell.SetCellValue("Unidades Entregadas");
+
+            cell = row.CreateCell(17);
+            cell.CellStyle = style5;
+            cell.SetCellValue("Unidad Precio Costo");
+
+            cell = row.CreateCell(18);
+            cell.CellStyle = style5;
+            cell.SetCellValue("Extensión Precio Costo");
+
+            row = sh.CreateRow(rownum2++);
+
+            cell = row.CreateCell(0);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(1);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(2);
+            cell.CellStyle = style5;
+            cell.SetCellValue("4");
+
+            cell = row.CreateCell(3);
+            cell.CellStyle = style5;
+            cell.SetCellValue("UND");
+
+            cell = row.CreateCell(4);
+            cell.CellStyle = style5;
+            cell.SetCellValue("UN260");
+
+            cell = row.CreateCell(5);
+            cell.CellStyle = style5;
+            cell.SetCellValue("ESTUFA DE CONVECCIÓN NATURAL, 256L\r\nMARCA: MEMMERT");
+
+            cell = row.CreateCell(6);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(7);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(8);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(9);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(10);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(11);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(12);
+            cell.CellStyle = style5;
+            cell.SetCellValue("$. 4,364.41");
+
+            cell = row.CreateCell(13);
+            cell.CellStyle = style5;
+            cell.SetCellValue("$. 14,364.41");
+
+            cell = row.CreateCell(14);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(15);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(16);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(17);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(18);
+            cell.CellStyle = style5;
+
+            row = sh.CreateRow(rownum2++);
+
+            cell = row.CreateCell(0);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(1);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(2);
+            cell.CellStyle = style5;
+            cell.SetCellValue("3");
+
+            cell = row.CreateCell(3);
+            cell.CellStyle = style5;
+            cell.SetCellValue("UND");
+
+            cell = row.CreateCell(4);
+            cell.CellStyle = style5;
+            cell.SetCellValue("IN30");
+
+            cell = row.CreateCell(5);
+            cell.CellStyle = style5;
+            cell.SetCellValue("INCUBADORA DE 32L\r\nMARCA: MEMMERT");
+
+            cell = row.CreateCell(6);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(7);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(8);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(9);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(10);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(11);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(12);
+            cell.CellStyle = style5;
+            cell.SetCellValue("$. 4,364.41");
+
+            cell = row.CreateCell(13);
+            cell.CellStyle = style5;
+            cell.SetCellValue("$. 14,364.41");
+
+            cell = row.CreateCell(14);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(15);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(16);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(17);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(18);
+            cell.CellStyle = style5;
+
+            row = sh.CreateRow(rownum2++);
+
+            cell = row.CreateCell(0);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(1);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(2);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(3);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(4);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(5);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(6);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(7);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(8);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(9);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(10);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(11);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(12);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(13);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(14);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(15);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(16);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(17);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(18);
+            cell.CellStyle = style5;
+
+            row = sh.CreateRow(rownum2++);
+
+            cell = row.CreateCell(0);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(1);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(2);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(3);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(4);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(5);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(6);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(7);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(8);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(9);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(10);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(11);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(12);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(13);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(14);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(15);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(16);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(17);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(18);
+            cell.CellStyle = style5;
+
+            row = sh.CreateRow(rownum2++);
+
+
+            cell = row.CreateCell(5);
+            cell.CellStyle = style6;
+            cell.SetCellValue("DÓLARES  SUB TOTAL");
+
+            cell = row.CreateCell(6);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(7);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(8);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(9);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(10);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(11);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(12);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(13);
+            cell.CellStyle = style5;
+            cell.SetCellValue("$. 21,779.00");
+
+            cell = row.CreateCell(14);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(15);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(16);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(17);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(18);
+            cell.CellStyle = style5;
+
+            row = sh.CreateRow(rownum2++);
+
+
+            cell = row.CreateCell(5);
+            cell.CellStyle = style6;
+            cell.SetCellValue("DÓLARES  IGV 18%");
+
+            cell = row.CreateCell(6);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(7);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(8);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(9);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(10);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(11);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(12);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(13);
+            cell.CellStyle = style5;
+            cell.SetCellValue("$. 21,779.00");
+
+            cell = row.CreateCell(14);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(15);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(16);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(17);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(18);
+            cell.CellStyle = style5;
+
+            row = sh.CreateRow(rownum2++);
+
+            cell = row.CreateCell(5);
+            cell.CellStyle = style6;
+            cell.SetCellValue("DÓLARES TOTAL");
+
+            cell = row.CreateCell(6);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(7);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(8);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(9);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(10);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(11);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(12);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(13);
+            cell.CellStyle = style5;
+            cell.SetCellValue("$. 21,779.00");
+
+            cell = row.CreateCell(14);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(15);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(16);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(17);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(18);
+            cell.CellStyle = style5;
+
+            row = sh.CreateRow(rownum2++);
+
+            cell = row.CreateCell(0);
+            cell.CellStyle = style9;
+            cell.SetCellValue("OBSERVACIONES:");
+
+            cell = row.CreateCell(1);
+            cell.CellStyle = style9;
+            cell = row.CreateCell(2);
+            cell.CellStyle = style9;
+            cell = row.CreateCell(3);
+            cell.CellStyle = style9;
+            cell = row.CreateCell(4);
+            cell.CellStyle = style9;
+            cell = row.CreateCell(5);
+            cell.CellStyle = style9;
+            cell = row.CreateCell(6);
+            cell.CellStyle = style9;
+            cell = row.CreateCell(7);
+            cell.CellStyle = style9;
+            cell = row.CreateCell(8);
+            cell.CellStyle = style9;
+            cell = row.CreateCell(9);
+            cell.CellStyle = style9;
+            cell = row.CreateCell(10);
+            cell.CellStyle = style9;
+            cell = row.CreateCell(11);
+            cell.CellStyle = style9;
+            cell = row.CreateCell(12);
+            cell.CellStyle = style9;
+            cell = row.CreateCell(13);
+            cell.CellStyle = style9;
+
+            cell = row.CreateCell(14);
+            cell.CellStyle = style8;
+            cell = row.CreateCell(15);
+            cell.CellStyle = style9;
+            cell = row.CreateCell(16);
+            cell.CellStyle = style8;
+            cell = row.CreateCell(17);
+            cell.CellStyle = style8;
+
+
+            cell = row.CreateCell(18);
+            cell.CellStyle = style5;
+            cell.SetCellValue("TOTAL");
+
+            row = sh.CreateRow(rownum2++);
+
+            cell = row.CreateCell(0);
+            row.Height = 30 * 20;
+            cell.CellStyle = style9;
+            cell.SetCellValue("EMPAQUETADO X");
+
+            cell = row.CreateCell(1);
+            cell.CellStyle = style9;
+
+            cell = row.CreateCell(2);
+            cell.CellStyle = style9;
+
+            cell = row.CreateCell(3);
+            cell.CellStyle = style9;
+            cell.SetCellValue("FACTURADO X");
+
+            cell = row.CreateCell(4);
+            cell.CellStyle = style9;
+
+            cell = row.CreateCell(5);
+            cell.CellStyle = style9;
+            cell.SetCellValue("N° DE FACTURA");
+            cell = row.CreateCell(6);
+            cell.CellStyle = style9;
+
+            cell = row.CreateCell(7);
+            cell.CellStyle = style9;
+            cell.SetCellValue("ENTREGADO POR");
+
+            cell = row.CreateCell(8);
+            cell.CellStyle = style9;
+            cell = row.CreateCell(9);
+            cell.CellStyle = style9;
+            cell = row.CreateCell(10);
+            cell.CellStyle = style9;
+
+            cell = row.CreateCell(11);
+            cell.CellStyle = style9;
+            cell.SetCellValue("N° DE CAJAS");
+            cell = row.CreateCell(12);
+            cell.CellStyle = style9;
+
+            cell = row.CreateCell(13);
+            cell.CellStyle = style9;
+            cell.SetCellValue("GUIA FLETADOR");
+
+            cell = row.CreateCell(14);
+            cell.CellStyle = style9;
+
+            cell = row.CreateCell(15);
+            cell.CellStyle = style8;
+
+            cell = row.CreateCell(16);
+            cell.CellStyle = style8;
+
+            cell = row.CreateCell(17);
+            cell.CellStyle = style8;
+
+            cell = row.CreateCell(18);
+            cell.CellStyle = style8;
+
+            row = sh.CreateRow(rownum2++);
+
+            cell = row.CreateCell(0);
+            cell.CellStyle = style9;
+            cell.SetCellValue("ES CONFORME");
+
+            cell = row.CreateCell(1);
+            cell.CellStyle = style9;
+
+            cell = row.CreateCell(2);
+            cell.CellStyle = style9;
+
+            cell = row.CreateCell(3);
+            cell.CellStyle = style9;
+
+            cell = row.CreateCell(4);
+            cell.CellStyle = style9;
+            cell.SetCellValue("FECHA DE DESPACHO");
+
+            cell = row.CreateCell(5);
+            cell.CellStyle = style9;
+            cell = row.CreateCell(6);
+            cell.CellStyle = style9;
+
+            cell = row.CreateCell(7);
+            cell.CellStyle = style9;
+            cell.SetCellValue("CREDITO POR");
+
+            cell = row.CreateCell(8);
+            cell.CellStyle = style9;
+
+            cell = row.CreateCell(9);
+            cell.CellStyle = style9;
+
+            cell = row.CreateCell(10);
+            cell.CellStyle = style9;
+            cell.SetCellValue("DESCARGADO");
+
+            cell = row.CreateCell(11);
+            cell.CellStyle = style9;
+
+            cell = row.CreateCell(12);
+            cell.CellStyle = style9;
+
+            cell = row.CreateCell(13);
+            cell.CellStyle = style9;
+            cell.SetCellValue("PESO");
+
+            cell = row.CreateCell(14);
+            cell.CellStyle = style9;
+
+            cell = row.CreateCell(15);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(16);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(17);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(18);
+            cell.CellStyle = style5;
+
+            row = sh.CreateRow(rownum2++);
+
+            cell = row.CreateCell(0);
+            row.Height = 40 * 20;
+            cell.CellStyle = style5;
+            cell.SetCellValue("");
+
+            cell = row.CreateCell(1);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(2);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(3);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(4);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(5);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(6);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(7);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(8);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(9);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(10);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(11);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(12);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(13);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(14);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(15);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(16);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(17);
+            cell.CellStyle = style5;
+
+            cell = row.CreateCell(18);
+            cell.CellStyle = style5;
+
+
+            string rutaInicial = ConfigurationManager.AppSettings.Get("RutaVentaGP");
+            string nombre = "Documento_"+ DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
+            var ruta_file = rutaInicial + nombre;
+
+            try
+            {
+                using (var fs = new FileStream(ruta_file, FileMode.Create, FileAccess.Write))
+                {
+                    hssfworkbook.Write(fs);
+                }
+                return Json(new
+                {
+                    Status = 1,
+                    Archivo = nombre
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    Status = 0,
+                    Archivo = ex.Message.ToString()
+                }); 
+            }
+
+
+        }
 
     }
 }
