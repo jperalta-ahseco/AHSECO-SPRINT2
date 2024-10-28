@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArticuloDTO.cs" />
     <Compile Include="AsignacionManual\ClientevsAsesorDTO.cs" />
     <Compile Include="Consultas\PrecioDTO.cs" />
     <Compile Include="Consultas\StockDTO.cs" />
@@ -68,9 +69,14 @@
     <Compile Include="Reportes\UsuarioAuditoriaDTO.cs" />
     <Compile Include="ReportParamsDTO.cs" />
     <Compile Include="ServicioDTO.cs" />
+    <Compile Include="ServicioTecnico\BandejaInstalacionTecnica\GrupoInstalacionTecnicaDTO.cs" />
+    <Compile Include="ServicioTecnico\BandejaInstalacionTecnica\InstalacionTecnicaDetalleDTO.cs" />
+    <Compile Include="ServicioTecnico\BandejaInstalacionTecnica\InstalacionTecnicaDTO.cs" />
+    <Compile Include="ServicioTecnico\BandejaInstalacionTecnica\TecnicoInstalacionDTO.cs" />
+    <Compile Include="FiltroArticuloDTO.cs" />
+    <Compile Include="AlmacenDTO.cs" />
     <Compile Include="Ventas\CotizacionDetalleDTO.cs" />
     <Compile Include="Ventas\CotizacionDTO.cs" />
-    <Compile Include="Ventas\DetalleCotizacionDTO.cs" />
     <Compile Include="Ventas\DocumentoCabCotizacionDTO.cs" />
     <Compile Include="Ventas\DocumentoCotizacionDTO.cs" />
     <Compile Include="Ventas\DocumentoDetCotizacionDTO.cs" />

@@ -1,0 +1,78 @@
+﻿
+@{
+    ViewBag.Title = "Detalle de Producto";
+}
+
+<div style="width:50%" class="modal-dialog modal-lg container-fluid" role="document">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <!-- Modal content header -->
+        <div class="modal-header box-header well well-sm" style="padding-bottom: 30px;">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="tituloModal"><i class="fa fa-cubes"></i> @ViewBag.Title</h4>
+        </div>
+        <!-- Modal content body -->
+        <div class="modal-body d-flex justify-content-center" align-items-center>
+            <form id="formItem" class="d-flex flex-row">
+                <div class="row container-fluid d-flex justify-content-center">
+                    <div class="row container-fluid">
+                        <div class="col-md-3">
+                            <label for="DI_txtCodProducto">C&oacute;digo Producto: </label>
+                            <div class="form-group">
+                                <input disabled placeholder="Ingresar código de producto" type="text" class="form-control input-sm" id="DI_txtCodProducto" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <label for="DI_txtNomProducto">Nombre de Producto: </label>
+                            <div class="form-group">
+                                <input disabled placeholder="Ingresar nombre de producto" type="text" class="form-control input-sm" id="DI_txtNomProducto" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="DI_txtCantidad">Cantidad: </label>
+                            <div class="form-group">
+                                <input placeholder="Ingresar cantidad" type="text" class="form-control input-sm" id="DI_txtCantidad" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="col-md-3">
+                            <label for="DI_chkLLaveEnMano">LLave en mano: </label>
+                            <div class="form-group">
+                                <table style="width:100%">
+                                    <tr>
+                                        <td><input type="radio" name="DI_chkLLaveEnMano" class="input-sm" id="DI_chkLLaveEnMano_Si" value="Si"></td>
+                                        <td style="padding-top:5px"><label>SI</label></td>
+                                        <td>&nbsp;</td>
+                                        <td><input type="radio" name="DI_chkLLaveEnMano" class="input-sm" id="DI_chkLLaveEnMano_No" value="No" checked="checked"></td>
+                                        <td style="padding-top:5px"><label>NO</label></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="DI_txtCantPreventivo">Cantidad Preventivo: </label>
+                            <div class="form-group">
+                                <input placeholder="Ingresar cantidad" type="text" class="form-control input-sm" id="DI_txtCantPreventivo" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="BI_cmbPerPreventivo">Periodo Preventivo: </label>
+                            <div class="form-group">
+                                <select class="form-control select2 input-sm" style="width:100%;" id="BI_cmbPerPreventivo" data-selected="">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button class="btn btn-default btn-sm" type="button" id="DI_btnGuardar"><i class="fa fa-save" aria-hidden="true"></i> Guardar</button>
+                        <button class="btn btn-danger btn-sm" type="button" id="DI_btnCerrar" onclick="javascript: cotvtadet.cerrarModalDetItem();"><i class="fa fa-plus" aria-hidden="true"></i> Cancelar</button>
+                        <span id="hidden_fields"></span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -81,5 +81,20 @@ namespace AHSECO.CCL.COMUN
             }
         }
 
+        public struct Articulos
+        {
+            public struct Familia
+            {
+                public static string Equipos { get { return "01"; } }
+                public static string ReactivosLaboratorio { get { return "02"; } }
+                public static string ArticulosLaboratorio { get { return "03"; } }
+                public static string InstApaMedicina { get { return "04"; } }
+                public static string Medicon { get { return "05"; } }
+                public static string Repuestos { get { return "06"; } }
+                public static string Locales { get { return "07"; } }
+                public static string Accesorios { get { return "08"; } }
+            }
+        }
+
     }
 }

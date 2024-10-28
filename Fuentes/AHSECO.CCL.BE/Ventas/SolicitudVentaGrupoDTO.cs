@@ -10,7 +10,7 @@ namespace AHSECO.CCL.BE.Ventas
     {
         public SolicitudDTO Solicitud { get; set; }
         public CotizacionDTO CabeceraCotizacion { get; set; }
-        public List<DetalleCotizacionDTO> DetalleCotizacion { get; set; }
+        public List<CotizacionDetalleDTO> DetalleCotizacion { get; set; }
         public List<ObservacionDTO> Observaciones { get; set; }
         public List<WorkflowLogDTO> Seguimiento { get; set; }
         public List<DocumentoDTO> Adjuntos { get; set; }

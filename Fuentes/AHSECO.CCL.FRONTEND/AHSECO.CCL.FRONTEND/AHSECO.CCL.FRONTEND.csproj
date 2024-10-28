@@ -936,6 +936,7 @@
     <Content Include="Views\Shared\_BandejaHistorialCotizacion.cshtml" />
     <Content Include="Views\Shared\_BusquedaSolicitud.cshtml" />
     <Content Include="Views\Shared\_DetalleServicio.cshtml" />
+    <Content Include="Views\BandejaSolicitudesVentas\_SolicitudDetItem.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\css\font\" />

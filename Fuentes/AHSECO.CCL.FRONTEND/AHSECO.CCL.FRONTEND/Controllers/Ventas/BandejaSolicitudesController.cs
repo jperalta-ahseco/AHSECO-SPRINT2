@@ -29,6 +29,7 @@ using System.ComponentModel.Design;
 using System.IO;
 using AHSECO.CCL.BL.Mantenimientos;
 using AHSECO.CCL.BL.Consulta;
+using NPOI.OpenXmlFormats.Spreadsheet;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 {
@@ -99,8 +100,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.VerTabCotDet = false;
             ViewBag.PermitirAgregarCotDet = false;
             ViewBag.PermitirNuevoCot = false;
-
-            ViewBag.ListaSeleccionados = new List<CotizacionDetalleDTO>();
+            VariableSesion.setObject("CotDetItems", new List<CotizacionDetalleDTO>());
 
             if (numSol != null)
             {
@@ -307,7 +307,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             //Registra detalles de cotizacion
             foreach (var detalle in solicitudVentaGrupoDTO.DetalleCotizacion)
             {
-                detalle.Id_Cotizacion = cabeceraCotizacion.Result.Codigo;
+                detalle.IdCotizacion = cabeceraCotizacion.Result.Codigo;
                 detalle.UsuarioRegistra = User.ObtenerUsuario();
 
                 var resultDetalle = ventasBL.MantenimientoCotizacionDetalle(detalle);
@@ -589,6 +589,15 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         }
 
         [HttpPost]
+        public JsonResult ObtenerArticulos(FiltroArticuloDTO filtro)
+        {
+            var dgBL = new VentasBL();
+            var articulos = dgBL.ObtenerArticulosxFiltro(filtro);
+            var ojson = Json(articulos);
+            return ojson;
+        }
+
+        [HttpPost]
         public JsonResult CancelarSolicitud(int ID_Solicitud)
         {
             try
@@ -606,30 +615,72 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         }
 
         [HttpPost]
-        public JsonResult AgregarItemCotDet(CotizacionDetalleDTO Item)
+        public JsonResult AgregarItemCotDet(string CodItem)
         {
             try
             {
-                var consultaPreciosBL = new ConsultaPrecioBL();
-                var respPrecios = consultaPreciosBL.ObtenerPrecios(new PrecioDTO { CodigoProducto = Item.CodItem });
+                var ventaBL = new VentasBL();
+                var respArt = ventaBL.ObtenerArticulosxFiltro(new FiltroArticuloDTO { CodsArticulo = CodItem });
 
                 List<CotizacionDetalleDTO> lstItems = new List<CotizacionDetalleDTO>();
-                if(ViewBag.ListaSeleccionados != null) { lstItems = ViewBag.ListaSeleccionados; }
-                if (respPrecios.Result.Any())
-                {
-                    var objPrecio = respPrecios.Result.First();
-                    var select = new CotizacionDetalleDTO();
-                    select.CodItem = objPrecio.CodigoProducto;
-                    select.Descripcion = objPrecio.NombreProducto;
-                    lstItems.Add(select);
-                }
-                ViewBag.ListaSeleccionados = lstItems;
+                if (VariableSesion.getObject("CotDetItems") != null) { lstItems = (List<CotizacionDetalleDTO>)VariableSesion.getObject("CotDetItems"); }
+
+                if (lstItems.Any(x => x.CodItem == CodItem))
+                { throw new Exception("Producto ya fue selecionado"); }
+
+                var oArticulo = new ArticuloDTO();
+                if (respArt.Result.Any(x => x.CodArticulo == CodItem))
+                { oArticulo = respArt.Result.First(x => x.CodArticulo == CodItem); }
+
+                var select = new CotizacionDetalleDTO();
+                select.CodItem = oArticulo.CodArticulo;
+                select.Descripcion = oArticulo.DescArticulo;
+                lstItems.Add(select);
+
+                VariableSesion.setObject("CotDetItems", lstItems);
+
+                var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems);
+
+                return Json(response);
+            }
+            catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
+        }
+
+        [HttpPost]
+        public JsonResult QuitarItemCotDet(string CodArticulo)
+        {
+            try
+            {
+                List<CotizacionDetalleDTO> lstItems = new List<CotizacionDetalleDTO>();
+                if (VariableSesion.getObject("CotDetItems") != null) { lstItems = (List<CotizacionDetalleDTO>)VariableSesion.getObject("CotDetItems"); }
+
+                lstItems = lstItems.Where(x => x.CodItem != CodArticulo).ToList();
+
+                VariableSesion.setObject("CotDetItems", lstItems);
 
                 var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems);
 
                 return Json(response);
             }
             catch (Exception ex) { return Json(new { Status = 0, Mensaje = ex.Message }); }
+        }
+
+        [HttpPost]
+        public JsonResult EditarItemCotDet(ArticuloDTO itemArticulo)
+        {
+            try
+            {
+                var ventaBL = new VentasBL();
+                var respArt = ventaBL.ObtenerArticulosxFiltro(new FiltroArticuloDTO { CodsArticulo = itemArticulo.CodArticulo });
+                var oArticulo = respArt.Result.First();
+
+                CotizacionDetalleDTO itemCotDet = new CotizacionDetalleDTO();
+                itemCotDet.CodItem = oArticulo.CodArticulo;
+                itemCotDet.Descripcion = oArticulo.DescArticulo;
+
+                return Json(new ResponseDTO<CotizacionDetalleDTO>(itemCotDet));
+            }
+            catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
         }
 
     }

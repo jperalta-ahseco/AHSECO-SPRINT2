@@ -234,7 +234,7 @@ namespace AHSECO.CCL.BD.Ventas
                 return result;
             }
         }
-        public RespuestaDTO MantenimientoCotizacionDetalle(DetalleCotizacionDTO detalleCotizacion)
+        public RespuestaDTO MantenimientoCotizacionDetalle(CotizacionDetalleDTO detalleCotizacion)
         {
             Log.TraceInfo(Utilidades.GetCaller());
             using ( var connection = Factory.ConnectionFactory())
@@ -243,23 +243,23 @@ namespace AHSECO.CCL.BD.Ventas
                 var parameters = new DynamicParameters();
 
                 parameters.Add("isTipoProceso",detalleCotizacion.TipoProceso);
-                parameters.Add("isID_DETALLE", detalleCotizacion.IdDetalleCot);
-                parameters.Add("isID_COTIZACION", detalleCotizacion.IdDetalleCot);
-                parameters.Add("isTIPO", detalleCotizacion.Tipo);
-                parameters.Add("isTIPOPRODUCTO", detalleCotizacion.TipoProducto);
-                parameters.Add("isCODPRODUCTO", detalleCotizacion.CodProducto);
+                parameters.Add("isID_DETALLE", detalleCotizacion.Id);
+                parameters.Add("isID_COTIZACION", detalleCotizacion.IdCotizacion);
+                parameters.Add("isTIPO", detalleCotizacion.TipoItem);
+                parameters.Add("isTIPOPRODUCTO", null);
+                parameters.Add("isCODPRODUCTO", detalleCotizacion.CodItem);
                 parameters.Add("isDESCRIPCION", detalleCotizacion.Descripcion);
                 parameters.Add("isUNIDAD", detalleCotizacion.Unidad);
                 parameters.Add("isCANTIDAD", detalleCotizacion.Cantidad);
-                parameters.Add("isCOSTOFOB", detalleCotizacion.CostoFob);
-                parameters.Add("isVVENTAUNI", detalleCotizacion.VventaUni);
-                parameters.Add("isVVTOTALSIGV", detalleCotizacion.VvTotalSigv);
-                parameters.Add("isELIMINADO", detalleCotizacion.Eliminado);
+                parameters.Add("isCOSTOFOB", detalleCotizacion.CostoFOB);
+                parameters.Add("isVVENTAUNI", detalleCotizacion.VentaUnitaria);
+                parameters.Add("isVVTOTALSIGV", detalleCotizacion.VentaTotalSinIGV);
+                parameters.Add("isELIMINADO", null);
                 parameters.Add("isUsrEjecuta",detalleCotizacion.UsuarioRegistra);
                 parameters.Add("isFecEjecuta", detalleCotizacion.FechaRegistro);
 
                 var result = connection.Query(
-                    sql: "",
+                    sql: "USP_MANT_TBD_COTIZACIONVENTA",
                     param: parameters,
                     commandType: CommandType.StoredProcedure)
                     .Select(s => s as IDictionary<string, object>)
@@ -583,7 +583,6 @@ namespace AHSECO.CCL.BD.Ventas
             };
         }
 
-
 		public IEnumerable<HistorialCotizacionCabeceraDTO> ListarHistorialCotizacion(long codCotizacion, long codSolicitud)
         {
             Log.TraceInfo(Utilidades.GetCaller());
@@ -702,5 +701,100 @@ namespace AHSECO.CCL.BD.Ventas
 
             }
         }
+
+        public IEnumerable<ArticuloDTO> ObtenerArticulosxFiltro(FiltroArticuloDTO filtro)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            try
+            {
+                using (var connection = Factory.ConnectionFactory())
+                {
+                    connection.Open();
+                    var parameters = new DynamicParameters();
+                    if (filtro.CodsArticulo != null) { parameters.Add("pAR_CCODIGO", filtro.CodsArticulo, DbType.String, ParameterDirection.Input); }
+                    else { parameters.Add("pAR_CCODIGO", DBNull.Value, DbType.String, ParameterDirection.Input); }
+                    if (filtro.DescArticulo != null) { parameters.Add("pAR_CDESCRI", filtro.DescArticulo, DbType.String, ParameterDirection.Input); }
+                    else { parameters.Add("pAR_CDESCRI", DBNull.Value, DbType.String, ParameterDirection.Input); }
+                    if (filtro.CodsUnidad != null) { parameters.Add("pAR_CUNIDAD", filtro.CodsUnidad, DbType.String, ParameterDirection.Input); }
+                    else { parameters.Add("pAR_CUNIDAD", DBNull.Value, DbType.String, ParameterDirection.Input); }
+                    if (filtro.CodsFamilia != null) { parameters.Add("pAR_CFAMILI", filtro.CodsFamilia, DbType.String, ParameterDirection.Input); }
+                    else { parameters.Add("pAR_CFAMILI", DBNull.Value, DbType.String, ParameterDirection.Input); }
+                    if (filtro.CodsLinea != null) { parameters.Add("pAR_CLINEA", filtro.CodsLinea, DbType.String, ParameterDirection.Input); }
+                    else { parameters.Add("pAR_CLINEA", DBNull.Value, DbType.String, ParameterDirection.Input); }
+                    if (filtro.CodsMarca != null) { parameters.Add("pAR_CMARCA", filtro.CodsMarca, DbType.String, ParameterDirection.Input); }
+                    else { parameters.Add("pAR_CMARCA", DBNull.Value, DbType.String, ParameterDirection.Input); }
+                    if (filtro.CodsAlma != null) { parameters.Add("pSK_CALMA", filtro.CodsAlma, DbType.String, ParameterDirection.Input); }
+                    else { parameters.Add("pSK_CALMA", DBNull.Value, DbType.String, ParameterDirection.Input); }
+                    if (filtro.CantidadRegistros != null) { parameters.Add("pCANTREG", filtro.CantidadRegistros.Value, DbType.Int32, ParameterDirection.Input); }
+                    else { parameters.Add("pCANTREG", DBNull.Value, DbType.String, ParameterDirection.Input); }
+
+                    var result = connection.Query(
+                        sql: "USP_SEL_ARTICULOSXFILTRO",
+                        param: parameters,
+                        commandType: CommandType.StoredProcedure)
+                        .Select(s => s as IDictionary<string, object>)
+                        .Select(i => new ArticuloDTO
+                        {
+                            CodArticulo = i.Single(d => d.Key.Equals("COD_ARTICULO")).Value.Parse<string>(),
+                            DescArticulo = i.Single(d => d.Key.Equals("DESC_ARTICULO")).Value.Parse<string>(),
+                            CodUnidad = i.Single(d => d.Key.Equals("COD_UNIDAD")).Value.Parse<string>(),
+                            DescUnidad = i.Single(d => d.Key.Equals("DESC_UNIDAD")).Value.Parse<string>(),
+                            CodFamilia = i.Single(d => d.Key.Equals("COD_FAMILIA")).Value.Parse<string>(),
+                            DescFamilia = i.Single(d => d.Key.Equals("DESC_FAMILIA")).Value.Parse<string>(),
+                            CodLinea = i.Single(d => d.Key.Equals("COD_LINEA")).Value.Parse<string>(),
+                            DescLinea = i.Single(d => d.Key.Equals("DESC_LINEA")).Value.Parse<string>(),
+                            CodMarca = i.Single(d => d.Key.Equals("COD_MARCA")).Value.Parse<string>(),
+                            DescMarca = i.Single(d => d.Key.Equals("DESC_MARCA")).Value.Parse<string>(),
+                            StockDisponible = i.Single(d => d.Key.Equals("STOCK_DISPO")).Value.Parse<int>(),
+                            PrecioRef = i.Single(d => d.Key.Equals("PRECIO_REF")).Value.Parse<decimal>(),
+                            CodAlmacen = i.Single(d => d.Key.Equals("COD_ALMACEN")).Value.Parse<string>(),
+                            DescAlmacen = i.Single(d => d.Key.Equals("DESC_ALMACEN")).Value.Parse<string>()
+                        });
+
+                    connection.Close();
+
+                    if (result != null)
+                    {
+                        List<ArticuloDTO> lst = new List<ArticuloDTO>();
+                        foreach (string codArti in result.Select(x => x.CodArticulo).Distinct().ToList())
+                        {
+                            var lstArticulo = result.Where(x => x.CodArticulo == codArti).ToList();
+                            var oArticulo = lstArticulo.FirstOrDefault(x => x.CodArticulo == codArti);
+                            var newItem = new ArticuloDTO();
+                            newItem.CodArticulo = oArticulo.CodArticulo;
+                            newItem.DescArticulo = oArticulo.DescArticulo;
+                            newItem.CodUnidad = oArticulo.CodUnidad;
+                            newItem.DescUnidad = oArticulo.DescUnidad;
+                            newItem.CodFamilia = oArticulo.CodFamilia;
+                            newItem.DescFamilia = oArticulo.DescFamilia;
+                            newItem.CodLinea = oArticulo.CodLinea;
+                            newItem.DescLinea = oArticulo.DescLinea;
+                            newItem.CodMarca = oArticulo.CodMarca;
+                            newItem.DescMarca = oArticulo.DescMarca;
+                            newItem.PrecioRef = oArticulo.PrecioRef;
+                            if (oArticulo != null && lstArticulo.Any())
+                            {
+                                var Almacenes = new List<AlmacenDTO>();
+                                foreach (ArticuloDTO objArt in lstArticulo)
+                                {
+                                    Almacenes.Add(new AlmacenDTO() { CodAlmacen = objArt.CodAlmacen, DescAlmacen = objArt.DescAlmacen, StockDisponible = objArt.StockDisponible });
+                                }
+                                newItem.Almacenes = Almacenes.ToArray();
+                                lst.Add(newItem);
+                            }
+                        }
+                        result = lst;
+                    }
+
+                    return result;
+                };
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
     }
 }

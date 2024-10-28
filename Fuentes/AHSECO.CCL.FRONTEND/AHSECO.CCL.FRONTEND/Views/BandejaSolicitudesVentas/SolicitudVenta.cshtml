@@ -297,7 +297,7 @@
                                                 <br />
                                                 <div class="row container-fluid">
                                                     <div class="text-right">
-						    <button class="btn btn-danger btn-sm" type="button" data-target="#modalBandejaHistorialCotizacion" data-toggle="modal" id="btnHistorial" tabindex="14"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Historial</button>
+                                                        <button class="btn btn-danger btn-sm" type="button" data-target="#modalBandejaHistorialCotizacion" data-toggle="modal" id="btnHistorial" tabindex="14"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Historial</button>
                                                         <button class="btn btn-primary btn-sm" type="button" id="btnImprimirCotizacion"><i class="fa fa-print" aria-hidden="true"></i>&nbsp;Generar Cotizaci&oacute;n</button>
                                                         @if (ViewBag.IdCotizacion == 0)
                                                         {
@@ -316,7 +316,7 @@
                                                         <div class="text-right">
                                                             @if (ViewBag.PermitirAgregarCotDet == true)
                                                             {
-                                                                <button class="btn btn-default btn-sm" type="button" data-target="#modalDetalleProductos" data-toggle="modal" id="btnAgregarDetalle" tabindex="14"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar Detalle</button>
+                                                                <button class="btn btn-default btn-sm" type="button" data-target="#modalDetalleCotizacion" data-toggle="modal" id="btnAgregarDetalle" tabindex="14"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar Detalle</button>
                                                             }
                                                             @if (ViewBag.PermitirNuevoCot == true)
                                                             {
@@ -549,19 +549,25 @@
 </script>
 <!--Modal-->
 
-<div class="modal fade" id="modalContactos" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+<div class="modal fade" id="modalContactos" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false">
     @{
         Html.RenderPartial("_Contactos");
     }
 </div>
 
-<div class="modal fade" id="modalDetalleProductos" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+<div class="modal fade" id="modalDetalleCotizacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false">
     @{
         Html.RenderPartial("_SolicitudDetCot");
     }
 </div>
 
-<div class="modal fade" id="modalBandejaHistorialCotizacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+<div class="modal fade" id="modalDetalleItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_SolicitudDetItem");
+    }
+</div>
+
+<div class="modal fade" id="modalBandejaHistorialCotizacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false">
     @{
         Html.RenderPartial("_BandejaHistorialCotizacion");
     }

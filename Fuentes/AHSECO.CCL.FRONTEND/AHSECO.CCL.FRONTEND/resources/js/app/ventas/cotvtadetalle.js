@@ -41,13 +41,13 @@ var cotvtadet = (function ($, win, doc) {
             var filters2 = {};
             filters2.placeholder = "-- Todos --";
             filters2.allowClear = false;
-            app.llenarComboMultiResult($BI_cmbMarca, data.Result.Marcas, null, 0, "--Todos--", filters2);
+            app.llenarComboMultiResult($BI_cmbMarca, data.Result.Marcas, null, "", "--Todos--", filters2);
             
             //Cargar combo de medidas:
             var filters4 = {};
             filters4.placeholder = "-- Todos --";
             filters4.allowClear = false;
-            app.llenarComboMultiResult($BI_cmbTipoMedida, data.Result.Medidas, null, 0, "--Todos--", filters4);
+            app.llenarComboMultiResult($BI_cmbTipoMedida, data.Result.Medidas, null, "", "--Todos--", filters4);
 
         }
         return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, mensajes.obteniendoFiltros);
@@ -76,42 +76,45 @@ var cotvtadet = (function ($, win, doc) {
 
     function buscarItems() {
         method = "POST";
-        url = "CatalogoPrecios/ObtenerPrecios";
+        url = "BandejaSolicitudesVentas/ObtenerArticulos";
         var objFiltros = {
-            CodigoProducto: $BI_txtCodProducto.val(),
-            NombreProducto: $BI_txtNomProducto.val(),
-            UnidadMedida: $BI_cmbTipoMedida.val(),
-            CodigoFamilia: $BI_cmbFamilia.val(),
-            CodigoMarca: $BI_cmbMarca.val(),
-            NumeroPaginas: 500,
-            Pagina: 1
+            CodsArticulo: $BI_txtCodProducto.val(),
+            DescArticulo: $BI_txtNomProducto.val(),
+            CodsUnidad: $BI_cmbTipoMedida.val(),
+            CodsFamilia: $BI_cmbFamilia.val(),
+            CodsMarca: $BI_cmbMarca.val(),
+            CantidadRegistros: 500
         };
         var objParam = JSON.stringify(objFiltros);
 
         var fnDoneCallBack = function (data) {
             cargarTablaItems(data);
         };
-        
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+
+        var fnFailCallback = function () {
+            app.message.error("Validación", "No hay productos.");
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallback);
     }
 
     function cargarTablaItems(data) {
 
         var columns = [
             {
-                data: "CodigoProducto",
+                data: "CodArticulo",
                 render: function (data) {
                     return '<center>' + data + '</center>';
                 }
             },
             {
-                data: "NombreFamilia",
+                data: "DescFamilia",
                 render: function (data) {
                     return '<center>' + data + '</center>';
                 }
             },
             {
-                data: "NombreProducto",
+                data: "DescArticulo",
                 render: function (data) {
                     return '<center>' + data + '</center>';
                 }
@@ -123,20 +126,20 @@ var cotvtadet = (function ($, win, doc) {
                 }
             },
             {
-                data: "PrecioReferencial",
+                data: "PrecioRef",
                 render: function (data) {
                     var precio = data.toFixed(2)
                     return '<center>' + precio + '</center>';
                 }
             },
             {
-                data: "UnidadMedida",
+                data: "DescUnidad",
                 render: function (data) {
                     return '<center>' + data + '</center>';
                 }
             },
             {
-                data: "CodigoProducto",
+                data: "CodArticulo",
                 render: function (data) {
                     var seleccionar = '<a id="btnSeleccionarItem" class="btn btn-default btn-xs" title="Seleccionar" href="javascript: cotvtadet.selItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) +')"><i class="fa fa-level-down" aria-hidden="true"></i> Seleccionar</a>';
                     return '<center>' + seleccionar + '</center>';
@@ -178,31 +181,136 @@ var cotvtadet = (function ($, win, doc) {
     }
 
     function cargarTablaCotDet(data) {
+        
+        //var columns = [
+        //    {
+        //        data: "CodItem",
+        //        render: function (data) {
+        //            if (data == null) { data = ""; }
+        //            return '<center>' + data + '</center>';
+        //        }
+        //    },
+        //    {
+        //        data: "Descripcion",
+        //        render: function (data) {
+        //            if (data == null) { data = ""; }
+        //            return '<center>' + data + '</center>';
+        //        }
+        //    },
+        //    {
+        //        data: "Cantidad",
+        //        render: function (data) {
+        //            if (data == null) { data = ""; }
+        //            return '<center>' + data + '</center>';
+        //        }
+        //    },
+        //    {
+        //        data: "LLaveEnMano",
+        //        render: function (data) {
+        //            var checked = "";
+        //            if (data == true) { checked = "checked='true'"; }
+        //            var input = "<input type='checkbox' " + checked + " disabled='disabled'";
+        //            return '<center>' + input + '</center>';
+        //        }
+        //    },
+        //    {
+        //        data: "Ubigeo",
+        //        render: function (data) {
+        //            return '<center>' + data + '</center>';
+        //        }
+        //    },
+        //    {
+        //        data: "Direccion",
+        //        render: function (data) {
+        //            if (data == null) { data = ""; }
+        //            return '<center>' + data + '</center>';
+        //        }
+        //    },
+        //    {
+        //        data: "Piso",
+        //        render: function (data) {
+        //            if (data == null) { data = ""; }
+        //            return '<center>' + data + '</center>';
+        //        }
+        //    },
+        //    {
+        //        data: "CantidadPreventivo",
+        //        render: function (data) {
+        //            if (data == null) { data = ""; }
+        //            return '<center>' + data + '</center>';
+        //        }
+        //    },
+        //    {
+        //        data: "PeriodoPreventivo",
+        //        render: function (data) {
+        //            if (data == null) { data = ""; }
+        //            return '<center>' + data + '</center>';
+        //        }
+        //    },
+        //    {
+        //        data: "Manuales",
+        //        render: function (data) {
+        //            var checked = "";
+        //            if (data == true) { checked = "checked='true'"; }
+        //            var input = "<input type='checkbox' " + checked + " disabled='disabled'";
+        //            return '<center>' + input + '</center>';
+        //        }
+        //    },
+        //    {
+        //        data: "Videos",
+        //        render: function (data) {
+        //            var checked = "";
+        //            if (data == true) { checked = "checked='true'"; }
+        //            var input = "<input type='checkbox' " + checked + " disabled='disabled'";
+        //            return '<center>' + input + '</center>';
+        //        }
+        //    },
+        //    {
+        //        data: "InstCapa",
+        //        render: function (data) {
+        //            var checked = "";
+        //            if (data == true) { checked = "checked='true'"; }
+        //            var input = "<input type='checkbox' " + checked + " disabled='disabled'";
+        //            return '<center>' + input + '</center>';
+        //        }
+        //    },
+        //    {
+        //        data: "GarantiaAdic",
+        //        render: function (data) {
+        //            if (data == null) { data = ""; }
+        //            return '<center>' + data + '</center>';
+        //        }
+        //    },
+        //    {
+        //        data: "CodItem",
+        //        render: function (data) {
+        //            var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.ediItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+        //            var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.eliItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ')"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+        //            return '<center>' + editar + ' ' + quitar + '</center>';
+        //        }
+        //    }
+        //];
 
         var columns = [
             {
                 data: "CodItem",
                 render: function (data) {
+                    if (data == null) { data = ""; }
                     return '<center>' + data + '</center>';
                 }
             },
             {
                 data: "Descripcion",
                 render: function (data) {
+                    if (data == null) { data = ""; }
                     return '<center>' + data + '</center>';
                 }
             },
             {
                 data: "Cantidad",
                 render: function (data) {
+                    if (data == null) { data = ""; }
                     return '<center>' + data + '</center>';
-                }
-            },
-            {
-                data: "LLaveEnMano",
-                render: function (data) {
-                    if (data == false) { return "<center><input type='checkbox'></center>"; }
-                    else { return "<center><input type='checkbox' checked='checked'></center>"; }
                 }
             },
             {
@@ -214,56 +322,23 @@ var cotvtadet = (function ($, win, doc) {
             {
                 data: "Direccion",
                 render: function (data) {
+                    if (data == null) { data = ""; }
                     return '<center>' + data + '</center>';
                 }
             },
             {
                 data: "Piso",
                 render: function (data) {
-                    return '<center>' + data + '</center>';
-                }
-            },
-            {
-                data: "CantidadPreventivo",
-                render: function (data) {
-                    return '<center>' + data + '</center>';
-                }
-            },
-            {
-                data: "PeriodoPreventivo",
-                render: function (data) {
-                    return '<center>' + data + '</center>';
-                }
-            },
-            {
-                data: "Manuales",
-                render: function (data) {
-                    return '<center>' + data + '</center>';
-                }
-            },
-            {
-                data: "Videos",
-                render: function (data) {
-                    return '<center>' + data + '</center>';
-                }
-            },
-            {
-                data: "InstCapa",
-                render: function (data) {
-                    return '<center>' + data + '</center>';
-                }
-            },
-            {
-                data: "GarantiaAdic",
-                render: function (data) {
+                    if (data == null) { data = ""; }
                     return '<center>' + data + '</center>';
                 }
             },
             {
                 data: "CodItem",
                 render: function (data) {
-                    var eliminar = '<a id="btnSeleccionarItem" class="btn btn-default btn-xs" title="Seleccionar" href="javascript: cotvtadet.eliItem(' + data + ')"><i class="fa fa-level-down" aria-hidden="true"></i> Quitar</a>';
-                    return '<center>' + eliminar + '</center>';
+                    var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.ediItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                    var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quiItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ')"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                    return '<center>' + editar + ' ' + quitar + '</center>';
                 }
             }
         ];
@@ -286,10 +361,49 @@ var cotvtadet = (function ($, win, doc) {
         app.llenarTabla($tblCotDet, data, columns, columnDefs, "#tblCotDet", rowCallback, null, filters);
     }
 
+    function quiItem(CodigoItem) {
+        method = "POST";
+        url = "BandejaSolicitudesVentas/QuitarItemCotDet";
+        var objFiltros = {
+            CodItem: CodigoItem
+        };
+        var objParam = JSON.stringify(objFiltros);
+
+        var fnDoneCallBack = function (data) {
+            cargarTablaCotDet(data);
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+    }
+
+    function ediItem(CodigoItem) {
+        method = "POST";
+        url = "BandejaSolicitudesVentas/EditarItemCotDet";
+        var objFiltros = {
+            CodArticulo: CodigoItem
+        };
+        var objParam = JSON.stringify(objFiltros);
+
+        var fnDoneCallBack = function (data) {
+            $("#DI_txtCodProducto").val(data.Result.CodItem);
+            $("#DI_txtNomProducto").val(data.Result.Descripcion);
+            $('#modalDetalleItem').modal('show');
+        };
+        
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+    }
+
+    function cerrarModalDetItem() {
+        $('#modalDetalleItem').modal('hide');
+    }
+
     return {
         buscarItems: buscarItems,
         ObtenerFiltrosPrecios: ObtenerFiltrosPrecios,
         RecargarFiltroFamilia: RecargarFiltroFamilia,
-        selItem: selItem
+        selItem: selItem,
+        quiItem: quiItem,
+        ediItem: ediItem,
+        cerrarModalDetItem: cerrarModalDetItem
     }
 })(window.jQuery, window, document);

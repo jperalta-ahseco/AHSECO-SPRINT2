@@ -358,20 +358,26 @@ var app = (function ($, win, doc) {
 
     // Ejecuta una llamada ajax con los parametros especificados
     var cantidadLlamadas = 0;
+    var $modalLoading;
     function llamarAjax(method, url, data, fnDoneCallback, fnFailCallback, fnAlwaysCallback, messageWait) {
         var m = method || "POST";
         var u = baseUrl + url;
         var d = data || "";
+        
+        //loading.show(messageWait);
 
-       // cantidadLlamadas++;
-        loading.show(messageWait);
-       // alert(loading.isOpen);
-        /*if (cantidadLlamadas == 1 ) {
-            loading.show(messageWait);
-        } else {
-            loading.setMessage(messageWait);
-        }*/
-
+        $modalLoading = $("#modalLoading");
+        var $modalLoading_body = $("#messageLoading");
+        var defaultMessage = "Procesando, por favor espere...";
+        $modalLoading_body.html(defaultMessage);
+        var zi = obtenerMayorZIndex();
+        $modalLoading.addClass("in");
+        $modalLoading.css("z-index", zi + 2);
+        $modalLoading.css("background-color", "#000000");
+        $modalLoading.css("opacity", "0.5");
+        $modalLoading.css("filter", "alpha(opacity=50)");
+        $modalLoading.show();
+        
         return $.ajax({
             method: m,
             url: u,
@@ -389,15 +395,13 @@ var app = (function ($, win, doc) {
         }).fail(function (jqXhr, textStatus, errorThrow) {
             message.error("Error inesperado", errorThrow, "Aceptar", fnFailCallback);
         }).always(function () {
-            
+
             if (typeof (fnAlwaysCallback) !== "undefined" && fnAlwaysCallback != null) {
                 fnAlwaysCallback();
             }
-          //  cantidadLlamadas--;
-            // if (cantidadLlamadas == 0)
-            if (!loading.isGlobal)
-            {
-                loading.hide();
+            if (!loading.isGlobal) {
+                //loading.hide();
+                $modalLoading.hide();
             }
         });
     }

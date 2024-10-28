@@ -1094,20 +1094,45 @@ if (typeof jQuery === 'undefined') {
   }
 
   Modal.prototype.removeBackdrop = function () {
-    this.$backdrop && this.$backdrop.remove()
-    this.$backdrop = null
+      //this.$backdrop && this.$backdrop.remove()
+      if (this.$backdrop != null) {
+          var id = this.$backdrop.attr('id')
+          var last = this.$backdrop.attr('last-backdrop')
+          if (last == "Y") {
+              $("#" + id).remove()
+              //this.$backdrop.removeClass('in')
+          }
+      }
   }
 
+  var index_highest = 0;
   Modal.prototype.backdrop = function (callback) {
     var that = this
     var animate = this.$element.hasClass('fade') ? 'fade' : ''
 
     if (this.isShown && this.options.backdrop) {
       var doAnimate = $.support.transition && animate
+      var dt = new Date();
+        var time = dt.getSeconds() + dt.getMilliseconds();
+
+      $("*").each(function () {
+          var index_current = parseInt($(this).css("zIndex"), 10);
+          if (index_current > index_highest)
+              index_highest = index_current;
+      });
+
+      $(".modal-backdrop2").each(function (index) {
+          $(this).attr('last-backdrop', 'N');
+      });
 
       this.$backdrop = $(document.createElement('div'))
-        .addClass('modal-backdrop ' + animate)
+        .addClass('modal-backdrop2 ' + animate)
+        .attr("id", "backdrop_" + time)
+        .css("z-index", index_highest + 1)
+        .attr("last-backdrop", "Y")
         .appendTo(this.$body)
+
+      this.$element.css("z-index", index_highest + 2);
 
       this.$element.on('click.dismiss.bs.modal', $.proxy(function (e) {
         if (this.ignoreBackdropClick) {
@@ -1131,22 +1156,40 @@ if (typeof jQuery === 'undefined') {
           .one('bsTransitionEnd', callback)
           .emulateTransitionEnd(Modal.BACKDROP_TRANSITION_DURATION) :
         callback()
-
+        
     } else if (!this.isShown && this.$backdrop) {
-      this.$backdrop.removeClass('in')
+        this.$backdrop.removeClass('in')
 
-      var callbackRemove = function () {
-        that.removeBackdrop()
-        callback && callback()
-      }
+        var callbackRemove = function () {
+            that.removeBackdrop()
+            callback && callback()
+        }
+
+        var callbackRemove1 = function () {
+            that.removeBackdrop()
+            callback && callback()
+        }
+
+        var callbackRemove2 = function () {
+            that.removeBackdrop()
+            callback && callback()
+        }
+
+        /*
       $.support.transition && this.$element.hasClass('fade') ?
         this.$backdrop
           .one('bsTransitionEnd', callbackRemove)
           .emulateTransitionEnd(Modal.BACKDROP_TRANSITION_DURATION) :
-        callbackRemove()
+            callbackRemove()
+            */
+        $.support.transition && this.$element.hasClass('fade') ?
+            this.$backdrop
+                .one('bsTransitionEnd', callbackRemove1)
+                .emulateTransitionEnd(Modal.BACKDROP_TRANSITION_DURATION) :
+            callbackRemove2()
 
     } else if (callback) {
-      callback()
+        callback()
     }
   }
 

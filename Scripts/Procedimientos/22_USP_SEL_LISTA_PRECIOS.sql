@@ -86,17 +86,17 @@ SET @SQL='SELECT A.AR_CCODIGO ''CODIGOPRODUCTO'',
 							BEGIN
 									SET @SQL=@SQL+'AND A.AR_CUNIDAD ='''+RTRIM(@TIPOMEDIDA)+''' '
 							END
-							IF(@CODFAMILIA<> '0' AND LEN(@CODFAMILIA)>0)
+							IF(@CODFAMILIA<> '0' AND LEN(RTRIM(@CODFAMILIA))>0)
 							BEGIN
-								IF(CHARINDEX(';',@CODFAMILIA)>0)
+								IF(CHARINDEX(';',RTRIM(@CODFAMILIA))>0)
 								BEGIN
-									SET @SQL=@SQL+'AND ('''+TRIM(@CODFAMILIA)+''' LIKE TRIM(A.AR_CFAMILI)+'';%''
-									OR '''+TRIM(@CODFAMILIA)+''' LIKE ''%;''+TRIM(A.AR_CFAMILI)
-									OR '''+TRIM(@CODFAMILIA)+''' LIKE ''%;''+TRIM(A.AR_CFAMILI)+'';%'') '
+									SET @SQL=@SQL+'AND ('''+RTRIM(@CODFAMILIA)+''' LIKE RTRIM(A.AR_CFAMILI)+'';%''
+									OR '''+RTRIM(@CODFAMILIA)+''' LIKE ''%;''+RTRIM(A.AR_CFAMILI)
+									OR '''+RTRIM(@CODFAMILIA)+''' LIKE ''%;''+RTRIM(A.AR_CFAMILI)+'';%'') '
 								END
 								ELSE
 								BEGIN
-									SET @SQL=@SQL+'AND TRIM(A.AR_CFAMILI) = '''+TRIM(@CODFAMILIA)+''''
+									SET @SQL=@SQL+'AND RTRIM(A.AR_CFAMILI) = '''+RTRIM(@CODFAMILIA)+''''
 								END
 							END
 							IF(@CODMARCA<> '0' AND LEN(@CODMARCA)>0)

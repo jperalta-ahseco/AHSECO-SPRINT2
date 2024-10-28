@@ -97,7 +97,7 @@ namespace AHSECO.CCL.BL.Ventas
             }
         }
 
-        public ResponseDTO<RespuestaDTO> MantenimientoCotizacionDetalle(DetalleCotizacionDTO cotizacionDetalle)
+        public ResponseDTO<RespuestaDTO> MantenimientoCotizacionDetalle(CotizacionDetalleDTO cotizacionDetalle)
         {
             try
             {
@@ -207,6 +207,31 @@ namespace AHSECO.CCL.BL.Ventas
                 Log.TraceError(Utilidades.GetCaller() + ":: " + ex.Message);
                 return new ResponseDTO<DocumentoCotizacionDTO>(ex);
             };
+        }
+
+        public ResponseDTO<IEnumerable<ArticuloDTO>> ObtenerArticulosxFiltro(FiltroArticuloDTO filtro)
+        {
+            try
+            {
+                var result = Repository.ObtenerArticulosxFiltro(filtro);
+                if (result != null)
+                {
+                    foreach(ArticuloDTO item in result)
+                    {
+                        if (item.Almacenes != null)
+                        {
+                            item.StockDisponible = item.Almacenes.Max(y => y.StockDisponible);
+                            if (item.StockDisponible > 0) { item.EsDisponible = true; }
+                        }
+                    }
+                }
+                return new ResponseDTO<IEnumerable<ArticuloDTO>>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceInfo(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<IEnumerable<ArticuloDTO>>(ex);
+            }
         }
 
     }
