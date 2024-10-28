@@ -663,7 +663,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             var datosGuia = ventasBL.ConsultaGuia(codSolicitud,tipo).Result;
 
             var hssfworkbook = new HSSFWorkbook();
-            ISheet sh = hssfworkbook.CreateSheet(datosGuia.GuiaCabecera.Titulo);
+
+            var namesheet = datosGuia.GuiaCabecera.Titulo;
+            if (namesheet == "B/O") namesheet = "BO";
+
+            ISheet sh = hssfworkbook.CreateSheet(namesheet);
 
             //Se define ancho de columnas:
             sh.SetColumnWidth(0, 12 * 256);
