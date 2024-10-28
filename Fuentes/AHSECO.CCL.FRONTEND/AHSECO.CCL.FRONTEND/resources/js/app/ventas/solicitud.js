@@ -47,6 +47,9 @@
     var $tblHistorial = $("#tablaHistorial");
     var $txtCodCotizacion = $("#txtCodCotizacion");
     var $btnImprimirCotizacion = $("#btnImprimirCotizacion");
+    var $btnGuiaBO = $("#btnGuiaBO");
+    var $btnGuiaPedido = $("#btnGuiaPedido");
+    var $formGestionVenta = $("#formGestionVenta");
 
 
     /*Sección Solicitud*/
@@ -136,7 +139,9 @@
         guardandoObservacion: "Realizando el registro la observación, por favor espere....",
         BuscandoPrecios: "Buscando Precios, por favor espere....",
         BuscandoHistorial: "Buscando Historial de cotizaciones, por favor espere....",
-        GenerarCotizacion: "Realizando la generación de la cotización, por favor espere..."
+        GenerarCotizacion: "Realizando la generación de la cotización, por favor espere...",
+        GenerarGuiaPedidos: "Generando la guía de pedidos, por favor espere...",
+        GenerarBO: "Generando BO, por favor espere..."
     };
 
     $(Initialize);
@@ -204,6 +209,8 @@
         $btnHistorial.click($btnHistorial_click);
         $btnBuscarHistorial.click($btnHistorial_click);
         $btnImprimirCotizacion.click($btnImprimirCotizacion_click);
+        $btnGuiaBO.click($btnGuiaBO_click);
+        $btnGuiaPedido.click($btnGuiaPedido_click);
         inicializarBotonesCantidad();
         //crearTablaProductos();
         $('#tblConsultaProductos tbody').on('click', 'td #btnAñadirChild', function () {
@@ -303,6 +310,46 @@
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, mensajes.GenerarCotizacion);
     }
+
+    function $btnGuiaPedido_click() {
+
+        var num_solicitud = $numeroSolicitud.val();
+        var tipo = "GP"
+        method = 'POST';
+        url = 'BandejaHistorialCotizacion/ExportarDocumentosVentas?tipo=' + tipo + "&codSolicitud=" + num_solicitud;
+
+        objParam = '';
+
+        var fnDoneCallBack = function (data) {
+           // app.abrirVentana("BandejaHistorialCotizacion/ExportarFile?nombreDoc=" + data.Archivo);
+           // app.message.success("Ventas", "Se generó la cotización correctamente.")
+        }
+        var fnFailCallBack = function () {
+
+        }
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, mensajes.GenerarGuiaPedidos);
+    }
+
+    function $btnGuiaBO_click() {
+        var num_solicitud = $numeroSolicitud.val();
+        var tipo = "BO"
+        method = 'POST';
+        url = 'BandejaHistorialCotizacion/ExportarDocumentosVentas?tipo=' + tipo + "&codSolicitud=" + num_solicitud;
+
+        objParam = '';
+
+        var fnDoneCallBack = function (data) {
+            // app.abrirVentana("BandejaHistorialCotizacion/ExportarFile?nombreDoc=" + data.Archivo);
+            // app.message.success("Ventas", "Se generó la cotización correctamente.")
+        }
+        var fnFailCallBack = function () {
+
+        }
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, mensajes.GenerarBO);
+    }
+
 
     function $btnHistorial_click() {
         var filtrosDTO = {};
