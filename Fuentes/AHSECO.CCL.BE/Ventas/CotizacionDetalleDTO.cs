@@ -33,5 +33,12 @@ namespace AHSECO.CCL.BE.Ventas
         public bool Videos { get; set; }
         public bool InstCapa { get; set; }
         public string GarantiaAdic { get; set; }
+
+        #region BandejaInstalacionTecnica
+        public string Marca { get; set; }
+        public string Modelo { get; set; }
+        public string Serie { get; set; }
+        public string NumFianza { get; set; }
+        #endregion
     }
 }

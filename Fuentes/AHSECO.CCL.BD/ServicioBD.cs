@@ -32,30 +32,6 @@ namespace AHSECO.CCL.BD
         {
             Log.TraceInfo(Utilidades.GetCaller());
             var result = new FiltrosServiciosDTO();
-            using (var connection = Factory.ConnectionFactoryPostgresSQL())
-            {
-                connection.Open();
-
-                using (var command = new NpgsqlCommand("select id_equipo, descripcion from public.equipos where id_equipo is not null", connection))
-                {
-                    using(var reader = command.ExecuteReader())
-                    {
-                        List<ComboDTO> _equipos = new List<ComboDTO>();
-                        while (reader.Read())
-                        {
-                            var equipo = new ComboDTO()
-                            {
-                                Id = reader.GetInt64(0).ToString(),
-                                Text = reader.GetString(1)
-                            };
-                            _equipos.Add(equipo);
-                        };
-                        result.Equipos = _equipos;
-                    };
-                };
-                connection.Close();    
-            };
-
             using (var connection = Factory.ConnectionSingle())
             {
                 var parameters = new DynamicParameters();
@@ -80,6 +56,30 @@ namespace AHSECO.CCL.BD
                 };
             };
             return result;
+            //using (var connection = Factory.ConnectionFactoryPostgresSQL())
+            //{
+            //    connection.Open();
+
+            //    using (var command = new NpgsqlCommand("select id_equipo, descripcion from public.equipos where id_equipo is not null", connection))
+            //    {
+            //        using(var reader = command.ExecuteReader())
+            //        {
+            //            List<ComboDTO> _equipos = new List<ComboDTO>();
+            //            while (reader.Read())
+            //            {
+            //                var equipo = new ComboDTO()
+            //                {
+            //                    Id = reader.GetInt64(0).ToString(),
+            //                    Text = reader.GetString(1)
+            //                };
+            //                _equipos.Add(equipo);
+            //            };
+            //            result.Equipos = _equipos;
+            //        };
+            //    };
+            //    connection.Close();    
+            //};
+
         }
 
         public IEnumerable<ServicioDTO> ObtenerServicios(ServicioDTO servicioDTO) {
@@ -89,7 +89,7 @@ namespace AHSECO.CCL.BD
                 connection.Open();
                 var parameters = new DynamicParameters();
                 parameters.Add("isIdServicio", servicioDTO.CodigoServicio);
-                parameters.Add("CodEquipo", servicioDTO.CodEquipo);
+                parameters.Add("isEquipo", servicioDTO.Equipo);
                 parameters.Add("isMarca", servicioDTO.Marca);
                 parameters.Add("isModelo",servicioDTO.Modelo);
                 parameters.Add("isTipoServicio", servicioDTO.TipoServicio);
@@ -104,7 +104,7 @@ namespace AHSECO.CCL.BD
                     {
                         CodigoServicio=i.Single(d=>d.Key.Equals("ID_SERVICIO")).Value.Parse<int>(),
                         TipoServicio=i.Single(d=>d.Key.Equals("TIPO_SERVICIO")).Value.Parse<string>(),
-                        CodEquipo =i.Single(d => d.Key.Equals("CODEQUIPO")).Value.Parse<long>(),
+                        //CodEquipo =i.Single(d => d.Key.Equals("CODEQUIPO")).Value.Parse<long>(),
                         Equipo=i.Single(d => d.Key.Equals("DESCRIPCIONEQUIPO")).Value.Parse<string>(),
                         Modelo = i.Single(d => d.Key.Equals("NOMBREMODELO")).Value.Parse<string>(),
                         Marca = i.Single(d => d.Key.Equals("NOMBREMARCA")).Value.Parse<string>(),
@@ -166,7 +166,7 @@ namespace AHSECO.CCL.BD
                 parameters.Add("IsID_SERVICIO",servicioDTO.CodigoServicio);
                 parameters.Add("IsTIPOSERVICIO",servicioDTO.TipoServicio);
                 parameters.Add("IsDESCRIPCIONEQUIPO",servicioDTO.Equipo);
-                parameters.Add("IsCODEQUIPO", servicioDTO.CodEquipo);
+                //parameters.Add("IsCODEQUIPO", servicioDTO.CodEquipo);
                 parameters.Add("IsNOMBREMARCA",servicioDTO.Marca);
                 parameters.Add("IsNOMBREMODELO",servicioDTO.Modelo);
                 parameters.Add("IsPRECIOPREVENTIVO",servicioDTO.PrecioPreventivo);
@@ -217,7 +217,7 @@ namespace AHSECO.CCL.BD
                         CodigoServicio = reader.IsDBNull(reader.GetOrdinal("ID_SERVICIO")) ? 0 : reader.GetInt32(reader.GetOrdinal("ID_SERVICIO")),
                         TipoServicio = reader.IsDBNull(reader.GetOrdinal("TIPO_SERVICIO")) ? "" : reader.GetString(reader.GetOrdinal("TIPO_SERVICIO")),
                         CodTipoServicio = reader.IsDBNull(reader.GetOrdinal("CODTIPOSERVICIO")) ? "" : reader.GetString(reader.GetOrdinal("CODTIPOSERVICIO")),
-                        CodEquipo = reader.IsDBNull(reader.GetOrdinal("CODEQUIPO")) ? 0 : reader.GetInt64(reader.GetOrdinal("CODEQUIPO")),
+                        //CodEquipo = reader.IsDBNull(reader.GetOrdinal("CODEQUIPO")) ? 0 : reader.GetInt64(reader.GetOrdinal("CODEQUIPO")),
                         Equipo = reader.IsDBNull(reader.GetOrdinal("DESCRIPCIONEQUIPO")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCIONEQUIPO")),
                         Modelo = reader.IsDBNull(reader.GetOrdinal("NOMBREMODELO")) ? "" : reader.GetString(reader.GetOrdinal("NOMBREMODELO")),
                         Marca = reader.IsDBNull(reader.GetOrdinal("NOMBREMARCA")) ? "" : reader.GetString(reader.GetOrdinal("NOMBREMARCA")),

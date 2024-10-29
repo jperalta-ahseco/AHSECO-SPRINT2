@@ -1,6 +1,6 @@
 ﻿var manipularServicio = (function ($, win, doc) {
     var $cmbTipoServicio = $("#cmbTipoServicio");
-    var $cmbEquipo = $("#cmbEquipo");
+    var $txtEquipo = $("#txtEquipo");
     var $txtMarca = $("#txtMarca");
     var $txtModelo = $("#txtModelo");
     var $cmbEstado = $("#cmbEstado");
@@ -94,7 +94,7 @@
             var filters = {};
             filters.placeholder = "--Seleccionar--";
             filters.allowClear = false;
-            app.llenarComboMultiResult($cmbEquipo, data.Result.Equipos, null, 0, "--Seleccionar--", filters);
+            //app.llenarComboMultiResult($cmbEquipo, data.Result.Equipos, null, 0, "--Seleccionar--", filters);
             app.llenarComboMultiResult($cmbTipoServicio, data.Result.TipServicio, null, 0, "--Seleccionar--", filters);
 
         };
@@ -133,6 +133,12 @@
                     detalleServicios.push(objDetalle);
                     cargarTablaDetalle(detalleServicios);
                     $txtDetalleServicio.val("");
+                    $modalDetalleServicio.modal('toggle');
+
+                    var fnSiSer = function () {
+                        $modalDetalleServicio.modal('toggle');
+                    }
+                    return app.message.confirm("Se registró con éxito", "Desea agregar una actividad adicional?", "Si", "No", fnSiSer, null);
                 };
 
                 var fnFailCallback = function () {
@@ -153,8 +159,13 @@
                 detalleServicios.push(objDetalle); //insertamos el detalle ingresado.
                 cargarTablaDetalle(detalleServicios);
                 $txtDetalleServicio.val("");
+                $modalDetalleServicio.modal('toggle');
+
+                var fnSiSer = function () {
+                    $modalDetalleServicio.modal('toggle');
+                }
+                return app.message.confirm("Se registró con éxito", "Desea agregar una actividad adicional?", "Si", "No", fnSiSer, null);
             }
-            $modalDetalleServicio.modal('toggle');
             $NoExisteReg.hide();
             
         }
@@ -222,8 +233,8 @@
             return; 
         }
 
-        if ($cmbEquipo.val() == 0 || $cmbEquipo.val() === null || $cmbEquipo.val() == "") {
-            app.message.error("Validación", "Debe de seleccionar un equipo")
+        if ($txtEquipo.val() == 0 || $txtEquipo.val() === null || $txtEquipo.val() == "" || $txtEquipo.val().trim().length == 0) {
+            app.message.error("Validación", "Debe de ingresar un equipo")
             return;
         };
 
@@ -275,8 +286,8 @@
                 CabeceraServicio : {
                     TipoProceso: 'I',
                     CodigoServicio: 0,
-                    Equipo: $('select[id="cmbEquipo"] option:selected').text(),
-                    CodEquipo: $cmbEquipo.val(),
+                    Equipo: $txtEquipo.val(),
+                   //CodEquipo: $cmbEquipo.val(),
                     Modelo: $txtModelo.val(),
                     Marca: $txtMarca.val(),
                     Estado: $cmbEstado.val(),
@@ -311,7 +322,7 @@
         var fncn = function () {
             app.redirectTo("BandejaServicios")
         }
-        return app.message.confirm("Guardar", "¿Está seguro/a de regresar a la bandeja, se perderán los cambios?", "Sí", "No", fncn, null);
+        return app.message.confirm("Guardar", "¿Está seguro/a de regresar a la bandeja, se perderán los cambios no guardados?", "Sí", "No", fncn, null);
     }
 
     function eliminarDetalleServicioTemp(Id) {
@@ -388,8 +399,8 @@
                 return;
             }
 
-            if ($cmbEquipo.val() == 0 || $cmbEquipo.val() === null || $cmbEquipo.val() == "") {
-                app.message.error("Validación", "Debe de seleccionar un equipo")
+            if ($txtEquipo.val() == 0 || $txtEquipo.val() === null || $txtEquipo.val() == "" || $txtEquipo.val().trim().length == 0) {
+                app.message.error("Validación", "Debe de ingresar un equipo")
                 return;
             };
 
@@ -440,8 +451,8 @@
                 var objServicio = {
                         TipoProceso: 'U',
                         CodigoServicio: $txtCodigoServicio.val(),
-                        Equipo: $('select[id="cmbEquipo"] option:selected').text(),
-                        CodEquipo: $cmbEquipo.val(),
+                        Equipo:$txtEquipo.val(),
+                        //CodEquipo: $cmbEquipo.val(),
                         Modelo: $txtModelo.val(),
                         Marca: $txtMarca.val(),
                         Estado: $cmbEstado.val(),
@@ -479,7 +490,7 @@
 
             var fnDoneCallBack = function (data) {
                 $cmbTipoServicio.val(data.Result.CabeceraServicio.CodTipoServicio).trigger("change.select2");
-                $cmbEquipo.val(data.Result.CabeceraServicio.CodEquipo).trigger("change.select2");
+                $txtEquipo.val(data.Result.CabeceraServicio.Equipo);
                 $txtModelo.val(data.Result.CabeceraServicio.Modelo);
                 $txtMarca.val(data.Result.CabeceraServicio.Marca);
                 $txtPrecioAct.val(data.Result.CabeceraServicio.PrecioActualizacion);

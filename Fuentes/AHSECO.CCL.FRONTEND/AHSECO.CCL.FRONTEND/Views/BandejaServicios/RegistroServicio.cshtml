@@ -49,8 +49,9 @@
                         <select @(esconder ? "disabled" : "")  class="form-control select2 input-sm" style="width:100%;" id="cmbTipoServicio" tabindex="1"></select>
                     </div>
                     <div class="col-md-6 col-sm-6">
-                        <label for="cmbEquipo">Equipo:</label>
-                        <select @(esconder ? "disabled" : "") class="form-control select2 input-sm" style="width:100%;" id="cmbEquipo" tabindex="2"></select>
+                        <label for="txtEquipo">Equipo:</label>
+<!--                        <select @(esconder ? "disabled" : "") class="form-control select2 input-sm" style="width:100%;" id="cmbEquipo" tabindex="2"></select>-->
+                        <input @(esconder ? "disabled" : "") placeholder="Ingrese Equipo" type="text" class="form-control input-sm" id="txtEquipo" tabindex="2" value="">
                     </div>
                 </div>
                 <br />
@@ -59,12 +60,12 @@
                     <div class="col-md-6 col-sm-12">
                         <label for="txtModelo">Modelo:</label>
                         <div class="form-group">
-                            <input @(esconder ? "disabled" : "") placeholder="Ingrese Modelo" type="text" class="form-control input-sm" id="txtModelo" maxlength="75" value="">
+                            <input @(esconder ? "disabled" : "") placeholder="Ingrese Modelo" type="text" class="form-control input-sm" id="txtModelo" tabindex="3" value="">
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-12">
                         <label for="txtMarca">Marca:</label>
-                        <input @(esconder ? "disabled" : "") placeholder="Ingrese Marca" type="text" class="form-control input-sm" id="txtMarca" maxlength="75" value="">
+                        <input @(esconder ? "disabled" : "") placeholder="Ingrese Marca" type="text" class="form-control input-sm" id="txtMarca" tabindex="4" value="">
                     </div>
                 </div>
                 <br />
@@ -72,7 +73,7 @@
                     <div class="col-md-6 col-sm-12">
                         <label for="txtPrecioAct">Precio Actualizaci&oacute;n de Software:</label>
                         <div class="form-group">
-                            <input @(esconder ? "disabled" : "") placeholder="Ingrese Precio de Actualización de Software" type="text" class="form-control input-sm" id="txtPrecioAct" value="" tabindex="8">
+                            <input @(esconder ? "disabled" : "") placeholder="Ingrese Precio de Actualización de Software" type="text" class="form-control input-sm" id="txtPrecioAct" value="" tabindex="5">
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-12">
@@ -93,7 +94,7 @@
                     {
                         <div class="col-md-6 col-sm-12">
                             <label for="cmbEstado">Estado:</label>
-                            <select disabled class="form-control select2 input-sm" style="width:100%;" id="cmbEstado" tabindex="5"></select>
+                            <select disabled class="form-control select2 input-sm" style="width:100%;" id="cmbEstado" tabindex="8"></select>
                         </div>
                     }
                     else
@@ -102,14 +103,14 @@
                         {
                             <div class="col-md-6 col-sm-12">
                                 <label for="cmbEstado">Estado:</label>
-                                <select class="form-control select2 input-sm" style="width:100%;" id="cmbEstado" tabindex="5"></select>
+                                <select class="form-control select2 input-sm" style="width:100%;" id="cmbEstado" tabindex="8"></select>
                             </div>
                         }
                         else
                         {
                             <div class="col-md-6 col-sm-12">
                                 <label for="cmbEstado">Estado:</label>
-                                <select disabled class="form-control select2 input-sm" style="width:100%;" id="cmbEstado" tabindex="5"></select>
+                                <select disabled class="form-control select2 input-sm" style="width:100%;" id="cmbEstado" tabindex="8"></select>
                             </div>
                         }
                     }
@@ -119,16 +120,16 @@
                 <div class="text-right">
                     @if (codigoServicio == "0")
                     {
-                        <button class="btn btn-success btn-sm " type="button" id="btnGuardar"><i class="fa fa-save"></i> Guardar</button>
+                        <button class="btn btn-success btn-sm " type="button" tabindex="9" id="btnGuardar"><i class="fa fa-save"></i> Guardar</button>
                     }
                     else
                     {
                         if (tipoProceso == "U")
                             {
-                            <button class="btn btn-success btn-sm " type="button" id="btnActualizar"><i class="fa fa-floppy-o"></i> Actualizar</button>
+                            <button class="btn btn-success btn-sm " tabindex="9" type="button" id="btnActualizar"><i class="fa fa-floppy-o"></i> Actualizar</button>
                             }
                     }
-                    <button class="btn btn-primary btn-sm" type="button" id="btnCancelar"><i class="fa fa-undo"></i> Regresar</button>
+                    <button class="btn btn-primary btn-sm" type="button" id="btnCancelar" tabindex="10" ><i class="fa fa-undo"></i> Regresar</button>
                 </div>
                <br />
             </form>

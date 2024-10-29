@@ -1,10 +1,11 @@
 ﻿var bandejaServicios = (function ($, win, doc) {
     /**Combos*/
     var $cmbTipoServicio = $("#cmbTipoServicio");
-    var $cmbEquipo = $("#cmbEquipo");
+    var $txtEquipo = $("#txtEquipo");
     var $txtModelo = $("#txtModelo");
     var $txtMarca = $("#txtMarca");
     var $cmbEstado = $("#cmbEstado");
+    var $txtCodServicio = $('#txtCodServicio');
     /**Tablas*/
     var $tblServicio = $("#tblServicio");
     /**Botones*/
@@ -50,7 +51,7 @@
             var filters = {};
             filters.placeholder = "--Todos--";
             filters.allowClear = false;
-            app.llenarComboMultiResult($cmbEquipo, data.Result.Equipos, null, 0, "--Todos--", filters);
+            //app.llenarComboMultiResult($cmbEquipo, data.Result.Equipos, null, 0, "--Todos--", filters);
             app.llenarComboMultiResult($cmbTipoServicio, data.Result.TipServicio, null, 0, "--Todos--", filters);
 
         };
@@ -65,10 +66,10 @@
         var method = "POST";
         var url = "BandejaServicios/ObtenerServicios";
         var objServicio = {
-            CodigoServicio:0,
-            CodEquipo: $cmbEquipo.val() == '' ? '' : $cmbEquipo.val(),
-            Marca: $txtMarca.val() == '' ? '' : $txtMarca.val(),
-            Modelo: $txtModelo.val() == '' ? '' : $txtModelo.val(),
+            CodigoServicio: $txtCodServicio.val() == '' ? 0 : $txtCodServicio.val(),
+            Equipo: $txtEquipo.val(),
+            Marca: $txtMarca.val(),
+            Modelo: $txtModelo.val(),
             Estado: $cmbEstado.val() == ' ' ? ' ' : $cmbEstado.val(),
             TipoServicio: $cmbTipoServicio.val() == "0" ? '' : $cmbTipoServicio.val()
         }
@@ -186,12 +187,12 @@
             return false;
         }
         $("#hidden_fields").empty();
-        $("<input>", { type: "hidden", name: "CodigoServicio", value: null }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "CodEquipo", value: $cmbEquipo.val() == '' ? '' : $cmbEquipo.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "CodigoServicio", value: $txtCodServicio.val() == '' ? 0 : $txtCodServicio.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "CodEquipo", value: $txtEquipo.val() == '' ? '' : $txtEquipo.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "Marca", value: $txtMarca.val() == '' ? '' : $txtMarca.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "Modelo", value: $txtModelo.val().trim() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "Estado", value: $cmbEstado.val() == '' ? '' : $cmbEstado.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "TipoServicio", value: $cmbEquipo.val() == '0' ? '' : $cmbEquipo.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "TipoServicio", value: $cmbTipoServicio.val() == '0' ? '' : $cmbTipoServicio.val() }).appendTo("#hidden_fields");
         $formServicio.attr('action', href);
         $formServicio.submit();
     }
