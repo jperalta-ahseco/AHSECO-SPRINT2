@@ -1,0 +1,163 @@
+﻿
+@{
+    ViewBag.Title = "Bandeja Instalación Técnica";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" style="margin-right: 15px;">
+    <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
+    <div class="box-inner">
+        <div class="box-header well" data-original-title="">
+            <h2><i class="glyphicon glyphicon-list"></i> Bandeja de Instalaciones</h2>
+        </div>
+        <div class="box-content">
+            <form id="formInstallTec">
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtFecIni">Fecha Inicio:</label>
+                        <div class="input-group date">
+                            <input type="text" class="form-control input-sm" id="dateFecIni" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
+                            <span class="input-group-addon input-sm" id="openRegFecIni">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtFecFin">Fecha Final:</label>
+                        <div class="input-group date">
+                            <input type="text" class="form-control input-sm" id="dateFecFin" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
+                            <span class="input-group-addon input-sm" id="openRegFecFin">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtNumReq">N° Requerimiento:</label>
+                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                            <input class="form-control input-sm" type="text" id="txtNumReq" placeholder="Ingresar el número de Requerimiento" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <label for="cmbCliente">Cliente:</label>
+                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                            <select aria-hide="false" id="cmbCliente" type="text" class="input form-control input-sm">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtUbicacion">Destino:</label>
+                        <div class="form-group">
+                            <div class="input-group input-group-sm date">
+                                <input disabled maxlength="6" type="text" class="form-control input-sm" id="txtUbicacion" value="" aria-describedby="sizing-addon3" />
+                                <span style="cursor:pointer" class="input-group-addon input-sm" id="searchUbigeo" data-toggle="modal" data-target="#modalUbigeo">
+                                    <i class="fa fa-search"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="cmbVendedor">Vendedor:</label>
+                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                            <select aria-hide="false" id="cmbVendedor" type="text" class="input form-control input-sm">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtTipDoc">Estado:</label>
+                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                            <select aria-hide="false" id="cmbEstado" type="text" class="input form-control input-sm">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="cmbempresa">Empresa:</label>
+                        <div class="form-group" id="empresaEdit">
+                            <select class="form-control select2 input-sm" style="width:100%;" id="cmbempresa" tabindex="3"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="cmbTipVenta">Tip. Venta:</label>
+                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                            <select aria-hide="false" id="cmbTipVenta" type="text" class="input form-control input-sm">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtNumProc">N° Proceso:</label>
+                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                            <input class="form-control input-sm" type="text" id="txtNumProc" placeholder="Ingresar el número de Proceso" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtNumContrato">N° Contrato:</label>
+                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                            <input class="form-control input-sm" type="text" id="txtNumContrato" placeholder="Ingresar el número de Contrato" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtNumOrdCompra">N° Orden de Compra:</label>
+                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                            <input class="form-control input-sm" type="text" id="txtNumOrdCompra" placeholder="Ingresar el número de orden de compra" />
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtNumFianza">N° Fianza:</label>
+                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                            <input class="form-control input-sm" type="text" id="txtNumFianza" placeholder="Ingresar el número de fianza" />
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="text-right">
+                    <button class="btn btn-primary btn-sm" type="button" id="btnBuscar"><i class="fa fa-search"></i> Buscar</button>
+                    <span id="hidden_fields"></span>
+                    <a class="btn btn-info btn-sm" type="button" id="btnExportar" href="BandejaInstalacionTecnica/GenerarReporte"><i class="fa fa-table"></i> Exportar</a>
+                    <button class="btn btn-success btn-sm" type="button" id="btnNuevo"><i class="fa fa-plus"></i> Nueva Instalaci&oacute;n</button>
+                </div>
+            </form>
+
+            <br />
+            <div class="table-responsive">
+                <table id="tblInstallTec" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                    <thead>
+                        <tr>
+                            <th>ID_REQ</th>
+                            <th style="text-align: center; width:20%;padding-bottom: 10px;">Num. Solicitud</th>
+                            <th style="text-align: center; width:50px;padding-bottom: 20px;">R.U.C</th>
+                            <th style="text-align: center; width:20%;padding-bottom: 10px;">Nombre Empresa</th>
+                            <th style="text-align: center; width:20%;padding-bottom: 20px;">Ubicación de Empresa</th>
+                            <th style="text-align: center; width:20%;padding-bottom: 20px;">Tipo de Venta</th>
+                            <th style="text-align: center; width: 20%; padding-bottom: 10px;">Vendedor</th>
+                            <th style="text-align: center; width: 20%; padding-bottom: 20px;">Empresa</th>
+                            <th style="text-align: center; width: 20%; padding-bottom: 20px;">Fecha M&aacute;xima</th>
+                            <th style="text-align: center; width: 20%; padding-bottom: 20px;">Destino</th>
+                            <th style="text-align: center; width: 20%; padding-bottom: 20px;">Estado</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalUbigeo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_Ubigeo");
+    }
+</div>
+@section scripts{
+    <script type="text/javascript" src="~/resources/js/app/ServicioTecnico/BandejaInstalacionTecnica/bandejaInstalacionTecnica.js"></script>
+} 

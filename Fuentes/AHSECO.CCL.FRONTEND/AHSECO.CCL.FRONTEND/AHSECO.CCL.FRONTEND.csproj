@@ -55,62 +55,6 @@
     <Reference Include="Azure.Identity, Version=1.11.4.0, Culture=neutral, PublicKeyToken=92742159e12e44c8, processorArchitecture=MSIL">
       <HintPath>..\packages\Azure.Identity.1.11.4\lib\netstandard2.0\Azure.Identity.dll</HintPath>
     </Reference>
-    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
-      <HintPath>..\packages\CrystalReports.Engine.13.0.4001\lib\net40\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
-    </Reference>
-    <Reference Include="CrystalDecisions.ReportAppServer.ClientDoc, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
-      <HintPath>..\packages\CrystalReports.ReportAppServer.ClientDoc.13.0.4003\lib\net40\CrystalDecisions.ReportAppServer.ClientDoc.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="CrystalDecisions.ReportAppServer.CommLayer, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
-      <HintPath>..\packages\CrystalReports.ReportAppServer.CommLayer.13.0.4003\lib\net40\CrystalDecisions.ReportAppServer.CommLayer.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="CrystalDecisions.ReportAppServer.CommonControls, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
-      <HintPath>..\packages\CrystalReports.ReportAppServer.CommonControls.13.0.4003\lib\net40\CrystalDecisions.ReportAppServer.CommonControls.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="CrystalDecisions.ReportAppServer.CommonObjectModel, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
-      <HintPath>..\packages\CrystalReports.ReportAppServer.CommonObjectModel.13.0.4003\lib\net40\CrystalDecisions.ReportAppServer.CommonObjectModel.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="CrystalDecisions.ReportAppServer.Controllers, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
-      <HintPath>..\packages\CrystalReports.ReportAppServer.Controllers.13.0.4003\lib\net40\CrystalDecisions.ReportAppServer.Controllers.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="CrystalDecisions.ReportAppServer.CubeDefModel, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
-      <HintPath>..\packages\CrystalReports.ReportAppServer.CubeDefModel.13.0.4003\lib\net40\CrystalDecisions.ReportAppServer.CubeDefModel.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="CrystalDecisions.ReportAppServer.DataDefModel, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
-      <HintPath>..\packages\CrystalReports.ReportAppServer.DataDefModel.13.0.4003\lib\net40\CrystalDecisions.ReportAppServer.DataDefModel.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="CrystalDecisions.ReportAppServer.DataSetConversion, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
-      <HintPath>..\packages\CrystalReports.ReportAppServer.DataSetConversion.13.0.4001\lib\net40\CrystalDecisions.ReportAppServer.DataSetConversion.dll</HintPath>
-    </Reference>
-    <Reference Include="CrystalDecisions.ReportAppServer.ObjectFactory, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
-      <HintPath>..\packages\CrystalReports.ReportAppServer.ObjectFactory.13.0.4003\lib\net40\CrystalDecisions.ReportAppServer.ObjectFactory.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="CrystalDecisions.ReportAppServer.Prompting, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
-      <HintPath>..\packages\CrystalReports.ReportAppServer.Prompting.13.0.4003\lib\net40\CrystalDecisions.ReportAppServer.Prompting.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="CrystalDecisions.ReportAppServer.ReportDefModel, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
-      <HintPath>..\packages\CrystalReports.ReportAppServer.ReportDefModel.13.0.4003\lib\net40\CrystalDecisions.ReportAppServer.ReportDefModel.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="CrystalDecisions.ReportAppServer.XmlSerialize, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
-      <HintPath>..\packages\CrystalReports.ReportAppServer.XmlSerialize.13.0.4003\lib\net40\CrystalDecisions.ReportAppServer.XmlSerialize.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="CrystalDecisions.ReportSource, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
-      <HintPath>..\packages\CrystalReports.ReportSource.13.0.3501\lib\net20\CrystalDecisions.ReportSource.dll</HintPath>
-    </Reference>
-    <Reference Include="CrystalDecisions.Shared, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
-      <HintPath>..\packages\CrystalReports.Shared.13.0.4001\lib\net40\CrystalDecisions.Shared.dll</HintPath>
-    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
@@ -123,8 +67,8 @@
     <Reference Include="Microsoft.AspNet.Identity.Owin, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.2\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.1\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.8.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
@@ -157,6 +101,10 @@
     </Reference>
     <Reference Include="Microsoft.IdentityModel.Tokens, Version=6.35.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.IdentityModel.Tokens.6.35.0\lib\net472\Microsoft.IdentityModel.Tokens.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Word, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Office.Interop.Word.15.0.4797.1004\lib\net20\Microsoft.Office.Interop.Word.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
@@ -225,8 +173,8 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data.OracleClient" />
-    <Reference Include="System.Diagnostics.DiagnosticSource, Version=6.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.6.0.1\lib\net461\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.8.0.0\lib\net462\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.IdentityModel" />
@@ -238,8 +186,8 @@
     <Reference Include="System.IO.FileSystem.AccessControl, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IO.FileSystem.AccessControl.5.0.0\lib\net461\System.IO.FileSystem.AccessControl.dll</HintPath>
     </Reference>
-    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
+    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
     </Reference>
     <Reference Include="System.Memory.Data, Version=1.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.Data.1.0.2\lib\net461\System.Memory.Data.dll</HintPath>
@@ -272,11 +220,11 @@
     </Reference>
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceProcess" />
-    <Reference Include="System.Text.Encodings.Web, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Text.Encodings.Web.6.0.0\lib\net461\System.Text.Encodings.Web.dll</HintPath>
+    <Reference Include="System.Text.Encodings.Web, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encodings.Web.8.0.0\lib\net462\System.Text.Encodings.Web.dll</HintPath>
     </Reference>
-    <Reference Include="System.Text.Json, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Text.Json.4.7.2\lib\net461\System.Text.Json.dll</HintPath>
+    <Reference Include="System.Text.Json, Version=8.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Json.8.0.5\lib\net462\System.Text.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
@@ -391,8 +339,10 @@
     <Compile Include="Controllers\Seguridad\SeguridadPerfilController.cs" />
     <Compile Include="Controllers\Seguridad\SeguridadUsuarioController.cs" />
     <Compile Include="Controllers\Seguridad\SeguridadUsuarioPerfilController.cs" />
+    <Compile Include="Controllers\ServicioTecnico\BandejaInstalacionTecnica\BandejaInstalacionTecnicaController.cs" />
     <Compile Include="Controllers\UbigeoController.cs" />
     <Compile Include="Controllers\UtilesController.cs" />
+    <Compile Include="Controllers\Ventas\BandejaHistorialCotizacionController.cs" />
     <Compile Include="Controllers\Ventas\BandejaSolicitudesController.cs" />
     <Compile Include="Controllers\Ventas\BandejaVentasController.cs" />
     <Compile Include="Controllers\Viaticos\BandejaViaticoController.cs" />
@@ -563,7 +513,7 @@
     <Content Include="resources\js\app\mantenimientos\cliente\manipularCliente.js" />
     <Content Include="resources\js\app\mantenimientos\parametros\bandejaParametros.js" />
     <Content Include="resources\js\app\mantenimientos\servicios\bandejaServicios.js" />
-    <Content Include="resources\js\app\mantenimientos\servicios\maniupularServicio.js" />
+    <Content Include="resources\js\app\mantenimientos\servicios\manipularServicios.js" />
     <Content Include="resources\js\app\mantenimientos\tecnico\bandejaTecnico.js" />
     <Content Include="resources\js\app\mantenimientos\tecnico\manipularTecnico.js" />
     <Content Include="resources\js\app\mantenimientos\asesorventa\bandejaAsesor.js" />
@@ -576,10 +526,13 @@
     <Content Include="resources\js\app\seguridad\usuarioPerfil\usuarioPerfil.js" />
     <Content Include="resources\js\app\seguridad\usuario\changePassword.js" />
     <Content Include="resources\js\app\seguridad\usuario\usuario.js" />
+    <Content Include="resources\js\app\ServicioTecnico\BandejaInstalacionTecnica\bandejaInstalacionTecnica.js" />
+    <Content Include="resources\js\app\ServicioTecnico\BandejaInstalacionTecnica\registroInstalacionTecnica.js" />
     <Content Include="resources\js\app\ubigeo\ubigeo.js" />
     <Content Include="resources\js\app\uploadFile.js" />
     <Content Include="resources\js\app\ventas\bandejaSolicitudes.js" />
     <Content Include="resources\js\app\ventas\bandejaVentas.js" />
+    <Content Include="resources\js\app\ventas\cotvtadetalle.js" />
     <Content Include="resources\js\app\ventas\solicitud.js" />
     <Content Include="resources\js\app\viaticos\registroviaticos.js" />
     <Content Include="resources\js\app\viaticos\bandejaviaticos.js" />
@@ -977,6 +930,12 @@
     <Content Include="Views\Shared\_RegistraProductos.cshtml" />
     <Content Include="Views\BandejaServicios\Index.cshtml" />
     <Content Include="Views\BandejaServicios\RegistroServicio.cshtml" />
+    <Content Include="Views\Shared\_HerramientasInstrumentos.cshtml" />
+    <Content Include="Views\BandejaSolicitudesVentas\_SolicitudDetCot.cshtml" />
+    <Content Include="Views\Shared\_AsignacionTecnico.cshtml" />
+    <Content Include="Views\Shared\_BandejaHistorialCotizacion.cshtml" />
+    <Content Include="Views\Shared\_BusquedaSolicitud.cshtml" />
+    <Content Include="Views\Shared\_DetalleServicio.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\css\font\" />

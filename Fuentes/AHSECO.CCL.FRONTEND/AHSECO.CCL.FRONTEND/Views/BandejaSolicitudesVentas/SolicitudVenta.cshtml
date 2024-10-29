@@ -10,9 +10,12 @@
     var empleado = VariableSesion.getObject("VENTA_EMPLEADO") as EmpleadoDTO;
     var numSol = VariableSesion.getCadena("numSol");
     var estadoSol = VariableSesion.getCadena("estadoSol");
+    var estadoAbrev = VariableSesion.getCadena("estadoAbrev");
+    if (estadoAbrev != null) { estadoAbrev = estadoAbrev.ToUpper(); }
     var tipoSol = VariableSesion.getCadena("tipoSol");
     var idflujo = VariableSesion.getCadena("idFlujo");
     var idWorkFlow = VariableSesion.getCadena("idWorkFlow");
+    var idCotizacion = ViewBag.IdCotizacion;
     ViewBag.disabled = false; //
     if (NombreRol != "SGI_VENTA_ASESOR") //habilitado solo cuando es nuevo y con perfil de SGI_VENTA_ASESOR
     {
@@ -27,7 +30,6 @@
     }
 }
 
-
 <input type="hidden" id="nomEmpresa" value="@cliente.NomEmpresa" />
 <input type="hidden" id="codigoWorkflow" value="@idWorkFlow" />
 <input type="hidden" id="idCliente" value="@cliente.ID" />
@@ -35,6 +37,8 @@
 <input type="hidden" id="Asesor" value="@empleado.NombresCompletosEmpleado" />
 <input type="hidden" id="numeroSolicitud" value="@numSol" />
 <input type="hidden" id="estadoSol" value="@estadoSol" />
+<input type="hidden" id="idWorkFlow" value="@idWorkFlow" />
+<input type="hidden" id="idCotizacion" value="@idCotizacion" />
 
 <div class="container-fluid">
     <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
@@ -62,7 +66,7 @@
                         <div class="row container-fluid">
                             <div class="text-right">
                                 <!--- Aquí tendremos que controlar-->
-                                <label for="txtRuc">ESTADO: @estadoSol</label>
+                                <label>ESTADO: <span id="spanEstadoSol">@estadoAbrev</span></label>
                             </div>
                         </div>
                     }
@@ -97,7 +101,7 @@
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12">
-                            <label for="txtNomEmpresa">Nombre Empresa:</label>
+                            <label for="txtNomEmpresa">Empresa Cliente:</label>
                             <div class="form-group">
                                 <input disabled type="text" class="form-control input-sm" id="txtNomEmpresa" value="@cliente.NomEmpresa">
                             </div>
@@ -127,6 +131,13 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <label for="cmbempresa">Empresa Emisora:</label>
+                                <select @(ViewBag.disabled ? "disabled" : "") class="form-control select2 input-sm" style="width:100%;" id="cmbempresa" data-selected="">
+                                </select>
+                            </div>
+                        </div>
                     </div>
                     <br />
                     <div class="row container-fluid">
@@ -135,8 +146,7 @@
                             {
                                 if (numSol != null)
                                 {
-                                    <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnEditarSol" tabindex="14"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;Editar</button>
-                                    <button class="btn btn-danger btn-sm" type="button" data-dismiss="modal" id="btnEliminarSol" tabindex="14"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;Cancelar Solicitud</button>
+                                    <button style="@(ViewBag.PermitirCancelarCot ? "" : "display:none")" class="btn btn-danger btn-sm" type="button" data-dismiss="modal" id="btnEliminarSol" tabindex="14"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;Cancelar Solicitud</button>
                                 }
                                 else
                                 {
@@ -191,34 +201,34 @@
                                                             <div class="col-md-12 col-sm-12">
                                                                 <label for="nombreContacto">Contacto: </label>
                                                                 <div class="form-group">
-                                                                    <div class="input-group input-group-sm date">
-                                                                        <input type="text" class="form-control input-sm" id="nombreContacto" value="" placeholder="--Ingrese Nombre de Contacto--" aria-describedby="sizing-addon3" disabled="disabled" />
-                                                                        <span style="cursor:pointer" class="input-group-addon input-sm" id="searchContacto" title="Buscar Contacto" data-toggle="modal" data-target="#modalContactos">
+                                                                    <div @(ViewBag.IdCotizacion > 0 ? "input-group-sm date" : "input-group input-group-sm date") class="input-group input-group-sm date">
+                                                                        <input @(ViewBag.IdCotizacion > 0 ? "disabled" : "") type="text" class="form-control input-sm col-md-10" id="nombreContacto" value="@ViewBag.NombreContacto" placeholder="--Ingrese Nombre de Contacto--" aria-describedby="sizing-addon3" />
+                                                                        <span style="@(ViewBag.IdCotizacion > 0 ? "display:none" : "cursor:pointer")" class="input-group-addon input-sm" id="searchContacto" title="Buscar Contacto" data-toggle="modal" data-target="#modalContactos">
                                                                             <i class="fa fa-search"></i>
                                                                         </span>
-                                                                        <span style="cursor:pointer" class="input-group-addon input-sm" id="agregarContacto" title="Agregar Contacto" data-toggle="modal">
+                                                                        <span style="@(ViewBag.IdCotizacion > 0 ? "display:none" : "cursor:pointer")" class="input-group-addon input-sm" id="agregarContacto" title="Agregar Contacto" data-toggle="modal">
                                                                             <i class="fa fa-plus"></i>
                                                                         </span>
-                                                                        <input type="hidden" id="txtCodContacto" value="" />
+                                                                        <input type="hidden" id="txtCodContacto" value="@ViewBag.IdContacto" />
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-12 col-sm-12">
                                                                 <label for="txtAreaContacto">&Aacute;rea: </label>
                                                                 <div class="form-group">
-                                                                    <input disabled placeholder="Ingresar Área" type="text" class="form-control input-sm" id="txtAreaContacto" value="">
+                                                                    <input disabled placeholder="Ingresar Área" type="text" class="form-control input-sm" id="txtAreaContacto" value="@ViewBag.AreaContacto">
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-12 col-sm-12">
                                                                 <label for="txtTelefono">Tel&eacute;fono: </label>
                                                                 <div class="form-group">
-                                                                    <input disabled placeholder="Ingresar número de télefono" type="text" class="form-control input-sm" id="txtTelefono" value="">
+                                                                    <input disabled placeholder="Ingresar número de télefono" type="text" class="form-control input-sm" id="txtTelefono" value="@ViewBag.TelefonoContacto">
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-12 col-sm-12">
                                                                 <label for="txtCorreo">Correo: </label>
                                                                 <div class="form-group">
-                                                                    <input disabled placeholder="Ingresar Correo" type="text" class="form-control input-sm" id="txtCorreo" value="" />
+                                                                    <input disabled placeholder="Ingresar Correo" type="text" class="form-control input-sm" id="txtCorreo" value="@ViewBag.CorreoContacto" />
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -228,7 +238,7 @@
                                                             <div class="col-md-6 col-sm-12">
                                                                 <label for="dateCotizacion">Fecha Cotizaci&oacute;n: </label>
                                                                 <div class="input-group date">
-                                                                    <input type="text" class="form-control input-sm" id="dateCotizacion" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
+                                                                    <input @(ViewBag.IdCotizacion > 0 ? "disabled" : "") type="text" class="form-control input-sm" id="dateCotizacion" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10" value="@ViewBag.FechaCotizacion">
                                                                     <span class="input-group-addon input-sm" id="openRegdateCotizacion">
                                                                         <i class="fa fa-calendar"></i>
                                                                     </span>
@@ -237,7 +247,7 @@
                                                             <div class="col-md-6 col-sm-7 col-xs-12">
                                                                 <label for="txtVigencia">Vigencia Cotizaci&oacute;n: </label>
                                                                 <div class="form-group">
-                                                                    <input placeholder="Ingresar número de días" type="text" class="form-control input-sm" id="txtVigencia" value="">
+                                                                    <input @(ViewBag.IdCotizacion > 0 ? "disabled" : "") placeholder="Ingresar número de días" type="text" class="form-control input-sm" id="txtVigencia" value="@ViewBag.Vigencia">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -246,13 +256,13 @@
                                                             <div class="col-md-6 col-sm-12">
                                                                 <label for="txtPlazoEntrega">Plazo Entrega: </label>
                                                                 <div class="form-group">
-                                                                    <input placeholder="Ingresar número de días" type="text" class="form-control input-sm" id="txtPlazoEntrega" value="">
+                                                                    <input @(ViewBag.IdCotizacion > 0 ? "disabled" : "") placeholder="Ingresar número de días" type="text" class="form-control input-sm" id="txtPlazoEntrega" value="@ViewBag.PlazoEntrega">
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-6 col-sm-12">
                                                                 <label for="cmbGarantia">Garant&iacute;a: </label>
                                                                 <div class="form-group">
-                                                                    <select class="form-control select2 input-sm" style="width:100%;" id="cmbGarantia" data-selected="">
+                                                                    <select @(ViewBag.IdCotizacion > 0 ? "disabled" : "") class="form-control select2 input-sm" style="width:100%;" id="cmbGarantia" data-selected="@ViewBag.Garantia">
                                                                     </select>
                                                                 </div>
                                                             </div>
@@ -261,14 +271,14 @@
                                                             <div class="col-md-6 col-sm-12">
                                                                 <label for="cmbTipoPago">Forma de Pago: </label>
                                                                 <div class="form-group">
-                                                                    <select class="form-control select2 input-sm" style="width:100%;" id="cmbTipoPago" data-selected="">
+                                                                    <select @(ViewBag.IdCotizacion > 0 ? "disabled" : "") class="form-control select2 input-sm" style="width:100%;" id="cmbTipoPago" data-selected="@ViewBag.FormaPago">
                                                                     </select>
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-6 col-sm-12">
                                                                 <label for="txtObs">Observaci&oacute;n: </label>
                                                                 <div class="form-group">
-                                                                    <input disabled placeholder="Ingresar observación" type="text" class="form-control input-sm" id="txtObs" value="">
+                                                                    <input @(ViewBag.IdCotizacion > 0 ? "disabled" : "") placeholder="Ingresar observación" type="text" class="form-control input-sm" id="txtObs" value="@ViewBag.Observacion">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -277,7 +287,7 @@
                                                             <div class="col-md-6 col-sm-12">
                                                                 <label for="cmbTipMoneda">Moneda: </label>
                                                                 <div class="form-group">
-                                                                    <select class="form-control select2 input-sm" style="width:100%;" id="cmbTipMoneda" data-selected="">
+                                                                    <select @(ViewBag.IdCotizacion > 0 ? "disabled" : "") class="form-control select2 input-sm" style="width:100%;" id="cmbTipMoneda" data-selected="@ViewBag.Moneda">
                                                                     </select>
                                                                 </div>
                                                             </div>
@@ -287,28 +297,32 @@
                                                 <br />
                                                 <div class="row container-fluid">
                                                     <div class="text-right">
-                                                        <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnRegistrarCotizacion" tabindex="14"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Registrar</button>
-                                                        @if (1 == 0)
+						    <button class="btn btn-danger btn-sm" type="button" data-target="#modalBandejaHistorialCotizacion" data-toggle="modal" id="btnHistorial" tabindex="14"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Historial</button>
+                                                        <button class="btn btn-primary btn-sm" type="button" id="btnImprimirCotizacion"><i class="fa fa-print" aria-hidden="true"></i>&nbsp;Generar Cotizaci&oacute;n</button>
+                                                        @if (ViewBag.IdCotizacion == 0)
                                                         {
-                                                            <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnEditarCotizacion" tabindex="14"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;Editar</button><!--Controlar por estado de la solicitud.-->
-                                                            <button class="btn btn-danger btn-sm" type="button" data-dismiss="modal" id="btnEliminarCotizacion" tabindex="14"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;Eliminar</button><!--Controlar por estado de la solicitud.-->
+                                                            <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnRegistrarCotizacion" tabindex="14"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Registrar</button>
                                                         }
                                                     </div>
                                                 </div>
                                                 <br />
-                                                <div class="box-inner">
+                                                <div class="box-inner" style="@(ViewBag.VerTabCotDet ? "" : "display:none")">
                                                     <div class="box-header well" data-original-title="">
                                                         <div style="display: flex;justify-content: space-between;">
                                                             <h2><i class="fa fa-list" aria-hidden="true"></i> Detalle</h2>
                                                         </div>
                                                     </div>
                                                     <div class="box-content">
-                                                        @if (numSol != null)
-                                                        {
-                                                            <div class="text-right">
+                                                        <div class="text-right">
+                                                            @if (ViewBag.PermitirAgregarCotDet == true)
+                                                            {
                                                                 <button class="btn btn-default btn-sm" type="button" data-target="#modalDetalleProductos" data-toggle="modal" id="btnAgregarDetalle" tabindex="14"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar Detalle</button>
-                                                            </div>
-                                                        }
+                                                            }
+                                                            @if (ViewBag.PermitirNuevoCot == true)
+                                                            {
+                                                                <button class="btn btn-default btn-sm" type="button" id="btnNuevoCot" tabindex="15"><i class="fa fa-newspaper-o" aria-hidden="true"></i>&nbsp; Nueva Cotización</button>
+                                                            }
+                                                        </div>
                                                         <br />
                                                         <ul class="nav nav-tabs" style="padding-top: 5px;">
                                                             <li class="" id="tabDetalleProducto">
@@ -410,25 +424,160 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    <div class="row container-fluid">
-                                                        <div class="text-right">
-                                                            <button class="btn btn-default btn-sm" type="button" id=""><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Editar</button><!--Controlar por estado de la solicitud.-->
+                                                        <div class="row container-fluid">
+                                                            <div class="text-right">
+                                                                <button class="btn btn-default btn-sm" type="button" id=""><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Editar</button>
+                                                            </div>
                                                         </div>
-                                                    </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </form>
                                     </div>
                                 </div>
-                                <div class="panel panel-default" style="border-color: #07bc58;">
+                                <div class="panel panel-default" style="@(ViewBag.VerTabCotDet ? "" : "display:none");border-color: #07bc58;">
                                     <div class="panel-heading" role="tab" id="heading2183316" style="background-color: #07bc5833;">
                                         <h5 class="panel-title">
-                                            <a role="button" data-toggle="collapse" class="accordion-arrow-toggle collapsed" href="#collapse2183316" aria-expanded="true" aria-controls="collapse2183316"><i class="fa fa-money" aria-hidden="true"></i> VENTA</a>
+                                            <a role="button" data-toggle="collapse" class="accordion-arrow-toggle collapsed" href="#collapse2183316" aria-expanded="true" aria-controls="collapse2183316"><i class="fa fa-money" aria-hidden="true"></i> GESTI&Oacute;N DE VENTA</a>
                                         </h5>
                                     </div>
                                     <div id="collapse2183316" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading2183316">
-                                        <div class="panel-body">Lorem ipsum dolor sic amet!</div>
+                                        <form id="formGestionVenta">
+                                            <div class="box-content">
+                                                <div class="row container-fluid">
+                                                    <div class="col-md-4 col-sm-12">
+                                                        <label for="txtNroOrdenCompra">N° Orden de Compra: </label>
+                                                        <div class="form-group">
+                                                            <input placeholder="Ingresar número de orden de compra" type="text" class="form-control input-sm" id="txtNroOrdenCompra">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 col-sm-12">
+                                                        <label for="dateOrdenCompra">Fecha Orden de Compra: </label>
+                                                        <div class="input-group date">
+                                                            <input type="text" class="form-control input-sm" id="dateOrdenCompra" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
+                                                            <span class="input-group-addon input-sm" id="openRegdateOrdenCompra">
+                                                                <i class="fa fa-calendar"></i>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 col-sm-12">
+                                                        <label for="txtFechaEntregaMax">Fecha Entrega M&aacute;xima: </label>
+                                                        <div class="form-group">
+                                                            <input type="text" class="form-control input-sm" id="txtFechaEntregaMax" disabled>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row container-fluid">
+                                                    <div class="text-right">
+                                                        <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnEnviarGuia"><i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar Guia</button>
+                                                        <button class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnGuiaBO"><i class="fa fa-file" aria-hidden="true" tabindex="111"></i>&nbsp;Generar Gu&iacute;a de BO</button>
+                                                        <button class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnGuiaPedido"><i class="fa fa-file" aria-hidden="true" tabindex="112"></i>&nbsp;Generar Gu&iacute;a de Pedido</button>
+                                                        <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnAprobarGestion" tabindex="113"><i class="fa fa-handshake-o" aria-hidden="true"></i>&nbsp;Aprobar</button>
+                                                        <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnObservarGestion" tabindex="114"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Observar</button>
+                                                        <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnGuardarGestion" tabindex="115"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar</button>
+                                                        <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnFinalizarVenta" tabindex="116"><i class="fa fa-window-close" aria-hidden="true"></i>&nbsp;Finalizar Venta</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="box-content">
+                                                <ul class="nav nav-tabs" style="padding-top: 5px;">
+                                                    <li class="" id="tabConStock">
+                                                        <a href="#navConStock" data-toggle="tab" style="font-weight:bold; color:black;" tabindex="220"><i class="fa fa-cubes" aria-hidden="true"></i> Con Stock</a>
+                                                    </li>
+                                                    <li class="" id="tabSinStock">
+                                                        <a href="#navSinStock" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="221"><i class="fa fa-wrench" aria-hidden="true"></i> Sin Stock</a>
+                                                    </li>
+                                                </ul>
+
+
+                                                <div class="tab-content">
+                                                    <div id="navConStock" class="tab-pane fade in active">
+                                                        <div class="row container-fluid">
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <label for="dateEntregaPedidoCE">Fecha de Entrega de Pedido: </label>
+                                                                <div class="input-group date">
+                                                                    <input type="text" class="form-control input-sm" id="dateEntregaPedidoCE" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
+                                                                    <span class="input-group-addon input-sm" id="opendateEntregaPedidoCE">
+                                                                        <i class="fa fa-calendar"></i>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <label for="txtNumeroFacturaCE">N° de Factura: </label>
+                                                                <div class="form-group">
+                                                                    <input type="text" class="form-control input-sm" id="txtNumeroFacturaCE" placeholder="Ingresar Número de Factura">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row container-fluid">
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <label for="txtNumeroGuiaRemisionCE">N° de Gu&iacute;a de Remisi&oacute;n: </label>
+                                                                <div class="form-group">
+                                                                    <input type="text" class="form-control input-sm" id="txtNumeroGuiaRemisionCE" placeholder="Ingresar N° Guia de Remisión">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <label for="txtNumeroSerieCE">N° de Serie: </label>
+                                                                <div class="form-group">
+                                                                    <input type="text" class="form-control input-sm" id="txtNumeroSerieCE" placeholder="Ingresar Número de Serie">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div id="navSinStock" class="tab-pane fade">
+                                                        <div class="row container-fluid">
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <label for="txtCodigoPedidoSE">C&oacute;digo de Pedido: </label>
+                                                                <div class="form-group">
+                                                                    <input type="text" class="form-control input-sm" id="txtCodigoPedidoSE" placeholder="Ingresar Código de Pedido">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <label for="dateIngresoAlmacenSE">Fecha de Ingreso de Almacen: </label>
+                                                                <div class="input-group date">
+                                                                    <input type="text" class="form-control input-sm" id="dateIngresoAlmacenSE" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
+                                                                    <span class="input-group-addon input-sm" id="opendateIngresoAlmacenSE">
+                                                                        <i class="fa fa-calendar"></i>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row container-fluid">
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <label for="dateEntregaPedidoSE">Fecha de Entrega de Pedido: </label>
+                                                                <div class="input-group date">
+                                                                    <input type="text" class="form-control input-sm" id="dateEntregaPedidoSE" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
+                                                                    <span class="input-group-addon input-sm" id="opendateEntregaPedidoSE">
+                                                                        <i class="fa fa-calendar"></i>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <label for="txtNumeroFacturaSE">N° de Factura: </label>
+                                                                <div class="form-group">
+                                                                    <input type="text" class="form-control input-sm" id="txtNumeroFacturaSE" placeholder="Ingresar Número de Factura">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row container-fluid">
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <label for="txtNumeroGuiaRemisionSE">N° de Gu&iacute;a de Remisi&oacute;n: </label>
+                                                                <div class="form-group">
+                                                                    <input type="text" class="form-control input-sm" id="txtNumeroGuiaRemisionSE" placeholder="Ingresar N° Guia de Remisión">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <label for="txtNumeroSerieSE">N° de Serie: </label>
+                                                                <div class="form-group">
+                                                                    <input type="text" class="form-control input-sm" id="txtNumeroSerieSE" placeholder="Ingresar Número de Serie">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -543,10 +692,17 @@
 
 <div class="modal fade" id="modalDetalleProductos" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     @{
-        Html.RenderPartial("_DetalleProducto");
+        Html.RenderPartial("_SolicitudDetCot");
+    }
+</div>
+
+<div class="modal fade" id="modalBandejaHistorialCotizacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_BandejaHistorialCotizacion");
     }
 </div>
 
 @section scripts{
     <script type="text/javascript" src="~/resources/js/app/ventas/solicitud.js"></script>
+    <script type="text/javascript" src="~/resources/js/app/ventas/cotvtadetalle.js"></script>
 }

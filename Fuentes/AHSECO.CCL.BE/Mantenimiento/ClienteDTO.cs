@@ -11,7 +11,7 @@ namespace AHSECO.CCL.BE.Mantenimiento
 		public string SectorCliente { get; set;}
         public string Id_Empleado { get; set; }
         public EmpleadoDTO Empleado { get; set; }
-        public int NumContacto { get; set; }
+        public int? NumContacto { get; set; }
         public string FechaInicio { get; set; }
         public string FechaFinal { get; set; }
         public string Direccion { get; set; }

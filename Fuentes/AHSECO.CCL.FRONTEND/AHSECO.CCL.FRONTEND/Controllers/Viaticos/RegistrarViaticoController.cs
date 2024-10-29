@@ -3,7 +3,6 @@ using AHSECO.CCL.BL;
 using AHSECO.CCL.COMUN;
 using AHSECO.CCL.FRONTEND.Core;
 using AHSECO.CCL.FRONTEND.Identity;
-using CrystalDecisions.ReportAppServer.DataDefModel;
 using Newtonsoft.Json;
 using NPOI.SS.Formula.Functions;
 using System;

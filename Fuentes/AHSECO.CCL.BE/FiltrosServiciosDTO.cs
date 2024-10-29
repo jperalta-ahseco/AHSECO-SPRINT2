@@ -8,6 +8,7 @@ namespace AHSECO.CCL.BE
 {
     public class FiltrosServiciosDTO
     {
-
+        public List<ComboDTO> Equipos { get; set; }
+        public List<ComboDTO> TipServicio { get; set; }
     }
 }

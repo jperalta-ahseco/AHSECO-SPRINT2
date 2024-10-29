@@ -22,9 +22,9 @@ namespace AHSECO.CCL.BD
                 connection.Open();
 
                 var parameters = new DynamicParameters();
-                parameters.Add("isDominio", DatosGeneralesDetalle.DatosGenerales.Dominio);
+                if (DatosGeneralesDetalle.DatosGenerales != null) { parameters.Add("isDominio", DatosGeneralesDetalle.DatosGenerales.Dominio); }
                 parameters.Add("isParametro", DatosGeneralesDetalle.Parametro);
-                parameters.Add("inCabeceraId", DatosGeneralesDetalle.DatosGenerales.Id);
+                if (DatosGeneralesDetalle.DatosGenerales != null) { parameters.Add("inCabeceraId", DatosGeneralesDetalle.DatosGenerales.Id); }
                 parameters.Add("inDetalleId", DatosGeneralesDetalle.Id);
 
                 var result = connection.Query(
@@ -48,8 +48,8 @@ namespace AHSECO.CCL.BD
                         Valor2 = i.Single(d => d.Key.Equals("VALOR2")).Value.Parse<string>(),
                         Valor3 = i.Single(d => d.Key.Equals("VALOR3")).Value.Parse<string>(),
                         Habilitado = i.Single(d => d.Key.Equals("HABILITADO")).Value.Parse<bool>(),
-                        Estado = i.Single(d => d.Key.Equals("ESTADO")).Value.Parse<int>(),
-                        Editable = i.Single(d => d.Key.Equals("EDITABLE")).Value.Parse<int>(),
+                        Estado = Utilidades.Parse<int>(i.Single(d => d.Key.Equals("ESTADO")).Value),
+                        Editable = Utilidades.Parse<int>(i.Single(d => d.Key.Equals("EDITABLE")).Value),
                         Dominio = i.Single(d => d.Key.Equals("DOMINIO")).Value.Parse<string>(),
 
                     });

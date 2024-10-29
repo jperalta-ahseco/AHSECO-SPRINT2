@@ -146,7 +146,8 @@ namespace AHSECO.CCL.BD.Mantenimientos
                 connection.Open();
                 var parameters = new DynamicParameters();
 
-                parameters.Add("isIdCliente", contactoDTO.IdCliente);
+                parameters.Add("isIdContacto", contactoDTO.IdContacto,DbType.Int32,ParameterDirection.Input);
+                parameters.Add("isIdCliente", contactoDTO.IdCliente, DbType.Int64, ParameterDirection.Input);
 
                 var result = connection.Query(
                     sql: "USP_SEL_CONTACTOS",

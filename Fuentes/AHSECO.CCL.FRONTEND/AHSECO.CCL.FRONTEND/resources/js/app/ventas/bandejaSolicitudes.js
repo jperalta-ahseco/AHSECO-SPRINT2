@@ -138,7 +138,7 @@
             {
                 data: "Id_Solicitud",
                 render: function (data, type, row) {
-                    var detalle = "'" + row.Id_WorkFlow + "','" + row.Id_Solicitud + "','" + row.nomEstado + "','" + row.Tipo_Sol + "','" + row.Id_Flujo+"'";
+                    var detalle = "'" + row.Id_WorkFlow + "','" + row.Id_Solicitud + "','" + row.Estado + "','" + row.nomEstado + "','" + row.abrevEstado + "','" + row.Tipo_Sol + "','" + row.Id_Flujo+"'";
                     var seleccionar = '<a id="btnSeleccionar" class="btn btn-primary btn-xs" title="Seleccionar" href="javascript: bandejaSolicitudes.seleccionar(' + detalle + ')"><i class="fa fa-plus" aria-hidden="true"></i> Seleccionar</a>';
                     return '<center>' + seleccionar + '</center>';
                 }
@@ -164,7 +164,7 @@
         app.redirectTo("BandejaVentas");
     };
 
-    function seleccionar(idWorkFlow, nomSolicitud, estadoSol,tipoSol, idflujo) {
+    function seleccionar(idWorkFlow, nomSolicitud, estadoSol, nomEstado, abrevEstado, tipoSol, idflujo) {
      
         method = "POST"
         url = "BandejaSolicitudesVentas/ObtenerDetallexSolicitud";
@@ -172,6 +172,8 @@
             Id_WorkFlow: idWorkFlow,
             Id_Solicitud: nomSolicitud,
             Estado: estadoSol,
+            nomEstado: nomEstado,
+            abrevEstado: abrevEstado,
             Tipo_Sol: tipoSol,
             Id_Flujo: idflujo
         };

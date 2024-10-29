@@ -54,6 +54,7 @@
     <Compile Include="PlantillasBL.cs" />
     <Compile Include="ProcesosBL.cs" />
     <Compile Include="ServiciosBL.cs" />
+    <Compile Include="ServicioTecnico\BandejaInstalacionTecnica\InstalacionTecnicaBL.cs" />
     <Compile Include="Util\UtilesBL.cs" />
     <Compile Include="Util\UbigeoBL.cs" />
     <Compile Include="Ventas\VentasBL.cs" />

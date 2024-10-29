@@ -14,6 +14,7 @@ namespace AHSECO.CCL.BE
         public List<ComboDTO> TipoMoneda { get; set; }
         public List<ComboDTO> Garantias { get; set; }
         public List<ComboDTO> FormPago { get; set; }
+        public List<ComboDTO> Empresas { get; set; }
 
     }
 }

@@ -580,15 +580,13 @@ namespace AHSECO.CCL.COMUN
         {
             try
             {
-                if (obj == null)
+                if (obj == DBNull.Value || obj == null)
                 {
+                    if (typeof(T) == typeof(int)) { return 0; }
                     return null;
                 }
-                else if (typeof(T) != typeof(DBNull) && obj == DBNull.Value)
-                {
-                    return null;
-                }
-                else if (typeof(T) == typeof(string))
+                
+                if (typeof(T) == typeof(string))
                 {
                     return obj.ToString();
                 }

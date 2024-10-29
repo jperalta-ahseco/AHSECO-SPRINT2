@@ -8,12 +8,13 @@ namespace AHSECO.CCL.BE
 {
     public class ProcesoEstadoDTO:CamposAuditoriaDTO
     {
-        public int CodigoProcesoEstado { get; set; }
+        public int Id { get; set; }
+        public int IdProceso { get; set; }
         public ProcesoDTO Proceso { get; set; }
         public string CodigoEstado { get; set; }
         public string NombreEstado { get; set; }
         public string AbreviaturaEstado { get; set; }
-        public bool Estado { get; set; }
+        public bool Habilitado { get; set; }
 
     }
 }

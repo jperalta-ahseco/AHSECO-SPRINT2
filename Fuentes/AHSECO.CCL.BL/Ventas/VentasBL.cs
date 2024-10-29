@@ -40,6 +40,34 @@ namespace AHSECO.CCL.BL.Ventas
             }
         }
 
+        public ResponseDTO<IEnumerable<CotizacionDTO>> ObtenerCotizacionVenta(CotizacionDTO cotizacionDTO)
+        {
+            try
+            {
+                var result = Repository.ObtenerCotizacionVenta(cotizacionDTO);
+                return new ResponseDTO<IEnumerable<CotizacionDTO>>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceInfo(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<IEnumerable<CotizacionDTO>>(ex);
+            }
+        }
+
+        public ResponseDTO<IEnumerable<CotizacionDetalleDTO>> ObtenerCotizacionVentaDetalle(CotizacionDetalleDTO cotizacionDetDTO)
+        {
+            try
+            {
+                var result = Repository.ObtenerCotizacionVentaDetalle(cotizacionDetDTO);
+                return new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceInfo(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(ex);
+            }
+        }
+
         public ResponseDTO<RespuestaDTO> MantenimientoSolicitudes(SolicitudDTO solicitudDTO)
         {
 
@@ -124,5 +152,76 @@ namespace AHSECO.CCL.BL.Ventas
                 return new ResponseDTO<FiltroGrupoSolicitudVentaDTO>(ex);
             };
         }
+
+        public ResponseDTO<bool> ActualizarSolicitudEstado(SolicitudDTO solicitudDTO)
+        {
+            try
+            {
+                var result = Repository.ActualizarSolicitudEstado(solicitudDTO);
+                return new ResponseDTO<bool>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + ":: " + ex.Message);
+                return new ResponseDTO<bool>(ex);
+            }
+        }
+
+        public ResponseDTO<IEnumerable<ProcesoEstadoDTO>> ObtenerEstadosProcesos(ProcesoEstadoDTO procestDTO)
+        {
+            try
+            {
+                var result = Repository.ObtenerEstadosProcesos(procestDTO);
+                return new ResponseDTO<IEnumerable<ProcesoEstadoDTO>>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceInfo(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<IEnumerable<ProcesoEstadoDTO>>(ex);
+            }
+        }
+		
+		public ResponseDTO<IEnumerable<HistorialCotizacionCabeceraDTO>> ListarHistorialCotizacion(long codCotizacion, long codSolicitud)
+        {
+            try
+            {
+                var result = Repository.ListarHistorialCotizacion(codCotizacion, codSolicitud);
+                return new ResponseDTO<IEnumerable<HistorialCotizacionCabeceraDTO>>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + ":: " + ex.Message);
+                return new ResponseDTO<IEnumerable<HistorialCotizacionCabeceraDTO>>(ex);
+            };
+        }
+
+        public ResponseDTO<DocumentoCotizacionDTO> ConsultaCotizacionCliente(long codCotizacion)
+        {
+            try
+            {
+                var result = Repository.ConsultaCotizacionCliente(codCotizacion);
+                return new ResponseDTO<DocumentoCotizacionDTO>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + ":: " + ex.Message);
+                return new ResponseDTO<DocumentoCotizacionDTO>(ex);
+            };
+        }
+
+        public ResponseDTO<GuiaDTO> ConsultaGuia(long codSolicitud, string tipo)
+        {
+            try
+            {
+                var result = Repository.ConsultaGuia(codSolicitud,tipo);
+                return new ResponseDTO<GuiaDTO>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + ":: " + ex.Message);
+                return new ResponseDTO<GuiaDTO>(ex);
+            };
+        }
+
     }
 }

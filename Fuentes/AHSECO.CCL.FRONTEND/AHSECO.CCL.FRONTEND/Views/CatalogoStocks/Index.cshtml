@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "Consulta Stocks";
+    ViewBag.Title = "Precios & Stocks";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <input type="hidden" id="NombreRol" value=""/>
@@ -9,7 +9,7 @@
   
     <div class="box-inner">
         <div class="box-header well" data-original-title="">
-            <h2><i class="glyphicon glyphicon-list"></i> Cat&aacute;logo de Stocks</h2>
+            <h2><i class="glyphicon glyphicon-list"></i> Cat&aacute;logo de Precios y Stocks</h2>
         </div>
         <div class="box-content">
             <form id="formStocks">
@@ -19,7 +19,7 @@
                         <label for="txtProducto">C&oacute;digo de Producto:</label>
                         <div class="form-group">
                             <div class="input-group input-sm col-md-10">
-                                <input placeholder="Ingresar Codigo Producto" maxlength="10" type="text" class="form-control input-sm" id="txtProducto" value="">
+                                <input placeholder="Ingresar Codigo Producto" type="text" class="form-control input-sm" id="txtProducto" value="">
                             </div>
                         </div>
                     </div>
@@ -27,7 +27,7 @@
                         <label for="txtDescripcion">Descripci&oacute;n de Producto:</label>
                         <div class="form-group">
                             <div class="input-group input-sm col-md-10">
-                                <input placeholder="Ingresar Descripción de Producto" maxlength="250" type="text" class="form-control input-sm" id="txtDescripcion" value="">
+                                <input placeholder="Ingresar Descripción de Producto" type="text" class="form-control input-sm" id="txtDescripcion" value="">
                             </div>
                         </div>
                     </div>
@@ -35,7 +35,7 @@
                         <label for="txtFabrica">C&oacute;digo de F&aacute;brica:</label>
                         <div class="form-group">
                             <div class="input-group input-sm col-md-10">
-                                <input placeholder="Ingresar Código Fabrica" maxlength="8" type="text" class="form-control input-sm" id="txtFabrica" value="">
+                                <input placeholder="Ingresar Código Fabrica" type="text" class="form-control input-sm" id="txtFabrica" value="">
                             </div>
                         </div>
                     </div>
@@ -83,8 +83,10 @@
                     <div class="row container-fluid">
                         <div class="text-right">
                             <button class="btn btn-primary btn-sm" type="button" id="btnBuscar"><i class="fa fa-search"></i> Buscar</button>
+                            <!--
                             <span id="hidden_fields"></span>
-                            <a class="btn btn-info btn-sm " type="button" id="btnExportar" href="CatalogoStocks/ExportarStocks"><i class=" fa fa-table"></i> Exportar</a>
+    <a class="btn btn-info btn-sm " type="button" id="btnExportar" href="CatalogoStocks/ExportarStocks"><i class=" fa fa-table"></i> Exportar</a>
+        -->
                         </div>
                     </div>
 

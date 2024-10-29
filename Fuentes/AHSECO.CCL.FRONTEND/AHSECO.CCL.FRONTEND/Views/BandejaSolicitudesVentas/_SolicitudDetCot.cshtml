@@ -1,0 +1,107 @@
+﻿@{
+    ViewBag.Title = "Detalle de Cotización";
+}
+
+<div style="width:100%" class="modal-dialog modal-lg container-fluid" role="document">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <!-- Modal content header -->
+        <div class="modal-header box-header well well-sm" style="padding-bottom: 30px;">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="tituloModal"><i class="fa fa-cubes"></i> @ViewBag.Title</h4>
+        </div>
+        <!-- Modal content body -->
+        <div class="modal-body d-flex justify-content-center" align-items-center>
+            <form id="formRegistro" class="d-flex flex-row">
+                <div class="row container-fluid d-flex justify-content-center">
+                    <div class="row container-fluid">
+                        <div class="col-md-3 col-sm-12">
+                            <label for="cmbFamilia">Familia Producto: </label>
+                            <div class="form-group">
+                                <select class="form-control select2 input-sm" style="width:100%;" id="BI_cmbFamilia" data-selected="">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-12">
+                            <label for="txtSelectNomProducto">Nombre de Producto: </label>
+                            <div class="form-group">
+                                <input placeholder="Ingresar nombre de producto" type="text" class="form-control input-sm" id="BI_txtNomProducto" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-12">
+                            <label for="txtCodProducto">C&oacute;digo Producto: </label>
+                            <div class="form-group">
+                                <input placeholder="Ingresar código de producto" type="text" class="form-control input-sm" id="BI_txtCodProducto" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-12">
+                            <label for="cmbTipoMedida">Tipo de Medida: </label>
+                            <div class="form-group">
+                                <select class="form-control select2 input-sm" style="width:100%;" id="BI_cmbTipoMedida" data-selected="">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-12">
+                            <label for="cmbMarca">Marca: </label>
+                            <div class="form-group">
+                                <select class="form-control select2 input-sm" style="width:100%;" id="BI_cmbMarca" data-selected="">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <button class="btn btn-primary btn-sm" type="button" id="btnBuscarItems"><i class="fa fa-search" aria-hidden="true"></i>  Buscar</button>
+                        <button class="btn btn-default btn-sm" type="button" data-toggle="modal" id="btnAñadirItem"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Añadir Producto</button>
+                        <span id="hidden_fields"></span>
+                    </div>
+                    <label>Productos: </label>
+                    <div class="table-responsive">
+                        <table id="tblItems" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center; width:10%">Cod.Producto</th>
+                                    <th style="text-align:center; width:10%">Tip. Producto</th>
+                                    <th style="text-align:center; width:20%">Descripción</th>
+                                    <th style="text-align:center; width:5%">Stock</th>
+                                    <th style="text-align:center; width:5%">Precio Ref.</th>
+                                    <th style="text-align:center; width:5%">Und. Med.</th>
+                                    <th style="text-align:center; width:10%">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <label>Seleccionados: </label>
+                    <div class="table-responsive">
+                        <table id="tblCotDet" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center; width:10%">Cod. Producto</th>
+                                    <th style="text-align:center; width:35%">Descripción</th>
+                                    <th style="text-align:center; width:10%">Cant.</th>
+                                    <th style="text-align:center; width:10%">LLave en mano</th>
+                                    <th style="text-align:center; width:10%">Destino</th>
+                                    <th style="text-align:center; width:10%">Dirección</th>
+                                    <th style="text-align:center; width:10%">Piso</th>
+                                    <th style="text-align:center; width:10%">Cant. Preve.</th>
+                                    <th style="text-align:center; width:10%">Periodo Prev.</th>
+                                    <th style="text-align:center; width:10%">Manuales</th>
+                                    <th style="text-align:center; width:10%">Videos</th>
+                                    <th style="text-align:center; width:10%">Instalación y Capacitación</th>
+                                    <th style="text-align:center; width:10%">Garantía Adicional</th>
+                                    <th style="text-align:center; width:10%">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <br />
+            </form>
+        </div>
+    </div>
+</div>

@@ -33,7 +33,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Consultas
                 "Lote",
                 "Fec.Ven",
                 "Stock",
-                "Stock Disponible"
+                "Stock Disponible",
+                "Precio Referencia",
+                "Tip.Moneda"
             };
             ViewData["ListaStocks"] = listaStocks;
             return View();
@@ -168,6 +170,15 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Consultas
             cell.SetCellValue("Stock Disponible");
 
 
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
+            cell.SetCellValue("Precio Referencial");
+
+
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
+            cell.SetCellValue("Tipo de Moneda");
+
             #endregion
 
 
@@ -221,6 +232,12 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Consultas
 
                 cell = row.CreateCell(cellnum++);
                 cell.SetCellValue(item.StockDisponible.ToString("0.00"));
+
+                cell = row.CreateCell(cellnum++);
+                cell.SetCellValue(item.PrecioReferencial.ToString("0.00"));
+                
+                cell = row.CreateCell(cellnum++);
+                cell.SetCellValue(item.Moneda);
             }
 
             var filename = "REPORTE_CATALOGO_STOCKS" + DateTime.Now.ToString("ddMMyyyyHHmmss") + ".xls";
