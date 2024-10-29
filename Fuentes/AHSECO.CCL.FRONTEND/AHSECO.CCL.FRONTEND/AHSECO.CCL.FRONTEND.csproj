@@ -513,7 +513,7 @@
     <Content Include="resources\js\app\mantenimientos\cliente\manipularCliente.js" />
     <Content Include="resources\js\app\mantenimientos\parametros\bandejaParametros.js" />
     <Content Include="resources\js\app\mantenimientos\servicios\bandejaServicios.js" />
-    <Content Include="resources\js\app\mantenimientos\servicios\maniupularServicio.js" />
+    <Content Include="resources\js\app\mantenimientos\servicios\manipularServicios.js" />
     <Content Include="resources\js\app\mantenimientos\tecnico\bandejaTecnico.js" />
     <Content Include="resources\js\app\mantenimientos\tecnico\manipularTecnico.js" />
     <Content Include="resources\js\app\mantenimientos\asesorventa\bandejaAsesor.js" />
