@@ -19,6 +19,7 @@ using NPOI.HSSF.UserModel;
 using NPOI.HSSF.Util;
 using NPOI.SS.UserModel;
 using System.Web.UI.WebControls;
+using Microsoft.SqlServer.Server;
 
 
 namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
@@ -646,6 +647,28 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             return File(ruta, contentType, nombreDoc);
         }
 
+        public FileResult ExportarFileGuiaPedido(string nombreDoc)
+        {
+            string url = ConfigurationManager.AppSettings.Get("RutaVentaGP");
+            string ruta = url + nombreDoc;
+
+            var fileName = Path.GetFileName(nombreDoc);
+            var contentType = MimeMapping.GetMimeMapping(fileName); //determina el tipo de documento que se envía. 
+
+            return File(ruta, contentType, nombreDoc);
+        }
+
+        public FileResult ExportarFileGuiaBO(string nombreDoc)
+        {
+            string url = ConfigurationManager.AppSettings.Get("RutaVentaBO");
+            string ruta = url + nombreDoc;
+
+            var fileName = Path.GetFileName(nombreDoc);
+            var contentType = MimeMapping.GetMimeMapping(fileName); //determina el tipo de documento que se envía. 
+
+            return File(ruta, contentType, nombreDoc);
+        }
+
 
         private static byte[] ReadFully(Stream input)
         {
@@ -858,10 +881,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             // Leer la imagen
             int pictureIndex;
-            var url1 = new Uri(HttpContext.Request.Url, Url.Content(datosGuia.GuiaCabecera.RutaImagen));
-            var imagePath = url1.AbsoluteUri;
+            //var url1 = new Uri(HttpContext.Request.Url, Url.Content(datosGuia.GuiaCabecera.RutaImagen));
+            //var imagePath = url1.AbsoluteUri;
 
-            //string imagePath = @"C:\ruta\RAZ1.png";
+            string imagePath = ConfigurationManager.AppSettings.Get("RutaImagenGuia") + datosGuia.GuiaCabecera.RutaImagen;
 
             using (FileStream fs2 = new FileStream(imagePath, FileMode.Open, FileAccess.Read))
             {
@@ -1776,8 +1799,20 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             cell.CellStyle = style5;
 
 
-            string rutaInicial = ConfigurationManager.AppSettings.Get("RutaVentaGP");
-            string nombre = "Documento_"+ DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
+            string rutaInicial;
+            string nombre;
+            if(tipo == "GP")
+            {
+                rutaInicial=ConfigurationManager.AppSettings.Get("RutaVentaGP");
+                nombre = "GP_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
+            }
+            else
+            {
+                rutaInicial=ConfigurationManager.AppSettings.Get("RutaVentaBO");
+                nombre = "BO_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
+            }
+
+            
             var ruta_file = rutaInicial + nombre;
 
             try
