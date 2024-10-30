@@ -18,18 +18,23 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Mantenimientos
         {
             VariableSesion.setCadena("tipoProceso", "");
             VariableSesion.setCadena("codigoServicio", "0");
+            VariableSesion.setCadena("codestado", "0");
+            VariableSesion.setCadena("tiposervicio", "");
+
             return View();
         }
         public ActionResult RegistroServicio()
         {
             return View();
         }
-        public JsonResult SetDatosServicios(string codServicio, string tipoProceso)
+        public JsonResult SetDatosServicios(string codServicio, string tipoProceso, int codEstado, string tipoServicio)
         {
             try
             {
                 VariableSesion.setCadena("tipoProceso", tipoProceso.ToString());
                 VariableSesion.setCadena("codigoServicio", codServicio.ToString());
+                VariableSesion.setCadena("codestado", codEstado.ToString());
+                VariableSesion.setCadena("tiposervicio", tipoServicio);
                 return Json(new 
                 { 
                     Status = 1                
@@ -148,13 +153,23 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Mantenimientos
             fontbold.FontName = "Calibri (Body)";
 
             var style = hssfworkbook.CreateCellStyle();
+            style.WrapText = true;
             style.SetFont(fontbold);
+            style.VerticalAlignment = VerticalAlignment.Top;
             style.BorderBottom = BorderStyle.Thin;
             style.BorderTop = BorderStyle.Thin;
             style.BorderRight = BorderStyle.Thin;
             style.BorderLeft = BorderStyle.Thin;
             style.FillPattern = FillPattern.SolidForeground;
             style.FillForegroundColor = HSSFColor.BlueGrey.Index;
+
+            var styleRow = hssfworkbook.CreateCellStyle();
+            styleRow.WrapText = true;
+            styleRow.VerticalAlignment = VerticalAlignment.Center;
+            styleRow.BorderBottom = BorderStyle.Thin;
+            styleRow.BorderTop = BorderStyle.Thin;
+            styleRow.BorderRight = BorderStyle.Thin;
+            styleRow.BorderLeft = BorderStyle.Thin;
 
             // Impresión de cabeceras (empezando desde la fila 2, después del título y la fila vacía)
             int rownum = 2; // Cambiamos a 2 porque la fila 0 es el título y la 1 es vacía
@@ -196,6 +211,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Mantenimientos
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
+            cell.SetCellValue("Actividades");
+
+
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
             cell.SetCellValue("Instrumentos");
 
             cell = row.CreateCell(cellnum++);
@@ -213,50 +233,86 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Mantenimientos
             //// Impresión de la data
             foreach (var item in listaServicios)
             {
+                var detalleServicio = servicioBL.GetFullService(item.CodigoServicio.ToString()).Result.servicios.ToList();
+                var actividades = "";
+                foreach(var detalle in detalleServicio)
+                {
+                    actividades += "-" + detalle.DesMantenimiento.ToString() + "\r\n"; // Usar "\r\n" para salto de línea
+                };
+
                 cellnum = 0;
                 row = sh.CreateRow(rownum++);
 
+                //row.Height = 100 * 20;
+
                 cell = row.CreateCell(cellnum++);
                 cell.SetCellValue(item.CodigoServicio);
+                cell.CellStyle = styleRow;
 
                 cell = row.CreateCell(cellnum++);
                 cell.SetCellValue(item.Equipo);
+                cell.CellStyle = styleRow;
 
                 cell = row.CreateCell(cellnum++);
                 cell.SetCellValue(item.Marca);
+                cell.CellStyle = styleRow;
 
                 cell = row.CreateCell(cellnum++);
                 cell.SetCellValue(item.Modelo);
+                cell.CellStyle = styleRow;
 
                 cell = row.CreateCell(cellnum++);
                 cell.SetCellValue(item.TipoServicio);
+                cell.CellStyle = styleRow;
 
                 cell = row.CreateCell(cellnum++);
                 cell.SetCellValue(item.PrecioPreventivo.ToString());
+                cell.CellStyle = styleRow;
 
                 cell = row.CreateCell(cellnum++);
                 cell.SetCellValue(item.PrecioCapacitacion.ToString());
+                cell.CellStyle = styleRow;
 
                 cell = row.CreateCell(cellnum++);
                 cell.SetCellValue(item.PrecioActualizacion.ToString());
+                cell.CellStyle = styleRow;
+
+                cell = row.CreateCell(cellnum++);
+                cell.SetCellValue(actividades);
+                cell.CellStyle = styleRow;
 
                 cell = row.CreateCell(cellnum++);
                 cell.SetCellValue(item.Instrumentos);
+                cell.CellStyle = styleRow;
 
-                cell=row.CreateCell(cellnum++);
+                cell =row.CreateCell(cellnum++);
                 cell.SetCellValue(item.Herramientas);
+                cell.CellStyle = styleRow;
 
                 cell = row.CreateCell(cellnum++);
                 cell.SetCellValue(item.HerramientasEspeciales);
+                cell.CellStyle = styleRow;
 
                 cell = row.CreateCell(cellnum++);
                 cell.SetCellValue((item.Estado == "1") ? "ACTIVO" : "INACTIVO");
+                cell.CellStyle = styleRow;
             }
 
-            for (var i = 0; i < 21; i++)
-            {
-                sh.SetColumnWidth(i, 28 * 255);
-            }
+            sh.AutoSizeColumn(0);
+            sh.AutoSizeColumn(1);
+            sh.AutoSizeColumn(2);
+            sh.AutoSizeColumn(3);
+            sh.AutoSizeColumn(4);
+            sh.AutoSizeColumn(5);
+            sh.AutoSizeColumn(6);
+            sh.AutoSizeColumn(7);
+            sh.AutoSizeColumn(8);
+            sh.AutoSizeColumn(9);
+            sh.AutoSizeColumn(10);
+            sh.AutoSizeColumn(11);
+            sh.AutoSizeColumn(12);
+
+            //sh.SetColumnWidth(i, 28 * 255);
 
             var filename = "REPORTE_SERVICIOS_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + ".xls";
             Response.AddHeader("content-disposition", "attachment; filename=" + filename);

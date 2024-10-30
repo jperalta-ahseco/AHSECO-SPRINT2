@@ -22,25 +22,11 @@
     $(Initializer)
     function Initializer() {
         CargarCombos();
-        cargarEstados();
         btnBuscarClick();
         $btnBuscar.click(btnBuscarClick);
         $btnExportar.click(btnExportarClick);
         $btnNuevo.click(btnNuevoClick);
     }
-    function cargarEstados() {
-        var method = "POST";
-        var url = "Utiles/ListarEstados";
-        var objParam = "";
-
-        var fnDoneCallback = function (data) {
-            var filters = {};
-            filters.placeholder = "--Todos--";
-            filters.allowClear = false;
-            app.llenarComboMultiResult($cmbEstado, data.Result, null, " ", "--Todos--", filters);
-        };
-        return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, mensajes.obteniendoEstados);
-    };
     function CargarCombos() {
         method = "POST";
         url = "BandejaServicios/FiltroServicios"
@@ -49,11 +35,11 @@
 
         var fnDoneCallBack = function (data) {
             var filters = {};
-            filters.placeholder = "--Todos--";
+            filters.placeholder = "--Seleccionar--";
             filters.allowClear = false;
-            //app.llenarComboMultiResult($cmbEquipo, data.Result.Equipos, null, 0, "--Todos--", filters);
-            app.llenarComboMultiResult($cmbTipoServicio, data.Result.TipServicio, null, 0, "--Todos--", filters);
-
+            //app.llenarComboMultiResult($cmbEquipo, data.Result.Equipos, null, 0, "--Seleccionar--", filters);
+            app.llenarComboMultiResult($cmbTipoServicio, data.Result.TipServicio, null, 0, "--Seleccionar--", filters);
+            app.llenarComboMultiResult($cmbEstado, data.Result.Estados, null, "", "--Seleccionar--", filters);
         };
         var fnFailCallBack = function () {
             app.message.error("Sistema", "Ocurrió un error al realizar la carga de los filtros");
@@ -91,19 +77,19 @@
             {
                 data: "PrecioActualizacion",
                 render: function (data) {
-                    return "S/." + data.toFixed(2)
+                    return "S/." + formatoMiles(data.toFixed(2))
                 }
             },
             {
                 data: "PrecioPreventivo",
                 render: function (data) {
-                    return "S/." + data.toFixed(2)
+                    return "S/." + formatoMiles(data.toFixed(2))
                 }
             },
             {
                 data: "PrecioCapacitacion",
                 render: function (data) {
-                    return "S/." + data.toFixed(2)
+                    return "S/." + formatoMiles(data.toFixed(2))
                 }    
             },
             { data: "TipoServicio"},
@@ -121,8 +107,9 @@
             {
                 data: "CodigoServicio",
                 render: function (data, type, row) {
-                    var editar = '<a class="btn btn-default btn-xs" title="Editar" href="javascript:bandejaServicios.editar('+ "'" + row.CodigoServicio + "'" +')"><i class="fa fa-pencil-square-o" aria-hidden=true></i></a>';
-                    var ver = '<a class="btn btn-info btn-xs" title="Ver" href="javascript:bandejaServicios.ver('+ "'" + row.CodigoServicio + "'" +')"><i class="fa fa-eye" aria-hidden=true></i></a>';
+                    var d = "'" + row.CodigoServicio + "','" + row.Estado + "','" + row.CodTipoServicio + "'"; 
+                    var editar = '<a class="btn btn-default btn-xs" title="Editar" href="javascript:bandejaServicios.editar('+ d +')"><i class="fa fa-pencil-square-o" aria-hidden=true></i></a>';
+                    var ver = '<a class="btn btn-info btn-xs" title="Ver" href="javascript:bandejaServicios.ver('+ d +')"><i class="fa fa-eye" aria-hidden=true></i></a>';
                     return '<center>' + editar + ' '+ ver +'</center>';
                    
                 }
@@ -140,12 +127,14 @@
         }
         app.llenarTabla($tblServicio, data, columns, columnDefs, "#tblServicio", null, null, filters);
     }
-    function editar(codigoServicio) {
+    function editar(codigoServicio, Estado, tipServicio ) {
         var method = "POST";
         var url = "BandejaServicios/SetDatosServicios";
         var objServicio = {
             tipoProceso:"U",
-            codServicio: codigoServicio
+            codServicio: codigoServicio,
+            codEstado: Estado,
+            tipoServicio: tipServicio
         }
         var data = JSON.stringify(objServicio);
         var fnDoneCallback = function () {
@@ -157,13 +146,17 @@
         }
         return app.llamarAjax(method, url, data, fnDoneCallback, fnFailCallback, null, null);
     }
-    function ver(codigoServicio) {
+    function ver(codigoServicio, Estado, tipServicio) {
         var method = "POST";
         var url = "BandejaServicios/SetDatosServicios";
+
         var objServicio = {
-            tipoProceso:"V",
-            codServicio: codigoServicio
+            tipoProceso: "V",
+            codServicio: codigoServicio,
+            codEstado: Estado,
+            tipoServicio: tipServicio
         }
+
         var data = JSON.stringify(objServicio);
         var fnDoneCallback = function () {
             app.redirectTo("BandejaServicios/RegistroServicio");
@@ -199,6 +192,29 @@
     function btnNuevoClick() {
         app.redirectTo("BandejaServicios/RegistroServicio");
     }
+
+    function formatoMiles(value) {
+        let valor = value;
+        // Contar cuántos puntos hay
+        // Si hay un punto, limitar a dos decimales
+        const partes = valor.split('.');
+
+        // Formatear la parte entera con separadores de miles
+        let partesEntera = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        let valorFormateado = partesEntera;
+
+        // Agregar la parte decimal (con ceros si es necesario)
+        if (partes[1]) {
+            valorFormateado += '.' + partes[1];
+        } else {
+            valorFormateado += '.00'; // Si no hay parte decimal, agregar .00
+        }
+
+        // Asignar el valor formateado al input
+        return valorFormateado;
+    }
+
+
     return {
         editar: editar,
         ver:ver

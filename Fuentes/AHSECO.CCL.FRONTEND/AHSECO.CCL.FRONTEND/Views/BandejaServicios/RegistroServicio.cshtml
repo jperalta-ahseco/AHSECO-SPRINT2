@@ -8,6 +8,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     string tipoProceso = VariableSesion.getCadena("tipoProceso");
     var codigoServicio = VariableSesion.getCadena("codigoServicio");
+    var codestado = VariableSesion.getCadena("codestado");
+    var tiposervicio = VariableSesion.getCadena("tiposervicio");
 
     var esconder = false;
     if (tipoProceso == "V")
@@ -19,6 +21,8 @@
 
 <input hidden id="txtTipoIngreso" value="@tipoProceso"/>
 <input hidden id="txtCodigoServicio" value="@codigoServicio"/>
+<input hidden id="txtcodestado" value="@codestado"/>
+<input hidden id="txttiposervicio" value="@tiposervicio" />
 
 <div class="container-fluid" style="margin-right: 15px;">
     <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
@@ -73,13 +77,13 @@
                     <div class="col-md-6 col-sm-12">
                         <label for="txtPrecioAct">Precio Actualizaci&oacute;n de Software:</label>
                         <div class="form-group">
-                            <input @(esconder ? "disabled" : "") placeholder="Ingrese Precio de Actualización de Software" type="text" class="form-control input-sm" id="txtPrecioAct" value="" tabindex="5">
+                            <input @(esconder ? "disabled" : "") placeholder="0.00" type="text" class="form-control input-sm" id="txtPrecioAct" value="" tabindex="5">
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-12">
                         <label for="txtPrecioPreventivo">Precio Preventivo:</label>
                         <div class="form-group">
-                            <input @(esconder ? "disabled" : "") placeholder="Ingrese Precio Preventivo" type="text" class="form-control input-sm" id="txtPrecioPreventivo" tabindex="6" value="">
+                            <input @(esconder ? "disabled" : "") placeholder="0.00" type="text" class="form-control input-sm" id="txtPrecioPreventivo" tabindex="6" value="">
                         </div>
                     </div>
                 </div>
@@ -87,14 +91,16 @@
                     <div class="col-md-6 col-sm-12">
                         <label for="txtPrecioCapacitacion">Precio Capacitaci&oacute;n:</label>
                         <div class="form-group">
-                            <input @(esconder ? "disabled" : "") placeholder="Ingrese Precio de Capacitación" type="text" class="form-control input-sm" id="txtPrecioCapacitacion" value="" tabindex="7">
+                            <input @(esconder ? "disabled" : "") placeholder="0.00" type="text" class="form-control input-sm" id="txtPrecioCapacitacion" value="" tabindex="7">
                         </div>
                     </div>
                     @if (codigoServicio == "0")
                     {
                         <div class="col-md-6 col-sm-12">
                             <label for="cmbEstado">Estado:</label>
-                            <select disabled class="form-control select2 input-sm" style="width:100%;" id="cmbEstado" tabindex="8"></select>
+                            <select disabled class="form-control select2 input-sm" style="width:100%;" id="cmbEstado" tabindex="8">
+                                <option value="1">Activo</option>
+                            </select>
                         </div>
                     }
                     else
@@ -193,83 +199,115 @@
 <script>
     $(document).ready(function () {
 
-
-
-        $('#txtPrecioAct').on('input', function () {
-            let value = $(this).val();
-
-            // Expresión regular para validar números con hasta 2 decimales
-            const regex = /^\d*\.?\d{0,2}$/;
-
-            // Permitir solo valores válidos
-            if (value === '' || regex.test(value)) {
-                // Guarda el valor actual como anterior
-                $(this).data('previous', value);
-            } else {
-                // Si no es un número válido, restaura el valor anterior
-                $(this).val($(this).data('previous'));
-            }
-        });
-
         $('#txtPrecioAct').on('blur', function () {
-            let value = $(this).val();
-            if (value) {
-                // Formatea el valor al perder el foco
-                const parsedValue = parseFloat(value).toFixed(2);
-                $(this).val(parsedValue);
+            let valor = $(this).val();
+
+            // Eliminar caracteres que no son números o punto
+            valor = valor.replace(/[^0-9.]/g, '');
+
+            // Contar cuántos puntos hay
+            const puntoCount = (valor.match(/\./g) || []).length;
+
+            // Permitir solo un punto
+            if (puntoCount > 1) {
+                valor = valor.replace(/\.+$/, ''); // Eliminar el último punto si hay más de uno
             }
-        });
 
-
-        $('#txtPrecioPreventivo').on('input', function () {
-            let value = $(this).val();
-
-            // Expresión regular para validar números con hasta 2 decimales
-            const regex = /^\d*\.?\d{0,2}$/;
-
-            // Permitir solo valores válidos
-            if (value === '' || regex.test(value)) {
-                // Guarda el valor actual como anterior
-                $(this).data('previous', value);
+            // Si hay un punto, limitar a dos decimales
+            const partes = valor.split('.');
+            if (partes.length > 1) {
+                partes[1] = partes[1].substring(0, 2); // Limitar a dos decimales
             } else {
-                // Si no es un número válido, restaura el valor anterior
-                $(this).val($(this).data('previous'));
+                partes[1] = ''; // Si no hay parte decimal, inicializar
             }
+
+            // Formatear la parte entera con separadores de miles
+            let partesEntera = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            let valorFormateado = partesEntera;
+
+            // Agregar la parte decimal (con ceros si es necesario)
+            if (partes[1]) {
+                valorFormateado += '.' + partes[1];
+            } else {
+                valorFormateado += '.00'; // Si no hay parte decimal, agregar .00
+            }
+
+            // Asignar el valor formateado al input
+            $(this).val(valorFormateado);
         });
 
         $('#txtPrecioPreventivo').on('blur', function () {
-            let value = $(this).val();
-            if (value) {
-                // Formatea el valor al perder el foco
-                const parsedValue = parseFloat(value).toFixed(2);
-                $(this).val(parsedValue);
+            let valor = $(this).val();
+
+            // Eliminar caracteres que no son números o punto
+            valor = valor.replace(/[^0-9.]/g, '');
+
+            // Contar cuántos puntos hay
+            const puntoCount = (valor.match(/\./g) || []).length;
+
+            // Permitir solo un punto
+            if (puntoCount > 1) {
+                valor = valor.replace(/\.+$/, ''); // Eliminar el último punto si hay más de uno
             }
-        });
 
-
-        $('#txtPrecioCapacitacion').on('input', function () {
-            let value = $(this).val();
-
-            // Expresión regular para validar números con hasta 2 decimales
-            const regex = /^\d*\.?\d{0,2}$/;
-
-            // Permitir solo valores válidos
-            if (value === '' || regex.test(value)) {
-                // Guarda el valor actual como anterior
-                $(this).data('previous', value);
+            // Si hay un punto, limitar a dos decimales
+            const partes = valor.split('.');
+            if (partes.length > 1) {
+                partes[1] = partes[1].substring(0, 2); // Limitar a dos decimales
             } else {
-                // Si no es un número válido, restaura el valor anterior
-                $(this).val($(this).data('previous'));
+                partes[1] = ''; // Si no hay parte decimal, inicializar
             }
+
+            // Formatear la parte entera con separadores de miles
+            let partesEntera = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            let valorFormateado = partesEntera;
+
+            // Agregar la parte decimal (con ceros si es necesario)
+            if (partes[1]) {
+                valorFormateado += '.' + partes[1];
+            } else {
+                valorFormateado += '.00'; // Si no hay parte decimal, agregar .00
+            }
+
+            // Asignar el valor formateado al input
+            $(this).val(valorFormateado);
         });
 
         $('#txtPrecioCapacitacion').on('blur', function () {
-            let value = $(this).val();
-            if (value) {
-                // Formatea el valor al perder el foco
-                const parsedValue = parseFloat(value).toFixed(2);
-                $(this).val(parsedValue);
+            let valor = $(this).val();
+
+            // Eliminar caracteres que no son números o punto
+            valor = valor.replace(/[^0-9.]/g, '');
+
+            // Contar cuántos puntos hay
+            const puntoCount = (valor.match(/\./g) || []).length;
+
+            // Permitir solo un punto
+            if (puntoCount > 1) {
+                valor = valor.replace(/\.+$/, ''); // Eliminar el último punto si hay más de uno
             }
+
+            // Si hay un punto, limitar a dos decimales
+            const partes = valor.split('.');
+            if (partes.length > 1) {
+                partes[1] = partes[1].substring(0, 2); // Limitar a dos decimales
+            } else {
+                partes[1] = ''; // Si no hay parte decimal, inicializar
+            }
+
+            // Formatear la parte entera con separadores de miles
+            let partesEntera = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            let valorFormateado = partesEntera;
+
+            // Agregar la parte decimal (con ceros si es necesario)
+            if (partes[1]) {
+                valorFormateado += '.' + partes[1];
+            } else {
+                valorFormateado += '.00'; // Si no hay parte decimal, agregar .00
+            }
+
+            // Asignar el valor formateado al input
+            $(this).val(valorFormateado);
         });
 
 

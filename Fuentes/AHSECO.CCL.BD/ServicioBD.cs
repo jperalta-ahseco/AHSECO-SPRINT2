@@ -36,13 +36,13 @@ namespace AHSECO.CCL.BD
             {
                 var parameters = new DynamicParameters();
                 SqlCommand command;
-                string query = "SELECT COD_VALOR1 COD_TIPSERVICIO,VALOR1 NOM_SERVICIO FROM TBD_DATOS_GENERALES WHERE DOMINIO='TIPOSERV' AND ESTADO=1 AND HABILITADO=1;";
+                string query = "USP_FILTROS_SERVICIOS";
                 connection.Open();
                 command = new SqlCommand(query, connection);
 
-                List<ComboDTO> _tipServicio = new List<ComboDTO>();
                 using (var reader = command.ExecuteReader())
                 {
+                    List<ComboDTO> _tipServicio = new List<ComboDTO>();
                     while (reader.Read())
                     {
                         var servicio = new ComboDTO()
@@ -51,35 +51,25 @@ namespace AHSECO.CCL.BD
                             Text = reader.GetString(1)
                         };
                         _tipServicio.Add(servicio);
-                    }; 
+                    };
+
+                    reader.NextResult();
+
+                    List<ComboDTO> _Estados = new List<ComboDTO>();
+                    while (reader.Read())
+                    {
+                        var estado = new ComboDTO()
+                        {
+                            Id = reader.GetString(0),
+                            Text = reader.GetString(1)
+                        };
+                        _Estados.Add(estado);
+                    };
+                    result.Estados = _Estados;
                     result.TipServicio = _tipServicio;
                 };
             };
             return result;
-            //using (var connection = Factory.ConnectionFactoryPostgresSQL())
-            //{
-            //    connection.Open();
-
-            //    using (var command = new NpgsqlCommand("select id_equipo, descripcion from public.equipos where id_equipo is not null", connection))
-            //    {
-            //        using(var reader = command.ExecuteReader())
-            //        {
-            //            List<ComboDTO> _equipos = new List<ComboDTO>();
-            //            while (reader.Read())
-            //            {
-            //                var equipo = new ComboDTO()
-            //                {
-            //                    Id = reader.GetInt64(0).ToString(),
-            //                    Text = reader.GetString(1)
-            //                };
-            //                _equipos.Add(equipo);
-            //            };
-            //            result.Equipos = _equipos;
-            //        };
-            //    };
-            //    connection.Close();    
-            //};
-
         }
 
         public IEnumerable<ServicioDTO> ObtenerServicios(ServicioDTO servicioDTO) {
@@ -104,8 +94,9 @@ namespace AHSECO.CCL.BD
                     {
                         CodigoServicio=i.Single(d=>d.Key.Equals("ID_SERVICIO")).Value.Parse<int>(),
                         TipoServicio=i.Single(d=>d.Key.Equals("TIPO_SERVICIO")).Value.Parse<string>(),
+                        CodTipoServicio = i.Single(d => d.Key.Equals("CODTIPOSERVICIO")).Value.Parse<string>(),
                         //CodEquipo =i.Single(d => d.Key.Equals("CODEQUIPO")).Value.Parse<long>(),
-                        Equipo=i.Single(d => d.Key.Equals("DESCRIPCIONEQUIPO")).Value.Parse<string>(),
+                        Equipo =i.Single(d => d.Key.Equals("DESCRIPCIONEQUIPO")).Value.Parse<string>(),
                         Modelo = i.Single(d => d.Key.Equals("NOMBREMODELO")).Value.Parse<string>(),
                         Marca = i.Single(d => d.Key.Equals("NOMBREMARCA")).Value.Parse<string>(),
                         PrecioPreventivo = i.Single(d => d.Key.Equals("PRECIOPREVENTIVO")).Value.Parse<decimal>(),

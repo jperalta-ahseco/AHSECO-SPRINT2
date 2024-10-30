@@ -1,4 +1,6 @@
 ﻿var manipularServicio = (function ($, win, doc) {
+    var $txttiposervicio = $('#txttiposervicio');
+    var $txtcodestado = $('#txtcodestado');
     var $cmbTipoServicio = $("#cmbTipoServicio");
     var $txtEquipo = $("#txtEquipo");
     var $txtMarca = $("#txtMarca");
@@ -34,56 +36,16 @@
     var contadorDetalle = 0;
     $(Initializer)
     function Initializer() {
+        //CargarCombos();
         CargarCombos();
-        Promise.all([cargarEstados()]).then(() => {
-            if ($txtTipoIngreso.val() == "") {
-                $cmbEstado.val("1").trigger("change.select2");
-            }
-        }).catch((error) => {
-            app.message.error("Error", "No se cargaron los datos de listados de la bandeja.");
-        });
-
         $btnGuardar.click(btnGuardarClick);
         $btnCancelar.click(btnCancelarClick);
-        $txtPrecioAct.on('change', function () {
-            if (isNaN(this.value) || this.value.trim().length == 0) {
-                app.message.error("Validación", "El Precio Actualización debe ser un número de 2 decimales.")
-                $txtPrecioAct.val(0);
-            };
-        });
-        $txtPrecioPreventivo.on('change', function () {
-            if (isNaN(this.value) || this.value.trim().length == 0) {
-                app.message.error("Validación", "El Precio Preventivo debe ser un número de 2 decimales.")
-                $txtPrecioPreventivo.val(0);
-            };
-        });
-        $txtPrecioCapacitacion.on('change', function () {
-            if (isNaN(this.value) || this.value.trim().length == 0) {
-                app.message.error("Validación", "El Precio Capacitación debe ser un número de 2 decimales.")
-                $txtPrecioCapacitacion.val(0);
-            };
-        });
         $btnAbrirModalServicio.click(btnAbrirModalDetalle);
         $btnGuardarDetalleServicio.click(GuardarDetalleServicio);
         $btnActualizar.click(ActualizarServicio);
         $btnActualizarDetalleServicio.click(ActualizarDetalleServicio);
         cargarDatos();
     };
-
-    function cargarEstados() {
-        var method = "POST";
-        var url = "Utiles/ListarEstados";
-        var objParam = "";
-
-        var fnDoneCallback = function (data) {
-            var filters = {};
-            filters.placeholder = "-- Seleccionar --";
-            filters.allowClear = false;
-            app.llenarComboMultiResult($cmbEstado, data.Result, null, "", "--Seleccionar--", filters);
-        };
-        return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, mensajes.obteniendoEstados);
-    };
-
     function CargarCombos() {
         method = "POST";
         url = "BandejaServicios/FiltroServicios"
@@ -96,7 +58,9 @@
             filters.allowClear = false;
             //app.llenarComboMultiResult($cmbEquipo, data.Result.Equipos, null, 0, "--Seleccionar--", filters);
             app.llenarComboMultiResult($cmbTipoServicio, data.Result.TipServicio, null, 0, "--Seleccionar--", filters);
-
+            if ($txtTipoIngreso.val() != "") {
+                app.llenarComboMultiResult($cmbEstado, data.Result.Estados, null, "", "--Seleccionar--", filters);
+            }
         };
         var fnFailCallBack = function () {
             app.message.error("Sistema", "Ocurrió un error al realizar la carga de los filtros");
@@ -234,7 +198,7 @@
         }
 
         if ($txtEquipo.val() == 0 || $txtEquipo.val() === null || $txtEquipo.val() == "" || $txtEquipo.val().trim().length == 0) {
-            app.message.error("Validación", "Debe de ingresar un equipo")
+            app.message.error("Validación", "Debe de registrar un equipo")
             return;
         };
 
@@ -292,9 +256,9 @@
                     Marca: $txtMarca.val(),
                     Estado: $cmbEstado.val(),
                     TipoServicio: $cmbTipoServicio.val(),
-                    PrecioPreventivo: $txtPrecioPreventivo.val(),
-                    PrecioCapacitacion: $txtPrecioCapacitacion.val(),
-                    PrecioActualizacion: $txtPrecioAct.val(),
+                    PrecioPreventivo: ($txtPrecioPreventivo.val()).replaceAll(",", ""),
+                    PrecioCapacitacion: ($txtPrecioCapacitacion.val()).replaceAll(",", ""),
+                    PrecioActualizacion: ($txtPrecioAct.val()).replaceAll(",", ""),
                     Herramientas: $txtHerramientas.val(),
                     HerramientasEspeciales: $txtHerramientasEspeciales.val(),
                     Instrumentos: $txtInstrumentos.val()
@@ -303,12 +267,14 @@
             };
 
             var objParam = JSON.stringify(objServicio);
-            function redirectTo() {
-                app.redirectTo("BandejaServicios");
-            };
+            
 
             var fnDoneCallback = function (data) {
-                app.message.confirm("Confirmación", "Se realizó el registro del servicio exitosamente", "Aceptar", redirectTo);
+                function redirectTo() {
+                    app.redirectTo("BandejaServicios");
+                };
+
+                app.message.success("Confirmación", "Se realizó el registro del servicio exitosamente", "Aceptar", redirectTo);
             };
             var fnFailCallback = function (data) {
                 app.message.error("Validación", data.Mensaje);
@@ -319,10 +285,15 @@
     }
 
     function btnCancelarClick() {
-        var fncn = function () {
-            app.redirectTo("BandejaServicios")
+        if ($txtTipoIngreso.val() == 'U' || $txtTipoIngreso.val() == '') {
+            var fncn = function () {
+                app.redirectTo("BandejaServicios");
+            }
+            return app.message.confirm("Guardar", "¿Está seguro/a de regresar a la bandeja, se perderán los cambios no guardados?", "Sí", "No", fncn, null);
         }
-        return app.message.confirm("Guardar", "¿Está seguro/a de regresar a la bandeja, se perderán los cambios no guardados?", "Sí", "No", fncn, null);
+        else {
+            app.redirectTo("BandejaServicios");
+        }
     }
 
     function eliminarDetalleServicioTemp(Id) {
@@ -364,10 +335,10 @@
                 '<td><center>' + indice + '</center></td>' +
                 '<td><center>' + detalle[i].DesMantenimiento + '</center></td>';
             if ($txtTipoIngreso.val() == "") {
-                nuevoTr += '<td><center><a class="btn btn-primary btn-xs" href="javascript: manipularServicio.eliminarDetalleServicioTemp(' + detalle[i].Id + ')"><i class="fa fa-trash"></i></a></center></td>';
+                nuevoTr += '<td><center><a class="btn btn-primary btn-xs" title="Eliminar" href="javascript: manipularServicio.eliminarDetalleServicioTemp(' + detalle[i].Id + ')"><i class="fa fa-trash"></i></a></center></td>';
             } else if ($txtTipoIngreso.val() == "U") {
                 var editar ='<a class="btn btn-default btn-xs" href="javascript: manipularServicio.editarDetalleServicio(' + detalle[i].Id + ')" btn-xs"><i class="fa fa-pencil"></i></a>';
-                nuevoTr += '<td><center>' + editar +' '+'<a class="btn btn-primary btn-xs" href="javascript: manipularServicio.eliminarDetalleServicio(' + detalle[i].Id + ')" btn-xs"><i class="fa fa-trash"></i></a></center></td>';
+                nuevoTr += '<td><center>' + editar + ' ' +'<a class="btn btn-primary btn-xs" title="Eliminar" href="javascript: manipularServicio.eliminarDetalleServicio(' + detalle[i].Id + ')" btn-xs"><i class="fa fa-trash"></i></a></center></td>';
             }
             nuevoTr += '</tr>';
             $tblDetalleServicio.append(nuevoTr);
@@ -457,21 +428,21 @@
                         Marca: $txtMarca.val(),
                         Estado: $cmbEstado.val(),
                         TipoServicio: $cmbTipoServicio.val(),
-                        PrecioPreventivo: $txtPrecioPreventivo.val(),
-                        PrecioCapacitacion: $txtPrecioCapacitacion.val(),
-                        PrecioActualizacion: $txtPrecioAct.val(),
+                        PrecioPreventivo: ($txtPrecioPreventivo.val()).replaceAll(",",""),
+                        PrecioCapacitacion: ($txtPrecioCapacitacion.val()).replaceAll(",", ""),
+                        PrecioActualizacion: ($txtPrecioAct.val()).replaceAll(",", ""),
                         Instrumentos: $txtInstrumentos.val(),
                         Herramientas: $txtHerramientas.val(),
                         HerramientasEspeciales: $txtHerramientasEspeciales.val()
                 };
 
                 var objParam = JSON.stringify(objServicio);
-                function redirectTo() {
-                    app.redirectTo("BandejaServicios");
-                };
-
                 var fnDoneCallback = function (data) {
-                    app.message.confirm("Confirmación", "Se realizó la actualización del servicio exitosamente", "Aceptar", redirectTo);
+                    function redirectTo() {
+                        app.redirectTo("BandejaServicios");
+                    };
+
+                    app.message.success("Confirmación", "Se realizó la actualización del servicio exitosamente", "Aceptar", redirectTo);
                 };
                 var fnFailCallback = function (data) {
                     app.message.error("Validación", data.Mensaje);
@@ -489,21 +460,28 @@
             url = "BandejaServicios/GetFullService?CodServicio="+$txtCodigoServicio.val();
 
             var fnDoneCallBack = function (data) {
-                $cmbTipoServicio.val(data.Result.CabeceraServicio.CodTipoServicio).trigger("change.select2");
                 $txtEquipo.val(data.Result.CabeceraServicio.Equipo);
                 $txtModelo.val(data.Result.CabeceraServicio.Modelo);
                 $txtMarca.val(data.Result.CabeceraServicio.Marca);
-                $txtPrecioAct.val(data.Result.CabeceraServicio.PrecioActualizacion);
-                $txtPrecioPreventivo.val(data.Result.CabeceraServicio.PrecioPreventivo);
-                $txtPrecioCapacitacion.val(data.Result.CabeceraServicio.PrecioCapacitacion);
-                $cmbEstado.val(data.Result.CabeceraServicio.Estado).trigger("change.select2");
+                //$txtPrecioAct.val(data.Result.CabeceraServicio.PrecioActualizacion.toFixed(2));
+                //$txtPrecioPreventivo.val(data.Result.CabeceraServicio.PrecioPreventivo.toFixed(2));
+                //$txtPrecioCapacitacion.val(data.Result.CabeceraServicio.PrecioCapacitacion.toFixed(2));
+                $txtPrecioAct.val(formatoMiles(data.Result.CabeceraServicio.PrecioActualizacion.toFixed(2)));
+                $txtPrecioPreventivo.val(formatoMiles(data.Result.CabeceraServicio.PrecioPreventivo.toFixed(2)));
+                $txtPrecioCapacitacion.val(formatoMiles(data.Result.CabeceraServicio.PrecioCapacitacion.toFixed(2)));
+
                 $txtInstrumentos.val(data.Result.CabeceraServicio.Instrumentos).trigger("change.select2");
                 $txtHerramientas.val(data.Result.CabeceraServicio.Herramientas).trigger("change.select2");
                 $txtHerramientasEspeciales.val(data.Result.CabeceraServicio.HerramientasEspeciales).trigger("change.select2");
 
                 detalleServicios = data.Result.servicios;
                 contadorDetalle = data.Result.servicios.length;
-                cargarTablaDetalle(detalleServicios)
+
+                $cmbEstado.val($txtcodestado.val()).trigger("change.select2");
+                $cmbTipoServicio.val($txttiposervicio.val()).trigger("change.select2");
+                $cmbEstado.val(data.Result.CabeceraServicio.Estado).trigger("change.select2");
+                $cmbTipoServicio.val(data.Result.CabeceraServicio.CodTipoServicio).trigger("change.select2");
+                cargarTablaDetalle(detalleServicios);
             };
 
             var fnFailCallBack = function (data) {
@@ -514,6 +492,28 @@
         };
 
     };
+
+    function formatoMiles(value) {
+        let valor = value;
+        // Contar cuántos puntos hay
+        // Si hay un punto, limitar a dos decimales
+        const partes = valor.split('.');
+
+        // Formatear la parte entera con separadores de miles
+        let partesEntera = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        let valorFormateado = partesEntera;
+
+        // Agregar la parte decimal (con ceros si es necesario)
+        if (partes[1]) {
+            valorFormateado += '.' + partes[1];
+        } else {
+            valorFormateado += '.00'; // Si no hay parte decimal, agregar .00
+        }
+
+        // Asignar el valor formateado al input
+        return valorFormateado;
+    }
+
     return {
         eliminarDetalleServicioTemp: eliminarDetalleServicioTemp,
         eliminarDetalleServicio: eliminarDetalleServicio,
