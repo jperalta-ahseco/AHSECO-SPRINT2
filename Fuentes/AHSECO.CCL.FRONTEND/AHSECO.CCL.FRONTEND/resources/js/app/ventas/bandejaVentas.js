@@ -44,8 +44,14 @@
         };
 
         if ($RolUsuario.val() == "SGI_VENTA_ASESOR") {
-            objBuscar.Id_Empleado = $CodEmpleado.val() == "" || $CodEmpleado.val() == null || $CodEmpleado.val() == undefined || $CodEmpleado.val() == 0 ? -2 : $CodEmpleado.val()
-        };
+            objBuscar.Id_Empleado = $CodEmpleado.val();
+        }
+        else if ($RolUsuario.val() == "SGI_VENTA_COORDINASERV" || $RolUsuario.val() == "SGI_VENTA_COORDINAATC") {
+            objBuscar.Id_Empleado = null;
+        }
+        else {
+            objBuscar.Id_Empleado = -2;
+        }
 
         objParam = JSON.stringify(objBuscar);
 
@@ -125,8 +131,14 @@
         };
 
         if ($RolUsuario.val() == "SGI_VENTA_ASESOR") {
-            objBuscar.Id_Empleado = $CodEmpleado.val() == "" || $CodEmpleado.val() == null || $CodEmpleado.val() == undefined || $CodEmpleado.val() == 0 ? -2 : $CodEmpleado.val()
-        };
+            objBuscar.Id_Empleado = $CodEmpleado.val();
+        }
+        else if ($RolUsuario.val() == "SGI_VENTA_COORDINASERV" || $RolUsuario.val() == "SGI_VENTA_COORDINAATC") {
+            objBuscar.Id_Empleado = null;
+        }
+        else {
+            objBuscar.Id_Empleado = -2;
+        }
 
         objParam = JSON.stringify(objBuscar);
         var fnDoneCallBack = function (data) {

@@ -31,17 +31,12 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             var detalleEmpleado = new EmpleadoDTO()
             {
                 CodigoEmpleado = 0,
-                NombresCompletosEmpleado = ""};
-
+                NombresCompletosEmpleado = ""
+            };
 
             VariableSesion.setCadena("VENTA_NOMBRE_ROL",roles.NombreRol);
-
-            var NombreRol = VariableSesion.getCadena("VENTA_NOMBRE_ROL");
-
             ViewBag.CodigoArea = roles.CodigoArea;
 
-            if (NombreRol == "SGI_VENTA_ASESOR")
-            {
                 var usuarioBL = new UsuarioBL();
                 var empleadosBL = new EmpleadosBL();
 
@@ -52,7 +47,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 {
                     Id = Int32.Parse(idUsuario)
                 };
-                var result = usuarioBL.Obtener(usuarioDTO);
 
                 usuarios.Add(usuarioBL.Obtener(usuarioDTO).Result);
 
@@ -92,10 +86,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         detalleEmpleado.NombresCompletosEmpleado = detalle.NombresCompletosEmpleado;
                     };
                 };
-            };
 
             VariableSesion.setObject("VENTA_EMPLEADO", detalleEmpleado); //Encapsulamos información relevante del empleado.
-
             return View();
         }
         
