@@ -220,7 +220,7 @@ namespace AHSECO.CCL.BL.Ventas
                     {
                         if (item.Almacenes != null)
                         {
-                            item.StockDisponible = item.Almacenes.Max(y => y.StockDisponible);
+                            item.StockDisponible = item.Almacenes.Sum(y => y.StockDisponible);
                             if (item.StockDisponible > 0) { item.EsDisponible = true; }
                         }
                     }

@@ -408,13 +408,13 @@ var app = (function ($, win, doc) {
 
     // Llena un datatable con datos y especificacion de columnas
     function llenarTabla(selector, data, columns, columnsDefs, tableName, rowCallback, drawCallback, filters) {
-        
+
         var table;
         if ($.fn.dataTable.isDataTable(tableName)) {
             table = selector.dataTable().api();
         } else {
             table = selector.dataTable({
-                paging: filters != null ? (filters.dataTablePaging || defaults.dataTablePaging) : defaults.dataTablePaging,
+                paging: filters != null ? filters.dataTablePaging : false,
                 searching: filters != null ? (filters.dataTableSearching || defaults.dataTableSearching) : defaults.dataTableSearching,
                 info: filters != null ? filters.dataTableInfo : true,
                 ordering: defaults.dataTableOrdering,
@@ -427,8 +427,8 @@ var app = (function ($, win, doc) {
                 language: defaults.dataTableLanguage,
                 rowCallback: rowCallback,
                 drawCallback: drawCallback,
-                pageLength: filters != null ? (filters.dataTablePageLength || defaults.dataTablePageLength): defaults.dataTablePageLength,
-                lengthChange: filters != null ? (filters.dataTableLengthChange || defaults.dataTableLengthChange): defaults.dataTableLengthChange
+                pageLength: filters != null ? (filters.dataTablePageLength || defaults.dataTablePageLength) : defaults.dataTablePageLength,
+                lengthChange: filters != null ? (filters.dataTableLengthChange || defaults.dataTableLengthChange) : defaults.dataTableLengthChange
             }).api();
         }
         table.clear();

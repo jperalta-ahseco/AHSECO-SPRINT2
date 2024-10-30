@@ -8,6 +8,7 @@ namespace AHSECO.CCL.BE.Ventas
 {
     public class CotizacionDetalleDTO : CamposAuditoriaDTO
     {
+        public bool Select { get; set; }
         public string TipoProceso { get; set; }
         public long Id { get; set; }
         public long IdCotizacion { get; set; }
@@ -34,5 +35,6 @@ namespace AHSECO.CCL.BE.Ventas
         public bool Videos { get; set; }
         public bool InstCapa { get; set; }
         public string GarantiaAdic { get; set; }
+        public CotizacionDetalleDTO[] SubItems { get; set; }
     }
 }

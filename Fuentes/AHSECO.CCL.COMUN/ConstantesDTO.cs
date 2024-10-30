@@ -66,6 +66,15 @@ namespace AHSECO.CCL.COMUN
             }
         }
 
+        public struct CotizacionVentaDetalle
+        {
+            public struct TipoItem
+            {
+                public static string Producto { get { return "PRO"; } }
+                public static string Accesorio { get { return "ACC"; } }
+            }
+        }
+
         public struct EstadosProcesos
         {
             public struct ProcesoVenta

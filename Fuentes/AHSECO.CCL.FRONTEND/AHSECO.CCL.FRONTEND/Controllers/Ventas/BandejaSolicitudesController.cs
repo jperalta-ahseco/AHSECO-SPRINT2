@@ -101,6 +101,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.PermitirAgregarCotDet = false;
             ViewBag.PermitirNuevoCot = false;
             VariableSesion.setObject("CotDetItems", new List<CotizacionDetalleDTO>());
+            VariableSesion.setObject("CotDetSubItems", new List<CotizacionDetalleDTO>());
 
             if (numSol != null)
             {
@@ -625,21 +626,47 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 List<CotizacionDetalleDTO> lstItems = new List<CotizacionDetalleDTO>();
                 if (VariableSesion.getObject("CotDetItems") != null) { lstItems = (List<CotizacionDetalleDTO>)VariableSesion.getObject("CotDetItems"); }
 
-                if (lstItems.Any(x => x.CodItem == CodItem))
-                { throw new Exception("Producto ya fue selecionado"); }
-
+                //Articulo Seleccionado
                 var oArticulo = new ArticuloDTO();
                 if (respArt.Result.Any(x => x.CodArticulo == CodItem))
                 { oArticulo = respArt.Result.First(x => x.CodArticulo == CodItem); }
 
+                //Registro Detalle
                 var select = new CotizacionDetalleDTO();
                 select.CodItem = oArticulo.CodArticulo;
                 select.Descripcion = oArticulo.DescArticulo;
-                lstItems.Add(select);
+                select.TipoItem = ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto;
 
-                VariableSesion.setObject("CotDetItems", lstItems);
+                if (oArticulo.CodFamilia.Trim() == ConstantesDTO.Articulos.Familia.Accesorios.Trim())
+                { select.TipoItem = ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio; }
 
-                var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems);
+                if (select.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio)
+                {
+                    var lstItemsPadre = lstItems.Where(x => x.Select).ToList();
+                    if (!lstItemsPadre.Any()) { throw new Exception("Debe seleccionar el producto a asociar el accesorio"); }
+                    foreach(CotizacionDetalleDTO itemPadre in lstItemsPadre)
+                    {
+                        if (lstItems.Any(x => x.NroItem == itemPadre.NroItem && x.CodItem.TrimEnd() == CodItem.TrimEnd()))
+                        { throw new Exception("Accesorio ya fue selecionado"); }
+                        CotizacionDetalleDTO item = select;
+                        item.NroItem = itemPadre.NroItem;
+                        lstItems.Add(item);
+                        VariableSesion.setObject("CotDetItems", lstItems);
+                    }
+                }
+                else
+                {
+                    if (lstItems.Any()) { select.NroItem = lstItems.Max(x => x.NroItem) + 1; }
+                    else { select.NroItem = 1; }
+                    if (lstItems.Any(x => x.CodItem.TrimEnd() == CodItem.TrimEnd()))
+                    { throw new Exception("Producto ya fue selecionado"); }
+                    lstItems.ForEach(x => x.Select = false);
+                    lstItems.Add(select);
+                    VariableSesion.setObject("CotDetItems", lstItems);
+                }
+
+                //Solo cargar los productos en pantalla
+                var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems.Where(x => x.TipoItem != ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio));
 
                 return Json(response);
             }
@@ -647,14 +674,69 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         }
 
         [HttpPost]
-        public JsonResult QuitarItemCotDet(string CodArticulo)
+        public JsonResult SeleccionarRowCotDet(string CodigoItem)
         {
             try
             {
                 List<CotizacionDetalleDTO> lstItems = new List<CotizacionDetalleDTO>();
                 if (VariableSesion.getObject("CotDetItems") != null) { lstItems = (List<CotizacionDetalleDTO>)VariableSesion.getObject("CotDetItems"); }
 
-                lstItems = lstItems.Where(x => x.CodItem != CodArticulo).ToList();
+                foreach (CotizacionDetalleDTO item in lstItems)
+                {
+                    if (item.CodItem.TrimEnd() == CodigoItem.TrimEnd()) {
+                        if (item.Select) { item.Select = false; }
+                        else { item.Select = true; }
+                    }
+                }
+
+                VariableSesion.setObject("CotDetItems", lstItems);
+
+                var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems);
+
+                return Json(response);
+            }
+            catch (Exception ex) { return Json(new { Status = 0, Mensaje = ex.Message }); }
+        }
+
+        [HttpPost]
+        public JsonResult ObtenerSubItems(string CodItemPadre)
+        {
+            try
+            {
+                List<CotizacionDetalleDTO> lstItems = new List<CotizacionDetalleDTO>();
+                if (VariableSesion.getObject("CotDetItems") != null) { lstItems = (List<CotizacionDetalleDTO>)VariableSesion.getObject("CotDetItems"); }
+
+                List<CotizacionDetalleDTO> lstSubItems = new List<CotizacionDetalleDTO>();
+
+                if (lstItems.Any())
+                {
+
+                    var oItemPadre = lstItems.FirstOrDefault(x => x.CodItem.TrimEnd() == CodItemPadre.TrimEnd());
+
+                    if (oItemPadre != null)
+                    {
+                        lstSubItems = lstItems.Where(x => x.NroItem.Equals(oItemPadre.NroItem) && 
+                        x.TipoItem.Equals(ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio)).ToList();
+                    }
+
+                }
+
+                var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstSubItems);
+
+                return Json(response);
+            }
+            catch (Exception ex) { return Json(new { Status = 0, Mensaje = ex.Message }); }
+        }
+
+        [HttpPost]
+        public JsonResult QuitarItemCotDet(string CodItem)
+        {
+            try
+            {
+                List<CotizacionDetalleDTO> lstItems = new List<CotizacionDetalleDTO>();
+                if (VariableSesion.getObject("CotDetItems") != null) { lstItems = (List<CotizacionDetalleDTO>)VariableSesion.getObject("CotDetItems"); }
+
+                lstItems = lstItems.Where(x => x.CodItem != CodItem).ToList();
 
                 VariableSesion.setObject("CotDetItems", lstItems);
 
@@ -681,6 +763,27 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 return Json(new ResponseDTO<CotizacionDetalleDTO>(itemCotDet));
             }
             catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
+        }
+
+        [HttpPost]
+        public JsonResult QuitarSubItemCotDet(string CodItemPadre, string CodItem)
+        {
+            try
+            {
+                List<CotizacionDetalleDTO> lstItems = new List<CotizacionDetalleDTO>();
+                if (VariableSesion.getObject("CotDetItems") != null) { lstItems = (List<CotizacionDetalleDTO>)VariableSesion.getObject("CotDetItems"); }
+
+                var itemPadre = lstItems.FirstOrDefault(x => x.CodItem == CodItemPadre);
+                if (itemPadre != null)
+                {
+                    lstItems = lstItems.Where(x => x.NroItem == itemPadre.NroItem && x.CodItem != CodItem).ToList();
+                    VariableSesion.setObject("CotDetItems", lstItems);
+                }
+                var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems);
+
+                return Json(response);
+            }
+            catch (Exception ex) { return Json(new { Status = 0, Mensaje = ex.Message }); }
         }
 
     }
