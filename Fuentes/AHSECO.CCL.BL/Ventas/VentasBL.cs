@@ -234,5 +234,19 @@ namespace AHSECO.CCL.BL.Ventas
             }
         }
 
+        public ResponseDTO<GuiaDTO> ConsultaGuia(long codSolicitud, string tipo)
+        {
+            try
+            {
+                var result = Repository.ConsultaGuia(codSolicitud,tipo);
+                return new ResponseDTO<GuiaDTO>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + ":: " + ex.Message);
+                return new ResponseDTO<GuiaDTO>(ex);
+            };
+        }
+
     }
 }

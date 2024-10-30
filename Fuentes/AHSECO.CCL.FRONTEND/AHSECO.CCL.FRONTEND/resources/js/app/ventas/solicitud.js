@@ -312,7 +312,6 @@
     }
 
     function $btnGuiaPedido_click() {
-
         var num_solicitud = $numeroSolicitud.val();
         var tipo = "GP"
         method = 'POST';
@@ -321,13 +320,12 @@
         objParam = '';
 
         var fnDoneCallBack = function (data) {
-           // app.abrirVentana("BandejaHistorialCotizacion/ExportarFile?nombreDoc=" + data.Archivo);
-           // app.message.success("Ventas", "Se generó la cotización correctamente.")
+            app.abrirVentana("BandejaHistorialCotizacion/ExportarFileGuiaPedido?nombreDoc=" + data.Archivo);
+            app.message.success("Ventas", "Se generó la guía de pedidos correctamente.")
         }
         var fnFailCallBack = function () {
 
         }
-
         app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, mensajes.GenerarGuiaPedidos);
     }
 
@@ -336,12 +334,11 @@
         var tipo = "BO"
         method = 'POST';
         url = 'BandejaHistorialCotizacion/ExportarDocumentosVentas?tipo=' + tipo + "&codSolicitud=" + num_solicitud;
-
         objParam = '';
 
         var fnDoneCallBack = function (data) {
-            // app.abrirVentana("BandejaHistorialCotizacion/ExportarFile?nombreDoc=" + data.Archivo);
-            // app.message.success("Ventas", "Se generó la cotización correctamente.")
+            app.abrirVentana("BandejaHistorialCotizacion/ExportarFileGuiaBO?nombreDoc=" + data.Archivo);
+            app.message.success("Ventas", "Se generó la guía de BO correctamente.")    
         }
         var fnFailCallBack = function () {
 

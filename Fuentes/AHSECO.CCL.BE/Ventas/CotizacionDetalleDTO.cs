@@ -36,5 +36,12 @@ namespace AHSECO.CCL.BE.Ventas
         public bool InstCapa { get; set; }
         public string GarantiaAdic { get; set; }
         public CotizacionDetalleDTO[] SubItems { get; set; }
+
+        #region BandejaInstalacionTecnica
+        public string Marca { get; set; }
+        public string Modelo { get; set; }
+        public string Serie { get; set; }
+        public string NumFianza { get; set; }
+        #endregion
     }
 }

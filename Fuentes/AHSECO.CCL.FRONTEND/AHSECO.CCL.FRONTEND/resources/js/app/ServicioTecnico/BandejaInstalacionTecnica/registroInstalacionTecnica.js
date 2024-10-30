@@ -21,11 +21,18 @@
     var $openRegdateSolicitud = $('#openRegdateSolicitud');
     var $tblMainProducts = $('#tblMainProducts');
     var $hdnIdProduct = $('#hdnIdProduct');
+    var $txtOrdCompra = $('#txtOrdCompra');
+    var $txtProceso = $('#txtProceso');
+    var $txtContrato = $('#txtContrato');
+    var $txtFianza = $('#txtFianza');
+    var $hdnCodEmpresa = $('#hdnCodEmpresa');
+    var $hdnCodTipVenta = $('#hdnCodTipVenta');
 
 
     var $searchSolVenta = $('#searchSolVenta'); 
     var mensajes = {
-        procesandoUbigeo: "Cargando Ubigeo, por favor espere...."
+        procesandoUbigeo: "Cargando Ubigeo, por favor espere....",
+        RegistrarRequerimiento: "Registrando requerimiento, por favor espere...."
     };
 
     /*Modales*/
@@ -79,7 +86,8 @@
 
     let productos = [];
     let destinos_select = [];
-    let observaciones = []
+    let observaciones = [];
+    let adjuntos = [];
     function Initializer() {
         ObtenerFiltrosInstalacion();
         Promise.all([ObtenerDepartamentos()]).then(() => {
@@ -162,8 +170,55 @@
 
         };*/
         var method = "POST";
-        var url = ""
+        var url = "BandejaInstalacionTecnica/RegistroRequerimientoMain"
+        var objGrupo = {
+            CabeceraInstalacion: {
+                TipoProceso: "I"
+                , NumReq : 0
+                , Id_Solicitud: $txtSolVenta.val()
+                , RucEmpresa: $txtRuc.val()
+                , NomEmpresa: $txtNomEmpresa.val()
+                , Ubicacion: $txtUbigeo.val()
+                , NombreContacto: 'pendiente'
+                , TelefonoContacto: 'pendiente'
+                , CargoContacto: 'pendiente'
+                , Establecimiento: 'pendiente'
+                , TipoVenta: $hdnCodTipVenta.val()
+                , CodEmpresa: $hdnCodEmpresa.val()
+                , OrdenCompra: $txtOrdCompra.val()
+                , NumProceso: $txtProceso.val()
+                , Contrato: $txtContrato.val()
+                , Fianza: $txtFianza.val()
+                , NumFianza: $txtFianza.val()
+                , Vendedor: $txtAsesor.val()
+                , FechaMax: $dateSolicitud.val()
+                , Destino: destinos_select.toString()
+                , Estado: 'REG'
+            },
+            DetalleInstalacion: productos,
+            Observaciones: observaciones,
+            Adjuntos: adjuntos
 
+        }
+        var objParam = JSON.stringify(objGrupo);
+
+
+        function redirect() {
+            app.redirectTo("BandejaInstalacionTecnica");
+        }
+
+        var fnSi = function () {
+            var fnDoneCallBack = function (data) {
+                app.message.success("Registro Realizado", "Se realizó el registro satisfactoriamente.", "Aceptar", redirect);
+            };
+
+            var fnFailCallBack = function () {
+                app.message.error("Validación", "Error al realizar el registro del requerimiento");
+            };
+
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, mensajes.RegistrarRequerimiento);
+        }
+        return app.message.confirm("Instalación Técnica", "¿Esta seguro que desea registrar el requerimiento?", "Si", "No", fnSi, null);
     };
 
     function BuscarSolicitudes() {
@@ -204,10 +259,29 @@
 
         var fnDoneCallBack = function (data) {
             cargarCabecera(data.Result.Solicitud)
-            cargarBandejaProductos(data.Result.DetalleCotizacion)
+
+            for (var i = 0; i < data.Result.DetalleCotizacion.length; i++) {
+                productos.push({
+                    Id: data.Result.DetalleCotizacion[i].Id,
+                    Cantidad: data.Result.DetalleCotizacion[i].Cantidad,
+                    CodProducto: data.Result.DetalleCotizacion[i].CodItem,
+                    DescProducto: data.Result.DetalleCotizacion[i].Descripcion,
+                    Marca: data.Result.DetalleCotizacion[i].Marca,
+                    Modelo: data.Result.DetalleCotizacion[i].Modelo,
+                    Serie: data.Result.DetalleCotizacion[i].Serie,
+                    NumFianza: data.Result.DetalleCotizacion[i].NumFianza,
+                    CantidadMP: data.Result.DetalleCotizacion[i].CantidadPreventivo,
+                    Periodicidad: data.Result.DetalleCotizacion[i].PeriodoPreventivo,
+                    Garantia: data.Result.DetalleCotizacion[i].GarantiaAdic
+                })
+            };
+            cargarBandejaProductos(data.Result.DetalleCotizacion);
             $modalSolicitud.modal('toggle');
             $cmbDestino.prop('disabled', false);
             $dateSolicitud.prop('disabled', false);
+
+
+
         };
 
         var fnFailCallBack = function () {
@@ -218,9 +292,11 @@
     };
 
     function cargarCabecera(solicitud) {
+        $hdnCodEmpresa.val(solicitud.Cod_Empresa);
         $txtSolVenta.val(solicitud.Id_Solicitud);
         $txtEmpresa.val(solicitud.Nom_Empresa);
         $txtTipVenta.val(solicitud.nomFlujo);
+        $hdnCodTipVenta.val(solicitud.Id_Flujo);
         $txtRuc.val(solicitud.RUC);
         $txtNomEmpresa.val(solicitud.RazonSocial);
         $txtUbigeo.val(solicitud.Ubigeo);
@@ -286,7 +362,6 @@
     };
 
     function cargarBandejaProductos(detalleProductos) {
-        productos = detalleProductos;
         var data = {}
         data.Result = [];
         data.Result = detalleProductos;
@@ -304,9 +379,51 @@
                 }   
             },
             {
+                data: "Marca",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "Modelo",
+                render: function (data, type, row) {
+                    return '<center>' + "Modelo" + '</center>'
+                }
+            },
+            {
+                data: "Serie",
+                render: function (data, type, row) {
+                    return '<center>' + "Serie" + '</center>'
+                }
+            },
+            {
                 data: "Cantidad",
                 render: function (data, type, row) {
                     return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "CantidadPrev",
+                render: function (data, type, row) {
+                    return '<center>' + "CantidadPrev" + '</center>'
+                }
+            },
+            {
+                data: "Periodicidad",
+                render: function (data, type, row) {
+                    return '<center>' + "Periodicidad" + '</center>'
+                }
+            },
+            {
+                data: "Garantia",
+                render: function (data, type, row) {
+                    return '<center>' + "Garantia" + '</center>'
+                }
+            },
+            {
+                data: "NumFianza",
+                render: function (data, type, row) {
+                    return '<center>' + "NumFianza" + '</center>'
                 }
             }
         ];

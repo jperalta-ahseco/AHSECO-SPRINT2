@@ -796,5 +796,72 @@ namespace AHSECO.CCL.BD.Ventas
             }
         }
 
+        public GuiaDTO ConsultaGuia(long codSolicitud, string tipo)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using (var connection = Factory.ConnectionSingle())
+            {
+
+                var parameters = new DynamicParameters();
+                parameters.Add("CodigoSol", codSolicitud);
+                parameters.Add("Tipo", tipo);
+                SqlCommand command;
+                var result = new GuiaDTO();
+                string query = "exec USP_CREAR_GUIA @CodigoSol=" + codSolicitud.ToString() + ",@Tipo='"+tipo+"'";
+                connection.Open();
+                command = new SqlCommand(query, connection);
+
+
+                using (var reader = command.ExecuteReader())
+                {
+                    reader.Read();
+                    GuiaCabDTO _cabeceraGuia = new GuiaCabDTO()
+                    {
+                        RutaImagen = reader.IsDBNull(reader.GetOrdinal("RUTAIMAGEN")) ? "" : reader.GetString(reader.GetOrdinal("RUTAIMAGEN")),
+                        Titulo = reader.IsDBNull(reader.GetOrdinal("TITULO")) ? "" : reader.GetString(reader.GetOrdinal("TITULO")),
+                        FechaOrdenCompra = reader.IsDBNull(reader.GetOrdinal("FECHAOC")) ? "" : reader.GetString(reader.GetOrdinal("FECHAOC")),
+                        PlazoEntrega = reader.IsDBNull(reader.GetOrdinal("PLAZOENTREGA")) ? "" : reader.GetString(reader.GetOrdinal("PLAZOENTREGA")),
+                        NombreVendedor = reader.IsDBNull(reader.GetOrdinal("NOMBREVENDEDOR")) ? "" : reader.GetString(reader.GetOrdinal("NOMBREVENDEDOR")),
+                        VendidoA = reader.IsDBNull(reader.GetOrdinal("VENDIDOA")) ? "" : reader.GetString(reader.GetOrdinal("VENDIDOA")),
+                        EnviadoA = reader.IsDBNull(reader.GetOrdinal("ENVIADOA")) ? "" : reader.GetString(reader.GetOrdinal("ENVIADOA")),
+                        Ruc = reader.IsDBNull(reader.GetOrdinal("RUC")) ? "" : reader.GetString(reader.GetOrdinal("RUC")),
+                        Direccion = reader.IsDBNull(reader.GetOrdinal("DIRECCION")) ? "" : reader.GetString(reader.GetOrdinal("DIRECCION")),
+                        Ciudad = reader.IsDBNull(reader.GetOrdinal("CIUDAD")) ? "" : reader.GetString(reader.GetOrdinal("CIUDAD")),         
+                        NumeroOrdenCompra = reader.IsDBNull(reader.GetOrdinal("NUMOC")) ? "" : reader.GetString(reader.GetOrdinal("NUMOC")),
+                        Subtotal = reader.IsDBNull(reader.GetOrdinal("SUBTOTAL")) ? "" : reader.GetString(reader.GetOrdinal("SUBTOTAL")),
+                        Igv = reader.IsDBNull(reader.GetOrdinal("IGV")) ? "" : reader.GetString(reader.GetOrdinal("IGV")),
+                        Total = reader.IsDBNull(reader.GetOrdinal("TOTAL")) ? "" : reader.GetString(reader.GetOrdinal("TOTAL"))
+                    };
+
+                    result.GuiaCabecera = _cabeceraGuia;
+
+                    reader.NextResult();
+
+                    List<GuiaDetDTO> _listadetalleGuia = new List<GuiaDetDTO>();
+
+                    while (reader.Read())
+                    {
+                        var detalle = new GuiaDetDTO()
+                        {
+                            NumeroItem = reader.IsDBNull(reader.GetOrdinal("NROITEM")) ? "" : reader.GetString(reader.GetOrdinal("NROITEM")),
+                            Catalogo = reader.IsDBNull(reader.GetOrdinal("CATALOGO")) ? "" : reader.GetString(reader.GetOrdinal("CATALOGO")),
+                            Descripcion = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION")),
+                            Unidad = reader.IsDBNull(reader.GetOrdinal("UNIDAD")) ? "" : reader.GetString(reader.GetOrdinal("UNIDAD")),
+                            Cantidad = reader.IsDBNull(reader.GetOrdinal("CANTIDAD")) ? "" : reader.GetString(reader.GetOrdinal("CANTIDAD")),
+                            PrecioUnitario = reader.IsDBNull(reader.GetOrdinal("PRECIOUNITARIO")) ? "" : reader.GetString(reader.GetOrdinal("PRECIOUNITARIO")),
+                            Total = reader.IsDBNull(reader.GetOrdinal("TOTAL")) ? "" : reader.GetString(reader.GetOrdinal("TOTAL"))
+                        };
+                        _listadetalleGuia.Add(detalle);
+                    }
+
+                    result.GuiaDetalle = _listadetalleGuia;
+                    result.NroItems = _listadetalleGuia.Count();
+
+                }
+
+                return result;
+
+            }
+        }
     }
 }

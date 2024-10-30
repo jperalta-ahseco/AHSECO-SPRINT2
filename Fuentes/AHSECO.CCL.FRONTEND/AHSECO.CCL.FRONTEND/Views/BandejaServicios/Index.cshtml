@@ -16,17 +16,20 @@
                 <!--Primera Fila-->
                 <div class="row container-fluid">
                     <div class="col-md-4 col-sm-12">
-                        <label for="cmbEquipo">Equipo:</label>
-                        <select class="form-control select2 input-sm" style="width:100%;" id="cmbEquipo" tabindex="1"></select>
+                        <label for="txtEquipo">Equipo:</label>
+                        <!--
+    <select class="form-control select2 input-sm" style="width:100%;" id="cmbEquipo" tabindex="1"></select>
+    -->
+                        <input placeholder="Ingrese Equipo" type="text" class="form-control input-sm" id="txtEquipo" value="">
                     </div>
                     <div class="col-md-4 col-sm-12">
                         <label for="txtMarca">Marca:</label>
-                        <input placeholder="Ingrese Marca" type="text" class="form-control input-sm" id="txtMarca" maxlength="75" value="">
+                        <input placeholder="Ingrese Marca" type="text" class="form-control input-sm" id="txtMarca" value="">
                     </div>
                     <div class="col-md-4 col-sm-12">
                         <label for="txtModelo">Modelo:</label>
                         <div class="form-group">
-                            <input placeholder="Ingrese Modelo" type="text" class="form-control input-sm" id="txtModelo" maxlength="75" value="">
+                            <input placeholder="Ingrese Modelo" type="text" class="form-control input-sm" id="txtModelo" value="">
                         </div>
                     </div>
                 </div>
@@ -41,13 +44,17 @@
                         <label for="cmbEstado">Estado:</label>
                         <select class="form-control select2 input-sm" style="width:100%;" id="cmbEstado" tabindex="5"></select>
                     </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtCodServicio">Código Servicio:</label>
+                        <input placeholder="Ingrese código de servicio" type="text" class="form-control input-sm" id="txtCodServicio" value="">
+                    </div>
                 </div>
+                <br />
                 <div class="text-right">
                     <button class="btn btn-success btn-sm " type="button" id="btnNuevo"><i class="fa fa-plus"></i> Agregar Nuevo</button>
                     <button class="btn btn-primary btn-sm" type="button" id="btnBuscar"><i class="fa fa-search"></i> Buscar</button>
                     <span id="hidden_fields"></span>
                     <a class="btn btn-info btn-sm " type="button" id="btnExportar" href="BandejaServicios/ExportarServicios"><i class="fa fa-table"></i> Exportar</a>
-
                 </div>
 
             </form>
@@ -57,16 +64,16 @@
                 <table id="tblServicio" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                     <thead>
                         <tr>
-                            <th style="text-align:center">Codigo Servicio</th>
-                            <th style="text-align:center" width="30%"><center>Equipo</center></th>
-                            <th style="text-align: center; width:5%"><center>Modelo</center></th>
-                            <th style="text-align: center; width:10%"><center>Marca</center></th>
+                            <th style="text-align:center">C&oacute;digo Servicio</th>
+                            <th style="text-align:center; padding-bottom:14px" width="30%"><center>Equipo</center></th>
+                            <th style="text-align: center; width: 5%; padding-bottom: 14px"><center>Modelo</center></th>
+                            <th style="text-align: center; width: 10%; padding-bottom: 14px"><center>Marca</center></th>
                             <th style="text-align: center; width:10%"><center>Precio Software</center></th>
                             <th style="text-align: center; width:10%"><center>Precio Preventivo</center></th>
                             <th style="text-align: center; width:10%"><center>Precio Capacitaci&oacute;n</center></th>
                             <th style="text-align: center; width:10%"><center>Tipo de Servicio</center></th>
-                            <th style="text-align: center; width:10%"><center>Estado</center></th>
-                            <th style="text-align:center; width:10%">Acciones</th>
+                            <th style="text-align: center; width: 10%; padding-bottom: 14px"><center>Estado</center></th>
+                            <th style="text-align: center; width: 10%; padding-bottom: 14px">Acciones</th>
                         </tr>
                     </thead>
                     <tbody></tbody>

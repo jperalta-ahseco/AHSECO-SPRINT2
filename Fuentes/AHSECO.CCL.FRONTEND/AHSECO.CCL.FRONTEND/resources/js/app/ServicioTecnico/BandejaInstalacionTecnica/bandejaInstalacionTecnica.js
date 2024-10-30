@@ -17,13 +17,20 @@
     var $cmbVendedor = $('#cmbVendedor');
     var $cmbCliente = $('#cmbCliente');
     var $cmbTipVenta = $('#cmbTipVenta');
-    var $btnSeleccionar = $('#btnGuardarUbigeo')
+    var $btnSeleccionar = $('#btnGuardarUbigeo');
+    var $txtNumReq = $('#txtNumReq');
+    var $txtNumProc = $('#txtNumProc');
+    var $txtNumContrato = $('#txtNumContrato');
+    var $txtNumOrdCompra = $('#txtNumOrdCompra');
+    var $txtNumFianza = $('#txtNumFianza');
+
     
     var $btnGuardarUbigeo = $('#btnGuardarUbigeo');
     var $txtUbicacion = $('#txtUbicacion');
     var $btnBuscar = $('#btnBuscar');
     var mensajes = {
-        procesandoUbigeo : "Cargando Ubigeo, por favor espere...."
+        procesandoUbigeo: "Cargando Ubigeo, por favor espere....",
+        buscandoRequerimientos: "Buscando requerimientos, por favor espere....."
     }
 
     $(Initializer);
@@ -92,14 +99,43 @@
             filters.allowClear = false;
             //app.llenarCombo($cmbVendedor, resultado, null, 0, "-- Todos --", filters);
             //app.llenarComboMultiResult($cmbVendedor, resultado)
-            app.llenarComboMultiResult($cmbVendedor, resultado, null, 0, "-- Todos --", filters);
+            app.llenarCombo($cmbVendedor, resultado, null, 0, "-- Todos --", filters);
 
         }
         app.llamarAjax(method, url, objParams, fnDoneCallback, null, null, null);
     }
 
     function BuscarClick() {
+        var method = "POST";
+        var url = "BandejaInstalacionTecnica/ObtenerInstalacionesTec";
+        var objBuscar = {
+            FecIni: $dateFecIni.val(),
+            FecFin: $dateFecFin.val(),
+            NumReq: $txtNumReq.val(),
+            Estado: $cmbEstado.val() == 0 ? "" : $cmbEstado.val(),
+            Destino: $txtUbicacion.val(),
+            Vendedor: $cmbVendedor.val() == 0 ? "" : $cmbVendedor.val(),
+            RucEmpresa: $cmbCliente.val() == 0 ? "" : $cmbCliente.val(),
+            CodEmpresa: $cmbempresa.val() == 0 ? "" : $cmbempresa.val(),
+            Id_Flujo: $cmbTipVenta.val() == 0 ? "" : $cmbTipVenta.val(),
+            NumProceso: $txtNumProc.val(),
+            Contrato: $txtNumContrato.val(),
+            OrdenCompra: $txtNumOrdCompra.val(),
+            NumFianza: $txtNumFianza.val(),
+        };
 
+        var objParam = JSON.stringify(objBuscar);
+
+        var fnDoneCallBack = function (data) {
+            console.log(data);
+        };
+
+        var fnFailCallBack = function (data) {
+
+        };
+
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, mensajes.buscandoRequerimientos);
     };
 
     function NuevaInstalacion() {
@@ -116,9 +152,19 @@
             return false;
         }
         $("#hidden_fields").empty();
-        $("<input>", { type: "hidden", name: "RUC", value: $txtRuc.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "NomEmpresa", value: $txtNomEmpresa.val() }).appendTo("#hidden_fields");
-
+        $("<input>", { type: "hidden", name: "FecIni", value: $dateFecIni.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "FecFin", value: $dateFecFin.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "NumReq", value: $txtNumReq.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "Estado", value: $cmbEstado.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "Destino", value: $txtUbicacion.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "Vendedor", value: $cmbVendedor.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "RucEmpresa", value: $cmbCliente.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "CodEmpresa", value: $cmbempresa.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "Id_Flujo", value: $cmbTipVenta.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "NumProceso", value: $txtNumProc.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "Contrato", value: $txtNumContrato.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "OrdenCompra", value: $txtNumOrdCompra.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "NumFianza", value: $txtNumFianza.val() }).appendTo("#hidden_fields");
         $formInstallTec.attr('action', href);
         $formInstallTec.submit();
     }
@@ -375,5 +421,138 @@
 
     }
 
+    function editar(numReq, codEstado, idWorkFlow) {
+        var method = "POST";
+        var url = "BandejaInstalacionTecnica/SetVariablesGenerales";
+        var objEditar = {
+            NumReq: numReq,
+            Estado: codEstado,
+            Id_WokFlow: idWorkFlow
+        };
+
+        var objParam = JSON.stringify(objEditar);
+
+        var fnDoneCallBack = function () {
+            app.redirectTo("BandejaInstalacionTecnica/RegistroInstallTec");
+        };
+
+        var fnFailCallBack = function (Message) {
+            ap.message.error("Validación", Message);
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+    };
+
+    function ver(numReq, codEstado, idWorkFlow) {
+        var method = "POST";
+        var url = "BandejaInstalacionTecnica/SetVariablesGenerales";
+        var objEditar = {
+            NumReq: numReq,
+            Estado: codEstado,
+            Id_WokFlow: idWorkFlow
+        };
+
+        var objParam = JSON.stringify(objEditar);
+        var fnDoneCallBack = function () {
+            app.redirectTo("BandejaInstalacionTecnica/RegistroInstallTec");
+        };
+
+        var fnFailCallBack = function (Message) {
+            ap.message.error("Validación", Message);
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+    };
+
+    function cargarTablaInstalacion(data) {
+        var columns = [
+            {
+                data: "NumReq",
+                render = function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "Id_Solicitud",
+                render = function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "RucEmpresa",
+                render = function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "NomEmpresa",
+                render = function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "Ubicacion",
+                render = function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "TipoVenta",
+                render = function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "Vendedor",
+                render = function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "CodEmpresa",
+                render = function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "FechaMax",
+                render = function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "Destino",
+                render = function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "Estado",
+                render = function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "NumReq",
+                render = function (data, type, row) {
+                    var d = "'" + row.NumReq + "','" + row.CodEstado + "','" + Id_WokFlow +"'"; 
+                    var ver = '<a id="btnVer" class="btn btn-info btn-xs" title="Ver" href="javascript: bandejaInstalacionTecnica.ver(' + d + ')"><i class="fa fa-eye" aria-hidden="true"></i></a>';
+                    var editar = '<a id="btnEditar" class="btn btn-default btn-xs" title="Editar" href="javascript: bandejaInstalacionTecnica.editar(' + d + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>';
+                    return '<center>' + editar + ' ' + ver +'</center>'
+                }
+            }
+        ];
+
+        var columnDefs = [
+
+        ];
+
+        app.llenarTabla($tblInstallTec, data, columns, columnDefs, "#tblInstallTec", rowCallback);
+    };
+
+    return {
+        editar: editar,
+        ver: ver
+    }
 
 })(window.jQuery, window, document);

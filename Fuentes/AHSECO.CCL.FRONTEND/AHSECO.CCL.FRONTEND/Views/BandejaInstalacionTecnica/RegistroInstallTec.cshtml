@@ -1,7 +1,11 @@
-﻿
+﻿@using AHSECO.CCL.FRONTEND.Core;
+
 @{
     ViewBag.Title = "Registro Instalación Técnica";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var numReq = VariableSesion.getCadena("NumReq");
+    var codEstado = VariableSesion.getCadena("CodEstado");
+    var IdWorkFlow = VariableSesion.getCadena("IdWorkFlow");
 }
 
 <input hidden id="numeroReq" value="" />
@@ -25,7 +29,7 @@
                             <div class="form-group">
                                 <div class="input-group input-group-sm date">
                                     <input type="text" class="form-control input-sm" id="txtSolVenta" value="" placeholder="---Seleccionar Solicitud---" aria-describedby="sizing-addon3" disabled="disabled" />
-                                    <span style="cursor:pointer" class="input-group-addon input-sm" id="searchSolVenta" title="Buscar Contacto" data-toggle="modal" data-target="#modalSolicitud">
+                                    <span style="cursor:pointer" class="input-group-addon input-sm" id="searchSolVenta" title="Buscar Solicitud" data-toggle="modal" data-target="#modalSolicitud">
                                         <i class="fa fa-search"></i>
                                     </span>
                                     <input type="hidden" id="txtCodSolicitud" value="" />
@@ -33,12 +37,14 @@
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12">
+                            <input hidden id="hdnCodEmpresa" value=""/>
                             <label for="txtEmpresa">Empresa: </label>
                             <div class="form-group">
                                 <input disabled type="text" class="form-control input-sm" id="txtEmpresa" value="">
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12">
+                            <input hidden id="hdnCodTipVenta" value=""/>
                             <label for="txtTipVenta">Tip. Venta: </label>
                             <div class="form-group">
                                 <input disabled type="text" class="form-control input-sm" id="txtTipVenta" value="">
@@ -106,14 +112,6 @@
                             <label for="txtOrdCompra">Orden de Compra:</label>
                             <div class="form-group">
                                 <input disabled type="text" class="form-control input-sm" id="txtOrdCompra" value="">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row container-fluid">
-                        <div class="col-md-4 col-sm-12">
-                            <label for="txtFianza">N° Fianza:</label>
-                            <div class="form-group">
-                                <input disabled type="text" class="form-control input-sm" id="txtFianza" value="">
                             </div>
                         </div>
                     </div>
