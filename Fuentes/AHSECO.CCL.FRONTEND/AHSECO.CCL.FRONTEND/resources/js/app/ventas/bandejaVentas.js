@@ -43,7 +43,7 @@
             objBuscar.Id_Empleado = -1
         };
 
-        if ($RolUsuario.val() == "SGI_VENTA_ASESOR") {
+         if ($RolUsuario.val() == "SGI_VENTA_ASESOR") {
             objBuscar.Id_Empleado = $CodEmpleado.val();
         }
         else if ($RolUsuario.val() == "SGI_VENTA_COORDINASERV" || $RolUsuario.val() == "SGI_VENTA_COORDINAATC") {
@@ -111,6 +111,7 @@
         app.llamarAjax(method, url, objParams, fnDoneCallback, null, null, mensajes.llenarEmpleados);
     };
     function Buscar() {
+        console.log("$cmbAsesor:" + $cmbAsesor.val());
         method = "POST";
         url = "BandejaCliente/ObtenerClientes"
 
@@ -137,7 +138,13 @@
             objBuscar.Id_Empleado = null;
         }
         else {
-            objBuscar.Id_Empleado = -2;
+            if ($cmbAsesor.val() != null && $cmbAsesor.val() != "-1") {
+                objBuscar.Id_Empleado = $cmbAsesor.val();
+            }
+            else {
+                objBuscar.Id_Empleado = -2;
+            }
+            
         }
 
         objParam = JSON.stringify(objBuscar);
@@ -175,55 +182,101 @@
     }
 
     function cargarTabla(data) {
-        var columns = [
-            { data: "ID" },
-            {
-                data: "RUC",
-                render: function (data, type, row) {
-                    return '<center>' + data + '</center>';
-                }
-            },
-            { data: "NomEmpresa" },
-            { data: "SectorCliente" },
-            { data: "Categoria" },
-            { data: "Direccion" },
-            {
-                data: "UbigeoDepartamento.Descripcion",
-                render: function (data, type, row) {
-                    return '<center>' + data + '</center>';
-                }
-            },
-            {
-                data: "UbigeoProvincia.Descripcion",
-                render: function (data, type, row) {
-                    return '<center>' + data + '</center>';
-                }
-            },
-            { data: "UbigeoDistrito.Descripcion" ,
-                render: function (data, type, row) {
-                    return '<center>' + data + '</center>';
-                }
-            },
-            {
-                data: "Empleado.NombresCompletosEmpleado",
-                render: function (data, type, row) {
-                    if (data != "") {
+        if ($RolUsuario.val() == "SGI_VENTA_ASESOR" || $RolUsuario.val() == "SGI_VENTA_JEFE" ||
+            $RolUsuario.val() == "SGI_VENTA_COORDINAVENTA" || $RolUsuario.val() == "SGI_VENTA_GERENTE") {
+            var columns = [
+                { data: "ID" },
+                {
+                    data: "RUC",
+                    render: function (data, type, row) {
                         return '<center>' + data + '</center>';
                     }
-                    else {
-                        return '<center>' + "Sin asignar" + '</center>';
+                },
+                { data: "NomEmpresa" },
+                { data: "SectorCliente" },
+                { data: "Categoria" },
+                { data: "Direccion" },
+                {
+                    data: "UbigeoDepartamento.Descripcion",
+                    render: function (data, type, row) {
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "UbigeoProvincia.Descripcion",
+                    render: function (data, type, row) {
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "UbigeoDistrito.Descripcion",
+                    render: function (data, type, row) {
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "Empleado.NombresCompletosEmpleado",
+                    render: function (data, type, row) {
+                        if (data != "") {
+                            return '<center>' + data + '</center>';
+                        }
+                        else {
+                            return '<center>' + "Sin asignar" + '</center>';
+                        }
+                    }
+                },
+                {
+                    data: "ID",
+                    render: function (data, type, row) {
+                        var params = "'" + row.ID + "','" + row.NomEmpresa + "','" + row.RUC + "'"
+                        var solicitud = '<a id="btnSolicitud" class="btn btn-default btn-xs" title="Solicitudes" href="javascript: bandejaVentas.solicitud(' + params + ')"><i class="fa fa-book" aria-hidden="true"></i> Solicitudes </a>';
+                        return '<center>' + solicitud + '</center>';
                     }
                 }
-            },
-            {
-                data: "ID",
-                render: function (data, type, row) {
-                    var params = "'" + row.ID + "','" + row.NomEmpresa + "','" + row.RUC +"'"
-                    var solicitud = '<a id="btnSolicitud" class="btn btn-default btn-xs" title="Solicitudes" href="javascript: bandejaVentas.solicitud(' + params + ')"><i class="fa fa-book" aria-hidden="true"></i> Solicitudes </a>';
-                    return '<center>' + solicitud + '</center>';
+            ];
+        }
+        else {
+            var columns = [
+                { data: "ID" },
+                {
+                    data: "RUC",
+                    render: function (data, type, row) {
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                { data: "NomEmpresa" },
+                { data: "SectorCliente" },
+                { data: "Categoria" },
+                { data: "Direccion" },
+                {
+                    data: "UbigeoDepartamento.Descripcion",
+                    render: function (data, type, row) {
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "UbigeoProvincia.Descripcion",
+                    render: function (data, type, row) {
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "UbigeoDistrito.Descripcion",
+                    render: function (data, type, row) {
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "ID",
+                    render: function (data, type, row) {
+                        var params = "'" + row.ID + "','" + row.NomEmpresa + "','" + row.RUC + "'"
+                        var solicitud = '<a id="btnSolicitud" class="btn btn-default btn-xs" title="Solicitudes" href="javascript: bandejaVentas.solicitud(' + params + ')"><i class="fa fa-book" aria-hidden="true"></i> Solicitudes </a>';
+                        return '<center>' + solicitud + '</center>';
+                    }
                 }
-            }
-        ];
+            ];
+        }
+
         var columnDefs = [
             {
                 targets: [0],
