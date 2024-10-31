@@ -686,12 +686,10 @@
     });
 </script>
 <!--Modal-->
-
-<div class="modal fade" id="modalContactos" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false">
-    @{
-        Html.RenderPartial("_Contactos");
-    }
-</div>
+<!--No se debe poner un MODAL dentro de otro MODAL-->
+@{
+    Html.RenderPartial("_Contactos");
+}
 
 <div class="modal fade" id="modalDetalleCotizacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false">
     @{

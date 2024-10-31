@@ -77,7 +77,7 @@
                         <label>Contactos</label>
                         <div class="form-group">
                             <div class="input-group input-group-sm date">
-                                <a data-toggle="modal" data-target="#modalContacto" id="btnAbreRegistroContacto" class="btn btn-default btn-sm" title="Registrar Contacto"><i class="fa fa-users" aria-hidden="true"></i> Agregar Contactos</a>
+                                <a data-toggle="modal" data-target="#modalContactos" id="btnAbreRegistroContacto" class="btn btn-default btn-sm" title="Registrar Contacto"><i class="fa fa-users" aria-hidden="true"></i> Agregar Contactos</a>
                             </div>
                         </div>
                     </div>
@@ -98,11 +98,10 @@
     }
 </div>
 
-<div class="modal fade" id="modalContacto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    @{
-        Html.RenderPartial("_Contactos");
-    }
-</div>
+<!--No se debe poner un MODAL dentro de otro MODAL-->
+@{
+    Html.RenderPartial("_Contactos");
+}
 
 <script>
     function check(e) {

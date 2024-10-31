@@ -86,7 +86,7 @@
                         <label>Consultar Contactos</label>
                         <div class="form-group">
                             <div class="input-group input-group-sm date">
-                                <a data-toggle="modal" data-target="#modalContacto" id="btnConsultContacto" class="btn btn-default btn-lg" title="Consulta Contacto"><i class="fa fa-users" aria-hidden="true"></i></a>
+                                <a data-toggle="modal" data-target="#modalContactos" id="btnConsultContacto" class="btn btn-default btn-lg" title="Consulta Contacto"><i class="fa fa-users" aria-hidden="true"></i></a>
                             </div>
                         </div>
                     </div>
@@ -105,14 +105,10 @@
     }
 </div>
 
-
-<div class="modal fade" id="modalContacto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    @{
-        Html.RenderPartial("_Contactos");
-    }
-</div>
-
-
+<!--No se debe poner un MODAL dentro de otro MODAL-->
+@{
+    Html.RenderPartial("_Contactos");
+}
 
 @section scripts{
     <script type="text/javascript" src="~/resources/js/app/mantenimientos/cliente/manipularCliente.js"></script>
