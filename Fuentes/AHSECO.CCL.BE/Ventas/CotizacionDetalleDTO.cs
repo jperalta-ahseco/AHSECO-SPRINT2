@@ -35,7 +35,8 @@ namespace AHSECO.CCL.BE.Ventas
         public bool Videos { get; set; }
         public bool InstCapa { get; set; }
         public string GarantiaAdic { get; set; }
-        public CotizacionDetalleDTO[] SubItems { get; set; }
+        public bool EsItemPadre { get; set; }
+        public int CantSubItem { get; set; }
 
         #region BandejaInstalacionTecnica
         public string Marca { get; set; }

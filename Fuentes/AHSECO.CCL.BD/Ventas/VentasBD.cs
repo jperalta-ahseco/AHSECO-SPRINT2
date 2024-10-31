@@ -31,6 +31,10 @@ namespace AHSECO.CCL.BD.Ventas
                 var parameters = new DynamicParameters();
                 parameters.Add("isIdCliente", solicitudDTO.IdCliente);
                 parameters.Add("isIdSolicitud", solicitudDTO.Id_Solicitud);
+                if (solicitudDTO.Estado != null) { parameters.Add("isEstado", solicitudDTO.Estado); }
+                else { parameters.Add("isEstado", DBNull.Value, DbType.String, ParameterDirection.Input); }
+                if (solicitudDTO.Tipo_Sol != null) { parameters.Add("isTipoSol", solicitudDTO.Tipo_Sol); }
+                else { parameters.Add("isTipoSol", DBNull.Value, DbType.String, ParameterDirection.Input); }
 
                 var result = connection.Query(
                     sql: "USP_SEL_SOLICITUDES",
@@ -747,6 +751,8 @@ namespace AHSECO.CCL.BD.Ventas
                             DescMarca = i.Single(d => d.Key.Equals("DESC_MARCA")).Value.Parse<string>(),
                             StockDisponible = i.Single(d => d.Key.Equals("STOCK_DISPO")).Value.Parse<int>(),
                             PrecioRef = i.Single(d => d.Key.Equals("PRECIO_REF")).Value.Parse<decimal>(),
+                            CodModelo = i.Single(d => d.Key.Equals("COD_MODELO")).Value.Parse<string>(),
+                            DescModelo = i.Single(d => d.Key.Equals("DESC_MODELO")).Value.Parse<string>(),
                             CodAlmacen = i.Single(d => d.Key.Equals("COD_ALMACEN")).Value.Parse<string>(),
                             DescAlmacen = i.Single(d => d.Key.Equals("DESC_ALMACEN")).Value.Parse<string>()
                         });

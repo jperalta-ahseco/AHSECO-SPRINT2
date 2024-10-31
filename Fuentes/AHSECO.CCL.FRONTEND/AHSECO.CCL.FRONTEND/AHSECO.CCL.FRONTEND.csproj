@@ -838,7 +838,6 @@
     <Content Include="resources\img\Thumbs.db" />
     <Content Include="resources\plugins\dataTables_back\Spanish.json" />
     <Content Include="app.config" />
-    <None Include="Properties\PublishProfiles\Ruta.pubxml" />
     <Content Include="resources\plugins\ckeditor\CHANGES.md" />
     <Content Include="resources\plugins\ckeditor\LICENSE.md" />
     <Content Include="resources\plugins\ckeditor\plugins\about\dialogs\hidpi\Thumbs.db" />

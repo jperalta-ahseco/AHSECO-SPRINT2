@@ -30,6 +30,7 @@ using System.IO;
 using AHSECO.CCL.BL.Mantenimientos;
 using AHSECO.CCL.BL.Consulta;
 using NPOI.OpenXmlFormats.Spreadsheet;
+using System.Web.UI.WebControls;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 {
@@ -590,6 +591,29 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         }
 
         [HttpPost]
+        public JsonResult ObtenerEstadosSolicitud()
+        {
+            try
+            {
+                var ventaBL = new VentasBL();
+                var rpta = ventaBL.ObtenerEstadosProcesos(new ProcesoEstadoDTO() { IdProceso = ConstantesDTO.Procesos.Ventas.ID });
+                var lstEstados = new List<ComboDTO>();
+
+                if (rpta.Result.Any())
+                {
+                    foreach (ProcesoEstadoDTO item in rpta.Result)
+                    {
+                        if (item.Habilitado)
+                        { lstEstados.Add(new ComboDTO() { Id = item.CodigoEstado, Text = item.NombreEstado }); }
+                    }
+                }
+
+                return Json(new { Status = 1, EstadosSolicitud = lstEstados });
+            }
+            catch (Exception ex) { return Json(new { Status = 0, Mensaje = ex.Message }); }
+        }
+
+        [HttpPost]
         public JsonResult ObtenerArticulos(FiltroArticuloDTO filtro)
         {
             var dgBL = new VentasBL();
@@ -636,11 +660,15 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 select.CodItem = oArticulo.CodArticulo;
                 select.Descripcion = oArticulo.DescArticulo;
                 select.TipoItem = ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto;
+                select.EsItemPadre = true;
 
                 if (oArticulo.CodFamilia.Trim() == ConstantesDTO.Articulos.Familia.Accesorios.Trim())
-                { select.TipoItem = ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio; }
+                { 
+                    select.TipoItem = ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio;
+                    select.EsItemPadre = false;
+                }
 
-                if (select.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio)
+                if (!select.EsItemPadre)
                 {
                     var lstItemsPadre = lstItems.Where(x => x.Select).ToList();
                     if (!lstItemsPadre.Any()) { throw new Exception("Debe seleccionar el producto a asociar el accesorio"); }
@@ -664,6 +692,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     lstItems.Add(select);
                     VariableSesion.setObject("CotDetItems", lstItems);
                 }
+
+                lstItems = ReconteoSubItemsCotDet(lstItems);
 
                 //Solo cargar los productos en pantalla
                 var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems.Where(x => x.TipoItem != ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio));
@@ -699,36 +729,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         }
 
         [HttpPost]
-        public JsonResult ObtenerSubItems(string CodItemPadre)
-        {
-            try
-            {
-                List<CotizacionDetalleDTO> lstItems = new List<CotizacionDetalleDTO>();
-                if (VariableSesion.getObject("CotDetItems") != null) { lstItems = (List<CotizacionDetalleDTO>)VariableSesion.getObject("CotDetItems"); }
-
-                List<CotizacionDetalleDTO> lstSubItems = new List<CotizacionDetalleDTO>();
-
-                if (lstItems.Any())
-                {
-
-                    var oItemPadre = lstItems.FirstOrDefault(x => x.CodItem.TrimEnd() == CodItemPadre.TrimEnd());
-
-                    if (oItemPadre != null)
-                    {
-                        lstSubItems = lstItems.Where(x => x.NroItem.Equals(oItemPadre.NroItem) && 
-                        x.TipoItem.Equals(ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio)).ToList();
-                    }
-
-                }
-
-                var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstSubItems);
-
-                return Json(response);
-            }
-            catch (Exception ex) { return Json(new { Status = 0, Mensaje = ex.Message }); }
-        }
-
-        [HttpPost]
         public JsonResult QuitarItemCotDet(string CodItem)
         {
             try
@@ -736,7 +736,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 List<CotizacionDetalleDTO> lstItems = new List<CotizacionDetalleDTO>();
                 if (VariableSesion.getObject("CotDetItems") != null) { lstItems = (List<CotizacionDetalleDTO>)VariableSesion.getObject("CotDetItems"); }
 
-                lstItems = lstItems.Where(x => x.CodItem != CodItem).ToList();
+                var itemArticulo = lstItems.FirstOrDefault(x => x.CodItem == CodItem);
+                if (itemArticulo.EsItemPadre)
+                { lstItems = lstItems.Where(x => x.NroItem != itemArticulo.NroItem).ToList(); }
+                else
+                { lstItems = lstItems.Where(x => x.CodItem != CodItem).ToList(); }
 
                 VariableSesion.setObject("CotDetItems", lstItems);
 
@@ -748,12 +752,12 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         }
 
         [HttpPost]
-        public JsonResult EditarItemCotDet(ArticuloDTO itemArticulo)
+        public JsonResult EditarItemCotDet(string CodItem)
         {
             try
             {
                 var ventaBL = new VentasBL();
-                var respArt = ventaBL.ObtenerArticulosxFiltro(new FiltroArticuloDTO { CodsArticulo = itemArticulo.CodArticulo });
+                var respArt = ventaBL.ObtenerArticulosxFiltro(new FiltroArticuloDTO { CodsArticulo = CodItem });
                 var oArticulo = respArt.Result.First();
 
                 CotizacionDetalleDTO itemCotDet = new CotizacionDetalleDTO();
@@ -763,6 +767,33 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 return Json(new ResponseDTO<CotizacionDetalleDTO>(itemCotDet));
             }
             catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
+        }
+
+        [HttpPost]
+        public JsonResult ObtenerSubItems(string CodItemPadre)
+        {
+            try
+            {
+                List<CotizacionDetalleDTO> lstItems = new List<CotizacionDetalleDTO>();
+                if (VariableSesion.getObject("CotDetItems") != null) { lstItems = (List<CotizacionDetalleDTO>)VariableSesion.getObject("CotDetItems"); }
+
+                List<CotizacionDetalleDTO> lstSubItems = new List<CotizacionDetalleDTO>();
+
+                if (lstItems.Any())
+                {
+                    var oItemPadre = lstItems.FirstOrDefault(x => x.CodItem.TrimEnd() == CodItemPadre.TrimEnd());
+                    if (oItemPadre != null)
+                    {
+                        lstSubItems = lstItems.Where(x => x.NroItem.Equals(oItemPadre.NroItem) &&
+                        x.TipoItem.Equals(ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio)).ToList();
+                    }
+                }
+
+                var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstSubItems);
+
+                return Json(response);
+            }
+            catch (Exception ex) { return Json(new { Status = 0, Mensaje = ex.Message }); }
         }
 
         [HttpPost]
@@ -777,6 +808,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 if (itemPadre != null)
                 {
                     lstItems = lstItems.Where(x => x.NroItem == itemPadre.NroItem && x.CodItem != CodItem).ToList();
+                    lstItems = ReconteoSubItemsCotDet(lstItems);
                     VariableSesion.setObject("CotDetItems", lstItems);
                 }
                 var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems);
@@ -784,6 +816,39 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 return Json(response);
             }
             catch (Exception ex) { return Json(new { Status = 0, Mensaje = ex.Message }); }
+        }
+
+        [HttpPost]
+        public JsonResult EditarSubItemCotDet(string CodItemPadre, string CodItem)
+        {
+            try
+            {
+                var ventaBL = new VentasBL();
+                var respArt = ventaBL.ObtenerArticulosxFiltro(new FiltroArticuloDTO { CodsArticulo = CodItem });
+                var oArticulo = respArt.Result.First();
+
+                CotizacionDetalleDTO itemCotDet = new CotizacionDetalleDTO();
+                itemCotDet.CodItem = oArticulo.CodArticulo;
+                itemCotDet.Descripcion = oArticulo.DescArticulo;
+
+                return Json(new ResponseDTO<CotizacionDetalleDTO>(itemCotDet));
+            }
+            catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
+        }
+
+        public List<CotizacionDetalleDTO> ReconteoSubItemsCotDet(List<CotizacionDetalleDTO> lstItems)
+        {
+            if (lstItems != null)
+            {
+                foreach (CotizacionDetalleDTO item in lstItems)
+                {
+                    if (item.EsItemPadre)
+                    {
+                        item.CantSubItem = lstItems.Where(x => x.CodItem != item.CodItem && x.NroItem == item.NroItem).Count();
+                    }
+                }
+            }
+            return lstItems;
         }
 
     }

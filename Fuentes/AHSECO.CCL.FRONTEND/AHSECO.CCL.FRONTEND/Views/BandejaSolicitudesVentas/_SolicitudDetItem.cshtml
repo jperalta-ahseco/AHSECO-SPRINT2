@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "Detalle de Producto";
+    ViewBag.Title = "Detalle de Cotización";
 }
 
 <div style="width:50%" class="modal-dialog modal-lg container-fluid" role="document">
@@ -17,54 +17,120 @@
         <div class="modal-body d-flex justify-content-center" align-items-center>
             <form id="formItem" class="d-flex flex-row">
                 <div class="row container-fluid d-flex justify-content-center">
-                    <div class="row container-fluid">
-                        <div class="col-md-3">
-                            <label for="DI_txtCodProducto">C&oacute;digo Producto: </label>
-                            <div class="form-group">
-                                <input disabled placeholder="Ingresar código de producto" type="text" class="form-control input-sm" id="DI_txtCodProducto" value="">
+                    <div class="container-fluid">
+                        <fieldset class="form-group">
+                            <legend><b>Informaci&oacute;n General</b></legend>
+                            <div class="row container-fluid">
+                                <div class="col-md-3">
+                                    <label for="DI_txtCodigo">C&oacute;digo: </label>
+                                    <input disabled placeholder="Ingresar código de producto" type="text" class="form-control input-sm" id="DI_txtCodigo" value="">
+                                </div>
+                                <div class="col-md-7">
+                                    <label for="DI_txtDescripcion">Descripci&oacute;n: </label>
+                                    <input disabled placeholder="Ingresar nombre de producto" type="text" class="form-control input-sm" id="DI_txtDescripcion" value="">
+                                </div>
+                                <div class="col-md-1">
+                                    <label for="DI_txtCantidad">Cantidad: </label>
+                                    <input placeholder="Ingresar Cantidad" type="text" class="form-control input-sm" id="DI_txtCantidad" value="">
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-7">
-                            <label for="DI_txtNomProducto">Nombre de Producto: </label>
-                            <div class="form-group">
-                                <input disabled placeholder="Ingresar nombre de producto" type="text" class="form-control input-sm" id="DI_txtNomProducto" value="">
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="DI_txtCantidad">Cantidad: </label>
-                            <div class="form-group">
-                                <input placeholder="Ingresar cantidad" type="text" class="form-control input-sm" id="DI_txtCantidad" value="">
-                            </div>
-                        </div>
+                        </fieldset>
                     </div>
-                    <div class="row container-fluid">
-                        <div class="col-md-3">
-                            <label for="DI_chkLLaveEnMano">LLave en mano: </label>
-                            <div class="form-group">
-                                <table style="width:100%">
-                                    <tr>
-                                        <td><input type="radio" name="DI_chkLLaveEnMano" class="input-sm" id="DI_chkLLaveEnMano_Si" value="Si"></td>
-                                        <td style="padding-top:5px"><label>SI</label></td>
-                                        <td>&nbsp;</td>
-                                        <td><input type="radio" name="DI_chkLLaveEnMano" class="input-sm" id="DI_chkLLaveEnMano_No" value="No" checked="checked"></td>
-                                        <td style="padding-top:5px"><label>NO</label></td>
-                                    </tr>
-                                </table>
+                    <div class="container-fluid">
+                        <fieldset class="form-group">
+                            <legend><b>Informaci&oacute;n de Costos</b></legend>
+                            <div class="row container-fluid">
+                                <div class="col-md-2">
+                                    <label for="DI_txtCostoFOB">Costo FOB: </label>
+                                    <input placeholder="Ingresar Costo" type="text" class="form-control input-sm" id="DI_txtCostoFOB" value="">
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="DI_txtValorUnitario">Val. Unitario: </label>
+                                    <input placeholder="Ingresar Costo" type="text" class="form-control input-sm" id="DI_txtValorUnitario" value="">
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="DI_txtCantPreventivo">Cantidad Preventivo: </label>
-                            <div class="form-group">
-                                <input placeholder="Ingresar cantidad" type="text" class="form-control input-sm" id="DI_txtCantPreventivo" value="">
+                        </fieldset>
+                    </div>
+                    <div class="container-fluid">
+                        <fieldset class="form-group">
+                            <legend><b>Información del Env&iacute;o</b></legend>
+                            <div class="row container-fluid">
+                                <div class="col-md-3">
+                                    <label for="DI_radLLaveEnMano">LLave en mano: </label>
+                                    <table style="width:100%">
+                                        <tr>
+                                            <td><input type="radio" name="DI_radLLaveEnMano" class="input-sm" id="DI_radLLaveEnMano_Si" value="Si"></td>
+                                            <td style="padding-top:5px"><label>SI</label></td>
+                                            <td>&nbsp;</td>
+                                            <td><input type="radio" name="DI_radLLaveEnMano" class="input-sm" id="DI_radLLaveEnMano_No" value="No"></td>
+                                            <td style="padding-top:5px"><label>NO</label></td>
+                                        </tr>
+                                    </table>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="BI_cmbPerPreventivo">Periodo Preventivo: </label>
-                            <div class="form-group">
-                                <select class="form-control select2 input-sm" style="width:100%;" id="BI_cmbPerPreventivo" data-selected="">
-                                </select>
+                            <div class="row container-fluid">
+
                             </div>
-                        </div>
+                        </fieldset>
+                    </div>
+                    <div class="container-fluid">
+                        <fieldset class="form-group">
+                            <legend><b>Información Adicional</b></legend>
+                            <div class="row container-fluid">
+                                <div class="col-md-2">
+                                    <label for="DI_txtCantPreventivo">Cantidad Preventivo: </label>
+                                    <input placeholder="" type="text" class="form-control input-sm" id="DI_txtCantPreventivo" value="">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="BI_cmbCicloPreventivo">Ciclo de Preventivo: </label>
+                                    <select class="form-control select2 input-sm" style="width:100%;" id="BI_cmbCicloPreventivo" data-selected=""></select>
+                                </div>
+                            </div>
+                            <div class="row container-fluid">
+                                <div class="col-md-3">
+                                    <label for="DI_radManuales">Manuales: </label>
+                                    <table style="width:100%">
+                                        <tr>
+                                            <td><input type="radio" name="DI_radManuales" class="input-sm" id="DI_radManuales_Si" value="Si"></td>
+                                            <td style="padding-top:5px"><label>SI</label></td>
+                                            <td>&nbsp;</td>
+                                            <td><input type="radio" name="DI_radManuales" class="input-sm inp" id="DI_radManuales_No" value="No"></td>
+                                            <td style="padding-top:5px"><label>NO</label></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="DI_radVideos">Videos: </label>
+                                    <table style="width:100%">
+                                        <tr>
+                                            <td><input type="radio" name="DI_radVideos" class="input-sm" id="DI_radVideos_Si" value="Si"></td>
+                                            <td style="padding-top:5px"><label>SI</label></td>
+                                            <td>&nbsp;</td>
+                                            <td><input type="radio" name="DI_radVideos" class="input-sm" id="DI_radVideos_No" value="No"></td>
+                                            <td style="padding-top:5px"><label>NO</label></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="DI_radInstaCapa">Instalaci&oacute;n y Capacitaci&oacute;n: </label>
+                                    <table style="width:100%">
+                                        <tr>
+                                            <td><input type="radio" name="DI_radInstaCapa" class="input-sm" id="DI_radInstaCapa_Si" value="Si"></td>
+                                            <td style="padding-top:5px"><label>SI</label></td>
+                                            <td>&nbsp;</td>
+                                            <td><input type="radio" name="DI_radInstaCapa" class="input-sm" id="DI_radInstaCapa_No" value="No"></td>
+                                            <td style="padding-top:5px"><label>NO</label></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row container-fluid">
+                                <div class="col-md-2">
+                                    <label for="DI_txtGarantiaAdic">Garant&iacute;a Adicional: </label>
+                                    <input placeholder="" type="text" class="form-control input-sm" id="DI_txtGarantiaAdic" value="">
+                                </div>
+                            </div>
+                        </fieldset>
                     </div>
                     <div class="text-center">
                         <button class="btn btn-default btn-sm" type="button" id="DI_btnGuardar"><i class="fa fa-save" aria-hidden="true"></i> Guardar</button>

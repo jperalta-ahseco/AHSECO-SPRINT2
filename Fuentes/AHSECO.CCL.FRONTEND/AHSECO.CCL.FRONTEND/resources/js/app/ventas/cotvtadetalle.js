@@ -193,9 +193,11 @@ var cotvtadet = (function ($, win, doc) {
                 }
             },
             {
-                data: "CodItem",
-                render: function (data, type, row) {
-                    return '<a id="btnVerAdic" class="btn btn-link btn-xs" href="javascript: cotvtadet.VerSubItems(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ')"><i class="fa fa-arrow-down" aria-hidden="true"></i></a>';
+                data: "CantSubItem",
+                render: function (data) {
+                    if (data == 0) { return ""; }
+                    else { return '<center><span id="btnVerAdic" class="btn btn-link btn-xs" onclick="javascript: cotvtadet.VerSubItems(this)"><i class="fa fa-arrow-down" aria-hidden="true"></i></span></center>'; }
+                    //else { return '<center><a id="btnVerAdic" class="btn btn-link btn-xs" href="javascript: cotvtadet.VerSubItems(this)"><i class="fa fa-arrow-down" aria-hidden="true"></i></a></center>'; }
                 }
             },
             {
@@ -268,8 +270,40 @@ var cotvtadet = (function ($, win, doc) {
         app.llenarTabla($tblCotDet, data, columns, columnDefs, "#tblCotDet", rowCallback, null, filters);
     }
     
+    function quitarItem(CodigoItem) {
+        method = "POST";
+        url = "BandejaSolicitudesVentas/QuitarItemCotDet";
+        var objFiltros = {
+            CodItem: CodigoItem
+        };
+        var objParam = JSON.stringify(objFiltros);
+
+        var fnDoneCallBack = function (data) {
+            cargarTablaCotDet(data);
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+    }
+
+    function editarItem(CodigoItem) {
+        method = "POST";
+        url = "BandejaSolicitudesVentas/EditarItemCotDet";
+        var objFiltros = {
+            CodItem: CodigoItem
+        };
+        var objParam = JSON.stringify(objFiltros);
+
+        var fnDoneCallBack = function (data) {
+            $("#DI_txtCodigo").val(data.Result.CodItem);
+            $("#DI_txtDescripcion").val(data.Result.Descripcion);
+            $('#modalDetalleItem').modal('show');
+        };
+        
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+    }
+
     function SeleccionarRowCotDet(chk) {
-        var ID = ObtenerIDxFila(chk);
+        var ID = ObtenerCodItemxFila(chk);
 
         method = "POST";
         url = "BandejaSolicitudesVentas/SeleccionarRowCotDet";
@@ -284,7 +318,7 @@ var cotvtadet = (function ($, win, doc) {
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
     }
 
-    function ObtenerIDxFila(obj) {
+    function ObtenerCodItemxFila(obj) {
         var $ID = "";
         var $TR = $(obj).closest('tr');
         var $arrTD = $($TR).children("td");
@@ -301,12 +335,20 @@ var cotvtadet = (function ($, win, doc) {
         return $ID;
     }
 
-    function VerSubItems(CodItem) {
+    function VerSubItems(obj) {
+        var CodItem = ObtenerCodItemxFila(obj);
         var $hdnCodItem = $("#hdnCodItem_" + $.trim(CodItem));
         var tr = $($hdnCodItem).closest('tr');
         var row = $('#tblCotDet').dataTable().api().row(tr);
+
+        if (tr.attr('class').indexOf("shown") > 0) {
+            row.child.hide();
+            tr.removeClass('shown');
+            return;
+        }
+
         var childTableHtml = '';
-        childTableHtml += '<table id="tblAcc_' + $.trim(CodItem) + '" class="table table-condensed table-striped table-bordered" style="width:95%; margin-left: 15px">';
+        childTableHtml += '<table id="tblAcc_' + $.trim(CodItem) + '" class="table table-condensed table-striped table-bordered" style="width:100%; margin-left: 15px">';
         childTableHtml += '<thead>';
         childTableHtml += '<th style="text-align:center; width:10%">Cod. Acce.</th>';
         childTableHtml += '<th style="text-align:center; width:50%">Descripci&oacute;n</th>';
@@ -389,38 +431,6 @@ var cotvtadet = (function ($, win, doc) {
         app.llenarTabla($("#tblAcc_" + $.trim(CodItemPadre)), data, columns, columnDefs, "#tblAcc_" + $.trim(CodItemPadre), rowCallback, null, filters);
     }
 
-    function quitarItem(CodigoItem) {
-        method = "POST";
-        url = "BandejaSolicitudesVentas/QuitarItemCotDet";
-        var objFiltros = {
-            CodItem: CodigoItem
-        };
-        var objParam = JSON.stringify(objFiltros);
-
-        var fnDoneCallBack = function (data) {
-            cargarTablaCotDet(data);
-        };
-
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
-    }
-
-    function editarItem(CodigoItem) {
-        method = "POST";
-        url = "BandejaSolicitudesVentas/EditarItemCotDet";
-        var objFiltros = {
-            CodArticulo: CodigoItem
-        };
-        var objParam = JSON.stringify(objFiltros);
-
-        var fnDoneCallBack = function (data) {
-            $("#DI_txtCodProducto").val(data.Result.CodItem);
-            $("#DI_txtNomProducto").val(data.Result.Descripcion);
-            $('#modalDetalleItem').modal('show');
-        };
-        
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
-    }
-
     function quitarSubItem(CodigoItemPadre, CodigoItem) {
         method = "POST";
         url = "BandejaSolicitudesVentas/QuitarSubItemCotDet";
@@ -438,6 +448,24 @@ var cotvtadet = (function ($, win, doc) {
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
     }
 
+    function editarSubItem(CodigoItemPadre, CodigoItem) {
+        method = "POST";
+        url = "BandejaSolicitudesVentas/EditarSubItemCotDet";
+        var objFiltros = {
+            CodItemPadre: CodigoItemPadre,
+            CodItem: CodigoItem
+        };
+        var objParam = JSON.stringify(objFiltros);
+
+        var fnDoneCallBack = function (data) {
+            $("#DI_txtCodigo").val(data.Result.CodItem);
+            $("#DI_txtDescripcion").val(data.Result.Descripcion);
+            $('#modalDetalleItem').modal('show');
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+    }
+
     function cerrarModalDetItem() {
         $('#modalDetalleItem').modal('hide');
     }
@@ -450,6 +478,7 @@ var cotvtadet = (function ($, win, doc) {
         quitarItem: quitarItem,
         editarItem: editarItem,
         quitarSubItem: quitarSubItem,
+        editarSubItem: editarSubItem,
         SeleccionarRowCotDet: SeleccionarRowCotDet,
         VerSubItems: VerSubItems,
         cerrarModalDetItem: cerrarModalDetItem

@@ -5,6 +5,7 @@
     var $txtSolicitud = $('#txtSolicitud');
     var $btnRegresar = $('#btnRegresar');
     var $tblSolicitudes = $('#tblSolicitudes');
+    var $cmbEstado = $("#cmbEstado");
 
     var mensajes = {
         cargandoSolicitudes: "Cargando Solicitudes, por favor espere....."
@@ -18,11 +19,33 @@
         $btnBuscar.click(Buscar);
         $btnNuevo.click(btnNuevoClick);
         $btnRegresar.click(btnRegresarClick);
-
+        CargarComboEstado();
 
         setInterval(function () {
             refrescar();
         }, 60000);
+    };
+
+    function CargarComboEstado() {
+        method = "POST";
+        url = "BandejaSolicitudesVentas/ObtenerEstadosSolicitud"
+        var objComb = "";
+        objComb = JSON.stringify(objComb);
+
+        var fnDoneCallback = function (data) {
+
+            var filters = {};
+            filters.placeholder = "-- Todos --";
+            filters.allowClear = false;
+            
+            app.llenarComboMultiResult($cmbEstado, data.EstadosSolicitud, null, "", "", filters);
+        };
+
+        var fnFailCallback = function () {
+            app.message.error("Validación", "Error al cargar los combos.");
+        };
+
+        app.llamarAjax(method, url, objComb, fnDoneCallback, fnFailCallback, null, null);
     };
 
     function refrescar() {
@@ -32,7 +55,8 @@
 
         objBuscar = {
             IdCliente: $idCliente.val(),
-            Id_Solicitud: $txtSolicitud.val() == "" || $txtSolicitud.val() == "0" ? 0 : $txtSolicitud.val()
+            Id_Solicitud: $txtSolicitud.val() == "" || $txtSolicitud.val() == "0" ? 0 : $txtSolicitud.val(),
+            Estado: $cmbEstado.val()
         };
 
         objParam = JSON.stringify(objBuscar);
@@ -75,7 +99,8 @@
         url = "BandejaSolicitudesVentas/ObtenerSolicitudes"
         objBuscar = {
             IdCliente: $idCliente.val(),
-            Id_Solicitud: $txtSolicitud.val() == "" || $txtSolicitud.val() == "0" ? 0 : $txtSolicitud.val()
+            Id_Solicitud: $txtSolicitud.val() == "" || $txtSolicitud.val() == "0" ? 0 : $txtSolicitud.val(),
+            Estado: $cmbEstado.val()
         };
 
         objParam = JSON.stringify(objBuscar);

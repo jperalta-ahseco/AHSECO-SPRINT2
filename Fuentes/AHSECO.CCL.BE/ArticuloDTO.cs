@@ -11,6 +11,7 @@ namespace AHSECO.CCL.BE
     {
         public string CodArticulo { get; set; }
         public string DescArticulo { get; set; }
+        public string DescRealArticulo { get; set; }
         public string CodUnidad { get; set; }
         public string DescUnidad { get; set; }
         public string CodFamilia { get; set; }
@@ -21,6 +22,9 @@ namespace AHSECO.CCL.BE
         public string DescMarca { get; set; }
         public int StockDisponible { get; set; }
         public decimal PrecioRef { get; set; }
+        public string CodModelo { get; set; }
+        public string DescModelo { get; set; }
+        public string DescRealModelo { get; set; }
         public string CodAlmacen { get; set; }
         public string DescAlmacen { get; set; }
         public bool EsDisponible { get; set; }
