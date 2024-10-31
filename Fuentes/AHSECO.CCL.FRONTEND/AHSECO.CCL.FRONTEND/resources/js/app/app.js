@@ -385,6 +385,7 @@ var app = (function ($, win, doc) {
             contentType: 'application/json',
             dataType: "json"
         }).done(function (data, textStatus, jqXhr) {
+            $modalLoading.hide();
             if (data.Status === 1) {
                 if (typeof (fnDoneCallback) != "undefined" || fnDoneCallback != null) {
                     fnDoneCallback(data);
@@ -393,6 +394,7 @@ var app = (function ($, win, doc) {
                 message.error("Error", data.CurrentException, "Aceptar", fnFailCallback);
             }
         }).fail(function (jqXhr, textStatus, errorThrow) {
+            $modalLoading.hide();
             message.error("Error inesperado", errorThrow, "Aceptar", fnFailCallback);
         }).always(function () {
 
