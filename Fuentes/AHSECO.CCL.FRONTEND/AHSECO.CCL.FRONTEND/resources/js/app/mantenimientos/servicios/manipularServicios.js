@@ -24,7 +24,8 @@
     var $btnActualizar = $('#btnActualizar');
     var $btnActualizarDetalleServicio = $('#btnActualizarDetalleServicio');
     var $hdnIdDetalleServicio = $('#hdnIdDetalleServicio');
-
+    var $btnCerrarDetalleServicio = $('#btnCerrarDetalleServicio');
+   
     var $btnAbrirModalServicio = $("#btnAbrirModalServicio");
     var mensajes = {
         registrandoServicio: "Registrando Servicio por favor espere...",
@@ -44,6 +45,7 @@
         $btnGuardarDetalleServicio.click(GuardarDetalleServicio);
         $btnActualizar.click(ActualizarServicio);
         $btnActualizarDetalleServicio.click(ActualizarDetalleServicio);
+        $btnCerrarDetalleServicio.click(CerrarModalDetalleServicio);
         cargarDatos();
     };
     function CargarCombos() {
@@ -67,6 +69,12 @@
         };
 
         app.llamarAjax(method, url, opjParam, fnDoneCallBack, fnFailCallBack, null, mensajes.ObteniendoFiltros);
+    };
+
+    function CerrarModalDetalleServicio() {
+        $modalDetalleServicio.hide();
+        $('.modal-backdrop2').remove();
+        $txtDetalleServicio.val("");
     };
     function GuardarDetalleServicio() {
         if ($txtDetalleServicio.val().trim() === "" || $txtDetalleServicio.val().trim().length == 0) {
@@ -149,42 +157,30 @@
         }
         objParam = JSON.stringify(objDetalle);
 
-        var fnDoneCallback = function (data) {
-            for (var i = 0; i < detalleServicios.length; i++) {
-                if (detalleServicios[i].Id == data.Result.Codigo) {
-                    detalleServicios[i].DesMantenimiento = $txtDetalleServicio.val();
+        var fnSi = function () {
+            var fnDoneCallback = function (data) {
+                var rpta = function () {
+                    $modalDetalleServicio.hide();
+                    $('.modal-backdrop2').remove();
                 };
+
+                for (var i = 0; i < detalleServicios.length; i++) {
+                    if (detalleServicios[i].Id == data.Result.Codigo) {
+                        detalleServicios[i].DesMantenimiento = $txtDetalleServicio.val();
+                    };
+                };
+                $modalDetalleServicio.modal('toggle');
+                app.message.success("Actualización", "Se realizó la actualización con éxito", "Aceptar",rpta);
+                cargarTablaDetalle(detalleServicios);
             };
-            $modalDetalleServicio.modal('toggle');
-            cargarTablaDetalle(detalleServicios);
+            var fnFailCallback = function () {
 
-        };
+            };
 
-        var fnFailCallback = function () {
-
-        };
-
-        app.llamarAjax(method, url, objParam, fnDoneCallback, fnFailCallback, null, null);
+            app.llamarAjax(method, url, objParam, fnDoneCallback, fnFailCallback, null, null);
+        }
+        return app.message.confirm("Confimación", "¿Está seguro de actualizar el detalle?", "Si", "No", fnSi, null);
     };
-    //function agregarNuevoDetalleServicio() {
-    //    var fnreg = function () {
-    //        var method = "POST";
-    //        var url = "BandejaServicios/MantenimientoDetalleServicio";
-    //        var objDetalle = {
-
-    //        }
-    //        var fnDoneCallback = function () {
-    //            app.redirectTo("BandejaServicios")
-    //        }
-
-    //        var fnFailCallback = function () {
-
-    //        }
-    //        var data = JSON.stringify(objDetalle);
-    //        return app.llamarAjax(method, url, data, fnDoneCallback, fnFailCallback, mensajes.registrandoServicio);
-    //    }
-    //    return app.message.confirm("Guardar", "¿Está seguro/a de guardar el detalle del servicio?", "Sí", "No", fnreg, null);
-    //}
     function btnAbrirModalDetalle() {
         $txtDetalleServicio.val("");
         $hdnIdDetalleServicio.val("");
@@ -321,7 +317,8 @@
         var fnSi = function () {
             var fnDoneCallBack = function () {
                 app.message.success("Registro de Servicio", "Se eliminó correctamente el servicio");
-                eliminarDetalleServicioTemp(id)
+                detalleServicios = detalleServicios.filter(detalle => detalle.Id != id);
+                cargarTablaDetalle(detalleServicios);
             };
 
             var fnFailCallBack = function () {
