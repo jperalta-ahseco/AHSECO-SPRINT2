@@ -1097,11 +1097,7 @@ if (typeof jQuery === 'undefined') {
       //this.$backdrop && this.$backdrop.remove()
       if (this.$backdrop != null) {
           var id = this.$backdrop.attr('id')
-          var last = this.$backdrop.attr('last-backdrop')
-          if (last == "Y") {
-              $("#" + id).remove()
-              //this.$backdrop.removeClass('in')
-          }
+          $("#" + id).remove()
       }
   }
 
@@ -1120,16 +1116,11 @@ if (typeof jQuery === 'undefined') {
           if (index_current > index_highest)
               index_highest = index_current;
       });
-
-      $(".modal-backdrop2").each(function (index) {
-          $(this).attr('last-backdrop', 'N');
-      });
-
+      
       this.$backdrop = $(document.createElement('div'))
         .addClass('modal-backdrop2 ' + animate)
         .attr("id", "backdrop_" + time)
         .css("z-index", index_highest + 1)
-        .attr("last-backdrop", "Y")
         .appendTo(this.$body)
 
       this.$element.css("z-index", index_highest + 2);
