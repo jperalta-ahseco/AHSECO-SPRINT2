@@ -72,7 +72,7 @@
     };
 
     function CerrarModalDetalleServicio() {
-        $modalDetalleServicio.hide();
+        $modalDetalleServicio.modal('toggle');
         $('.modal-backdrop2').remove();
         $txtDetalleServicio.val("");
     };
@@ -340,7 +340,7 @@
             if ($txtTipoIngreso.val() == "") {
                 nuevoTr += '<td><center><a class="btn btn-primary btn-xs" title="Eliminar" href="javascript: manipularServicio.eliminarDetalleServicioTemp(' + detalle[i].Id + ')"><i class="fa fa-trash"></i></a></center></td>';
             } else if ($txtTipoIngreso.val() == "U") {
-                var editar = '<a class="btn btn-default btn-xs" tittle="Editar" href="javascript: manipularServicio.editarDetalleServicio(' + detalle[i].Id + ')" btn-xs"><i class="fa fa-pencil"></i></a>';
+                var editar = '<a class="btn btn-default btn-xs" title="Editar" href="javascript: manipularServicio.editarDetalleServicio(' + detalle[i].Id + ')" btn-xs"><i class="fa fa-pencil"></i></a>';
                 nuevoTr += '<td><center>' + editar + ' ' + '<a class="btn btn-primary btn-xs" title="Eliminar" href="javascript: manipularServicio.eliminarDetalleServicio(' + detalle[i].Id + ')" btn-xs"><i class="fa fa-trash"></i></a></center></td>';
             } else if ($txtTipoIngreso.val() == "V") {
                 nuevoTr += '<td><center></center></td>';
