@@ -1451,7 +1451,8 @@ var manipularCliente = (function ($, win, doc) {
         method = "POST";
         url = "BandejaCliente/ObtenerContactos"
         ObjContactos = {
-            IdCliente: idCliente
+            IdCliente: idCliente,
+            IdContacto: 0
         }
 
         objParam = JSON.stringify(ObjContactos);
