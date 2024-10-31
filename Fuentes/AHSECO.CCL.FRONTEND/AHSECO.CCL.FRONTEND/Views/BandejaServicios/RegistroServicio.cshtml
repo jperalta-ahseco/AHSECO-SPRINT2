@@ -229,7 +229,12 @@
             if (partes[1]) {
                 valorFormateado += '.' + partes[1];
             } else {
-                valorFormateado += '.00'; // Si no hay parte decimal, agregar .00
+                if (partes[0] == '') {
+                    valorFormateado += ''
+                }
+                else {
+                    valorFormateado += '.00'; // Si no hay parte decimal, agregar .00
+                }
             }
 
             // Asignar el valor formateado al input
@@ -266,7 +271,12 @@
             if (partes[1]) {
                 valorFormateado += '.' + partes[1];
             } else {
-                valorFormateado += '.00'; // Si no hay parte decimal, agregar .00
+                if (partes[0] == '') {
+                    valorFormateado += ''
+                }
+                else {
+                    valorFormateado += '.00'; // Si no hay parte decimal, agregar .00
+                }
             }
 
             // Asignar el valor formateado al input
@@ -303,7 +313,13 @@
             if (partes[1]) {
                 valorFormateado += '.' + partes[1];
             } else {
-                valorFormateado += '.00'; // Si no hay parte decimal, agregar .00
+                if (partes[0] == '') {
+                    valorFormateado += ''
+                }
+                else {
+                    valorFormateado += '.00'; // Si no hay parte decimal, agregar .00
+                }
+                
             }
 
             // Asignar el valor formateado al input

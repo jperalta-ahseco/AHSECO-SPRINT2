@@ -97,10 +97,10 @@
                     detalleServicios.push(objDetalle);
                     cargarTablaDetalle(detalleServicios);
                     $txtDetalleServicio.val("");
-                    $modalDetalleServicio.modal('toggle');
-
+                    $modalDetalleServicio.hide();
+                    $('.modal-backdrop2').remove();
                     var fnSiSer = function () {
-                        $modalDetalleServicio.modal('toggle');
+                        $modalDetalleServicio.show();
                     }
                     return app.message.confirm("Se registró con éxito", "Desea agregar una actividad adicional?", "Si", "No", fnSiSer, null);
                 };
@@ -123,10 +123,11 @@
                 detalleServicios.push(objDetalle); //insertamos el detalle ingresado.
                 cargarTablaDetalle(detalleServicios);
                 $txtDetalleServicio.val("");
-                $modalDetalleServicio.modal('toggle');
+                $modalDetalleServicio.hide();
+                $('.modal-backdrop2').remove();
 
                 var fnSiSer = function () {
-                    $modalDetalleServicio.modal('toggle');
+                    $modalDetalleServicio.show();
                 }
                 return app.message.confirm("Se registró con éxito", "Desea agregar una actividad adicional?", "Si", "No", fnSiSer, null);
             }
@@ -297,9 +298,11 @@
     }
 
     function eliminarDetalleServicioTemp(Id) {
-        detalleServicios = detalleServicios.filter(detalle => detalle.Id != Id);
-        cargarTablaDetalle(detalleServicios);
-        
+        var fnSi = function () {
+            detalleServicios = detalleServicios.filter(detalle => detalle.Id != Id);
+            cargarTablaDetalle(detalleServicios);
+        }
+        return app.message.confirm("Eliminación", "¿Está seguro de eliminar el detalle?", "Si", "No", fnSi, null);
     };
 
     function eliminarDetalleServicio(id) {
@@ -314,17 +317,20 @@
         };
 
         objParam = JSON.stringify(objEliminar);
-        
-        var fnDoneCallBack = function () {
-            app.message.success("Registro de Servicio", "Se eliminó correctamente el servicio");
-            eliminarDetalleServicioTemp(id)
-        };
 
-        var fnFailCallBack = function () {
-            app.message.error("Error","Error al realizar la eliminación del detalle")
-        };
+        var fnSi = function () {
+            var fnDoneCallBack = function () {
+                app.message.success("Registro de Servicio", "Se eliminó correctamente el servicio");
+                eliminarDetalleServicioTemp(id)
+            };
 
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+            var fnFailCallBack = function () {
+                app.message.error("Error", "Error al realizar la eliminación del detalle")
+            };
+
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+        }
+        return app.message.confirm("Eliminación", "¿Está seguro de eliminar el detalle?", "Si", "No", fnSi, null);
     };
     function cargarTablaDetalle(detalle) {
         $('#tblDetalleServicio tbody').empty();
@@ -337,8 +343,10 @@
             if ($txtTipoIngreso.val() == "") {
                 nuevoTr += '<td><center><a class="btn btn-primary btn-xs" title="Eliminar" href="javascript: manipularServicio.eliminarDetalleServicioTemp(' + detalle[i].Id + ')"><i class="fa fa-trash"></i></a></center></td>';
             } else if ($txtTipoIngreso.val() == "U") {
-                var editar ='<a class="btn btn-default btn-xs" href="javascript: manipularServicio.editarDetalleServicio(' + detalle[i].Id + ')" btn-xs"><i class="fa fa-pencil"></i></a>';
-                nuevoTr += '<td><center>' + editar + ' ' +'<a class="btn btn-primary btn-xs" title="Eliminar" href="javascript: manipularServicio.eliminarDetalleServicio(' + detalle[i].Id + ')" btn-xs"><i class="fa fa-trash"></i></a></center></td>';
+                var editar = '<a class="btn btn-default btn-xs" href="javascript: manipularServicio.editarDetalleServicio(' + detalle[i].Id + ')" btn-xs"><i class="fa fa-pencil"></i></a>';
+                nuevoTr += '<td><center>' + editar + ' ' + '<a class="btn btn-primary btn-xs" title="Eliminar" href="javascript: manipularServicio.eliminarDetalleServicio(' + detalle[i].Id + ')" btn-xs"><i class="fa fa-trash"></i></a></center></td>';
+            } else if ($txtTipoIngreso.val() == "V") {
+                nuevoTr += '<td><center></center></td>';
             }
             nuevoTr += '</tr>';
             $tblDetalleServicio.append(nuevoTr);
