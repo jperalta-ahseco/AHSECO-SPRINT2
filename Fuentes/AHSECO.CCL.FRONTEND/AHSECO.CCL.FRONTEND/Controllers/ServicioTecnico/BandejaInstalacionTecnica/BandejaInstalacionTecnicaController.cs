@@ -20,6 +20,7 @@ using NPOI.HSSF.UserModel;
 using NPOI.HSSF.Util;
 using NPOI.SS.UserModel;
 using System.IO;
+using CrystalDecisions.ReportAppServer.DataDefModel;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecnica
 {
@@ -29,9 +30,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
         [Permissions(Permissions = "BANDEJAINSTALACIONTECNICA")]
         public ActionResult Index()
         {
-            VariableSesion.setCadena("NumReq", null);
-            VariableSesion.setCadena("CodEstado", null);
-            VariableSesion.setCadena("IdWorkFlow", null);
+            VariableSesion.setCadena("NumReq", "");
+            VariableSesion.setCadena("CodEstado", "");
+            VariableSesion.setCadena("IdWorkFlow", "");
+            VariableSesion.setCadena("TipoProceso", "");
             return View();
         }
         
@@ -86,7 +88,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
             {
                 VariableSesion.setCadena("NumReq", instalacion.NumReq.ToString());
                 VariableSesion.setCadena("CodEstado", instalacion.CodEstado);
-                VariableSesion.setCadena("IdWorkFlow", instalacion.Id_WokFlow.ToString());
+                VariableSesion.setCadena("IdWorkFlow", instalacion.Id_WorkFlow.ToString());
+                VariableSesion.setCadena("TipoProceso", instalacion.TipoProceso);
                 return Json(new
                 {
                     Status = 1
@@ -102,11 +105,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
             }
         }
 
-        public JsonResult ObtenerInstalacionesTec(InstalacionTecnicaDTO instalacion)
+        public JsonResult ObtenerInstalacionesTec(FiltroInstalacionTecDTO filtros)
         {
 
             var instalacionTecnicaBL = new InstalacionTecnicaBL();
-            var result = instalacionTecnicaBL.ObtenerInstalacionesTec(instalacion);
+            var result = instalacionTecnicaBL.ObtenerInstalacionesTec(filtros);
             return Json(result);
         }
 
@@ -124,7 +127,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
                 workflow.SubTipo = "";
 
                 var rpta = procesoBL.InsertarWorkflow(workflow);
-                grupoInstalacionTecnicaDTO.CabeceraInstalacion.Id_WokFlow = rpta.Result;
+                grupoInstalacionTecnicaDTO.CabeceraInstalacion.Id_WorkFlow = rpta.Result;
                 grupoInstalacionTecnicaDTO.CabeceraInstalacion.UsuarioRegistra = User.ObtenerUsuario();
 
                 //Registra Main Solicitudes
@@ -190,7 +193,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
                     {
                         NumReq = mainRequerimiento.Result.Codigo,
                         Estado = grupoInstalacionTecnicaDTO.CabeceraInstalacion.Estado,
-                        Id_WokFlow = rpta.Result
+                        Id_WorkFlow = rpta.Result
                     }
                 });
             }
@@ -319,10 +322,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
             return Json(result);
         }
 
-        public void GenerarReporte(InstalacionTecnicaDTO instalacion)
+        public void GenerarReporte(FiltroInstalacionTecDTO filtros)
         {
             var instalacionTecnicaBL = new InstalacionTecnicaBL();
-            var instalaciones = instalacionTecnicaBL.ObtenerInstalacionesTec(instalacion).Result.ToList();
+            var instalaciones = instalacionTecnicaBL.ObtenerInstalacionesTec(filtros).Result.ToList();
 
             var hssfworkbook = new HSSFWorkbook();
             ISheet sh = hssfworkbook.CreateSheet("Requerimientos");

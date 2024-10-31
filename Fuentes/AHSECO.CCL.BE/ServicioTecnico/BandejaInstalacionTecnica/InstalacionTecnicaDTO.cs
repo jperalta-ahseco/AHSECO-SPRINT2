@@ -6,7 +6,7 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica
     {
         public string TipoProceso { get; set; }
         public long NumReq { get; set; }
-        public long Id_WokFlow { get; set; }
+        public long Id_WorkFlow { get; set; }
         public long Id_Solicitud { get; set; }
         public string RucEmpresa { get; set; }
         public string NomEmpresa { get; set; }
@@ -27,7 +27,5 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica
         public string Destino { get; set; }
         public string Estado { get; set; }
         public string CodEstado { get; set; }
-        public DateTime FecIni { get; set; }
-        public DateTime FecFin { get; set; }
     }
 }

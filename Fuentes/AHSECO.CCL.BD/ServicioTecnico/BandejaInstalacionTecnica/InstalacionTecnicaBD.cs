@@ -12,6 +12,7 @@ using System.Data;
 using AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica;
 using Microsoft.Extensions.DependencyInjection;
 using System.Runtime.CompilerServices;
+using System.Net.Http.Headers;
 
 namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
 {
@@ -102,54 +103,50 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                 };
             };
         }
- 
-        public IEnumerable<InstalacionTecnicaDTO> ObtenerInstalacionesTec(InstalacionTecnicaDTO instalacion)
+        public IEnumerable<InstalacionTecnicaDTO> ObtenerInstalacionesTec(FiltroInstalacionTecDTO filtros)
         {
-            Log.TraceInfo(Utilidades.GetCaller());
-            using(var connection = Factory.ConnectionFactory())
+            Log.TraceInfo(Utilidades.GetCaller());  
+            using (var connection = Factory.ConnectionFactory())
             {
                 connection.Open();
                 var parameters = new DynamicParameters();
-                parameters.Add("isFecIni", instalacion.FecIni);
-                parameters.Add("isFecFin", instalacion.FecFin);
-                parameters.Add("IsRequerimiento", instalacion.NumReq);
-                parameters.Add("IsEstado", instalacion.Estado);
-                parameters.Add("IsDestino", instalacion.Destino);
-                parameters.Add("IsVendedor", instalacion.Vendedor);
-                parameters.Add("IsRuc", instalacion.RucEmpresa);
-                parameters.Add("IsEmpresa", instalacion.CodEmpresa);
-                parameters.Add("IsTipVenta", instalacion.Id_Flujo);
-                parameters.Add("IsNumProceso", instalacion.NumProceso);
-                parameters.Add("IsNumContrato", instalacion.Contrato);
-                parameters.Add("IsNumOrdenCompra", instalacion.OrdenCompra);
-                parameters.Add("IsNumFianza", instalacion.NumFianza);
+                parameters.Add("isFecIni", filtros.FecIni);
+                parameters.Add("isFecFin", filtros.FecFin);
+                parameters.Add("IsRequerimiento", filtros.NumReq);
+                parameters.Add("IsEstado", filtros.Estado);
+                parameters.Add("IsDestino", filtros.Destino);
+                parameters.Add("IsVendedor", filtros.Vendedor);
+                parameters.Add("IsRuc", filtros.RucEmpresa);
+                parameters.Add("IsCodEmpresa", filtros.CodEmpresa);
+                parameters.Add("IsTipVenta", filtros.Id_Flujo);
+                parameters.Add("IsNumProceso", filtros.NumProceso);
+                parameters.Add("IsNumContrato", filtros.Contrato);
+                parameters.Add("IsNumOrdenCompra", filtros.OrdenCompra);
+                parameters.Add("IsNumFianza", filtros.NumFianza);
 
                 var result = connection.Query(
-                            sql: "USP_SEL_INSTALL_TEC",
-                            param: parameters,
-                            commandType: CommandType.StoredProcedure)
-                            .Select(s => s as IDictionary<string, object>)
-                            .Select(i => new InstalacionTecnicaDTO
-                            {
-                                NumReq = i.Single(d => d.Key.Equals("NUMREQ")).Value.Parse<long>(), //INSTALL.NUMREQ
-                                Id_Solicitud = i.Single(d => d.Key.Equals("ID_SOLICITUD")).Value.Parse<long>(), //,INSTALL.ID_SOLICITUD
-                                Id_WokFlow = i.Single(d  => d.Key.Equals("IDWORKFLOW")).Value.Parse<long>(),
-                                RucEmpresa = i.Single(d => d.Key.Equals("RUCEMPRESA")).Value.Parse<string>(),//,INSTALL.RUCEMPRESA
-                                NomEmpresa = i.Single(d => d.Key.Equals("NOMEMPRESA")).Value.Parse<string>(),//,INSTALL.NOMEMPRESA
-                                Ubicacion =  i.Single(d => d.Key.Equals("UBICACION")).Value.Parse<string>(),//,INSTALL.UBICACION
-                                TipoVenta = i.Single(d => d.Key.Equals("TIPOVENTA")).Value.Parse<string>(),//,INSTALL.TIPOVENTA
-                                Vendedor =  i.Single(d => d.Key.Equals("VENDEDOR")).Value.Parse<string>(), //,INSTALL.VENDEDOR
-                                CodEmpresa= i.Single(d => d.Key.Equals("CODEMPRESA")).Value.Parse<string>(),//,CODEMPRESA
-                                FechaMax = i.Single(d => d.Key.Equals("FECHAMAX")).Value.Parse<DateTime>(), //,INSTALL.FECHAMAX
-                                Destino =  i.Single(d => d.Key.Equals("DESTINO")).Value.Parse<string>(),//,INSTALL.DESTINO
-                                Estado =  i.Single(d => d.Key.Equals("ESTADO")).Value.Parse<string>(),//,INSTALL.ESTADO
-                                CodEstado = i.Single(d => d.Key.Equals("CODESTADO")).Value.Parse<string>()
-                            });
-                //connection.Close();
+                    sql: "USP_SEL_INSTALL_TEC",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new InstalacionTecnicaDTO
+                    {
+                        NumReq = i.Single(d => d.Key.Equals("NUMREQ")).Value.Parse<long>(),
+                        Id_Solicitud = i.Single(d => d.Key.Equals("ID_SOLICITUD")).Value.Parse<long>(),
+                        RucEmpresa = i.Single(d => d.Key.Equals("RUCEMPRESA")).Value.Parse<string>(),
+                        NomEmpresa = i.Single(d => d.Key.Equals("NOMEMPRESA")).Value.Parse<string>(),
+                        Ubicacion = i.Single(d => d.Key.Equals("UBICACION")).Value.Parse<string>(),
+                        TipoVenta = i.Single(d => d.Key.Equals("TIPOVENTA")).Value.Parse<string>(),
+                        Vendedor = i.Single(d => d.Key.Equals("VENDEDOR")).Value.Parse<string>(),
+                        CodEmpresa = i.Single(d => d.Key.Equals("CODEMPRESA")).Value.Parse<string>(),
+                        FechaMax = i.Single(d => d.Key.Equals("FECHAMAX")).Value.Parse<DateTime>(),
+                        Destino = i.Single(d => d.Key.Equals("DESTINO")).Value.Parse<string>(),
+                        Estado = i.Single(d => d.Key.Equals("ESTADO")).Value.Parse<string>(),
+                        CodEstado = i.Single(d => d.Key.Equals("CODESTADO")).Value.Parse<string>()
+                    });
                 return result;
-            }
+            };
         }
-
         public RespuestaDTO MantInstalacion(InstalacionTecnicaDTO instalacion)
         {
             Log.TraceInfo(Utilidades.GetCaller());
@@ -159,7 +156,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                 var parameters = new DynamicParameters();   
                 parameters.Add("IsTipoProceso", instalacion.TipoProceso);
                 parameters.Add("NUMREQ", instalacion.NumReq);
-                parameters.Add("ID_WORKFLOW", instalacion.Id_WokFlow);
+                parameters.Add("ID_WORKFLOW", instalacion.Id_WorkFlow);
                 parameters.Add("ID_SOLICITUD", instalacion.Id_Solicitud);
                 parameters.Add("RUCEMPRESA", instalacion.RucEmpresa);
                 parameters.Add("NOMEMPRESA", instalacion.NomEmpresa);
@@ -333,13 +330,10 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                         RazonSocial = i.Single(d => d.Key.Equals("RAZONSOCIAL")).Value.Parse<string>(),
                         AsesorVenta = i.Single(d => d.Key.Equals("ASESORVENTA")).Value.Parse<string>()
                     });
-
                 connection.Close();
                 return result;
             };
         }
-
-
         public SolicitudVentaGrupoDTO ObtenerDetalleSolicitud(long id)
         {
             Log.TraceInfo(Utilidades.GetCaller());
@@ -386,14 +380,14 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                             TipoItem = reader.IsDBNull(reader.GetOrdinal("TIPOITEM")) ? "" : reader.GetString(reader.GetOrdinal("TIPOITEM")),
                             Cantidad = reader.IsDBNull(reader.GetOrdinal("CANTIDAD")) ? 0 : reader.GetInt32(reader.GetOrdinal("CANTIDAD")),
                             Descripcion = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION")),
-                           // Marca = reader.IsDBNull(reader.GetOrdinal("DESMARCA")) ? "" : reader.GetString(reader.GetOrdinal("DESMARCA")),
-                           // Serie = reader.IsDBNull(reader.GetOrdinal("LOTESERIE")) ? "" : reader.GetString(reader.GetOrdinal("LOTESERIE")),
+                            Marca = reader.IsDBNull(reader.GetOrdinal("DESMARCA")) ? "" : reader.GetString(reader.GetOrdinal("DESMARCA")),
+                            Serie = reader.IsDBNull(reader.GetOrdinal("LOTESERIE")) ? "" : reader.GetString(reader.GetOrdinal("LOTESERIE")),
                         };
                         _detalleCotizacion.Add(cotDetalle);
                     }
 
                     result.Solicitud = solicitud;
-                    //result.DetalleCotizacion = _detalleCotizacion;
+                    result.DetalleCotizacion = _detalleCotizacion;
                     connection.Close();
                 }
                 return result;

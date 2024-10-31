@@ -6,11 +6,20 @@
     var numReq = VariableSesion.getCadena("NumReq");
     var codEstado = VariableSesion.getCadena("CodEstado");
     var IdWorkFlow = VariableSesion.getCadena("IdWorkFlow");
+    var tipoProceso = VariableSesion.getCadena("TipoProceso");
+
+    var visualizar = false;
+
+    if(tipoProceso != "")
+    {
+        visualizar = true;
+    };
+
 }
 
-<input hidden id="numeroReq" value="" />
-<input hidden id="codigoWorkflow" value="" />
-<input hidden id="estadoReq" value="" />
+<input hidden id="numeroReq" value="@numReq" />
+<input hidden id="codigoWorkflow" value="@IdWorkFlow" />
+<input hidden id="estadoReq" value="@codEstado" />
 
 <div class="container-fluid">
     <h4><i class="fa fa-wrench" aria-hidden="true"></i> @ViewBag.Title</h4>
@@ -27,7 +36,7 @@
                         <div class="col-md-4 col-sm-12">
                             <label for="txtSolVenta">Solicitud de Venta: </label>
                             <div class="form-group">
-                                <div class="input-group input-group-sm date">
+                                <div @(visualizar ? "disabled" : "") class="input-group input-group-sm date">
                                     <input type="text" class="form-control input-sm" id="txtSolVenta" value="" placeholder="---Seleccionar Solicitud---" aria-describedby="sizing-addon3" disabled="disabled" />
                                     <span style="cursor:pointer" class="input-group-addon input-sm" id="searchSolVenta" title="Buscar Solicitud" data-toggle="modal" data-target="#modalSolicitud">
                                         <i class="fa fa-search"></i>

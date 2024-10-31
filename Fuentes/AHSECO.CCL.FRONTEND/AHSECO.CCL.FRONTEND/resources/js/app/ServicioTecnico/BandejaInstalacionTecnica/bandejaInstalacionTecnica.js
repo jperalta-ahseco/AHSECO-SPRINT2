@@ -64,7 +64,7 @@
         $dateFecIni.datepicker().on("changeDate", changeDateFechaInicialRegFecIni);
 
         $dateFecFin.val(hoy());
-
+        BuscarClick();
     };
 
     function cargarAsesoresVenta() {
@@ -111,13 +111,13 @@
         var objBuscar = {
             FecIni: $dateFecIni.val(),
             FecFin: $dateFecFin.val(),
-            NumReq: $txtNumReq.val(),
+            NumReq: $txtNumReq.val() == "" ? "0" : $txtNumReq.val(),
             Estado: $cmbEstado.val() == 0 ? "" : $cmbEstado.val(),
             Destino: $txtUbicacion.val(),
             Vendedor: $cmbVendedor.val() == 0 ? "" : $cmbVendedor.val(),
             RucEmpresa: $cmbCliente.val() == 0 ? "" : $cmbCliente.val(),
             CodEmpresa: $cmbempresa.val() == 0 ? "" : $cmbempresa.val(),
-            Id_Flujo: $cmbTipVenta.val() == 0 ? "" : $cmbTipVenta.val(),
+            Id_Flujo: $cmbTipVenta.val() == 0 ? "0" : $cmbTipVenta.val(),
             NumProceso: $txtNumProc.val(),
             Contrato: $txtNumContrato.val(),
             OrdenCompra: $txtNumOrdCompra.val(),
@@ -127,13 +127,13 @@
         var objParam = JSON.stringify(objBuscar);
 
         var fnDoneCallBack = function (data) {
-            console.log(data);
+            cargarTablaInstalacion(data);
         };
 
         var fnFailCallBack = function (data) {
-
+            app.message.error("Validación", "No se encontraron resultados, por favor revisar.");
+            cargarTablaInstalacion();
         };
-
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, mensajes.buscandoRequerimientos);
     };
@@ -426,7 +426,8 @@
         var url = "BandejaInstalacionTecnica/SetVariablesGenerales";
         var objEditar = {
             NumReq: numReq,
-            Estado: codEstado,
+            CodEstado: codEstado,
+            TipoProceso: "U",
             Id_WokFlow: idWorkFlow
         };
 
@@ -448,8 +449,9 @@
         var url = "BandejaInstalacionTecnica/SetVariablesGenerales";
         var objEditar = {
             NumReq: numReq,
-            Estado: codEstado,
-            Id_WokFlow: idWorkFlow
+            CodEstado: codEstado,
+            Id_WokFlow: idWorkFlow,
+            TipoProceso: "U"
         };
 
         var objParam = JSON.stringify(objEditar);
@@ -468,74 +470,74 @@
         var columns = [
             {
                 data: "NumReq",
-                render = function (data, type, row) {
+                render : function (data, type, row) {
                     return '<center>' + data + '</center>'
                 }
             },
             {
                 data: "Id_Solicitud",
-                render = function (data, type, row) {
+                render : function (data, type, row) {
                     return '<center>' + data + '</center>'
                 }
             },
             {
                 data: "RucEmpresa",
-                render = function (data, type, row) {
+                render : function (data, type, row) {
                     return '<center>' + data + '</center>'
                 }
             },
             {
                 data: "NomEmpresa",
-                render = function (data, type, row) {
+                render : function (data, type, row) {
                     return '<center>' + data + '</center>'
                 }
             },
             {
                 data: "Ubicacion",
-                render = function (data, type, row) {
+                render : function (data, type, row) {
                     return '<center>' + data + '</center>'
                 }
             },
             {
                 data: "TipoVenta",
-                render = function (data, type, row) {
+                render : function (data, type, row) {
                     return '<center>' + data + '</center>'
                 }
             },
             {
                 data: "Vendedor",
-                render = function (data, type, row) {
+                render : function (data, type, row) {
                     return '<center>' + data + '</center>'
                 }
             },
             {
                 data: "CodEmpresa",
-                render = function (data, type, row) {
+                render : function (data, type, row) {
                     return '<center>' + data + '</center>'
                 }
             },
             {
                 data: "FechaMax",
-                render = function (data, type, row) {
-                    return '<center>' + data + '</center>'
+                render : function (data, type, row) {
+                    return '<center>' + app.obtenerFecha(data)+ '</center>'
                 }
             },
             {
                 data: "Destino",
-                render = function (data, type, row) {
+                render : function (data, type, row) {
                     return '<center>' + data + '</center>'
                 }
             },
             {
                 data: "Estado",
-                render = function (data, type, row) {
+                render : function (data, type, row) {
                     return '<center>' + data + '</center>'
                 }
             },
             {
                 data: "NumReq",
-                render = function (data, type, row) {
-                    var d = "'" + row.NumReq + "','" + row.CodEstado + "','" + Id_WokFlow +"'"; 
+                render : function (data, type, row) {
+                    var d = "'" + row.NumReq + "','" + row.CodEstado + "','" + row.Id_WorkFlow +"'"; 
                     var ver = '<a id="btnVer" class="btn btn-info btn-xs" title="Ver" href="javascript: bandejaInstalacionTecnica.ver(' + d + ')"><i class="fa fa-eye" aria-hidden="true"></i></a>';
                     var editar = '<a id="btnEditar" class="btn btn-default btn-xs" title="Editar" href="javascript: bandejaInstalacionTecnica.editar(' + d + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>';
                     return '<center>' + editar + ' ' + ver +'</center>'
@@ -544,8 +546,16 @@
         ];
 
         var columnDefs = [
-
+            {
+                targets: [0],
+                visible: true
+            }
         ];
+
+
+        var rowCallback = function (row, data, index) {
+            $(row).attr('id', 'row' + index);
+        };
 
         app.llenarTabla($tblInstallTec, data, columns, columnDefs, "#tblInstallTec", rowCallback);
     };

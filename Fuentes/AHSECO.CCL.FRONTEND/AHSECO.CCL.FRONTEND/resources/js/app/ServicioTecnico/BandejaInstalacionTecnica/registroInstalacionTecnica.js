@@ -19,7 +19,7 @@
     var $cmbDestino = $('#cmbDestino');
     var $dateSolicitud = $('#dateSolicitud');
     var $openRegdateSolicitud = $('#openRegdateSolicitud');
-    var $tblMainProducts = $('#tblMainProducts');
+    var $tblMainProducts = $('#tblMainProducts');   
     var $hdnIdProduct = $('#hdnIdProduct');
     var $txtOrdCompra = $('#txtOrdCompra');
     var $txtProceso = $('#txtProceso');
@@ -193,7 +193,7 @@
                 , Vendedor: $txtAsesor.val()
                 , FechaMax: $dateSolicitud.val()
                 , Destino: destinos_select.toString()
-                , Estado: 'REG'
+                , Estado: 'STREG'
             },
             DetalleInstalacion: productos,
             Observaciones: observaciones,
