@@ -1005,7 +1005,7 @@ if (typeof jQuery === 'undefined') {
       if (transition) {
         that.$element[0].offsetWidth // force reflow
       }
-
+      
       that.$element.addClass('in')
 
       that.enforceFocus()
@@ -1097,11 +1097,11 @@ if (typeof jQuery === 'undefined') {
       //this.$backdrop && this.$backdrop.remove()
       if (this.$backdrop != null) {
           var id = this.$backdrop.attr('id')
-          $("#" + id).remove()
+          $("#" + id).remove();
+          this.$backdrop = null;
       }
   }
 
-  var index_highest = 0;
   Modal.prototype.backdrop = function (callback) {
     var that = this
     var animate = this.$element.hasClass('fade') ? 'fade' : ''
@@ -1109,14 +1109,21 @@ if (typeof jQuery === 'undefined') {
     if (this.isShown && this.options.backdrop) {
       var doAnimate = $.support.transition && animate
       var dt = new Date();
-        var time = dt.getSeconds() + dt.getMilliseconds();
+      var time = dt.getSeconds() + dt.getMilliseconds();
 
+      var index_highest = 0;
       $("*").each(function () {
           var index_current = parseInt($(this).css("zIndex"), 10);
-          if (index_current > index_highest)
-              index_highest = index_current;
+          if (index_current > index_highest) { index_highest = index_current; }
       });
-      
+
+      var nBackdrop = 0;
+      $(".modal-backdrop2").each(function () {
+          nBackdrop = nBackdrop + 1;
+      });
+
+      index_highest = 9999 + nBackdrop;
+
       this.$backdrop = $(document.createElement('div'))
         .addClass('modal-backdrop2 ' + animate)
         .attr("id", "backdrop_" + time)
