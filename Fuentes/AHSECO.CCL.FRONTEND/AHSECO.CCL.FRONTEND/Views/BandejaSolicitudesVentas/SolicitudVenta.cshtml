@@ -709,7 +709,14 @@
     }
 </div>
 
+<div data-backdrop="static" data-keyboard="false" class="modal fade" id="modalUbigeo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    @{
+        Html.RenderPartial("_Ubigeo");
+    }
+</div>
+
 @section scripts{
     <script type="text/javascript" src="~/resources/js/app/ventas/solicitud.js"></script>
     <script type="text/javascript" src="~/resources/js/app/ventas/cotvtadetalle.js"></script>
+    <script type="text/javascript" src="~/resources/js/app/mantenimientos/cliente/bandejaCliente.js"></script>
 }

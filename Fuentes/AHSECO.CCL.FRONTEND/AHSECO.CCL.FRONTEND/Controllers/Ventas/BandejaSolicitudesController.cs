@@ -31,6 +31,7 @@ using AHSECO.CCL.BL.Mantenimientos;
 using AHSECO.CCL.BL.Consulta;
 using NPOI.OpenXmlFormats.Spreadsheet;
 using System.Web.UI.WebControls;
+using static AHSECO.CCL.COMUN.ConstantesDTO.CotizacionVentaDetalle;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 {
@@ -101,6 +102,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.VerTabCotDet = false;
             ViewBag.PermitirAgregarCotDet = false;
             ViewBag.PermitirNuevoCot = false;
+            ViewBag.TitleDetItem = string.Empty;
             VariableSesion.setObject("CotDetItems", new List<CotizacionDetalleDTO>());
             VariableSesion.setObject("CotDetSubItems", new List<CotizacionDetalleDTO>());
 
@@ -668,10 +670,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     select.EsItemPadre = false;
                 }
 
-                if (!select.EsItemPadre)
+                if (select.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio)
                 {
                     var lstItemsPadre = lstItems.Where(x => x.Select).ToList();
-                    if (!lstItemsPadre.Any()) { throw new Exception("Debe seleccionar el producto a asociar el accesorio"); }
+                    if (!lstItemsPadre.Any()) { throw new Exception("Para agregar un accesorio a la cotización deberá previamente seleccionar un producto para asociarlo. Favor de seleccionar un producto."); }
                     foreach(CotizacionDetalleDTO itemPadre in lstItemsPadre)
                     {
                         if (lstItems.Any(x => x.NroItem == itemPadre.NroItem && x.CodItem.TrimEnd() == CodItem.TrimEnd()))
@@ -687,7 +689,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     if (lstItems.Any()) { select.NroItem = lstItems.Max(x => x.NroItem) + 1; }
                     else { select.NroItem = 1; }
                     if (lstItems.Any(x => x.CodItem.TrimEnd() == CodItem.TrimEnd()))
-                    { throw new Exception("Producto ya fue selecionado"); }
+                    { throw new Exception("Producto y/o Servicio ya fue selecionado"); }
                     lstItems.ForEach(x => x.Select = false);
                     lstItems.Add(select);
                     VariableSesion.setObject("CotDetItems", lstItems);

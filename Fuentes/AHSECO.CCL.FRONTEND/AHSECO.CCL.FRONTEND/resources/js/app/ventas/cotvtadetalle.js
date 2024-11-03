@@ -11,6 +11,9 @@ var cotvtadet = (function ($, win, doc) {
     var $BI_txtNomProducto = $('#BI_txtNomProducto');
     var $BI_cmbTipoMedida = $('#BI_cmbTipoMedida');
     var $BI_cmbMarca = $('#BI_cmbMarca');
+    var $BI_cmbDepartamento = $("#BI_cmbDepartamento");
+    var $BI_cmbProvincia = $("#BI_cmbProvincia");
+    var $BI_cmbDistrito = $("#BI_cmbDistrito");
 
     var $btnBuscarItems = $('#btnBuscarItems');
     var $tblItems = $('#tblItems');

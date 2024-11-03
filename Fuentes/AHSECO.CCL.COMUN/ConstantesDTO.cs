@@ -28,6 +28,15 @@ namespace AHSECO.CCL.COMUN
 
         public static string AplicacionExterna = "Aplicación Externa";
 
+        public struct Mensajes
+        {
+            public struct CotizacionDetalle
+            {
+                public static string M1 = "Detalle de {0}";
+                public static string M2 = "Detalle de Registro";
+            }
+        }
+
         public struct Procesos
         {
             public struct Ventas
@@ -72,6 +81,27 @@ namespace AHSECO.CCL.COMUN
             {
                 public static string Producto { get { return "PRO"; } }
                 public static string Accesorio { get { return "ACC"; } }
+            }
+        }
+
+        public struct CotizacionDespacho
+        {
+            public struct CicloPreventivo
+            {
+                public static string Diario { get { return "CIPR0001"; } }
+                public static string Semanal { get { return "CIPR0002"; } }
+                public static string Quincenal { get { return "CIPR0003"; } }
+                public static string Mensual { get { return "CIPR0004"; } }
+                public static string Bimestral { get { return "CIPR0005"; } }
+                public static string Trimestral { get { return "CIPR0006"; } }
+                public static string Cuatrimestral { get { return "CIPR0007"; } }
+                public static string Quimestral { get { return "CIPR0008"; } }
+                public static string Semestral { get { return "CIPR0009"; } }
+                public static string Septimenstral { get { return "CIPR0010"; } }
+                public static string Octamestral { get { return "CIPR0011"; } }
+                public static string Novamestral { get { return "CIPR0012"; } }
+                public static string Decamestral { get { return "CIPR0013"; } }
+                public static string Anual { get { return "CIPR0014"; } }
             }
         }
 
