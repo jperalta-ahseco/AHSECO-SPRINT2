@@ -428,7 +428,7 @@
             NumReq: numReq,
             CodEstado: codEstado,
             TipoProceso: "U",
-            Id_WokFlow: idWorkFlow
+            Id_WorkFlow: idWorkFlow
         };
 
         var objParam = JSON.stringify(objEditar);
@@ -447,14 +447,14 @@
     function ver(numReq, codEstado, idWorkFlow) {
         var method = "POST";
         var url = "BandejaInstalacionTecnica/SetVariablesGenerales";
-        var objEditar = {
+        var objVer = {
             NumReq: numReq,
             CodEstado: codEstado,
-            Id_WokFlow: idWorkFlow,
-            TipoProceso: "U"
+            Id_WorkFlow: idWorkFlow,
+            TipoProceso: "V"
         };
 
-        var objParam = JSON.stringify(objEditar);
+        var objParam = JSON.stringify(objVer);
         var fnDoneCallBack = function () {
             app.redirectTo("BandejaInstalacionTecnica/RegistroInstallTec");
         };
@@ -519,7 +519,7 @@
             {
                 data: "FechaMax",
                 render : function (data, type, row) {
-                    return '<center>' + app.obtenerFecha(data)+ '</center>'
+                    return '<center>' + data + '</center>'
                 }
             },
             {

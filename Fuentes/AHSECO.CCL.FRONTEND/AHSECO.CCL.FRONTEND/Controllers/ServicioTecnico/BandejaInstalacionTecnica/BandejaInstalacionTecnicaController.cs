@@ -20,7 +20,8 @@ using NPOI.HSSF.UserModel;
 using NPOI.HSSF.Util;
 using NPOI.SS.UserModel;
 using System.IO;
-using CrystalDecisions.ReportAppServer.DataDefModel;
+using System.Web;
+using System.Configuration;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecnica
 {
@@ -77,7 +78,19 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
                 "Acciones"
             };
 
-            ViewBag.cabecera = cabeceraProductos1;
+            var tipoProceso = VariableSesion.getCadena("TipoProceso");
+
+            if (tipoProceso == "U")
+            {
+                ViewBag.cabecera = cabeceraProductos2;
+            }
+            else if (tipoProceso =="V")
+            {
+                ViewBag.cabecera = cabeceraProductos2;
+            }
+            else{
+                ViewBag.cabecera = cabeceraProductos1;
+            }
 
             return View();
         }
@@ -496,6 +509,24 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
             outStream.Close();
             Response.End();
 
+        }
+
+        public JsonResult ObtenerMainInstalacion(long NumReq, long IdWorkFlow)
+        {
+            var instalacionTecnicaBL = new InstalacionTecnicaBL();
+            var result = instalacionTecnicaBL.ObtenerMainInstalacion(NumReq, IdWorkFlow);
+            return Json(result);
+        }
+
+        public FileResult DescargarFile(string url, string nombreDoc)
+        {
+            string pao_files = ConfigurationManager.AppSettings.Get("temppFiles");
+            string ruta = pao_files + url;
+
+            var fileName = Path.GetFileName(url);
+            var contentType = MimeMapping.GetMimeMapping(fileName); //determina el tipo de documento que se envía. 
+
+            return File(ruta, contentType, nombreDoc);
         }
 
     }

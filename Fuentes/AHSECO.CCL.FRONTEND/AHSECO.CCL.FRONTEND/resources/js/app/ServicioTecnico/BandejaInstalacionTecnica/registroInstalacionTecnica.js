@@ -1,32 +1,41 @@
 ﻿var registroInstalacionTec = (function ($, win, doc) {
-    var $btnAgregarObservacion = $('#btnAgregarObservacion');
+    //Ids Hidden - Importante
     var $nombreusuario = $('#nombreusuario');
     var $numeroReq = $('#numeroReq');
     var $perfilnombre = $('#perfilnombre');
     var $codigoWorkflow = $('#codigoWorkflow');
     var $estadoReq = $('#estadoReq');
+    var $tipoproceso = $('#tipoproceso');
+    //Btns
+    var $btnAgregarObservacion = $('#btnAgregarObservacion');
     var $btnRegresar = $('#btnRegresar');
-    var $lblUsuarioCreacionObservacion = $('#lblUsuarioCreacionObservacion');
-    var $lblFechaCreacionObservacion = $('#lblFechaCreacionObservacion');
     var $btnRegistrarReq = $('#btnRegistrarReq');
-    var $txtSolVenta = $('#txtSolVenta');
+    //TxT
     var $txtEmpresa = $('#txtEmpresa');
-    var $txtTipVenta = $('#txtTipVenta');
+    var $txtSolVenta = $('#txtSolVenta');
     var $txtRuc = $('#txtRuc');
+    var $txtTipVenta = $('#txtTipVenta');
     var $txtNomEmpresa = $('#txtNomEmpresa');
     var $txtUbigeo = $('#txtUbigeo');
     var $txtAsesor = $('#txtAsesor');
-    var $cmbDestino = $('#cmbDestino');
-    var $dateSolicitud = $('#dateSolicitud');
-    var $openRegdateSolicitud = $('#openRegdateSolicitud');
-    var $tblMainProducts = $('#tblMainProducts');   
-    var $hdnIdProduct = $('#hdnIdProduct');
     var $txtOrdCompra = $('#txtOrdCompra');
     var $txtProceso = $('#txtProceso');
     var $txtContrato = $('#txtContrato');
     var $txtFianza = $('#txtFianza');
+    //Labels
+    var $lblUsuarioCreacionObservacion = $('#lblUsuarioCreacionObservacion');
+    var $lblFechaCreacionObservacion = $('#lblFechaCreacionObservacion');
+
+    //HiddenIds
+    var $hdnIdProduct = $('#hdnIdProduct');
     var $hdnCodEmpresa = $('#hdnCodEmpresa');
     var $hdnCodTipVenta = $('#hdnCodTipVenta');
+
+    //Combos
+    var $cmbDestino = $('#cmbDestino');
+    var $dateSolicitud = $('#dateSolicitud');
+    var $openRegdateSolicitud = $('#openRegdateSolicitud');
+    var $tblMainProducts = $('#tblMainProducts');   
 
 
     var $searchSolVenta = $('#searchSolVenta'); 
@@ -117,6 +126,7 @@
         $btnBuscarSolicitud.click(BuscarSolicitudes);
         $searchSolVenta.click(BuscarSolicitudes);
         $agregarTecnico.click(AgregarTecnicoExterno);
+        cargarDatos();
         $dateSolicitud.val(hoy());
         CargarTipoDocumento(4); //Cambiar a tipo de proceso Instalación Técnica.
     };
@@ -291,16 +301,16 @@
         app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null)
     };
 
-    function cargarCabecera(solicitud) {
-        $hdnCodEmpresa.val(solicitud.Cod_Empresa);
-        $txtSolVenta.val(solicitud.Id_Solicitud);
-        $txtEmpresa.val(solicitud.Nom_Empresa);
-        $txtTipVenta.val(solicitud.nomFlujo);
-        $hdnCodTipVenta.val(solicitud.Id_Flujo);
-        $txtRuc.val(solicitud.RUC);
-        $txtNomEmpresa.val(solicitud.RazonSocial);
-        $txtUbigeo.val(solicitud.Ubigeo);
-        $txtAsesor.val(solicitud.AsesorVenta);
+    function cargarCabecera(requerimiento) {
+        $hdnCodEmpresa.val(requerimiento.Cod_Empresa);
+        $txtSolVenta.val(requerimiento.Id_Solicitud);
+        $txtEmpresa.val(requerimiento.Nom_Empresa);
+        $txtTipVenta.val(requerimiento.nomFlujo);
+        $hdnCodTipVenta.val(requerimiento.Id_Flujo);
+        $txtRuc.val(requerimiento.RUC);
+        $txtNomEmpresa.val(requerimiento.RazonSocial);
+        $txtUbigeo.val(requerimiento.Ubigeo);
+        $txtAsesor.val(requerimiento.AsesorVenta);
     };
 
     function ObtenerDepartamentos() {
@@ -362,71 +372,166 @@
     };
 
     function cargarBandejaProductos(detalleProductos) {
+
         var data = {}
         data.Result = [];
         data.Result = detalleProductos;
-        var columns = [
-            {
-                data: "Id",
-                render: function (data, type, row) {
-                    return '<center>' + data + '</center>'
+
+        if ($tipoproceso.val() == "") {
+            var columns = [
+                {
+                    data: "Id",
+                    render: function (data, type, row) {
+                        return '<center>' + data + '</center>'
+                    }
+                },
+                {
+                    data: "Descripcion",
+                    render: function (data, type, row) {
+                        return '<center>' + data + '</center>'
+                    }
+                },
+                {
+                    data: "Marca",
+                    render: function (data, type, row) {
+                        return '<center>' + data + '</center>'
+                    }
+                },
+                {
+                    data: "Modelo",
+                    render: function (data, type, row) {
+                        return '<center>' + "Modelo" + '</center>'
+                    }
+                },
+                {
+                    data: "Serie",
+                    render: function (data, type, row) {
+                        return '<center>' + "Serie" + '</center>'
+                    }
+                },
+                {
+                    data: "Cantidad",
+                    render: function (data, type, row) {
+                        return '<center>' + data + '</center>'
+                    }
+                },
+                {
+                    data: "CantidadPrev",
+                    render: function (data, type, row) {
+                        return '<center>' + "CantidadPrev" + '</center>'
+                    }
+                },
+                {
+                    data: "Periodicidad",
+                    render: function (data, type, row) {
+                        return '<center>' + "Periodicidad" + '</center>'
+                    }
+                },
+                {
+                    data: "Garantia",
+                    render: function (data, type, row) {
+                        return '<center>' + "Garantia" + '</center>'
+                    }
+                },
+                {
+                    data: "NumFianza",
+                    render: function (data, type, row) {
+                        return '<center>' + "NumFianza" + '</center>'
+                    }
                 }
-            },
-            {
-                data: "Descripcion",
-                render: function (data, type, row) {
-                    return '<center>' + data + '</center>'
-                }   
-            },
-            {
-                data: "Marca",
-                render: function (data, type, row) {
-                    return '<center>' + data + '</center>'
+            ];
+        }
+        else { 
+            var columns = [
+                {
+                    data: "Id",
+                    render: function (data, type, row) {
+                        return '<center>' + data + '</center>'
+                    }
+                },
+                {
+                    data: "Descripcion",
+                    render: function (data, type, row) {
+                        return '<center>' + data + '</center>'
+                    }
+                },
+                {
+                    data: "Marca",
+                    render: function (data, type, row) {
+                        return '<center>' + data + '</center>'
+                    }
+                },
+                {
+                    data: "Modelo",
+                    render: function (data, type, row) {
+                        return '<center>' + "Modelo" + '</center>'
+                    }
+                },
+                {
+                    data: "Serie",
+                    render: function (data, type, row) {
+                        return '<center>' + "Serie" + '</center>'
+                    }
+                },
+                {
+                    data: "Cantidad",
+                    render: function (data, type, row) {
+                        return '<center>' + data + '</center>'
+                    }
+                },
+                {
+                    data: "CantidadPrev",
+                    render: function (data, type, row) {
+                        return '<center>' + "CantidadPrev" + '</center>'
+                    }
+                },
+                {
+                    data: "Periodicidad",
+                    render: function (data, type, row) {
+                        return '<center>' + "Periodicidad" + '</center>'
+                    }
+                },
+                {
+                    data: "Garantia",
+                    render: function (data, type, row) {
+                        return '<center>' + "Garantia" + '</center>'
+                    }
+                },
+                {
+                    data: "NumFianza",
+                    render: function (data, type, row) {
+                        return '<center>' + "NumFianza" + '</center>'
+                    }
+                },
+                {
+                    data: "FechaProgramacion",
+                    render: function (data, type, row) {
+                        if (data == "" || data == null || data == undefined) {
+                            return '<center>' + '<input id="txtFechaProgramacion" type="text" />' + '</center>';
+                        } else {
+                            return '<center>' + data + '</center>';
+                        }
+                    }
+                },
+                {
+                    data: "FechaReal",
+                    render: function (data, type, row) {
+                        if (data == "" || data == null || data == undefined) {
+                            return '<center>' + '<input id="txtFechaReal" type="text" />' + '</center>';
+                        } else {
+                            return '<center>' + data + '</center>';
+                        }
+                    }
+                },
+                {
+                    data: "Id",
+                    render: function (data, type, row) {
+                        var addTecnico = '<a >';
+                        return '<center>' + addTecnico + '</center>'
+                    }
                 }
-            },
-            {
-                data: "Modelo",
-                render: function (data, type, row) {
-                    return '<center>' + "Modelo" + '</center>'
-                }
-            },
-            {
-                data: "Serie",
-                render: function (data, type, row) {
-                    return '<center>' + "Serie" + '</center>'
-                }
-            },
-            {
-                data: "Cantidad",
-                render: function (data, type, row) {
-                    return '<center>' + data + '</center>'
-                }
-            },
-            {
-                data: "CantidadPrev",
-                render: function (data, type, row) {
-                    return '<center>' + "CantidadPrev" + '</center>'
-                }
-            },
-            {
-                data: "Periodicidad",
-                render: function (data, type, row) {
-                    return '<center>' + "Periodicidad" + '</center>'
-                }
-            },
-            {
-                data: "Garantia",
-                render: function (data, type, row) {
-                    return '<center>' + "Garantia" + '</center>'
-                }
-            },
-            {
-                data: "NumFianza",
-                render: function (data, type, row) {
-                    return '<center>' + "NumFianza" + '</center>'
-                }
-            }
-        ];
+            ];
+        }
 
         var columnDefs = [
             {
@@ -546,7 +651,7 @@
                 if ($numeroSolicitud.val() != "") {
 
                     var method = "POST";
-                    var url = "BandejaSolicitudesVentas/GuardarAdjunto";
+                    var url = "BandejaInstalacionTecnica/GuardarAdjunto";
                     var obj = {
                         Accion: "I",
                         CodigoDocumento: 0,
@@ -762,10 +867,10 @@
     };
 
     function eliminarDocumento(idDocumento) {
-        if ($numeroSolicitud.val() != "") {
+        if ($numeroReq.val() != "") {
             var fnSi = function () {
                 var method = "POST";
-                var url = "BandejaSolicitudesVentas/EliminarAdjunto";
+                var url = "BandejaInstalacionTecnica/EliminarAdjunto";
                 var obj = {
                     Accion: "D",
                     CodigoDocumento: idDocumento,
@@ -809,7 +914,7 @@
 
         var nombre = documento.NombreDocumento;
 
-        app.abrirVentana("BandejaSolicitudesVentas/DescargarFile?url=" + ruta + "&nombreDoc=" + nombre);
+        app.abrirVentana("BandejaInstalacionTecnica/DescargarFile?url=" + ruta + "&nombreDoc=" + nombre);
     }
 
     function cargarTablaSolicitudes(data) {
@@ -886,6 +991,85 @@
         app.llenarTabla($tblSolicitudes, data, columns, columnDefs, "#tblSolicitudes", null);
     };
 
+    function cargarDatos() {
+        if ($numeroReq.val() != "") {
+            var method = "POST";
+            var url = "BandejaInstalacionTecnica/ObtenerMainInstalacion"
+            objRq = {
+                NumReq: $numeroReq.val(),
+                IdWorkFlow:$codigoWorkflow.val()
+            };
+            var objParam = JSON.stringify(objRq);
+
+            var fnDoneCallBack = function (data) {
+                console.log(data);
+                cargarCabecera(data.Result.CabeceraInstalacion);
+                cargarBandejaProductos(data.Result.DetalleInstalacion);
+
+                registroInstalacionTec.contadorObservaciones = data.Result.Observaciones.length;
+                registroInstalacionTec.observaciones = data.Result.Observaciones;
+                if (registroInstalacionTec.contadorObservaciones > 0) {
+                    for (var i = 0; i < data.Result.Observaciones.length; i++) {
+                        var nuevoTr = "<tr id='row" + data.Result.Observaciones[i].Id + "'>" +
+                            "<th style='text-align: center;'>" + data.Result.Observaciones[i].Nombre_Usuario + "</th>" +
+                            "<th style='text-align: center;'>" + data.Result.Observaciones[i].Perfil_Usuario + "</th>" +
+                            "<th style='text-align: center;'>" + data.Result.Observaciones[i].Fecha_Registro + "</th>" +
+                            "<th style='text-align: center;'>" + data.Result.Observaciones[i].Observacion + "</th>" +
+                            "<th style='text-align: center;'>" + " " + "</th>" + //Controlar la modificación de observaciones por el usuario que haya registrado dicha solicitud. 
+                            "</tr>";
+                        $tblObservaciones.append(nuevoTr);
+                    }
+                    $NoExisteRegObs.hide();
+                }
+
+                var seguimiento = data.Result.Seguimiento.length;
+                if (seguimiento > 0) {
+                    for (i = 0; i < data.Result.Seguimiento.length; i++) {
+
+                        var nuevoTr = "<tr>" +
+                            "<th style='text-align: center;'>" + data.Result.Seguimiento[i].DescripcionEstado + "</th>" +
+                            "<th style='text-align: center;'>" + data.Result.Seguimiento[i].Cargo + "</th>" +
+                            "<th style='text-align: center;'>" + data.Result.Seguimiento[i].NombreUsuarioRegistro + "</th>" +
+                            "<th style='text-align: center;'>" + data.Result.Seguimiento[i].FechaRegistro + "</th>" +
+                            "<th style='text-align: center;'>" + data.Result.Seguimiento[i].HoraRegistro + "</th>" +
+                            "</tr>";
+                        $tblSeguimiento.append(nuevoTr);
+                    }
+                    $NoExisteRegSeg.hide();
+                }
+
+                var docs = data.Result.Adjuntos.length;
+                adjuntos = data.Result.Adjuntos;
+                $contadordoc.val(docs);
+                if (docs > 0) {
+                    for (i = 0; i < data.Result.Adjuntos.length; i++) {
+                        var html = '<div class="text-center">';
+                        //var d = "'" + data.Result.Adjuntos[i].CodigoDocumento + "','" + data.Result.Adjuntos[i].RutaDocumento + "'";
+                        html += ' <a class="btn btn-default btn-xs" title="Descargar"  href="javascript:registroInstalacionTec.download(' + data.Result.Adjuntos[i].CodigoDocumento + ')"><i class="fa fa-download" aria-hidden="true"></i></a>&nbsp;';
+                        html += ' <a class="btn btn-default btn-xs" title="Eliminar"  href="javascript:registroInstalacionTec.eliminarDocumento(' + data.Result.Adjuntos[i].CodigoDocumento + ')"><i class="fa fa-ban" aria-hidden="true"></i></a>&nbsp;';
+
+                        html += '</div>';
+
+                        var nuevoTr = "<tr id='row" + data.Result.Adjuntos[i].CodigoDocumento + "'>" +
+                            "<th>" + data.Result.Adjuntos[i].NombreTipoDocumento + "</th>" +
+                            "<th>" + data.Result.Adjuntos[i].NombreDocumento + "</th>" +
+                            "<th>" + data.Result.Adjuntos[i].NombreUsuario + "</th>" +
+                            "<th>" + data.Result.Adjuntos[i].NombrePerfil + "</th>" +
+                            "<th>" + data.Result.Adjuntos[i].FechaRegistroFormat + "</th>" +
+                            "<th>" + html + "</th>" +
+                            "</tr>";
+                        $tblDocumentosCargados.append(nuevoTr);
+                    }
+                    $NoExisteRegDoc.hide();
+                }
+            };
+            var fnFailCallBack = function () {
+                app.message.error("Validación", "Hubo un error en obtener el detalle de la instalación técnica.")
+            };
+
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+        }
+    }
 
     return {
         //visualizar: visualizar,

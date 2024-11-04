@@ -13,6 +13,9 @@ using AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica;
 using Microsoft.Extensions.DependencyInjection;
 using System.Runtime.CompilerServices;
 using System.Net.Http.Headers;
+using System.Security.Permissions;
+using System.Diagnostics.Contracts;
+using static AHSECO.CCL.COMUN.ConstantesDTO.CotizacionVenta;
 
 namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
 {
@@ -133,13 +136,14 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                     {
                         NumReq = i.Single(d => d.Key.Equals("NUMREQ")).Value.Parse<long>(),
                         Id_Solicitud = i.Single(d => d.Key.Equals("ID_SOLICITUD")).Value.Parse<long>(),
+                        Id_WorkFlow = i.Single(d => d.Key.Equals("ID_WORKFLOW")).Value.Parse<long>(),
                         RucEmpresa = i.Single(d => d.Key.Equals("RUCEMPRESA")).Value.Parse<string>(),
                         NomEmpresa = i.Single(d => d.Key.Equals("NOMEMPRESA")).Value.Parse<string>(),
                         Ubicacion = i.Single(d => d.Key.Equals("UBICACION")).Value.Parse<string>(),
                         TipoVenta = i.Single(d => d.Key.Equals("TIPOVENTA")).Value.Parse<string>(),
                         Vendedor = i.Single(d => d.Key.Equals("VENDEDOR")).Value.Parse<string>(),
                         CodEmpresa = i.Single(d => d.Key.Equals("CODEMPRESA")).Value.Parse<string>(),
-                        FechaMax = i.Single(d => d.Key.Equals("FECHAMAX")).Value.Parse<DateTime>(),
+                        FechaMax = i.Single(d => d.Key.Equals("FECHAMAX")).Value.Parse<string>(),
                         Destino = i.Single(d => d.Key.Equals("DESTINO")).Value.Parse<string>(),
                         Estado = i.Single(d => d.Key.Equals("ESTADO")).Value.Parse<string>(),
                         CodEstado = i.Single(d => d.Key.Equals("CODESTADO")).Value.Parse<string>()
@@ -392,6 +396,114 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                 }
                 return result;
             }
+        }
+
+        public GrupoInstalacionTecnicaDTO ObtenerMainInstalacion(long NumReq, long IdWorkFlow)
+        {
+            var result = new GrupoInstalacionTecnicaDTO();
+            using (var connection = Factory.ConnectionSingle())
+            {
+                SqlCommand sqlcommand;
+                string query = "EXEC USP_SEL_MAIN_INSTALL_TEC @isNumReq=" + NumReq.ToString() + ", @isIdWorkFlow="+ IdWorkFlow.ToString();
+                connection.Open();
+                sqlcommand = new SqlCommand(query, connection);
+
+                using (var reader = sqlcommand.ExecuteReader())
+                {
+                    reader.Read();
+                    InstalacionTecnicaDTO instalacion = new InstalacionTecnicaDTO
+                    {
+                        Id_Solicitud = reader.IsDBNull(reader.GetOrdinal("ID_SOLICITUD")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_SOLICITUD"))
+                        ,RucEmpresa = reader.IsDBNull(reader.GetOrdinal("RUCEMPRESA")) ? "" : reader.GetString(reader.GetOrdinal("RUCEMPRESA"))
+                        ,NomEmpresa = reader.IsDBNull(reader.GetOrdinal("NOMEMPRESA")) ? "" : reader.GetString(reader.GetOrdinal("NOMEMPRESA"))
+                        ,Ubicacion = reader.IsDBNull(reader.GetOrdinal("UBICACION")) ? "" : reader.GetString(reader.GetOrdinal("UBICACION"))
+                        ,NombreContacto = reader.IsDBNull(reader.GetOrdinal("NOMBRECONTACTO")) ? "" : reader.GetString(reader.GetOrdinal("NOMBRECONTACTO"))
+                        ,TelefonoContacto = reader.IsDBNull(reader.GetOrdinal("TELEFONOCONTACTO")) ? "" : reader.GetString(reader.GetOrdinal("TELEFONOCONTACTO"))
+                        ,CargoContacto = reader.IsDBNull(reader.GetOrdinal("CARGOCONTACTO")) ? "" : reader.GetString(reader.GetOrdinal("CARGOCONTACTO"))
+                        ,Establecimiento = reader.IsDBNull(reader.GetOrdinal("ESTABLECIMIENTO")) ? "" : reader.GetString(reader.GetOrdinal("ESTABLECIMIENTO"))
+                        ,TipoVenta = reader.IsDBNull(reader.GetOrdinal("TIPOVENTA")) ? "" : reader.GetString(reader.GetOrdinal("TIPOVENTA"))
+                        ,OrdenCompra = reader.IsDBNull(reader.GetOrdinal("ORDENCOMPRA")) ? "" : reader.GetString(reader.GetOrdinal("ORDENCOMPRA"))
+                        ,NumProceso = reader.IsDBNull(reader.GetOrdinal("NUMPROCESO")) ? "" : reader.GetString(reader.GetOrdinal("NUMPROCESO"))
+                        ,Contrato = reader.IsDBNull(reader.GetOrdinal("CONTRATO")) ? "" : reader.GetString(reader.GetOrdinal("CONTRATO"))
+                        ,Vendedor = reader.IsDBNull(reader.GetOrdinal("VENDEDOR")) ? "" : reader.GetString(reader.GetOrdinal("VENDEDOR"))
+                        ,CodEmpresa = reader.IsDBNull(reader.GetOrdinal("CODEMPRESA")) ? "" : reader.GetString(reader.GetOrdinal("CODEMPRESA"))
+                        ,FechaMax = reader.IsDBNull(reader.GetOrdinal("FECHAMAX")) ? "" : reader.GetString(reader.GetOrdinal("FECHAMAX"))
+                        ,Destino = reader.IsDBNull(reader.GetOrdinal("DESTINO")) ? "" : reader.GetString(reader.GetOrdinal("DESTINO"))
+                        ,Estado = reader.IsDBNull(reader.GetOrdinal("ESTADO")) ? "" : reader.GetString(reader.GetOrdinal("ESTADO"))
+                    };
+
+                    reader.NextResult();
+                    List<InstalacionTecnicaDetalleDTO> _listDetalle = new List<InstalacionTecnicaDetalleDTO>(); 
+                    while (reader.Read()) 
+                    {
+                        var detalle = new InstalacionTecnicaDetalleDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("ID")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID"))
+                            ,NumReq = reader.IsDBNull(reader.GetOrdinal("NUMREQ")) ? 0 : reader.GetInt64(reader.GetOrdinal("NUMREQ"))
+                            ,CodProducto = reader.IsDBNull(reader.GetOrdinal("CODIGOPRODUCTO")) ? "" : reader.GetString(reader.GetOrdinal("CODIGOPRODUCTO"))
+                            ,DescProducto = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION"))
+                            ,Cantidad = reader.IsDBNull(reader.GetOrdinal("CANTIDAD")) ? 0 : reader.GetInt32(reader.GetOrdinal("CANTIDAD"))
+                            ,Marca = reader.IsDBNull(reader.GetOrdinal("MARCA")) ? "" : reader.GetString(reader.GetOrdinal("MARCA"))
+                            ,Modelo = reader.IsDBNull(reader.GetOrdinal("MODELO")) ? "" : reader.GetString(reader.GetOrdinal("MODELO"))
+                            ,Serie = reader.IsDBNull(reader.GetOrdinal("SERIE")) ? "" : reader.GetString(reader.GetOrdinal("SERIE"))
+                            ,NumFianza = reader.IsDBNull(reader.GetOrdinal("NUMFIANZA")) ? "" : reader.GetString(reader.GetOrdinal("NUMFIANZA"))
+                            ,CantidadMP = reader.IsDBNull(reader.GetOrdinal("CANTIDADMP")) ? 0 : reader.GetInt32(reader.GetOrdinal("CANTIDADMP"))
+                            ,Periodicidad = reader.IsDBNull(reader.GetOrdinal("PERIODICIDAD")) ? "" : reader.GetString(reader.GetOrdinal("PERIODICIDAD"))
+                            ,Garantia = reader.IsDBNull(reader.GetOrdinal("GARANTIA")) ? "" : reader.GetString(reader.GetOrdinal("GARANTIA"))
+                            ,FechaProgramacion = reader.IsDBNull(reader.GetOrdinal("FECHAPROGRAMACION")) ? "" : reader.GetString(reader.GetOrdinal("FECHAPROGRAMACION"))
+                            ,FechaReal = reader.IsDBNull(reader.GetOrdinal("FECHAREAL")) ? "" : reader.GetString(reader.GetOrdinal("FECHAREAL"))
+                        };
+                        _listDetalle.Add(detalle);
+                    }
+                    reader.NextResult();
+
+                    List<DocumentoDTO> _listaAdjuntos = new List<DocumentoDTO>();
+
+                    while (reader.Read())
+                    {
+                        var documento = new DocumentoDTO
+                        {
+                            CodigoDocumento = reader.IsDBNull(reader.GetOrdinal("COD_DOCUMENTO")) ? 0 : reader.GetInt64(reader.GetOrdinal("COD_DOCUMENTO")),
+                            CodigoWorkFlow = reader.IsDBNull(reader.GetOrdinal("ID_WORKFLOW")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_WORKFLOW")),
+                            CodigoTipoDocumento = reader.IsDBNull(reader.GetOrdinal("COD_TIPODOC")) ? "" : reader.GetString(reader.GetOrdinal("COD_TIPODOC")),
+                            NombreTipoDocumento = reader.IsDBNull(reader.GetOrdinal("NOMTIPODOC")) ? "" : reader.GetString(reader.GetOrdinal("NOMTIPODOC")),
+                            NombreDocumento = reader.IsDBNull(reader.GetOrdinal("NOM_DOCUMENTO")) ? "" : reader.GetString(reader.GetOrdinal("NOM_DOCUMENTO")),
+                            VerDocumento = reader.IsDBNull(reader.GetOrdinal("VER_DOCUMENTO")) ? false : reader.GetBoolean(reader.GetOrdinal("VER_DOCUMENTO")),
+                            RutaDocumento = reader.IsDBNull(reader.GetOrdinal("RUTA_DOCUMENTO")) ? "" : reader.GetString(reader.GetOrdinal("RUTA_DOCUMENTO")),
+                            NombreUsuario = reader.IsDBNull(reader.GetOrdinal("NOMBRE_USUARIO")) ? "" : reader.GetString(reader.GetOrdinal("NOMBRE_USUARIO")),
+                            NombrePerfil = reader.IsDBNull(reader.GetOrdinal("PERFIL")) ? "" : reader.GetString(reader.GetOrdinal("PERFIL")),
+                            Eliminado = reader.IsDBNull(reader.GetOrdinal("ELIMINADO")) ? 0 : reader.GetInt32(reader.GetOrdinal("ELIMINADO")),
+                            UsuarioRegistra = reader.IsDBNull(reader.GetOrdinal("USR_REG")) ? "" : reader.GetString(reader.GetOrdinal("USR_REG")),
+                            FechaRegistroFormat = reader.IsDBNull(reader.GetOrdinal("FEC_REG")) ? "" : reader.GetString(reader.GetOrdinal("FEC_REG")),
+                        };
+                        _listaAdjuntos.Add(documento);
+                    };
+
+                    reader.NextResult();
+                    List<ObservacionDTO> _listaObservaciones = new List<ObservacionDTO>();
+                    while (reader.Read())
+                    {
+                        var observacion = new ObservacionDTO
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("ID_OBSERVACION")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_OBSERVACION")),
+                            Id_WorkFlow = reader.IsDBNull(reader.GetOrdinal("ID_WORKFLOW")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_WORKFLOW")),
+                            Estado_Instancia = reader.IsDBNull(reader.GetOrdinal("ESTADO_INSTANCIA")) ? "" : reader.GetString(reader.GetOrdinal("ESTADO_INSTANCIA")),
+                            Observacion = reader.IsDBNull(reader.GetOrdinal("OBSERVACION")) ? "" : reader.GetString(reader.GetOrdinal("OBSERVACION")),
+                            Nombre_Usuario = reader.IsDBNull(reader.GetOrdinal("NOMBRE_USUARIO")) ? "" : reader.GetString(reader.GetOrdinal("NOMBRE_USUARIO")),
+                            Perfil_Usuario = reader.IsDBNull(reader.GetOrdinal("PERFIL_USUARIO")) ? "" : reader.GetString(reader.GetOrdinal("PERFIL_USUARIO")),
+                            UsuarioRegistra = reader.IsDBNull(reader.GetOrdinal("USR_REG")) ? "" : reader.GetString(reader.GetOrdinal("USR_REG")),
+                            Fecha_Registro = reader.IsDBNull(reader.GetOrdinal("FEC_REG")) ? "" : reader.GetString(reader.GetOrdinal("FEC_REG"))
+                        };
+                        _listaObservaciones.Add(observacion);
+                    };
+
+                    result.CabeceraInstalacion = instalacion;
+                    result.DetalleInstalacion = _listDetalle;
+                    result.Observaciones = _listaObservaciones;
+                    result.Adjuntos = _listaAdjuntos;
+                }
+            }
+            return result;
         }
     }
 }
