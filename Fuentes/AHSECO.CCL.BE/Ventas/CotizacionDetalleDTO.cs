@@ -31,7 +31,7 @@ namespace AHSECO.CCL.BE.Ventas
         public string Direccion { get; set; }
         public string Dimension { get; set; }
         public int CantidadPreventivo { get; set; }
-        public string CicloPreventivo { get; set; }
+        public string CodCicloPreventivo { get; set; }
         public bool Manuales { get; set; }
         public bool Videos { get; set; }
         public bool InstCapa { get; set; }

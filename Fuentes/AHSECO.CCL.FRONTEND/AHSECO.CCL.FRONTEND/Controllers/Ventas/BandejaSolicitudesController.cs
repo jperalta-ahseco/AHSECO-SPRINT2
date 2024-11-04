@@ -32,6 +32,7 @@ using AHSECO.CCL.BL.Consulta;
 using NPOI.OpenXmlFormats.Spreadsheet;
 using System.Web.UI.WebControls;
 using static AHSECO.CCL.COMUN.ConstantesDTO.CotizacionVentaDetalle;
+using AHSECO.CCL.BL.Util;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 {
@@ -784,12 +785,31 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             try
             {
                 var ventaBL = new VentasBL();
-                var respArt = ventaBL.ObtenerArticulosxFiltro(new FiltroArticuloDTO { CodsArticulo = CodItem });
-                var oArticulo = respArt.Result.First();
+                var ubigeoBL = new UbigeoBL();
 
                 CotizacionDetalleDTO itemCotDet = new CotizacionDetalleDTO();
-                itemCotDet.CodItem = oArticulo.CodArticulo;
-                itemCotDet.Descripcion = oArticulo.DescArticulo;
+
+                List<CotizacionDetalleDTO> lstItems = new List<CotizacionDetalleDTO>();
+                if (VariableSesion.getObject(TAG_CotDetItems) != null) { lstItems = (List<CotizacionDetalleDTO>)VariableSesion.getObject(TAG_CotDetItems); }
+
+                if (lstItems.Any(x => x.CodItem == CodItem))
+                {
+                    itemCotDet = lstItems.FirstOrDefault(x => x.CodItem == CodItem);
+                }
+                else
+                {
+                    var respArt = ventaBL.ObtenerArticulosxFiltro(new FiltroArticuloDTO { CodsArticulo = CodItem });
+                    var oArticulo = respArt.Result.First();
+                    itemCotDet.CodItem = oArticulo.CodArticulo;
+                    itemCotDet.Descripcion = oArticulo.DescRealArticulo;
+                }
+
+                if (string.IsNullOrEmpty(itemCotDet.CodUbigeoDestino))
+                {
+                    var rptaUbigeos = ubigeoBL.Obtener(new UbigeoDTO() { UbigeoId = itemCotDet.CodUbigeoDestino });
+                    var oUbigeoDestino = rptaUbigeos.Result.FirstOrDefault();
+                    itemCotDet.DescUbigeoDestino = oUbigeoDestino.NombreDepartamento + " / " + oUbigeoDestino.NombreProvincia + " / " + oUbigeoDestino.NombreDistrito;
+                }
 
                 return Json(new ResponseDTO<CotizacionDetalleDTO>(itemCotDet));
             }
@@ -851,12 +871,31 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             try
             {
                 var ventaBL = new VentasBL();
-                var respArt = ventaBL.ObtenerArticulosxFiltro(new FiltroArticuloDTO { CodsArticulo = CodItem });
-                var oArticulo = respArt.Result.First();
+                var ubigeoBL = new UbigeoBL();
 
                 CotizacionDetalleDTO itemCotDet = new CotizacionDetalleDTO();
-                itemCotDet.CodItem = oArticulo.CodArticulo;
-                itemCotDet.Descripcion = oArticulo.DescArticulo;
+
+                List<CotizacionDetalleDTO> lstItems = new List<CotizacionDetalleDTO>();
+                if (VariableSesion.getObject(TAG_CotDetItems) != null) { lstItems = (List<CotizacionDetalleDTO>)VariableSesion.getObject(TAG_CotDetItems); }
+
+                if (lstItems.Any(x => x.CodItem == CodItem))
+                {
+                    itemCotDet = lstItems.FirstOrDefault(x => x.CodItem == CodItem);
+                }
+                else
+                {
+                    var respArt = ventaBL.ObtenerArticulosxFiltro(new FiltroArticuloDTO { CodsArticulo = CodItem });
+                    var oArticulo = respArt.Result.First();
+                    itemCotDet.CodItem = oArticulo.CodArticulo;
+                    itemCotDet.Descripcion = oArticulo.DescRealArticulo;
+                }
+
+                if (string.IsNullOrEmpty(itemCotDet.CodUbigeoDestino))
+                {
+                    var rptaUbigeos = ubigeoBL.Obtener(new UbigeoDTO() { UbigeoId = itemCotDet.CodUbigeoDestino });
+                    var oUbigeoDestino = rptaUbigeos.Result.FirstOrDefault();
+                    itemCotDet.DescUbigeoDestino = oUbigeoDestino.NombreDepartamento + " / " + oUbigeoDestino.NombreProvincia + " / " + oUbigeoDestino.NombreDistrito;
+                }
 
                 return Json(new ResponseDTO<CotizacionDetalleDTO>(itemCotDet));
             }
@@ -889,20 +928,40 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 CotizacionDetalleDTO oItem = null;
                 if (string.IsNullOrEmpty(CodItemPadre))
                 {
-                    oItem = lstItems.FirstOrDefault(x => x.CodItem == CotDet.CodItem && x.EsItemPadre == true);
+                    oItem = lstItems.FirstOrDefault(x => x.CodItem.Trim() == CotDet.CodItem.Trim() && x.EsItemPadre == true);
                 }
                 else
                 {
-                    var oItemPadre = lstItems.FirstOrDefault(x => x.CodItem == CodItemPadre && x.EsItemPadre == true);
+                    var oItemPadre = lstItems.FirstOrDefault(x => x.CodItem.Trim() == CodItemPadre.Trim() && x.EsItemPadre == true);
                     oItem = lstItems.FirstOrDefault(x => x.NroItem == oItemPadre.NroItem && x.CodItem == CotDet.CodItem);
                 }
 
                 lstItems.ForEach(x =>
                 { 
-                    if(x.NroItem == oItem.NroItem && x.CodItem == oItem.CodItem) {
+                    if(x.NroItem == oItem.NroItem && x.CodItem.Trim() == oItem.CodItem.Trim()) {
+                        x.Id = x.NroItem * -1;
                         x.Cantidad = CotDet.Cantidad;
-                        x.CodUbigeoDestino = CotDet.CodUbigeoDestino;
-                        x.DescUbigeoDestino = CotDet.DescUbigeoDestino;
+                        x.CostoFOB = CotDet.CostoFOB;
+                        x.VentaUnitaria = CotDet.VentaUnitaria;
+                        x.LLaveEnMano = CotDet.LLaveEnMano;
+                        int nUbigeo;
+                        if (!string.IsNullOrEmpty(CotDet.CodUbigeoDestino) && int.TryParse(CotDet.CodUbigeoDestino, out nUbigeo))
+                        {
+                            if (nUbigeo > 0)
+                            {
+                                x.CodUbigeoDestino = CotDet.CodUbigeoDestino;
+                                x.DescUbigeoDestino = CotDet.DescUbigeoDestino;
+                            }
+                        }
+                        x.Direccion = CotDet.Direccion;
+                        x.NroPiso = CotDet.NroPiso;
+                        x.Dimension = CotDet.Dimension;
+                        x.CantidadPreventivo = CotDet.CantidadPreventivo;
+                        x.CodCicloPreventivo = CotDet.CodCicloPreventivo;
+                        x.Manuales = CotDet.Manuales;
+                        x.Videos = CotDet.Videos;
+                        x.InstCapa = CotDet.InstCapa;
+                        x.GarantiaAdic = CotDet.GarantiaAdic;
                     }
                 }
                 );
