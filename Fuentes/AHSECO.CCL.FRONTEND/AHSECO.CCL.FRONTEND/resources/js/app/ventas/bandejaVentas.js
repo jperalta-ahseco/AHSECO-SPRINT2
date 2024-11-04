@@ -146,15 +146,17 @@
             }
             
         }
-
+       
         objParam = JSON.stringify(objBuscar);
         var fnDoneCallBack = function (data) {
+
             cargarTabla(data);
         }
-
+  
         var fnFailCallBack = function () {
             app.message.error("Validación", "Ocurrió un error al cargar la bandeja de clientes.")
         }
+        
         app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, mensajes.cargandoClientes);
     }
 
@@ -182,8 +184,9 @@
     }
 
     function cargarTabla(data) {
+       
         if ($RolUsuario.val() == "SGI_VENTA_ASESOR" || $RolUsuario.val() == "SGI_VENTA_JEFE" ||
-            $RolUsuario.val() == "SGI_VENTA_COORDINAVENTA" || $RolUsuario.val() == "SGI_VENTA_GERENTE") {
+            $RolUsuario.val() == "SGI_VENTA_COORDINAVENTA") {
             var columns = [
                 { data: "ID" },
                 {
@@ -236,6 +239,7 @@
             ];
         }
         else {
+
             var columns = [
                 { data: "ID" },
                 {

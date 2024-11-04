@@ -34,7 +34,7 @@
                             <input placeholder="Nombre de Empresa" type="text" class="form-control input-sm" id="txtNomEmpresa" value="">
                         </div>
                     </div>
-                    @if (NombreRol == "SGI_VENTA_JEFE" || NombreRol == "SGI_VENTA_COORDINAVENTA" || NombreRol == "SGI_VENTA_GERENTE")
+                    @if (NombreRol == "SGI_VENTA_JEFE" || NombreRol == "SGI_VENTA_COORDINAVENTA")
                     {
                         <div class="col-md-4 col-sm-7 col-xs-12">
                             <label for="cmbAsesor">Asesor:</label>
@@ -63,7 +63,7 @@
                             <th style="text-align: center; width: 20%;">Departamento</th>
                             <th style="text-align: center; width: 20%;">Provincia</th>
                             <th style="text-align: center; width: 20%;">Distrito</th>
-                            @if (NombreRol == "SGI_VENTA_JEFE" || NombreRol == "SGI_VENTA_COORDINAVENTA" || NombreRol == "SGI_VENTA_GERENTE" || NombreRol == "SGI_VENTA_ASESOR")
+                            @if (NombreRol == "SGI_VENTA_JEFE" || NombreRol == "SGI_VENTA_COORDINAVENTA" || NombreRol == "SGI_VENTA_ASESOR")
                             {
                                 <th style="text-align: center; width: 20%;">Asesor</th>
                             }
