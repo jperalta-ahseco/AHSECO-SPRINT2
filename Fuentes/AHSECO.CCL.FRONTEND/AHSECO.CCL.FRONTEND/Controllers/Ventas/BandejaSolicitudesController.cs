@@ -37,6 +37,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 {
     public class BandejaSolicitudesVentasController : Controller
     {
+
+        const string TAG_CotDetItems = "CotDetItems";
+
         // GET BandejaSolicitudesVentas
         [Permissions(Permissions = "BANDEJAVENTAS")]
         public ActionResult Index()
@@ -103,8 +106,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.PermitirAgregarCotDet = false;
             ViewBag.PermitirNuevoCot = false;
             ViewBag.TitleDetItem = string.Empty;
-            VariableSesion.setObject("CotDetItems", new List<CotizacionDetalleDTO>());
-            VariableSesion.setObject("CotDetSubItems", new List<CotizacionDetalleDTO>());
+            VariableSesion.setObject(TAG_CotDetItems, new List<CotizacionDetalleDTO>());
 
             if (numSol != null)
             {
@@ -618,8 +620,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         [HttpPost]
         public JsonResult ObtenerArticulos(FiltroArticuloDTO filtro)
         {
-            var dgBL = new VentasBL();
-            var articulos = dgBL.ObtenerArticulosxFiltro(filtro);
+            var ventaBL = new VentasBL();
+            var articulos = ventaBL.ObtenerArticulosxFiltro(filtro);
             var ojson = Json(articulos);
             return ojson;
         }
@@ -642,6 +644,29 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         }
 
         [HttpPost]
+        public JsonResult ObtenerCiclosPreventivos()
+        {
+            var dgBL = new DatosGeneralesBL();
+            var lstDG = dgBL.Obtener(new DatosGeneralesDetalleDTO() { DatosGenerales = new DatosGeneralesDTO { Dominio = ConstantesDTO.DatosGenerales.Dominios.CicloPreventivo } });
+            var lstCP = new List<ComboDTO>();
+            foreach (DatosGeneralesDetalleDTO item in lstDG.Result)
+            {
+                if (item.Parametro == ConstantesDTO.DatosGenerales.CicloPreventivo.Mensual ||
+                    item.Parametro == ConstantesDTO.DatosGenerales.CicloPreventivo.Bimestral ||
+                    item.Parametro == ConstantesDTO.DatosGenerales.CicloPreventivo.Semestral ||
+                    item.Parametro == ConstantesDTO.DatosGenerales.CicloPreventivo.Anual)
+                {
+                    var param = new ComboDTO();
+                    param.Id = item.Parametro;
+                    param.Text = item.Descripcion;
+                    lstCP.Add(param);
+                }
+            }
+            var ojson = Json(new ResponseDTO<IEnumerable<ComboDTO>>(lstCP));
+            return ojson;
+        }
+
+        [HttpPost]
         public JsonResult AgregarItemCotDet(string CodItem)
         {
             try
@@ -650,7 +675,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 var respArt = ventaBL.ObtenerArticulosxFiltro(new FiltroArticuloDTO { CodsArticulo = CodItem });
 
                 List<CotizacionDetalleDTO> lstItems = new List<CotizacionDetalleDTO>();
-                if (VariableSesion.getObject("CotDetItems") != null) { lstItems = (List<CotizacionDetalleDTO>)VariableSesion.getObject("CotDetItems"); }
+                if (VariableSesion.getObject(TAG_CotDetItems) != null) { lstItems = (List<CotizacionDetalleDTO>)VariableSesion.getObject(TAG_CotDetItems); }
 
                 //Articulo Seleccionado
                 var oArticulo = new ArticuloDTO();
@@ -681,7 +706,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         CotizacionDetalleDTO item = select;
                         item.NroItem = itemPadre.NroItem;
                         lstItems.Add(item);
-                        VariableSesion.setObject("CotDetItems", lstItems);
+                        VariableSesion.setObject(TAG_CotDetItems, lstItems);
                     }
                 }
                 else
@@ -692,7 +717,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     { throw new Exception("Producto y/o Servicio ya fue selecionado"); }
                     lstItems.ForEach(x => x.Select = false);
                     lstItems.Add(select);
-                    VariableSesion.setObject("CotDetItems", lstItems);
+                    VariableSesion.setObject(TAG_CotDetItems, lstItems);
                 }
 
                 lstItems = ReconteoSubItemsCotDet(lstItems);
@@ -711,7 +736,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             try
             {
                 List<CotizacionDetalleDTO> lstItems = new List<CotizacionDetalleDTO>();
-                if (VariableSesion.getObject("CotDetItems") != null) { lstItems = (List<CotizacionDetalleDTO>)VariableSesion.getObject("CotDetItems"); }
+                if (VariableSesion.getObject(TAG_CotDetItems) != null) { lstItems = (List<CotizacionDetalleDTO>)VariableSesion.getObject(TAG_CotDetItems); }
 
                 foreach (CotizacionDetalleDTO item in lstItems)
                 {
@@ -721,7 +746,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     }
                 }
 
-                VariableSesion.setObject("CotDetItems", lstItems);
+                VariableSesion.setObject(TAG_CotDetItems, lstItems);
 
                 var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems);
 
@@ -736,7 +761,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             try
             {
                 List<CotizacionDetalleDTO> lstItems = new List<CotizacionDetalleDTO>();
-                if (VariableSesion.getObject("CotDetItems") != null) { lstItems = (List<CotizacionDetalleDTO>)VariableSesion.getObject("CotDetItems"); }
+                if (VariableSesion.getObject(TAG_CotDetItems) != null) { lstItems = (List<CotizacionDetalleDTO>)VariableSesion.getObject(TAG_CotDetItems); }
 
                 var itemArticulo = lstItems.FirstOrDefault(x => x.CodItem == CodItem);
                 if (itemArticulo.EsItemPadre)
@@ -744,7 +769,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 else
                 { lstItems = lstItems.Where(x => x.CodItem != CodItem).ToList(); }
 
-                VariableSesion.setObject("CotDetItems", lstItems);
+                VariableSesion.setObject(TAG_CotDetItems, lstItems);
 
                 var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems);
 
@@ -777,7 +802,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             try
             {
                 List<CotizacionDetalleDTO> lstItems = new List<CotizacionDetalleDTO>();
-                if (VariableSesion.getObject("CotDetItems") != null) { lstItems = (List<CotizacionDetalleDTO>)VariableSesion.getObject("CotDetItems"); }
+                if (VariableSesion.getObject(TAG_CotDetItems) != null) { lstItems = (List<CotizacionDetalleDTO>)VariableSesion.getObject(TAG_CotDetItems); }
 
                 List<CotizacionDetalleDTO> lstSubItems = new List<CotizacionDetalleDTO>();
 
@@ -804,14 +829,14 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             try
             {
                 List<CotizacionDetalleDTO> lstItems = new List<CotizacionDetalleDTO>();
-                if (VariableSesion.getObject("CotDetItems") != null) { lstItems = (List<CotizacionDetalleDTO>)VariableSesion.getObject("CotDetItems"); }
+                if (VariableSesion.getObject(TAG_CotDetItems) != null) { lstItems = (List<CotizacionDetalleDTO>)VariableSesion.getObject(TAG_CotDetItems); }
 
                 var itemPadre = lstItems.FirstOrDefault(x => x.CodItem == CodItemPadre);
                 if (itemPadre != null)
                 {
                     lstItems = lstItems.Where(x => x.NroItem == itemPadre.NroItem && x.CodItem != CodItem).ToList();
                     lstItems = ReconteoSubItemsCotDet(lstItems);
-                    VariableSesion.setObject("CotDetItems", lstItems);
+                    VariableSesion.setObject(TAG_CotDetItems, lstItems);
                 }
                 var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems);
 
@@ -851,6 +876,46 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 }
             }
             return lstItems;
+        }
+
+        [HttpPost]
+        public JsonResult GrabarDatosCotDetItem(string CodItemPadre, CotizacionDetalleDTO CotDet)
+        {
+            try
+            {
+                List<CotizacionDetalleDTO> lstItems = new List<CotizacionDetalleDTO>();
+                if (VariableSesion.getObject(TAG_CotDetItems) != null) { lstItems = (List<CotizacionDetalleDTO>)VariableSesion.getObject(TAG_CotDetItems); }
+
+                CotizacionDetalleDTO oItem = null;
+                if (string.IsNullOrEmpty(CodItemPadre))
+                {
+                    oItem = lstItems.FirstOrDefault(x => x.CodItem == CotDet.CodItem && x.EsItemPadre == true);
+                }
+                else
+                {
+                    var oItemPadre = lstItems.FirstOrDefault(x => x.CodItem == CodItemPadre && x.EsItemPadre == true);
+                    oItem = lstItems.FirstOrDefault(x => x.NroItem == oItemPadre.NroItem && x.CodItem == CotDet.CodItem);
+                }
+
+                lstItems.ForEach(x =>
+                { 
+                    if(x.NroItem == oItem.NroItem && x.CodItem == oItem.CodItem) {
+                        x.Cantidad = CotDet.Cantidad;
+                        x.CodUbigeoDestino = CotDet.CodUbigeoDestino;
+                        x.DescUbigeoDestino = CotDet.DescUbigeoDestino;
+                    }
+                }
+                );
+
+                lstItems = ReconteoSubItemsCotDet(lstItems);
+                VariableSesion.setObject(TAG_CotDetItems, lstItems);
+
+                //Solo cargar los productos en pantalla
+                var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems.Where(x => x.TipoItem != ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio));
+
+                return Json(response);
+            }
+            catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
         }
 
     }

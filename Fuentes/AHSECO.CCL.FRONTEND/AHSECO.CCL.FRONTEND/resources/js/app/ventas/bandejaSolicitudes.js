@@ -38,7 +38,7 @@
             filters.placeholder = "-- Todos --";
             filters.allowClear = false;
             
-            app.llenarComboMultiResult($cmbEstado, data.EstadosSolicitud, null, "", "", filters);
+            app.llenarComboMultiResult($cmbEstado, data.EstadosSolicitud, null, " ", "-- Todos --", filters);
         };
 
         var fnFailCallback = function () {

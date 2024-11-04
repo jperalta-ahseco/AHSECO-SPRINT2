@@ -11,13 +11,35 @@ var cotvtadet = (function ($, win, doc) {
     var $BI_txtNomProducto = $('#BI_txtNomProducto');
     var $BI_cmbTipoMedida = $('#BI_cmbTipoMedida');
     var $BI_cmbMarca = $('#BI_cmbMarca');
-    var $BI_cmbDepartamento = $("#BI_cmbDepartamento");
-    var $BI_cmbProvincia = $("#BI_cmbProvincia");
-    var $BI_cmbDistrito = $("#BI_cmbDistrito");
 
     var $btnBuscarItems = $('#btnBuscarItems');
     var $tblItems = $('#tblItems');
     var $tblCotDet = $('#tblCotDet');
+
+    var $DI_hdnCodigoPadre = $("#DI_hdnCodigoPadre");
+    var $DI_txtCodigo = $("#DI_txtCodigo");
+    var $DI_txtDescripcion = $("#DI_txtDescripcion");
+    var $DI_txtCantidad = $("#DI_txtCantidad");
+    var $DI_txtCostoFOB = $("#DI_txtCostoFOB");
+    var $DI_txtValorUnitario = $("#DI_txtValorUnitario");
+    var $DI_radLLaveEnMano_Si = $("#DI_radLLaveEnMano_Si");
+    var $DI_radLLaveEnMano_No = $("#DI_radLLaveEnMano_No");
+    var $DI_txtNroPiso = $("#DI_txtNroPiso");
+    var $DI_txtDimensiones = $("#DI_txtDimensiones");
+    var $DI_txtCantPreventivo = $("#DI_txtCantPreventivo");
+    var $BI_cmbCicloPreventivo = $("#BI_cmbCicloPreventivo");
+    var $DI_radManuales_Si = $("#DI_radManuales_Si");
+    var $DI_radManuales_No = $("#DI_radManuales_No");
+    var $DI_radVideos_Si = $("#DI_radVideos_Si");
+    var $DI_radVideos_No = $("#DI_radVideos_No");
+    var $DI_radInstaCapa_Si = $("#DI_radInstaCapa_Si");
+    var $DI_radInstaCapa_No = $("#DI_radInstaCapa_No");
+    var $DI_txtGarantiaAdic = $("#DI_txtGarantiaAdic");
+
+    var $txtUbicacion = $("#txtUbicacion");
+
+    var $DI_btnGuardar = $("#DI_btnGuardar");
+    var $DI_btnCerrar = $("#DI_btnCerrar");
 
     var mensajes = {
         BuscandoPrecios: "Buscando Precios, porfavor espere...",
@@ -28,6 +50,9 @@ var cotvtadet = (function ($, win, doc) {
     function Initialize() {
 
         $btnBuscarItems.click(buscarItems);
+        $DI_btnGuardar.click(grabarDatosCotDetItem);
+        $DI_btnCerrar.click(cerrarModalDetItem);
+        cargarCiclosPreventivos();
 
     }
 
@@ -44,13 +69,13 @@ var cotvtadet = (function ($, win, doc) {
             var filters2 = {};
             filters2.placeholder = "-- Todos --";
             filters2.allowClear = false;
-            app.llenarComboMultiResult($BI_cmbMarca, data.Result.Marcas, null, "", "--Todos--", filters2);
+            app.llenarComboMultiResult($BI_cmbMarca, data.Result.Marcas, null, " ", "-- Todos --", filters2);
             
             //Cargar combo de medidas:
             var filters4 = {};
             filters4.placeholder = "-- Todos --";
             filters4.allowClear = false;
-            app.llenarComboMultiResult($BI_cmbTipoMedida, data.Result.Medidas, null, "", "--Todos--", filters4);
+            app.llenarComboMultiResult($BI_cmbTipoMedida, data.Result.Medidas, null, " ", "-- Todos --", filters4);
 
         }
         return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, mensajes.obteniendoFiltros);
@@ -71,7 +96,7 @@ var cotvtadet = (function ($, win, doc) {
             filters3.allowClear = false;
             var opcTodos = data.Result.TodasFamilias;
             if (opcTodos == "" || opcTodos == null) { opcTodos = ""; }
-            app.llenarComboMultiResult($BI_cmbFamilia, data.Result.Familias, null, opcTodos, "--Todos--", filters3);
+            app.llenarComboMultiResult($BI_cmbFamilia, data.Result.Familias, null, opcTodos, "-- Todos --", filters3);
 
         }
         return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, mensajes.obteniendoFiltros);
@@ -225,7 +250,7 @@ var cotvtadet = (function ($, win, doc) {
                 }
             },
             {
-                data: "Ubigeo",
+                data: "DescUbigeoDestino",
                 render: function (data) {
                     return '<center>' + data + '</center>';
                 }
@@ -288,7 +313,24 @@ var cotvtadet = (function ($, win, doc) {
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
     }
 
+    function cargarCiclosPreventivos() {
+        var method = "POST";
+        var url = "BandejaSolicitudesVentas/ObtenerCiclosPreventivos";
+        var oValores = {};
+        var objParam = JSON.stringify(oValores);
+        var fnDoneCallback = function (data) {            
+            var filters = {};
+            filters.placeholder = "-- Ninguno --";
+            filters.allowClear = false;
+            app.llenarComboMultiResult($BI_cmbCicloPreventivo, data.Result, null, " ", "-- Ninguno --", filters);
+        }
+        return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, mensajes.obteniendoFiltros);
+    }
+
     function editarItem(CodigoItem) {
+
+        $DI_hdnCodigoPadre.val("");
+
         method = "POST";
         url = "BandejaSolicitudesVentas/EditarItemCotDet";
         var objFiltros = {
@@ -452,6 +494,9 @@ var cotvtadet = (function ($, win, doc) {
     }
 
     function editarSubItem(CodigoItemPadre, CodigoItem) {
+
+        $DI_hdnCodigoPadre.val(CodigoItemPadre);
+
         method = "POST";
         url = "BandejaSolicitudesVentas/EditarSubItemCotDet";
         var objFiltros = {
@@ -461,9 +506,32 @@ var cotvtadet = (function ($, win, doc) {
         var objParam = JSON.stringify(objFiltros);
 
         var fnDoneCallBack = function (data) {
-            $("#DI_txtCodigo").val(data.Result.CodItem);
-            $("#DI_txtDescripcion").val(data.Result.Descripcion);
+            $DI_txtCodigo.val(data.Result.CodItem);
+            $DI_txtDescripcion.val(data.Result.Descripcion);
+            $txtUbicacion.val(data.Result.DescUbigeoDestino);
             $('#modalDetalleItem').modal('show');
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+    }
+
+    function grabarDatosCotDetItem() {
+        method = "POST";
+        url = "BandejaSolicitudesVentas/GrabarDatosCotDetItem";
+        var objDatos = {
+            CodItemPadre: $DI_hdnCodigoPadre.val(),
+            CotDet: {
+                CodItem: $DI_txtCodigo.val(),
+                Cantidad: $DI_txtCantidad.val(),
+                CodUbigeoDestino: sessionStorage.getItem('codDistrito'),
+                DescUbigeoDestino: $txtUbicacion.val()
+            }
+        };
+        var objParam = JSON.stringify(objDatos);
+
+        var fnDoneCallBack = function (data) {
+            cerrarModalDetItem();
+            cargarTablaCotDet(data);
         };
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
@@ -479,11 +547,13 @@ var cotvtadet = (function ($, win, doc) {
         RecargarFiltroFamilia: RecargarFiltroFamilia,
         agregarItem: agregarItem,
         quitarItem: quitarItem,
+        cargarCiclosPreventivos: cargarCiclosPreventivos,
         editarItem: editarItem,
         quitarSubItem: quitarSubItem,
         editarSubItem: editarSubItem,
         SeleccionarRowCotDet: SeleccionarRowCotDet,
         VerSubItems: VerSubItems,
-        cerrarModalDetItem: cerrarModalDetItem
+        cerrarModalDetItem: cerrarModalDetItem,
+        grabarDatosCotDetItem: grabarDatosCotDetItem
     }
 })(window.jQuery, window, document);

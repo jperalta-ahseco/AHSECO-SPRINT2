@@ -25,18 +25,20 @@ namespace AHSECO.CCL.BE.Ventas
         public decimal PorcentajeGanancia { get; set; }
         public decimal VentaTotalConGanacia { get; set; }
         public bool LLaveEnMano { get; set; }
-        public int Piso { get; set; }
-        public string Ubigeo { get; set; }
+        public int NroPiso { get; set; }
+        public string CodUbigeoDestino { get; set; }
+        public string DescUbigeoDestino { get; set; }
         public string Direccion { get; set; }
         public string Dimension { get; set; }
         public int CantidadPreventivo { get; set; }
-        public string PeriodoPreventivo { get; set; }
+        public string CicloPreventivo { get; set; }
         public bool Manuales { get; set; }
         public bool Videos { get; set; }
         public bool InstCapa { get; set; }
         public string GarantiaAdic { get; set; }
         public bool EsItemPadre { get; set; }
         public int CantSubItem { get; set; }
+        public CotDetDespachoDTO CotizacionDespacho { get; set; }
 
         #region BandejaInstalacionTecnica
         public string Marca { get; set; }

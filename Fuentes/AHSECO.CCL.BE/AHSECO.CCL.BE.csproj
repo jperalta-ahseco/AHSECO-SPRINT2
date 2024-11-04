@@ -75,6 +75,7 @@
     <Compile Include="ServicioTecnico\BandejaInstalacionTecnica\TecnicoInstalacionDTO.cs" />
     <Compile Include="FiltroArticuloDTO.cs" />
     <Compile Include="AlmacenDTO.cs" />
+    <Compile Include="Ventas\CotDetDespachoDTO.cs" />
     <Compile Include="Ventas\CotizacionDetalleDTO.cs" />
     <Compile Include="Ventas\CotizacionDTO.cs" />
     <Compile Include="Ventas\GuiaDTO.cs" />

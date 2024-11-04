@@ -37,6 +37,31 @@ namespace AHSECO.CCL.COMUN
             }
         }
 
+        public struct DatosGenerales
+        {
+            public struct Dominios
+            {
+                public static string CicloPreventivo = "CICLOPREV";
+            }
+            public struct CicloPreventivo
+            {
+                public static string Diario = "CIPR0001";
+                public static string Semanal = "CIPR0002";
+                public static string Quincenal = "CIPR0003";
+                public static string Mensual = "CIPR0004";
+                public static string Bimestral = "CIPR0005";
+                public static string Trimestral = "CIPR0006";
+                public static string Cuatrimestral = "CIPR0007";
+                public static string Quimestral = "CIPR0008";
+                public static string Semestral = "CIPR0009";
+                public static string Septimestral = "CIPR0010";
+                public static string Octamestral = "CIPR0011";
+                public static string Novamestral = "CIPR0012";
+                public static string Decamestral = "CIPR0013";
+                public static string Anual = "CIPR0014";
+            }
+        }
+
         public struct Procesos
         {
             public struct Ventas

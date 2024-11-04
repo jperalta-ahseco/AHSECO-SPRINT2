@@ -11,7 +11,7 @@
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
-            <h4 class="modal-title" id="tituloModal"><i class="fa fa-cubes"></i>Detalle de Producto / Servicio</span></h4>
+            <h4 class="modal-title" id="tituloModal"><i class="fa fa-cubes"></i>Detalle de Producto / Servicio</h4>
         </div>
         <!-- Modal content body -->
         <div class="modal-body d-flex justify-content-center" align-items-center>
@@ -24,12 +24,13 @@
                                 <div class="col-md-3">
                                     <label for="DI_txtCodigo">C&oacute;digo: </label>
                                     <input disabled placeholder="Ingresar código de producto" type="text" class="form-control input-sm" id="DI_txtCodigo" value="">
+                                    <input type="hidden" id="DI_hdnCodigoPadre" value="" />
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-7">
                                     <label for="DI_txtDescripcion">Descripci&oacute;n: </label>
                                     <input disabled placeholder="Ingresar nombre de producto" type="text" class="form-control input-sm" id="DI_txtDescripcion" value="">
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <label for="DI_txtCantidad">Cantidad: </label>
                                     <input placeholder="Ingresar Cantidad" type="text" class="form-control input-sm" id="DI_txtCantidad" value="">
                                 </div>
@@ -62,7 +63,7 @@
                                     <div class="col-md-2">
                                         <table style="width:100%">
                                             <tr>
-                                                <td><input type="radio" name="DI_radLLaveEnMano" class="input-sm" id="DI_radLLaveEnMano_Si" value="Si"></td>
+                                                <td><input type="radio" name="DI_radLLaveEnMano" class="input-sm" id="DI_radLLaveEnMano_Si" value="S"></td>
                                                 <td style="padding-top:5px"><label>SI</label></td>
                                             </tr>
                                         </table>
@@ -70,7 +71,7 @@
                                     <div class="col-md-2">
                                         <table style="width:100%">
                                             <tr>
-                                                <td><input type="radio" name="DI_radLLaveEnMano" class="input-sm" id="DI_radLLaveEnMano_No" value="No"></td>
+                                                <td><input type="radio" name="DI_radLLaveEnMano" class="input-sm" id="DI_radLLaveEnMano_No" value="N"></td>
                                                 <td style="padding-top:5px"><label>NO</label></td>
                                             </tr>
                                         </table>
@@ -167,7 +168,7 @@
                                 </div>
                                 <div class="col-md-6 col-content-middleleft">
                                     <div class="col-md-1">&nbsp;</div>
-                                    <div class="col-md-7">
+                                    <div class="col-md-6">
                                         <label for="DI_radVideos">Videos: </label>
                                     </div>
                                     <div class="col-md-2">
@@ -212,7 +213,7 @@
                                 </div>
                                 <div class="col-md-6 col-content-middleleft">
                                     <div class="col-md-1">&nbsp;</div>
-                                    <div class="col-md-1">
+                                    <div class="col-md-6">
                                         <label for="DI_txtGarantiaAdic">Garant&iacute;a Adicional: </label>
                                     </div>
                                     <div class="col-md-4">
@@ -224,7 +225,7 @@
                     </div>
                     <div class="text-center">
                         <button class="btn btn-default btn-sm" type="button" id="DI_btnGuardar"><i class="fa fa-save" aria-hidden="true"></i> Guardar</button>
-                        <button class="btn btn-danger btn-sm" type="button" id="DI_btnCerrar" onclick="javascript: cotvtadet.cerrarModalDetItem();"><i class="fa fa-plus" aria-hidden="true"></i> Cancelar</button>
+                        <button class="btn btn-danger btn-sm" type="button" id="DI_btnCerrar"><i class="fa fa-plus" aria-hidden="true"></i> Cancelar</button>
                         <span id="hidden_fields"></span>
                     </div>
                 </div>
