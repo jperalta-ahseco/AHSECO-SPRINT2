@@ -25,5 +25,11 @@ namespace AHSECO.CCL.BE.Ventas
         public string abrevEstado { get; set; }
         public string Cod_Empresa { get; set; }
         public  string Nom_Empresa { get; set; }
+
+        #region BandejaInstalacionTecnica
+        public string OrdenCompra { get; set; }
+        public string NumProceso { get; set; }
+        public string Contrato { get; set; }
+        #endregion
     }
 }

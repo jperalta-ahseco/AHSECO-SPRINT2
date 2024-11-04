@@ -23,7 +23,7 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica
         public string CodEmpresa { get; set; }
         public int Id_Flujo { get; set; }
         public string NumFianza { get; set; }
-        public DateTime FechaMax { get; set; }
+        public string FechaMax { get; set; }
         public string Destino { get; set; }
         public string Estado { get; set; }
         public string CodEstado { get; set; }

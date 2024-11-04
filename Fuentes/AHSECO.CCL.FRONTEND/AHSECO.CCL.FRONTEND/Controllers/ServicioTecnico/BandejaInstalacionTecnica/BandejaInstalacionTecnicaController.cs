@@ -63,6 +63,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
 
             string[] cabeceraProductos2 =
             {
+                "",
                 "Id",
                 "Descripcion",
                 "Marca",
@@ -74,8 +75,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
                 "Garantia",
                 "Numero Fianza",
                 "Fecha Instalación",
-                "Fecha Real",
-                "Acciones"
+                "Fecha Real"
             };
 
             var tipoProceso = VariableSesion.getCadena("TipoProceso");

@@ -22,6 +22,10 @@
     var $txtProceso = $('#txtProceso');
     var $txtContrato = $('#txtContrato');
     var $txtFianza = $('#txtFianza');
+
+    var $colProceso = $('#colProceso');
+    var $colContrato = $('#colContrato');
+    var $colOrdenCompra = $('#colOrdenCompra');
     //Labels
     var $lblUsuarioCreacionObservacion = $('#lblUsuarioCreacionObservacion');
     var $lblFechaCreacionObservacion = $('#lblFechaCreacionObservacion');
@@ -35,10 +39,10 @@
     var $cmbDestino = $('#cmbDestino');
     var $dateSolicitud = $('#dateSolicitud');
     var $openRegdateSolicitud = $('#openRegdateSolicitud');
-    var $tblMainProducts = $('#tblMainProducts');   
+    var $tblMainProducts = $('#tblMainProducts');
 
 
-    var $searchSolVenta = $('#searchSolVenta'); 
+    var $searchSolVenta = $('#searchSolVenta');
     var mensajes = {
         procesandoUbigeo: "Cargando Ubigeo, por favor espere....",
         RegistrarRequerimiento: "Registrando requerimiento, por favor espere...."
@@ -71,6 +75,9 @@
     var $btnAdjuntarDocumento = $('#btnAdjuntarDocumento');
     var $btnCargarDocumento = $('#btnCargarDocumento');
     var $contadordoc = $("#contadordoc");
+    var $fileCargaDocumentoSustento = $('#fileCargaDocumentoSustento');
+    var $NoExisteRegDoc = $('#NoExisteRegDoc');
+    var $tblDocumentosCargados = $('#tblDocumentosCargados');
 
     /*Modal Solicitud*/
     var $btnBuscarSolicitud = $('#btnBuscarSolicitud');
@@ -93,21 +100,26 @@
     var $txtCorreo = $('#txtCorreo');
     var $txtZona = $('#txtZona');
 
+
+    var $spanEstadoSol = $('#spanEstadoSol');
+
     let productos = [];
     let destinos_select = [];
     let observaciones = [];
     let adjuntos = [];
     function Initializer() {
+        registroInstalacionTec.contadorObservaciones = 0;
+        registroInstalacionTec.observaciones = [];
         ObtenerFiltrosInstalacion();
-        Promise.all([ObtenerDepartamentos()]).then(() => {
-            if ($estadoReq.val() != "") {
-                $cmbDestino.val(destinos_select).trigger("change.select2");
-            };
-        }).catch((error) => {
-            app.message.error("Error", "No se cargaron los datos de listados de la bandeja.");
-        });
+        //Promise.all([ObtenerDepartamentos()]).then(() => {
+        //    if ($estadoReq.val() != "") {
+        //        $cmbDestino.val(destinos_select).trigger("change.select2");
+        //    };
+        //}).catch((error) => {
+        //    app.message.error("Error", "No se cargaron los datos de listados de la bandeja.");
+        //});
 
-        //ObtenerDepartamentos();
+        ObtenerDepartamentos();
         $btnRegresar.click(btnRegresarClick);
         $openRegdateSolicitud.click($openRegdateSolicitud_click);
         $dateSolicitud.datepicker({
@@ -116,19 +128,60 @@
             format: 'dd/mm/yyyy'
         });
         //$dateSolicitud.datepicker().on("changeDate", changeDateFechaInicialRegFecIni);
-        registroInstalacionTec.contadorObservaciones = 0;
-        registroInstalacionTec.observaciones = [];
+
         $btnAgregarObservacion.click($modalObservacionClick);
         $btnGuardarObservacionReq.click(GuardarObservacionReqClick);
         $btnAgregarDocumento.click($modalCargaDocumentoClick);
         $btnCargarDocumento.click($btnCargarDocumento_click);
         $btnRegistrarReq.click(RegistrarRequerimiento);
+        $btnAdjuntarDocumento.click($adjuntarDocumento_click);
         $btnBuscarSolicitud.click(BuscarSolicitudes);
         $searchSolVenta.click(BuscarSolicitudes);
         $agregarTecnico.click(AgregarTecnicoExterno);
-        cargarDatos();
         $dateSolicitud.val(hoy());
+        $fileCargaDocumentoSustento.on("change", $fileCargaDocumentoSustento_change);
         CargarTipoDocumento(4); //Cambiar a tipo de proceso Instalación Técnica.
+        cargarDatos();
+        $('#tblMainProducts tbody').on('click', 'td #btnAñadirChild', function () {
+            var tr = $(this).closest('tr');
+            var row = $('#tblMainProducts').dataTable().api().row(tr);
+
+            if (row.child.isShown()) {
+                // Si la fila hija está visible, ocultarla
+                row.child.hide();
+                tr.removeClass('shown');
+            } else {
+                // Si no, mostrar la fila hija
+                if (row.data().tecnicos.length == 0) {
+                    row.child('<a class="btn btn-green btn-xs" title="Añadir" href="javascript:registroInstalacionTec.añadirTecnico(' + row.data().id + ')"><i class="fa fa-plus" aria-hidden="true"></i> Agregar Técnico</a>&nbsp;').show();
+                }
+                else if (row.data().tecnicos.length > 0) {
+                    var producto = row.data();
+                    var childTableHtml = '<table class="table table-hover table-condensed table-striped table-bordered dataTable no-footer"><tbody><tr><td colspan="10" style="background-color:black;color:white;"><center><strong>Técnicos Asignados</strong></center></td></tr>';
+
+                    for (var i = 0; i < producto.tecnicos.length; i++)
+                        var contador = i + 1;
+
+                    childTableHtml += "<tr>" +
+                        "<td style='width:3.4%;'><i class='fa fa-circle-o' aria-hidden='true'></i></td>";
+                    childTableHtml += "</td>"
+
+                    childTableHtml += "<td style='text-align:center;width:10%;'><center><a style='color:red;' id='btnDesasignarTemp' class='btn btn-green btn-xs' title='Des-Asignar' href='javascript: registroInstalacionTec.DesasignarTécnicoTmp(" + producto.tecnicos[i].id + ")'><i class='fa fa-trash' aria-hidden='true'></i> Des-Asignar</a></center></td></tr>";
+
+                    childTableHtml += '<tr><td colspan="10"><a class="btn btn-green btn-xs" title="Añadir" href="javascript:registroInstalacionTec.añadirTecnico(' + producto.id + ')"><i class="fa fa-plus" aria-hidden="true"></i> Agregar Técnico</a></td></tr>';
+                    // Agregar la fila para el botón
+                    childTableHtml += '</tbody></table>';
+
+                    // Aquí se usa row.child() para mostrar la tabla
+                    row.child(childTableHtml).show();
+
+                    // Esto asegurará que el padre se expanda para mostrar la tabla correctamente
+                    row.child().show();
+                }
+                tr.addClass('shown');
+            }
+        });
+        // Función para dar formato a la fila hija
     };
 
     function $openRegdateSolicitud_click() {
@@ -140,11 +193,11 @@
             app.message.error("Validación", "Debe de seleccionar la solicitud de venta.")
             return;
         };
-        if ($txtEmpresa.val() == "" || $txtEmpresa.val() == null  || $txtEmpresa.val().trim().length == 0) {
+        if ($txtEmpresa.val() == "" || $txtEmpresa.val() == null || $txtEmpresa.val().trim().length == 0) {
             app.message.error("Validación", "El nombre de empresa está vacío, seleccione nuevamente la solicitud de venta.")
             return;
         };
-        if ($txtTipVenta.val() == "" || $txtTipVenta.val() == null  || $txtTipVenta.val().trim().length == 0) {
+        if ($txtTipVenta.val() == "" || $txtTipVenta.val() == null || $txtTipVenta.val().trim().length == 0) {
             app.message.error("Validación", "El campo tipo de venta está vacío, seleccione nuevamente la solicitud de venta.")
             return;
         };
@@ -172,19 +225,13 @@
             app.message.error("Validación", "Debe de ingresar la fecha máxima de la solicitud.")
             return;
         };
-        /*
-        if ($txtRuc.val() == "" || $txtRuc.val() == null || isNaN($txtRuc.val()) || $txtRuc.val().trim().length == 0) {
 
-        };
-        if ($txtRuc.val() == "" || $txtRuc.val() == null || isNaN($txtRuc.val()) || $txtRuc.val().trim().length == 0) {
-
-        };*/
         var method = "POST";
         var url = "BandejaInstalacionTecnica/RegistroRequerimientoMain"
         var objGrupo = {
             CabeceraInstalacion: {
                 TipoProceso: "I"
-                , NumReq : 0
+                , NumReq: 0
                 , Id_Solicitud: $txtSolVenta.val()
                 , RucEmpresa: $txtRuc.val()
                 , NomEmpresa: $txtNomEmpresa.val()
@@ -271,7 +318,7 @@
             cargarCabecera(data.Result.Solicitud)
 
             for (var i = 0; i < data.Result.DetalleCotizacion.length; i++) {
-                productos.push({
+                    productos.push({
                     Id: data.Result.DetalleCotizacion[i].Id,
                     Cantidad: data.Result.DetalleCotizacion[i].Cantidad,
                     CodProducto: data.Result.DetalleCotizacion[i].CodItem,
@@ -285,13 +332,11 @@
                     Garantia: data.Result.DetalleCotizacion[i].GarantiaAdic
                 })
             };
-            cargarBandejaProductos(data.Result.DetalleCotizacion);
+            //cargarBandejaProductos(data.Result.DetalleCotizacion);
+            cargarBandejaProductos(productos);
             $modalSolicitud.modal('toggle');
             $cmbDestino.prop('disabled', false);
             $dateSolicitud.prop('disabled', false);
-
-
-
         };
 
         var fnFailCallBack = function () {
@@ -302,15 +347,45 @@
     };
 
     function cargarCabecera(requerimiento) {
-        $hdnCodEmpresa.val(requerimiento.Cod_Empresa);
-        $txtSolVenta.val(requerimiento.Id_Solicitud);
-        $txtEmpresa.val(requerimiento.Nom_Empresa);
-        $txtTipVenta.val(requerimiento.nomFlujo);
-        $hdnCodTipVenta.val(requerimiento.Id_Flujo);
-        $txtRuc.val(requerimiento.RUC);
-        $txtNomEmpresa.val(requerimiento.RazonSocial);
-        $txtUbigeo.val(requerimiento.Ubigeo);
-        $txtAsesor.val(requerimiento.AsesorVenta);
+        if (requerimiento.OrdenCompra != "") {
+            $colProceso.css('display', 'block');
+        };
+
+        if (requerimiento.OrdenCompra != "") {
+            $colContrato.css('display', 'block');
+        };
+
+        if (requerimiento.OrdenCompra != "") {
+            $colOrdenCompra.css('display', 'block');
+        };
+
+        if ($tipoproceso.val() == "") {
+            $hdnCodEmpresa.val(requerimiento.Cod_Empresa);
+            $txtSolVenta.val(requerimiento.Id_Solicitud);
+            $txtEmpresa.val(requerimiento.Nom_Empresa);
+            $txtTipVenta.val(requerimiento.nomFlujo);
+            $hdnCodTipVenta.val(requerimiento.Id_Flujo);
+            $txtRuc.val(requerimiento.RUC);
+            $txtNomEmpresa.val(requerimiento.RazonSocial);
+            $txtUbigeo.val(requerimiento.Ubigeo);
+            $txtAsesor.val(requerimiento.AsesorVenta);
+        }
+        else if ($tipoproceso.val() == "U") {
+            $hdnCodEmpresa.val(requerimiento.Cod_Empresa);
+            $txtSolVenta.val(requerimiento.Id_Solicitud);
+            $txtEmpresa.val(requerimiento.CodEmpresa);
+            $txtTipVenta.val(requerimiento.TipoVenta);
+            $hdnCodTipVenta.val(requerimiento.TipoVenta);
+            $txtRuc.val(requerimiento.RucEmpresa);
+            $txtNomEmpresa.val(requerimiento.NomEmpresa);
+            $txtUbigeo.val(requerimiento.Ubicacion);
+            $txtAsesor.val(requerimiento.Vendedor);
+            $dateSolicitud.val(requerimiento.FechaMax);
+            destinos_select = requerimiento.Destino.split(',');
+            $cmbDestino.val(destinos_select).trigger("change.select2");
+            $spanEstadoSol.text(requerimiento.Estado);
+            $searchSolVenta.css('pointer-events', 'none');
+        };
     };
 
     function ObtenerDepartamentos() {
@@ -371,11 +446,11 @@
         });
     };
 
-    function cargarBandejaProductos(detalleProductos) {
+    function cargarBandejaProductos(listProductos) {
 
         var data = {}
         data.Result = [];
-        data.Result = detalleProductos;
+        data.Result = listProductos;
 
         if ($tipoproceso.val() == "") {
             var columns = [
@@ -386,7 +461,7 @@
                     }
                 },
                 {
-                    data: "Descripcion",
+                    data: "DescProducto",
                     render: function (data, type, row) {
                         return '<center>' + data + '</center>'
                     }
@@ -400,13 +475,13 @@
                 {
                     data: "Modelo",
                     render: function (data, type, row) {
-                        return '<center>' + "Modelo" + '</center>'
+                        return '<center>' + data + '</center>'
                     }
                 },
                 {
                     data: "Serie",
                     render: function (data, type, row) {
-                        return '<center>' + "Serie" + '</center>'
+                        return '<center>' + data + '</center>'
                     }
                 },
                 {
@@ -416,7 +491,7 @@
                     }
                 },
                 {
-                    data: "CantidadPrev",
+                    data: "CantidadMP",
                     render: function (data, type, row) {
                         return '<center>' + "CantidadPrev" + '</center>'
                     }
@@ -424,25 +499,31 @@
                 {
                     data: "Periodicidad",
                     render: function (data, type, row) {
-                        return '<center>' + "Periodicidad" + '</center>'
+                        return '<center>' + data + '</center>'
                     }
                 },
                 {
                     data: "Garantia",
                     render: function (data, type, row) {
-                        return '<center>' + "Garantia" + '</center>'
+                        return '<center>' + data + '</center>'
                     }
                 },
                 {
                     data: "NumFianza",
                     render: function (data, type, row) {
-                        return '<center>' + "NumFianza" + '</center>'
+                        return '<center>' + data + '</center>'
                     }
                 }
             ];
         }
-        else { 
+        else {
             var columns = [
+                {
+                    data: "Id",
+                    render: function (data, type, row) {
+                        return '<a id="btnAñadirChild" class="btn btn-green btn-xs" href="javascript: registroInstalacionTec.detalleHijo(' + data + ')"><i class="fa fa-arrow-down" aria-hidden="true" hre></i></a>';
+                    }
+                },
                 {
                     data: "Id",
                     render: function (data, type, row) {
@@ -522,13 +603,6 @@
                             return '<center>' + data + '</center>';
                         }
                     }
-                },
-                {
-                    data: "Id",
-                    render: function (data, type, row) {
-                        var addTecnico = '<a >';
-                        return '<center>' + addTecnico + '</center>'
-                    }
                 }
             ];
         }
@@ -539,6 +613,16 @@
                 visible: false
             }
         ];
+
+        if ($tipoproceso.val() == "") {
+            columnDefs = [
+                {
+                    targets: [0],
+                    visible: false
+                }
+            ]
+        }
+
 
 
         var rowCallback = function (row, data, index) {
@@ -555,16 +639,13 @@
     };
 
     function AgregarTecnicoExterno() {
-        $txtNombreTecnico.prop('disabled',false)
-        $txtDNI.prop('disabled',false)
-        $txtTelefono.prop('disabled',false)
-        $txtCorreo.prop('disabled',false)
-        $txtZona.prop('disabled',false)
+        $txtNombreTecnico.prop('disabled', false)
+        $txtDNI.prop('disabled', false)
+        $txtTelefono.prop('disabled', false)
+        $txtCorreo.prop('disabled', false)
+        $txtZona.prop('disabled', false)
     };
-    function asignarTecnico(id) {
-        $modalAsignacion.modal('toggle');
-        $hdnIdProduct.val(id);
-    };
+
     function ObtenerFiltrosInstalacion() {
         method = "POST";
         url = "BandejaInstalacionTecnica/ObtenerFiltrosInstalacion"
@@ -648,7 +729,7 @@
 
                 $contadordoc.val(cont);
 
-                if ($numeroSolicitud.val() != "") {
+                if ($numeroReq.val() != "") {
 
                     var method = "POST";
                     var url = "BandejaInstalacionTecnica/GuardarAdjunto";
@@ -742,6 +823,20 @@
         };
         $modalCargaDocumento.modal("hide");
     }
+
+    function eliminarDocTemp(cont) {
+
+        adjuntos.forEach(function (currentValue, index, arr) {
+            if (adjuntos[index].Id == cont) {
+                adjuntos.splice(index, 1);
+            }
+        });
+        $("#filadoc" + cont).remove();
+
+        if (adjuntos.length == 0) {
+            $NoExisteRegDoc.show();
+        }
+    }
     function $modalObservacionClick() {
         $modalObservacion.modal("show");
         $lblUsuarioCreacionObservacion.text($nombreusuario.val());
@@ -812,7 +907,7 @@
             registroInstalacionTec.contadorObservaciones += 1;
 
             registroInstalacionTec.observaciones.push({
-                //Id_WorkFlow: $codigoWorkflow.val(),
+                Id: registroInstalacionTec.contadorObservaciones,
                 TipoProceso: "I",
                 Estado_Instancia: "REG",
                 Observacion: $txtObservacion.val(),
@@ -851,12 +946,12 @@
     function eliminarObsTmp(idObs) {
         var fnSi = function () {
 
-            registroInstalacionTec.contadorObservaciones -= 1
 
             registroInstalacionTec.observaciones = registroInstalacionTec.observaciones.filter(observacion => observacion.Id !== Number(idObs));
 
             $("#row" + idObs).remove();
 
+            registroInstalacionTec.contadorObservaciones -= 1
             if (registroInstalacionTec.contadorObservaciones == 0) {
                 $NoExisteRegObs.show();
             };
@@ -982,11 +1077,6 @@
                 visible: false
             }
         ];
-        /*
-        var rowCallback = function (row, data, index) {
-            // Asignar un ID único basado en el índice de datos o algún identificador único
-            $(row).attr('id', 'row' + data.IdContacto);
-        };*/
 
         app.llenarTabla($tblSolicitudes, data, columns, columnDefs, "#tblSolicitudes", null);
     };
@@ -997,14 +1087,32 @@
             var url = "BandejaInstalacionTecnica/ObtenerMainInstalacion"
             objRq = {
                 NumReq: $numeroReq.val(),
-                IdWorkFlow:$codigoWorkflow.val()
+                IdWorkFlow: $codigoWorkflow.val()
             };
             var objParam = JSON.stringify(objRq);
 
             var fnDoneCallBack = function (data) {
                 console.log(data);
                 cargarCabecera(data.Result.CabeceraInstalacion);
-                cargarBandejaProductos(data.Result.DetalleInstalacion);
+
+                for (var i = 0; i < data.Result.DetalleInstalacion.length; i++) {
+                    productos.push({
+                        Id: data.Result.DetalleInstalacion[i].Id,
+                        Cantidad: data.Result.DetalleInstalacion[i].Cantidad,
+                        CodProducto: data.Result.DetalleInstalacion[i].CodItem,
+                        DescProducto: data.Result.DetalleInstalacion[i].Descripcion,
+                        Marca: data.Result.DetalleInstalacion[i].Marca,
+                        Modelo: data.Result.DetalleInstalacion[i].Modelo,
+                        Serie: data.Result.DetalleInstalacion[i].Serie,
+                        NumFianza: data.Result.DetalleInstalacion[i].NumFianza,
+                        CantidadMP: data.Result.DetalleInstalacion[i].CantidadPreventivo,
+                        Periodicidad: data.Result.DetalleInstalacion[i].PeriodoPreventivo,
+                        Garantia: data.Result.DetalleInstalacion[i].GarantiaAdic
+                    })
+                };
+
+
+                cargarBandejaProductos(productos);
 
                 registroInstalacionTec.contadorObservaciones = data.Result.Observaciones.length;
                 registroInstalacionTec.observaciones = data.Result.Observaciones;
@@ -1020,22 +1128,6 @@
                         $tblObservaciones.append(nuevoTr);
                     }
                     $NoExisteRegObs.hide();
-                }
-
-                var seguimiento = data.Result.Seguimiento.length;
-                if (seguimiento > 0) {
-                    for (i = 0; i < data.Result.Seguimiento.length; i++) {
-
-                        var nuevoTr = "<tr>" +
-                            "<th style='text-align: center;'>" + data.Result.Seguimiento[i].DescripcionEstado + "</th>" +
-                            "<th style='text-align: center;'>" + data.Result.Seguimiento[i].Cargo + "</th>" +
-                            "<th style='text-align: center;'>" + data.Result.Seguimiento[i].NombreUsuarioRegistro + "</th>" +
-                            "<th style='text-align: center;'>" + data.Result.Seguimiento[i].FechaRegistro + "</th>" +
-                            "<th style='text-align: center;'>" + data.Result.Seguimiento[i].HoraRegistro + "</th>" +
-                            "</tr>";
-                        $tblSeguimiento.append(nuevoTr);
-                    }
-                    $NoExisteRegSeg.hide();
                 }
 
                 var docs = data.Result.Adjuntos.length;
@@ -1071,13 +1163,114 @@
         }
     }
 
+    function detalleHijo(id) {
+        var tr = $(this).closest('tr');
+        var row = $('#tblMainProducts').dataTable().api().row(tr);
+
+
+
+        if (row.child.isShown()) {
+            // Si la fila hija está visible, ocultarla
+            row.child.hide();
+            tr.removeClass('shown');
+        } else {
+            // Si no, mostrar la fila hija
+            row.child(format(id)).show();
+            //row.child(format(2)).show();
+            tr.addClass('shown');
+        }
+        function format(data) {
+            return '<a class="btn btn-default btn-xs" title="Añadir" href="javascript:registroInstalacionTec.añadirTecnico(' + data + ')"><i class="fa fa-plus" aria-hidden="true"></i> Asignar Técnico</a>&nbsp;';
+        };
+    }
+
+    function añadirTecnico(codigo) {
+        $modalAsignacion.modal('toggle');
+        $hdnIdProduct.val(id);
+    };
+
+
+    function DesasignarTécnicoTmp(id) {
+
+        var id = id.toString();
+
+        if (id.indexOf('.') == -1) {
+            var fnSi = function () {
+                productos = productos.filter(producto => producto.id !== id);
+                cargarBandejaProductos(productos);
+            };
+            return app.message.confirm("Instalación Técnica", "¿Está seguro que desea des-asignar al técnico de la instalación de este producto?", "Si", "No", fnSi, null);
+        }
+        else {
+            var fnSi = function () {
+                for (var i = 0; i < productos.length; i++) {
+                    if (productos[i].id == id.substring(0, id.indexOf('.'))) {
+                        productos[i].hijos = productos[i].hijos.filter(subProducto => subProducto.id !== id)
+                    };
+                };
+                cargarBandejaProductos(productos);
+            };
+            return app.message.confirm("Instalación Técnica", "¿Está seguro que desea des-asignar al técnico de la instalación de este producto?", "Si", "No", fnSi, null);
+        };
+    }
+
+    function $adjuntarDocumento_click() {
+        //$fileCargaDocumentoSustento.click();
+        $lblNombreArchivo.text("");
+        myfile = "";
+        document.getElementById('fileCargaDocumentoSustento').click();
+
+    }
+
+    function $fileCargaDocumentoSustento_change() {
+
+
+        var fileInput = document.getElementById("fileCargaDocumentoSustento");
+
+        if (myfile.length > 0) {
+            myfile = "";
+        }
+
+        myfile = $(this).val();
+        var ext = myfile.split('.').pop();
+        if (ext == "pdf" || ext == "PDF" ||
+            ext == "xls" || ext == "XLS" ||
+            ext == "xlsx" || ext == "XLSX" ||
+            ext == "doc" || ext == "DOC" ||
+            ext == "docx" || ext == "DOCX") {
+            //beforeSendCargaDoc();
+            var formdata = new FormData(); //FormData object
+            //Appending each file to FormData object
+            formdata.append(fileInput.files[0].name, fileInput.files[0]);
+            formdata.append('name', name);
+
+            $lblNombreArchivo.text(fileInput.files[0].name);
+
+        }
+        else if (myfile !== "") {
+
+            app.message.error('Validación', 'El formato no es el permitido', 'Aceptar', null)
+            this.value = "";
+            $lblNombreArchivo.text("");
+
+        } else {
+            this.value = "";
+            $lblNombreArchivo.text("");
+
+        }
+
+    }
+
     return {
         //visualizar: visualizar,
         eliminarObsTmp: eliminarObsTmp,
+        eliminarDocTemp: eliminarDocTemp,
         eliminarDocumento: eliminarDocumento,
         download: download,
         seleccionarSolicitud: seleccionarSolicitud,
-        asignarTecnico: asignarTecnico
+        //asignarTecnico: asignarTecnico,
+        detalleHijo: detalleHijo,
+        añadirTecnico: añadirTecnico
 
     }
 })(window.jQuery, window, document);

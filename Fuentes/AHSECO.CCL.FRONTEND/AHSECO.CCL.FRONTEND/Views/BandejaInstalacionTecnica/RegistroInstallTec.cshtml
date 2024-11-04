@@ -27,12 +27,27 @@
     <div class="box-inner">
         <div class="box-header well" data-original-title="">
             <div style="display: flex;justify-content: space-between;">
-                <h2>N° Requerimiento:</h2> <!--- Aquí tendremos que controlar-->
+                @if (numReq != "")
+                {
+                    var numReqFormateado = ("000000" + numReq);
+
+                    numReqFormateado = numReqFormateado.Substring((numReqFormateado.Length) - 6, numReqFormateado.Length - ((numReqFormateado.Length) - 6));
+
+                    <h2>N&uacute;mero de Requerimiento: @numReqFormateado</h2> <!--- Aquí tendremos que controlar-->
+
+                    <div class="text-right">
+                        <!--- Aquí tendremos que controlar-->
+                        <label>ESTADO: <span id="spanEstadoSol"></span></label>
+                    </div>
+                }
+
             </div>
         </div>
         <div class="box-content">
             <div class="container-fluid" style="margin-right: 15px;">
                 <form id="formRequerimiento">
+                    <input type="hidden" id="contador" value="0" />
+                    <input type="hidden" id="contadordoc" value="0" />
                     <div class="row container-fluid">
                         <div class="col-md-4 col-sm-12">
                             <label for="txtSolVenta">Solicitud de Venta: </label>
@@ -47,14 +62,14 @@
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12">
-                            <input hidden id="hdnCodEmpresa" value=""/>
+                            <input hidden id="hdnCodEmpresa" value="" />
                             <label for="txtEmpresa">Empresa: </label>
                             <div class="form-group">
                                 <input disabled type="text" class="form-control input-sm" id="txtEmpresa" value="">
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12">
-                            <input hidden id="hdnCodTipVenta" value=""/>
+                            <input hidden id="hdnCodTipVenta" value="" />
                             <label for="txtTipVenta">Tip. Venta: </label>
                             <div class="form-group">
                                 <input disabled type="text" class="form-control input-sm" id="txtTipVenta" value="">
@@ -69,7 +84,7 @@
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12">
-                            <label for="txtNomEmpresa">Nombre Empresa:</label>
+                            <label for="txtNomEmpresa">Razón Social(Cliente):</label>
                             <div class="form-group">
                                 <input disabled type="text" class="form-control input-sm" id="txtNomEmpresa" value="">
                             </div>
@@ -105,20 +120,20 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row container-fluid">
+                    <div class="row container-fluid" id="colProceso" style="display:none">
                         <div class="col-md-4 col-sm-12">
                             <label for="txtProceso">N° Proceso:</label>
                             <div class="form-group">
                                 <input disabled type="text" class="form-control input-sm" id="txtProceso" value="">
                             </div>
                         </div>
-                        <div class="col-md-4 col-sm-12">
+                        <div class="col-md-4 col-sm-12" id="colContrato" style="display:none">
                             <label for="txtContrato">N° Contrato:</label>
                             <div class="form-group">
                                 <input disabled type="text" class="form-control input-sm" id="txtContrato" value="">
                             </div>
                         </div>
-                        <div class="col-md-4 col-sm-12">
+                        <div class="col-md-4 col-sm-12" id="colOrdenCompra" style="display:none">
                             <label for="txtOrdCompra">Orden de Compra:</label>
                             <div class="form-group">
                                 <input disabled type="text" class="form-control input-sm" id="txtOrdCompra" value="">
@@ -128,7 +143,10 @@
                     <br />
                     <div class="row container-fluid">
                         <div class="text-right">
-                            <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnRegistrarReq" tabindex="14"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Registrar</button>
+                            @if (numReq == "")
+                            {
+                                <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnRegistrarReq" tabindex="14"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Registrar</button>
+                            }
                             <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegresar" tabindex="14"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Regresar</button>
                         </div>
                     </div>
@@ -142,9 +160,6 @@
                     </li>
                     <li class="" id="tabObservaciones">
                         <a href="#navObservaciones" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-exclamation" aria-hidden="true"></i> Observaciones</a>
-                    </li>
-                    <li class="" id="tabSeguimiento">
-                        <a href="#navSeguimiento" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-code-fork" aria-hidden="true"></i>  Seguimiento</a>
                     </li>
                 </ul>
                 <div class="tab-content" style="padding-top: 5px;">
@@ -176,11 +191,6 @@
                     <div id="navObservaciones" class="tab-pane fade">
                         @{
                             Html.RenderPartial("~/Views/Modelos/_Observaciones.cshtml");
-                        }
-                    </div>
-                    <div id="navSeguimiento" class="tab-pane fade">
-                        @{
-                            Html.RenderPartial("~/Views/Modelos/_Seguimiento.cshtml");
                         }
                     </div>
                 </div>
