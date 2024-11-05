@@ -16,6 +16,7 @@ using System.Net.Http.Headers;
 using System.Security.Permissions;
 using System.Diagnostics.Contracts;
 using static AHSECO.CCL.COMUN.ConstantesDTO.CotizacionVenta;
+using System.Web.UI.WebControls.Expressions;
 
 namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
 {
@@ -96,11 +97,23 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
 
                         _tiposVenta.Add(cliente);
                     }
+                    reader.NextResult();
+                    List<ComboDTO> _tipoEmpleado = new List<ComboDTO>();
+                    while (reader.Read())
+                    {
+                        var tipEmpleado = new ComboDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("CODTIPO")) ? "" : reader.GetString(reader.GetOrdinal("CODTIPO")),
+                            //Text = reader.IsDBNull(reader.GetOrdinal("DESCTIPO")) ? "" : reader.GetString(reader.GetOrdinal("DESCTIPO"))
+                        };
+                        _tipoEmpleado.Add(tipEmpleado);
+                    }
 
                     result.Empresas = _listEmpresa;
                     result.Estados = _Estados;
                     result.Clientes = _Clientes;
                     result.TipVenta = _tiposVenta;
+                    result.TipoEmpleado = _tipoEmpleado;
 
                     return result;
                 };
@@ -151,6 +164,84 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                 return result;
             };
         }
+
+        public List<InstalacionTecnicaDetalleDTO> ObtenerDetalleInstalacion(InstalacionTecnicaDetalleDTO detalle)
+        {
+            var result = new List<InstalacionTecnicaDetalleDTO>();
+
+            Log.TraceInfo(Utilidades.GetCaller());
+            using( var connection = Factory.ConnectionSingle())
+            {
+                connection.Open();
+                SqlCommand command;
+                string query = "EXEC [USP_SEL_DETALLE_INSTALL] @isNumReq=" + detalle.NumReq;
+                command = new SqlCommand(query, connection);
+
+                using(var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var detalleDTO = new InstalacionTecnicaDetalleDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("ID")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID")),
+                            NumReq = reader.IsDBNull(reader.GetOrdinal("NUMREQ")) ? 0 : reader.GetInt64(reader.GetOrdinal("NUMREQ")),
+                            CodProducto = reader.IsDBNull(reader.GetOrdinal("CODIGOPRODUCTO")) ? "" : reader.GetString(reader.GetOrdinal("CODIGOPRODUCTO")),
+                            DescProducto = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION")),
+                            Cantidad = reader.IsDBNull(reader.GetOrdinal("CANTIDAD")) ? 0 : reader.GetInt32(reader.GetOrdinal("CANTIDAD")),
+                            Marca = reader.IsDBNull(reader.GetOrdinal("MARCA")) ? "" : reader.GetString(reader.GetOrdinal("MARCA")),
+                            Modelo = reader.IsDBNull(reader.GetOrdinal("MODELO")) ? "" : reader.GetString(reader.GetOrdinal("MODELO")),
+                            Serie = reader.IsDBNull(reader.GetOrdinal("SERIE")) ? "" : reader.GetString(reader.GetOrdinal("SERIE")),
+                            NumFianza = reader.IsDBNull(reader.GetOrdinal("NUMFIANZA")) ? "" : reader.GetString(reader.GetOrdinal("NUMFIANZA")),
+                            CantidadMP = reader.IsDBNull(reader.GetOrdinal("CANTIDADMP")) ? 0 : reader.GetInt32(reader.GetOrdinal("CANTIDADMP")),
+                            Periodicidad = reader.IsDBNull(reader.GetOrdinal("PERIODICIDAD")) ? "" : reader.GetString(reader.GetOrdinal("PERIODICIDAD")),
+                            Garantia = reader.IsDBNull(reader.GetOrdinal("GARANTIA")) ? "" : reader.GetString(reader.GetOrdinal("GARANTIA")),
+                            FechaProgramacion = reader.IsDBNull(reader.GetOrdinal("FECHAPROGRAMACION")) ? "" : reader.GetString(reader.GetOrdinal("FECHAPROGRAMACION")),
+                            FechaReal = reader.IsDBNull(reader.GetOrdinal("FECHAREAL")) ? "" : reader.GetString(reader.GetOrdinal("FECHAREAL"))
+                        };
+
+                        detalleDTO.Tecnicos = this.ObtenerTecnico(detalleDTO.Id);
+                        result.Add(detalleDTO);
+                    }
+                }
+            }
+            return result;
+        }
+
+        public List<TecnicoInstalacionDTO> ObtenerTecnico(long CodDetalle)
+        {
+            var result = new List<TecnicoInstalacionDTO>();
+            Log.TraceInfo(Utilidades.GetCaller());
+            using(var connection = Factory.ConnectionSingle())
+            {
+                connection.Open();
+                SqlCommand command;
+                string query = "EXEC [USP_SEL_DETALLE_TECNICOS] @isCodDetalle="+CodDetalle;
+                command = new SqlCommand(query, connection);
+
+                using(var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var tecnico = new TecnicoInstalacionDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("ID")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID")),
+                            Id_Detalle = reader.IsDBNull(reader.GetOrdinal("ID_DETALLE")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_DETALLE")),
+                            Cod_Tecnico = reader.IsDBNull(reader.GetOrdinal("COD_TECNICO")) ? 0 : reader.GetInt32(reader.GetOrdinal("COD_TECNICO")),
+                            NombreTecnico = reader.IsDBNull(reader.GetOrdinal("NOMBRETECNICO")) ? "" : reader.GetString(reader.GetOrdinal("NOMBRETECNICO")),
+                            Documento = reader.IsDBNull(reader.GetOrdinal("DOCUMENTO")) ? "" : reader.GetString(reader.GetOrdinal("DOCUMENTO")),
+                            TipDocumento = reader.IsDBNull(reader.GetOrdinal("TIPO_DOCUMENTO")) ? "" : reader.GetString(reader.GetOrdinal("TIPO_DOCUMENTO")),
+                            Correo = reader.IsDBNull(reader.GetOrdinal("CORREO")) ? "" : reader.GetString(reader.GetOrdinal("CORREO")),
+                            Telefono = reader.IsDBNull(reader.GetOrdinal("TELEFONO")) ? "" : reader.GetString(reader.GetOrdinal("TELEFONO")),
+                            Zona = reader.IsDBNull(reader.GetOrdinal("ZONA")) ? "" : reader.GetString(reader.GetOrdinal("ZONA")),
+                            TipoTecnico = reader.IsDBNull(reader.GetOrdinal("TIPOTECNICO")) ? "" : reader.GetString(reader.GetOrdinal("TIPOTECNICO"))
+                        };
+                        result.Add(tecnico);
+                    }
+                }
+            }
+            return result;
+        }
+
         public RespuestaDTO MantInstalacion(InstalacionTecnicaDTO instalacion)
         {
             Log.TraceInfo(Utilidades.GetCaller());
@@ -247,6 +338,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                 parameters.Add("IsCOD_TECNICO", tecnico.Cod_Tecnico);
                 parameters.Add("IsNOMBRETECNICO",tecnico.NombreTecnico);
                 parameters.Add("IsDOCUMENTO",tecnico.Documento);
+                parameters.Add("IsTIP_DOCUMENTO", tecnico.TipDocumento);
                 parameters.Add("IsCORREO",tecnico.Correo);
                 parameters.Add("IsTELEFONO",tecnico.Telefono);
                 parameters.Add("IsZONA",tecnico.Zona);
@@ -453,6 +545,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                             ,FechaProgramacion = reader.IsDBNull(reader.GetOrdinal("FECHAPROGRAMACION")) ? "" : reader.GetString(reader.GetOrdinal("FECHAPROGRAMACION"))
                             ,FechaReal = reader.IsDBNull(reader.GetOrdinal("FECHAREAL")) ? "" : reader.GetString(reader.GetOrdinal("FECHAREAL"))
                         };
+                        detalle.Tecnicos = this.ObtenerTecnico(detalle.Id);
                         _listDetalle.Add(detalle);
                     }
                     reader.NextResult();
