@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+
 
 namespace AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica
 {
@@ -17,7 +19,8 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica
         public int CantidadMP { get; set; }
         public string Periodicidad { get; set; }
         public string Garantia { get; set; }
-        public DateTime FechaProgramacion { get; set; }
-        public DateTime FechaReal { get; set; }
+        public string FechaProgramacion { get; set; }
+        public string FechaReal { get; set; }
+        public List<TecnicoInstalacionDTO> Tecnicos { get; set; }
     }
 }

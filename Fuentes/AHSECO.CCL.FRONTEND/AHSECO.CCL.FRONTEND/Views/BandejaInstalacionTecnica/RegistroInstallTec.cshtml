@@ -170,13 +170,21 @@
                                     <table id="tblMainProducts" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                         <thead>
                                             <tr>
+                                                @if (numReq != "")
+                                                {
+                                                    <th style="width:1%"><center><i class="fa fa-address-book-o" aria-hidden="true"></i></center></th>
+                                                }
                                                 @for (var i = 0; i < @ViewBag.cabecera.Length; i++)
                                                 {
-                                                    <th style="text-align:center; width:5%">@ViewBag.cabecera[i]</th>
+                                                    string[] cabecera = ViewBag.Cabecera[i].Split(',');
+                                                    <th style="text-align:center; width:@(cabecera[1]+"%")">@cabecera[0]</th>
                                                 }
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            <tr id="NoExisteProductos">
+                                                <td colspan="10"><center>No hay data que mostrar</center></td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -219,9 +227,9 @@
 </div>
 
 
-<div class="modal fade" id="modalAsignacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+<div class="modal fade" id="modalBusquedaTecnico" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     @{
-        Html.RenderPartial("_AsignacionTecnico");
+        Html.RenderPartial("_BuscarTecnico");
     }
 </div>
 

@@ -44,38 +44,67 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
             var result = instalacionTecnicaBL.ObtenerFiltrosInstalacion();
             return Json(result);
         }
+        public JsonResult ObtenerSolicitudes(SolicitudDTO solicitudDTO)
+        {
+            var instalacionTecnicaBL = new InstalacionTecnicaBL();
+            var result = instalacionTecnicaBL.ObtenerSolicitudes(solicitudDTO);
+            return Json(result);
+        }
+        public JsonResult ObtenerDetalleSolicitud(long id)
+        {
+            var instalacionTecnicaBL = new InstalacionTecnicaBL();
+            var result = instalacionTecnicaBL.ObtenerDetalleSolicitud(id);
+            return Json(result);
+        }
+        public JsonResult ObtenerInstalacionesTec(FiltroInstalacionTecDTO filtros)
+        {
 
+            var instalacionTecnicaBL = new InstalacionTecnicaBL();
+            var result = instalacionTecnicaBL.ObtenerInstalacionesTec(filtros);
+            return Json(result);
+        }
+        public JsonResult ObtenerMainInstalacion(long NumReq, long IdWorkFlow)
+        {
+            var instalacionTecnicaBL = new InstalacionTecnicaBL();
+            var result = instalacionTecnicaBL.ObtenerMainInstalacion(NumReq, IdWorkFlow);
+            return Json(result);
+        }
+        public JsonResult ObtenerDetalleInstalacion(InstalacionTecnicaDetalleDTO detalle)
+        {
+            var instalacionTecnicaBL = new InstalacionTecnicaBL();
+            var result = instalacionTecnicaBL.ObtenerDetalleInstalacion(detalle);
+            return Json(result);
+        }
         public ActionResult RegistroInstallTec()
         {
             string[] cabeceraProductos1 =
             {
-                "Id",
-                "Descripcion",
-                "Marca",
-                "Modelo",
-                "Serie",
-                "Cantidad",
-                "Cantidad Prev.",
-                "Periodicidad",
-                "Garantia",
-                "Numero Fianza",
+                "Id,5",
+                "Descripcion,10",
+                "Marca,10",
+                "Modelo,10",
+                "Serie,10",
+                "Cantidad,10",
+                "Cantidad Prev.,12",
+                "Periodicidad,10",
+                "Garantia,10",
+                "Numero Fianza,10",
             };
 
             string[] cabeceraProductos2 =
             {
-                "",
-                "Id",
-                "Descripcion",
-                "Marca",
-                "Modelo",
-                "Serie",
-                "Cantidad",
-                "Cantidad Prev.",
-                "Periodicidad",
-                "Garantia",
-                "Numero Fianza",
-                "Fecha Instalación",
-                "Fecha Real"
+                "Id,5",
+                "Descripción,10",
+                "Marca,10",
+                "Modelo,10",
+                "Serie,10",
+                "Cantidad,5",
+                "Cantidad Prev,5",
+                "Periodicidad,5",
+                "Garantia,5",
+                "Numero Fianza,5",
+                "Fecha Instalación,15",
+                "Fecha Real,15"
             };
 
             var tipoProceso = VariableSesion.getCadena("TipoProceso");
@@ -117,15 +146,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
                 });
             }
         }
-
-        public JsonResult ObtenerInstalacionesTec(FiltroInstalacionTecDTO filtros)
-        {
-
-            var instalacionTecnicaBL = new InstalacionTecnicaBL();
-            var result = instalacionTecnicaBL.ObtenerInstalacionesTec(filtros);
-            return Json(result);
-        }
-
         public JsonResult RegistroRequerimientoMain(GrupoInstalacionTecnicaDTO grupoInstalacionTecnicaDTO)
         {
             try
@@ -321,19 +341,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
             }
         }
 
-        public JsonResult ObtenerSolicitudes(SolicitudDTO solicitudDTO)
-        {
-            var instalacionTecnicaBL = new InstalacionTecnicaBL();
-            var result = instalacionTecnicaBL.ObtenerSolicitudes(solicitudDTO);
-            return Json(result);
-        }
-
-        public JsonResult ObtenerDetalleSolicitud(long id)
-        {
-            var instalacionTecnicaBL = new InstalacionTecnicaBL();
-            var result = instalacionTecnicaBL.ObtenerDetalleSolicitud(id);
-            return Json(result);
-        }
 
         public void GenerarReporte(FiltroInstalacionTecDTO filtros)
         {
@@ -511,12 +518,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
 
         }
 
-        public JsonResult ObtenerMainInstalacion(long NumReq, long IdWorkFlow)
-        {
-            var instalacionTecnicaBL = new InstalacionTecnicaBL();
-            var result = instalacionTecnicaBL.ObtenerMainInstalacion(NumReq, IdWorkFlow);
-            return Json(result);
-        }
 
         public FileResult DescargarFile(string url, string nombreDoc)
         {
@@ -528,6 +529,18 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
 
             return File(ruta, contentType, nombreDoc);
         }
+
+        #region Tecnico
+        public JsonResult ObtenerTecnico(FiltroEmpleadosDTO filtroEmpleadosDTO)
+        {
+            var empleadosBL = new EmpleadosBL();
+            filtroEmpleadosDTO.UsuarioRegistra = User.ObtenerUsuario();
+            var response = empleadosBL.ListarEmpleados(filtroEmpleadosDTO);
+            return Json(response);
+        }
+
+        #endregion
+
 
     }
 }

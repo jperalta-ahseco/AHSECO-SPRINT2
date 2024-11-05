@@ -18,9 +18,7 @@ BEGIN
 	--Detalle de instalacion
 	EXEC [dbo].[USP_SEL_DETALLE_INSTALL] @isNumReq = @isNumReq 
 	--Documentos adjuntos:
+	EXEC [USP_CONSULTA_DOCUMENTOS] @isIdWorkFlow
+	--Detalle de Observaciones :
 	EXEC [USP_SEL_OBSERVACIONES] @isIdWorkFlow
-	--Seguimiento de flujo de ventas:
-	EXEC [USP_CONSULTA_WORKFLOWLOG] @isIdWorkFlow
 END
-
-
