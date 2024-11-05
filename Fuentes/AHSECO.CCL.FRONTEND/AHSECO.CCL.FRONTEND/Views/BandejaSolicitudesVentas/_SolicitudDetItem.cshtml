@@ -1,6 +1,7 @@
-﻿
+﻿@using AHSECO.CCL.FRONTEND.Core;
 @{
     ViewBag.Title = "Detalle de Item";
+    var NombreRol = VariableSesion.getCadena("VENTA_NOMBRE_ROL");
 }
 
 <div style="width:50%" class="modal-dialog modal-lg container-fluid" role="document">
@@ -32,7 +33,7 @@
                                 </div>
                                 <div class="col-md-2">
                                     <label for="DI_txtCantidad">Cantidad: </label>
-                                    <input placeholder="Ingresar Cantidad" type="text" class="form-control input-sm" id="DI_txtCantidad" value="">
+                                    <input placeholder="Cantidad" type="text" class="form-control input-sm" id="DI_txtCantidad" value="">
                                 </div>
                             </div>
                         </fieldset>
@@ -40,19 +41,32 @@
                     <div class="container-fluid">
                         <fieldset class="form-group">
                             <legend><b>Informaci&oacute;n de Costos</b></legend>
-                            <div class="row container-fluid">
-                                <div class="col-md-3">
+                            <div style="@(NombreRol == "SGI_VENTA_GERENTE" || NombreRol == "SGI_VENTA_COSTOS" ? "" : "display:none")" class="row container-fluid col-content-middleleft form-group">
+                                <div class="col-md-2">
                                     <label for="DI_txtCostoFOB">Costo FOB: </label>
-                                    <input placeholder="Ingresar Costo" type="text" class="form-control input-sm" id="DI_txtCostoFOB" value="">
                                 </div>
                                 <div class="col-md-3">
+                                    <input placeholder="Ingresar Costo" type="text" class="form-control input-sm" id="DI_txtCostoFOB" value="">
+                                </div>
+                                <div class="col-md-1">&nbsp;</div>
+                                <div class="col-md-3">
                                     <label for="DI_txtValorUnitario">Val. Unitario: </label>
+                                </div>
+                                <div class="col-md-3">
                                     <input placeholder="Ingresar Val. Unt." type="text" class="form-control input-sm" id="DI_txtValorUnitario" value="">
+                                </div>
+                            </div>
+                            <div class="row container-fluid col-content-bottomleft">
+                                <div class="col-md-2">
+                                    <label for="DI_txtGanancia">Ganancia (%): </label>
+                                </div>
+                                <div class="col-md-2">
+                                    <input placeholder="N&uacute;mero(%)" type="text" class="form-control input-sm" id="DI_txtGanancia" value="">
                                 </div>
                             </div>
                         </fieldset>
                     </div>
-                    <div class="container-fluid">
+                    <div class="container-fluid" style="@(NombreRol == "SGI_VENTA_GERENTE" || NombreRol == "SGI_VENTA_COSTOS" ? "display:none" : "")">
                         <fieldset class="form-group">
                             <legend><b>Información del Env&iacute;o</b></legend>
                             <div class="row container-fluid">
@@ -123,7 +137,7 @@
                             </div>
                         </fieldset>
                     </div>
-                    <div class="container-fluid">
+                    <div class="container-fluid" style="@(NombreRol == "SGI_VENTA_GERENTE" || NombreRol == "SGI_VENTA_COSTOS" ? "display:none" : "")">
                         <fieldset class="form-group">
                             <legend><b>Información Adicional</b></legend>
                             <div class="row container-fluid">

@@ -142,13 +142,13 @@ namespace AHSECO.CCL.BD.Ventas
                         CodItem = i.Single(d => d.Key.Equals("CODITEM")).Value.Parse<string>(),
                         Descripcion = i.Single(d => d.Key.Equals("DESCRIPCION")).Value.Parse<string>(),
                         Stock = i.Single(d => d.Key.Equals("STOCK")).Value.Parse<int>(),
-                        Unidad = i.Single(d => d.Key.Equals("UNIDAD")).Value.Parse<string>(),
+                        CodUnidad = i.Single(d => d.Key.Equals("UNIDAD")).Value.Parse<string>(),
                         Cantidad = i.Single(d => d.Key.Equals("CANTIDAD")).Value.Parse<int>(),
-                        CostoFOB = i.Single(d => d.Key.Equals("COSTOFOB")).Value.Parse<decimal>(),
-                        VentaUnitaria = i.Single(d => d.Key.Equals("VVENTAUNI")).Value.Parse<decimal>(),
-                        VentaTotalSinIGV = i.Single(d => d.Key.Equals("VVTOTALSIGV")).Value.Parse<decimal>(),
-                        PorcentajeGanancia = i.Single(d => d.Key.Equals("PORCGANANCIA")).Value.Parse<decimal>(),
-                        VentaTotalConGanacia = i.Single(d => d.Key.Equals("VVTOTALCGAN")).Value.Parse<decimal>()
+                        CostoFOB = i.Single(d => d.Key.Equals("COSTOFOB")).Value.Parse<decimal?>(),
+                        VentaUnitaria = i.Single(d => d.Key.Equals("VVENTAUNI")).Value.Parse<decimal?>(),
+                        VentaTotalSinIGV = i.Single(d => d.Key.Equals("VVTOTALSIGV")).Value.Parse<decimal?>(),
+                        PorcentajeGanancia = i.Single(d => d.Key.Equals("PORCGANANCIA")).Value.Parse<decimal?>(),
+                        VentaTotalSinIGVCGanacia = i.Single(d => d.Key.Equals("VVTOTALCGAN")).Value.Parse<decimal?>()
                     });
 
                 connection.Close();
@@ -253,7 +253,7 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("isTIPOPRODUCTO", null);
                 parameters.Add("isCODPRODUCTO", detalleCotizacion.CodItem);
                 parameters.Add("isDESCRIPCION", detalleCotizacion.Descripcion);
-                parameters.Add("isUNIDAD", detalleCotizacion.Unidad);
+                parameters.Add("isUNIDAD", detalleCotizacion.CodUnidad);
                 parameters.Add("isCANTIDAD", detalleCotizacion.Cantidad);
                 parameters.Add("isCOSTOFOB", detalleCotizacion.CostoFOB);
                 parameters.Add("isVVENTAUNI", detalleCotizacion.VentaUnitaria);

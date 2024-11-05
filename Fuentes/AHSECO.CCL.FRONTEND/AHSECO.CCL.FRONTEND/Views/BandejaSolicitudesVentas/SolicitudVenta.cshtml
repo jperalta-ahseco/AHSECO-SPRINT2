@@ -39,6 +39,7 @@
 <input type="hidden" id="estadoSol" value="@estadoSol" />
 <input type="hidden" id="idWorkFlow" value="@idWorkFlow" />
 <input type="hidden" id="idCotizacion" value="@idCotizacion" />
+<input type="hidden" id="nombreRol" value="@NombreRol" />
 
 <div class="container-fluid">
     <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
@@ -347,17 +348,16 @@
                                                         <div class="tab-content">
                                                             <div id="navDetalleProducto" class="tab-pane fade in active">
                                                                 <div class="table-responsive">
-                                                                    <table id="tblMainProducts" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                    <table id="tblDetCotCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                                                         <thead>
                                                                             <tr>
                                                                                 @for (var i = 0; i < @ViewBag.Cabecera.Length; i++)
                                                                                 {
-                                                                                    <th style="text-align:center; width:5%">@ViewBag.Cabecera[i]</th>
+                                                                                    <th style="text-align:center">@ViewBag.Cabecera[i]</th>
                                                                                 }
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
-                                                                            <tr id="NoRegMainProd"><td colspan="9"><center>No existen productos añadidos</center></td></tr>
                                                                         </tbody>
                                                                     </table>
                                                                 </div>
@@ -369,7 +369,7 @@
                                                                             <tr>
                                                                                 @for (var i = 0; i < @ViewBag.Cabecera.Length; i++)
                                                                                 {
-                                                                                    <th style="text-align:center; width:5%">@ViewBag.Cabecera[i]</th>
+                                                                                    <th style="text-align:center">@ViewBag.Cabecera[i]</th>
                                                                                 }
                                                                             </tr>
                                                                         </thead>
@@ -385,7 +385,7 @@
                                                                             <tr>
                                                                                 @for (var i = 0; i < @ViewBag.Cabecera.Length; i++)
                                                                                 {
-                                                                                    <th style="text-align:center; width:5%">@ViewBag.Cabecera[i]</th>
+                                                                                    <th style="text-align:center">@ViewBag.Cabecera[i]</th>
                                                                                 }
                                                                             </tr>
                                                                         </thead>
@@ -401,7 +401,7 @@
                                                                             <tr>
                                                                                 @for (var i = 0; i < @ViewBag.Cabecera.Length; i++)
                                                                                 {
-                                                                                    <th style="text-align:center; width:5%">@ViewBag.Cabecera[i]</th>
+                                                                                    <th style="text-align:center">@ViewBag.Cabecera[i]</th>
                                                                                 }
                                                                             </tr>
                                                                         </thead>
@@ -417,7 +417,7 @@
                                                                             <tr>
                                                                                 @for (var i = 0; i < @ViewBag.Cabecera.Length; i++)
                                                                                 {
-                                                                                    <th style="text-align:center; width:5%">@ViewBag.Cabecera[i]</th>
+                                                                                    <th style="text-align:center">@ViewBag.Cabecera[i]</th>
                                                                                 }
                                                                             </tr>
                                                                         </thead>

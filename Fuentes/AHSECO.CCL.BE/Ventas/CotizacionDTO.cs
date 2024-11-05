@@ -24,6 +24,10 @@ namespace AHSECO.CCL.BE.Ventas
         public string Vigencia { get; set; }
         public string Garantia { get; set; }
         public string Observacion { get; set; }
+        public decimal? PorcentajeDescuento { get; set; }
+        public decimal? SubtotalVenta { get; set; }
+        public decimal? MontoIGV { get; set; }
+        public decimal? TotalVenta { get; set; }
         public string Estado { get; set; }
     }
 }

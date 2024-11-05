@@ -3,6 +3,7 @@ var cotvtadet = (function ($, win, doc) {
     var $nombreusuario = $('#nombreusuario');
     var $perfilnombre = $('#perfilnombre');
     var $idCotizacion = $("#idCotizacion");
+    var $hdnNombreRol = $("#hdnNombreRol");
 
     var $cmbTipo = $('#cmbTipo');
 
@@ -15,6 +16,7 @@ var cotvtadet = (function ($, win, doc) {
     var $btnBuscarItems = $('#btnBuscarItems');
     var $tblItems = $('#tblItems');
     var $tblCotDet = $('#tblCotDet');
+    var $tblDetCotCostos = $('#tblDetCotCostos');
 
     var $DI_hdnCodigoPadre = $("#DI_hdnCodigoPadre");
     var $DI_txtCodigo = $("#DI_txtCodigo");
@@ -22,6 +24,7 @@ var cotvtadet = (function ($, win, doc) {
     var $DI_txtCantidad = $("#DI_txtCantidad");
     var $DI_txtCostoFOB = $("#DI_txtCostoFOB");
     var $DI_txtValorUnitario = $("#DI_txtValorUnitario");
+    var $DI_txtGanancia = $("#DI_txtGanancia");
     var $DI_radLLaveEnMano_Si = $("#DI_radLLaveEnMano_Si");
     var $DI_radLLaveEnMano_No = $("#DI_radLLaveEnMano_No");
     var $DI_txtDireccion = $("#DI_txtDireccion");
@@ -50,14 +53,21 @@ var cotvtadet = (function ($, win, doc) {
         obteniendoFiltros: "Obteniendo filtros de lista de precios..."
     }
 
+    var swInicializarGrillaProductos = true;
+
     $(Initialize);
     function Initialize() {
 
         $btnBuscarItems.click(buscarItems);
         $DI_btnGuardar.click(grabarDatosCotDetItem);
+        $DC_btnGuardar.click(grabarDatosCotDet);
         $DI_btnCerrar.click(cerrarModalDetItem);
         $DC_btnCerrar.click(cerrarModalDetCot);
         cargarCiclosPreventivos();
+        if (swInicializarGrillaProductos) {
+            swInicializarGrillaProductos = false;
+            buscarItems();
+        }
 
     }
 
@@ -147,7 +157,7 @@ var cotvtadet = (function ($, win, doc) {
                 }
             },
             {
-                data: "DescArticulo",
+                data: "DescRealArticulo",
                 render: function (data) {
                     return '<center>' + data + '</center>';
                 }
@@ -168,6 +178,19 @@ var cotvtadet = (function ($, win, doc) {
             {
                 data: "DescUnidad",
                 render: function (data) {
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "DescMarca",
+                render: function (data) {
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "DescRealModelo",
+                render: function (data) {
+                    if (data == null) { data = ""; }
                     return '<center>' + data + '</center>';
                 }
             },
@@ -230,7 +253,6 @@ var cotvtadet = (function ($, win, doc) {
                 render: function (data) {
                     if (data == 0) { return ""; }
                     else { return '<center><span id="btnVerAdic" class="btn btn-link btn-xs" onclick="javascript: cotvtadet.VerSubItems(this)"><i class="fa fa-arrow-down" aria-hidden="true"></i></span></center>'; }
-                    //else { return '<center><a id="btnVerAdic" class="btn btn-link btn-xs" href="javascript: cotvtadet.VerSubItems(this)"><i class="fa fa-arrow-down" aria-hidden="true"></i></a></center>'; }
                 }
             },
             {
@@ -374,6 +396,7 @@ var cotvtadet = (function ($, win, doc) {
                 $DI_txtCantidad.val(data.Result.Cantidad);
                 $DI_txtCostoFOB.val(data.Result.CostoFOB);
                 $DI_txtValorUnitario.val(data.Result.VentaUnitaria);
+                $DI_txtGanancia.val(data.Result.PorcentajeGanancia);
                 if (data.Result.LLaveEnMano == true) { $DI_radLLaveEnMano_Si.prop("checked", true); }
                 else { $DI_radLLaveEnMano_No.prop("checked", true); }
                 sessionStorage.setItem('codDistrito', data.Result.CodUbigeoDestino);
@@ -389,6 +412,7 @@ var cotvtadet = (function ($, win, doc) {
                 else { $DI_radVideos_No.prop("checked", true); }
                 if (data.Result.InstCapa == true) { $DI_radInstaCapa_Si.prop("checked", true); }
                 else { $DI_radInstaCapa_No.prop("checked", true); }
+                $DI_txtGarantiaAdic.val(data.Result.GarantiaAdic);
             }
             $('#modalDetalleItem').modal('show');
         };
@@ -565,6 +589,7 @@ var cotvtadet = (function ($, win, doc) {
                 $DI_txtCantidad.val(data.Result.Cantidad);
                 $DI_txtCostoFOB.val(data.Result.CostoFOB);
                 $DI_txtValorUnitario.val(data.Result.VentaUnitaria);
+                $DI_txtGanancia.val(data.Result.PorcentajeGanancia);
                 if (data.Result.LLaveEnMano == true) { $DI_radLLaveEnMano_Si.prop("checked", true); }
                 else { $DI_radLLaveEnMano_No.prop("checked", true); }
                 sessionStorage.setItem('codDistrito', data.Result.CodUbigeoDestino);
@@ -580,6 +605,7 @@ var cotvtadet = (function ($, win, doc) {
                 else { $DI_radVideos_No.prop("checked", true); }
                 if (data.Result.InstCapa == true) { $DI_radInstaCapa_Si.prop("checked", true); }
                 else { $DI_radInstaCapa_No.prop("checked", true); }
+                $DI_txtGarantiaAdic.val(data.Result.GarantiaAdic);
             }
             $('#modalDetalleItem').modal('show');
         };
@@ -600,16 +626,30 @@ var cotvtadet = (function ($, win, doc) {
             }
         }
 
-        if ($DI_txtCostoFOB.val() != "") {
-            if (!app.validaNumeroDecimal($DI_txtCostoFOB.val())) {
-                app.message.error("Validaci&oacute;n", "Número inv&aacute;lido en campo Costo FOB");
+        if ($hdnNombreRol.val() == "SGI_VENTA_GERENTE" || $hdnNombreRol.val() == "SGI_VENTA_COSTOS") {
+            if ($DI_txtCostoFOB.val() == "" && $DI_txtValorUnitario.val() == "") {
+                app.message.error("Validaci&oacute;n", "Se debe llenar mínimo 1 campo de COSTOS");
                 return false;
+            }
+
+            if ($DI_txtCostoFOB.val() != "") {
+                if (!app.validaNumeroDecimal($DI_txtCostoFOB.val())) {
+                    app.message.error("Validaci&oacute;n", "Número inv&aacute;lido en campo Costo FOB");
+                    return false;
+                }
             }
         }
 
         if ($DI_txtValorUnitario.val() != "") {
             if (!app.validaNumeroDecimal($DI_txtValorUnitario.val())) {
                 app.message.error("Validaci&oacute;n", "Número inv&aacute;lido en campo Valor Unitario");
+                return false;
+            }
+        }
+
+        if ($DI_txtGanancia.val() != "") {
+            if (!app.validaNumeroDecimal($DI_txtGanancia.val())) {
+                app.message.error("Validaci&oacute;n", "Número inv&aacute;lido en campo Ganancia");
                 return false;
             }
         }
@@ -633,6 +673,21 @@ var cotvtadet = (function ($, win, doc) {
             if (!app.validaNumeroEntero($DI_txtNroPiso.val())) {
                 app.message.error("Validaci&oacute;n", "Número inv&aacute;lido en campo Piso");
                 return false;
+            }
+        }
+
+        if ($DI_txtCantPreventivo.val() != "") {
+            if (!validaNumeroEntero($DI_txtCantPreventivo.val())) {
+                app.message.error("Validaci&oacute;n", "Número inv&aacute;lido en campo Cantidad Preventivo");
+                return false;
+            }
+            else {
+                if (parseInt($DI_txtCantPreventivo.val()) > 0) {
+                    if ($.trim($DI_cmbCicloPreventivo.val()) == "") {
+                        app.message.error("Validaci&oacute;n", "Selecciona un ciclo de prevenci&oacute;n");
+                        return false;
+                    }
+                }
             }
         }
 
@@ -671,7 +726,9 @@ var cotvtadet = (function ($, win, doc) {
                 CodItem: $DI_txtCodigo.val(),
                 Cantidad: $DI_txtCantidad.val(),
                 CostoFOB: $DI_txtCostoFOB.val(),
+                PorcentajeGanancia: $DI_txtGanancia.val(),
                 VentaUnitaria: $DI_txtValorUnitario.val(),
+                PorcentajeGanancia: $DI_txtGanancia.val(),
                 LLaveEnMano: bLLaveMano,
                 CodUbigeoDestino: sessionStorage.getItem('codDistrito'),
                 DescUbigeoDestino: $txtUbicacion.val(),
@@ -700,6 +757,195 @@ var cotvtadet = (function ($, win, doc) {
         $('#modalDetalleItem').modal('hide');
     }
 
+    function grabarDatosCotDet() {
+        method = "POST";
+        url = "BandejaSolicitudesVentas/GrabarDatosCotDet";
+        var objDatos = { };
+        var objParam = JSON.stringify(objDatos);
+
+        var fnDoneCallBack = function (data) {
+            cerrarModalDetCot();
+            cargarTablaDetCotCostos(data);
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+    }
+
+    function cargarTablaDetCotCostos(data) {
+
+        var columns = [];
+
+        if ($hdnNombreRol.val() == "SGI_VENTA_GERENTE" || $hdnNombreRol.val() == "SGI_VENTA_COSTOS") {
+
+            columns = [
+                {
+                    data: "NroItem",
+                    render: function (data) {
+                        if (data == null) { data = ""; }
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "CodItem",
+                    render: function (data) {
+                        if (data == null) { data = ""; }
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "Descripcion",
+                    render: function (data) {
+                        if (data == null) { data = ""; }
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "Stock",
+                    render: function (data) {
+                        if (data == null) { data = ""; }
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "Unidad",
+                    render: function (data) {
+                        if (data == null) { data = ""; }
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "Cantidad",
+                    render: function (data) {
+                        if (data == null) { data = ""; }
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "CostoFOB",
+                    render: function (data) {
+                        if (data == null) { data = ""; }
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "VentaUnitaria",
+                    render: function (data) {
+                        if (data == null) { data = ""; }
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "VentaTotalSinIGV",
+                    render: function (data) {
+                        if (data == null) { data = ""; }
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "PorcentajeGanancia",
+                    render: function (data) {
+                        if (data == null) { data = ""; }
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "VentaTotalConGanacia",
+                    render: function (data) {
+                        if (data == null) { data = ""; }
+                        return '<center>' + data + '</center>';
+                    }
+                }
+            ];
+
+        }
+        else {
+
+            columns = [
+                {
+                    data: "NroItem",
+                    render: function (data) {
+                        if (data == null) { data = ""; }
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "CodItem",
+                    render: function (data) {
+                        if (data == null) { data = ""; }
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "Descripcion",
+                    render: function (data) {
+                        if (data == null) { data = ""; }
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "Stock",
+                    render: function (data) {
+                        if (data == null) { data = ""; }
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "Unidad",
+                    render: function (data) {
+                        if (data == null) { data = ""; }
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "Cantidad",
+                    render: function (data) {
+                        if (data == null) { data = ""; }
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "VentaTotalSinIGV",
+                    render: function (data) {
+                        if (data == null) { data = ""; }
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "PorcentajeGanancia",
+                    render: function (data) {
+                        if (data == null) { data = ""; }
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "VentaTotalConGanacia",
+                    render: function (data) {
+                        if (data == null) { data = ""; }
+                        return '<center>' + data + '</center>';
+                    }
+                }
+            ];
+
+        }
+
+        var columnDefs =
+        {
+            targets: [0],
+            visible: false
+        }
+
+        var rowCallback = function (row, data, index) {
+            // Asignar un ID único basado en el índice de datos o algún identificador único
+            $(row).attr('id', 'row' + index);
+        };
+
+        var filters = {}
+        filters.dataTableInfo = false;
+        filters.dataTablePaging = true;
+
+        app.llenarTabla($tblDetCotCostos, data, columns, columnDefs, "#tblDetCotCostos", rowCallback, null, filters);
+    }
+
     function cerrarModalDetCot() {
         $('#modalDetalleCotizacion').modal('hide');
     }
@@ -718,6 +964,8 @@ var cotvtadet = (function ($, win, doc) {
         VerSubItems: VerSubItems,
         grabarDatosCotDetItem: grabarDatosCotDetItem,
         cerrarModalDetItem: cerrarModalDetItem,
+        grabarDatosCotDet: grabarDatosCotDet,
+        cargarTablaDetCotCostos: cargarTablaDetCotCostos,
         cerrarModalDetCot: cerrarModalDetCot
     }
 })(window.jQuery, window, document);

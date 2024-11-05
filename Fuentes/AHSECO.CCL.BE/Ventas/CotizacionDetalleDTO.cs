@@ -17,13 +17,16 @@ namespace AHSECO.CCL.BE.Ventas
         public string CodItem { get; set; }
         public string Descripcion { get; set; }
         public int Stock { get; set; }
-        public string Unidad { get; set; }
+        public string CodUnidad { get; set; }
+        public string DescUnidad { get; set; }
         public int Cantidad { get; set; }
-        public decimal CostoFOB { get; set; }
-        public decimal VentaUnitaria { get; set; }
-        public decimal VentaTotalSinIGV { get; set; }
-        public decimal PorcentajeGanancia { get; set; }
-        public decimal VentaTotalConGanacia { get; set; }
+        public decimal? CostoFOB { get; set; }
+        public decimal? VentaUnitaria { get; set; }
+        public decimal? VentaTotalSinIGV { get; set; }
+        public decimal? PorcentajeGanancia { get; set; }
+        public decimal? VentaTotalSinIGVCGanacia { get; set; }
+        public decimal? MontoDescuento { get; set; }
+        public decimal? VentaTotalSinIGVDscto { get; set; }
         public bool LLaveEnMano { get; set; }
         public int NroPiso { get; set; }
         public string CodUbigeoDestino { get; set; }

@@ -67,8 +67,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             {
                 string[] dtHeadProducto = //detalle de las columnas
                 {
-                    "Item",
-                    "Cod.Producto",
+                    "Nro. Item",
+                    "Codigo Producto",
                     "Descripción",
                     "Stock Disponible",
                     "Unidad Medida",
@@ -85,8 +85,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             {
                 string[] dtHeadProducto = //detalle de las columnas
                 {
-                    "Item",
-                    "Cod.Producto",
+                    "Nro. Item",
+                    "Codigo Producto",
                     "Descripción",
                     "Stock Disponible",
                     "Unidad Medida",
@@ -98,6 +98,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 ViewBag.Cabecera = dtHeadProducto;
             };
 
+            ViewBag.NombreRol = NombreRol;
             ViewBag.EstadoSolicitud = "";
             ViewBag.IdCotizacion = 0;
             ViewBag.IdContacto = 0;
@@ -902,7 +903,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
         }
 
-        public List<CotizacionDetalleDTO> ReconteoSubItemsCotDet(List<CotizacionDetalleDTO> lstItems)
+        private List<CotizacionDetalleDTO> ReconteoSubItemsCotDet(List<CotizacionDetalleDTO> lstItems)
         {
             if (lstItems != null)
             {
@@ -943,6 +944,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         x.Cantidad = CotDet.Cantidad;
                         x.CostoFOB = CotDet.CostoFOB;
                         x.VentaUnitaria = CotDet.VentaUnitaria;
+                        x.PorcentajeGanancia = CotDet.PorcentajeGanancia;
                         x.LLaveEnMano = CotDet.LLaveEnMano;
                         int nUbigeo;
                         if (!string.IsNullOrEmpty(CotDet.CodUbigeoDestino) && int.TryParse(CotDet.CodUbigeoDestino, out nUbigeo))
@@ -962,12 +964,67 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         x.Videos = CotDet.Videos;
                         x.InstCapa = CotDet.InstCapa;
                         x.GarantiaAdic = CotDet.GarantiaAdic;
+                        x.PorcentajeGanancia = CotDet.PorcentajeGanancia;
                     }
                 }
                 );
 
                 lstItems = ReconteoSubItemsCotDet(lstItems);
                 VariableSesion.setObject(TAG_CotDetItems, lstItems);
+
+                //Solo cargar los productos en pantalla
+                var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems.Where(x => x.TipoItem != ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio));
+
+                return Json(response);
+            }
+            catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
+        }
+
+        private List<CotizacionDetalleDTO> TotalizacionCotDet(List<CotizacionDetalleDTO> lstItems)
+        {
+            if (lstItems != null)
+            {
+                var lstItemsPadre = lstItems.Where(x => x.EsItemPadre).ToList();
+                foreach (CotizacionDetalleDTO item in lstItems)
+                {
+                    if (item.EsItemPadre)
+                    {
+                        item.CantSubItem = lstItems.Where(x => x.CodItem != item.CodItem && x.NroItem == item.NroItem).Count();
+                    }
+                }
+            }
+            return lstItems;
+        }
+
+        [HttpPost]
+        public JsonResult GrabarDatosCotDet()
+        {
+            try
+            {
+                var ventasBL = new VentasBL();
+
+                List<CotizacionDetalleDTO> lstItems = new List<CotizacionDetalleDTO>();
+                if (VariableSesion.getObject(TAG_CotDetItems) != null) { lstItems = (List<CotizacionDetalleDTO>)VariableSesion.getObject(TAG_CotDetItems); }
+
+                if(!lstItems.Any()) { throw new Exception("No se ha agregado ning&uacute;n producto o servicio"); }
+
+                List<CotizacionDetalleDTO> lstItemsPadre = lstItems.Where(x => x.EsItemPadre).ToList();
+
+                foreach (CotizacionDetalleDTO item in lstItemsPadre)
+                {
+                    var rptaArticulo = ventasBL.ObtenerArticulosxFiltro(new FiltroArticuloDTO() { CodsArticulo = item.CodItem });
+                    var oArticulo = rptaArticulo.Result.FirstOrDefault();
+                    item.Stock = oArticulo.StockDisponible;
+                    item.VentaTotalSinIGV = lstItems.Where(x => x.NroItem == item.NroItem).Select(y => y.VentaUnitaria).Sum();
+                    lstItems.ForEach(itemPadre =>
+                    {
+                        if(item.NroItem == itemPadre.NroItem && item.CodItem.Trim() == itemPadre.CodItem.Trim())
+                        {
+                            itemPadre.VentaTotalSinIGV = item.VentaTotalSinIGV;
+                            itemPadre.CodUnidad = oArticulo.CodUnidad;
+                        }
+                    });
+                }
 
                 //Solo cargar los productos en pantalla
                 var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems.Where(x => x.TipoItem != ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio));
