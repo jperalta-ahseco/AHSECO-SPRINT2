@@ -550,10 +550,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             }
         }
 
-        public JsonResult GrupoSolicitudVentaFiltro()
+        public JsonResult GrupoSolicitudVentaFiltro(int codFlujo)
         {
             var ventasBL = new VentasBL();
-            var result = ventasBL.GrupoSolicitudVentaFiltro();
+            var result = ventasBL.GrupoSolicitudVentaFiltro(codFlujo);
             return Json(result);
         }
 

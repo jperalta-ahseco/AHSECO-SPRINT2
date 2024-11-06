@@ -17,7 +17,7 @@
     var idWorkFlow = VariableSesion.getCadena("idWorkFlow");
     var idCotizacion = ViewBag.IdCotizacion;
     ViewBag.disabled = false; //
-    if (NombreRol != "SGI_VENTA_ASESOR") //habilitado solo cuando es nuevo y con perfil de SGI_VENTA_ASESOR
+    if (NombreRol != "SGI_VENTA_ASESOR" && NombreRol != "SGI_VENTA_COORDINASERV" && NombreRol != "SGI_VENTA_COORDINAATC") //habilitado solo cuando es nuevo y con  los perfiles de vendedores
     {
         ViewBag.disabled = true;
     }
@@ -39,6 +39,7 @@
 <input type="hidden" id="estadoSol" value="@estadoSol" />
 <input type="hidden" id="idWorkFlow" value="@idWorkFlow" />
 <input type="hidden" id="idCotizacion" value="@idCotizacion" />
+<input type="hidden" id="idRolUsuario" value="@NombreRol" />
 
 <div class="container-fluid">
     <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
@@ -72,9 +73,16 @@
                     }
                     <div class="row container-fluid">
                         <div class="col-md-4 col-sm-7 col-xs-12">
-                            <label for="cmbFlujo">&Aacute;reas: </label>
+                            <label for="cmbFlujo">&Aacute;rea: </label>
                             <div class="form-group">
                                 <select @(ViewBag.disabled ? "disabled" : "") class="form-control select2 input-sm" style="width:100%;" id="cmbFlujo" data-selected="">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-7 col-xs-12">
+                            <label for="cmbTipoVenta">Tipo de Venta: </label>
+                            <div class="form-group">
+                                <select @(ViewBag.disabled ? "disabled" : "") class="form-control select2 input-sm" style="width:100%;" id="cmbTipoVenta" data-selected="">
                                 </select>
                             </div>
                         </div>
@@ -82,13 +90,6 @@
                             <label for="cmbTipo">Tipo: </label>
                             <div class="form-group">
                                 <select @(ViewBag.disabled ? "disabled" : "") class="form-control select2 input-sm" style="width:100%;" id="cmbTipo" data-selected="">
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-4 col-sm-7 col-xs-12">
-                            <label for="cmbMedioContacto">Medio de Contacto: </label>
-                            <div class="form-group">
-                                <select @(ViewBag.disabled ? "disabled" : "") class="form-control select2 input-sm" style="width:100%;" id="cmbMedioContacto" data-selected="">
                                 </select>
                             </div>
                         </div>
@@ -138,24 +139,46 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
-                    <br />
-                    <div class="row container-fluid">
-                        <div class="text-right">
-                            @if (NombreRol == "SGI_VENTA_ASESOR")
-                            {
-                                if (numSol != null)
-                                {
-                                    <button style="@(ViewBag.PermitirCancelarCot ? "" : "display:none")" class="btn btn-danger btn-sm" type="button" data-dismiss="modal" id="btnEliminarSol" tabindex="14"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;Cancelar Solicitud</button>
-                                }
-                                else
-                                {
-                                    <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnRegistrar" tabindex="14"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Registrar</button>
-                                }
-                            }
-                            <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegresar" tabindex="14"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Regresar</button>
+                        <div class="col-md-4 col-xs-12">
+                            <label for="cmbMedioContacto">Medio de Contacto: </label>
+                            <div class="form-group">
+                                <select @(ViewBag.disabled ? "disabled" : "") class="form-control select2 input-sm" style="width:100%;" id="cmbMedioContacto" data-selected="">
+                                </select>
+                            </div>
                         </div>
                     </div>
+                    <div class="row container-fluid" id="divDatosLicitacion" style="display:none;">
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtNroProceso">N° de Proceso:</label>
+                            <div class="form-group">
+                                <input type="text" class="form-control input-sm" id="txtNroProceso" placeholder="Ingresar N° de Proceso" maxlength="50">
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtTipoProceso">Tipo de Proceso:</label>
+                            <div class="form-group">
+                                <input type="text" class="form-control input-sm" id="txtTipoProceso" placeholder="Ingresar Tipo de Proceso" maxlength="200">
+                            </div>
+                        </div>
+
+                    </div>
+                        <br />
+                        <div class="row container-fluid">
+                            <div class="text-right">
+                                @if (NombreRol == "SGI_VENTA_ASESOR")
+                                {
+                                    if (numSol != null)
+                                    {
+                                        <button style="@(ViewBag.PermitirCancelarCot ? "" : "display:none")" class="btn btn-danger btn-sm" type="button" data-dismiss="modal" id="btnEliminarSol" tabindex="14"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;Cancelar Solicitud</button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnRegistrar" tabindex="14"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Registrar</button>
+                                    }
+                                }
+                                <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegresar" tabindex="14"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Regresar</button>
+                            </div>
+                        </div>
                 </form>
                 <ul class="nav nav-tabs" style="padding-top: 5px;">
                     @if (numSol != null)

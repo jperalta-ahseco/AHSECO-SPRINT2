@@ -419,14 +419,14 @@ namespace AHSECO.CCL.BD.Ventas
             };
         }
 
-        public FiltroGrupoSolicitudVentaDTO GrupoSolicitudVentaFiltro()
+        public FiltroGrupoSolicitudVentaDTO GrupoSolicitudVentaFiltro(int codFlujo)
         {
             Log.TraceInfo(Utilidades.GetCaller());
             using (var connection = Factory.ConnectionSingle())
             {
                 SqlCommand sqlcommand;
                 var result = new FiltroGrupoSolicitudVentaDTO();
-                string query = "USP_FILTROS_SOLICITUD_VENTAS";
+                string query = "exec USP_FILTROS_SOLICITUD_VENTAS @CodFlujo="+codFlujo.ToString();
                 connection.Open();
                 sqlcommand = new SqlCommand(query, connection);
                 using (var reader = sqlcommand.ExecuteReader())
@@ -515,6 +515,18 @@ namespace AHSECO.CCL.BD.Ventas
                         _empresas.Add(emp);
                     };
 
+                    reader.NextResult();
+                    List<ComboDTO> _tipoVenta = new List<ComboDTO>();
+                    while (reader.Read())
+                    {
+                        var tventa = new ComboDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("CODTIPOVENTA")) ? "" : reader.GetString(reader.GetOrdinal("CODTIPOVENTA")),
+                            Text = reader.IsDBNull(reader.GetOrdinal("TIPOVENTA")) ? "" : reader.GetString(reader.GetOrdinal("TIPOVENTA"))
+                        };
+                        _tipoVenta.Add(tventa);
+                    };
+
                     result.Flujos = _flujos;
                     result.TipoSol = _tipoSol;
                     result.MedioContacto = _medioContacto;
@@ -522,6 +534,7 @@ namespace AHSECO.CCL.BD.Ventas
                     result.Garantias = _garantias;
                     result.FormPago = _formPago;
                     result.Empresas = _empresas;
+                    result.TipoVenta = _tipoVenta;
                 };
                 return result;
             };

@@ -1,13 +1,13 @@
 USE [DB_AHSECO]
 GO
 
-CREATE PROCEDURE [dbo].[USP_FILTROS_SOLICITUD_VENTAS]
+CREATE OR ALTER PROCEDURE [dbo].[USP_FILTROS_SOLICITUD_VENTAS]
 /*=================================================================================================
 	NOMBRE:					FECHA:		DESCRIPCIÓN:
 	Diego A. Bazalar		04/10/2024	Extrae los filtros para realizar la inserción, actualización de la solicitud de ventas. 
 	EXEC [USP_FILTROS_SOLICITUD_VENTAS] 
   =================================================================================================*/
-
+@CodFlujo INT
 AS
 BEGIN
 	--ComboBox FlujodeSolicitud
@@ -24,5 +24,6 @@ BEGIN
 	SELECT D.PARAMETRO CODPAGO, D.VALOR1 NOMPAGO FROM TBD_DATOS_GENERALES D WHERE DOMINIO='FORMAPAGO' AND ESTADO=1 AND HABILITADO=1
 	--ComboBox Empresas
 	SELECT D.PARAMETRO CODEMPRESA, D.VALOR1 RAZONSOCIAL FROM TBD_DATOS_GENERALES D WHERE DOMINIO='RAZSOCIAL' AND ESTADO=1
-
+	--ComboBox Tipo de ventas
+	SELECT D.COD_VALOR1 CODTIPOVENTA, D.VALOR1 TIPOVENTA FROM TBD_DATOS_GENERALES D WHERE DOMINIO='TIPOVENTA' AND ESTADO=1 AND HABILITADO=1
 END

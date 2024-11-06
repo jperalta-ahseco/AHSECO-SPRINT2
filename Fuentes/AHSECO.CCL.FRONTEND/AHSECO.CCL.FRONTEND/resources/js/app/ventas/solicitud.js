@@ -50,7 +50,10 @@
     var $btnGuiaBO = $("#btnGuiaBO");
     var $btnGuiaPedido = $("#btnGuiaPedido");
     var $formGestionVenta = $("#formGestionVenta");
-
+    var $divDatosLicitacion = $("#divDatosLicitacion");
+    var $txtNroProceso = $("#txtNroProceso");
+    var $txtTipoProceso = $("#txtTipoProceso");
+    var $idRolUsuario = $("#idRolUsuario");
 
     /*Sección Solicitud*/
     var $cmbServicios = $('#cmbServicios');
@@ -66,6 +69,7 @@
     var $btnRegistrar = $('#btnRegistrar');
     var $cmbTipo = $('#cmbTipo');
     var $cmbFlujo = $('#cmbFlujo');
+    var $cmbTipoVenta = $('#cmbTipoVenta');
     var $btnRegresar = $("#btnRegresar");
     var $btnActualizar = $('#btnActualizar');
     var $servicios = $('#servicios');
@@ -211,6 +215,7 @@
         $btnImprimirCotizacion.click($btnImprimirCotizacion_click);
         $btnGuiaBO.click($btnGuiaBO_click);
         $btnGuiaPedido.click($btnGuiaPedido_click);
+        $cmbTipoVenta.on("change", changeTipoVenta);
         inicializarBotonesCantidad();
         //crearTablaProductos();
         $('#tblConsultaProductos tbody').on('click', 'td #btnAñadirChild', function () {
@@ -291,6 +296,18 @@
         });
         // Función para dar formato a la fila hija
     };
+
+    function changeTipoVenta() {
+        var tipo_venta = $cmbTipoVenta.val();
+        $txtNroProceso.val('');
+        $txtTipoProceso.val('');
+        if (tipo_venta == "TVEN02") { //Para licitaciones:
+            $divDatosLicitacion.show();
+        }
+        else {
+            $divDatosLicitacion.hide();
+        }
+    }
 
     function $btnImprimirCotizacion_click() {
 
@@ -528,8 +545,18 @@
     }
 
     function cargaCombos() {
+
+        var rol = $idRolUsuario.val();
+        var codFlujo = "0";
+        if (rol == "SGI_VENTA_ASESOR" || rol == "SGI_VENTA_COORDINAVENTA") {
+            codFlujo = "1";
+        }
+        else if (rol == "SGI_VENTA_COORDINASERV" || rol == "SGI_VENTA_COORDINAATC") {
+            codFlujo = "2";
+        }
+
         method = "POST";
-        url = "BandejaSolicitudesVentas/GrupoSolicitudVentaFiltro"
+        url = "BandejaSolicitudesVentas/GrupoSolicitudVentaFiltro?codFlujo=" + codFlujo;
         var objComb = "";
         objComb = JSON.stringify(objComb);
 
@@ -546,6 +573,7 @@
             app.llenarComboMultiResult($cmbMedioContacto, data.Result.MedioContacto, null, "", "", filters);
             app.llenarComboMultiResult($cmbTipoPago, data.Result.FormPago, null, "", "", filters);
             app.llenarComboMultiResult($cmbempresa, data.Result.Empresas, null, "", "", filters);
+            app.llenarComboMultiResult($cmbTipoVenta, data.Result.TipoVenta, null, "", "", filters);
         };
 
         var fnFailCallback = function () {
@@ -1993,7 +2021,7 @@
             objBuscar = {
                 IdCliente: $idCliente.val(),
                 Id_Solicitud: $numeroSolicitud.val(),
-                Id_WorkFlow :$codigoWorkflow.val()
+                Id_WorkFlow: $codigoWorkflow.val()
             };
 
             objParam = JSON.stringify(objBuscar);
@@ -2024,7 +2052,7 @@
                 solicitud.observaciones = data.Result.Observaciones;
                 if (solicitud.contadorObservaciones > 0) {
                     for (var i = 0; i < data.Result.Observaciones.length; i++) {
-                        var nuevoTr = "<tr id='row" + data.Result.Observaciones[i].Id +"'>" +
+                        var nuevoTr = "<tr id='row" + data.Result.Observaciones[i].Id + "'>" +
                             "<th style='text-align: center;'>" + data.Result.Observaciones[i].Nombre_Usuario + "</th>" +
                             "<th style='text-align: center;'>" + data.Result.Observaciones[i].Perfil_Usuario + "</th>" +
                             "<th style='text-align: center;'>" + data.Result.Observaciones[i].Fecha_Registro + "</th>" +
@@ -2058,7 +2086,7 @@
                 if (docs > 0) {
                     for (i = 0; i < data.Result.Adjuntos.length; i++) {
                         var html = '<div class="text-center">';
-                            //var d = "'" + data.Result.Adjuntos[i].CodigoDocumento + "','" + data.Result.Adjuntos[i].RutaDocumento + "'";
+                        //var d = "'" + data.Result.Adjuntos[i].CodigoDocumento + "','" + data.Result.Adjuntos[i].RutaDocumento + "'";
                         html += ' <a class="btn btn-default btn-xs" title="Descargar"  href="javascript:solicitud.download(' + data.Result.Adjuntos[i].CodigoDocumento + ')"><i class="fa fa-download" aria-hidden="true"></i></a>&nbsp;';
                         html += ' <a class="btn btn-default btn-xs" title="Eliminar"  href="javascript:solicitud.eliminarDocumento(' + data.Result.Adjuntos[i].CodigoDocumento + ')"><i class="fa fa-ban" aria-hidden="true"></i></a>&nbsp;';
 
@@ -2078,10 +2106,23 @@
                 }
             };
             var fnFailCallBack = function () {
-                app.message.error("Validación","Hubo un error en obtener el detalle de la solicitud.")
+                app.message.error("Validación", "Hubo un error en obtener el detalle de la solicitud.")
             };
 
             app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, mensajes.consultandoDetalleSolicitud)
+        }
+        else {
+            $cmbFlujo.prop("disabled", true);
+            setTimeout(function () {
+                var rol = $idRolUsuario.val();
+                if (rol == "SGI_VENTA_ASESOR" || rol == "SGI_VENTA_COORDINAVENTA") {
+                    $cmbFlujo.val("1").trigger("change.select2");
+                }
+                else if (rol == "SGI_VENTA_COORDINASERV" || rol == "SGI_VENTA_COORDINAATC") {
+                    $cmbFlujo.val("2").trigger("change.select2");
+                }
+            }, 3000);
+
         };
     };
 
