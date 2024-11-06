@@ -1459,6 +1459,7 @@
                 IsTipoProceso: "I",
                 Id_Solicitud: "",
                 Id_Flujo: $cmbFlujo.val(),
+                TipoVenta: $cmbTipoVenta.val(),
                 Fecha_Sol: $dateSolicitud.val(),
                 Tipo_Sol: $cmbTipo.val(),
                 Cod_MedioCont: $cmbMedioContacto.val(),
@@ -1467,6 +1468,8 @@
                 RazonSocial: $nomEmpresa.val(),
                 AsesorVenta: $Asesor.val(),
                 Cod_Empresa: $cmbempresa.val(),
+                TipoProceso: $txtTipoProceso.val(),
+                NumProceso: $txtNroProceso.val(),
                 Estado: "SREG"
             },
             Observaciones: solicitud.observaciones,
@@ -2037,6 +2040,11 @@
                 $cmbMedioContacto.val(data.Result.Solicitud.Cod_MedioCont).trigger("change.select2");
                 $cmbempresa.val(data.Result.Solicitud.Cod_Empresa).trigger("change.select2");
                 $dateSolicitud.val(data.Result.Solicitud.Fecha_Sol);
+                $cmbTipoVenta.val(data.Result.Solicitud.TipoVenta).trigger("change.select2");
+                $txtNroProceso.val(data.Result.Solicitud.NroProceso);
+                $txtTipoProceso.val(data.Result.Solicitud.TipoProceso);
+
+
 
                 cotvtadet.RecargarFiltroFamilia();
 
