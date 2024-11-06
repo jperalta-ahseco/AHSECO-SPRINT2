@@ -23,7 +23,7 @@
     var $txtNumContrato = $('#txtNumContrato');
     var $txtNumOrdCompra = $('#txtNumOrdCompra');
     var $txtNumFianza = $('#txtNumFianza');
-
+    var $formInstallTec = $('#formInstallTec');
     
     var $btnGuardarUbigeo = $('#btnGuardarUbigeo');
     var $txtUbicacion = $('#txtUbicacion');
@@ -470,14 +470,19 @@
         var columns = [
             {
                 data: "NumReq",
-                render : function (data, type, row) {
-                    return '<center>' + data + '</center>'
+                render: function (data, type, row) {
+                    var numReqFormateado = ("000000" + data.toString());
+                    numReqFormateado = numReqFormateado.substring((numReqFormateado.length) - 6, numReqFormateado.length);
+
+                    return '<center>' + numReqFormateado + '</center>'
                 }
             },
             {
                 data: "Id_Solicitud",
-                render : function (data, type, row) {
-                    return '<center>' + data + '</center>'
+                render: function (data, type, row) {
+                    var numSolFormateado = ("000000" + data.toString());
+                    numSolFormateado = numSolFormateado.substring((numSolFormateado.length) - 6, numSolFormateado.length);
+                    return '<center>' + numSolFormateado + '</center>'
                 }
             },
             {
@@ -539,8 +544,16 @@
                 render : function (data, type, row) {
                     var d = "'" + row.NumReq + "','" + row.CodEstado + "','" + row.Id_WorkFlow +"'"; 
                     var ver = '<a id="btnVer" class="btn btn-info btn-xs" title="Ver" href="javascript: bandejaInstalacionTecnica.ver(' + d + ')"><i class="fa fa-eye" aria-hidden="true"></i></a>';
-                    var editar = '<a id="btnEditar" class="btn btn-default btn-xs" title="Editar" href="javascript: bandejaInstalacionTecnica.editar(' + d + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>';
-                    return '<center>' + editar + ' ' + ver +'</center>'
+                    if (row.CodEstado == "STREG") {
+                        var accion = '<a id="btnEditar" class="btn btn-default btn-xs" title="Asignar Técnicos" href="javascript: bandejaInstalacionTecnica.editar(' + d + ')"><i class="fa fa-handshake-o" aria-hidden="true"></i></a>';
+                    }
+                    else if (row.CodEstado == "STEPI") {
+                        var accion = '<a id="btnEditar" class="btn btn-primary btn-xs" title="Cerrar Requerimiento" href="javascript: bandejaInstalacionTecnica.editar(' + d + ')"><i class="fa fa-check" aria-hidden="true"></i></a>';
+                    }
+                    else if (row.CodEstado == "STINS") {
+                        var accion = '';
+                    };
+                    return '<center>' + accion + ' ' + ver +'</center>'
                 }
             }
         ];

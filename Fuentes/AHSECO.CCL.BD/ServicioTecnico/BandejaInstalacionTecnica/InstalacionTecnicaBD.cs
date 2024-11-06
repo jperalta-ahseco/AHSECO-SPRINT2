@@ -104,7 +104,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                         var tipEmpleado = new ComboDTO()
                         {
                             Id = reader.IsDBNull(reader.GetOrdinal("CODTIPO")) ? "" : reader.GetString(reader.GetOrdinal("CODTIPO")),
-                            //Text = reader.IsDBNull(reader.GetOrdinal("DESCTIPO")) ? "" : reader.GetString(reader.GetOrdinal("DESCTIPO"))
+                            Text = reader.IsDBNull(reader.GetOrdinal("DESCTIPO")) ? "" : reader.GetString(reader.GetOrdinal("DESCTIPO"))
                         };
                         _tipoEmpleado.Add(tipEmpleado);
                     }
@@ -199,7 +199,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                             FechaReal = reader.IsDBNull(reader.GetOrdinal("FECHAREAL")) ? "" : reader.GetString(reader.GetOrdinal("FECHAREAL"))
                         };
 
-                        detalleDTO.Tecnicos = this.ObtenerTecnico(detalleDTO.Id);
+                        detalleDTO.Tecnicos = ObtenerTecnico(detalleDTO.Id);
                         result.Add(detalleDTO);
                     }
                 }
@@ -228,8 +228,11 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                             Id_Detalle = reader.IsDBNull(reader.GetOrdinal("ID_DETALLE")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_DETALLE")),
                             Cod_Tecnico = reader.IsDBNull(reader.GetOrdinal("COD_TECNICO")) ? 0 : reader.GetInt32(reader.GetOrdinal("COD_TECNICO")),
                             NombreTecnico = reader.IsDBNull(reader.GetOrdinal("NOMBRETECNICO")) ? "" : reader.GetString(reader.GetOrdinal("NOMBRETECNICO")),
+                            ApellidoPaterno = reader.IsDBNull(reader.GetOrdinal("APELLIDOPATERNO")) ? "" : reader.GetString(reader.GetOrdinal("APELLIDOPATERNO")),
+                            ApellidoMaterno = reader.IsDBNull(reader.GetOrdinal("APELLIDOMATERNO")) ? "" : reader.GetString(reader.GetOrdinal("APELLIDOMATERNO")),
                             Documento = reader.IsDBNull(reader.GetOrdinal("DOCUMENTO")) ? "" : reader.GetString(reader.GetOrdinal("DOCUMENTO")),
                             TipDocumento = reader.IsDBNull(reader.GetOrdinal("TIPO_DOCUMENTO")) ? "" : reader.GetString(reader.GetOrdinal("TIPO_DOCUMENTO")),
+                            Nom_TipDocumento = reader.IsDBNull(reader.GetOrdinal("NOM_TIPO_DOCUMENTO")) ? "" : reader.GetString(reader.GetOrdinal("NOM_TIPO_DOCUMENTO")),
                             Correo = reader.IsDBNull(reader.GetOrdinal("CORREO")) ? "" : reader.GetString(reader.GetOrdinal("CORREO")),
                             Telefono = reader.IsDBNull(reader.GetOrdinal("TELEFONO")) ? "" : reader.GetString(reader.GetOrdinal("TELEFONO")),
                             Zona = reader.IsDBNull(reader.GetOrdinal("ZONA")) ? "" : reader.GetString(reader.GetOrdinal("ZONA")),
@@ -336,7 +339,9 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                 parameters.Add("IsID", tecnico.Id);
                 parameters.Add("IsID_DETALLE", tecnico.Id_Detalle);
                 parameters.Add("IsCOD_TECNICO", tecnico.Cod_Tecnico);
-                parameters.Add("IsNOMBRETECNICO",tecnico.NombreTecnico);
+                parameters.Add("IsNOMBRES", tecnico.NombreTecnico);
+                parameters.Add("IsAPELLIDOPATERNO", tecnico.ApellidoPaterno);
+                parameters.Add("IsAPELLIDOMATERNO", tecnico.ApellidoMaterno);
                 parameters.Add("IsDOCUMENTO",tecnico.Documento);
                 parameters.Add("IsTIP_DOCUMENTO", tecnico.TipDocumento);
                 parameters.Add("IsCORREO",tecnico.Correo);
@@ -545,7 +550,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                             ,FechaProgramacion = reader.IsDBNull(reader.GetOrdinal("FECHAPROGRAMACION")) ? "" : reader.GetString(reader.GetOrdinal("FECHAPROGRAMACION"))
                             ,FechaReal = reader.IsDBNull(reader.GetOrdinal("FECHAREAL")) ? "" : reader.GetString(reader.GetOrdinal("FECHAREAL"))
                         };
-                        detalle.Tecnicos = this.ObtenerTecnico(detalle.Id);
+                        detalle.Tecnicos = ObtenerTecnico(detalle.Id);
                         _listDetalle.Add(detalle);
                     }
                     reader.NextResult();
