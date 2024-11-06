@@ -33,6 +33,7 @@ using NPOI.OpenXmlFormats.Spreadsheet;
 using System.Web.UI.WebControls;
 using static AHSECO.CCL.COMUN.ConstantesDTO.CotizacionVentaDetalle;
 using AHSECO.CCL.BL.Util;
+using Microsoft.Office.Interop.Word;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 {
@@ -62,6 +63,63 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             var clienteBL = new ClienteBL();
             var NombreRol = VariableSesion.getCadena("VENTA_NOMBRE_ROL");
             var numSol = VariableSesion.getCadena("numSol");
+
+            //Para los botones de despacho:
+            ViewBag.Btn_FinalizarVenta = "none";
+            ViewBag.Btn_GuardarDespacho = "none";
+            ViewBag.Btn_EnviarGuia = "none";
+            ViewBag.Btn_GuiaPedido = "none";
+            ViewBag.Btn_GuiaBO = "none";
+            ViewBag.Btn_Aprobar = "none";
+            ViewBag.Btn_Observar = "none";  
+            ViewBag.TxtOrdenCompra = "disabled";
+            ViewBag.TxtFecOrdenCompra = "disabled";
+            ViewBag.TxtCodigoPedido = "disabled";
+            ViewBag.IngresoAlmacen ="disabled";
+            ViewBag.FechaEntregaPedidoSE = "disabled";
+            ViewBag.TxtNumeroFacturaSE = "disabled";
+            ViewBag.TxtNumeroGuiaRemisionSE = "disabled";
+            ViewBag.TxtNumeroSerieSE = "disabled";
+            ViewBag.FechaEntregaPedidoCE = "disabled";
+            ViewBag.TxtNumeroFacturaCE = "disabled";
+            ViewBag.TxtNumeroGuiaRemisionCE = "disabled";
+            ViewBag.TxtNumeroSerieCE = "disabled";
+
+
+            if (NombreRol == "SGI_VENTA_ASESOR" || NombreRol == "SGI_VENTA_COORDINASERV" || NombreRol == "SGI_VENTA_COORDINAATC")
+            {
+                ViewBag.Btn_FinalizarVenta = "inline-block";
+                ViewBag.Btn_GuardarDespacho = "inline-block";
+                ViewBag.Btn_EnviarGuia = "inline-block";
+                ViewBag.Btn_GuiaPedido = "inline-block";
+                ViewBag.Btn_GuiaBO = "inline-block";
+                ViewBag.TxtOrdenCompra = "";
+                ViewBag.TxtFecOrdenCompra = "";
+            }
+            else if(NombreRol == "SGI_VENTA_GERENTE")
+            {
+                ViewBag.Btn_Aprobar = "inline-block";
+                ViewBag.Btn_Observar = "inline-block";
+            }
+            else if (NombreRol == "SGI_VENTA_LOGISTICA")
+            {
+                ViewBag.Btn_GuardarDespacho = "inline-block";
+                ViewBag.FechaEntregaPedidoSE = "";
+                ViewBag.TxtNumeroFacturaSE = "";
+                ViewBag.TxtNumeroGuiaRemisionSE = "";
+                ViewBag.TxtNumeroSerieSE = "";
+                ViewBag.FechaEntregaPedidoCE = "";
+                ViewBag.TxtNumeroFacturaCE = "";
+                ViewBag.TxtNumeroGuiaRemisionCE = "";
+                ViewBag.TxtNumeroSerieCE = "";
+            }
+            else if (NombreRol == "SGI_VENTA_IMPORTACION")
+            {
+                ViewBag.TxtCodigoPedido = "";
+                ViewBag.IngresoAlmacen = "";
+                ViewBag.Btn_GuardarDespacho = "inline-block";
+            }
+
 
             if (NombreRol == "SGI_VENTA_GERENTE" || NombreRol == "SGI_VENTA_COSTOS")
             {
