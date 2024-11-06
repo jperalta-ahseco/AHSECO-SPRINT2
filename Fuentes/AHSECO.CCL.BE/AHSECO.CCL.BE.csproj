@@ -69,6 +69,7 @@
     <Compile Include="Reportes\UsuarioAuditoriaDTO.cs" />
     <Compile Include="ReportParamsDTO.cs" />
     <Compile Include="ServicioDTO.cs" />
+    <Compile Include="ServicioTecnico\BandejaInstalacionTecnica\FiltroInstalacionTecDTO.cs" />
     <Compile Include="ServicioTecnico\BandejaInstalacionTecnica\GrupoInstalacionTecnicaDTO.cs" />
     <Compile Include="ServicioTecnico\BandejaInstalacionTecnica\InstalacionTecnicaDetalleDTO.cs" />
     <Compile Include="ServicioTecnico\BandejaInstalacionTecnica\InstalacionTecnicaDTO.cs" />
