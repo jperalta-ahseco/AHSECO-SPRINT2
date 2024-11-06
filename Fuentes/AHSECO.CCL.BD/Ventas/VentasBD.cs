@@ -148,7 +148,7 @@ namespace AHSECO.CCL.BD.Ventas
                         VentaUnitaria = i.Single(d => d.Key.Equals("VVENTAUNI")).Value.Parse<decimal?>(),
                         VentaTotalSinIGV = i.Single(d => d.Key.Equals("VVTOTALSIGV")).Value.Parse<decimal?>(),
                         PorcentajeGanancia = i.Single(d => d.Key.Equals("PORCGANANCIA")).Value.Parse<decimal?>(),
-                        VentaTotalSinIGVCGanacia = i.Single(d => d.Key.Equals("VVTOTALCGAN")).Value.Parse<decimal?>()
+                        VentaTotalSinIGVConGanacia = i.Single(d => d.Key.Equals("VVTOTALCGAN")).Value.Parse<decimal?>()
                     });
 
                 connection.Close();

@@ -1299,6 +1299,7 @@
         method = "POST";
         url = "BandejaSolicitudesVentas/RegistraCotizacionVenta"
         objCotizacion = {
+            IdCliente: $idCliente.val(),
             IdCotizacion: $idCotizacion.val(),
             IdSolicitud: $numeroSolicitud.val(),
             IdWorkFlow: $idWorkFlow.val(),

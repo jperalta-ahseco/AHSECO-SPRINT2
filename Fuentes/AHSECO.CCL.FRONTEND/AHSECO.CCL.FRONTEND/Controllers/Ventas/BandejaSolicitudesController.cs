@@ -41,6 +41,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
     {
 
         const string TAG_CotDetItems = "CotDetItems";
+        const string TAG_ConceptosVenta = "ConceptosVenta";
 
         // GET BandejaSolicitudesVentas
         [Permissions(Permissions = "BANDEJAVENTAS")]
@@ -580,12 +581,33 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                 var procesoBL = new ProcesosBL();
                 var ventasBL = new VentasBL();
+                var clienteBL = new ClienteBL();
 
                 if (cotizacionDTO.IdWorkFlow <= 0)
                 {
                     var solicitud = ventasBL.ObtenerSolicitudes(new SolicitudDTO()
                     { Id_Solicitud = cotizacionDTO.IdSolicitud });
                     cotizacionDTO.IdWorkFlow = solicitud.Result.First().Id_WorkFlow;
+                }
+
+                var swContacto = true;
+                if (!cotizacionDTO.IdContacto.HasValue)
+                { swContacto = false; }
+                else { if (cotizacionDTO.IdContacto.Value <= 0) { swContacto = false; } }
+
+                if (!swContacto)
+                {
+                    var respContacto = clienteBL.InsertarContacto(new ContactoDTO()
+                    {
+                        TipDoc = string.Empty,
+                        NomCont = cotizacionDTO.NombreContacto,
+                        AreaContacto = cotizacionDTO.AreaContacto,
+                        Telefono = cotizacionDTO.TelefonoContacto,
+                        Correo = cotizacionDTO.EmailContacto,
+                        IdCliente = cotizacionDTO.IdCliente,
+                        Estado = true.ToString()
+                    });
+                    cotizacionDTO.IdContacto = respContacto.Result.Codigo;
                 }
 
                 //Solo se debe tener una cotizacion activa
@@ -681,8 +703,42 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         public JsonResult ObtenerArticulos(FiltroArticuloDTO filtro)
         {
             var ventaBL = new VentasBL();
-            var articulos = ventaBL.ObtenerArticulosxFiltro(filtro);
-            var ojson = Json(articulos);
+            ResponseDTO<IEnumerable<ArticuloDTO>> resArticulos = ventaBL.ObtenerArticulosxFiltro(filtro);
+            if (filtro.AddDescriptionAsNewRecord)
+            {
+                if (resArticulos.Result == null)
+                { resArticulos.Result = new List<ArticuloDTO>(); }
+
+                var lstEncontrados = resArticulos.Result.ToList();
+                ArticuloDTO newRecord = null;
+                if (!string.IsNullOrEmpty(filtro.DescArticulo))
+                {
+                    if (filtro.DescArticulo.Trim() != string.Empty)
+                    {
+                        var FORMAT_IdNewTempRecord = ConstantesDTO.CotizacionVentaDetalle.CodigoItem.FORMAT_IdNewTempRecord;
+                        if (lstEncontrados.Any(x => x.CodArticulo == string.Format(FORMAT_IdNewTempRecord, 1)))
+                        {
+                            var TAG = string.Format(FORMAT_IdNewTempRecord, 1).Replace("1", "");
+                            var nCantNewId = lstEncontrados.Where(x => x.CodArticulo.Contains(TAG)).Count();
+                            newRecord = new ArticuloDTO() { CodArticulo = string.Format(FORMAT_IdNewTempRecord, nCantNewId.ToString()), DescArticulo = filtro.DescArticulo };
+                        }
+                        else
+                        {
+                            newRecord = new ArticuloDTO()
+                            {
+                                CodArticulo = string.Format(FORMAT_IdNewTempRecord, 1.ToString()),
+                                DescArticulo = filtro.DescArticulo,
+                                DescFamilia = ConstantesDTO.Articulos.Text.Text_1
+                            };
+                        }
+                        resArticulos.Result = new List<ArticuloDTO>();
+                        ((List<ArticuloDTO>)resArticulos.Result).Add(newRecord);
+                        ((List<ArticuloDTO>)resArticulos.Result).AddRange(lstEncontrados);
+                    }
+                }
+            }
+            VariableSesion.setObject(TAG_ConceptosVenta, resArticulos.Result.ToList());
+            var ojson = Json(resArticulos);
             return ojson;
         }
 
@@ -732,27 +788,48 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             try
             {
                 var ventaBL = new VentasBL();
-                var respArt = ventaBL.ObtenerArticulosxFiltro(new FiltroArticuloDTO { CodsArticulo = CodItem });
+                var oArticulo = new ArticuloDTO();
+
+                var swLstTemp = false;
+                if (VariableSesion.getObject(TAG_ConceptosVenta) != null)
+                {
+                    if (((List<ArticuloDTO>)VariableSesion.getObject(TAG_ConceptosVenta)).Any()) { swLstTemp = true; }
+                }
+
+                if (swLstTemp)
+                {
+                    var lstArticulos = (List<ArticuloDTO>)VariableSesion.getObject(TAG_ConceptosVenta);
+                    //Articulo Seleccionado
+                    if (lstArticulos.Any(x => x.CodArticulo == CodItem))
+                    { oArticulo = lstArticulos.First(x => x.CodArticulo == CodItem); }
+                }
+                else
+                {
+                    var respArt = ventaBL.ObtenerArticulosxFiltro(new FiltroArticuloDTO { CodsArticulo = CodItem });
+                    //Articulo Seleccionado
+                    if (respArt.Result.Any(x => x.CodArticulo == CodItem))
+                    { oArticulo = respArt.Result.First(x => x.CodArticulo == CodItem); }
+                }
 
                 List<CotizacionDetalleDTO> lstItems = new List<CotizacionDetalleDTO>();
                 if (VariableSesion.getObject(TAG_CotDetItems) != null) { lstItems = (List<CotizacionDetalleDTO>)VariableSesion.getObject(TAG_CotDetItems); }
 
-                //Articulo Seleccionado
-                var oArticulo = new ArticuloDTO();
-                if (respArt.Result.Any(x => x.CodArticulo == CodItem))
-                { oArticulo = respArt.Result.First(x => x.CodArticulo == CodItem); }
+                VariableSesion.getObject(TAG_ConceptosVenta);
 
                 //Registro Detalle
                 var select = new CotizacionDetalleDTO();
                 select.CodItem = oArticulo.CodArticulo;
-                select.Descripcion = oArticulo.DescArticulo;
+                select.Descripcion = oArticulo.DescRealArticulo;
                 select.TipoItem = ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto;
                 select.EsItemPadre = true;
 
-                if (oArticulo.CodFamilia.Trim() == ConstantesDTO.Articulos.Familia.Accesorios.Trim())
-                { 
-                    select.TipoItem = ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio;
-                    select.EsItemPadre = false;
+                if (oArticulo.CodFamilia != null)
+                {
+                    if (oArticulo.CodFamilia.Trim() == ConstantesDTO.Articulos.Familia.Accesorios.Trim())
+                    {
+                        select.TipoItem = ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio;
+                        select.EsItemPadre = false;
+                    }
                 }
 
                 if (select.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio)
@@ -863,11 +940,19 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     itemCotDet.Descripcion = oArticulo.DescRealArticulo;
                 }
 
-                if (string.IsNullOrEmpty(itemCotDet.CodUbigeoDestino))
+                int nUbigeoDest;
+                if(itemCotDet.CotizacionDespacho != null)
                 {
-                    var rptaUbigeos = ubigeoBL.Obtener(new UbigeoDTO() { UbigeoId = itemCotDet.CodUbigeoDestino });
-                    var oUbigeoDestino = rptaUbigeos.Result.FirstOrDefault();
-                    itemCotDet.DescUbigeoDestino = oUbigeoDestino.NombreDepartamento + " / " + oUbigeoDestino.NombreProvincia + " / " + oUbigeoDestino.NombreDistrito;
+                    if (!string.IsNullOrEmpty(itemCotDet.CotizacionDespacho.CodUbigeoDestino) && string.IsNullOrEmpty(itemCotDet.CotizacionDespacho.DescUbigeoDestino) 
+                        && int.TryParse(itemCotDet.CotizacionDespacho.CodUbigeoDestino, out nUbigeoDest))
+                    {
+                        if (nUbigeoDest > 0)
+                        {
+                            var rptaUbigeos = ubigeoBL.Obtener(new UbigeoDTO() { UbigeoId = itemCotDet.CotizacionDespacho.CodUbigeoDestino });
+                            var oUbigeoDestino = rptaUbigeos.Result.FirstOrDefault();
+                            itemCotDet.CotizacionDespacho.DescUbigeoDestino = oUbigeoDestino.NombreDepartamento + " / " + oUbigeoDestino.NombreProvincia + " / " + oUbigeoDestino.NombreDistrito;
+                        }
+                    }
                 }
 
                 return Json(new ResponseDTO<CotizacionDetalleDTO>(itemCotDet));
@@ -949,11 +1034,18 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     itemCotDet.Descripcion = oArticulo.DescRealArticulo;
                 }
 
-                if (string.IsNullOrEmpty(itemCotDet.CodUbigeoDestino))
+                int nUbigeo;
+                if (itemCotDet.CotizacionDespacho != null)
                 {
-                    var rptaUbigeos = ubigeoBL.Obtener(new UbigeoDTO() { UbigeoId = itemCotDet.CodUbigeoDestino });
-                    var oUbigeoDestino = rptaUbigeos.Result.FirstOrDefault();
-                    itemCotDet.DescUbigeoDestino = oUbigeoDestino.NombreDepartamento + " / " + oUbigeoDestino.NombreProvincia + " / " + oUbigeoDestino.NombreDistrito;
+                    if (string.IsNullOrEmpty(itemCotDet.CotizacionDespacho.CodUbigeoDestino) && int.TryParse(itemCotDet.CotizacionDespacho.CodUbigeoDestino,out nUbigeo))
+                    {
+                        if (nUbigeo > 0)
+                        {
+                            var rptaUbigeos = ubigeoBL.Obtener(new UbigeoDTO() { UbigeoId = itemCotDet.CotizacionDespacho.CodUbigeoDestino });
+                            var oUbigeoDestino = rptaUbigeos.Result.FirstOrDefault();
+                            itemCotDet.CotizacionDespacho.DescUbigeoDestino = oUbigeoDestino.NombreDepartamento + " / " + oUbigeoDestino.NombreProvincia + " / " + oUbigeoDestino.NombreDistrito;
+                        }
+                    }
                 }
 
                 return Json(new ResponseDTO<CotizacionDetalleDTO>(itemCotDet));
@@ -996,33 +1088,34 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 }
 
                 lstItems.ForEach(x =>
-                { 
-                    if(x.NroItem == oItem.NroItem && x.CodItem.Trim() == oItem.CodItem.Trim()) {
+                {
+                    if (x.NroItem == oItem.NroItem && x.CodItem.Trim() == oItem.CodItem.Trim())
+                    {
                         x.Id = x.NroItem * -1;
                         x.Cantidad = CotDet.Cantidad;
                         x.CostoFOB = CotDet.CostoFOB;
                         x.VentaUnitaria = CotDet.VentaUnitaria;
                         x.PorcentajeGanancia = CotDet.PorcentajeGanancia;
-                        x.LLaveEnMano = CotDet.LLaveEnMano;
-                        int nUbigeo;
-                        if (!string.IsNullOrEmpty(CotDet.CodUbigeoDestino) && int.TryParse(CotDet.CodUbigeoDestino, out nUbigeo))
+                        if (CotDet.CotizacionDespacho != null)
                         {
-                            if (nUbigeo > 0)
-                            {
-                                x.CodUbigeoDestino = CotDet.CodUbigeoDestino;
-                                x.DescUbigeoDestino = CotDet.DescUbigeoDestino;
-                            }
+                            if (x.CotizacionDespacho == null) { x.CotizacionDespacho = new CotDetDespachoDTO(); }
+                            x.CotizacionDespacho.CantPreventivo = CotDet.CotizacionDespacho.CantPreventivo;
+                            x.CotizacionDespacho.CodCicloPreventivo = CotDet.CotizacionDespacho.CodCicloPreventivo;
+                            x.CotizacionDespacho.IndInfoVideo = CotDet.CotizacionDespacho.IndInfoVideo;
+                            x.CotizacionDespacho.IndInfoManual = CotDet.CotizacionDespacho.IndInfoManual;
+                            x.CotizacionDespacho.IndInstaCapa = CotDet.CotizacionDespacho.IndInstaCapa;
+                            x.CotizacionDespacho.GarantiaAdicional = CotDet.CotizacionDespacho.GarantiaAdicional;
+                            x.CotizacionDespacho.IndLLaveMano = CotDet.CotizacionDespacho.IndLLaveMano;
+                            x.CotizacionDespacho.CodUbigeoDestino = CotDet.CotizacionDespacho.CodUbigeoDestino;
+                            x.CotizacionDespacho.DescUbigeoDestino = CotDet.CotizacionDespacho.DescUbigeoDestino;
+                            x.CotizacionDespacho.Direccion = CotDet.CotizacionDespacho.Direccion;
+                            x.CotizacionDespacho.NroPiso = CotDet.CotizacionDespacho.NroPiso;
+                            x.CotizacionDespacho.Dimensiones = CotDet.CotizacionDespacho.Dimensiones;
+                            x.CotizacionDespacho.IndCompraLocal = CotDet.CotizacionDespacho.IndCompraLocal;
+                            x.CotizacionDespacho.IndFianza = CotDet.CotizacionDespacho.IndFianza;
+                            x.CotizacionDespacho.MontoPrestPrin = CotDet.CotizacionDespacho.MontoPrestPrin;
+                            x.CotizacionDespacho.MontoPrestAcc = CotDet.CotizacionDespacho.MontoPrestAcc;
                         }
-                        x.Direccion = CotDet.Direccion;
-                        x.NroPiso = CotDet.NroPiso;
-                        x.Dimension = CotDet.Dimension;
-                        x.CantidadPreventivo = CotDet.CantidadPreventivo;
-                        x.CodCicloPreventivo = CotDet.CodCicloPreventivo;
-                        x.Manuales = CotDet.Manuales;
-                        x.Videos = CotDet.Videos;
-                        x.InstCapa = CotDet.InstCapa;
-                        x.GarantiaAdic = CotDet.GarantiaAdic;
-                        x.PorcentajeGanancia = CotDet.PorcentajeGanancia;
                     }
                 }
                 );
@@ -1073,13 +1166,31 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     var rptaArticulo = ventasBL.ObtenerArticulosxFiltro(new FiltroArticuloDTO() { CodsArticulo = item.CodItem });
                     var oArticulo = rptaArticulo.Result.FirstOrDefault();
                     item.Stock = oArticulo.StockDisponible;
-                    item.VentaTotalSinIGV = lstItems.Where(x => x.NroItem == item.NroItem).Select(y => y.VentaUnitaria).Sum();
+                    if (item.EsItemPadre)
+                    {
+                        item.VentaTotalSinIGV = lstItems.Where(x => x.NroItem == item.NroItem && x.VentaUnitaria.HasValue).Select(y => y.VentaUnitaria.Value * y.Cantidad).Sum();
+                        if (item.VentaTotalSinIGV.HasValue)
+                        {
+                            if (item.PorcentajeGanancia.HasValue)
+                            {
+                                if (item.PorcentajeGanancia.Value > 0)
+                                {
+                                    item.VentaTotalSinIGVConGanacia = item.VentaTotalSinIGV.Value * (item.PorcentajeGanancia.Value / 100);
+                                }
+                                else 
+                                {
+                                    item.VentaTotalSinIGVConGanacia = item.VentaTotalSinIGV.Value;
+                                }
+                            }
+                        }
+                    }
                     lstItems.ForEach(itemPadre =>
                     {
                         if(item.NroItem == itemPadre.NroItem && item.CodItem.Trim() == itemPadre.CodItem.Trim())
                         {
                             itemPadre.VentaTotalSinIGV = item.VentaTotalSinIGV;
                             itemPadre.CodUnidad = oArticulo.CodUnidad;
+                            itemPadre.DescUnidad = oArticulo.DescUnidad;
                         }
                     });
                 }

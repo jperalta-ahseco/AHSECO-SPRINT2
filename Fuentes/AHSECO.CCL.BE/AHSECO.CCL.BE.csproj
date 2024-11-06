@@ -114,6 +114,12 @@
     <Compile Include="Seguridad\UsuarioDTO.cs" />
     <Compile Include="UbigeoDTO.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AHSECO.CCL.COMUN\AHSECO.CCL.COMUN.csproj">
+      <Project>{d3367662-289a-4310-bb4c-937123b3ac22}</Project>
+      <Name>AHSECO.CCL.COMUN</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

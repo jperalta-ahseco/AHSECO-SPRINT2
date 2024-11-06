@@ -27,6 +27,8 @@ var cotvtadet = (function ($, win, doc) {
     var $DI_txtGanancia = $("#DI_txtGanancia");
     var $DI_radLLaveEnMano_Si = $("#DI_radLLaveEnMano_Si");
     var $DI_radLLaveEnMano_No = $("#DI_radLLaveEnMano_No");
+    var $DI_radCompraLocal_Si = $("#DI_radCompraLocal_Si");
+    var $DI_radCompraLocal_No = $("#DI_radCompraLocal_No");
     var $DI_txtDireccion = $("#DI_txtDireccion");
     var $DI_txtNroPiso = $("#DI_txtNroPiso");
     var $DI_txtDimensiones = $("#DI_txtDimensiones");
@@ -52,9 +54,7 @@ var cotvtadet = (function ($, win, doc) {
         BuscandoPrecios: "Buscando Precios, porfavor espere...",
         obteniendoFiltros: "Obteniendo filtros de lista de precios..."
     }
-
-    var swInicializarGrillaProductos = true;
-
+    
     $(Initialize);
     function Initialize() {
 
@@ -64,10 +64,6 @@ var cotvtadet = (function ($, win, doc) {
         $DI_btnCerrar.click(cerrarModalDetItem);
         $DC_btnCerrar.click(cerrarModalDetCot);
         cargarCiclosPreventivos();
-        if (swInicializarGrillaProductos) {
-            swInicializarGrillaProductos = false;
-            buscarItems();
-        }
 
     }
 
@@ -126,7 +122,8 @@ var cotvtadet = (function ($, win, doc) {
             CodsUnidad: $BI_cmbTipoMedida.val(),
             CodsFamilia: $BI_cmbFamilia.val(),
             CodsMarca: $BI_cmbMarca.val(),
-            CantidadRegistros: 500
+            AddDescriptionAsNewRecord: true,
+            CantidadRegistros: 300
         };
         var objParam = JSON.stringify(objFiltros);
 
@@ -147,18 +144,21 @@ var cotvtadet = (function ($, win, doc) {
             {
                 data: "CodArticulo",
                 render: function (data) {
+                    if (data == null) { data = ""; }
                     return '<center>' + data + '</center>';
                 }
             },
             {
                 data: "DescFamilia",
                 render: function (data) {
+                    if (data == null) { data = ""; }
                     return '<center>' + data + '</center>';
                 }
             },
             {
                 data: "DescRealArticulo",
                 render: function (data) {
+                    if (data == null) { data = ""; }
                     return '<center>' + data + '</center>';
                 }
             },
@@ -178,12 +178,14 @@ var cotvtadet = (function ($, win, doc) {
             {
                 data: "DescUnidad",
                 render: function (data) {
+                    if (data == null) { data = ""; }
                     return '<center>' + data + '</center>';
                 }
             },
             {
                 data: "DescMarca",
                 render: function (data) {
+                    if (data == null) { data = ""; }
                     return '<center>' + data + '</center>';
                 }
             },
@@ -277,21 +279,21 @@ var cotvtadet = (function ($, win, doc) {
                 }
             },
             {
-                data: "DescUbigeoDestino",
+                data: "CotizacionDespacho.DescUbigeoDestino",
                 render: function (data) {
                     if (data == null) { data = ""; }
                     return '<center>' + data + '</center>';
                 }
             },
             {
-                data: "Direccion",
+                data: "CotizacionDespacho.Direccion",
                 render: function (data) {
                     if (data == null) { data = ""; }
                     return '<center>' + data + '</center>';
                 }
             },
             {
-                data: "Piso",
+                data: "CotizacionDespacho.NroPiso",
                 render: function (data) {
                     if (data == null) { data = ""; }
                     return '<center>' + data + '</center>';
@@ -376,6 +378,38 @@ var cotvtadet = (function ($, win, doc) {
         $DI_radInstaCapa_No.removeAttr("checked");
     }
 
+    function MostrarDatosItem(data) {
+        $DI_txtCodigo.val(data.Result.CodItem);
+        $DI_txtDescripcion.val(data.Result.Descripcion);
+        //Cargando Datos
+        if (data.Result.Id != 0) {
+            $DI_txtCantidad.val(data.Result.Cantidad);
+            $DI_txtCostoFOB.val(data.Result.CostoFOB);
+            $DI_txtValorUnitario.val(data.Result.VentaUnitaria);
+            $DI_txtGanancia.val(data.Result.PorcentajeGanancia);
+            if (data.Result.CotizacionDespacho != null) {
+                if (data.Result.CotizacionDespacho.LLaveEnMano == true) { $DI_radLLaveEnMano_Si.prop("checked", true); }
+                else { $DI_radLLaveEnMano_No.prop("checked", true); }
+                sessionStorage.setItem('codDistrito', data.Result.CotizacionDespacho.CodUbigeoDestino);
+                if (data.Result.CotizacionDespacho.DescUbigeoDestino != null) { $txtUbicacion.val(data.Result.CotizacionDespacho.DescUbigeoDestino); }
+                $DI_txtDireccion.val(data.Result.CotizacionDespacho.Direccion);
+                $DI_txtNroPiso.val(data.Result.CotizacionDespacho.NroPiso);
+                $DI_txtDimensiones.val(data.Result.CotizacionDespacho.Dimensiones);
+                $DI_txtCantPreventivo.val(data.Result.CotizacionDespacho.CantPreventivo);
+                $DI_cmbCicloPreventivo.val(data.Result.CotizacionDespacho.CodCicloPreventivo).trigger("change.select2");
+                if (data.Result.CotizacionDespacho.IndInfoManual == true) { $DI_radManuales_Si.prop("checked", true); }
+                else { $DI_radManuales_No.prop("checked", true); }
+                if (data.Result.CotizacionDespacho.IndInfoVideo == true) { $DI_radVideos_Si.prop("checked", true); }
+                else { $DI_radVideos_No.prop("checked", true); }
+                if (data.Result.CotizacionDespacho.IndInstaCapa == true) { $DI_radInstaCapa_Si.prop("checked", true); }
+                else { $DI_radInstaCapa_No.prop("checked", true); }
+                $DI_txtGarantiaAdic.val(data.Result.CotizacionDespacho.GarantiaAdicional);
+                if (data.Result.CotizacionDespacho.IndCompraLocal == true) { $DI_radCompraLocal_Si.prop("checked", true); }
+                else { $DI_radCompraLocal_No.prop("checked", true); }
+            }
+        }
+    }
+
     function editarItem(CodigoItem) {
 
         $DI_hdnCodigoPadre.val("");
@@ -388,32 +422,8 @@ var cotvtadet = (function ($, win, doc) {
         var objParam = JSON.stringify(objFiltros);
 
         var fnDoneCallBack = function (data) {
-            $DI_txtCodigo.val(data.Result.CodItem);
-            $DI_txtDescripcion.val(data.Result.Descripcion);
             LimpiarModalDetItem();
-            //Cargando Datos
-            if (data.Result.Id != 0) {
-                $DI_txtCantidad.val(data.Result.Cantidad);
-                $DI_txtCostoFOB.val(data.Result.CostoFOB);
-                $DI_txtValorUnitario.val(data.Result.VentaUnitaria);
-                $DI_txtGanancia.val(data.Result.PorcentajeGanancia);
-                if (data.Result.LLaveEnMano == true) { $DI_radLLaveEnMano_Si.prop("checked", true); }
-                else { $DI_radLLaveEnMano_No.prop("checked", true); }
-                sessionStorage.setItem('codDistrito', data.Result.CodUbigeoDestino);
-                if (data.Result.DescUbigeoDestino != null) { $txtUbicacion.val(data.Result.DescUbigeoDestino); }
-                $DI_txtDireccion.val(data.Result.Direccion);
-                $DI_txtNroPiso.val(data.Result.NroPiso);
-                $DI_txtDimensiones.val(data.Result.Dimension);
-                $DI_txtCantPreventivo.val(data.Result.CantidadPreventivo);
-                $DI_cmbCicloPreventivo.val(data.Result.CodCicloPreventivo).trigger("change.select2");
-                if (data.Result.Manuales == true) { $DI_radManuales_Si.prop("checked", true); }
-                else { $DI_radManuales_No.prop("checked", true); }
-                if (data.Result.Videos == true) { $DI_radVideos_Si.prop("checked", true); }
-                else { $DI_radVideos_No.prop("checked", true); }
-                if (data.Result.InstCapa == true) { $DI_radInstaCapa_Si.prop("checked", true); }
-                else { $DI_radInstaCapa_No.prop("checked", true); }
-                $DI_txtGarantiaAdic.val(data.Result.GarantiaAdic);
-            }
+            MostrarDatosItem(data);
             $('#modalDetalleItem').modal('show');
         };
         
@@ -581,32 +591,8 @@ var cotvtadet = (function ($, win, doc) {
         var objParam = JSON.stringify(objFiltros);
 
         var fnDoneCallBack = function (data) {
-            $DI_txtCodigo.val(data.Result.CodItem);
-            $DI_txtDescripcion.val(data.Result.Descripcion);
             LimpiarModalDetItem();
-            //Cargando Datos
-            if (data.Result.Id != 0) {
-                $DI_txtCantidad.val(data.Result.Cantidad);
-                $DI_txtCostoFOB.val(data.Result.CostoFOB);
-                $DI_txtValorUnitario.val(data.Result.VentaUnitaria);
-                $DI_txtGanancia.val(data.Result.PorcentajeGanancia);
-                if (data.Result.LLaveEnMano == true) { $DI_radLLaveEnMano_Si.prop("checked", true); }
-                else { $DI_radLLaveEnMano_No.prop("checked", true); }
-                sessionStorage.setItem('codDistrito', data.Result.CodUbigeoDestino);
-                if (data.Result.DescUbigeoDestino != null) { $txtUbicacion.val(data.Result.DescUbigeoDestino); }
-                $DI_txtDireccion.val(data.Result.Direccion);
-                $DI_txtNroPiso.val(data.Result.NroPiso);
-                $DI_txtDimensiones.val(data.Result.Dimension);
-                $DI_txtCantPreventivo.val(data.Result.CantidadPreventivo);
-                $DI_cmbCicloPreventivo.val(data.Result.CodCicloPreventivo).trigger("change.select2");
-                if (data.Result.Manuales == true) { $DI_radManuales_Si.prop("checked", true); }
-                else { $DI_radManuales_No.prop("checked", true); }
-                if (data.Result.Videos == true) { $DI_radVideos_Si.prop("checked", true); }
-                else { $DI_radVideos_No.prop("checked", true); }
-                if (data.Result.InstCapa == true) { $DI_radInstaCapa_Si.prop("checked", true); }
-                else { $DI_radInstaCapa_No.prop("checked", true); }
-                $DI_txtGarantiaAdic.val(data.Result.GarantiaAdic);
-            }
+            MostrarDatosItem(data);
             $('#modalDetalleItem').modal('show');
         };
 
@@ -621,7 +607,7 @@ var cotvtadet = (function ($, win, doc) {
         }
         else {
             if (!app.validaNumeroEntero($DI_txtCantidad.val())) {
-                app.message.error("Validaci&oacute;n", "Número inv&aacute;lido en campo Cantidad");
+                app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Cantidad");
                 return false;
             }
         }
@@ -634,7 +620,7 @@ var cotvtadet = (function ($, win, doc) {
 
             if ($DI_txtCostoFOB.val() != "") {
                 if (!app.validaNumeroDecimal($DI_txtCostoFOB.val())) {
-                    app.message.error("Validaci&oacute;n", "Número inv&aacute;lido en campo Costo FOB");
+                    app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Costo FOB");
                     return false;
                 }
             }
@@ -642,14 +628,14 @@ var cotvtadet = (function ($, win, doc) {
 
         if ($DI_txtValorUnitario.val() != "") {
             if (!app.validaNumeroDecimal($DI_txtValorUnitario.val())) {
-                app.message.error("Validaci&oacute;n", "Número inv&aacute;lido en campo Valor Unitario");
+                app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Valor Unitario");
                 return false;
             }
         }
 
         if ($DI_txtGanancia.val() != "") {
             if (!app.validaNumeroDecimal($DI_txtGanancia.val())) {
-                app.message.error("Validaci&oacute;n", "Número inv&aacute;lido en campo Ganancia");
+                app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Ganancia");
                 return false;
             }
         }
@@ -671,14 +657,14 @@ var cotvtadet = (function ($, win, doc) {
 
         if ($DI_txtNroPiso.val() != "") {
             if (!app.validaNumeroEntero($DI_txtNroPiso.val())) {
-                app.message.error("Validaci&oacute;n", "Número inv&aacute;lido en campo Piso");
+                app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Piso");
                 return false;
             }
         }
 
         if ($DI_txtCantPreventivo.val() != "") {
-            if (!validaNumeroEntero($DI_txtCantPreventivo.val())) {
-                app.message.error("Validaci&oacute;n", "Número inv&aacute;lido en campo Cantidad Preventivo");
+            if (!app.validaNumeroEntero($DI_txtCantPreventivo.val())) {
+                app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Cantidad Preventivo");
                 return false;
             }
             else {
@@ -709,6 +695,9 @@ var cotvtadet = (function ($, win, doc) {
         var bLLaveMano = false;
         if ($DI_radLLaveEnMano_Si.is(':checked')) { bLLaveMano = true; }
 
+        var bCompraLocal = false;
+        if ($DI_radCompraLocal_Si.is(':checked')) { bCompraLocal = true; }
+
         var bManuales = false;
         if ($DI_radManuales_Si.is(':checked')) { bManuales = true; }
 
@@ -726,7 +715,6 @@ var cotvtadet = (function ($, win, doc) {
                 CodItem: $DI_txtCodigo.val(),
                 Cantidad: $DI_txtCantidad.val(),
                 CostoFOB: $DI_txtCostoFOB.val(),
-                PorcentajeGanancia: $DI_txtGanancia.val(),
                 VentaUnitaria: $DI_txtValorUnitario.val(),
                 PorcentajeGanancia: $DI_txtGanancia.val(),
                 LLaveEnMano: bLLaveMano,
@@ -740,7 +728,22 @@ var cotvtadet = (function ($, win, doc) {
                 Manuales: bManuales,
                 Videos: bVideos,
                 InstCapa: bInstaCapa,
-                GarantiaAdic: $DI_txtGarantiaAdic.val()
+                GarantiaAdic: $DI_txtGarantiaAdic.val(),
+                CotizacionDespacho: {
+                    IndLLaveMano: bLLaveMano,
+                    CodUbigeoDestino: sessionStorage.getItem('codDistrito'),
+                    DescUbigeoDestino: $txtUbicacion.val(),
+                    Direccion: $DI_txtDireccion.val(),
+                    NroPiso: $DI_txtNroPiso.val(),
+                    Dimensiones: $DI_txtDimensiones.val(),
+                    CantPreventivo: $DI_txtCantPreventivo.val(),
+                    CodCicloPreventivo: $DI_cmbCicloPreventivo.val(),
+                    IndInfoManual: bManuales,
+                    IndInfoVideo: bVideos,
+                    IndInstaCapa: bInstaCapa,
+                    GarantiaAdicional: $DI_txtGarantiaAdic.val(),
+                    IndCompraLocal: bCompraLocal
+                }
             }
         };
         var objParam = JSON.stringify(objDatos);
@@ -890,7 +893,7 @@ var cotvtadet = (function ($, win, doc) {
                     }
                 },
                 {
-                    data: "Unidad",
+                    data: "DescUnidad",
                     render: function (data) {
                         if (data == null) { data = ""; }
                         return '<center>' + data + '</center>';
@@ -918,7 +921,7 @@ var cotvtadet = (function ($, win, doc) {
                     }
                 },
                 {
-                    data: "VentaTotalConGanacia",
+                    data: "VentaTotalSinIGVConGanacia",
                     render: function (data) {
                         if (data == null) { data = ""; }
                         return '<center>' + data + '</center>';

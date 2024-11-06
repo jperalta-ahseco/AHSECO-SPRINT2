@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using AHSECO.CCL.BD.Mantenimientos;
 using AHSECO.CCL.BE.Mantenimiento;
+using AHSECO.CCL.BE;
 namespace AHSECO.CCL.BL.Mantenimientos
 {
     public class ClienteBL
@@ -79,17 +80,17 @@ namespace AHSECO.CCL.BL.Mantenimientos
         }
 
 
-        public ResponseDTO<bool> InsertarContacto(ContactoDTO contactoDTO)
+        public ResponseDTO<RespuestaDTO> InsertarContacto(ContactoDTO contactoDTO)
         {
             try
             {
                 var result = Repository.InsertarContacto(contactoDTO);
-                return new ResponseDTO<bool>(result);
+                return new ResponseDTO<RespuestaDTO>(result);
             }
             catch (Exception ex)
             {
                 Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
-                return new ResponseDTO<bool>(ex);
+                return new ResponseDTO<RespuestaDTO>(ex);
             }
         }
 

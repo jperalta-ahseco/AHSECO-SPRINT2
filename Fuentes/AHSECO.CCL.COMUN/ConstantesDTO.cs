@@ -102,6 +102,10 @@ namespace AHSECO.CCL.COMUN
 
         public struct CotizacionVentaDetalle
         {
+            public struct CodigoItem
+            {
+                public static string FORMAT_IdNewTempRecord { get { return "TMPREC_{0}"; } }
+            }
             public struct TipoItem
             {
                 public static string Producto { get { return "PRO"; } }
@@ -157,6 +161,14 @@ namespace AHSECO.CCL.COMUN
                 public static string Repuestos { get { return "06"; } }
                 public static string Locales { get { return "07"; } }
                 public static string Accesorios { get { return "08"; } }
+            }
+            public struct Tag
+            {
+                public static string Tag_1 { get { return "MODELO"; } }
+            }
+            public struct Text
+            {
+                public static string Text_1 { get { return "REGISTRO TEMPORAL"; } }
             }
         }
 

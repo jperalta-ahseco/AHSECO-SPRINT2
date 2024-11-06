@@ -177,7 +177,7 @@ namespace AHSECO.CCL.BD.Mantenimientos
             }
         }
 
-        public bool InsertarContacto(ContactoDTO contactoDTO)
+        public RespuestaDTO InsertarContacto(ContactoDTO contactoDTO)
         {
             Log.TraceInfo(Utilidades.GetCaller());
             using (var connection = Factory.ConnectionFactory())
@@ -198,15 +198,22 @@ namespace AHSECO.CCL.BD.Mantenimientos
                 parameters.Add("isCorreo", contactoDTO.Correo);
                 parameters.Add("isEstado", contactoDTO.Estado);
                 parameters.Add("isAudit_Reg_Usr", contactoDTO.UsuarioRegistra);
-                var result = connection.Execute(
+
+                var result = connection.Query(
                     sql: "USP_MANT_CONTACTOS",
                     param: parameters,
-                    commandType: CommandType.StoredProcedure
-                 );
+                    commandType: CommandType.StoredProcedure)
+                     .Select(s => s as IDictionary<string, object>)
+                     .Select(i => new RespuestaDTO
+                     {
+                         Codigo = i.Single(d => d.Key.Equals("COD")).Value.Parse<int>(),
+                         Mensaje = i.Single(d => d.Key.Equals("MSG")).Value.Parse<string>()
+                     }).FirstOrDefault();
 
+                connection.Close();
+                return result;
             }
-            return true;
-        } 
+        }
 
         public bool ActualizarContacto(ContactoDTO contactoDTO)
         {

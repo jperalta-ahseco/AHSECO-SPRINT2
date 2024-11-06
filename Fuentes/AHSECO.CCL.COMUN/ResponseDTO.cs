@@ -6,15 +6,15 @@ using System.Runtime.Serialization;
 
 namespace AHSECO.CCL.COMUN
 {
-    
+
     public class ResponseDTO<T>
     {
-   
+
         public ResponseStatusDTO Status { get; set; }
 
-           public string CurrentException { get; set; }
+        public string CurrentException { get; set; }
 
-       public T Result { get; set; }
+        public T Result { get; set; }
 
         public ResponseDTO(T result)
         {

@@ -33,7 +33,7 @@
                                 </div>
                                 <div class="col-md-2">
                                     <label for="DI_txtCantidad">Cantidad: </label>
-                                    <input placeholder="Cantidad" type="text" class="form-control input-sm" id="DI_txtCantidad" value="">
+                                    <input placeholder="Cantidad" type="text" maxlength="8" class="form-control input-sm" id="DI_txtCantidad" value="">
                                 </div>
                             </div>
                         </fieldset>
@@ -46,14 +46,14 @@
                                     <label for="DI_txtCostoFOB">Costo FOB: </label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input placeholder="Ingresar Costo" type="text" class="form-control input-sm" id="DI_txtCostoFOB" value="">
+                                    <input placeholder="Ingresar Costo" type="text" maxlength="20" class="form-control input-sm" id="DI_txtCostoFOB" value="">
                                 </div>
                                 <div class="col-md-1">&nbsp;</div>
                                 <div class="col-md-3">
                                     <label for="DI_txtValorUnitario">Val. Unitario: </label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input placeholder="Ingresar Val. Unt." type="text" class="form-control input-sm" id="DI_txtValorUnitario" value="">
+                                    <input placeholder="Ingresar Val. Unt." type="text" maxlength="20" class="form-control input-sm" id="DI_txtValorUnitario" value="">
                                 </div>
                             </div>
                             <div class="row container-fluid col-content-bottomleft">
@@ -61,7 +61,7 @@
                                     <label for="DI_txtGanancia">Ganancia (%): </label>
                                 </div>
                                 <div class="col-md-2">
-                                    <input placeholder="N&uacute;mero(%)" type="text" class="form-control input-sm" id="DI_txtGanancia" value="">
+                                    <input placeholder="N&uacute;mero(%)" type="text" maxlength="15" class="form-control input-sm" id="DI_txtGanancia" value="">
                                 </div>
                             </div>
                         </fieldset>
@@ -71,7 +71,7 @@
                             <legend><b>Información del Env&iacute;o</b></legend>
                             <div class="row container-fluid">
                                 <div class="col-md-6 col-content-middleleft">
-                                    <div class="col-md-5">
+                                    <div class="col-md-5 col-content-middleleft">
                                         <label for="DI_radLLaveEnMano">LLave en mano: </label>
                                     </div>
                                     <div class="col-md-2">
@@ -86,6 +86,27 @@
                                         <table style="width:100%">
                                             <tr>
                                                 <td><input type="radio" name="DI_radLLaveEnMano" class="input-sm" id="DI_radLLaveEnMano_No"></td>
+                                                <td style="padding-top:5px"><label>NO</label></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-content-middleleft">
+                                    <div class="col-md-5 col-content-middleleft">
+                                        <label for="DI_radCompraLocal">Compra Local: </label>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <table style="width:100%">
+                                            <tr>
+                                                <td><input type="radio" name="DI_radCompraLocal" class="input-sm" id="DI_radCompraLocal_Si"></td>
+                                                <td style="padding-top:5px"><label>SI</label></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <table style="width:100%">
+                                            <tr>
+                                                <td><input type="radio" name="DI_radCompraLocal" class="input-sm" id="DI_radCompraLocal_No"></td>
                                                 <td style="padding-top:5px"><label>NO</label></td>
                                             </tr>
                                         </table>
@@ -113,7 +134,7 @@
                                         <label for="DI_txtDireccion">Direcci&oacute;n :</label>
                                     </div>
                                     <div class="col-md-12">
-                                        <input placeholder="Ingresar Dirección" type="text" class="form-control input-sm" id="DI_txtDireccion" value="">
+                                        <input placeholder="Ingresar Dirección" type="text" maxlength="150" class="form-control input-sm" id="DI_txtDireccion" value="">
                                     </div>
                                 </div>
                             </div>
@@ -123,7 +144,7 @@
                                         <label for="DI_txtNroPiso">Piso: </label>
                                     </div>
                                     <div class="col-md-2">
-                                        <input placeholder="Nro." type="text" class="form-control input-sm" id="DI_txtNroPiso" value="">
+                                        <input placeholder="Nro." type="text" maxlength="2" class="form-control input-sm" id="DI_txtNroPiso" value="">
                                     </div>
                                 </div>
                                 <div class="col-md-6 col-content-middleleft">
@@ -131,7 +152,7 @@
                                         <label for="DI_txtDimensiones">Dimensiones: </label>
                                     </div>
                                     <div class="col-md-7">
-                                        <input placeholder="Ingresar Dimensiones" type="text" class="form-control input-sm" id="DI_txtDimensiones" value="">
+                                        <input placeholder="Ingresar Dimensiones" type="text" maxlength="50" class="form-control input-sm" id="DI_txtDimensiones" value="">
                                     </div>
                                 </div>
                             </div>
@@ -146,7 +167,7 @@
                                         <label for="DI_txtCantPreventivo">Cantidad Preventivo: </label>
                                     </div>
                                     <div class="col-md-3">
-                                        <input placeholder="" type="text" class="form-control input-sm" id="DI_txtCantPreventivo" value="">
+                                        <input placeholder="" type="text" maxlength="2" class="form-control input-sm" id="DI_txtCantPreventivo" value="">
                                     </div>
                                 </div>
                                 <div class="col-md-7 col-content-middleleft">
@@ -231,7 +252,7 @@
                                         <label for="DI_txtGarantiaAdic">Garant&iacute;a Adicional: </label>
                                     </div>
                                     <div class="col-md-4">
-                                        <input placeholder="" type="text" class="form-control input-sm" id="DI_txtGarantiaAdic" value="">
+                                        <input placeholder="" type="text" maxlength="50" class="form-control input-sm" id="DI_txtGarantiaAdic" value="">
                                     </div>
                                 </div>
                             </div>

@@ -219,19 +219,6 @@ namespace AHSECO.CCL.BL.Ventas
                 {
                     foreach(ArticuloDTO item in result)
                     {
-                        if(item.DescArticulo != null && item.DescRealArticulo == null)
-                        {
-                            item.DescRealArticulo = item.DescArticulo;
-                            if (item.DescArticulo.ToUpper().IndexOf(tag) >= 0)
-                            {
-                                item.DescRealArticulo = item.DescArticulo.Substring(0, item.DescArticulo.ToUpper().IndexOf(tag));
-                                item.DescRealModelo = item.DescArticulo.Substring(item.DescArticulo.ToUpper().IndexOf(tag) + tag.Length);
-                            }
-                            else
-                            {
-                                item.DescRealModelo = item.DescModelo;
-                            }
-                        }
                         if (item.Almacenes != null)
                         {
                             item.StockDisponible = item.Almacenes.Sum(y => y.StockDisponible);

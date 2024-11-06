@@ -1,5 +1,6 @@
 ﻿using AHSECO.CCL.BE.Mantenimiento;
 using AHSECO.CCL.BL.Mantenimientos;
+using AHSECO.CCL.COMUN;
 using AHSECO.CCL.FRONTEND.Core;
 using AHSECO.CCL.FRONTEND.Identity;
 using AHSECO.CCL.FRONTEND.Security;
@@ -64,7 +65,15 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Mantenimientos
             var clienteBL = new ClienteBL();
             contactoDTO.UsuarioRegistra = User.ObtenerUsuario();
             var response = clienteBL.InsertarContacto(contactoDTO);
-            return Json(response);
+            var sw = false;
+            if (response != null)
+            {
+                if(response.Result != null)
+                {
+                    if (response.Result.Codigo > 0) { sw = true; }
+                }
+            }
+            return Json(new ResponseDTO<bool>(sw));
         }
 
         public JsonResult ActualizarContacto(ContactoDTO contactoDTO)
