@@ -21,11 +21,10 @@
                 <div class="row container-fluid d-flex justify-content-center">
                     <div class="text-right">
                         <button class="btn btn-primary btn-sm" type="button" id="btnRegistrarTecnico"><i class="fa fa-handshake-o"></i> Asignar</button>
-                        <button class="btn btn-default btn-sm" type="button" id="btnEditarTecnico"><i class="fa fa-pencil"></i> Editar</button>
                     </div>
                     <div class="row container-fluid">
-                        <div class="col-md-12 col-sm-12">
-                            <label for="txtNombreTecnico">Nombre Completo: </label>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtNombreTecnico">Nombres: </label>
                             <div class="form-group">
                                 <div class="input-group input-group-sm date">
                                     <input type="text" class="form-control input-sm" id="txtNombreTecnico" value="" placeholder="--Ingrese Nombre del Técnico--" aria-describedby="sizing-addon3" disabled="disabled" />
@@ -38,8 +37,20 @@
                                     <input type="hidden" id="txtCodTecnico" value="" />
                                 </div>
                             </div>
-                    </div>
                         </div>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtNombreTecnico">Apellido Paterno: </label>
+                            <div class="form-group">
+                                <input placeholder="--Ingresar Apellido Paterno---" disabled type="text" class="form-control input-sm" id="txtApellidoPaternoTec" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtNombreTecnico">Apellido Materno: </label>
+                            <div class="form-group">
+                                 <input placeholder="--Ingresar Apellido Materno---" disabled type="text" class="form-control input-sm" id="txtApellidoMaternoTec" value="">
+                            </div>
+                        </div>
+                    </div>
                     <div class="row container-fluid">
                         <div class="col-md-4 col-sm-12">
                             <label for="txtTipoTecnico">Tipo de T&eacute;cnico: </label>
@@ -79,6 +90,7 @@
                             <label for="txtZona">Zona: </label>
                             <div class="form-group">
                                 <input placeholder="--Ingresar Zona---" disabled type="text" class="form-control input-sm" id="txtZona" value="">
+                                <input hidden id="hdnCodZona"/>
                             </div>
                         </div>
                     </div>
