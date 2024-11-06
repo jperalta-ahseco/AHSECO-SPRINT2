@@ -50,7 +50,10 @@
     var $btnGuiaBO = $("#btnGuiaBO");
     var $btnGuiaPedido = $("#btnGuiaPedido");
     var $formGestionVenta = $("#formGestionVenta");
-
+    var $divDatosLicitacion = $("#divDatosLicitacion");
+    var $txtNroProceso = $("#txtNroProceso");
+    var $txtTipoProceso = $("#txtTipoProceso");
+    var $idRolUsuario = $("#idRolUsuario");
 
     /*Sección Solicitud*/
     var $cmbServicios = $('#cmbServicios');
@@ -66,6 +69,7 @@
     var $btnRegistrar = $('#btnRegistrar');
     var $cmbTipo = $('#cmbTipo');
     var $cmbFlujo = $('#cmbFlujo');
+    var $cmbTipoVenta = $('#cmbTipoVenta');
     var $btnRegresar = $("#btnRegresar");
     var $btnActualizar = $('#btnActualizar');
     var $servicios = $('#servicios');
@@ -211,6 +215,7 @@
         $btnImprimirCotizacion.click($btnImprimirCotizacion_click);
         $btnGuiaBO.click($btnGuiaBO_click);
         $btnGuiaPedido.click($btnGuiaPedido_click);
+        $cmbTipoVenta.on("change", changeTipoVenta);
         inicializarBotonesCantidad();
         //crearTablaProductos();
         $('#tblConsultaProductos tbody').on('click', 'td #btnAñadirChild', function () {
@@ -291,6 +296,18 @@
         });
         // Función para dar formato a la fila hija
     };
+
+    function changeTipoVenta() {
+        var tipo_venta = $cmbTipoVenta.val();
+        $txtNroProceso.val('');
+        $txtTipoProceso.val('');
+        if (tipo_venta == "TVEN02") { //Para licitaciones:
+            $divDatosLicitacion.show();
+        }
+        else {
+            $divDatosLicitacion.hide();
+        }
+    }
 
     function $btnImprimirCotizacion_click() {
 
@@ -528,8 +545,20 @@
     }
 
     function cargaCombos() {
+
+        var rol = $idRolUsuario.val();
+        var codFlujo = "0";
+
+        if ($numeroSolicitud.val() == "") {
+            if (rol == "SGI_VENTA_ASESOR" || rol == "SGI_VENTA_COORDINAVENTA") {
+                codFlujo = "1";
+            }
+            else if (rol == "SGI_VENTA_COORDINASERV" || rol == "SGI_VENTA_COORDINAATC") {
+                codFlujo = "2";
+            }
+        }
         method = "POST";
-        url = "BandejaSolicitudesVentas/GrupoSolicitudVentaFiltro"
+        url = "BandejaSolicitudesVentas/GrupoSolicitudVentaFiltro?codFlujo=" + codFlujo;
         var objComb = "";
         objComb = JSON.stringify(objComb);
 
@@ -546,6 +575,7 @@
             app.llenarComboMultiResult($cmbMedioContacto, data.Result.MedioContacto, null, "", "", filters);
             app.llenarComboMultiResult($cmbTipoPago, data.Result.FormPago, null, "", "", filters);
             app.llenarComboMultiResult($cmbempresa, data.Result.Empresas, null, "", "", filters);
+            app.llenarComboMultiResult($cmbTipoVenta, data.Result.TipoVenta, null, "", "", filters);
         };
 
         var fnFailCallback = function () {
@@ -1399,29 +1429,47 @@
     function $btnRegistrarClick() {
 
         if ($cmbFlujo.val() === "") {
-            app.message.error("Validación", "Debe de escoger el flujo de la solicitud.");
+            app.message.error("Validación", "Debe seleccionar el flujo de la solicitud.");
             return;
         };
+
+        if ($cmbTipoVenta.val() === "") {
+            app.message.error("Validación", "Debe seleccionar el tipo de venta.");
+            return;
+        };
+
 
         if ($cmbTipo.val() === "") {
-            app.message.error("Validación", "Debe de escoger el tipo de solicitud.");
-            return;
-        };
-
-        if ($cmbMedioContacto.val() === "") {
-            app.message.error("Validación", "Debe de escoger el medio de contacto.");
+            app.message.error("Validación", "Debe seleccionar el tipo de solicitud.");
             return;
         };
 
         if ($dateSolicitud.val() === "") {
-            app.message.error("Validación", "Debe de ingresar la fecha de solicitud.");
+            app.message.error("Validación", "Debe ingresar la fecha de solicitud.");
             return
         };
 
         if ($cmbempresa.val() === "") {
-            app.message.error("Validación", "Debe de escoger la empresa que emite la solicitud.");
+            app.message.error("Validación", "Debe seleccionar la empresa que emite la solicitud.");
             return;
         };
+
+        if ($cmbMedioContacto.val() === "") {
+            app.message.error("Validación", "Debe seleccionar el medio de contacto.");
+            return;
+        };
+
+        if ($cmbTipoVenta.val() === "2") { //Si es de licitación:
+            if ($txtNroProceso.val() === "" || $txtNroProceso.val() == null) {
+                app.message.error("Validación", "Debe ingresar el número de proceso.");
+                return;
+            };
+
+            if ($txtTipoProceso.val() === "" || $txtTipoProceso.val() == null) {
+                app.message.error("Validación", "Debe ingresar el tipo de proceso o adjudicación.");
+                return;
+            };
+        }
         
         method = "POST";
         url = "BandejaSolicitudesVentas/RegistraSolicitudes"
@@ -1430,6 +1478,7 @@
                 IsTipoProceso: "I",
                 Id_Solicitud: "",
                 Id_Flujo: $cmbFlujo.val(),
+                TipoVenta: $cmbTipoVenta.val(),
                 Fecha_Sol: $dateSolicitud.val(),
                 Tipo_Sol: $cmbTipo.val(),
                 Cod_MedioCont: $cmbMedioContacto.val(),
@@ -1438,6 +1487,8 @@
                 RazonSocial: $nomEmpresa.val(),
                 AsesorVenta: $Asesor.val(),
                 Cod_Empresa: $cmbempresa.val(),
+                TipoProceso: $txtTipoProceso.val(),
+                NumProceso: $txtNroProceso.val(),
                 Estado: "SREG"
             },
             Observaciones: solicitud.observaciones,
@@ -1994,7 +2045,7 @@
             objBuscar = {
                 IdCliente: $idCliente.val(),
                 Id_Solicitud: $numeroSolicitud.val(),
-                Id_WorkFlow :$codigoWorkflow.val()
+                Id_WorkFlow: $codigoWorkflow.val()
             };
 
             objParam = JSON.stringify(objBuscar);
@@ -2008,6 +2059,11 @@
                 $cmbMedioContacto.val(data.Result.Solicitud.Cod_MedioCont).trigger("change.select2");
                 $cmbempresa.val(data.Result.Solicitud.Cod_Empresa).trigger("change.select2");
                 $dateSolicitud.val(data.Result.Solicitud.Fecha_Sol);
+                $cmbTipoVenta.val(data.Result.Solicitud.TipoVenta).trigger("change.select2");
+                $txtNroProceso.val(data.Result.Solicitud.NroProceso);
+                $txtTipoProceso.val(data.Result.Solicitud.TipoProceso);
+
+
 
                 cotvtadet.RecargarFiltroFamilia();
 
@@ -2025,7 +2081,7 @@
                 solicitud.observaciones = data.Result.Observaciones;
                 if (solicitud.contadorObservaciones > 0) {
                     for (var i = 0; i < data.Result.Observaciones.length; i++) {
-                        var nuevoTr = "<tr id='row" + data.Result.Observaciones[i].Id +"'>" +
+                        var nuevoTr = "<tr id='row" + data.Result.Observaciones[i].Id + "'>" +
                             "<th style='text-align: center;'>" + data.Result.Observaciones[i].Nombre_Usuario + "</th>" +
                             "<th style='text-align: center;'>" + data.Result.Observaciones[i].Perfil_Usuario + "</th>" +
                             "<th style='text-align: center;'>" + data.Result.Observaciones[i].Fecha_Registro + "</th>" +
@@ -2059,7 +2115,7 @@
                 if (docs > 0) {
                     for (i = 0; i < data.Result.Adjuntos.length; i++) {
                         var html = '<div class="text-center">';
-                            //var d = "'" + data.Result.Adjuntos[i].CodigoDocumento + "','" + data.Result.Adjuntos[i].RutaDocumento + "'";
+                        //var d = "'" + data.Result.Adjuntos[i].CodigoDocumento + "','" + data.Result.Adjuntos[i].RutaDocumento + "'";
                         html += ' <a class="btn btn-default btn-xs" title="Descargar"  href="javascript:solicitud.download(' + data.Result.Adjuntos[i].CodigoDocumento + ')"><i class="fa fa-download" aria-hidden="true"></i></a>&nbsp;';
                         html += ' <a class="btn btn-default btn-xs" title="Eliminar"  href="javascript:solicitud.eliminarDocumento(' + data.Result.Adjuntos[i].CodigoDocumento + ')"><i class="fa fa-ban" aria-hidden="true"></i></a>&nbsp;';
 
@@ -2079,10 +2135,23 @@
                 }
             };
             var fnFailCallBack = function () {
-                app.message.error("Validación","Hubo un error en obtener el detalle de la solicitud.")
+                app.message.error("Validación", "Hubo un error en obtener el detalle de la solicitud.")
             };
 
             app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, mensajes.consultandoDetalleSolicitud)
+        }
+        else {
+            $cmbFlujo.prop("disabled", true);
+            setTimeout(function () {
+                var rol = $idRolUsuario.val();
+                if (rol == "SGI_VENTA_ASESOR" || rol == "SGI_VENTA_COORDINAVENTA") {
+                    $cmbFlujo.val("1").trigger("change.select2");
+                }
+                else if (rol == "SGI_VENTA_COORDINASERV" || rol == "SGI_VENTA_COORDINAATC") {
+                    $cmbFlujo.val("2").trigger("change.select2");
+                }
+            }, 3000);
+
         };
     };
 

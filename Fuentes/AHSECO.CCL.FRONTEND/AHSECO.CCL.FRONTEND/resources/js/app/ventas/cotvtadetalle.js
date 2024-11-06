@@ -3,7 +3,7 @@ var cotvtadet = (function ($, win, doc) {
     var $nombreusuario = $('#nombreusuario');
     var $perfilnombre = $('#perfilnombre');
     var $idCotizacion = $("#idCotizacion");
-    var $hdnNombreRol = $("#hdnNombreRol");
+    var $idRolUsuario = $("#idRolUsuario");
 
     var $cmbTipo = $('#cmbTipo');
 
@@ -123,7 +123,7 @@ var cotvtadet = (function ($, win, doc) {
             CodsFamilia: $BI_cmbFamilia.val(),
             CodsMarca: $BI_cmbMarca.val(),
             AddDescriptionAsNewRecord: true,
-            CantidadRegistros: 300
+            CantidadRegistros: 20
         };
         var objParam = JSON.stringify(objFiltros);
 
@@ -612,7 +612,7 @@ var cotvtadet = (function ($, win, doc) {
             }
         }
 
-        if ($hdnNombreRol.val() == "SGI_VENTA_GERENTE" || $hdnNombreRol.val() == "SGI_VENTA_COSTOS") {
+        if ($idRolUsuario.val() == "SGI_VENTA_GERENTE" || $idRolUsuario.val() == "SGI_VENTA_COSTOS") {
             if ($DI_txtCostoFOB.val() == "" && $DI_txtValorUnitario.val() == "") {
                 app.message.error("Validaci&oacute;n", "Se debe llenar mínimo 1 campo de COSTOS");
                 return false;
@@ -778,7 +778,7 @@ var cotvtadet = (function ($, win, doc) {
 
         var columns = [];
 
-        if ($hdnNombreRol.val() == "SGI_VENTA_GERENTE" || $hdnNombreRol.val() == "SGI_VENTA_COSTOS") {
+        if ($idRolUsuario.val() == "SGI_VENTA_GERENTE" || $idRolUsuario.val() == "SGI_VENTA_COSTOS") {
 
             columns = [
                 {

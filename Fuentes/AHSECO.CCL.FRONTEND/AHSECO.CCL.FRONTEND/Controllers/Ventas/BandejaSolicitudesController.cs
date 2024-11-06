@@ -552,10 +552,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             }
         }
 
-        public JsonResult GrupoSolicitudVentaFiltro()
+        public JsonResult GrupoSolicitudVentaFiltro(int codFlujo)
         {
             var ventasBL = new VentasBL();
-            var result = ventasBL.GrupoSolicitudVentaFiltro();
+            var result = ventasBL.GrupoSolicitudVentaFiltro(codFlujo);
             return Json(result);
         }
 
@@ -1152,7 +1152,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         {
             try
             {
-                var ventasBL = new VentasBL();
+                var ventaBL = new VentasBL();
 
                 List<CotizacionDetalleDTO> lstItems = new List<CotizacionDetalleDTO>();
                 if (VariableSesion.getObject(TAG_CotDetItems) != null) { lstItems = (List<CotizacionDetalleDTO>)VariableSesion.getObject(TAG_CotDetItems); }
@@ -1163,8 +1163,30 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                 foreach (CotizacionDetalleDTO item in lstItemsPadre)
                 {
-                    var rptaArticulo = ventasBL.ObtenerArticulosxFiltro(new FiltroArticuloDTO() { CodsArticulo = item.CodItem });
-                    var oArticulo = rptaArticulo.Result.FirstOrDefault();
+                    //var rptaArticulo = ventasBL.ObtenerArticulosxFiltro(new FiltroArticuloDTO() { CodsArticulo = item.CodItem });
+                    var oArticulo = new ArticuloDTO();
+
+                    var swLstTemp = false;
+                    if (VariableSesion.getObject(TAG_ConceptosVenta) != null)
+                    {
+                        if (((List<ArticuloDTO>)VariableSesion.getObject(TAG_ConceptosVenta)).Any()) { swLstTemp = true; }
+                    }
+
+                    if (swLstTemp)
+                    {
+                        var lstArticulos = (List<ArticuloDTO>)VariableSesion.getObject(TAG_ConceptosVenta);
+                        //Articulo Seleccionado
+                        if (lstArticulos.Any(x => x.CodArticulo == item.CodItem))
+                        { oArticulo = lstArticulos.First(x => x.CodArticulo == item.CodItem); }
+                    }
+                    else
+                    {
+                        var respArt = ventaBL.ObtenerArticulosxFiltro(new FiltroArticuloDTO { CodsArticulo = item.CodItem });
+                        //Articulo Seleccionado
+                        if (respArt.Result.Any(x => x.CodArticulo == item.CodItem))
+                        { oArticulo = respArt.Result.First(x => x.CodArticulo == item.CodItem); }
+                    }
+
                     item.Stock = oArticulo.StockDisponible;
                     if (item.EsItemPadre)
                     {

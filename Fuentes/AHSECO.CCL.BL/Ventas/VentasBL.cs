@@ -139,11 +139,11 @@ namespace AHSECO.CCL.BL.Ventas
             };
         }
 
-        public ResponseDTO<FiltroGrupoSolicitudVentaDTO> GrupoSolicitudVentaFiltro()
+        public ResponseDTO<FiltroGrupoSolicitudVentaDTO> GrupoSolicitudVentaFiltro(int codFlujo)
         {
             try
             {
-                var result = Repository.GrupoSolicitudVentaFiltro();
+                var result = Repository.GrupoSolicitudVentaFiltro(codFlujo);
                 return new ResponseDTO<FiltroGrupoSolicitudVentaDTO>(result);
             }
             catch (Exception ex)

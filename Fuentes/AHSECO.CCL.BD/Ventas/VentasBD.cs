@@ -168,6 +168,7 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("isCodSolicitud", solicitudDTO.Id_Solicitud);
                 parameters.Add("IsID_WORKFLOW",solicitudDTO.Id_WorkFlow);
                 parameters.Add("IsID_FLUJO", solicitudDTO.Id_Flujo);
+                parameters.Add("IsTipoVenta", solicitudDTO.TipoVenta);
                 parameters.Add("IsFECHA_SOL", solicitudDTO.Fecha_Sol);
                 parameters.Add("IsTIPO_SOL", solicitudDTO.Tipo_Sol);
                 parameters.Add("IsCOD_MEDIOCONT", solicitudDTO.Cod_MedioCont);
@@ -177,6 +178,8 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("IsASESORVENTA", solicitudDTO.AsesorVenta);
                 parameters.Add("IsESTADO", solicitudDTO.Estado);
                 parameters.Add("IsCOD_EMPRESA", solicitudDTO.Cod_Empresa);
+                parameters.Add("TipoProceso", solicitudDTO.TipoProceso);
+                parameters.Add("NumProceso", solicitudDTO.NumProceso);
                 parameters.Add("isUsrEjecuta", solicitudDTO.UsuarioRegistra);
                 parameters.Add("isIP_Ejecuta", solicitudDTO.IpMaquinaRegistro);
 
@@ -342,7 +345,11 @@ namespace AHSECO.CCL.BD.Ventas
                         RUC = reader.IsDBNull(reader.GetOrdinal("RUC")) ? "" : reader.GetString(reader.GetOrdinal("RUC")),
                         RazonSocial = reader.IsDBNull(reader.GetOrdinal("RAZONSOCIAL")) ? "" : reader.GetString(reader.GetOrdinal("RAZONSOCIAL")),
                         AsesorVenta = reader.IsDBNull(reader.GetOrdinal("ASESORVENTA")) ? "" : reader.GetString(reader.GetOrdinal("ASESORVENTA")),
-                        Cod_Empresa = reader.IsDBNull(reader.GetOrdinal("COD_EMPRESA")) ? "" : reader.GetString(reader.GetOrdinal("COD_EMPRESA"))
+                        Cod_Empresa = reader.IsDBNull(reader.GetOrdinal("COD_EMPRESA")) ? "" : reader.GetString(reader.GetOrdinal("COD_EMPRESA")),
+                        TipoProceso = reader.IsDBNull(reader.GetOrdinal("TIPOPROCESO")) ? "" : reader.GetString(reader.GetOrdinal("TIPOPROCESO")),
+                        NroProceso = reader.IsDBNull(reader.GetOrdinal("NROPROCESO")) ? "" : reader.GetString(reader.GetOrdinal("NROPROCESO")),
+                        TipoVenta = reader.IsDBNull(reader.GetOrdinal("TIPOVENTA")) ? "" : reader.GetString(reader.GetOrdinal("TIPOVENTA")),
+                        NombreTipoVenta = reader.IsDBNull(reader.GetOrdinal("NOMTIPOVENTA")) ? "" : reader.GetString(reader.GetOrdinal("NOMTIPOVENTA"))
                     };
 
                     reader.NextResult();
@@ -419,14 +426,14 @@ namespace AHSECO.CCL.BD.Ventas
             };
         }
 
-        public FiltroGrupoSolicitudVentaDTO GrupoSolicitudVentaFiltro()
+        public FiltroGrupoSolicitudVentaDTO GrupoSolicitudVentaFiltro(int codFlujo)
         {
             Log.TraceInfo(Utilidades.GetCaller());
             using (var connection = Factory.ConnectionSingle())
             {
                 SqlCommand sqlcommand;
                 var result = new FiltroGrupoSolicitudVentaDTO();
-                string query = "USP_FILTROS_SOLICITUD_VENTAS";
+                string query = "exec USP_FILTROS_SOLICITUD_VENTAS @CodFlujo="+codFlujo.ToString();
                 connection.Open();
                 sqlcommand = new SqlCommand(query, connection);
                 using (var reader = sqlcommand.ExecuteReader())
@@ -515,6 +522,18 @@ namespace AHSECO.CCL.BD.Ventas
                         _empresas.Add(emp);
                     };
 
+                    reader.NextResult();
+                    List<ComboDTO> _tipoVenta = new List<ComboDTO>();
+                    while (reader.Read())
+                    {
+                        var tventa = new ComboDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("CODTIPOVENTA")) ? "" : reader.GetString(reader.GetOrdinal("CODTIPOVENTA")),
+                            Text = reader.IsDBNull(reader.GetOrdinal("TIPOVENTA")) ? "" : reader.GetString(reader.GetOrdinal("TIPOVENTA"))
+                        };
+                        _tipoVenta.Add(tventa);
+                    };
+
                     result.Flujos = _flujos;
                     result.TipoSol = _tipoSol;
                     result.MedioContacto = _medioContacto;
@@ -522,6 +541,7 @@ namespace AHSECO.CCL.BD.Ventas
                     result.Garantias = _garantias;
                     result.FormPago = _formPago;
                     result.Empresas = _empresas;
+                    result.TipoVenta = _tipoVenta;
                 };
                 return result;
             };
