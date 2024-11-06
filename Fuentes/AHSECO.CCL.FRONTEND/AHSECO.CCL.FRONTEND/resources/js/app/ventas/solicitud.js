@@ -1428,29 +1428,47 @@
     function $btnRegistrarClick() {
 
         if ($cmbFlujo.val() === "") {
-            app.message.error("Validación", "Debe de escoger el flujo de la solicitud.");
+            app.message.error("Validación", "Debe seleccionar el flujo de la solicitud.");
             return;
         };
+
+        if ($cmbTipoVenta.val() === "") {
+            app.message.error("Validación", "Debe seleccionar el tipo de venta.");
+            return;
+        };
+
 
         if ($cmbTipo.val() === "") {
-            app.message.error("Validación", "Debe de escoger el tipo de solicitud.");
-            return;
-        };
-
-        if ($cmbMedioContacto.val() === "") {
-            app.message.error("Validación", "Debe de escoger el medio de contacto.");
+            app.message.error("Validación", "Debe seleccionar el tipo de solicitud.");
             return;
         };
 
         if ($dateSolicitud.val() === "") {
-            app.message.error("Validación", "Debe de ingresar la fecha de solicitud.");
+            app.message.error("Validación", "Debe ingresar la fecha de solicitud.");
             return
         };
 
         if ($cmbempresa.val() === "") {
-            app.message.error("Validación", "Debe de escoger la empresa que emite la solicitud.");
+            app.message.error("Validación", "Debe seleccionar la empresa que emite la solicitud.");
             return;
         };
+
+        if ($cmbMedioContacto.val() === "") {
+            app.message.error("Validación", "Debe seleccionar el medio de contacto.");
+            return;
+        };
+
+        if ($cmbTipoVenta.val() === "2") { //Si es de licitación:
+            if ($txtNroProceso.val() === "" || $txtNroProceso.val() == null) {
+                app.message.error("Validación", "Debe ingresar el número de proceso.");
+                return;
+            };
+
+            if ($txtTipoProceso.val() === "" || $txtTipoProceso.val() == null) {
+                app.message.error("Validación", "Debe ingresar el tipo de proceso o adjudicación.");
+                return;
+            };
+        }
         
         method = "POST";
         url = "BandejaSolicitudesVentas/RegistraSolicitudes"
