@@ -548,13 +548,15 @@
 
         var rol = $idRolUsuario.val();
         var codFlujo = "0";
-        if (rol == "SGI_VENTA_ASESOR" || rol == "SGI_VENTA_COORDINAVENTA") {
-            codFlujo = "1";
-        }
-        else if (rol == "SGI_VENTA_COORDINASERV" || rol == "SGI_VENTA_COORDINAATC") {
-            codFlujo = "2";
-        }
 
+        if ($numeroSolicitud.val() == "") {
+            if (rol == "SGI_VENTA_ASESOR" || rol == "SGI_VENTA_COORDINAVENTA") {
+                codFlujo = "1";
+            }
+            else if (rol == "SGI_VENTA_COORDINASERV" || rol == "SGI_VENTA_COORDINAATC") {
+                codFlujo = "2";
+            }
+        }
         method = "POST";
         url = "BandejaSolicitudesVentas/GrupoSolicitudVentaFiltro?codFlujo=" + codFlujo;
         var objComb = "";
