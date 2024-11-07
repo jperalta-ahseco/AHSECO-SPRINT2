@@ -161,6 +161,7 @@ namespace AHSECO.CCL.COMUN
                 public static string Repuestos { get { return "06"; } }
                 public static string Locales { get { return "07"; } }
                 public static string Accesorios { get { return "08"; } }
+                public static string SinRegistrar { get { return "--"; } }
             }
             public struct Tag
             {
@@ -168,7 +169,7 @@ namespace AHSECO.CCL.COMUN
             }
             public struct Text
             {
-                public static string Text_1 { get { return "REGISTRO TEMPORAL"; } }
+                public static string Text_1 { get { return "No Registrado en Almacén"; } }
             }
         }
 

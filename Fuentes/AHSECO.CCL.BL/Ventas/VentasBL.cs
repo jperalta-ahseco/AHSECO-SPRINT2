@@ -214,7 +214,6 @@ namespace AHSECO.CCL.BL.Ventas
             try
             {
                 var result = Repository.ObtenerArticulosxFiltro(filtro);
-                var tag = "MODELO";
                 if (result != null)
                 {
                     foreach(ArticuloDTO item in result)

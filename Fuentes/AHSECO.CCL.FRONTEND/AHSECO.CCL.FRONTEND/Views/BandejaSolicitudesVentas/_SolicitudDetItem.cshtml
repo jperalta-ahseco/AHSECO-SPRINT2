@@ -4,7 +4,7 @@
     var NombreRol = VariableSesion.getCadena("VENTA_NOMBRE_ROL");
 }
 
-<div style="width:50%" class="modal-dialog modal-lg container-fluid" role="document">
+<div style="width:80%" class="modal-dialog modal-lg container-fluid" role="document">
     <!-- Modal content -->
     <div class="modal-content">
         <!-- Modal content header -->
@@ -19,21 +19,44 @@
             <form id="formItem" class="d-flex flex-row">
                 <div class="row container-fluid d-flex justify-content-center">
                     <div class="container-fluid">
-                        <fieldset class="form-group">
+                        <fieldset>
                             <legend><b>Informaci&oacute;n General</b></legend>
                             <div class="row container-fluid">
-                                <div class="col-md-3">
-                                    <label for="DI_txtCodigo">C&oacute;digo: </label>
-                                    <input disabled placeholder="Ingresar código de producto" type="text" class="form-control input-sm" id="DI_txtCodigo" value="">
-                                    <input type="hidden" id="DI_hdnCodigoPadre" value="" />
+                                <div class="col-md-6">
+                                    <div class="row container-fluid col-content-middleleft form-group">
+                                        <div class="col-md-3">
+                                            <label for="DI_txtCodigo">C&oacute;digo: </label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input disabled placeholder="Ingresar código de producto" type="text" class="form-control input-sm" id="DI_txtCodigo" value="">
+                                            <input type="hidden" id="DI_hdnCodigoPadre" value="" />
+                                        </div>
+                                    </div>
+                                    <div class="row container-fluid col-content-middleleft form-group">
+                                        <div class="col-md-3">
+                                            <label for="DI_txtDescripcion">Descripci&oacute;n: </label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <input disabled placeholder="Ingresar nombre de producto" type="text" class="form-control input-sm" id="DI_txtDescripcion" value="">
+                                        </div>
+                                    </div>
+                                    <div class="row container-fluid col-content-middleleft form-group">
+                                        <div class="col-md-3">
+                                            <label for="DI_txtCantidad">Cantidad: </label>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input placeholder="Cantidad" type="text" maxlength="8" class="form-control input-sm" id="DI_txtCantidad" value="">
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-md-7">
-                                    <label for="DI_txtDescripcion">Descripci&oacute;n: </label>
-                                    <input disabled placeholder="Ingresar nombre de producto" type="text" class="form-control input-sm" id="DI_txtDescripcion" value="">
-                                </div>
-                                <div class="col-md-2">
-                                    <label for="DI_txtCantidad">Cantidad: </label>
-                                    <input placeholder="Cantidad" type="text" maxlength="8" class="form-control input-sm" id="DI_txtCantidad" value="">
+                                <div class="col-md-6">
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-11">
+                                        <div class="row container-fluid">
+                                            <label for="DI_txtDescripcionAdic">Especificaciones: </label>
+                                            <textarea placeholder="Ingresar Especificaciones <Opcional>" rows="5" class="form-control input-sm" id="DI_txtDescripcionAdic" value=""></textarea>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </fieldset>
@@ -41,37 +64,42 @@
                     <div class="container-fluid">
                         <fieldset class="form-group">
                             <legend><b>Informaci&oacute;n de Costos</b></legend>
-                            <div style="@(NombreRol == "SGI_VENTA_GERENTE" || NombreRol == "SGI_VENTA_COSTOS" ? "" : "display:none")" class="row container-fluid col-content-middleleft form-group">
-                                <div class="col-md-2">
-                                    <label for="DI_txtCostoFOB">Costo FOB: </label>
+                            <div class="row container-fluid form-group" style="@(NombreRol == "SGI_VENTA_GERENTE" || NombreRol == "SGI_VENTA_COSTOS" ? "" : "display:none")">
+                                <div class="col-md-6 col-content-middleleft">
+                                    <div class="col-md-3">
+                                        <label for="DI_txtCostoFOB">Costo FOB: </label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input placeholder="Ingresar Costo" type="text" maxlength="20" class="form-control input-sm" id="DI_txtCostoFOB" value="">
+                                    </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <input placeholder="Ingresar Costo" type="text" maxlength="20" class="form-control input-sm" id="DI_txtCostoFOB" value="">
-                                </div>
-                                <div class="col-md-1">&nbsp;</div>
-                                <div class="col-md-3">
-                                    <label for="DI_txtValorUnitario">Val. Unitario: </label>
-                                </div>
-                                <div class="col-md-3">
-                                    <input placeholder="Ingresar Val. Unt." type="text" maxlength="20" class="form-control input-sm" id="DI_txtValorUnitario" value="">
+                                <div class="col-md-6 col-content-middleleft">
+                                    <div class="col-md-3">
+                                        <label for="DI_txtValorUnitario">Val. Unitario: </label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input placeholder="Ingresar Val. Unt." type="text" maxlength="20" class="form-control input-sm" id="DI_txtValorUnitario" value="">
+                                    </div>
                                 </div>
                             </div>
                             <div class="row container-fluid col-content-bottomleft">
-                                <div class="col-md-2">
-                                    <label for="DI_txtGanancia">Ganancia (%): </label>
-                                </div>
-                                <div class="col-md-2">
-                                    <input placeholder="N&uacute;mero(%)" type="text" maxlength="15" class="form-control input-sm" id="DI_txtGanancia" value="">
+                                <div class="col-md-6 col-content-middleleft">
+                                    <div class="col-md-3">
+                                        <label for="DI_txtGanancia">Ganancia (%): </label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input placeholder="N&uacute;mero(%)" type="text" maxlength="15" class="form-control input-sm" id="DI_txtGanancia" value="">
+                                    </div>
                                 </div>
                             </div>
                         </fieldset>
                     </div>
-                    <div class="container-fluid" style="@(NombreRol == "SGI_VENTA_GERENTE" || NombreRol == "SGI_VENTA_COSTOS" ? "display:none" : "")">
+                    <div class="container-fluid">
                         <fieldset class="form-group">
                             <legend><b>Información del Env&iacute;o</b></legend>
                             <div class="row container-fluid">
-                                <div class="col-md-6 col-content-middleleft">
-                                    <div class="col-md-5 col-content-middleleft">
+                                <div class="col-md-4 col-content-middleleft">
+                                    <div class="col-md-7">
                                         <label for="DI_radLLaveEnMano">LLave en mano: </label>
                                     </div>
                                     <div class="col-md-2">
@@ -91,8 +119,23 @@
                                         </table>
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-content-middleleft">
-                                    <div class="col-md-5 col-content-middleleft">
+                                <div class="col-md-8 col-content-middleleft">
+                                    <div class="col-md-3">
+                                        <label for="txtUbicacion">Ubigeo Destino :</label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="input-group">
+                                            <input readonly placeholder="Seleccione Ubigeo Destino" maxlength="6" type="text" class="form-control input-sm" id="txtUbicacion" value="" aria-describedby="sizing-addon3" style="cursor:pointer" data-toggle="modal" data-target="#modalUbigeo" />
+                                            <span style="cursor:pointer" class="input-group-addon input-sm" id="searchUbigeo" data-toggle="modal" data-target="#modalUbigeo">
+                                                <i class="fa fa-search"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row container-fluid">
+                                <div class="col-md-7 col-content-middleleft">
+                                    <div class="col-md-4">
                                         <label for="DI_radCompraLocal">Compra Local: </label>
                                     </div>
                                     <div class="col-md-2">
@@ -112,76 +155,42 @@
                                         </table>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row container-fluid form-group">
-                                <div class="col-md-12 col-content-middleleft">
-                                    <div class="col-md-3">
-                                        <label for="txtUbicacion">Ubigeo Destino :</label>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="input-group">
-                                            <input readonly placeholder="Seleccione Ubigeo Destino" maxlength="6" type="text" class="form-control input-sm" id="txtUbicacion" value="" aria-describedby="sizing-addon3" style="cursor:pointer" data-toggle="modal" data-target="#modalUbigeo" />
-                                            <span style="cursor:pointer" class="input-group-addon input-sm" id="searchUbigeo" data-toggle="modal" data-target="#modalUbigeo">
-                                                <i class="fa fa-search"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row container-fluid form-group">
-                                <div class="col-md-12 col-content-middleleft">
+                                <div class="col-md-7 col-content-middleleft">
                                     <div class="col-md-3">
                                         <label for="DI_txtDireccion">Direcci&oacute;n :</label>
                                     </div>
-                                    <div class="col-md-12">
+                                    <div class="col-md-9">
                                         <input placeholder="Ingresar Dirección" type="text" maxlength="150" class="form-control input-sm" id="DI_txtDireccion" value="">
                                     </div>
                                 </div>
                             </div>
                             <div class="row container-fluid">
-                                <div class="col-md-6 col-content-middleleft">
-                                    <div class="col-md-5">
+                                <div class="col-md-5 col-content-middleleft">&nbsp;</div>
+                                <div class="col-md-3 col-content-middleleft">
+                                    <div class="col-md-7">
                                         <label for="DI_txtNroPiso">Piso: </label>
                                     </div>
-                                    <div class="col-md-2">
+                                    <div class="col-md-3">
                                         <input placeholder="Nro." type="text" maxlength="2" class="form-control input-sm" id="DI_txtNroPiso" value="">
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-content-middleleft">
+                                <div class="col-md-3 col-content-middleleft">
                                     <div class="col-md-5">
                                         <label for="DI_txtDimensiones">Dimensiones: </label>
                                     </div>
-                                    <div class="col-md-7">
+                                    <div class="col-md-8">
                                         <input placeholder="Ingresar Dimensiones" type="text" maxlength="50" class="form-control input-sm" id="DI_txtDimensiones" value="">
                                     </div>
                                 </div>
                             </div>
                         </fieldset>
                     </div>
-                    <div class="container-fluid" style="@(NombreRol == "SGI_VENTA_GERENTE" || NombreRol == "SGI_VENTA_COSTOS" ? "display:none" : "")">
+                    <div class="container-fluid">
                         <fieldset class="form-group">
                             <legend><b>Información Adicional</b></legend>
                             <div class="row container-fluid">
-                                <div class="col-md-5 col-content-middleleft">
-                                    <div class="col-md-8">
-                                        <label for="DI_txtCantPreventivo">Cantidad Preventivo: </label>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <input placeholder="" type="text" maxlength="2" class="form-control input-sm" id="DI_txtCantPreventivo" value="">
-                                    </div>
-                                </div>
-                                <div class="col-md-7 col-content-middleleft">
-                                    <div class="col-md-5">
-                                        <label for="DI_cmbCicloPreventivo">Ciclo de Preventivo: </label>
-                                    </div>
+                                <div class="col-md-4 col-content-middleleft">
                                     <div class="col-md-7">
-                                        <select class="form-control select2 input-sm" style="width:100%;" id="DI_cmbCicloPreventivo" data-selected=""></select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row container-fluid">
-                                <div class="col-xs-6 col-content-middleleft">
-                                    <div class="col-md-4">
                                         <label for="DI_radManuales" style="flex: 0 0 120px">Manuales: </label>
                                     </div>
                                     <div class="col-md-2">
@@ -201,9 +210,26 @@
                                         </table>
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-content-middleleft">
-                                    <div class="col-md-1">&nbsp;</div>
+                                <div class="col-md-4 col-content-middleleft">
                                     <div class="col-md-6">
+                                        <label for="DI_txtCantPreventivo">Cantidad Preventivo: </label>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input placeholder="Cant." type="text" maxlength="2" class="form-control input-sm" id="DI_txtCantPreventivo" value="">
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-content-middleleft">
+                                    <div class="col-md-6">
+                                        <label for="DI_cmbCicloPreventivo">Ciclo de Preventivo: </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <select class="form-control select2 input-sm" style="width:100%;" id="DI_cmbCicloPreventivo" data-selected=""></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row container-fluid">
+                                <div class="col-md-4 col-content-middleleft">
+                                    <div class="col-md-7">
                                         <label for="DI_radVideos">Videos: </label>
                                     </div>
                                     <div class="col-md-2">
@@ -223,10 +249,21 @@
                                         </table>
                                     </div>
                                 </div>
+                                <div class="col-md-4 col-content-middleleft">
+                                    <div class="col-md-6">
+                                        <label for="DI_txtGarantiaAdic">Garant&iacute;a Adicional: </label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input placeholder="Garantía Adic." type="text" maxlength="50" class="form-control input-sm" id="DI_txtGarantiaAdic" value="">
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-content-middleleft">
+
+                                </div>
                             </div>
-                            <div class="row container-fluid col-content-middleleft">
-                                <div class="col-md-6 col-content-middleleft">
-                                    <div class="col-md-8">
+                            <div class="row container-fluid">
+                                <div class="col-md-4 col-content-middleleft">
+                                    <div class="col-md-7">
                                         <label for="DI_radInstaCapa">Instalaci&oacute;n y Capacitaci&oacute;n: </label>
                                     </div>
                                     <div class="col-md-2">
@@ -246,14 +283,41 @@
                                         </table>
                                     </div>
                                 </div>
+                                <div class="col-md-4 col-content-middleleft">
+
+                                </div>
+                                <div class="col-md-4 col-content-middleleft">
+
+                                </div>
+                            </div>
+                            <div class="row container-fluid">
+                                <div class="col-md-4 col-content-middleleft">
+
+                                </div>
+                                <div class="col-md-4 col-content-middleleft">
+
+                                </div>
+                                <div class="col-md-4 col-content-middleleft">
+
+                                </div>
+                            </div>
+                            <div class="row container-fluid">
+                                <div class="col-md-5 col-content-middleleft">
+                                </div>
+                                <div class="col-md-7 col-content-middleleft">
+                                </div>
+                            </div>
+                            <div class="row container-fluid">
+                                <div class="col-xs-6 col-content-middleleft">
+                                </div>
+                                <div class="col-md-6 col-content-middleleft">
+                                </div>
+                            </div>
+                            <div class="row container-fluid col-content-middleleft">
+                                <div class="col-md-6 col-content-middleleft">
+                                </div>
                                 <div class="col-md-6 col-content-middleleft">
                                     <div class="col-md-1">&nbsp;</div>
-                                    <div class="col-md-6">
-                                        <label for="DI_txtGarantiaAdic">Garant&iacute;a Adicional: </label>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <input placeholder="" type="text" maxlength="50" class="form-control input-sm" id="DI_txtGarantiaAdic" value="">
-                                    </div>
                                 </div>
                             </div>
                         </fieldset>
