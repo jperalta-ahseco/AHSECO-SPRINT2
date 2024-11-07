@@ -69,10 +69,10 @@
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12">
-                            <input hidden id="hdnCodTipVenta" value="" />
-                            <label for="txtTipVenta">Tip. Venta: </label>
-                            <div class="form-group">
-                                <input disabled type="text" class="form-control input-sm" id="txtTipVenta" value="">
+                            <label for="cmbTipVenta">Tip. Venta:</label>
+                            <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                                <select disabled aria-hide="false" id="cmbTipVenta" type="text" class="input form-control input-sm">
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -165,6 +165,9 @@
                     <li class="" id="tabObservaciones">
                         <a href="#navObservaciones" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-exclamation" aria-hidden="true"></i> Observaciones</a>
                     </li>
+                    <li class="" id="tabContacto">
+                        <a href="#navContactoDetalle" data-toggle="tab" style="font-weight:bold; color: black;" tabindex="22"><i class="fa fa-address-card-o" aria-hidden="true"></i> Info. Contacto</a>
+                    </li>
                 </ul>
                 <div class="tab-content" style="padding-top: 5px;">
                     <div id="navDetalleSolicitud" class="tab-pane fade in active">
@@ -192,20 +195,20 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                @if(numReq != "")
+                                @if (numReq != "")
                                 {
-                                 <div class="row container-fluid">
-                                     <div class="text-right">
-                                         @if (codEstado == "STREG")
-                                         {
-                                             <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnProcesoInst" tabindex="14"><i class="fa fa-cog" aria-hidden="true"></i>&nbsp;Cambiar a Estado: En Proceso de Instalación</button>
-                                         }
-                                         @if (codEstado == "STEPI")
-                                         {
-                                             <button class="btn btn-default btn-sm" type="button" id="btnFinalizarReq"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Finalizar Requerimiento</button>
-                                         }
-                                     </div>
-                                 </div>
+                                    <div class="row container-fluid">
+                                        <div class="text-right">
+                                            @if (codEstado == "STREG")
+                                            {
+                                                <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnProcesoInst" tabindex="14"><i class="fa fa-cog" aria-hidden="true"></i>&nbsp;Cambiar a Estado: En Proceso de Instalación</button>
+                                            }
+                                            @if (codEstado == "STEPI")
+                                            {
+                                                <button class="btn btn-default btn-sm" type="button" id="btnFinalizarReq"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Finalizar Requerimiento</button>
+                                            }
+                                        </div>
+                                    </div>
                                 }
                             </div>
                         </div>
@@ -219,6 +222,40 @@
                         @{
                             Html.RenderPartial("~/Views/Modelos/_Observaciones.cshtml");
                         }
+                    </div>
+                    <div id="navContactoDetalle" class="tab-pane fade">
+                        <div class="panel-group" id="accordion7401210" role="tablist" aria-multiselectable="false">
+                            <div class="box-content">
+                                <div class="row container-fluid">
+                                    <div class="col-md-6 col-sm-12">
+                                        <label for="txtNomContacto">Nombre de Contacto:</label>
+                                        <div class="form-group">
+                                            <input disabled type="text" class="form-control input-sm" id="txtNomContacto" value="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12">
+                                        <label for="txtTelefContacto">Tel&eacute;fono de Contacto:</label>
+                                        <div class="form-group">
+                                            <input disabled type="text" class="form-control input-sm" id="txtTelefContacto" value="">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row container-fluid">
+                                    <div class="col-md-6 col-sm-12">
+                                        <label for="txtEstablecimientoCont">Establecimiento:</label>
+                                        <div class="form-group">
+                                            <input disabled type="text" class="form-control input-sm" id="txtEstablecimientoCont" value="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12">
+                                        <label for="txtCargoContacto">Cargo de Contacto:</label>
+                                        <div class="form-group">
+                                            <input disabled type="text" class="form-control input-sm" id="txtCargoContacto" value="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -69,7 +69,7 @@ namespace AHSECO.CCL.BL.ServicioTecnico.BandejaInstalacionTecnica
             }
         }
 
-        public ResponseDTO<SolicitudVentaGrupoDTO> ObtenerDetalleSolicitud(long id)
+        public ResponseDTO<GrupoSolicitudVentaTecDTO> ObtenerDetalleSolicitud(long id)
         {
             try
             {

@@ -20,7 +20,7 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica
         public string Periodicidad { get; set; }
         public string Garantia { get; set; }
         public string FechaProgramacion { get; set; }
-        public string FechaReal { get; set; }
+        public string FechaInstalacion { get; set; }
         public List<TecnicoInstalacionDTO> Tecnicos { get; set; }
     }
 }
