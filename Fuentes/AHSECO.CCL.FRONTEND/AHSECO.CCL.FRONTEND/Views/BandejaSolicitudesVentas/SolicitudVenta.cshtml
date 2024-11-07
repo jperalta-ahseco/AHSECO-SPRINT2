@@ -151,13 +151,13 @@
                         <div class="col-md-4 col-sm-12">
                             <label for="txtNroProceso">N° de Proceso:</label>
                             <div class="form-group">
-                                <input type="text" class="form-control input-sm" id="txtNroProceso" placeholder="Ingresar N° de Proceso" maxlength="50">
+                                <input @(ViewBag.disabled ? "disabled" : "") type="text" class="form-control input-sm" id="txtNroProceso" placeholder="Ingresar N° de Proceso" maxlength="50">
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12">
                             <label for="txtTipoProceso">Tipo de Proceso:</label>
                             <div class="form-group">
-                                <input type="text" class="form-control input-sm" id="txtTipoProceso" placeholder="Ingresar Tipo de Proceso" maxlength="200">
+                                <input @(ViewBag.disabled ? "disabled" : "") type="text" class="form-control input-sm" id="txtTipoProceso" placeholder="Ingresar Tipo de Proceso" maxlength="200">
                             </div>
                         </div>
 

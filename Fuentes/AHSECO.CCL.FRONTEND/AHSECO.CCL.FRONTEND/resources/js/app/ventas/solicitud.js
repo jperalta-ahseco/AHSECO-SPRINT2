@@ -2060,6 +2060,11 @@
                 $cmbempresa.val(data.Result.Solicitud.Cod_Empresa).trigger("change.select2");
                 $dateSolicitud.val(data.Result.Solicitud.Fecha_Sol);
                 $cmbTipoVenta.val(data.Result.Solicitud.TipoVenta).trigger("change.select2");
+                if (data.Result.Solicitud.TipoVenta === "TVEN02") //Si es licitacion:
+                {
+                    $divDatosLicitacion.show();
+                }
+
                 $txtNroProceso.val(data.Result.Solicitud.NroProceso);
                 $txtTipoProceso.val(data.Result.Solicitud.TipoProceso);
 
