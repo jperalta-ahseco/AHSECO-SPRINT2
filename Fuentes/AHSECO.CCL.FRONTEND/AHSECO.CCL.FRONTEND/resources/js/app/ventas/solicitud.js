@@ -169,7 +169,13 @@
         cargaCombos();
         cotvtadet.ObtenerFiltrosPrecios();
         CargarTipoDocumento(4); //Tipo de Proceso "Ventas"
-        cargarDatosSolicitud();
+        
+
+        setTimeout(function () {
+            cargarDatosSolicitud();
+        }, 2000);
+
+
         $dateSolicitud.datepicker({
             viewMode: 0,
             minViewMode: 0,
@@ -2147,7 +2153,7 @@
         }
         else {
             $cmbFlujo.prop("disabled", true);
-            setTimeout(function () {
+
                 var rol = $idRolUsuario.val();
                 if (rol == "SGI_VENTA_ASESOR" || rol == "SGI_VENTA_COORDINAVENTA") {
                     $cmbFlujo.val("1").trigger("change.select2");
@@ -2155,7 +2161,7 @@
                 else if (rol == "SGI_VENTA_COORDINASERV" || rol == "SGI_VENTA_COORDINAATC") {
                     $cmbFlujo.val("2").trigger("change.select2");
                 }
-            }, 3000);
+
 
         };
     };
