@@ -168,6 +168,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.PermitirAgregarCotDet = false;
             ViewBag.PermitirNuevoCot = false;
             ViewBag.TitleDetItem = string.Empty;
+            ViewBag.AcordionCollapsedLiq = "collapsed";
+            ViewBag.TabAcordionCollapsedLiq = "collapse";
+            ViewBag.VerGestionVenta = false;
             VariableSesion.setObject(TAG_CotDetItems, new List<CotizacionDetalleDTO>());
 
             if (numSol != null)
@@ -197,6 +200,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                 if (rptaCotizacion.Result.Any())
                 {
+                    ViewBag.AcordionCollapsedLiq = "";
+                    ViewBag.TabAcordionCollapsedLiq = "";
                     ViewBag.VerTabCotDet = true;
                     var oCotizacion = rptaCotizacion.Result.First();
                     ViewBag.IdCotizacion = oCotizacion.IdCotizacion;

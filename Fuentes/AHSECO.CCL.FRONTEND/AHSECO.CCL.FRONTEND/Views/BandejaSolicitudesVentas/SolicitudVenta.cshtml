@@ -151,13 +151,13 @@
                         <div class="col-md-4 col-sm-12">
                             <label for="txtNroProceso">N° de Proceso:</label>
                             <div class="form-group">
-                                <input type="text" class="form-control input-sm" id="txtNroProceso" placeholder="Ingresar N° de Proceso" maxlength="50">
+                                <input @(ViewBag.disabled ? "disabled" : "") type="text" class="form-control input-sm" id="txtNroProceso" placeholder="Ingresar N° de Proceso" maxlength="50">
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12">
                             <label for="txtTipoProceso">Tipo de Proceso:</label>
                             <div class="form-group">
-                                <input type="text" class="form-control input-sm" id="txtTipoProceso" placeholder="Ingresar Tipo de Proceso" maxlength="200">
+                                <input @(ViewBag.disabled ? "disabled" : "") type="text" class="form-control input-sm" id="txtTipoProceso" placeholder="Ingresar Tipo de Proceso" maxlength="200">
                             </div>
                         </div>
 
@@ -212,10 +212,10 @@
                                 <div class="panel panel-default" style="border-color: #ef8f00;">
                                     <div class="panel-heading" role="tab" id="heading411391" style="background-color: #ef8f000f;">
                                         <h5 class="panel-title">
-                                            <a role="button" data-toggle="collapse" class="accordion-arrow-toggle collapsed" href="#collapse411391" aria-expanded="false" aria-controls="collapse411391"><i class="fa fa-briefcase" aria-hidden="true"></i> HOJA LIQUIDACI&Oacute;N DE COSTOS</a>
+                                            <a role="button" data-toggle="collapse" class="accordion-arrow-toggle @ViewBag.AcordionCollapsedLiq" href="#collapse411391" aria-expanded="false" aria-controls="collapse411391"><i class="fa fa-briefcase" aria-hidden="true"></i> LIQUIDACI&Oacute;N DE COSTOS</a>
                                         </h5>
                                     </div>
-                                    <div id="collapse411391" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading411391">
+                                    <div id="collapse411391" class="panel-collapse @ViewBag.TabAcordionCollapsedLiq" role="tabpanel" aria-labelledby="heading411391">
                                         <form id="formRegistraCotizacion">
                                             <div class="box-content">
                                                 <div style="display: flex;">
@@ -320,7 +320,7 @@
                                                 <br />
                                                 <div class="row container-fluid">
                                                     <div class="text-right">
-                                                        <button class="btn btn-danger btn-sm" type="button" data-target="#modalBandejaHistorialCotizacion" data-toggle="modal" id="btnHistorial" tabindex="14"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Historial</button>
+                                                        <button class="btn btn-danger btn-sm" type="button" data-target="#modalBandejaHistorialCotizacion" data-toggle="modal" id="btnHistorial" style="display:none;" tabindex="14"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Historial</button>
                                                         @if (ViewBag.IdCotizacion != 0)
                                                         {
                                                             <button class="btn btn-primary btn-sm" type="button" id="btnImprimirCotizacion"><i class="fa fa-print" aria-hidden="true"></i>&nbsp;Imprimir Cotizaci&oacute;n</button>
@@ -460,7 +460,7 @@
                                         </form>
                                     </div>
                                 </div>
-                                <div class="panel panel-default" style="@(ViewBag.VerTabCotDet ? "" : "display:none");border-color: #07bc58;">
+                                <div class="panel panel-default" style="@(ViewBag.VerGestionVenta ? "" : "display:none");border-color: #07bc58;">
                                     <div class="panel-heading" role="tab" id="heading2183316" style="background-color: #07bc5833;">
                                         <h5 class="panel-title">
                                             <a role="button" data-toggle="collapse" class="accordion-arrow-toggle collapsed" href="#collapse2183316" aria-expanded="true" aria-controls="collapse2183316"><i class="fa fa-money" aria-hidden="true"></i> GESTI&Oacute;N DE VENTA</a>

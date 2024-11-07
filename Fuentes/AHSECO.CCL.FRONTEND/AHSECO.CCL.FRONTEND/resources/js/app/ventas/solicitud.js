@@ -169,7 +169,13 @@
         cargaCombos();
         cotvtadet.ObtenerFiltrosPrecios();
         CargarTipoDocumento(4); //Tipo de Proceso "Ventas"
-        cargarDatosSolicitud();
+        
+
+        setTimeout(function () {
+            cargarDatosSolicitud();
+        }, 2000);
+
+
         $dateSolicitud.datepicker({
             viewMode: 0,
             minViewMode: 0,
@@ -2060,8 +2066,17 @@
                 $cmbempresa.val(data.Result.Solicitud.Cod_Empresa).trigger("change.select2");
                 $dateSolicitud.val(data.Result.Solicitud.Fecha_Sol);
                 $cmbTipoVenta.val(data.Result.Solicitud.TipoVenta).trigger("change.select2");
+                if (data.Result.Solicitud.TipoVenta === "TVEN02") //Si es licitacion:
+                {
+                    $divDatosLicitacion.show();
+                }
+
                 $txtNroProceso.val(data.Result.Solicitud.NroProceso);
                 $txtTipoProceso.val(data.Result.Solicitud.TipoProceso);
+                //para habilitar el boton de historial de cotizaciones:
+                if (data.Result.Solicitud.NroCotizacionEliminado > 0) {
+                    $btnHistorial.show();
+                }
 
 
 
@@ -2142,7 +2157,7 @@
         }
         else {
             $cmbFlujo.prop("disabled", true);
-            setTimeout(function () {
+
                 var rol = $idRolUsuario.val();
                 if (rol == "SGI_VENTA_ASESOR" || rol == "SGI_VENTA_COORDINAVENTA") {
                     $cmbFlujo.val("1").trigger("change.select2");
@@ -2150,7 +2165,7 @@
                 else if (rol == "SGI_VENTA_COORDINASERV" || rol == "SGI_VENTA_COORDINAATC") {
                     $cmbFlujo.val("2").trigger("change.select2");
                 }
-            }, 3000);
+
 
         };
     };
