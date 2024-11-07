@@ -2073,6 +2073,10 @@
 
                 $txtNroProceso.val(data.Result.Solicitud.NroProceso);
                 $txtTipoProceso.val(data.Result.Solicitud.TipoProceso);
+                //para habilitar el boton de historial de cotizaciones:
+                if (data.Result.Solicitud.NroCotizacionEliminado > 0) {
+                    $btnHistorial.show();
+                }
 
 
 

@@ -29,6 +29,7 @@ namespace AHSECO.CCL.BE.Ventas
         public string TipoProceso { get; set; }
         public string NroProceso { get; set; }
         public string NombreTipoVenta { get; set;}
+        public int NroCotizacionEliminado { get; set; }
 
         #region BandejaInstalacionTecnica
         public string OrdenCompra { get; set; }
