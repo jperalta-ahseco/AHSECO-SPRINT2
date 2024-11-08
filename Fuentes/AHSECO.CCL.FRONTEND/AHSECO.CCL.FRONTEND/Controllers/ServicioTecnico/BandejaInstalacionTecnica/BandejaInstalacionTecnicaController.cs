@@ -77,7 +77,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
         }
         public ActionResult RegistroInstallTec()
         {
-            string[] cabeceraProductos1 =
+            string[] cabeceraProductos1 = //tener en consideración que después de la coma, se define el ancho de la columna en %, ejemplo : 5%
             {
                 "Id,5",
                 "Descripcion,10",
@@ -91,7 +91,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
                 "Numero Fianza,10",
             };
 
-            string[] cabeceraProductos2 =
+            string[] cabeceraProductos2 = //tener en consideración que después de la coma, se define el ancho de la columna en %, ejemplo : 5%
             {
                 "Id,5",
                 "Descripción,10",
@@ -103,8 +103,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
                 "Periodicidad,5",
                 "Garantia,5",
                 "Numero Fianza,5",
-                "Fecha Instalación,15",
-                "Fecha Real,15"
+                "Fecha Programación,15",
+                "Fecha Instalacion,15"
             };
 
             var tipoProceso = VariableSesion.getCadena("TipoProceso");

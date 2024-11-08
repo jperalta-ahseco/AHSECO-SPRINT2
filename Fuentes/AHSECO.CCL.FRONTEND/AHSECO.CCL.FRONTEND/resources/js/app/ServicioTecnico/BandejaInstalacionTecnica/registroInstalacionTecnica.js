@@ -15,10 +15,14 @@
     var $btnActualizar = $('#btnActualizar');
     var $btnProcesoInst = $('#btnProcesoInst');
     //TxT
+    var $txtNomContacto = $('#txtNomContacto');
+    var $txtTelefContacto = $('#txtTelefContacto');
+    var $txtEstablecimientoCont = $('#txtEstablecimientoCont');
+    var $txtCargoContacto = $('#txtCargoContacto');
     var $txtEmpresa = $('#txtEmpresa');
     var $txtSolVenta = $('#txtSolVenta');
     var $txtRuc = $('#txtRuc');
-    var $txtTipVenta = $('#txtTipVenta');
+    var $cmbTipVenta = $('#cmbTipVenta');
     var $txtNomEmpresa = $('#txtNomEmpresa');
     var $txtUbigeo = $('#txtUbigeo');
     var $txtAsesor = $('#txtAsesor');
@@ -38,7 +42,7 @@
     //HiddenIds
     var $hdnIdProduct = $('#hdnIdProduct');
     var $hdnCodEmpresa = $('#hdnCodEmpresa');
-    var $hdnCodTipVenta = $('#hdnCodTipVenta');
+    //var $hdnCodTipVenta = $('#hdnCodTipVenta');
     var $hdnIdTecnico = $('#hdnIdTecnico');
 
     //Combos
@@ -48,7 +52,7 @@
     var $tblMainProducts = $('#tblMainProducts');
 
     var $dateFechaProgramacion = $('#dateFechaProgramacion');
-    var $dateFechaReal = $('#dateFechaReal');
+    var $dateFechaInstalacion = $('#dateFechaInstalacion');
 
     var $searchSolVenta = $('#searchSolVenta');
     var mensajes = {
@@ -132,11 +136,11 @@
     let observaciones = [];
     let adjuntos = [];
     function Initializer() {
-        registroInstalacionTec.requerimiento = [];
-        registroInstalacionTec.contadorObservaciones = 0;
         cargarTipoDoc();
         ObtenerFiltrosInstalacion();
         ObtenerDepartamentos();
+        registroInstalacionTec.requerimiento = [];
+        registroInstalacionTec.contadorObservaciones = 0;
         $btnRegresar.click(btnRegresarClick);
         $openRegdateSolicitud.click($openRegdateSolicitud_click);
         $dateSolicitud.datepicker({
@@ -161,8 +165,7 @@
         $btnBuscarTecnico.click(BuscarTecnicos);
         $dateSolicitud.val(hoy());
         $fileCargaDocumentoSustento.on("change", $fileCargaDocumentoSustento_change);
-        CargarTipoDocumento(4); //Cambiar a tipo de proceso Instalación Técnica.
-        cargarDatos();
+        CargarTipoDocumento(3); //Cambiar a tipo de proceso Instalación Técnica.
         $('#tblMainProducts tbody').on('click', 'td #btnAñadirChild', function () {
             var tr = $(this).closest('tr');
             var row = $('#tblMainProducts').dataTable().api().row(tr);
@@ -237,6 +240,7 @@
                 app.message.error("Validación", "Debe ingresar un Tipo de Documento para Registrar.");
             }
         })
+        cargarDatos();
     };
 
     function AsignarTecnico_a_Producto() {
@@ -357,7 +361,7 @@
                     Periodicidad: data.Result[i].PeriodoPreventivo,
                     Garantia: data.Result[i].GarantiaAdic,
                     FechaProgramacion: data.Result[i].FechaProgramacion,
-                    FechaReal: data.Result[i].FechaReal,
+                    FechaInstalacion: data.Result[i].FechaInstalacion,
                     Tecnicos: data.Result[i].Tecnicos
                 })
             };
@@ -491,7 +495,7 @@
             app.message.error("Validación", "El nombre de empresa está vacío, seleccione nuevamente la solicitud de venta.")
             return;
         };
-        if ($txtTipVenta.val() == "" || $txtTipVenta.val() == null || $txtTipVenta.val().trim().length == 0) {
+        if ($cmbTipVenta.val() == "" || $cmbTipVenta.val() == null || $cmbTipVenta.val().trim().length == 0) {
             app.message.error("Validación", "El campo tipo de venta está vacío, seleccione nuevamente la solicitud de venta.")
             return;
         };
@@ -534,7 +538,7 @@
                 , TelefonoContacto: 'pendiente'
                 , CargoContacto: 'pendiente'
                 , Establecimiento: 'pendiente'
-                , TipoVenta: $hdnCodTipVenta.val()
+                , TipoVenta: $cmbTipVenta.val()
                 , CodEmpresa: $hdnCodEmpresa.val()
                 , OrdenCompra: $txtOrdCompra.val()
                 , NumProceso: $txtProceso.val()
@@ -585,7 +589,7 @@
         objBuscar = {
             IdCliente: $cmbClienteSol.val() == "" || $cmbClienteSol.val() == 0 ? 0 : $cmbClienteSol.val(),
             Id_Solicitud: $txtSolicitud.val() == "" || $txtSolicitud.val() == 0 ? 0 : $txtSolicitud.val(),
-            Estado: 'REG', //Cambiar estado según lo requieran
+            Estado: 'PRVT', //Cambiar estado según lo requieran
             Tipo_Sol: "TSOL05"
         };
 
@@ -664,8 +668,11 @@
             $hdnCodEmpresa.val(requerimiento.Cod_Empresa);
             $txtSolVenta.val(numSolFormateado.toString()); 
             $txtEmpresa.val(requerimiento.Nom_Empresa);
-            $txtTipVenta.val(requerimiento.nomFlujo);
-            $hdnCodTipVenta.val(requerimiento.Id_Flujo);
+            $cmbTipVenta.val(requerimiento.TipoVenta).trigger('change.select2');
+            $txtCargoContacto.val(requerimiento.NombreContacto);
+            $txtTelefContacto.val(requerimiento.TelefonoContacto);
+            $txtEstablecimientoCont.val(requerimiento.Establecimiento);
+            $txtCargoContacto.val(requerimiento.CargoContacto);
             $txtRuc.val(requerimiento.RUC);
             $txtNomEmpresa.val(requerimiento.RazonSocial);
             $txtUbigeo.val(requerimiento.Ubigeo);
@@ -673,23 +680,23 @@
         }
         else if ($tipoproceso.val() == "U") {
             var numSolFormateado = ("000000" + requerimiento.Id_Solicitud.toString());
+            destinos_select = requerimiento.Destino.split(',');
 
             numSolFormateado = numSolFormateado.substring((numSolFormateado.length) - 6, numSolFormateado.length);
 
             $hdnCodEmpresa.val(requerimiento.Cod_Empresa);
             $txtSolVenta.val(numSolFormateado);
             $txtEmpresa.val(requerimiento.CodEmpresa);
-            $txtTipVenta.val(requerimiento.TipoVenta);
-            $hdnCodTipVenta.val(requerimiento.TipoVenta);
+            $cmbTipVenta.val(requerimiento.TipoVenta).trigger('change.select2');
+            //$hdnCodTipVenta.val(requerimiento.TipoVenta);
             $txtRuc.val(requerimiento.RucEmpresa);
             $txtNomEmpresa.val(requerimiento.NomEmpresa);
             $txtUbigeo.val(requerimiento.Ubicacion);
             $txtAsesor.val(requerimiento.Vendedor);
             $dateSolicitud.val(requerimiento.FechaMax);
-            destinos_select = requerimiento.Destino.split(',');
-            $cmbDestino.val(destinos_select).trigger("change.select2");
             $spanEstadoSol.text(requerimiento.Estado);
             $searchSolVenta.css('pointer-events', 'none');
+            $cmbDestino.val(destinos_select).trigger("change.select2");
         };
     };
 
@@ -892,29 +899,58 @@
                 {
                     data: "FechaProgramacion",
                     render: function (data, type, row) {
-                        if (data == "" || data == null || data == undefined) {
-                            return '<center>' +
-                                '<div class="input-group date">'+
-                                    '<input type="date" class="form-control input-sm" id="dateFechaProgramacion" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">' +
-                                '</div>'
-                                + '</center>'
-                        } else {
-                            return '<center>' + data + '</center>';
+                        var html = '';
+                        html += '<div class="form-group">' +
+                                    '<div class="input-group input-group-sm date">' +
+                            '<input disabled type="date" class="form-control input-sm" id="dateFechaProgramacion' + row.Id + '" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" value="' + row.FechaProgramacion + '">';
+                        if ($tipoproceso.val() == "U") {
+                            html += '<a style="cursor:pointer;background-color: #096bff;color: white;" class="input-group-addon input-sm" id="activeFechaProgramacion' + row.Id + '" title="Ingresar Fecha Programación" href="javascript:registroInstalacionTec.activarFechaProgramacion(' + row.Id + ')">' +
+                                        '<i class="fa fa-pencil" aria-hidden="true"></i>' +
+                                    '</a>';
+                            html += '<a disabled style="pointer-events:none; background-color: gray;color: white;" class="input-group-addon input-sm" id="cancelFechaProgramacion' + row.Id + '" href="javascript:registroInstalacionTec.desactivarFechaProgramacion(' + row.Id + ')"" >' +
+                                        '<i class="fa fa-times" aria-hidden="true"></i>' +
+                                    '</a>';
                         }
+                        else if ($tipoproceso.val() == "V") {
+                            html += '<a style="cursor:pointer; pointer-events:none ;background-color: gray;color: black;" class="input-group-addon input-sm" id="activeFechaProgramacion' + row.Id + '" >' +
+                                        '<i class="fa fa-pencil" aria-hidden="true"></i>' +
+                                    '</a>';
+                            html += '<a disabled style="pointer-events:none; background-color: gray;color: black;" class="input-group-addon input-sm" id="cancelFechaProgramacion' + row.Id + '" >' +
+                                        '<i class="fa fa-times" aria-hidden="true"></i>' +
+                                    '</a>';
+                        }
+                        html += '</div>';
+                        html += '</div>';
+                        return '<center>' + html + '</cemter>';
                     }
                 },
                 {
-                    data: "FechaReal",
+                    data: "FechaInstalacion",
                     render: function (data, type, row) {
-                        if (data == "" || data == null || data == undefined) {
-                            return '<center>' +
-                                '<div class="input-group date">' +
-                                '<input type="date" class="form-control input-sm" id="dateFechaReal" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">' +
-                                '</div>'
-                                + '</center>'
-                        } else {
-                            return '<center>' + data + '</center>';
+                        var html = "";
+                        html += '<div class="form-group">' +
+                                    '<div class="input-group input-group-sm date">' +
+                            '<input disabled type="date" class="form-control input-sm" id="dateFechaInstalacion' + row.Id + '" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" value="' + row.FechaInstalacion + '">';
+
+                        if ($tipoproceso.val() == "U") {
+                            html += '<a style="cursor:pointer;background-color: #096bff;color: white;" class="input-group-addon input-sm" id="activeFechaInstalacion' + row.Id + '" title="Ingresar Fecha Instalación" href="javascript:registroInstalacionTec.activarFechaInstalacion(' + row.Id + ')">' +
+                                        '<i class="fa fa-pencil" aria-hidden="true"></i>' +
+                                    '</a>';
+                            html += '<a disabled style="pointer-events:none; background-color: gray;color: white;" class="input-group-addon input-sm" id="cancelEditInstalacion' + row.Id + '" href="javascript:registroInstalacionTec.desactivarFechaInstalacion(' + row.Id + ')"" >' +
+                                        '<i class="fa fa-times" aria-hidden="true"></i>' +
+                                    '</a>';
                         }
+                        else if ($tipoproceso.val() == "V") {
+                            html += '<a style="cursor:pointer; pointer-events:none ;background-color: gray;color: black;" class="input-group-addon input-sm" id="activeFechaInstalacion' + row.Id + '" >' +
+                                        '<i class="fa fa-pencil" aria-hidden="true"></i>' +
+                                    '</a>';
+                            html += '<a disabled style="pointer-events:none; background-color: gray;color: black;" class="input-group-addon input-sm" id="cancelEditInstalacion' + row.Id + '" >' +
+                                        '<i class="fa fa-times" aria-hidden="true"></i>' +
+                                    '</a>';
+                        };
+                        html += '</div>';
+                        html += '</div>';
+                        return '<center>' + html + '</center>';
                     }
                 }
             ];
@@ -928,7 +964,249 @@
         ];
         app.llenarTabla($tblMainProducts, data, columns, columnDefs, "#tblMainProducts");
     };
+    /*Control de fechas*/
+    function activarFechaProgramacion(id) {
+        var activador = document.getElementById('activeFechaProgramacion' + id);
+        var desactivador = document.getElementById('cancelFechaProgramacion' + id);
 
+        if (activador != null) {
+
+            $('#dateFechaProgramacion' + id).prop('disabled', false);
+
+            $('#activeFechaProgramacion' + id).html('<i class="fa fa-check" aria-hidden="true"></i>');
+            desactivador.setAttribute("style", "cursor:pointer; background-color: red;color: white;");
+            activador.style.backgroundColor = "green";
+
+            var nuevoId = "activadoFecProgram" + id.toString()
+
+            $('#activeFechaProgramacion' + id).attr("id", nuevoId);
+        }
+        else {
+            guardarFechaProgramacion(id)
+        };
+    };
+
+    function desactivarFechaProgramacion(id) {
+        var activador = document.getElementById('activadoFecProgram' + id);
+        var desactivador = document.getElementById('cancelFechaProgramacion' + id);
+
+        var fnSi = function () {
+            $('#dateFechaProgramacion' + id).prop('disabled', true);
+
+            $('#activadoFecProgram' + id).html('<i class="fa fa-pencil" aria-hidden="true"></i>');
+            desactivador.setAttribute("style", "pointer-events: none; background-color: gray;color: white;");
+            activador.style.backgroundColor = "#096bff";
+
+            var nuevoId = "activeFechaProgramacion" + id.toString()
+
+            $('#activadoFecProgram' + id).attr("id", nuevoId);
+
+            for (var i = 0; i < productos.length; i++) {
+                if (productos[i].Id == id) {
+                    $('#dateFechaProgramacion'+id).val(productos[i].FechaProgramacion);
+                };
+            };
+        }
+        return app.message.confirm("Confirmación", "¿Está seguro(a) que desea cancelar?, no se guardarán los cambios realizados","Sí","No",fnSi,null);
+    };
+
+    function activarFechaInstalacion(id) {
+        var activador = document.getElementById('activeFechaInstalacion' + id);
+        var desactivador = document.getElementById('cancelEditInstalacion' + id);
+
+        if (activador != null) {
+
+            $('#dateFechaInstalacion' + id).prop('disabled', false);
+
+            $('#activeFechaInstalacion' + id).html('<i class="fa fa-check" aria-hidden="true"></i>');
+            desactivador.setAttribute("style", "cursor:pointer; background-color: red;color: white;");
+            activador.style.backgroundColor = "green";
+
+            var nuevoId = "activadoFecInstall" + id.toString()
+
+            $('#activeFechaInstalacion' + id).attr("id", nuevoId);
+        }
+        else {
+            guardarFechaInstalacion(id)
+        };
+    };
+
+    function desactivarFechaInstalacion(id) {
+        var activador = document.getElementById('activadoFecInstall' + id);
+        var desactivador = document.getElementById('cancelEditInstalacion' + id);
+
+        var fnSi = function () {
+            $('#dateFechaInstalacion' + id).prop('disabled', true);
+
+            $('#activadoFecInstall' + id).html('<i class="fa fa-pencil" aria-hidden="true"></i>');
+            desactivador.setAttribute("style", "pointer-events: none; background-color: gray;color: white;");
+            activador.style.backgroundColor = "#096bff";
+
+            var nuevoId = "activeFechaInstalacion" + id.toString()
+
+            $('#activadoFecInstall' + id).attr("id", nuevoId);
+
+            for (var i = 0; i < productos.length; i++) {
+                if (productos[i].Id == id) {
+                    $('#dateFechaInstalacion' + id).val(productos[i].FechaInstalacion);
+                };
+            };
+        }
+        return app.message.confirm("Confirmación", "¿Está seguro(a) que desea cancelar?, no se guardarán los cambios realizados", "Sí", "No", fnSi, null);
+    };
+
+
+    /*Fin del Control de Fechas*/
+
+    function guardarFechaProgramacion(id) {
+        /*Al guardar alguna fecha se restablecen las demás fechas para no generar inconsistencias*/
+
+        var date = new Date();
+        var dia = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+        var mesActual = (date.getMonth() + 1);
+        var mes = mesActual < 10 ? '0' + mesActual : mesActual;
+        var year = date.getFullYear();
+        var fechahoy = `${year}-${mes}-${dia}`
+
+        var fechaProgramacion = $('#dateFechaProgramacion' + id).val();
+        var fechaInstalacion = $('#dateFechaInstalacion' + id).val();
+
+        if (fechaProgramacion.length > 10) {
+            app.message.error("Validación", "Formato de fecha incorrecta, por favor rectifique.");
+            return;
+        };
+
+        if (fechaProgramacion.indexOf(" ") != -1) {
+            app.message.error("Validación", "Formato de fecha incorrecta, por favor rectifique.");
+            return;
+        };
+
+
+        if (fechaProgramacion < fechahoy) {
+            app.message.error("Validación", "La Fecha de Programación no puede ser menor a la fecha actual");
+            return;
+        };
+
+        for (var i = 0; i < productos.length; i++) {
+            $('#dateFechaInstalacion' + productos[i].Id).val(productos[i].FechaInstalacion);
+        };
+
+        if (fechaProgramacion == "" || fechaProgramacion == null) {
+            app.message.error("Validación", "Debe de ingresar una fecha de programación");
+            return;
+        };
+
+        if (fechaProgramacion > fechaInstalacion && fechaInstalacion != '') {
+            app.message.error("Validación", "La Fecha de Programación no puede ser mayor a la Fecha de Instalación");
+            return
+        };
+
+        var idDetalle = id;
+        
+        var method = "POST";
+        var url = "BandejaInstalacionTecnica/MantInstalacionTecnicaDetalle";
+        var objFecha = {
+            TipoProceso: "U",
+            Id: idDetalle,
+            NumReq: 0,
+            CodProducto: 0,
+            DescProducto: "",
+            Cantidad: 0,
+            Marca: "",
+            Modelo:"",
+            Serie:"",
+            NumFianza:"", 
+            CantidadMP:0,
+            Periodicidad:"",
+            Garantia:"",
+            FechaProgramacion: fechaProgramacion,
+            FechaInstalacion: fechaInstalacion
+        };
+
+        var objParam = JSON.stringify(objFecha);
+
+        var fnSi = function () {
+            var fnDoneCallBack = function (data) {
+                app.message.success("Éxito", "Se estableció la fecha de programación.");
+                obtenerDetalleInstalacion();
+            };
+
+            var fnFailCallBack = function () {
+                app.message.error("Error", "Ocurrió un error al realizar el cambio de fecha de programación");
+            };
+
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+        };
+        return app.message.confirm("Confirmación", "¿Desea realizar establecer la fecha seleccionada como: 'Fecha de Programación'?", "Sí","No",fnSi,null);
+    }
+
+    function guardarFechaInstalacion(id) {
+        /*Al guardar alguna fecha se restablecen las demás fechas para no generar inconsistencias*/
+        for (var i = 0; i < productos.length; i++) {
+            $('#dateFechaProgramacion' + productos[i].Id).val(productos[i].FechaProgramacion);
+        };
+
+        var fecha = $('#dateFechaInstalacion' + id).val();
+
+        if (fecha.length > 10) {
+            app.message.error("Validación", "Formato de fecha incorrecta, por favor rectifique.");
+            return;
+        };
+
+        if (fecha.indexOf(" ") != -1) {
+            app.message.error("Validación", "Formato de fecha incorrecta, por favor rectifique.");
+            return;
+        };
+
+        if ($('#dateFechaInstalacion' + id).val() == "" || $('#dateFechaInstalacion' + id).val() == null) {
+            app.message.error("Validación", "Debe de ingresar una fecha de instalación");
+            return;
+        };
+
+        if ($('#dateFechaInstalacion' + id).val() < $('#dateFechaProgramacion' + id).val()) {
+            app.message.error("Validación", "La Fecha de Instalación no puede ser menor a la Fecha de Programación");
+            return
+        };
+
+        var idDetalle = id;
+        var fechaProgramacion = $('#dateFechaProgramacion' + id).val();
+        var fechaInstalacion = $('#dateFechaInstalacion' + id).val();
+        var method = "POST";
+        var url = "BandejaInstalacionTecnica/MantInstalacionTecnicaDetalle";
+        var objFecha = {
+            TipoProceso: "U",
+            Id: idDetalle,
+            NumReq: 0,
+            CodProducto: 0,
+            DescProducto: "",
+            Cantidad: 0,
+            Marca: "",
+            Modelo: "",
+            Serie: "",
+            NumFianza: "",
+            CantidadMP: 0,
+            Periodicidad: "",
+            Garantia: "",
+            FechaProgramacion: fechaProgramacion,
+            FechaInstalacion: fechaInstalacion
+        };
+
+        var objParam = JSON.stringify(objFecha);
+
+        var fnSi = function () {
+            var fnDoneCallBack = function (data) {
+                app.message.success("Éxito", "Se estableció la fecha de instalación.");
+                obtenerDetalleInstalacion();
+            };
+
+            var fnFailCallBack = function () {
+                app.message.error("Error", "Ocurrió un error al realizar el cambio de fecha de instalación");
+            };
+
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+        };
+        return app.message.confirm("Confirmación", "¿Desea realizar establecer la fecha seleccionada como: 'Fecha de Instalación'?", "Sí", "No", fnSi, null);
+    }
     function AgregarTecnicoExterno() {
         $txtNombreTecnico.prop('disabled', false);
         $txtApellidoPaternoTec.prop('disabled', false);
@@ -983,13 +1261,18 @@
         url = "BandejaInstalacionTecnica/ObtenerFiltrosInstalacion"
 
         var fnDoneCallBack = function (data) {
-            //Cargar combo de empresas:
+            
             var filters = {};
             filters.placeholder = "-- Todos --";
             filters.allowClear = false;
 
             app.llenarComboMultiResult($cmbClienteSol, data.Result.Clientes, null, 0, "--Todos--", filters);
             app.llenarComboMultiResult($cmbTipoEmpleado, data.Result.TipoEmpleado, null, 0, "--Todos--", filters);
+
+            var filters2 = {};
+            filters2.placeholder = "--Seleccionar--";
+            filters2.allowClear = false;
+            app.llenarComboMultiResult($cmbTipVenta, data.Result.TipVenta, null, null, "--Seleccionar--",filters2);
         };
 
         var fnFailCallBack = function () {
@@ -1474,7 +1757,7 @@
                         Periodicidad: data.Result.DetalleInstalacion[i].PeriodoPreventivo,
                         Garantia: data.Result.DetalleInstalacion[i].GarantiaAdic,
                         FechaProgramacion: data.Result.DetalleInstalacion[i].FechaProgramacion,
-                        FechaReal: data.Result.DetalleInstalacion[i].FechaReal,
+                        FechaInstalacion: data.Result.DetalleInstalacion[i].FechaInstalacion,
                         Tecnicos: data.Result.DetalleInstalacion[i].Tecnicos
                     })
                 };
@@ -1530,9 +1813,6 @@
 
             app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
         }
-
-        var fechasProgramacion = document.querySelectorAll("#dateFechaProgramacion");
-        console.log(fechasProgramacion);
     };
 
     function detalleHijo(id) {
@@ -1837,7 +2117,7 @@
             app.message.error("Validación", "El nombre de empresa está vacío, seleccione nuevamente la solicitud de venta.")
             return;
         };
-        if ($txtTipVenta.val() == "" || $txtTipVenta.val() == null || $txtTipVenta.val().trim().length == 0) {
+        if ($cmbTipVenta.val() == "" || $cmbTipVenta.val() == null || $cmbTipVenta.val().trim().length == 0) {
             app.message.error("Validación", "El campo tipo de venta está vacío, seleccione nuevamente la solicitud de venta.")
             return;
         };
@@ -1920,13 +2200,21 @@
             };
         };
 
-        var fechasProgramacion = document.querySelectorAll(".dateFechaProgramacion");
-
-        console.log(fechasProgramacion);
-
-
         if (validador == 0) {
             app.message.error("Validación", "Debe de asignar por lo menos un técnico a un producto.");
+            return;
+        };
+
+        validador = 0;
+
+        for (var i = 0; productos.length > i; i++) {
+            if ($('#dateFechaProgramacion' + productos[i].Id).val() != "") {
+                validador = 1;
+            };
+        };
+
+        if (validador == 0) {
+            app.message.error("Validación", 'Por lo menos una instalación debe de contar con "Fecha de Programación", registrada.');
             return;
         };
 
@@ -1963,12 +2251,70 @@
         };
     };
     function CerrarRequerimiento() {
+        var validador = 0;
+
+        for (var i = 0; productos.length > i; i++) {
+            if ($('#dateFechaProgramacion' + productos[i].Id).val() == "") {
+                validador = 1;
+            };
+
+            if ($('#dateFechaInstalacion' + productos[i].Id).val() == "") {
+                validador = 1;
+            };
+        };
+
+        if (validador == 1) {
+            app.message.error("Validación", 'Todas las instalaciones deben de contar con "Fecha de Programación" y "Fecha Real", registradas.');
+            return;
+        };
+
+        validador = 1;
+
+        for (var i = 0; i < adjuntos.length; i++) {
+            if (adjuntos[i].CodigoTipoDocumento == "DV05") {
+                validador = 0;
+            };
+        };
+
+        if (validador == 1) {
+            app.message.error("Validación", 'Debe de adjuntar el tipo de documento: "Ficha de Instalación", para continuar.');
+            return;
+        };
+
         var requerimiento = $numeroReq.val()
         var method = "POST";
-        var url = "";
+        var url = "BandejaInstalacionTecnica/MantInstalacion";
 
-        var objReq = {
+        if ($estadoReq.val() == "STEPI") {
+            var method = "POST";
+            var url = "BandejaInstalacionTecnica/MantInstalacion";
 
+            var objReq = {
+                TipoProceso: "U",
+                NumReq: $numeroReq.val(),
+                FechaMax: $dateSolicitud.val(),
+                Destino: destinos_select.toString(),
+                Estado: "STINS",
+                OrdenCompra: $txtOrdCompra.val(),
+                NumProceso: $txtProceso.val(),
+                Contrato: $txtContrato.val()
+            };
+
+            var objParam = JSON.stringify(objReq);
+
+            var fnSi = function () {
+                var fnDoneCallBack = function () {
+                    function redirect() {
+                        app.redirectTo("BandejaInstalacionTecnica");
+                    }
+                    app.message.success("Éxito", "Se realizó el cambio de estado a: 'Instalado'", "Aceptar", redirect);
+                };
+                var fnFailCallBack = function () {
+                    app.message.error("Validación", "Se presentó un problema al realizar el cambio de estado, por favor revisar.");
+                };
+                app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+            }
+            return app.message.confirm("Confirmación", "¿Desea realizar el cambio de estado a: 'Instalado'. ?", "Si", "No", fnSi, null);
         };
     }
 
@@ -1981,6 +2327,10 @@
         seleccionarSolicitud: seleccionarSolicitud,
         seleccionarTecnico: seleccionarTecnico,
         //asignarTecnico: asignarTecnico,
+        activarFechaProgramacion: activarFechaProgramacion,
+        desactivarFechaProgramacion: desactivarFechaProgramacion,
+        activarFechaInstalacion: activarFechaInstalacion,
+        desactivarFechaInstalacion: desactivarFechaInstalacion,
         detalleHijo: detalleHijo,
         añadirTecnico: añadirTecnico,
         DesasignarTécnicoTmp: DesasignarTécnicoTmp
