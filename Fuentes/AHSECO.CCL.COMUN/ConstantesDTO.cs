@@ -102,6 +102,11 @@ namespace AHSECO.CCL.COMUN
 
         public struct CotizacionVentaDetalle
         {
+            public struct TipoProceso
+            {
+                public static string Insertar { get { return "I"; } }
+                public static string Modificar { get { return "U"; } }
+            }
             public struct CodigoItem
             {
                 public static string FORMAT_IdNewTempRecord { get { return "TMPREC_{0}"; } }

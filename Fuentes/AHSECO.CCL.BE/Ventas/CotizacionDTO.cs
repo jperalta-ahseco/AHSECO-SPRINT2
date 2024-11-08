@@ -30,5 +30,6 @@ namespace AHSECO.CCL.BE.Ventas
         public decimal? MontoIGV { get; set; }
         public decimal? TotalVenta { get; set; }
         public string Estado { get; set; }
+        public CotizacionDetalleDTO[] CotizacionDetalle { get; set; }
     }
 }

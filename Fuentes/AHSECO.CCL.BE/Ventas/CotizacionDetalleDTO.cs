@@ -16,6 +16,7 @@ namespace AHSECO.CCL.BE.Ventas
         public string TipoItem { get; set; }
         public string CodItem { get; set; }
         public string Descripcion { get; set; }
+        public string DescripcionAdicional { get; set; }
         public int Stock { get; set; }
         public string CodUnidad { get; set; }
         public string DescUnidad { get; set; }
@@ -30,7 +31,7 @@ namespace AHSECO.CCL.BE.Ventas
         public bool EsItemPadre { get; set; }
         public int CantSubItem { get; set; }
         public CotDetDespachoDTO CotizacionDespacho { get; set; }
-        public CotDetDespachoDTO CotizacionCosto { get; set; }
+        public CotizacionCostoDTO CotizacionCosto { get; set; }
 
         #region BandejaInstalacionTecnica
         public string Marca { get; set; }

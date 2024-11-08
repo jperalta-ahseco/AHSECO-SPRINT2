@@ -358,26 +358,13 @@ var app = (function ($, win, doc) {
 
     // Ejecuta una llamada ajax con los parametros especificados
     var cantidadLlamadas = 0;
-    var $modalLoading;
     function llamarAjax(method, url, data, fnDoneCallback, fnFailCallback, fnAlwaysCallback, messageWait) {
         var m = method || "POST";
         var u = baseUrl + url;
         var d = data || "";
         
-        //loading.show(messageWait);
+        mostrarLoading();
 
-        $modalLoading = $("#modalLoading");
-        var $modalLoading_body = $("#messageLoading");
-        var defaultMessage = "Procesando, por favor espere...";
-        $modalLoading_body.html(defaultMessage);
-        var zi = obtenerMayorZIndex();
-        $modalLoading.addClass("in");
-        $modalLoading.css("z-index", zi + 2);
-        $modalLoading.css("background-color", "#000000");
-        $modalLoading.css("opacity", "0.5");
-        $modalLoading.css("filter", "alpha(opacity=50)");
-        $modalLoading.show();
-        
         return $.ajax({
             method: m,
             url: u,
@@ -402,10 +389,62 @@ var app = (function ($, win, doc) {
                 fnAlwaysCallback();
             }
             if (!loading.isGlobal) {
-                //loading.hide();
-                $modalLoading.hide();
+                ocultarLoading();
             }
         });
+    }
+
+    function llamarAjaxNoLoading(method, url, data, fnDoneCallback, fnFailCallback, fnAlwaysCallback, messageWait) {
+        var m = method || "POST";
+        var u = baseUrl + url;
+        var d = data || "";
+
+        return $.ajax({
+            method: m,
+            url: u,
+            data: d,
+            contentType: 'application/json',
+            dataType: "json"
+        }).done(function (data, textStatus, jqXhr) {
+            $modalLoading.hide();
+            if (data.Status === 1) {
+                if (typeof (fnDoneCallback) != "undefined" || fnDoneCallback != null) {
+                    fnDoneCallback(data);
+                }
+            } else if (data.Status === 0) {
+                message.error("Error", data.CurrentException, "Aceptar", fnFailCallback);
+            }
+        }).fail(function (jqXhr, textStatus, errorThrow) {
+            $modalLoading.hide();
+            message.error("Error inesperado", errorThrow, "Aceptar", fnFailCallback);
+        }).always(function () {
+
+            if (typeof (fnAlwaysCallback) !== "undefined" && fnAlwaysCallback != null) {
+                fnAlwaysCallback();
+            }
+            if (!loading.isGlobal) {
+                ocultarLoading();
+            }
+        });
+    }
+
+    var $modalLoading;
+    function mostrarLoading() {
+        $modalLoading = $("#modalLoading");
+        var $modalLoading_body = $("#messageLoading");
+        var defaultMessage = "Procesando, por favor espere...";
+        $modalLoading_body.html(defaultMessage);
+        var zi = obtenerMayorZIndex();
+        $modalLoading.addClass("in");
+        $modalLoading.css("z-index", zi + 2);
+        $modalLoading.css("background-color", "#000000");
+        $modalLoading.css("opacity", "0.5");
+        $modalLoading.css("filter", "alpha(opacity=50)");
+        $modalLoading.show();
+    }
+
+    function ocultarLoading() {
+        $modalLoading.hide();
     }
 
     // Llena un datatable con datos y especificacion de columnas
@@ -772,6 +811,7 @@ var app = (function ($, win, doc) {
         loading: loading,
         obtenerMayorZIndex: obtenerMayorZIndex,
         llamarAjax: llamarAjax,
+        llamarAjaxNoLoading: llamarAjaxNoLoading,
         llenarTabla: llenarTabla,
         obtenerValorCeldaTabla: obtenerValorCeldaTabla,
         llenarCombo: llenarCombo,
@@ -794,7 +834,9 @@ var app = (function ($, win, doc) {
         redirigirA: redirigirA,
         abrirVentana: abrirVentana,
         validaNumeroDecimal: validaNumeroDecimal,
-        validaNumeroEntero: validaNumeroEntero
+        validaNumeroEntero: validaNumeroEntero,
+        mostrarLoading: mostrarLoading,
+        ocultarLoading: ocultarLoading
     }
 })(window.jQuery, window, document);
 

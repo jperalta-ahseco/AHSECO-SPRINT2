@@ -340,35 +340,28 @@
                                                     </div>
                                                     <div class="box-content">
                                                         <div class="text-right">
-                                                            @if (ViewBag.PermitirAgregarCotDet == true)
-                                                            {
-                                                                <button class="btn btn-default btn-sm" type="button" data-target="#modalDetalleCotizacion" data-toggle="modal" id="btnAgregarDetalle" tabindex="14"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar / Modificar Detalle</button>
-                                                            }
-                                                            @if (ViewBag.PermitirNuevoCot == true)
-                                                            {
-                                                                <button class="btn btn-default btn-sm" type="button" id="btnNuevoCot" tabindex="15"><i class="fa fa-newspaper-o" aria-hidden="true"></i>&nbsp; Nueva Cotización</button>
-                                                            }
+                                                            <button style="@(ViewBag.PermitirAgregarCotDet ? "" : "display:none")" class="btn btn-default btn-sm" type="button" data-target="#modalDetalleCotizacion" data-toggle="modal" id="btnAgregarDetalle" tabindex="14"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar / Modificar Detalle</button>
                                                         </div>
                                                         <br />
                                                         <ul class="nav nav-tabs" style="padding-top: 5px;">
-                                                            <li class="" id="tabDetalleProducto">
-                                                                <a href="#navDetalleProducto" data-toggle="tab" style="font-weight:bold; color:black;" tabindex="20"><i class="fa fa-cubes" aria-hidden="true"></i> Detalle de Productos</a>
+                                                            <li class="" id="tabDetCot" style="@(ViewBag.PermitirTabDetCot ? "" : "display:none")">
+                                                                <a href="#navCotDet" data-toggle="tab" style="font-weight:bold; color:black;" tabindex="20"><i class="fa fa-cubes" aria-hidden="true"></i> Detalle de Productos</a>
                                                             </li>
-                                                            <li class="" id="tabCalibracion">
-                                                                <a href="#navCalibracion" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-wrench" aria-hidden="true"></i> Calibraci&oacute;n</a>
+                                                            <li class="" id="tabCalib" style="@(ViewBag.PermitirTabCalib ? "" : "display:none")">
+                                                                <a href="#navCalib" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-wrench" aria-hidden="true"></i> Calibraci&oacute;n</a>
                                                             </li>
-                                                            <li class="" id="tabInstalacion">
-                                                                <a href="#navInstalacion" data-toggle="tab" style="font-weight: bold; color: black; " tabindex="20"><i class="fa fa-gears" aria-hidden="true"></i> Instalaci&oacute;n</a>
+                                                            <li class="" id="tabInsta" style="@(ViewBag.PermitirTabInsta ? "" : "display:none")">
+                                                                <a href="#navInsta" data-toggle="tab" style="font-weight: bold; color: black; " tabindex="20"><i class="fa fa-gears" aria-hidden="true"></i> Instalaci&oacute;n</a>
                                                             </li>
-                                                            <li class="" id="tabMantenimiento">
-                                                                <a href="#navMantenimiento" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-male" aria-hidden="true"></i> Mantenimiento</a>
+                                                            <li class="" id="tabMantPrevent" style="@(ViewBag.PermitirTabMantPrevent ? "" : "display:none")">
+                                                                <a href="#navMantPrevent" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-male" aria-hidden="true"></i> Mantenimiento</a>
                                                             </li>
-                                                            <li class="" id="tabTransporte">
-                                                                <a href="#navTransporte" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-truck" aria-hidden="true"></i>  Flete</a>
+                                                            <li class="" id="tabFlete" style="@(ViewBag.PermitirTabFlete ? "" : "display:none")">
+                                                                <a href="#navFlete" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-truck" aria-hidden="true"></i>  Flete</a>
                                                             </li>
                                                         </ul>
                                                         <div class="tab-content">
-                                                            <div id="navDetalleProducto" class="tab-pane fade in active">
+                                                            <div id="navCotDet" class="tab-pane fade in active">
                                                                 <div class="table-responsive">
                                                                     <table id="tblDetCotCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                                                         <thead>
@@ -384,9 +377,9 @@
                                                                     </table>
                                                                 </div>
                                                             </div>
-                                                            <div id="navCalibracion" class="tab-pane fade">
+                                                            <div id="navCalib" class="tab-pane fade">
                                                                 <div class="table-responsive">
-                                                                    <table id="tableCalibracion" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                    <table id="tblCalibCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                                                         <thead>
                                                                             <tr>
                                                                                 @for (var i = 0; i < @ViewBag.Cabecera.Length; i++)
@@ -400,9 +393,9 @@
                                                                     </table>
                                                                 </div>
                                                             </div>
-                                                            <div id="navInstalacion" class="tab-pane fade">
+                                                            <div id="navInsta" class="tab-pane fade">
                                                                 <div class="table-responsive">
-                                                                    <table id="tableInstalacion" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                    <table id="tblInstaCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                                                         <thead>
                                                                             <tr>
                                                                                 @for (var i = 0; i < @ViewBag.Cabecera.Length; i++)
@@ -416,9 +409,9 @@
                                                                     </table>
                                                                 </div>
                                                             </div>
-                                                            <div id="navMantenimiento" class="tab-pane fade">
+                                                            <div id="navMantPrevent" class="tab-pane fade">
                                                                 <div class="table-responsive">
-                                                                    <table id="tablemantenimiento" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                    <table id="tblMantPreventCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                                                         <thead>
                                                                             <tr>
                                                                                 @for (var i = 0; i < @ViewBag.Cabecera.Length; i++)
@@ -432,9 +425,9 @@
                                                                     </table>
                                                                 </div>
                                                             </div>
-                                                            <div id="navTransporte" class="tab-pane fade">
+                                                            <div id="navFlete" class="tab-pane fade">
                                                                 <div class="table-responsive">
-                                                                    <table id="tableTransporte" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                    <table id="tblFleteCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                                                         <thead>
                                                                             <tr>
                                                                                 @for (var i = 0; i < @ViewBag.Cabecera.Length; i++)
@@ -451,7 +444,7 @@
                                                         </div>
                                                         <div class="row container-fluid">
                                                             <div class="text-right">
-                                                                <button class="btn btn-default btn-sm" type="button" id=""><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Editar</button>
+                                                                <button style="@(ViewBag.PermitirEnvioCotizacion ? "" : "display:none")" class="btn btn-default btn-sm" type="button" id="btnEnviarCotizacion"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Enviar Cotizaci&oacute;n</button>
                                                             </div>
                                                         </div>
                                                     </div>

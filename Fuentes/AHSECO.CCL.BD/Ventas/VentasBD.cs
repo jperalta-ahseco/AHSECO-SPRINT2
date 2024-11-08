@@ -141,14 +141,17 @@ namespace AHSECO.CCL.BD.Ventas
                         TipoItem = i.Single(d => d.Key.Equals("TIPOITEM")).Value.Parse<string>(),
                         CodItem = i.Single(d => d.Key.Equals("CODITEM")).Value.Parse<string>(),
                         Descripcion = i.Single(d => d.Key.Equals("DESCRIPCION")).Value.Parse<string>(),
+                        DescripcionAdicional = i.Single(d => d.Key.Equals("DESCRIPADIC")).Value.Parse<string>(),
                         Stock = i.Single(d => d.Key.Equals("STOCK")).Value.Parse<int>(),
-                        CodUnidad = i.Single(d => d.Key.Equals("UNIDAD")).Value.Parse<string>(),
+                        CodUnidad = i.Single(d => d.Key.Equals("UNDMED")).Value.Parse<string>(),
                         Cantidad = i.Single(d => d.Key.Equals("CANTIDAD")).Value.Parse<int>(),
                         CostoFOB = i.Single(d => d.Key.Equals("COSTOFOB")).Value.Parse<decimal?>(),
                         VentaUnitaria = i.Single(d => d.Key.Equals("VVENTAUNI")).Value.Parse<decimal?>(),
                         VentaTotalSinIGV = i.Single(d => d.Key.Equals("VVTOTALSIGV")).Value.Parse<decimal?>(),
                         PorcentajeGanancia = i.Single(d => d.Key.Equals("PORCGANANCIA")).Value.Parse<decimal?>(),
-                        VentaTotalSinIGVConGanacia = i.Single(d => d.Key.Equals("VVTOTALCGAN")).Value.Parse<decimal?>()
+                        VentaTotalSinIGVConGanacia = i.Single(d => d.Key.Equals("VVTOTALSIGVCGAN")).Value.Parse<decimal?>(),
+                        MontoDescuento = i.Single(d => d.Key.Equals("MONTODSCTO")).Value.Parse<decimal?>(),
+                        VentaTotalSinIGVDscto = i.Single(d => d.Key.Equals("VVTOTALSIGVDSCTO")).Value.Parse<decimal?>()
                     });
 
                 connection.Close();
@@ -250,16 +253,32 @@ namespace AHSECO.CCL.BD.Ventas
                 var parameters = new DynamicParameters();
 
                 parameters.Add("isTipoProceso",detalleCotizacion.TipoProceso);
-                parameters.Add("isID_DETALLE", detalleCotizacion.Id);
+                parameters.Add("isID", detalleCotizacion.Id);
                 parameters.Add("isID_COTIZACION", detalleCotizacion.IdCotizacion);
-                parameters.Add("isTIPO", detalleCotizacion.TipoItem);
-                parameters.Add("isCODPRODUCTO", detalleCotizacion.CodItem);
+                parameters.Add("isNROITEM", detalleCotizacion.NroItem);
+                parameters.Add("isTIPOITEM", detalleCotizacion.TipoItem);
+                parameters.Add("isCODITEM", detalleCotizacion.CodItem);
                 parameters.Add("isDESCRIPCION", detalleCotizacion.Descripcion);
-                parameters.Add("isUNIDAD", detalleCotizacion.CodUnidad);
+                parameters.Add("isDESCRIPADIC", detalleCotizacion.DescripcionAdicional);
+                parameters.Add("isSTOCK", detalleCotizacion.Stock);
+                parameters.Add("isUNDMED", detalleCotizacion.CodUnidad);
                 parameters.Add("isCANTIDAD", detalleCotizacion.Cantidad);
-                parameters.Add("isCOSTOFOB", detalleCotizacion.CostoFOB);
-                parameters.Add("isVVENTAUNI", detalleCotizacion.VentaUnitaria);
-                parameters.Add("isVVTOTALSIGV", detalleCotizacion.VentaTotalSinIGV);
+                if (detalleCotizacion.CostoFOB.HasValue)
+                {
+                    parameters.Add("isCOSTOFOB", detalleCotizacion.CostoFOB.Value);
+                }
+                else
+                {
+                    parameters.Add("isCOSTOFOB", DBNull.Value, DbType.Decimal);
+                }
+                if (detalleCotizacion.VentaUnitaria.HasValue)
+                {
+                    parameters.Add("isVVENTAUNI", detalleCotizacion.VentaUnitaria.Value);
+                }
+                else
+                {
+                    parameters.Add("isVVENTAUNI", DBNull.Value, DbType.Decimal);
+                }
                 parameters.Add("isUsrEjecuta",detalleCotizacion.UsuarioRegistra);
                 parameters.Add("isFecEjecuta", detalleCotizacion.FechaRegistro);
 

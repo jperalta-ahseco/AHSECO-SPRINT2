@@ -4,6 +4,7 @@ var cotvtadet = (function ($, win, doc) {
     var $perfilnombre = $('#perfilnombre');
     var $idCotizacion = $("#idCotizacion");
     var $idRolUsuario = $("#idRolUsuario");
+    var $idWorkFlow = $("#idWorkFlow");
 
     var $cmbTipo = $('#cmbTipo');
 
@@ -13,10 +14,10 @@ var cotvtadet = (function ($, win, doc) {
     var $BI_cmbTipoMedida = $('#BI_cmbTipoMedida');
     var $BI_cmbMarca = $('#BI_cmbMarca');
 
+    var $btnAgregarDetalle = $("#btnAgregarDetalle");
     var $btnBuscarItems = $('#btnBuscarItems');
     var $tblItems = $('#tblItems');
     var $tblCotDet = $('#tblCotDet');
-    var $tblDetCotCostos = $('#tblDetCotCostos');
 
     var $DI_hdnCodigoPadre = $("#DI_hdnCodigoPadre");
     var $DI_txtCodigo = $("#DI_txtCodigo");
@@ -50,6 +51,20 @@ var cotvtadet = (function ($, win, doc) {
     var $DC_btnGuardar = $("#DC_btnGuardar");
     var $DC_btnCerrar = $("#DC_btnCerrar");
 
+    var $btnEnviarCotizacion = $("#btnEnviarCotizacion");
+
+    var $tabDetCot = $("#tabDetCot");
+    var $tabCalib = $("#tabCalib");
+    var $tabInsta = $("#tabInsta");
+    var $tabMantPrevent = $("#tabMantPrevent");
+    var $tabFlete = $("#tabFlete");
+
+    var $tblDetCotCostos = $('#tblDetCotCostos');
+    var $tblCalibCostos = $("#tblCalibCostos");
+    var $tblInstaCostos = $("#tblInstaCostos");
+    var $tblMantPreventCostos = $("#tblMantPreventCostos");
+    var $tblFleteCostos = $("#tblFleteCostos");
+
     var mensajes = {
         BuscandoPrecios: "Buscando Precios, porfavor espere...",
         obteniendoFiltros: "Obteniendo filtros de lista de precios..."
@@ -63,7 +78,11 @@ var cotvtadet = (function ($, win, doc) {
         $DC_btnGuardar.click(grabarDatosCotDet);
         $DI_btnCerrar.click(cerrarModalDetItem);
         $DC_btnCerrar.click(cerrarModalDetCot);
+        $btnEnviarCotizacion.click(enviarCotizacion);
+        app.mostrarLoading();
+        listarItemsCotDet();
         cargarCiclosPreventivos();
+        app.ocultarLoading();
 
     }
 
@@ -354,7 +373,7 @@ var cotvtadet = (function ($, win, doc) {
             filters.allowClear = false;
             app.llenarComboMultiResult($DI_cmbCicloPreventivo, data.Result, null, " ", "-- Ninguno --", filters);
         }
-        return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, null);
+        return app.llamarAjaxNoLoading(method, url, objParam, fnDoneCallback, null, null, null);
     }
 
     function LimpiarModalDetItem() {
@@ -410,6 +429,7 @@ var cotvtadet = (function ($, win, doc) {
         }
     }
 
+    var opcEditarItem = 0;
     function editarItem(CodigoItem) {
 
         $DI_hdnCodigoPadre.val("");
@@ -422,6 +442,7 @@ var cotvtadet = (function ($, win, doc) {
         var objParam = JSON.stringify(objFiltros);
 
         var fnDoneCallBack = function (data) {
+            opcEditarItem = 1;
             LimpiarModalDetItem();
             MostrarDatosItem(data);
             $('#modalDetalleItem').modal('show');
@@ -750,7 +771,12 @@ var cotvtadet = (function ($, win, doc) {
 
         var fnDoneCallBack = function (data) {
             cerrarModalDetItem();
-            cargarTablaCotDet(data);
+            if (opcEditarItem == 1) {
+                cargarTablaCotDet(data);
+            }
+            else {
+                cargarTablaDetCotCostos(data);
+            }
         };
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
@@ -769,6 +795,7 @@ var cotvtadet = (function ($, win, doc) {
         var fnDoneCallBack = function (data) {
             cerrarModalDetCot();
             cargarTablaDetCotCostos(data);
+            $btnEnviarCotizacion.css("display", "");
         };
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
@@ -857,6 +884,15 @@ var cotvtadet = (function ($, win, doc) {
                         if (data == null) { data = ""; }
                         return '<center>' + data + '</center>';
                     }
+                },
+                {
+                    data: "CodItem",
+                    render: function (data) {
+                        var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
+                        var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarItemCostos(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                        var quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarItemCostos(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ')"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                        return '<center>' + hidden + editar + ' ' + quitar + '</center>';
+                    }
                 }
             ];
 
@@ -926,6 +962,15 @@ var cotvtadet = (function ($, win, doc) {
                         if (data == null) { data = ""; }
                         return '<center>' + data + '</center>';
                     }
+                },
+                {
+                    data: "CodItem",
+                    render: function (data) {
+                        var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
+                        var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarItemCostos(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                        var quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarItemCostos(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ')"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                        return '<center>' + hidden + editar + ' ' + quitar + '</center>';
+                    }
                 }
             ];
 
@@ -949,8 +994,84 @@ var cotvtadet = (function ($, win, doc) {
         app.llenarTabla($tblDetCotCostos, data, columns, columnDefs, "#tblDetCotCostos", rowCallback, null, filters);
     }
 
+    function editarItemCostos(CodigoItem) {
+
+        $DI_hdnCodigoPadre.val("");
+
+        method = "POST";
+        url = "BandejaSolicitudesVentas/EditarItemCotDet";
+        var objFiltros = {
+            CodItem: CodigoItem
+        };
+        var objParam = JSON.stringify(objFiltros);
+
+        var fnDoneCallBack = function (data) {
+            opcEditarItem = 2;
+            LimpiarModalDetItem();
+            MostrarDatosItem(data);
+            $('#modalDetalleItem').modal('show');
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+    }
+
+    function quitarItemCostos(CodigoItem) {
+        method = "POST";
+        url = "BandejaSolicitudesVentas/QuitarItemCotDet";
+        var objFiltros = {
+            CodItem: CodigoItem
+        };
+        var objParam = JSON.stringify(objFiltros);
+
+        var fnDoneCallBack = function (data) {
+            opcEditarItem = 2;
+            cargarTablaDetCotCostos(data);
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+    }
+
     function cerrarModalDetCot() {
         $('#modalDetalleCotizacion').modal('hide');
+    }
+
+    function enviarCotizacion() {
+
+        method = "POST";
+        url = "BandejaSolicitudesVentas/enviarCotizacion";
+        var objDatos = {
+            IdCotizacion: $idCotizacion.val(),
+            IdWorkFlow: $idWorkFlow.val()
+        };
+        var objParam = JSON.stringify(objDatos);
+
+        function redirect() {
+            app.redirectTo("BandejaSolicitudesVentas/SolicitudVenta");
+        };
+        
+        var fnDoneCallBack = function (data) {
+            $btnAgregarDetalle.css("display", "none");
+            $(".botonDetCot").css("display", "none");
+            app.message.success("Cotización", "Se envi&oacute; la cotizaci&oacute;n correctamente.", "Aceptar", redirect);
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+    }
+
+    function listarItemsCotDet() {
+        method = "POST";
+        url = "BandejaSolicitudesVentas/ListarItemsCotDet";
+        var objFiltros = {
+        };
+        var objParam = JSON.stringify(objFiltros);
+
+        var fnDoneCallBack = function (data) {
+            cargarTablaCotDet(data);
+            cargarTablaDetCotCostos(data);
+            $btnEnviarCotizacion.css("display", "");
+        };
+
+        app.llamarAjaxNoLoading(method, url, objParam, fnDoneCallBack, null);
     }
 
     return {
@@ -959,8 +1080,10 @@ var cotvtadet = (function ($, win, doc) {
         RecargarFiltroFamilia: RecargarFiltroFamilia,
         agregarItem: agregarItem,
         quitarItem: quitarItem,
+        quitarItemCostos: quitarItemCostos,
         cargarCiclosPreventivos: cargarCiclosPreventivos,
         editarItem: editarItem,
+        editarItemCostos: editarItemCostos,
         quitarSubItem: quitarSubItem,
         editarSubItem: editarSubItem,
         SeleccionarRowCotDet: SeleccionarRowCotDet,
@@ -969,6 +1092,8 @@ var cotvtadet = (function ($, win, doc) {
         cerrarModalDetItem: cerrarModalDetItem,
         grabarDatosCotDet: grabarDatosCotDet,
         cargarTablaDetCotCostos: cargarTablaDetCotCostos,
-        cerrarModalDetCot: cerrarModalDetCot
+        cerrarModalDetCot: cerrarModalDetCot,
+        enviarCotizacion: enviarCotizacion,
+        listarItemsCotDet: listarItemsCotDet
     }
 })(window.jQuery, window, document);
