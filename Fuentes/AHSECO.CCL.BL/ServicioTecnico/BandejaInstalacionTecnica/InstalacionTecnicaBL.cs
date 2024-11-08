@@ -74,12 +74,12 @@ namespace AHSECO.CCL.BL.ServicioTecnico.BandejaInstalacionTecnica
             try
             {
                 var result = Repository.ObtenerDetalleSolicitud(id);
-                return new ResponseDTO<SolicitudVentaGrupoDTO>(result);
+                return new ResponseDTO<GrupoSolicitudVentaTecDTO>(result);
             }
             catch (Exception ex)
             {
                 Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
-                return new ResponseDTO<SolicitudVentaGrupoDTO>(ex);
+                return new ResponseDTO<GrupoSolicitudVentaTecDTO>(ex);
             }
         }
 
