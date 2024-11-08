@@ -23,6 +23,7 @@ namespace AHSECO.CCL.BE.Ventas
         public int? NroPiso { get; set; }
         public string Dimensiones { get; set; }
         public bool IndCompraLocal { get; set; }
+        public bool IndCalibracion { get; set; }
         public bool IndFianza { get; set; }
         public decimal? MontoPrestPrin { get; set; }
         public decimal? MontoPrestAcc { get; set; }

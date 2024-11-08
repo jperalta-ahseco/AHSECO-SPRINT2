@@ -17,7 +17,7 @@
         <!-- Modal content body -->
         <div class="modal-body d-flex justify-content-center" align-items-center>
             <form id="formItem" class="d-flex flex-row">
-                <div class="row container-fluid d-flex justify-content-center">
+                <div class="row d-flex justify-content-center">
                     <div class="container-fluid">
                         <fieldset>
                             <legend><b>Informaci&oacute;n General</b></legend>
@@ -97,7 +97,7 @@
                     <div class="container-fluid">
                         <fieldset class="form-group">
                             <legend><b>Información del Env&iacute;o</b></legend>
-                            <div class="row container-fluid">
+                            <div class="row container-fluid col-content-middleleft">
                                 <div class="col-md-4 col-content-middleleft">
                                     <div class="col-md-7">
                                         <label for="DI_radLLaveEnMano">LLave en mano: </label>
@@ -133,9 +133,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row container-fluid">
-                                <div class="col-md-7 col-content-middleleft">
-                                    <div class="col-md-4">
+                            <div class="row container-fluid col-content-middleleft">
+                                <div class="col-md-4 col-content-middleleft">
+                                    <div class="col-md-7">
                                         <label for="DI_radCompraLocal">Compra Local: </label>
                                     </div>
                                     <div class="col-md-2">
@@ -155,7 +155,7 @@
                                         </table>
                                     </div>
                                 </div>
-                                <div class="col-md-7 col-content-middleleft">
+                                <div class="col-md-8 col-content-middleleft">
                                     <div class="col-md-3">
                                         <label for="DI_txtDireccion">Direcci&oacute;n :</label>
                                     </div>
@@ -165,9 +165,9 @@
                                 </div>
                             </div>
                             <div class="row container-fluid">
-                                <div class="col-md-5 col-content-middleleft">&nbsp;</div>
+                                <div class="col-md-4 col-content-middleleft">&nbsp;</div>
                                 <div class="col-md-3 col-content-middleleft">
-                                    <div class="col-md-7">
+                                    <div class="col-md-8">
                                         <label for="DI_txtNroPiso">Piso: </label>
                                     </div>
                                     <div class="col-md-3">
@@ -188,7 +188,7 @@
                     <div class="container-fluid">
                         <fieldset class="form-group">
                             <legend><b>Información Adicional</b></legend>
-                            <div class="row container-fluid">
+                            <div class="row container-fluid col-content-middleleft">
                                 <div class="col-md-4 col-content-middleleft">
                                     <div class="col-md-7">
                                         <label for="DI_radManuales" style="flex: 0 0 120px">Manuales: </label>
@@ -227,7 +227,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row container-fluid">
+                            <div class="row container-fluid col-content-middleleft">
                                 <div class="col-md-4 col-content-middleleft">
                                     <div class="col-md-7">
                                         <label for="DI_radVideos">Videos: </label>
@@ -258,10 +258,15 @@
                                     </div>
                                 </div>
                                 <div class="col-md-4 col-content-middleleft">
-
+                                    <div class="col-md-6">
+                                        <label for="DI_txtFechaLimite">Fecha L&iacute;mite Instalaci&oacute;n: </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input placeholder="Garantía Adic." type="text" maxlength="8" class="form-control input-sm" id="DI_txtFechaLimite" value="">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="row container-fluid">
+                            <div class="row container-fluid col-content-middleleft">
                                 <div class="col-md-4 col-content-middleleft">
                                     <div class="col-md-7">
                                         <label for="DI_radInstaCapa">Instalaci&oacute;n y Capacitaci&oacute;n: </label>
@@ -284,40 +289,15 @@
                                     </div>
                                 </div>
                                 <div class="col-md-4 col-content-middleleft">
-
+                                    <div class="col-md-6">
+                                        <label for="DI_txtAmbienteInsta">Ambiente a Instalar: </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input placeholder="Garantía Adic." type="text" maxlength="150" class="form-control input-sm" id="DI_txtAmbienteInsta" value="">
+                                    </div>
                                 </div>
                                 <div class="col-md-4 col-content-middleleft">
 
-                                </div>
-                            </div>
-                            <div class="row container-fluid">
-                                <div class="col-md-4 col-content-middleleft">
-
-                                </div>
-                                <div class="col-md-4 col-content-middleleft">
-
-                                </div>
-                                <div class="col-md-4 col-content-middleleft">
-
-                                </div>
-                            </div>
-                            <div class="row container-fluid">
-                                <div class="col-md-5 col-content-middleleft">
-                                </div>
-                                <div class="col-md-7 col-content-middleleft">
-                                </div>
-                            </div>
-                            <div class="row container-fluid">
-                                <div class="col-xs-6 col-content-middleleft">
-                                </div>
-                                <div class="col-md-6 col-content-middleleft">
-                                </div>
-                            </div>
-                            <div class="row container-fluid col-content-middleleft">
-                                <div class="col-md-6 col-content-middleleft">
-                                </div>
-                                <div class="col-md-6 col-content-middleleft">
-                                    <div class="col-md-1">&nbsp;</div>
                                 </div>
                             </div>
                         </fieldset>

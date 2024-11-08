@@ -253,7 +253,6 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("isID_DETALLE", detalleCotizacion.Id);
                 parameters.Add("isID_COTIZACION", detalleCotizacion.IdCotizacion);
                 parameters.Add("isTIPO", detalleCotizacion.TipoItem);
-                parameters.Add("isTIPOPRODUCTO", null);
                 parameters.Add("isCODPRODUCTO", detalleCotizacion.CodItem);
                 parameters.Add("isDESCRIPCION", detalleCotizacion.Descripcion);
                 parameters.Add("isUNIDAD", detalleCotizacion.CodUnidad);
@@ -261,7 +260,6 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("isCOSTOFOB", detalleCotizacion.CostoFOB);
                 parameters.Add("isVVENTAUNI", detalleCotizacion.VentaUnitaria);
                 parameters.Add("isVVTOTALSIGV", detalleCotizacion.VentaTotalSinIGV);
-                parameters.Add("isELIMINADO", null);
                 parameters.Add("isUsrEjecuta",detalleCotizacion.UsuarioRegistra);
                 parameters.Add("isFecEjecuta", detalleCotizacion.FechaRegistro);
 

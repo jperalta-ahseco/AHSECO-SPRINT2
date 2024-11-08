@@ -30,6 +30,7 @@ namespace AHSECO.CCL.BE.Ventas
         public bool EsItemPadre { get; set; }
         public int CantSubItem { get; set; }
         public CotDetDespachoDTO CotizacionDespacho { get; set; }
+        public CotDetDespachoDTO CotizacionCosto { get; set; }
 
         #region BandejaInstalacionTecnica
         public string Marca { get; set; }
