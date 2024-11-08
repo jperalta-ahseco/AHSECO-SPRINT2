@@ -456,10 +456,10 @@
                                 <div class="panel panel-default" style="@(ViewBag.VerGestionVenta ? "" : "display:none");border-color: #07bc58;">
                                     <div class="panel-heading" role="tab" id="heading2183316" style="background-color: #07bc5833;">
                                         <h5 class="panel-title">
-                                            <a role="button" data-toggle="collapse" class="accordion-arrow-toggle collapsed" href="#collapse2183316" aria-expanded="true" aria-controls="collapse2183316"><i class="fa fa-money" aria-hidden="true"></i> GESTI&Oacute;N DE VENTA</a>
+                                            <a role="button" data-toggle="collapse" class="accordion-arrow-toggle @ViewBag.AcordionCollapsedGest" href="#collapse2183316" aria-expanded="true" aria-controls="collapse2183316"><i class="fa fa-money" aria-hidden="true"></i> GESTI&Oacute;N DE VENTA</a>
                                         </h5>
                                     </div>
-                                    <div id="collapse2183316" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading2183316">
+                                    <div id="collapse2183316" class="panel-collapse @ViewBag.TabAcordionCollapsedGest" role="tabpanel" aria-labelledby="heading2183316">
                                         <form id="formGestionVenta">
                                             <div class="box-content">
                                                 <div class="row container-fluid">

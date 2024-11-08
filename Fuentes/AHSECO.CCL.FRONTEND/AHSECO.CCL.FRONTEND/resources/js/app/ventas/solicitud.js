@@ -108,6 +108,9 @@
     var $btnHistorial = $("#btnHistorial");
     var $btnBuscarHistorial = $("#btnBuscarHistorial");
 
+    var $dateOrdenCompra = $("#dateOrdenCompra");
+    var $openRegdateOrdenCompra = $("#openRegdateOrdenCompra");
+
     var mensajes = {
         consultaContactos: "Consultando contactos, por favor espere....",
         consultandoFlujos: "Consultando tipos de flujos, por favor espere....",
@@ -165,8 +168,15 @@
             format:'dd/mm/yyyy'
         });
 
+        $dateOrdenCompra.datepicker({
+            viewMode: 0,
+            minViewMode: 0,
+            format: 'dd/mm/yyyy'
+        });
+
         $dateSolicitud.val(hoy());
         $dateCotizacion.val(hoy());
+        $dateOrdenCompra.val(hoy());
         $cmbTipo.on("change", VerServicios);
         $fileCargaDocumentoSustento.on("change", $fileCargaDocumentoSustento_change);
         $btnEliminarSol.click(btnEliminarSolClick);
@@ -176,6 +186,7 @@
         $btnAgregarObservacion.click($modalObservacionClick);
         $openRegdateSolicitud.click($openRegdateSolicitudClick);
         $openRegdateCotizacion.click($openRegdateCotizacionClick);
+        $openRegdateOrdenCompra.click($openRegdateOrdenCompraClick)
         $btnBuscarContactos.click($btnBuscarContactosClick);
         $btnRegresar.click(btnRegresarClick);
         $searchContacto.click($btnSearchContactoClick);
@@ -1254,6 +1265,9 @@
 
     function $openRegdateCotizacionClick() {
         $dateCotizacion.focus();
+    }
+    function $openRegdateOrdenCompraClick() {
+        $dateOrdenCompra.focus();
     }
 
     function hoy() {
