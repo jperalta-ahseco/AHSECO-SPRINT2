@@ -120,11 +120,17 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row container-fluid" id="colProceso" style="display:none">
-                        <div class="col-md-4 col-sm-12">
+                    <div class="row container-fluid" id="rowDocsProc" style="display:none">
+                        <div class="col-md-4 col-sm-12" id="colProceso">
                             <label for="txtProceso">N° Proceso:</label>
                             <div class="form-group">
                                 <input disabled type="text" class="form-control input-sm" id="txtProceso" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12" id="coltipProceso">
+                            <label for="txtProceso">N° Proceso:</label>
+                            <div class="form-group">
+                                <input disabled type="text" class="form-control input-sm" id="txtTipProceso" value=""/>
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12" id="colContrato" style="display:none">
@@ -230,13 +236,13 @@
                                     <div class="col-md-6 col-sm-12">
                                         <label for="txtNomContacto">Nombre de Contacto:</label>
                                         <div class="form-group">
-                                            <input disabled type="text" class="form-control input-sm" id="txtNomContacto" value="">
+                                            <input placeholder="Nombre de Contacto" disabled type="text" class="form-control input-sm" id="txtNomContacto">
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-sm-12">
                                         <label for="txtTelefContacto">Tel&eacute;fono de Contacto:</label>
                                         <div class="form-group">
-                                            <input disabled type="text" class="form-control input-sm" id="txtTelefContacto" value="">
+                                            <input placeholder="Teléfono de Contacto" disabled type="text" class="form-control input-sm" id="txtTelefContacto">
                                         </div>
                                     </div>
                                 </div>
@@ -244,13 +250,13 @@
                                     <div class="col-md-6 col-sm-12">
                                         <label for="txtEstablecimientoCont">Establecimiento:</label>
                                         <div class="form-group">
-                                            <input disabled type="text" class="form-control input-sm" id="txtEstablecimientoCont" value="">
+                                            <input placeholder="Establecimiento" disabled type="text" class="form-control input-sm" id="txtEstablecimientoCont">
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-sm-12">
                                         <label for="txtCargoContacto">Cargo de Contacto:</label>
                                         <div class="form-group">
-                                            <input disabled type="text" class="form-control input-sm" id="txtCargoContacto" value="">
+                                            <input placeholder="Cargo de Contacto" disabled type="text" class="form-control input-sm" id="txtCargoContacto">
                                         </div>
                                     </div>
                                 </div>
@@ -289,6 +295,11 @@
     }
 </div>
 
+<div class="modal fade" id="modalZona" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    @{ 
+        Html.RenderPartial("_Ubigeo");
+    }
+</div>
 @section scripts{
     <script type="text/javascript" src="~/resources/js/app/ServicioTecnico/BandejaInstalacionTecnica/registroInstalacionTecnica.js"></script>
 }

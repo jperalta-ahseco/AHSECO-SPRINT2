@@ -86,11 +86,24 @@
                                 <input placeholder="--Ingresar Correo---" disabled type="text" class="form-control input-sm" id="txtCorreo" value="">
                             </div>
                         </div>
+                        <input type="hidden" id="txtCodUbicacion" value="" />
                         <div class="col-md-4 col-sm-12">
-                            <label for="txtZona">Zona: </label>
+                            <label for="txtZona">Zona:</label>
                             <div class="form-group">
-                                <input placeholder="--Ingresar Zona---" disabled type="text" class="form-control input-sm" id="txtZona" value="">
-                                <input hidden id="hdnCodZona"/>
+                                <div class="input-group input-group-sm date">
+                                    <input disabled maxlength="6" type="text" class="form-control input-sm" id="txtZona" placeholder="--Seleccionar Zona--" aria-describedby="sizing-addon3" />
+                                    <span style="pointer-events: none" class="input-group-addon input-sm" id="searchZona" data-toggle="modal" data-target="#modalZona">
+                                        <i class="fa fa-search"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row container-fluid" style="display:none" id="divEmpresaTecnico">
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtEmpresaTecnico">Empresa: </label>
+                            <div class="form-group">
+                                <input placeholder="--Ingresar empresa--" type="text" class="form-control input-sm" id="txtEmpresaTecnico"/>
                             </div>
                         </div>
                     </div>

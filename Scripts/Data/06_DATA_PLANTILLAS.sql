@@ -34,3 +34,12 @@ VALUES('PLANCOTVEN',1,'Plantilla de cotización para vendedor','','','FINALIZACIÓ
 			   '<p>Sr. Vendedor, {NOM_VENDEDOR}</p>
 <p>Se finalizó el ingreso de montos de la cotizaci&oacute;n perteneciente en la solicitud N&deg; {NRO_SOL} para la empresa {NOM_EMPRESA}.</p>
 <p>Por favor ingrese al sistema para continuar con el flujo de venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
+
+INSERT INTO TBM_PLANTILLAS
+VALUES('PLANINSTECVEN',3,'Plantilla de instalación técnica para vendedor','','pminetti@ahsecoperu.com;facturacion@ahsecoperu.com;ahseco@ahsecoperu.com;cobranzas@ahsecoperu.com','FINALIZACIÓN DE INSTALACIÓN DE EQUIPOS - N° SOLICITUD {NRO_SOL}',
+			   '<p>Sr. Vendedor, {NOM_VENDEDOR},</p>
+<p>Se finalizó la instalación de los equipos pertenecientes a la solicitud N°{NRO_SOL} para el cliente {CLIENTE} con el requerimiento N°{NRO_REQ}.</p>
+<p>Detalle:</p>
+{DETALLE_EQUIPOS}
+<p>Se adjunta el documento: Acta de Instalación, que contiene un mayor detalle.</p>
+<p>Por favor ingrese al sistema para continuar con el flujo de venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);

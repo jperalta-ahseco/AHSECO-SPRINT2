@@ -1,4 +1,5 @@
 ﻿var registroInstalacionTec = (function ($, win, doc) {
+    $(Initializer);
     //Ids Hidden - Importante
     var $nombreusuario = $('#nombreusuario');
     var $numeroReq = $('#numeroReq');
@@ -30,11 +31,14 @@
     var $txtProceso = $('#txtProceso');
     var $txtContrato = $('#txtContrato');
     var $txtFianza = $('#txtFianza');
+    var $txtTipProceso = $('#txtTipProceso');
 
     var $NoExisteProductos = $('#NoExisteProductos');
     var $colProceso = $('#colProceso');
     var $colContrato = $('#colContrato');
     var $colOrdenCompra = $('#colOrdenCompra');
+    var $coltipProceso = $('#coltipProceso');
+    var $rowDocsProc = $('#rowDocsProc');
     //Labels
     var $lblUsuarioCreacionObservacion = $('#lblUsuarioCreacionObservacion');
     var $lblFechaCreacionObservacion = $('#lblFechaCreacionObservacion');
@@ -44,6 +48,7 @@
     var $hdnCodEmpresa = $('#hdnCodEmpresa');
     //var $hdnCodTipVenta = $('#hdnCodTipVenta');
     var $hdnIdTecnico = $('#hdnIdTecnico');
+    var $txtCodUbicacion = $('#txtCodUbicacion');
 
     //Combos
     var $cmbDestino = $('#cmbDestino');
@@ -66,7 +71,7 @@
     var $modalSolicitud = $('#modalSolicitud');
     var $modalAsignacion = $('#modalAsignacion');
     var $modalBusquedaTecnico = $('#modalBusquedaTecnico');
-    $(Initializer);
+    var $modalZona = $('#modalZona');
 
     /*Modales Observacion*/
     var $NoExisteRegObs = $('#NoExisteRegObs');
@@ -117,6 +122,9 @@
     var $cmbTipoCredencial = $('#cmbTipoCredencial');
     var $txtApellidoPaternoTec = $('#txtApellidoPaternoTec');
     var $txtApellidoMaternoTec = $('#txtApellidoMaternoTec');
+    var $txtEmpresaTecnico = $('#txtEmpresaTecnico');
+    var $divEmpresaTecnico = $('#divEmpresaTecnico');
+
 
     /*Modal Buscar Tecnicos*/
     var $cmbTipDocTecnico = $('#cmbTipDocTecnico');
@@ -315,7 +323,8 @@
                     , TipDocumento: $cmbTipoCredencial.val()
                     , Correo: $txtCorreo.val()
                     , Telefono: $txtTelefono.val()
-                    , Zona: $txtZona.val()
+                    , Zona: $txtCodUbicacion.val()
+                    , Empresa: ''
                     , TipoTecnico: $hdnTipoEmpleado.val()
                     , Estado: 1
                 }
@@ -357,9 +366,9 @@
                     Modelo: data.Result[i].Modelo,
                     Serie: data.Result[i].Serie,
                     NumFianza: data.Result[i].NumFianza,
-                    CantidadMP: data.Result[i].CantidadPreventivo,
-                    Periodicidad: data.Result[i].PeriodoPreventivo,
-                    Garantia: data.Result[i].GarantiaAdic,
+                    CantidadPreventivo: data.Result[i].CantidadPreventivo,
+                    CodCicloPreventivo: data.Result[i].PeriodoPreventivo,
+                    GarantiaAdicional: data.Result[i].GarantiaAdic,
                     FechaProgramacion: data.Result[i].FechaProgramacion,
                     FechaInstalacion: data.Result[i].FechaInstalacion,
                     Tecnicos: data.Result[i].Tecnicos
@@ -433,7 +442,8 @@
                 , TipDocumento: $cmbTipoCredencial.val()
                 , Correo: $txtCorreo.val()
                 , Telefono: $txtTelefono.val()
-                , Zona: $txtZona.val()
+                , Zona: $txtCodUbicacion.val()
+                , Empresa: $txtEmpresaTecnico.val()
                 , TipoTecnico: $hdnTipoEmpleado.val()
                 , Estado: 1
             };
@@ -617,6 +627,12 @@
         objParam = JSON.stringify(objBuscar);
 
         var fnDoneCallBack = function (data) {
+            $colProceso.css('display', 'none');
+            $coltipProceso.css('display', 'none');
+            $colContrato.css('display', 'none');
+            $colOrdenCompra.css('display', 'none');
+
+
             cargarCabecera(data.Result.Solicitud)
 
             for (var i = 0; i < data.Result.DetalleCotizacion.length; i++) {
@@ -629,12 +645,11 @@
                     Modelo: data.Result.DetalleCotizacion[i].Modelo,
                     Serie: data.Result.DetalleCotizacion[i].Serie,
                     NumFianza: data.Result.DetalleCotizacion[i].NumFianza,
-                    CantidadMP: data.Result.DetalleCotizacion[i].CantidadPreventivo,
-                    Periodicidad: data.Result.DetalleCotizacion[i].PeriodoPreventivo,
-                    Garantia: data.Result.DetalleCotizacion[i].GarantiaAdic
+                    CantidadPreventivo: data.Result.DetalleCotizacion[i].CantidadPreventivo,
+                    CodCicloPreventivo: data.Result.DetalleCotizacion[i].CodCicloPreventivo,
+                    GarantiaAdicional: data.Result.DetalleCotizacion[i].GarantiaAdicional
                 })
             };
-            //cargarBandejaProductos(data.Result.DetalleCotizacion);
             cargarBandejaProductos(productos);
             $modalSolicitud.modal('toggle');
             $cmbDestino.prop('disabled', false);
@@ -649,9 +664,13 @@
     };
 
     function cargarCabecera(requerimiento) {
-        if (requerimiento.NumProceso != "" && requerimiento.NumProceso != null) {
+        if (requerimiento.NroProceso != "" && requerimiento.NroProceso != null) {
             $colProceso.css('display', 'block');
         };
+
+        if (requerimiento.TipoProceso != "" && requerimiento.TipoProceso != null) {
+            $coltipProceso.css('display', 'block');
+        }
 
         if (requerimiento.Contrato != "" && requerimiento.Contrato != null) {
             $colContrato.css('display', 'block');
@@ -669,14 +688,16 @@
             $txtSolVenta.val(numSolFormateado.toString()); 
             $txtEmpresa.val(requerimiento.Nom_Empresa);
             $cmbTipVenta.val(requerimiento.TipoVenta).trigger('change.select2');
-            $txtCargoContacto.val(requerimiento.NombreContacto);
+            $txtNomContacto.val(requerimiento.NombreContacto);
+            $txtCargoContacto.val(requerimiento.CargoContacto);
             $txtTelefContacto.val(requerimiento.TelefonoContacto);
             $txtEstablecimientoCont.val(requerimiento.Establecimiento);
-            $txtCargoContacto.val(requerimiento.CargoContacto);
             $txtRuc.val(requerimiento.RUC);
             $txtNomEmpresa.val(requerimiento.RazonSocial);
             $txtUbigeo.val(requerimiento.Ubigeo);
             $txtAsesor.val(requerimiento.AsesorVenta);
+            $txtProceso.val(requerimiento.NroProceso);
+            $txtTipProceso.val(requerimiento.TipoProceso);
         }
         else if ($tipoproceso.val() == "U") {
             var numSolFormateado = ("000000" + requerimiento.Id_Solicitud.toString());
@@ -688,6 +709,10 @@
             $txtSolVenta.val(numSolFormateado);
             $txtEmpresa.val(requerimiento.CodEmpresa);
             $cmbTipVenta.val(requerimiento.TipoVenta).trigger('change.select2');
+            $txtNomContacto.val(requerimiento.NombreContacto);
+            $txtCargoContacto.val(requerimiento.CargoContacto);
+            $txtTelefContacto.val(requerimiento.TelefonoContacto);
+            $txtEstablecimientoCont.val(requerimiento.Establecimiento);
             //$hdnCodTipVenta.val(requerimiento.TipoVenta);
             $txtRuc.val(requerimiento.RucEmpresa);
             $txtNomEmpresa.val(requerimiento.NomEmpresa);
@@ -803,19 +828,19 @@
                     }
                 },
                 {
-                    data: "CantidadMP",
-                    render: function (data, type, row) {
-                        return '<center>' + "CantidadPrev" + '</center>'
-                    }
-                },
-                {
-                    data: "Periodicidad",
+                    data: "CantidadPreventivo",
                     render: function (data, type, row) {
                         return '<center>' + data + '</center>'
                     }
                 },
                 {
-                    data: "Garantia",
+                    data: "CodCicloPreventivo",
+                    render: function (data, type, row) {
+                        return '<center>' + data + '</center>'
+                    }
+                },
+                {
+                    data: "GarantiaAdicional",
                     render: function (data, type, row) {
                         return '<center>' + data + '</center>'
                     }
@@ -879,13 +904,13 @@
                     }
                 },
                 {
-                    data: "Periodicidad",
+                    data: "CodCicloPreventivo",
                     render: function (data, type, row) {
                         return '<center>' + data + '</center>'
                     }
                 },
                 {
-                    data: "Garantia",
+                    data: "GarantiaAdicional",
                     render: function (data, type, row) {
                         return '<center>' + data + '</center>'
                     }
@@ -1116,9 +1141,9 @@
             Modelo:"",
             Serie:"",
             NumFianza:"", 
-            CantidadMP:0,
-            Periodicidad:"",
-            Garantia:"",
+            CantidadPreventivo:0,
+            CodCicloPreventivo:"",
+            GarantiaAdicional:"",
             FechaProgramacion: fechaProgramacion,
             FechaInstalacion: fechaInstalacion
         };
@@ -1184,9 +1209,9 @@
             Modelo: "",
             Serie: "",
             NumFianza: "",
-            CantidadMP: 0,
-            Periodicidad: "",
-            Garantia: "",
+            CantidadPreventivo: 0,
+            CodCicloPreventivo: "",
+            GarantiaAdicional: "",
             FechaProgramacion: fechaProgramacion,
             FechaInstalacion: fechaInstalacion
         };
@@ -1208,6 +1233,7 @@
         return app.message.confirm("Confirmación", "¿Desea realizar establecer la fecha seleccionada como: 'Fecha de Instalación'?", "Sí", "No", fnSi, null);
     }
     function AgregarTecnicoExterno() {
+        $divEmpresaTecnico.css('display', 'block');
         $txtNombreTecnico.prop('disabled', false);
         $txtApellidoPaternoTec.prop('disabled', false);
         $txtApellidoMaternoTec.prop('disabled', false);
@@ -1219,9 +1245,13 @@
         limpiarAsignacionTecnicos();
         $txtTipoTecnico.val("Externo");
         $hdnTipoEmpleado.val("E");
+        var searchZona = document.querySelector('#searchZona')
+        searchZona.setAttribute('style', 'cursor: pointer');
+
     };
 
     function abrirModalTecnicos() {
+        $divEmpresaTecnico.css('display', 'none');
         limpiarAsignacionTecnicos();
         $txtNombreTecnico.prop('disabled', true);
         $txtApellidoPaternoTec.prop('disabled', true);
@@ -1231,8 +1261,10 @@
         $txtCorreo.prop('disabled', true);
         $txtZona.prop('disabled', true);
         $cmbTipoCredencial.prop('disabled', true);
-    }
 
+        var searchZona = document.querySelector('#searchZona')
+        searchZona.setAttribute('style', 'pointer-events:none')
+    }
     function cargarTipoDoc() {
         var method = "POST";
         var url = "Utiles/ListarDocumentos";
@@ -1272,7 +1304,7 @@
             var filters2 = {};
             filters2.placeholder = "--Seleccionar--";
             filters2.allowClear = false;
-            app.llenarComboMultiResult($cmbTipVenta, data.Result.TipVenta, null, null, "--Seleccionar--",filters2);
+            app.llenarComboMultiResult($cmbTipVenta, data.Result.TipVenta, null, "", "--Seleccionar--",filters2);
         };
 
         var fnFailCallBack = function () {
@@ -1364,7 +1396,6 @@
                 ruta_guardada = ruta_guardada.replace("\\", "");
                 ruta_guardada = ruta_guardada.replace('"', '');
                 ruta_guardada = ruta_guardada.replace('"', '');
-                //console.log("ruta_guardada:" + ruta_guardada);
 
                 $contadordoc.val(cont);
 
@@ -1753,9 +1784,9 @@
                         Modelo: data.Result.DetalleInstalacion[i].Modelo,
                         Serie: data.Result.DetalleInstalacion[i].Serie,
                         NumFianza: data.Result.DetalleInstalacion[i].NumFianza,
-                        CantidadMP: data.Result.DetalleInstalacion[i].CantidadPreventivo,
-                        Periodicidad: data.Result.DetalleInstalacion[i].PeriodoPreventivo,
-                        Garantia: data.Result.DetalleInstalacion[i].GarantiaAdic,
+                        CantidadPreventivo: data.Result.DetalleInstalacion[i].CantidadPreventivo,
+                        CodCicloPreventivo: data.Result.DetalleInstalacion[i].CodCicloPreventivo,
+                        GarantiaAdicional: data.Result.DetalleInstalacion[i].GarantiaAdic,
                         FechaProgramacion: data.Result.DetalleInstalacion[i].FechaProgramacion,
                         FechaInstalacion: data.Result.DetalleInstalacion[i].FechaInstalacion,
                         Tecnicos: data.Result.DetalleInstalacion[i].Tecnicos
@@ -1992,9 +2023,11 @@
             $txtNumDocumento.val(data.Result[0].NumeroDocumento);
             $txtTelefono.val(data.Result[0].TelefonoEmpleado);
             $txtCorreo.val(data.Result[0].EmailEmpleado);
+            $txtCodUbicacion.val(data.Result[0].LugarLaboral.UbigeoId);
             $txtZona.val(data.Result[0].LugarLaboral.NombreDepartamento + ' / ' + data.Result[0].LugarLaboral.NombreProvincia + ' / ' + data.Result[0].LugarLaboral.NombreDistrito);
             $hdnTipoEmpleado.val(data.Result[0].CodigoTipoEmpleado);
             $txtTipoTecnico.val(data.Result[0].TipoEmpleado);
+            $txtEmpresaTecnico.val(data.Result[0].Empresa.Valor1);
             $cmbTipoCredencial.val(data.Result[0].Documento.Parametro).trigger("change.select2");
 
         };
@@ -2220,7 +2253,7 @@
 
         if ($estadoReq.val() == "STREG") {
             var method = "POST";
-            var url = "BandejaInstalacionTecnica/MantInstalacion";
+            var url = "BandejaInstalacionTecnica/EnProcesoActualizacion";
 
             var objReq = {
                 TipoProceso: "U",
@@ -2256,9 +2289,11 @@
         for (var i = 0; productos.length > i; i++) {
             if ($('#dateFechaProgramacion' + productos[i].Id).val() == "") {
                 validador = 1;
-            };
-
-            if ($('#dateFechaInstalacion' + productos[i].Id).val() == "") {
+            }
+            else if ($('#dateFechaInstalacion' + productos[i].Id).val() == "") {
+                validador = 1;
+            }
+            else if (productos[0].Tecnicos.length == 0) {
                 validador = 1;
             };
         };
@@ -2281,13 +2316,9 @@
             return;
         };
 
-        var requerimiento = $numeroReq.val()
-        var method = "POST";
-        var url = "BandejaInstalacionTecnica/MantInstalacion";
-
         if ($estadoReq.val() == "STEPI") {
             var method = "POST";
-            var url = "BandejaInstalacionTecnica/MantInstalacion";
+            var url = "BandejaInstalacionTecnica/CerrarInstalacion";
 
             var objReq = {
                 TipoProceso: "U",

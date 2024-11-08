@@ -22,6 +22,9 @@ using NPOI.SS.UserModel;
 using System.IO;
 using System.Web;
 using System.Configuration;
+using static AHSECO.CCL.COMUN.ConstantesDTO;
+using System.Web.Http.Results;
+using Microsoft.Ajax.Utilities;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecnica
 {
@@ -340,8 +343,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
                 });
             }
         }
-
-
         public void GenerarReporte(FiltroInstalacionTecDTO filtros)
         {
             var instalacionTecnicaBL = new InstalacionTecnicaBL();
@@ -517,8 +518,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
             Response.End();
 
         }
-
-
         public FileResult DescargarFile(string url, string nombreDoc)
         {
             string pao_files = ConfigurationManager.AppSettings.Get("temppFiles");
@@ -529,8 +528,101 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
 
             return File(ruta, contentType, nombreDoc);
         }
+        
+        public JsonResult EnProcesoActualizacion(InstalacionTecnicaDTO instalacion)
+        {
+            var result = new RespuestaDTO();
+            try
+            {
+                var instalacionBL = new InstalacionTecnicaBL();
+                var procesosBL = new ProcesosBL();
 
-        #region Tecnico
+                var response = instalacionBL.MantInstalacion(instalacion);
+
+                //Se realiza el registro de seguimiento de workflow:
+                var log = new FiltroWorkflowLogDTO();
+                log.CodigoWorkflow = response.Result.Codigo;
+                log.Usuario = User.ObtenerUsuario();
+                log.CodigoEstado = "STEPI";
+                log.UsuarioRegistro = User.ObtenerUsuario();
+                procesosBL.InsertarWorkflowLog(log);
+
+                result.Codigo = 1;
+                result.Mensaje = "Se realizó el cambio de estado satisfactoriamente";
+                return Json(result);
+            }
+            catch(Exception ex)
+            {
+                result.Codigo = 0;
+                result.Mensaje = "Ocurrió un error al realizar el cambio de estado, por favor revisar.";
+                return Json(result);
+            }
+        }
+
+        public JsonResult CerrarInstalacion(InstalacionTecnicaDTO instalacion)
+        {
+            var result = new RespuestaDTO();
+            var instalacionBL = new InstalacionTecnicaBL();
+            var procesosBL = new ProcesosBL();
+
+            try
+            {
+                var response = instalacionBL.MantInstalacion(instalacion);
+                //Se realiza el registro de seguimiento de workflow:
+                var log = new FiltroWorkflowLogDTO();
+                log.CodigoWorkflow = response.Result.Codigo;
+                log.Usuario = User.ObtenerUsuario();
+                log.CodigoEstado = "STINS";
+                log.UsuarioRegistro = User.ObtenerUsuario();
+                procesosBL.InsertarWorkflowLog(log);
+
+                var filtros = new FiltroPlantillaDTO();
+                filtros.CodigoProceso = 3;
+                filtros.CodigoPlantilla = "PLANINSTECVEN";
+                filtros.Usuario = User.ObtenerUsuario();
+                filtros.Codigo = Convert.ToInt32(instalacion.NumReq);
+
+                //Se verifica los adjuntos:
+                var adjuntos = new List<string>();
+                var documentosBL = new DocumentosBL();
+                var documentos = documentosBL.ConsultaDocumentos(response.Result.Codigo);
+                foreach (var doc in documentos.Result)
+                {
+                    if (doc.CodigoTipoDocumento == "DI01" && doc.Eliminado == 0) //Solo documentos de tipo Acta de Instalación:
+                    {
+                        string pao_files = ConfigurationManager.AppSettings.Get("tempFiles");
+                        string ruta = pao_files + doc.RutaDocumento;
+                        adjuntos.Add(ruta);
+                    }
+                }
+
+                //Envío de correo.
+                var plantillasBL = new PlantillasBL();
+                var datos_correo = plantillasBL.ConsultarPlantillaCorreo(filtros).Result;
+                var respuesta = Utilidades.Send(datos_correo.To, datos_correo.CC, "", datos_correo.Subject, datos_correo.Body, adjuntos, "");
+                CCLog Log = new CCLog();
+                if (respuesta != "OK")
+                {
+                    Log.TraceInfo("Requerimiento N° " + instalacion.NumReq + ":" + respuesta);
+                }
+                else
+                {
+                    Log.TraceInfo("Envio exitoso de correo para el requerimiento N° " + instalacion.NumReq);
+                }
+
+                result.Codigo = 1;
+                result.Mensaje = "Se realizó el envío de correo a las áreas implicadas.";
+                return Json(result);
+            }
+            catch(Exception ex)
+            {
+                result.Codigo = 0;
+                result.Mensaje = ex.Message;
+                return Json(result);
+            }
+        }
+
+        #region Tecnico/Empleados
         public JsonResult ObtenerTecnico(FiltroEmpleadosDTO filtroEmpleadosDTO)
         {
             var empleadosBL = new EmpleadosBL();
