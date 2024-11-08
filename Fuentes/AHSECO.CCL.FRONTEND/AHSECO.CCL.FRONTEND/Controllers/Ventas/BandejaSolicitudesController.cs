@@ -88,39 +88,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.TxtNumeroSerieCE = "disabled";
 
 
-            if (NombreRol == "SGI_VENTA_ASESOR" || NombreRol == "SGI_VENTA_COORDINASERV" || NombreRol == "SGI_VENTA_COORDINAATC")
-            {
-                ViewBag.Btn_FinalizarVenta = "inline-block";
-                ViewBag.Btn_GuardarDespacho = "inline-block";
-                ViewBag.Btn_EnviarGuia = "inline-block";
-                ViewBag.Btn_GuiaPedido = "inline-block";
-                ViewBag.Btn_GuiaBO = "inline-block";
-                ViewBag.TxtOrdenCompra = "";
-                ViewBag.TxtFecOrdenCompra = "";
-            }
-            else if(NombreRol == "SGI_VENTA_GERENTE")
-            {
-                ViewBag.Btn_Aprobar = "inline-block";
-                ViewBag.Btn_Observar = "inline-block";
-            }
-            else if (NombreRol == "SGI_VENTA_LOGISTICA")
-            {
-                ViewBag.Btn_GuardarDespacho = "inline-block";
-                ViewBag.FechaEntregaPedidoSE = "";
-                ViewBag.TxtNumeroFacturaSE = "";
-                ViewBag.TxtNumeroGuiaRemisionSE = "";
-                ViewBag.TxtNumeroSerieSE = "";
-                ViewBag.FechaEntregaPedidoCE = "";
-                ViewBag.TxtNumeroFacturaCE = "";
-                ViewBag.TxtNumeroGuiaRemisionCE = "";
-                ViewBag.TxtNumeroSerieCE = "";
-            }
-            else if (NombreRol == "SGI_VENTA_IMPORTACION")
-            {
-                ViewBag.TxtCodigoPedido = "";
-                ViewBag.IngresoAlmacen = "";
-                ViewBag.Btn_GuardarDespacho = "inline-block";
-            }
+            
 
 
             if (NombreRol == "SGI_VENTA_GERENTE" || NombreRol == "SGI_VENTA_COSTOS")
@@ -170,6 +138,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.TitleDetItem = string.Empty;
             ViewBag.AcordionCollapsedLiq = "collapsed";
             ViewBag.TabAcordionCollapsedLiq = "collapse";
+            ViewBag.AcordionCollapsedGest = "collapsed";
+            ViewBag.TabAcordionCollapsedGest = "collapse";
             ViewBag.VerGestionVenta = false;
             VariableSesion.setObject(TAG_CotDetItems, new List<CotizacionDetalleDTO>());
 
@@ -178,6 +148,46 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 var rptaSoli = ventasBL.ObtenerSolicitudes(new SolicitudDTO() { Id_Solicitud = int.Parse(numSol) });
                 var soli = rptaSoli.Result.First();
                 ViewBag.EstadoSolicitud = soli.Estado;
+
+
+                if (NombreRol == "SGI_VENTA_ASESOR" || NombreRol == "SGI_VENTA_COORDINASERV" || NombreRol == "SGI_VENTA_COORDINAATC")
+                {
+                    if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.VentaProg)
+                    {
+                        ViewBag.Btn_FinalizarVenta = "inline-block";
+                    }
+                        
+                    ViewBag.Btn_GuardarDespacho = "inline-block";
+                    ViewBag.Btn_EnviarGuia = "inline-block";
+                    ViewBag.Btn_GuiaPedido = "inline-block";
+                    ViewBag.Btn_GuiaBO = "inline-block";
+                    ViewBag.TxtOrdenCompra = "";
+                    ViewBag.TxtFecOrdenCompra = "";
+                }
+                else if (NombreRol == "SGI_VENTA_GERENTE")
+                {
+                    ViewBag.Btn_Aprobar = "inline-block";
+                    ViewBag.Btn_Observar = "inline-block";
+                }
+                else if (NombreRol == "SGI_VENTA_LOGISTICA")
+                {
+                    ViewBag.Btn_GuardarDespacho = "inline-block";
+                    ViewBag.FechaEntregaPedidoSE = "";
+                    ViewBag.TxtNumeroFacturaSE = "";
+                    ViewBag.TxtNumeroGuiaRemisionSE = "";
+                    ViewBag.TxtNumeroSerieSE = "";
+                    ViewBag.FechaEntregaPedidoCE = "";
+                    ViewBag.TxtNumeroFacturaCE = "";
+                    ViewBag.TxtNumeroGuiaRemisionCE = "";
+                    ViewBag.TxtNumeroSerieCE = "";
+                }
+                else if (NombreRol == "SGI_VENTA_IMPORTACION")
+                {
+                    ViewBag.TxtCodigoPedido = "";
+                    ViewBag.IngresoAlmacen = "";
+                    ViewBag.Btn_GuardarDespacho = "inline-block";
+                }
+
 
                 var rptaEst = ventasBL.ObtenerEstadosProcesos(new ProcesoEstadoDTO
                 { IdProceso = ConstantesDTO.Procesos.Ventas.ID, CodigoEstado = soli.Estado });
@@ -194,14 +204,30 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     ViewBag.PermitirAgregarCotDet = true;
                     ViewBag.PermitirNuevoCot = true;
                 }
+                if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.CotAprob || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnProcVentas || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.VentaProg || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Finalizado)
+                {
+                    ViewBag.VerGestionVenta = true;
+                }
+
 
                 var rptaCotizacion = ventasBL.ObtenerCotizacionVenta(new CotizacionDTO() { IdSolicitud = int.Parse(numSol), 
                     Estado = ConstantesDTO.CotizacionVenta.Estados.Activo });
 
                 if (rptaCotizacion.Result.Any())
                 {
-                    ViewBag.AcordionCollapsedLiq = "";
-                    ViewBag.TabAcordionCollapsedLiq = "";
+
+                    if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnCotizacion || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.CotSinVenta)
+                    {
+                        ViewBag.AcordionCollapsedLiq = "";
+                        ViewBag.TabAcordionCollapsedLiq = "";
+                    }
+
+                    if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnProcVentas || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.VentaProg || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.CotAprob)
+                    {
+                        ViewBag.AcordionCollapsedGest = "";
+                        ViewBag.TabAcordionCollapsedGest = "";
+                    }
+
                     ViewBag.VerTabCotDet = true;
                     var oCotizacion = rptaCotizacion.Result.First();
                     ViewBag.IdCotizacion = oCotizacion.IdCotizacion;
