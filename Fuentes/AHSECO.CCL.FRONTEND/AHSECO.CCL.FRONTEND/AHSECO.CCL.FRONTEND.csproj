@@ -939,6 +939,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\css\font\" />
+    <Folder Include="Controllers\ServicioTecnico\BandejaGarantias\" />
+    <Folder Include="Controllers\ServicioTecnico\BandejaPreventivos\" />
     <Folder Include="Providers\" />
     <Folder Include="Reporte\DataSets\" />
     <Folder Include="Reporte\Reports\" />
