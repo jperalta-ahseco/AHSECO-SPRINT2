@@ -27,5 +27,6 @@ namespace AHSECO.CCL.BE.Ventas
         public bool IndFianza { get; set; }
         public decimal? MontoPrestPrin { get; set; }
         public decimal? MontoPrestAcc { get; set; }
+        public string NumFianza { get; set; }
     }
 }

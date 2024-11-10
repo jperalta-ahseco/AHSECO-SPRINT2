@@ -12,9 +12,7 @@ namespace AHSECO.CCL.BE
         public string Estado { get; set; }
         public string TipoServicio { get; set; }
         public string CodTipoServicio { get; set; }
-        public decimal PrecioPreventivo { get; set; }
-        public decimal PrecioCapacitacion { get; set; }
-        public decimal PrecioActualizacion { get; set; }
+        public decimal Precio { get; set; }
         public string Herramientas { get; set; }
         public string HerramientasEspeciales { get; set; }
         public string Instrumentos { get; set; }

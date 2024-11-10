@@ -132,7 +132,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Mantenimientos
             // Crear la fila para el título
             IRow titleRow = sh.CreateRow(0);
             ICell titleCell = titleRow.CreateCell(0);
-            titleCell.SetCellValue("ACTIVIDADES DE MANTENIMIENTO PREVENTIVO");
+            titleCell.SetCellValue("ACTIVIDADES DE SERVICIO");
             titleCell.CellStyle = styleTitle;
 
             // Fusionar celdas para que el título abarque todas las columnas (en este caso, 21 columnas)
@@ -199,15 +199,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Mantenimientos
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
-            cell.SetCellValue("Precio Preventivo");
-
-            cell = row.CreateCell(cellnum++);
-            cell.CellStyle = style;
-            cell.SetCellValue("Precio Capacitación");
-
-            cell = row.CreateCell(cellnum++);
-            cell.CellStyle = style;
-            cell.SetCellValue("Precio Actualización de Software");
+            cell.SetCellValue("Precio");
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
@@ -266,15 +258,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Mantenimientos
                 cell.CellStyle = styleRow;
 
                 cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.PrecioPreventivo.ToString());
-                cell.CellStyle = styleRow;
-
-                cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.PrecioCapacitacion.ToString());
-                cell.CellStyle = styleRow;
-
-                cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.PrecioActualizacion.ToString());
+                cell.SetCellValue(item.Precio.ToString());
                 cell.CellStyle = styleRow;
 
                 cell = row.CreateCell(cellnum++);
@@ -309,8 +293,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Mantenimientos
             sh.AutoSizeColumn(8);
             sh.AutoSizeColumn(9);
             sh.AutoSizeColumn(10);
-            sh.AutoSizeColumn(11);
-            sh.AutoSizeColumn(12);
 
             //sh.SetColumnWidth(i, 28 * 255);
 
