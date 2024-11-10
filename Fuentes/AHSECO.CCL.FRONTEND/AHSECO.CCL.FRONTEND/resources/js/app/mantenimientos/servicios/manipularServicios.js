@@ -215,7 +215,9 @@
             return;
         };
 
-        if (detalleServicios.length == 0) {
+
+
+        if (detalleServicios.length == 0 && ($cmbTipoServicio.val() == "SERV01" || $cmbTipoServicio.val() == "SERV02")) {
             app.message.error("Validación", "Debe de registrar el detalle de servicio");
             return;
         };
@@ -390,7 +392,7 @@
                 return;
             };
 
-            if (detalleServicios.length == 0) {
+            if (detalleServicios.length == 0 && ($cmbTipoServicio.val() == "SERV01" || $cmbTipoServicio.val() == "SERV02")) {
                 app.message.error("Validación", "Debe de registrar el detalle de servicio");
                 return;
             };
