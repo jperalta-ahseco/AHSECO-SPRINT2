@@ -339,7 +339,9 @@
     <Compile Include="Controllers\Seguridad\SeguridadPerfilController.cs" />
     <Compile Include="Controllers\Seguridad\SeguridadUsuarioController.cs" />
     <Compile Include="Controllers\Seguridad\SeguridadUsuarioPerfilController.cs" />
+    <Compile Include="Controllers\ServicioTecnico\BandejaGarantia\BandejaGarantiaController.cs" />
     <Compile Include="Controllers\ServicioTecnico\BandejaInstalacionTecnica\BandejaInstalacionTecnicaController.cs" />
+    <Compile Include="Controllers\ServicioTecnico\BandejaPreventivo\BandejaPreventivoController.cs" />
     <Compile Include="Controllers\UbigeoController.cs" />
     <Compile Include="Controllers\UtilesController.cs" />
     <Compile Include="Controllers\Ventas\BandejaHistorialCotizacionController.cs" />
@@ -526,6 +528,10 @@
     <Content Include="resources\js\app\seguridad\usuarioPerfil\usuarioPerfil.js" />
     <Content Include="resources\js\app\seguridad\usuario\changePassword.js" />
     <Content Include="resources\js\app\seguridad\usuario\usuario.js" />
+    <Content Include="resources\js\app\ServicioTecnico\BandejaPreventivo\bandejaPreventivo.js" />
+    <Content Include="resources\js\app\ServicioTecnico\BandejaPreventivo\registroPreventivo.js" />
+    <Content Include="resources\js\app\ServicioTecnico\BandejaGarantia\bandejaGarantia.js" />
+    <Content Include="resources\js\app\ServicioTecnico\BandejaGarantia\registroGarantia.js" />
     <Content Include="resources\js\app\ServicioTecnico\BandejaInstalacionTecnica\bandejaInstalacionTecnica.js" />
     <Content Include="resources\js\app\ServicioTecnico\BandejaInstalacionTecnica\registroInstalacionTecnica.js" />
     <Content Include="resources\js\app\ubigeo\ubigeo.js" />
@@ -936,6 +942,12 @@
     <Content Include="Views\Shared\_BusquedaSolicitud.cshtml" />
     <Content Include="Views\Shared\_DetalleServicio.cshtml" />
     <Content Include="Views\BandejaSolicitudesVentas\_SolicitudDetItem.cshtml" />
+    <Content Include="Views\BandejaInstalacionTecnica\Index.cshtml" />
+    <Content Include="Views\BandejaInstalacionTecnica\RegistroInstallTec.cshtml" />
+    <Content Include="Views\BandejaGarantia\Index.cshtml" />
+    <Content Include="Views\BandejaGarantia\RegistroGarantia.cshtml" />
+    <Content Include="Views\BandejaPreventivo\Index.cshtml" />
+    <Content Include="Views\BandejaPreventivo\RegistroPreventivo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\css\font\" />

@@ -99,9 +99,7 @@ namespace AHSECO.CCL.BD
                         Equipo =i.Single(d => d.Key.Equals("DESCRIPCIONEQUIPO")).Value.Parse<string>(),
                         Modelo = i.Single(d => d.Key.Equals("NOMBREMODELO")).Value.Parse<string>(),
                         Marca = i.Single(d => d.Key.Equals("NOMBREMARCA")).Value.Parse<string>(),
-                        PrecioPreventivo = i.Single(d => d.Key.Equals("PRECIOPREVENTIVO")).Value.Parse<decimal>(),
-                        PrecioCapacitacion = i.Single(d => d.Key.Equals("PRECIOCAPACITACION")).Value.Parse<decimal>(),
-                        PrecioActualizacion = i.Single(d => d.Key.Equals("PRECIOSOFTWARE")).Value.Parse<decimal>(),
+                        Precio= i.Single(d => d.Key.Equals("PRECIO")).Value.Parse<decimal>(),
                         Instrumentos =i.Single(d=>d.Key.Equals("INSTRUMENTOS")).Value.Parse<string>(),
                         Herramientas=i.Single(d=>d.Key.Equals("TOOLCOMUN")).Value.Parse<string>(),
                         HerramientasEspeciales=i.Single(d=>d.Key.Equals("TOOLESPECIAL")).Value.Parse<string>(),
@@ -157,12 +155,9 @@ namespace AHSECO.CCL.BD
                 parameters.Add("IsID_SERVICIO",servicioDTO.CodigoServicio);
                 parameters.Add("IsTIPOSERVICIO",servicioDTO.TipoServicio);
                 parameters.Add("IsDESCRIPCIONEQUIPO",servicioDTO.Equipo);
-                //parameters.Add("IsCODEQUIPO", servicioDTO.CodEquipo);
                 parameters.Add("IsNOMBREMARCA",servicioDTO.Marca);
                 parameters.Add("IsNOMBREMODELO",servicioDTO.Modelo);
-                parameters.Add("IsPRECIOPREVENTIVO",servicioDTO.PrecioPreventivo);
-                parameters.Add("IsPRECIOCAPACITACION",servicioDTO.PrecioCapacitacion);
-                parameters.Add("IsPRECIOSOFTWARE",servicioDTO.PrecioActualizacion);
+                parameters.Add("IsPRECIO",servicioDTO.Precio);
                 parameters.Add("IsINSTRUMENTOS",servicioDTO.Instrumentos);
                 parameters.Add("IsTOOLCOMUN",servicioDTO.Herramientas);
                 parameters.Add("IsTOOLESPECIAL",servicioDTO.HerramientasEspeciales);
@@ -212,9 +207,7 @@ namespace AHSECO.CCL.BD
                         Equipo = reader.IsDBNull(reader.GetOrdinal("DESCRIPCIONEQUIPO")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCIONEQUIPO")),
                         Modelo = reader.IsDBNull(reader.GetOrdinal("NOMBREMODELO")) ? "" : reader.GetString(reader.GetOrdinal("NOMBREMODELO")),
                         Marca = reader.IsDBNull(reader.GetOrdinal("NOMBREMARCA")) ? "" : reader.GetString(reader.GetOrdinal("NOMBREMARCA")),
-                        PrecioPreventivo = reader.IsDBNull(reader.GetOrdinal("PRECIOPREVENTIVO")) ? 0 : reader.GetDecimal(reader.GetOrdinal("PRECIOPREVENTIVO")),
-                        PrecioCapacitacion = reader.IsDBNull(reader.GetOrdinal("PRECIOCAPACITACION")) ? 0 : reader.GetDecimal(reader.GetOrdinal("PRECIOCAPACITACION")),
-                        PrecioActualizacion = reader.IsDBNull(reader.GetOrdinal("PRECIOSOFTWARE")) ? 0 : reader.GetDecimal(reader.GetOrdinal("PRECIOSOFTWARE")),
+                        Precio = reader.IsDBNull(reader.GetOrdinal("PRECIO")) ? 0 : reader.GetDecimal(reader.GetOrdinal("PRECIO")),
                         Instrumentos = reader.IsDBNull(reader.GetOrdinal("INSTRUMENTOS")) ? "" : reader.GetString(reader.GetOrdinal("INSTRUMENTOS")),
                         Herramientas = reader.IsDBNull(reader.GetOrdinal("TOOLCOMUN")) ? "" : reader.GetString(reader.GetOrdinal("TOOLCOMUN")),
                         HerramientasEspeciales = reader.IsDBNull(reader.GetOrdinal("TOOLESPECIAL")) ? "" : reader.GetString(reader.GetOrdinal("TOOLESPECIAL")),

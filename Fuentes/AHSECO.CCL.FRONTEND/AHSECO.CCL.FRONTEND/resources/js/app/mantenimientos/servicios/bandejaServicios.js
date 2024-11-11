@@ -75,22 +75,10 @@
             { data: "Modelo" },
             { data: "Marca" },
             {
-                data: "PrecioActualizacion",
+                data: "Precio",
                 render: function (data) {
                     return "S/." + formatoMiles(data.toFixed(2))
                 }
-            },
-            {
-                data: "PrecioPreventivo",
-                render: function (data) {
-                    return "S/." + formatoMiles(data.toFixed(2))
-                }
-            },
-            {
-                data: "PrecioCapacitacion",
-                render: function (data) {
-                    return "S/." + formatoMiles(data.toFixed(2))
-                }    
             },
             { data: "TipoServicio"},
             {

@@ -6,9 +6,8 @@
     var $txtMarca = $("#txtMarca");
     var $txtModelo = $("#txtModelo");
     var $cmbEstado = $("#cmbEstado");
-    var $txtPrecioPreventivo = $("#txtPrecioPreventivo");
-    var $txtPrecioCapacitacion = $("#txtPrecioCapacitacion");
-    var $txtPrecioAct = $("#txtPrecioAct");
+    var $txtPrecio = $("#txtPrecio");
+
     var $txtInstrumentos = $("#txtInstrumentos")
     var $txtHerramientas = $("#txtHerramientas");
     var $txtHerramientasEspeciales = $("#txtHerramientasEspeciales");
@@ -209,17 +208,16 @@
             return;
         };
 
-        if (($txtPrecioAct.val() == 0 || $txtPrecioAct.val() == "") && ($txtPrecioPreventivo.val() == 0 || $txtPrecioPreventivo.val() == "") && ($txtPrecioCapacitacion.val() == 0 || $txtPrecioCapacitacion.val() == "")) {
-            app.message.error("Validación", "Debe de registrar por lo menos un precio.");
-            return;
-        }
+
 
         if ($cmbEstado.val() == null || $cmbEstado.val() == "") {
             app.message.error("Validación", "Estado incorrecto.");
             return;
         };
 
-        if (detalleServicios.length == 0) {
+
+
+        if (detalleServicios.length == 0 && ($cmbTipoServicio.val() == "SERV01" || $cmbTipoServicio.val() == "SERV02")) {
             app.message.error("Validación", "Debe de registrar el detalle de servicio");
             return;
         };
@@ -253,9 +251,7 @@
                     Marca: $txtMarca.val(),
                     Estado: $cmbEstado.val(),
                     TipoServicio: $cmbTipoServicio.val(),
-                    PrecioPreventivo: ($txtPrecioPreventivo.val()).replaceAll(",", ""),
-                    PrecioCapacitacion: ($txtPrecioCapacitacion.val()).replaceAll(",", ""),
-                    PrecioActualizacion: ($txtPrecioAct.val()).replaceAll(",", ""),
+                    Precio: ($txtPrecio.val()).replaceAll(",", ""),
                     Herramientas: $txtHerramientas.val(),
                     HerramientasEspeciales: $txtHerramientasEspeciales.val(),
                     Instrumentos: $txtInstrumentos.val()
@@ -390,17 +386,13 @@
                 return;
             };
 
-            if (($txtPrecioAct.val() == 0 || $txtPrecioAct.val() == "") && ($txtPrecioPreventivo.val() == 0 || $txtPrecioPreventivo.val() == "") && ($txtPrecioCapacitacion.val() == 0 || $txtPrecioCapacitacion.val() == "")) {
-                app.message.error("Validación", "Debe de registrar por lo menos un precio.");
-                return;
-            }
 
             if ($cmbEstado.val() == null || $cmbEstado.val() == "") {
                 app.message.error("Validación", "Estado incorrecto.");
                 return;
             };
 
-            if (detalleServicios.length == 0) {
+            if (detalleServicios.length == 0 && ($cmbTipoServicio.val() == "SERV01" || $cmbTipoServicio.val() == "SERV02")) {
                 app.message.error("Validación", "Debe de registrar el detalle de servicio");
                 return;
             };
@@ -433,9 +425,7 @@
                         Marca: $txtMarca.val(),
                         Estado: $cmbEstado.val(),
                         TipoServicio: $cmbTipoServicio.val(),
-                        PrecioPreventivo: ($txtPrecioPreventivo.val()).replaceAll(",",""),
-                        PrecioCapacitacion: ($txtPrecioCapacitacion.val()).replaceAll(",", ""),
-                        PrecioActualizacion: ($txtPrecioAct.val()).replaceAll(",", ""),
+                        Precio: ($txtPrecio.val()).replaceAll(",", ""),
                         Instrumentos: $txtInstrumentos.val(),
                         Herramientas: $txtHerramientas.val(),
                         HerramientasEspeciales: $txtHerramientasEspeciales.val()
@@ -468,12 +458,8 @@
                 $txtEquipo.val(data.Result.CabeceraServicio.Equipo);
                 $txtModelo.val(data.Result.CabeceraServicio.Modelo);
                 $txtMarca.val(data.Result.CabeceraServicio.Marca);
-                //$txtPrecioAct.val(data.Result.CabeceraServicio.PrecioActualizacion.toFixed(2));
-                //$txtPrecioPreventivo.val(data.Result.CabeceraServicio.PrecioPreventivo.toFixed(2));
-                //$txtPrecioCapacitacion.val(data.Result.CabeceraServicio.PrecioCapacitacion.toFixed(2));
-                $txtPrecioAct.val(formatoMiles(data.Result.CabeceraServicio.PrecioActualizacion.toFixed(2)));
-                $txtPrecioPreventivo.val(formatoMiles(data.Result.CabeceraServicio.PrecioPreventivo.toFixed(2)));
-                $txtPrecioCapacitacion.val(formatoMiles(data.Result.CabeceraServicio.PrecioCapacitacion.toFixed(2)));
+
+                $txtPrecio.val(formatoMiles(data.Result.CabeceraServicio.Precio.toFixed(2)));
 
                 $txtInstrumentos.val(data.Result.CabeceraServicio.Instrumentos).trigger("change.select2");
                 $txtHerramientas.val(data.Result.CabeceraServicio.Herramientas).trigger("change.select2");
