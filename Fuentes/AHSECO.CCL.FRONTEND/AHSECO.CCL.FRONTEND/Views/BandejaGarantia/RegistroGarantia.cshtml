@@ -1,7 +1,7 @@
 ﻿@using AHSECO.CCL.FRONTEND.Core;
 
 @{
-    ViewBag.Title = "Registro de Garantías";
+    ViewBag.Title = "Nuevo Reclamo:";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var numReq = VariableSesion.getCadena("NumReq");
     var codEstado = VariableSesion.getCadena("CodEstado");
@@ -23,7 +23,7 @@
 <input hidden id="tipoproceso" value="@tipoProceso"/>
 
 <div class="container-fluid">
-    <h4><i class="fa fa-wrench" aria-hidden="true"></i> @ViewBag.Title</h4>
+    <h4><i class="fa fa-comment" aria-hidden="true"></i> @ViewBag.Title</h4>
     <div class="box-inner">
         <div class="box-header well" data-original-title="">
             <div style="display: flex;justify-content: space-between;">
@@ -33,7 +33,7 @@
 
                     numReqFormateado = numReqFormateado.Substring((numReqFormateado.Length) - 6, numReqFormateado.Length - ((numReqFormateado.Length) - 6));
 
-                    <h2>N&uacute;mero de Requerimiento: @numReqFormateado</h2> <!--- Aquí tendremos que controlar-->
+                    <h2>N&uacute;mero de Reclamo: @numReqFormateado</h2> <!--- Aquí tendremos que controlar-->
 
                     <div class="text-right">
                         <!--- Aquí tendremos que controlar-->

@@ -43,7 +43,7 @@
         $openRegFecIni.click($openRegFecIni_click);
         $openRegFecFin.click($openRegFecFin_click);
         $btnGuardarUbigeo.click(seleccionar);
-        $btnNuevo.click(NuevaInstalacion);
+        $btnNuevo.click(NuevoReclamo);
         $btnBuscar.click(BuscarClick);
         $btnExportar.click(btnExportarClick);
         $dateFecIni.val(firstDayMonth());
@@ -138,8 +138,8 @@
         app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, mensajes.buscandoRequerimientos);
     };
 
-    function NuevaInstalacion() {
-        app.redirectTo("BandejaInstalacionTecnica/RegistroInstallTec");
+    function NuevoReclamo() {
+        app.redirectTo("BandejaGarantia/RegistroGarantia");
     };
     function btnExportarClick(e) {
         var self = jQuery(this);

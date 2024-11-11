@@ -1326,7 +1326,7 @@
     function btnRegresarClick() {
         var btnRegresar = document.getElementById("btnRegresar");
         if (btnRegresar != null) {
-            app.redirectTo("BandejaInstalacionTecnica");
+            app.redirectTo("BandejaGarantia");
         }
         else {
             var fnSi = function () {
