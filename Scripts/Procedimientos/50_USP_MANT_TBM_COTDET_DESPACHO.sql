@@ -5,17 +5,23 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_MANT_TBM_COTDET_DESPACHO]
 (
 @pTipoProceso CHAR(1),
 @pId_CodDetalle BIGINT,
-@pCantPreventivo INT,
-@pCodCicloPreventivo NVARCHAR(10),
 @pIndInfoVideo CHAR(1),
 @pIndInfoManual CHAR(1),
 @pIndInstaCapa CHAR(1),
 @pGarantiaAdic VARCHAR(50),
 @pIndLLaveMano CHAR(1),
-@pCodUbigeo VARCHAR(6),
-@pDireccion VARCHAR(150),
-@pNroPiso INT,
 @pDimensiones VARCHAR(50),
+@pIndCompraLocal CHAR(1),
+@pIndCalibracion CHAR(1),
+@pObsCliente VARCHAR(2000),
+@pIndReqPlaca CHAR(1),
+@pObsDespacho VARCHAR(2000),
+@pFecLimInsta DATETIME,
+@pMontoTotalCosto DECIMAL(18,9),
+@pIndFianza CHAR(1),
+@pNumFianza VARCHAR(50),
+@pMontoPPrinc DECIMAL(18,9),
+@pMontoPAcce DECIMAL(18,9),
 @pUsuarioRegistro VARCHAR(50)
 )
 /*=======================================================================================================
@@ -31,11 +37,22 @@ BEGIN
 	IF (@pTipoProceso = 'I') BEGIN
 		
 		INSERT INTO [dbo].[TBM_COTDET_DESPACHO]
-		([ID_COTDETALLE],[CANTPREVENTIVO],[CODCICLOPREVENTIVO],[INDINFOVIDEO],[INDINFOMANUAL],[INDINSTACAPA],[GARANTIAADIC],
-		[INDLLAVEMANO],[CODUBIGEO],[DIRECCION],[NROPISO],[DIMENSIONES],[USR_REG],[FEC_REG])
+		([ID_COTDETALLE],
+		[INDINFOVIDEO],[INDINFOMANUAL],[INDINSTACAPA],
+		[GARANTIAADIC],[INDLLAVEMANO],[DIMENSIONES],
+		[INDCOMPRALOCAL],[INDCALIBRACION],[OBSCLIENTE],
+		[INDREQUIEREPLACA],[OBSDESPACHO],[FECLIMINSTA],
+		[MTOTOTALCOSTO],[INDFIANZA],[NUMFIANZA],
+		[MONTOPPRINC],[MONTOPACCE],[USR_REG],[FEC_REG])
 		VALUES
-		(@pId_CodDetalle,@pCantPreventivo,@pCodCicloPreventivo,@pIndInfoVideo,@pIndInfoManual,@pIndInstaCapa,@pGarantiaAdic,
-		@pIndLLaveMano,@pCodUbigeo,@pDireccion,@pNroPiso,@pDimensiones,@pUsuarioRegistro,GETDATE())
+		(@pId_CodDetalle,
+		@pIndInfoVideo,@pIndInfoManual,@pIndInstaCapa,
+		@pGarantiaAdic,@pIndLLaveMano,@pDimensiones,
+		@pIndCompraLocal,@pIndCalibracion,@pObsCliente,
+		@pIndReqPlaca,@pObsDespacho,@pFecLimInsta,
+		@pMontoTotalCosto,@pIndFianza,@pNumFianza,
+		@pMontoPPrinc,@pMontoPAcce,
+		@pUsuarioRegistro,GETDATE())
 		
 		SET  @CODIGO = @@IDENTITY
 		SET @MSG ='Registro Insertado con éxito'
@@ -44,9 +61,13 @@ BEGIN
 	IF (@pTipoProceso = 'U') BEGIN
 		
 		UPDATE [dbo].[TBM_COTDET_DESPACHO]
-		SET CANTPREVENTIVO = @pCantPreventivo, CODCICLOPREVENTIVO = @pCodCicloPreventivo, INDINFOVIDEO = @pIndInfoVideo, INDINFOMANUAL = @pIndInfoManual,
-		INDINSTACAPA = @pIndInstaCapa, GARANTIAADIC = @pGarantiaAdic, INDLLAVEMANO = @pIndLLaveMano, CODUBIGEO = @pCodUbigeo, DIRECCION = @pDireccion,
-		NROPISO = @pNroPiso, DIMENSIONES = @pDimensiones, USR_MOD = @pUsuarioRegistro, FEC_MOD = GETDATE()
+		SET INDINFOVIDEO = @pIndInfoVideo, INDINFOMANUAL = @pIndInfoManual, INDINSTACAPA = @pIndInstaCapa, 
+		GARANTIAADIC = @pGarantiaAdic, INDLLAVEMANO = @pIndLLaveMano, DIMENSIONES = @pDimensiones, 
+		INDCOMPRALOCAL = @pIndCompraLocal, INDCALIBRACION = @pIndCalibracion, OBSCLIENTE = @pObsCliente, 
+		INDREQUIEREPLACA = @pIndReqPlaca, OBSDESPACHO = @pObsDespacho, FECLIMINSTA = @pFecLimInsta, 
+		MTOTOTALCOSTO = @pMontoTotalCosto, INDFIANZA = @pIndFianza, NUMFIANZA = @pNumFianza, 
+		MONTOPPRINC = @pMontoPPrinc, MONTOPACCE = @pMontoPAcce,
+		USR_MOD = @pUsuarioRegistro, FEC_MOD = GETDATE()
 		WHERE ID_COTDETALLE = @pId_CodDetalle
 		
 		SET @MSG ='Registro Modificado con éxito'

@@ -239,7 +239,7 @@
                                                             <div class="col-md-12 col-sm-12">
                                                                 <label for="txtAreaContacto">&Aacute;rea: </label>
                                                                 <div class="form-group">
-                                                                    <input disabled placeholder="Ingresar Área" type="text" class="form-control input-sm" id="txtAreaContacto" value="@ViewBag.AreaContacto">
+                                                                    <input disabled placeholder="Ingresar Área" type="text" class="form-control input-sm" id="txtAreaContacto" maxlength="100" value="@ViewBag.AreaContacto">
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-12 col-sm-12">
@@ -275,11 +275,10 @@
                                                             </div>
                                                         </div>
                                                         <div class="row container-fluid">
-
                                                             <div class="col-md-6 col-sm-12">
-                                                                <label for="txtPlazoEntrega">Plazo Entrega: </label>
+                                                                <label for="txtPlazoEntrega">Plazo Entrega (d&iacute;as): </label>
                                                                 <div class="form-group">
-                                                                    <input @(ViewBag.IdCotizacion > 0 ? "disabled" : "") placeholder="Ingresar número de días" type="text" class="form-control input-sm" id="txtPlazoEntrega" value="@ViewBag.PlazoEntrega">
+                                                                    <input @(ViewBag.IdCotizacion > 0 ? "disabled" : "") placeholder="Ingresar número de días" type="text" class="form-control input-sm" id="txtPlazoEntrega" maxlength="8" value="@ViewBag.PlazoEntrega">
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-6 col-sm-12">
@@ -301,12 +300,11 @@
                                                             <div class="col-md-6 col-sm-12">
                                                                 <label for="txtObs">Observaci&oacute;n: </label>
                                                                 <div class="form-group">
-                                                                    <input @(ViewBag.IdCotizacion > 0 ? "disabled" : "") placeholder="Ingresar observación" type="text" class="form-control input-sm" id="txtObs" value="@ViewBag.Observacion">
+                                                                    <input @(ViewBag.IdCotizacion > 0 ? "disabled" : "") placeholder="Ingresar observación" type="text" class="form-control input-sm" id="txtObs" maxlength="200" value="@ViewBag.Observacion">
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="row container-fluid">
-
                                                             <div class="col-md-6 col-sm-12">
                                                                 <label for="cmbTipMoneda">Moneda: </label>
                                                                 <div class="form-group">

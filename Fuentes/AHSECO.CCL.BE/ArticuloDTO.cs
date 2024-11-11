@@ -13,19 +13,22 @@ namespace AHSECO.CCL.BE
         public string CodArticulo { get; set; }
         public string DescArticulo { get; set; }
         public string DescRealArticulo 
-        { 
+        {
             get
             {
-                var str = this.DescArticulo;
+                var strDesc = this.DescArticulo;
+                string strModelo = null;
                 var tag = ConstantesDTO.Articulos.Tag.Tag_1;
                 if (this.DescArticulo != null)
                 {
                     if (this.DescArticulo.ToUpper().IndexOf(tag) >= 0)
                     {
-                        str = this.DescArticulo.Substring(0, this.DescArticulo.ToUpper().IndexOf(tag));
+                        strDesc = this.DescArticulo.Substring(0, this.DescArticulo.ToUpper().IndexOf(tag));
+                        strModelo = this.DescArticulo.Substring(this.DescArticulo.ToUpper().IndexOf(tag) + tag.Length);
+                        if (string.IsNullOrEmpty(strModelo)) { strDesc = this.DescArticulo; }
                     }
                 }
-                return str;
+                return strDesc;
             }
         }
         public string CodUnidad { get; set; }
@@ -44,21 +47,23 @@ namespace AHSECO.CCL.BE
         {
             get
             {
-                string str = null;
+                string strModelo = null;
                 var tag = ConstantesDTO.Articulos.Tag.Tag_1;
                 if (this.DescArticulo != null)
                 {
                     if (this.DescArticulo.ToUpper().IndexOf(tag) >= 0)
                     {
-                        str = this.DescArticulo.Substring(this.DescArticulo.ToUpper().IndexOf(tag) + tag.Length);
+                        strModelo = this.DescArticulo.Substring(this.DescArticulo.ToUpper().IndexOf(tag) + tag.Length);
                     }
                 }
-                return str;
+                return strModelo;
             }
         }
         public string CodAlmacen { get; set; }
         public string DescAlmacen { get; set; }
         public bool EsDisponible { get; set; }
         public AlmacenDTO[] Almacenes { get; set; }
+        public bool IsTempRecord { get; set; }
+        public string CodArticuloTemp { get; set; }
     }
 }

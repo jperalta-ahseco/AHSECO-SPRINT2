@@ -887,9 +887,15 @@
             return;
         };
 
-        if ($txtPlazoEntrega.val().trim() === "" || $txtPlazoEntrega.val().trim().length <= 0 || $txtPlazoEntrega.val().trim() == null) {
+        if ($.trim($txtPlazoEntrega.val()) == "") {
             app.message.error("Validación", "Debe de ingresar el plazo de entrega de la cotización.");
             return;
+        }
+        else {
+            if (!app.validaNumeroEntero($txtPlazoEntrega.val())) {
+                app.message.error("Validación", "Número inválido para el Plazo de Entrega.");
+                return;
+            }
         };
 
         if ($cmbTipoPago.val() === "" || $cmbTipoPago.val() == undefined || $cmbTipoPago.val() == null) {

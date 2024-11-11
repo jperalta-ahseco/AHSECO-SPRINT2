@@ -100,7 +100,7 @@ namespace AHSECO.CCL.BD.Ventas
                         AreaContacto = i.Single(d => d.Key.Equals("AREACONTACTO")).Value.Parse<string>(),
                         TelefonoContacto = i.Single(d => d.Key.Equals("TELEFONOCONTACTO")).Value.Parse<string>(),
                         EmailContacto = i.Single(d => d.Key.Equals("EMAILCONTACTO")).Value.Parse<string>(),
-                        PlazoEntrega = i.Single(d => d.Key.Equals("PLAZOENTREGA")).Value.Parse<string>(),
+                        PlazoEntrega = i.Single(d => d.Key.Equals("PLAZOENTREGA")).Value.Parse<int>(),
                         FormaPago = i.Single(d => d.Key.Equals("FORMAPAGO")).Value.Parse<string>(),
                         Moneda = i.Single(d => d.Key.Equals("MONEDA")).Value.Parse<string>(),
                         Vigencia = i.Single(d => d.Key.Equals("VIGENCIA")).Value.Parse<string>(),

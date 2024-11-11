@@ -19,7 +19,7 @@ namespace AHSECO.CCL.BE.Ventas
         public string AreaContacto { get; set; }
         public string TelefonoContacto { get; set; }
         public string EmailContacto { get; set; }
-        public string PlazoEntrega { get; set; }
+        public int PlazoEntrega { get; set; }
         public string FormaPago { get; set; }
         public string Moneda { get; set; }
         public string Vigencia { get; set; }
