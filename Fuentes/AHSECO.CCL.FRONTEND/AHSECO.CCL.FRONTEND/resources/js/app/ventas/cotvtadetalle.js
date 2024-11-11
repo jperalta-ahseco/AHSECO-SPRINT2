@@ -322,8 +322,8 @@ var cotvtadet = (function ($, win, doc) {
                 data: "CodItem",
                 render: function (data) {
                     var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
-                    var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                    var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ')"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                    var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',1)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                    var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',1)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
                     return '<center>' + hidden + editar + ' ' + quitar + '</center>';
                 }
             }
@@ -347,11 +347,12 @@ var cotvtadet = (function ($, win, doc) {
         app.llenarTabla($tblCotDet, data, columns, columnDefs, "#tblCotDet", rowCallback, null, filters);
     }
     
-    function quitarItem(CodigoItem) {
+    function quitarItem(CodigoItem, opc) {
         method = "POST";
         url = "BandejaSolicitudesVentas/QuitarItemCotDet";
         var objFiltros = {
-            CodItem: CodigoItem
+            CodItem: CodigoItem,
+            opcGrillaItems: opc
         };
         var objParam = JSON.stringify(objFiltros);
 
@@ -429,20 +430,20 @@ var cotvtadet = (function ($, win, doc) {
         }
     }
 
-    var opcEditarItem = 0;
-    function editarItem(CodigoItem) {
-
+    var opcGrillaItems = 0;
+    function editarItem(CodigoItem, opc) {
         $DI_hdnCodigoPadre.val("");
 
         method = "POST";
         url = "BandejaSolicitudesVentas/EditarItemCotDet";
         var objFiltros = {
-            CodItem: CodigoItem
+            CodItem: CodigoItem,
+            opcGrillaItems: opc
         };
         var objParam = JSON.stringify(objFiltros);
 
         var fnDoneCallBack = function (data) {
-            opcEditarItem = 1;
+            opcGrillaItems = opc;
             LimpiarModalDetItem();
             MostrarDatosItem(data);
             $('#modalDetalleItem').modal('show');
@@ -557,8 +558,8 @@ var cotvtadet = (function ($, win, doc) {
                 data: "CodItem",
                 render: function (data) {
                     var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
-                    var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarSubItem(' + String.fromCharCode(39) + CodItemPadre + String.fromCharCode(39) + ',' + String.fromCharCode(39) + data + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                    var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarSubItem(' + String.fromCharCode(39) + CodItemPadre + String.fromCharCode(39) + ',' + String.fromCharCode(39) + data + String.fromCharCode(39) + ')"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                    var editar = '<a id="btnEditarSubItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarSubItem(' + String.fromCharCode(39) + CodItemPadre + String.fromCharCode(39) + ',' + String.fromCharCode(39) + data + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                    var quitar = '<a id="btnQuitarSubItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarSubItem(' + String.fromCharCode(39) + CodItemPadre + String.fromCharCode(39) + ',' + String.fromCharCode(39) + data + String.fromCharCode(39) + ')"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
                     return '<center>' + hidden + editar + ' ' + quitar + '</center>';
                 }
             }
@@ -612,6 +613,7 @@ var cotvtadet = (function ($, win, doc) {
         var objParam = JSON.stringify(objFiltros);
 
         var fnDoneCallBack = function (data) {
+            opcGrillaItems = 1;
             LimpiarModalDetItem();
             MostrarDatosItem(data);
             $('#modalDetalleItem').modal('show');
@@ -765,16 +767,15 @@ var cotvtadet = (function ($, win, doc) {
                     GarantiaAdicional: $DI_txtGarantiaAdic.val(),
                     IndCompraLocal: bCompraLocal
                 }
-            }
+            },
+            opcGrillaItems: opcGrillaItems
         };
         var objParam = JSON.stringify(objDatos);
 
         var fnDoneCallBack = function (data) {
             cerrarModalDetItem();
-            if (opcEditarItem == 1) {
-                cargarTablaCotDet(data);
-            }
-            else {
+            cargarTablaCotDet(data);
+            if (opcGrillaItems == 2) {
                 cargarTablaDetCotCostos(data);
             }
         };
@@ -889,8 +890,8 @@ var cotvtadet = (function ($, win, doc) {
                     data: "CodItem",
                     render: function (data) {
                         var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
-                        var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarItemCostos(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                        var quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarItemCostos(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ')"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                        var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                        var quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
                         return '<center>' + hidden + editar + ' ' + quitar + '</center>';
                     }
                 }
@@ -967,8 +968,8 @@ var cotvtadet = (function ($, win, doc) {
                     data: "CodItem",
                     render: function (data) {
                         var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
-                        var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarItemCostos(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                        var quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarItemCostos(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ')"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                        var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                        var quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
                         return '<center>' + hidden + editar + ' ' + quitar + '</center>';
                     }
                 }
@@ -993,44 +994,7 @@ var cotvtadet = (function ($, win, doc) {
 
         app.llenarTabla($tblDetCotCostos, data, columns, columnDefs, "#tblDetCotCostos", rowCallback, null, filters);
     }
-
-    function editarItemCostos(CodigoItem) {
-
-        $DI_hdnCodigoPadre.val("");
-
-        method = "POST";
-        url = "BandejaSolicitudesVentas/EditarItemCotDet";
-        var objFiltros = {
-            CodItem: CodigoItem
-        };
-        var objParam = JSON.stringify(objFiltros);
-
-        var fnDoneCallBack = function (data) {
-            opcEditarItem = 2;
-            LimpiarModalDetItem();
-            MostrarDatosItem(data);
-            $('#modalDetalleItem').modal('show');
-        };
-
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
-    }
-
-    function quitarItemCostos(CodigoItem) {
-        method = "POST";
-        url = "BandejaSolicitudesVentas/QuitarItemCotDet";
-        var objFiltros = {
-            CodItem: CodigoItem
-        };
-        var objParam = JSON.stringify(objFiltros);
-
-        var fnDoneCallBack = function (data) {
-            opcEditarItem = 2;
-            cargarTablaDetCotCostos(data);
-        };
-
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
-    }
-
+    
     function cerrarModalDetCot() {
         $('#modalDetalleCotizacion').modal('hide');
     }
@@ -1080,10 +1044,8 @@ var cotvtadet = (function ($, win, doc) {
         RecargarFiltroFamilia: RecargarFiltroFamilia,
         agregarItem: agregarItem,
         quitarItem: quitarItem,
-        quitarItemCostos: quitarItemCostos,
         cargarCiclosPreventivos: cargarCiclosPreventivos,
         editarItem: editarItem,
-        editarItemCostos: editarItemCostos,
         quitarSubItem: quitarSubItem,
         editarSubItem: editarSubItem,
         SeleccionarRowCotDet: SeleccionarRowCotDet,

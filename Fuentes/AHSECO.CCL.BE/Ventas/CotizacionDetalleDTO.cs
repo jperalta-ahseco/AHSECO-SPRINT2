@@ -32,6 +32,7 @@ namespace AHSECO.CCL.BE.Ventas
         public int CantSubItem { get; set; }
         public CotDetDespachoDTO CotizacionDespacho { get; set; }
         public CotizacionCostoDTO CotizacionCosto { get; set; }
+        public bool IsTempRecord { get; set; }
 
         #region BandejaInstalacionTecnica
         public string Marca { get; set; }
@@ -39,5 +40,42 @@ namespace AHSECO.CCL.BE.Ventas
         public string Serie { get; set; }
         public string NumFianza { get; set; }
         #endregion
+
+        public void CopyTo(ref CotizacionDetalleDTO obj)
+        {
+            obj.Cantidad = Cantidad;
+            obj.CantSubItem = CantSubItem;
+            obj.CodItem = CodItem;
+            obj.CostoFOB = CostoFOB;
+            obj.CotizacionCosto = CotizacionCosto;
+            obj.CotizacionDespacho = CotizacionDespacho;
+            obj.Descripcion = Descripcion;
+            obj.DescripcionAdicional = DescripcionAdicional;
+            obj.DescUnidad = DescUnidad;
+            obj.EsItemPadre = EsItemPadre;
+            obj.FechaModifica = FechaModifica;
+            obj.FechaRegistro = FechaRegistro;
+            obj.Id = Id;
+            obj.IdCotizacion = IdCotizacion;
+            obj.IpMaquinaModifica = IpMaquinaModifica;
+            obj.IsTempRecord = IsTempRecord;
+            obj.Marca = Marca;
+            obj.Modelo = Modelo;
+            obj.MontoDescuento = MontoDescuento;
+            obj.NroItem= NroItem;
+            obj.NumFianza = NumFianza;
+            obj.PorcentajeGanancia = PorcentajeGanancia;
+            obj.Select = Select;
+            obj.Serie = Serie;
+            obj.Stock = Stock;
+            obj.TipoItem = TipoItem;
+            obj.TipoProceso = TipoProceso;
+            obj.UsuarioModifica = UsuarioModifica;
+            obj.UsuarioRegistra = UsuarioRegistra;
+            obj.VentaTotalSinIGV = VentaTotalSinIGV;
+            obj.VentaTotalSinIGVConGanacia = VentaTotalSinIGVConGanacia;
+            obj.VentaTotalSinIGVDscto = VentaTotalSinIGVDscto;
+            obj.VentaUnitaria = VentaUnitaria;
+        }
     }
 }

@@ -182,7 +182,7 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("IsESTADO", solicitudDTO.Estado);
                 parameters.Add("IsCOD_EMPRESA", solicitudDTO.Cod_Empresa);
                 parameters.Add("TipoProceso", solicitudDTO.TipoProceso);
-                parameters.Add("NumProceso", solicitudDTO.NumProceso);
+                parameters.Add("NumProceso", solicitudDTO.NroProceso);
                 parameters.Add("isUsrEjecuta", solicitudDTO.UsuarioRegistra);
                 parameters.Add("isIP_Ejecuta", solicitudDTO.IpMaquinaRegistro);
 
