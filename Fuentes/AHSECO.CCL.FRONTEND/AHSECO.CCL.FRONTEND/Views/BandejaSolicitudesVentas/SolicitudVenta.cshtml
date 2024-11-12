@@ -212,10 +212,10 @@
                                 <div class="panel panel-default" style="border-color: #ef8f00;">
                                     <div class="panel-heading" role="tab" id="heading411391" style="background-color: #ef8f000f;">
                                         <h5 class="panel-title">
-                                            <a role="button" data-toggle="collapse" class="accordion-arrow-toggle @ViewBag.AcordionCollapsedLiq" href="#collapse411391" aria-expanded="false" aria-controls="collapse411391"><i class="fa fa-briefcase" aria-hidden="true"></i> LIQUIDACI&Oacute;N DE COSTOS</a>
+                                            <a role="button" data-toggle="collapse" class="accordion-arrow-toggle @ViewBag.AcordionCollapsedLiq" href="#Cotizacion_Body" aria-expanded="false" aria-controls="Cotizacion_Body"><i class="fa fa-briefcase" aria-hidden="true"></i> LIQUIDACI&Oacute;N DE COSTOS</a>
                                         </h5>
                                     </div>
-                                    <div id="collapse411391" class="panel-collapse @ViewBag.TabAcordionCollapsedLiq" role="tabpanel" aria-labelledby="heading411391">
+                                    <div id="Cotizacion_Body" class="panel-collapse @ViewBag.TabAcordionCollapsedLiq" role="tabpanel" aria-labelledby="heading411391">
                                         <form id="formRegistraCotizacion">
                                             <div class="box-content">
                                                 <div style="display: flex;">
@@ -224,12 +224,12 @@
                                                             <div class="col-md-12 col-sm-12">
                                                                 <label for="nombreContacto">Contacto: </label>
                                                                 <div class="form-group">
-                                                                    <div @(ViewBag.IdCotizacion > 0 ? "input-group-sm date" : "input-group input-group-sm date") class="input-group input-group-sm date">
-                                                                        <input @(ViewBag.IdCotizacion > 0 ? "disabled" : "") type="text" class="form-control input-sm col-md-10" id="nombreContacto" value="@ViewBag.NombreContacto" placeholder="--Ingrese Nombre de Contacto--" aria-describedby="sizing-addon3" />
-                                                                        <span style="@(ViewBag.IdCotizacion > 0 ? "display:none" : "cursor:pointer")" class="input-group-addon input-sm" id="searchContacto" title="Buscar Contacto" data-toggle="modal" data-target="#modalContactos">
+                                                                    <div class="@(ViewBag.PermitirEditarCotizacion ? "input-group input-group-sm date" : "input-group-sm date")">
+                                                                        <input readonly @(ViewBag.PermitirEditarCotizacion ? "" : "disabled") type="text" class="@(ViewBag.PermitirEditarCotizacion ? "" : "form-group") form-control input-sm col-md-10" id="nombreContacto" value="@ViewBag.NombreContacto" placeholder="--Ingrese Nombre de Contacto--" aria-describedby="sizing-addon3" />
+                                                                        <span style="@(ViewBag.PermitirEditarCotizacion ? "cursor:pointer" : "display:none")" class="input-group-addon input-sm" id="searchContacto" title="Buscar Contacto" data-toggle="modal" data-target="#modalContactos">
                                                                             <i class="fa fa-search"></i>
                                                                         </span>
-                                                                        <span style="@(ViewBag.IdCotizacion > 0 ? "display:none" : "cursor:pointer")" class="input-group-addon input-sm" id="agregarContacto" title="Agregar Contacto" data-toggle="modal">
+                                                                        <span style="@(ViewBag.PermitirEditarCotizacion ? "cursor:pointer" : "display:none")" class="input-group-addon input-sm" id="agregarContacto" title="Agregar Contacto" data-toggle="modal">
                                                                             <i class="fa fa-plus"></i>
                                                                         </span>
                                                                         <input type="hidden" id="txtCodContacto" value="@ViewBag.IdContacto" />
@@ -261,7 +261,7 @@
                                                             <div class="col-md-6 col-sm-12">
                                                                 <label for="dateCotizacion">Fecha Cotizaci&oacute;n: </label>
                                                                 <div class="input-group date">
-                                                                    <input @(ViewBag.IdCotizacion > 0 ? "disabled" : "") type="text" class="form-control input-sm" id="dateCotizacion" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10" value="@ViewBag.FechaCotizacion">
+                                                                    <input @(ViewBag.PermitirEditarCotizacion ? "" : "disabled") type="text" class="form-control input-sm" id="dateCotizacion" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10" value="@ViewBag.FechaCotizacion">
                                                                     <span class="input-group-addon input-sm" id="openRegdateCotizacion">
                                                                         <i class="fa fa-calendar"></i>
                                                                     </span>
@@ -270,7 +270,7 @@
                                                             <div class="col-md-6 col-sm-7 col-xs-12">
                                                                 <label for="txtVigencia">Vigencia Cotizaci&oacute;n: </label>
                                                                 <div class="form-group">
-                                                                    <input @(ViewBag.IdCotizacion > 0 ? "disabled" : "") placeholder="Ingresar número de días" type="text" class="form-control input-sm" id="txtVigencia" value="@ViewBag.Vigencia">
+                                                                    <input @(ViewBag.PermitirEditarCotizacion ? "" : "disabled") placeholder="Ingresar número de días" type="text" class="form-control input-sm" id="txtVigencia" value="@ViewBag.Vigencia">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -278,13 +278,13 @@
                                                             <div class="col-md-6 col-sm-12">
                                                                 <label for="txtPlazoEntrega">Plazo Entrega (d&iacute;as): </label>
                                                                 <div class="form-group">
-                                                                    <input @(ViewBag.IdCotizacion > 0 ? "disabled" : "") placeholder="Ingresar número de días" type="text" class="form-control input-sm" id="txtPlazoEntrega" maxlength="8" value="@ViewBag.PlazoEntrega">
+                                                                    <input @(ViewBag.PermitirEditarCotizacion ? "" : "disabled") placeholder="Ingresar número de días" type="text" class="form-control input-sm" id="txtPlazoEntrega" maxlength="8" value="@ViewBag.PlazoEntrega">
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-6 col-sm-12">
                                                                 <label for="cmbGarantia">Garant&iacute;a: </label>
                                                                 <div class="form-group">
-                                                                    <select @(ViewBag.IdCotizacion > 0 ? "disabled" : "") class="form-control select2 input-sm" style="width:100%;" id="cmbGarantia" data-selected="@ViewBag.Garantia">
+                                                                    <select @(ViewBag.PermitirEditarCotizacion ? "" : "disabled") class="form-control select2 input-sm" style="width:100%;" id="cmbGarantia" data-selected="@ViewBag.Garantia">
                                                                     </select>
                                                                 </div>
                                                             </div>
@@ -293,14 +293,14 @@
                                                             <div class="col-md-6 col-sm-12">
                                                                 <label for="cmbTipoPago">Forma de Pago: </label>
                                                                 <div class="form-group">
-                                                                    <select @(ViewBag.IdCotizacion > 0 ? "disabled" : "") class="form-control select2 input-sm" style="width:100%;" id="cmbTipoPago" data-selected="@ViewBag.FormaPago">
+                                                                    <select @(ViewBag.PermitirEditarCotizacion ? "" : "disabled") class="form-control select2 input-sm" style="width:100%;" id="cmbTipoPago" data-selected="@ViewBag.FormaPago">
                                                                     </select>
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-6 col-sm-12">
                                                                 <label for="txtObs">Observaci&oacute;n: </label>
                                                                 <div class="form-group">
-                                                                    <input @(ViewBag.IdCotizacion > 0 ? "disabled" : "") placeholder="Ingresar observación" type="text" class="form-control input-sm" id="txtObs" maxlength="200" value="@ViewBag.Observacion">
+                                                                    <input @(ViewBag.PermitirEditarCotizacion ? "" : "disabled") placeholder="Ingresar observación" type="text" class="form-control input-sm" id="txtObs" maxlength="200" value="@ViewBag.Observacion">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -308,7 +308,7 @@
                                                             <div class="col-md-6 col-sm-12">
                                                                 <label for="cmbTipMoneda">Moneda: </label>
                                                                 <div class="form-group">
-                                                                    <select @(ViewBag.IdCotizacion > 0 ? "disabled" : "") class="form-control select2 input-sm" style="width:100%;" id="cmbTipMoneda" data-selected="@ViewBag.Moneda">
+                                                                    <select @(ViewBag.PermitirEditarCotizacion ? "" : "disabled") class="form-control select2 input-sm" style="width:100%;" id="cmbTipMoneda" data-selected="@ViewBag.Moneda">
                                                                     </select>
                                                                 </div>
                                                             </div>
@@ -325,7 +325,7 @@
                                                         }
                                                         else
                                                         {
-                                                            <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnRegistrarCotizacion" tabindex="14"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Registrar</button>
+                                                            <button style="@(ViewBag.PermitirRegistroCotizacion ? "" : "display:none")" class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnRegistrarCotizacion" tabindex="14"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Registrar</button>
                                                         }
                                                     </div>
                                                 </div>
@@ -364,9 +364,9 @@
                                                                     <table id="tblDetCotCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                                                         <thead>
                                                                             <tr>
-                                                                                @for (var i = 0; i < @ViewBag.Cabecera.Length; i++)
+                                                                                @for (var i = 0; i < @ViewBag.CabeceraCotDet.Length; i++)
                                                                                 {
-                                                                                    <th style="text-align:center">@ViewBag.Cabecera[i]</th>
+                                                                                    <th style="text-align:center">@ViewBag.CabeceraCotDet[i]</th>
                                                                                 }
                                                                             </tr>
                                                                         </thead>
@@ -443,6 +443,7 @@
                                                         <div class="row container-fluid">
                                                             <div class="text-right">
                                                                 <button style="@(ViewBag.PermitirEnvioCotizacion ? "" : "display:none")" class="btn btn-default btn-sm" type="button" id="btnEnviarCotizacion"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Enviar Cotizaci&oacute;n</button>
+                                                                <button style="@(ViewBag.PermitirReCotizacion ? "" : "display:none")" class="btn btn-default btn-sm" type="button" id="btnRecotizacion"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Generar Nueva Cotizaci&oacute;n</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -504,8 +505,6 @@
                                                         <a href="#navSinStock" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="221"><i class="fa fa-wrench" aria-hidden="true"></i> Sin Stock</a>
                                                     </li>
                                                 </ul>
-
-
                                                 <div class="tab-content">
                                                     <div id="navConStock" class="tab-pane fade in active">
                                                         <div class="row container-fluid">

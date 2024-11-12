@@ -1,7 +1,6 @@
 var cotvtadet = (function ($, win, doc) {
-    var $numeroSolicitud = $("#numeroSolicitud");
-    var $nombreusuario = $('#nombreusuario');
-    var $perfilnombre = $('#perfilnombre');
+
+    var $estadoSol = $('#estadoSol');
     var $idCotizacion = $("#idCotizacion");
     var $idRolUsuario = $("#idRolUsuario");
     var $idWorkFlow = $("#idWorkFlow");
@@ -672,9 +671,16 @@ var cotvtadet = (function ($, win, doc) {
                 app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Cantidad");
                 return false;
             }
+            else {
+                if (parseInt($DI_txtCantidad.val()) <= 0) {
+                    app.message.error("Validaci&oacute;n", "La cantidad debe ser mayor a 0.");
+                    return false;
+                }
+            }
         }
 
         if ($idRolUsuario.val() == "SGI_VENTA_GERENTE" || $idRolUsuario.val() == "SGI_VENTA_COSTOS") {
+
             if ($DI_txtCostoFOB.val() == "" && $DI_txtValorUnitario.val() == "") {
                 app.message.error("Validaci&oacute;n", "Se debe llenar mínimo 1 campo de COSTOS");
                 return false;
@@ -686,19 +692,25 @@ var cotvtadet = (function ($, win, doc) {
                     return false;
                 }
             }
-        }
-
-        if ($DI_txtValorUnitario.val() != "") {
-            if (!app.validaNumeroDecimal($DI_txtValorUnitario.val())) {
-                app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Valor Unitario");
-                return false;
+            if ($DI_txtValorUnitario.val() != "") {
+                if (!app.validaNumeroDecimal($DI_txtValorUnitario.val())) {
+                    app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Valor Unitario");
+                    return false;
+                }
             }
+
         }
 
         if ($DI_txtGanancia.val() != "") {
             if (!app.validaNumeroDecimal($DI_txtGanancia.val())) {
                 app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Ganancia");
                 return false;
+            }
+            else {
+                if (parseInt($DI_txtGanancia.val()) <= 0) {
+                    app.message.error("Validaci&oacute;n", "La ganancia no debe ser menor a 0.");
+                    return false;
+                }
             }
         }
 
@@ -1017,6 +1029,11 @@ var cotvtadet = (function ($, win, doc) {
 
         }
 
+        //Se quita los campos para edición de registros
+        if ($estadoSol.val() == "CVAL") {
+            columns.pop();
+        }
+
         var columnDefs =
         {
             targets: [0],
@@ -1042,7 +1059,7 @@ var cotvtadet = (function ($, win, doc) {
     function enviarCotizacion() {
 
         method = "POST";
-        url = "BandejaSolicitudesVentas/enviarCotizacion";
+        url = "BandejaSolicitudesVentas/EnviarCotizacion";
         var objDatos = {
             IdCotizacion: $idCotizacion.val(),
             IdWorkFlow: $idWorkFlow.val()
@@ -1054,9 +1071,28 @@ var cotvtadet = (function ($, win, doc) {
         };
         
         var fnDoneCallBack = function (data) {
-            $btnAgregarDetalle.css("display", "none");
-            $(".botonDetCot").css("display", "none");
             app.message.success("Cotización", "Se envi&oacute; la cotizaci&oacute;n correctamente.", "Aceptar", redirect);
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+    }
+
+    function recotizarSolicitud() {
+
+        method = "POST";
+        url = "BandejaSolicitudesVentas/RecotizarSolicitud";
+        var objDatos = {
+            IdCotizacion: $idCotizacion.val(),
+            IdWorkFlow: $idWorkFlow.val()
+        };
+        var objParam = JSON.stringify(objDatos);
+
+        function redirect() {
+            app.redirectTo("BandejaSolicitudesVentas/SolicitudVenta");
+        };
+
+        var fnDoneCallBack = function (data) {
+            app.message.success("Cotización", "Se gener&oacute; una nueva cotizaci&oacute;n correctamente.", "Aceptar", redirect);
         };
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
@@ -1096,6 +1132,7 @@ var cotvtadet = (function ($, win, doc) {
         cargarTablaDetCotCostos: cargarTablaDetCotCostos,
         cerrarModalDetCot: cerrarModalDetCot,
         enviarCotizacion: enviarCotizacion,
-        listarItemsCotDet: listarItemsCotDet
+        listarItemsCotDet: listarItemsCotDet,
+        recotizarSolicitud: recotizarSolicitud
     }
 })(window.jQuery, window, document);

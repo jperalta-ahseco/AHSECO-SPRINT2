@@ -356,14 +356,34 @@ var app = (function ($, win, doc) {
         return index_highest;
     }
 
+    var swAllowLoading = true;
+    var swCallingAjax = true;
+    var timerCallingLoading;
+
+    function ValidateKeepLoading() {
+        timerCallingLoading = setInterval(TerminateLoading, 3000);
+    }
+
+    function TerminateLoading() {
+        if (swCallingAjax == false) {
+            swAllowLoading = true;
+            $modalLoading.hide();
+            clearInterval(timerCallingLoading);
+        }
+    }
+
     // Ejecuta una llamada ajax con los parametros especificados
-    var cantidadLlamadas = 0;
     function llamarAjax(method, url, data, fnDoneCallback, fnFailCallback, fnAlwaysCallback, messageWait) {
         var m = method || "POST";
         var u = baseUrl + url;
         var d = data || "";
-        
-        mostrarLoading();
+
+        swCallingAjax = true;
+
+        if (swAllowLoading) {
+            mostrarLoading();
+            swAllowLoading = false;
+        }
 
         return $.ajax({
             method: m,
@@ -372,7 +392,9 @@ var app = (function ($, win, doc) {
             contentType: 'application/json',
             dataType: "json"
         }).done(function (data, textStatus, jqXhr) {
-            $modalLoading.hide();
+            //$modalLoading.hide();
+            if (typeof (fnDoneCallback) == "undefined" || fnDoneCallback == null) { ValidateKeepLoading(); }
+            else { $modalLoading.hide(); }
             if (data.Status === 1) {
                 if (typeof (fnDoneCallback) != "undefined" || fnDoneCallback != null) {
                     fnDoneCallback(data);
@@ -380,54 +402,23 @@ var app = (function ($, win, doc) {
             } else if (data.Status === 0) {
                 message.error("Error", data.CurrentException, "Aceptar", fnFailCallback);
             }
+            swCallingAjax = false;
         }).fail(function (jqXhr, textStatus, errorThrow) {
             $modalLoading.hide();
             message.error("Error inesperado", errorThrow, "Aceptar", fnFailCallback);
+            swCallingAjax = false;
         }).always(function () {
-
             if (typeof (fnAlwaysCallback) !== "undefined" && fnAlwaysCallback != null) {
                 fnAlwaysCallback();
             }
             if (!loading.isGlobal) {
-                ocultarLoading();
+                //$modalLoading.hide();
+                ValidateKeepLoading();
             }
+            swCallingAjax = false;
         });
     }
-
-    function llamarAjaxNoLoading(method, url, data, fnDoneCallback, fnFailCallback, fnAlwaysCallback, messageWait) {
-        var m = method || "POST";
-        var u = baseUrl + url;
-        var d = data || "";
-
-        return $.ajax({
-            method: m,
-            url: u,
-            data: d,
-            contentType: 'application/json',
-            dataType: "json"
-        }).done(function (data, textStatus, jqXhr) {
-            $modalLoading.hide();
-            if (data.Status === 1) {
-                if (typeof (fnDoneCallback) != "undefined" || fnDoneCallback != null) {
-                    fnDoneCallback(data);
-                }
-            } else if (data.Status === 0) {
-                message.error("Error", data.CurrentException, "Aceptar", fnFailCallback);
-            }
-        }).fail(function (jqXhr, textStatus, errorThrow) {
-            $modalLoading.hide();
-            message.error("Error inesperado", errorThrow, "Aceptar", fnFailCallback);
-        }).always(function () {
-
-            if (typeof (fnAlwaysCallback) !== "undefined" && fnAlwaysCallback != null) {
-                fnAlwaysCallback();
-            }
-            if (!loading.isGlobal) {
-                ocultarLoading();
-            }
-        });
-    }
-
+    
     var $modalLoading;
     function mostrarLoading() {
         $modalLoading = $("#modalLoading");
@@ -811,7 +802,6 @@ var app = (function ($, win, doc) {
         loading: loading,
         obtenerMayorZIndex: obtenerMayorZIndex,
         llamarAjax: llamarAjax,
-        llamarAjaxNoLoading: llamarAjaxNoLoading,
         llenarTabla: llenarTabla,
         obtenerValorCeldaTabla: obtenerValorCeldaTabla,
         llenarCombo: llenarCombo,
@@ -822,7 +812,6 @@ var app = (function ($, win, doc) {
         obtenerFecha2: obtenerFecha2,
         obtenerObjetoFecha: obtenerObjetoFecha,
         obtenerFechaHora: obtenerFechaHora,
-        procesosActivos: cantidadLlamadas,
         validacionesGeneralesFormularios: validacionesGeneralesFormularios,
         llenarComboAjax: llenarComboAjax,
         buildParameters: buildParameters,
