@@ -156,6 +156,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.AcordionCollapsedGest = "collapsed";
             ViewBag.TabAcordionCollapsedGest = "collapse";
             ViewBag.VerGestionVenta = false;
+            ViewBag.VerGestionLogistica = false;
             VariableSesion.setObject(TAG_CDI, new List<CotizacionDetalleDTO>());
             ViewBag.PermitirTabDetCot = false;
             ViewBag.PermitirTabCalib = false;
@@ -184,9 +185,14 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     }
 
                     ViewBag.Btn_GuardarDespacho = "inline-block";
-                    ViewBag.Btn_EnviarGuia = "inline-block";
-                    ViewBag.Btn_GuiaPedido = "inline-block";
-                    ViewBag.Btn_GuiaBO = "inline-block";
+
+                    if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnProcVentas)
+                    {
+                        ViewBag.Btn_EnviarGuia = "inline-block";
+                        ViewBag.Btn_GuiaPedido = "inline-block";
+                        ViewBag.Btn_GuiaBO = "inline-block";
+                    }
+
                     ViewBag.TxtOrdenCompra = "";
                     ViewBag.TxtFecOrdenCompra = "";
                 }
@@ -239,7 +245,16 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.CotAprob || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnProcVentas || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.VentaProg || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Finalizado)
                 {
                     ViewBag.VerGestionVenta = true;
+
                 }
+
+                if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnProcVentas || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.VentaProg || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Finalizado)
+                {
+                    ViewBag.VerGestionLogistica = true;
+                }
+
+
+                
 
                 if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion)
                 {

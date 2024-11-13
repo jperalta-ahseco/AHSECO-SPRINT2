@@ -24,6 +24,9 @@
     var $btnActualizarDetalleServicio = $('#btnActualizarDetalleServicio');
     var $hdnIdDetalleServicio = $('#hdnIdDetalleServicio');
     var $btnCerrarDetalleServicio = $('#btnCerrarDetalleServicio');
+
+    var $navDetalle = $("#navDetalle");
+    var $tabsDetalle = $("#tabsDetalle");
    
     var $btnAbrirModalServicio = $("#btnAbrirModalServicio");
     var mensajes = {
@@ -45,8 +48,41 @@
         $btnActualizar.click(ActualizarServicio);
         $btnActualizarDetalleServicio.click(ActualizarDetalleServicio);
         $btnCerrarDetalleServicio.click(CerrarModalDetalleServicio);
+        $cmbTipoServicio.on("change", changeTipoServicio);
         cargarDatos();
     };
+
+    function changeTipoServicio() {
+        var tipo = $cmbTipoServicio.val();
+        if (tipo == "SERV06" || tipo == "SERV07") {
+            $navDetalle.show();
+            $tabsDetalle.show();
+        }
+        else {
+            $navDetalle.hide();
+            $tabsDetalle.hide();
+
+            $txtInstrumentos.val("");
+            $txtHerramientas.val("");
+            $txtHerramientasEspeciales.val("");
+            detalleServicios = [];
+            contadorDetalle = 0;
+
+            
+            $("tr[name='rowDetalle']").each(function (index, element) {
+                $("tr[name='rowDetalle']").remove();
+            });
+
+            if (detalleServicios.length == 0) {
+                var nuevoTr = '<tr id="rowDetalle" name="rowDetalle">' +
+                    '<td colspan=8><center>No existen registros</center></td>'
+                '</tr>';
+
+                $tblDetalleServicio.append(nuevoTr);
+            };
+            
+        }
+    }
     function CargarCombos() {
         method = "POST";
         url = "BandejaServicios/FiltroServicios"
@@ -338,7 +374,7 @@
 
         for (var i = 0; i < detalle.length; i++) {
             var indice = i + 1 
-            var nuevoTr = '<tr id="rowDetalle">' +
+            var nuevoTr = '<tr id="rowDetalle" name="rowDetalle">' +
                 '<td><center>' + indice + '</center></td>' +
                 '<td><center>' + detalle[i].DesMantenimiento + '</center></td>';
             if ($txtTipoIngreso.val() == "") {
@@ -354,7 +390,7 @@
         };
 
         if (detalleServicios.length == 0) {
-            var nuevoTr = '<tr id="rowDetalle">' +
+            var nuevoTr = '<tr id="rowDetalle" name="rowDetalle">' +
             '<td colspan=8><center>No existen registros</center></td>'
                 '</tr>';
 
