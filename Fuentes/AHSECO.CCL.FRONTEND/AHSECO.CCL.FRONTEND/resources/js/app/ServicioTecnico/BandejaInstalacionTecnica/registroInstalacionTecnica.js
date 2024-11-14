@@ -72,6 +72,28 @@
     var $modalAsignacion = $('#modalAsignacion');
     var $modalBusquedaTecnico = $('#modalBusquedaTecnico');
     var $modalZona = $('#modalZona');
+    var $modalDetalleInstalacion = $('#modalDetalleInstalacion');
+    var $modalElementosDeProducto = $('#modalElementosDeProducto');
+
+    /*ModalElementos de Producto */
+    var $tblElementosDeProducto = $('#tblElementosDeProducto');
+    
+
+    /**Modal Detalle Adicional de Instalación*/
+    var $tituloModal = $('#tituloModal');
+    var $titulo = $('#titulo');
+    var $formDetalleInstall = $('#formDetalleInstall');
+    var $txtCantPrev = $('#txtCantPrev');
+    var $cmbPeriodos = $('#cmbPeriodos');
+    var $txtGarantia = $('#txtGarantia');
+    var $txtGarantiaAdicional = $('#txtGarantiaAdicional');
+    var $txtUbigeDestinoc = $('#txtUbigeDestino');
+    var $hdnCodUbigeoDestino = $('#hdnCodUbigeoDestino');
+    var $txtDireccionInstall = $('#txtDireccionInstall');
+    var $txtNroPiso = $('#txtNroPiso');
+    var $txtDimensiones = $('#txtDimensiones');
+    var $txtMontoPrestAcc = $('#txtMontoPrestAcc');
+    var $txtMontoPrestPrin = $('#txtMontoPrestPrin');
 
     /*Modales Observacion*/
     var $NoExisteRegObs = $('#NoExisteRegObs');
@@ -81,7 +103,7 @@
     var $txtObservacion = $('#txtObservacion');
     var $grpAuditoriaObservacion = $('#grpAuditoriaObservacion');
     var $btnGuardarObservacionReq = $('#btnGuardarObservacionReq');
-
+    var $tbodyObservaciones = $('#tbodyObservaciones');
 
     /*Modal Adjuntos*/
     var $btnAgregarDocumento = $('#btnAgregarDocumento');
@@ -96,6 +118,7 @@
     var $fileCargaDocumentoSustento = $('#fileCargaDocumentoSustento');
     var $NoExisteRegDoc = $('#NoExisteRegDoc');
     var $tblDocumentosCargados = $('#tblDocumentosCargados');
+    var $tbodyDocAdjuntos = $('#tbodyDocAdjuntos');
 
     /*Modal Solicitud*/
     var $btnBuscarSolicitud = $('#btnBuscarSolicitud');
@@ -124,6 +147,8 @@
     var $txtApellidoMaternoTec = $('#txtApellidoMaternoTec');
     var $txtEmpresaTecnico = $('#txtEmpresaTecnico');
     var $divEmpresaTecnico = $('#divEmpresaTecnico');
+    var $btnRegistrarTecnicoExterno = $('#btnRegistrarTecnicoExterno');
+    var $btnAsignarTecnico = $('#btnAsignarTecnico');
 
 
     /*Modal Buscar Tecnicos*/
@@ -144,9 +169,10 @@
     let observaciones = [];
     let adjuntos = [];
     function Initializer() {
-        cargarTipoDoc();
         ObtenerFiltrosInstalacion();
+        cargarTipoDoc();
         ObtenerDepartamentos();
+        registroInstalacionTec.childProductos = [];
         registroInstalacionTec.requerimiento = [];
         registroInstalacionTec.contadorObservaciones = 0;
         $btnRegresar.click(btnRegresarClick);
@@ -174,69 +200,6 @@
         $dateSolicitud.val(hoy());
         $fileCargaDocumentoSustento.on("change", $fileCargaDocumentoSustento_change);
         CargarTipoDocumento(3); //Cambiar a tipo de proceso Instalación Técnica.
-        $('#tblMainProducts tbody').on('click', 'td #btnAñadirChild', function () {
-            var tr = $(this).closest('tr');
-            var row = $('#tblMainProducts').dataTable().api().row(tr);
-
-            if (row.child.isShown()) {
-                // Si la fila hija está visible, ocultarla
-                row.child.hide();
-                tr.removeClass('shown');
-            } else {
-                // Si no, mostrar la fila hija
-                if (row.data().Tecnicos.length == 0) {
-                    if ($tipoproceso.val() == "U") {
-                        row.child('<a class="btn btn-green btn-xs" title="Añadir" href="javascript:registroInstalacionTec.añadirTecnico(' + row.data().Id + ')"><i class="fa fa-plus" aria-hidden="true"></i> Asignar Técnico</a>&nbsp;').show();
-                    }
-                }
-                else if (row.data().Tecnicos.length > 0) {
-                    var producto = row.data();
-                    var childTableHtml = '<table class="table table-hover table-condensed table-striped table-bordered dataTable no-footer"><tbody>';
-                    childTableHtml += '<tr>' +
-                        '<th style="background-color:black;color:white;"><center></center>' +
-                        '<th hidden></th>' +
-                        '<th style="background-color:black;color:white;"><center>Tip.Documento</center></th>' +
-                        '<th style="background-color:black;color:white;"><center>N°Documento</center></th>' +
-                        '<th style="background-color:black;color:white;"><center>Nombre de Técnico</center></th>' +
-                        '<th style="background-color:black;color:white;"><center>Correo</center></th>' +
-                        '<th style="background-color:black;color:white;"><center>Teléfono</center></th>' +
-                        '<th style="background-color:black;color:white;"><center>Zona</center></th>' +
-                        '<th style="background-color:black;color:white;"><center>Tip.Empleado</center></th>' +
-                        '<th style="background-color:black;color:white;"><center><i class="fa fa-dot-circle-o" aria-hidden="true"></i></center></th>' +
-                        '</tr>';
-
-                    for (var i = 0; i < producto.Tecnicos.length; i++) {
-                        childTableHtml += "<tr>" +
-                            "<td style='width:3.4%;'><center><i class='fa fa-user-circle-o' aria-hidden='true'></i></center></td>";
-                        childTableHtml += "<td hidden ><center>" + producto.Tecnicos[i].Cod_Tecnico + "</center></td>";
-                        childTableHtml += "<td style='text-align:center;width:10%;'><center>" + producto.Tecnicos[i].Nom_TipDocumento + "</center></td>";
-                        childTableHtml += "<td style='text-align:center;width:10%;'><center>" + producto.Tecnicos[i].Documento + "</center></td>"
-                        childTableHtml += "<td style='text-align:center;width:10%;'><center>" + producto.Tecnicos[i].NombreTecnico.trim() + ' ' + producto.Tecnicos[i].ApellidoPaterno.trim() + ' ' + producto.Tecnicos[i].ApellidoMaterno.trim() + "</center></td>"
-                        childTableHtml += "<td style='text-align:center;width:10%;'><center>" + producto.Tecnicos[i].Correo + "</center></td>"
-                        childTableHtml += "<td style='text-align:center;width:10%;'><center>" + producto.Tecnicos[i].Telefono + "</center></td>"
-                        childTableHtml += "<td style='text-align:center;width:10%;'><center>" + producto.Tecnicos[i].Zona + "</center></td>"
-                        childTableHtml += "<td style='text-align:center;width:10%;'><center>" + producto.Tecnicos[i].TipoTecnico + "</center></td>"
-                        // Agregar la fila para el botón
-                        if ($tipoproceso.val() == "V") {
-                            childTableHtml += "";
-                        }
-                        else if ($tipoproceso.val() == "U") {
-                            childTableHtml += "<td style='text-align:center;width:10%;'><center><a style='color:red;' id='btnDesasignarTemp' class='btn btn-green btn-xs' title='Des-Asignar' href='javascript: registroInstalacionTec.DesasignarTécnicoTmp(" + producto.Tecnicos[i].Id + ")'><i class='fa fa-trash' aria-hidden='true'></i> Des-Asignar</a></center></td></tr>";
-                        }
-                    }
-                    if ($tipoproceso.val() == "U") {
-                        childTableHtml += '<tr><td colspan="10"><a class="btn btn-green btn-xs" title="Añadir" href="javascript:registroInstalacionTec.añadirTecnico(' + producto.Id + ')"><i class="fa fa-plus" aria-hidden="true"></i> Asignar Técnico</a></td></tr>';
-                    }
-                    childTableHtml += '</tbody></table>';
-
-                    // Aquí se usa row.child() para mostrar la tabla
-                    row.child(childTableHtml).show();
-                    // Esto asegurará que el padre se expanda para mostrar la tabla correctamente
-                    row.child().show();
-                }
-                tr.addClass('shown');
-            }
-        });
         $cmbTipoCredencial.on('change', function (e) {
             if (e.target.value === "GETD0001") {
                 $txtNumDocumento.attr("maxlength", '8');
@@ -345,6 +308,34 @@
         }
     };
 
+    function btnCheck() {
+        $(document).on('change', '#checkSeleccionar', function (e) {
+            if (this.checked) {
+                asignacionTerritorial.xasignar.push(this.value);
+            }
+            else {
+                asignacionTerritorial.xasignar = asignacionTerritorial.xasignar.filter(valor => valor != this.value);
+            }
+        });
+
+        $(document).on('change', '#checkSeleccionarTodos', function (e) {
+            if (this.checked) {
+                $checkSeleccionar.prop('checked', true);
+                $('input').filter('#checkSeleccionar').prop('checked', true);
+                var ids = document.querySelectorAll("input[name='checkSeleccionar']:checked");
+                var a = [];
+                for (var i = 0; i < ids.length; i++) {
+                    asignacionTerritorial.xasignar.push(ids[i].value);
+                }
+            }
+            else {
+                $('input').filter('#checkSeleccionar').prop('checked', false);
+                asignacionTerritorial.xasignar = []
+            }
+        });
+    }
+
+
     function obtenerDetalleInstalacion() {
         productos = [];
 
@@ -365,10 +356,22 @@
                     Marca: data.Result[i].Marca,
                     Modelo: data.Result[i].Modelo,
                     Serie: data.Result[i].Serie,
+                    IndFianza: data.Result[i].IndFianza, 
                     NumFianza: data.Result[i].NumFianza,
-                    CantidadPreventivo: data.Result[i].CantidadPreventivo,
-                    CodCicloPreventivo: data.Result[i].PeriodoPreventivo,
-                    GarantiaAdicional: data.Result[i].GarantiaAdic,
+                    CantPreventivo: data.Result[i].CantPreventivo,
+                    CodCicloPreventivo: data.Result[i].CodCicloPreventivo,
+                    GarantiaAdicional: data.Result[i].GarantiaAdicional,
+                    IndLLaveMano: data.Result[i].IndLLaveMano,
+                    IndRequierePlaca: data.Result[i].IndRequierePlaca,
+                    IndCalibracion: data.Result[i].IndCalibracion,
+                    CodUbigeoDestino: data.Result[i].CodUbigeoDestino,
+                    DescUbigeoDestino: data.Result[i].DescUbigeoDestino,
+                    Direccion: data.Result[i].Direccion,
+                    NroPiso: data.Result[i].NroPiso,
+                    Dimensiones: data.Result[i].Dimensiones,
+                    MontoPrestAcc: data.Result[i].MontoPrestAcc,
+                    MontoPrestPrin: data.Result[i].MontoPrestPrin,
+                    FecLimInsta: app.obtenerFecha(data.Result[i].FecLimInsta),
                     FechaProgramacion: data.Result[i].FechaProgramacion,
                     FechaInstalacion: data.Result[i].FechaInstalacion,
                     Tecnicos: data.Result[i].Tecnicos
@@ -434,7 +437,7 @@
                 TipoProceso: "I"
                 , Id: 0
                 , Id_Detalle: idProducto
-                , Cod_Tecnico: null
+                , Cod_Tecnico: data.Result.Codigo
                 , NombreTecnico: $txtNombreTecnico.val()
                 , ApellidoPaterno: $txtApellidoPaternoTec.val()
                 , ApellidoMaterno: $txtApellidoMaternoTec.val()
@@ -534,6 +537,14 @@
             return;
         };
 
+        var fechaHoy = hoy();
+
+        if ($dateSolicitud.val() < fechaHoy) {
+            app.message.error("Validación", "La fecha máxima no puede ser menor a la fecha de hoy");
+            return;
+        };
+
+
         var method = "POST";
         var url = "BandejaInstalacionTecnica/RegistroRequerimientoMain"
         var objGrupo = {
@@ -544,14 +555,15 @@
                 , RucEmpresa: $txtRuc.val()
                 , NomEmpresa: $txtNomEmpresa.val()
                 , Ubicacion: $txtUbigeo.val()
-                , NombreContacto: 'pendiente'
-                , TelefonoContacto: 'pendiente'
-                , CargoContacto: 'pendiente'
-                , Establecimiento: 'pendiente'
+                , NombreContacto: $txtNomContacto.val()
+                , TelefonoContacto: $txtTelefContacto.val()
+                , CargoContacto: $txtCargoContacto.val()
+                , Establecimiento: $txtEstablecimientoCont.val()
                 , TipoVenta: $cmbTipVenta.val()
                 , CodEmpresa: $hdnCodEmpresa.val()
                 , OrdenCompra: $txtOrdCompra.val()
-                , NumProceso: $txtProceso.val()
+                , NroProceso: $txtProceso.val()
+                , TipoProcesoVenta: $txtTipProceso.val()
                 , Contrato: $txtContrato.val()
                 , Fianza: $txtFianza.val()
                 , NumFianza: $txtFianza.val()
@@ -631,29 +643,46 @@
             $coltipProceso.css('display', 'none');
             $colContrato.css('display', 'none');
             $colOrdenCompra.css('display', 'none');
+            $rowDocsProc.css('display', 'none');
 
-
+            //$cmbDestino.val("00");
             cargarCabecera(data.Result.Solicitud)
 
             for (var i = 0; i < data.Result.DetalleCotizacion.length; i++) {
+                var elementos = data.Result.ElementosDeProducto.filter(elemento => elemento.Id_Detalle == data.Result.DetalleCotizacion[i].Id);
+
                     productos.push({
-                    Id: data.Result.DetalleCotizacion[i].Id,
-                    Cantidad: data.Result.DetalleCotizacion[i].Cantidad,
-                    CodProducto: data.Result.DetalleCotizacion[i].CodItem,
-                    DescProducto: data.Result.DetalleCotizacion[i].Descripcion,
-                    Marca: data.Result.DetalleCotizacion[i].Marca,
-                    Modelo: data.Result.DetalleCotizacion[i].Modelo,
-                    Serie: data.Result.DetalleCotizacion[i].Serie,
-                    NumFianza: data.Result.DetalleCotizacion[i].NumFianza,
-                    CantidadPreventivo: data.Result.DetalleCotizacion[i].CantidadPreventivo,
-                    CodCicloPreventivo: data.Result.DetalleCotizacion[i].CodCicloPreventivo,
-                    GarantiaAdicional: data.Result.DetalleCotizacion[i].GarantiaAdicional
+                        Id: data.Result.DetalleCotizacion[i].Id,
+                        Cantidad: data.Result.DetalleCotizacion[i].Cantidad,
+                        CodProducto: data.Result.DetalleCotizacion[i].CodItem,
+                        DescProducto: data.Result.DetalleCotizacion[i].Descripcion,
+                        Marca: data.Result.DetalleCotizacion[i].Marca,
+                        Modelo: data.Result.DetalleCotizacion[i].Modelo,
+                        Serie: data.Result.DetalleCotizacion[i].Serie,
+                        IndFianza: data.Result.DetalleCotizacion[i].CotizacionDespacho.IndFianza,
+                        NumFianza: data.Result.DetalleCotizacion[i].CotizacionDespacho.NumFianza,
+                        CantPreventivo: data.Result.DetalleCotizacion[i].CotizacionDespacho.CantPreventivo,
+                        CodCicloPreventivo: data.Result.DetalleCotizacion[i].CotizacionDespacho.CodCicloPreventivo,
+                        GarantiaAdicional: data.Result.DetalleCotizacion[i].CotizacionDespacho.GarantiaAdicional,
+                        IndLLaveMano: data.Result.DetalleCotizacion[i].CotizacionDespacho.IndLLaveMano,
+                        IndRequierePlaca: data.Result.DetalleCotizacion[i].CotizacionDespacho.IndRequierePlaca,
+                        IndCalibracion: data.Result.DetalleCotizacion[i].CotizacionDespacho.IndCalibracion,
+                        CodUbigeoDestino: data.Result.DetalleCotizacion[i].CotizacionDespacho.CodUbigeoDestino,
+                        DescUbigeoDestino: data.Result.DetalleCotizacion[i].CotizacionDespacho.DescUbigeoDestino,
+                        Direccion: data.Result.DetalleCotizacion[i].CotizacionDespacho.Direccion,
+                        NroPiso: data.Result.DetalleCotizacion[i].CotizacionDespacho.NroPiso,
+                        Dimensiones: data.Result.DetalleCotizacion[i].CotizacionDespacho.Dimensiones,
+                        MontoPrestAcc: data.Result.DetalleCotizacion[i].CotizacionDespacho.MontoPrestAcc,
+                        MontoPrestPrin: data.Result.DetalleCotizacion[i].CotizacionDespacho.MontoPrestPrin,
+                        FecLimInsta: app.obtenerFecha(data.Result.DetalleCotizacion[i].CotizacionDespacho.FecLimInsta),
+                        Elementos : elementos
                 })
             };
             cargarBandejaProductos(productos);
             $modalSolicitud.modal('toggle');
             $cmbDestino.prop('disabled', false);
             $dateSolicitud.prop('disabled', false);
+            cargarBtnInfoAdicional();
         };
 
         var fnFailCallBack = function () {
@@ -663,66 +692,77 @@
         app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null)
     };
 
+    function limpiarCabecera() {
+        $hdnCodEmpresa.val("");
+        $txtSolVenta.val("");
+        $txtEmpresa.val("");
+        $cmbTipVenta.val("").trigger('change.select2');
+        $txtNomContacto.val("");
+        $txtCargoContacto.val("");
+        $txtTelefContacto.val("");
+        $txtEstablecimientoCont.val("");
+        $txtRuc.val("");
+        $txtNomEmpresa.val("");
+        $txtUbigeo.val("");
+        $txtAsesor.val("");
+        $txtProceso.val("");
+        $txtTipProceso.val("");
+        $cmbDestino.val("").trigger("change.select2");
+    }
     function cargarCabecera(requerimiento) {
+        limpiarCabecera()
+
         if (requerimiento.NroProceso != "" && requerimiento.NroProceso != null) {
+            $rowDocsProc.css('display', 'block');
             $colProceso.css('display', 'block');
         };
 
         if (requerimiento.TipoProceso != "" && requerimiento.TipoProceso != null) {
+            $rowDocsProc.css('display', 'block');
             $coltipProceso.css('display', 'block');
         }
 
         if (requerimiento.Contrato != "" && requerimiento.Contrato != null) {
+            $rowDocsProc.css('display', 'block');
             $colContrato.css('display', 'block');
         };
 
         if (requerimiento.OrdenCompra != "" && requerimiento.OrdenCompra != null) {
+            $rowDocsProc.css('display', 'block');
             $colOrdenCompra.css('display', 'block');
         };
 
-        if ($tipoproceso.val() == "") {
             var numSolFormateado = ("000000" + requerimiento.Id_Solicitud.toString());
 
             numSolFormateado = numSolFormateado.substring((numSolFormateado.length) - 6, numSolFormateado.length);
             $hdnCodEmpresa.val(requerimiento.Cod_Empresa);
             $txtSolVenta.val(numSolFormateado.toString()); 
-            $txtEmpresa.val(requerimiento.Nom_Empresa);
-            $cmbTipVenta.val(requerimiento.TipoVenta).trigger('change.select2');
             $txtNomContacto.val(requerimiento.NombreContacto);
             $txtCargoContacto.val(requerimiento.CargoContacto);
             $txtTelefContacto.val(requerimiento.TelefonoContacto);
             $txtEstablecimientoCont.val(requerimiento.Establecimiento);
+            $cmbTipVenta.val(requerimiento.TipoVenta).trigger('change.select2');
+        if ($tipoproceso.val() == "") {
             $txtRuc.val(requerimiento.RUC);
             $txtNomEmpresa.val(requerimiento.RazonSocial);
+            $txtEmpresa.val(requerimiento.Nom_Empresa);
             $txtUbigeo.val(requerimiento.Ubigeo);
             $txtAsesor.val(requerimiento.AsesorVenta);
-            $txtProceso.val(requerimiento.NroProceso);
-            $txtTipProceso.val(requerimiento.TipoProceso);
-        }
-        else if ($tipoproceso.val() == "U") {
-            var numSolFormateado = ("000000" + requerimiento.Id_Solicitud.toString());
-            destinos_select = requerimiento.Destino.split(',');
-
-            numSolFormateado = numSolFormateado.substring((numSolFormateado.length) - 6, numSolFormateado.length);
-
-            $hdnCodEmpresa.val(requerimiento.Cod_Empresa);
-            $txtSolVenta.val(numSolFormateado);
-            $txtEmpresa.val(requerimiento.CodEmpresa);
-            $cmbTipVenta.val(requerimiento.TipoVenta).trigger('change.select2');
-            $txtNomContacto.val(requerimiento.NombreContacto);
-            $txtCargoContacto.val(requerimiento.CargoContacto);
-            $txtTelefContacto.val(requerimiento.TelefonoContacto);
-            $txtEstablecimientoCont.val(requerimiento.Establecimiento);
-            //$hdnCodTipVenta.val(requerimiento.TipoVenta);
+        } else if ($tipoproceso.val() != "") {
             $txtRuc.val(requerimiento.RucEmpresa);
             $txtNomEmpresa.val(requerimiento.NomEmpresa);
+            $txtEmpresa.val(requerimiento.CodEmpresa);
+            destinos_select = requerimiento.Destino.split(',');
             $txtUbigeo.val(requerimiento.Ubicacion);
             $txtAsesor.val(requerimiento.Vendedor);
-            $dateSolicitud.val(requerimiento.FechaMax);
+            $dateSolicitud.val(app.obtenerFecha(requerimiento.FechaMax));
             $spanEstadoSol.text(requerimiento.Estado);
             $searchSolVenta.css('pointer-events', 'none');
             $cmbDestino.val(destinos_select).trigger("change.select2");
-        };
+        }
+
+            $txtProceso.val(requerimiento.NroProceso);
+            $txtTipProceso.val(requerimiento.TipoProceso);
     };
 
     function ObtenerDepartamentos() {
@@ -783,208 +823,102 @@
         });
     };
 
-    function cargarBandejaProductos(listProductos) {
+    function cargarBandejaProductos(arrayProductos) {
         $NoExisteProductos.remove();
         var data = {}
         data.Result = [];
-        data.Result = listProductos;
+        data.Result = arrayProductos;
 
-        if ($tipoproceso.val() == "") {
-            var columns = [
-                {
-                    data: "Id",
-                    render: function (data, type, row) {
-                        return '<center>' + data + '</center>'
-                    }
-                },
-                {
-                    data: "DescProducto",
-                    render: function (data, type, row) {
-                        return '<center>' + data + '</center>'
-                    }
-                },
-                {
-                    data: "Marca",
-                    render: function (data, type, row) {
-                        return '<center>' + data + '</center>'
-                    }
-                },
-                {
-                    data: "Modelo",
-                    render: function (data, type, row) {
-                        return '<center>' + data + '</center>'
-                    }
-                },
-                {
-                    data: "Serie",
-                    render: function (data, type, row) {
-                        return '<center>' + data + '</center>'
-                    }
-                },
-                {
-                    data: "Cantidad",
-                    render: function (data, type, row) {
-                        return '<center>' + data + '</center>'
-                    }
-                },
-                {
-                    data: "CantidadPreventivo",
-                    render: function (data, type, row) {
-                        return '<center>' + data + '</center>'
-                    }
-                },
-                {
-                    data: "CodCicloPreventivo",
-                    render: function (data, type, row) {
-                        return '<center>' + data + '</center>'
-                    }
-                },
-                {
-                    data: "GarantiaAdicional",
-                    render: function (data, type, row) {
-                        return '<center>' + data + '</center>'
-                    }
-                },
-                {
-                    data: "NumFianza",
-                    render: function (data, type, row) {
-                        return '<center>' + data + '</center>'
-                    }
+        var columns = [
+            {
+                data: "Id",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
                 }
-            ];
-        }
-        else {
-            var columns = [
-                {
-                    data: "Id",
-                    render: function (data, type, row) {
-                        return '<a id="btnAñadirChild" title="Asignar Técnicos" class="btn btn-green btn-xs" href="javascript: registroInstalacionTec.detalleHijo(' + data + ')"><i class="fa fa-sitemap" aria-hidden="true" hre style="color:red;"></i></a>';
-                    }
-                },
-                {
-                    data: "Id",
-                    render: function (data, type, row) {
-                        return '<center>' + data + '</center>'
-                    }
-                },
-                {
-                    data: "DescProducto",
-                    render: function (data, type, row) {
-                        return '<center>' + data + '</center>'
-                    }
-                },
-                {
-                    data: "Marca",
-                    render: function (data, type, row) {
-                        return '<center>' + data + '</center>'
-                    }
-                },
-                {
-                    data: "Modelo",
-                    render: function (data, type, row) {
-                        return '<center>' + data + '</center>'
-                    }
-                },
-                {
-                    data: "Serie",
-                    render: function (data, type, row) {
-                        return '<center>' + data + '</center>'
-                    }
-                },
-                {
-                    data: "Cantidad",
-                    render: function (data, type, row) {
-                        return '<center>' + data + '</center>'
-                    }
-                },
-                {
-                    data: "CantidadPrev",
-                    render: function (data, type, row) {
-                        return '<center>' + data + '</center>'
-                    }
-                },
-                {
-                    data: "CodCicloPreventivo",
-                    render: function (data, type, row) {
-                        return '<center>' + data + '</center>'
-                    }
-                },
-                {
-                    data: "GarantiaAdicional",
-                    render: function (data, type, row) {
-                        return '<center>' + data + '</center>'
-                    }
-                },
-                {
-                    data: "NumFianza",
-                    render: function (data, type, row) {
-                        return '<center>' + data + '</center>'
-                    }
-                },
-                {
-                    data: "FechaProgramacion",
-                    render: function (data, type, row) {
-                        var html = '';
-                        html += '<div class="form-group">' +
-                                    '<div class="input-group input-group-sm date">' +
-                            '<input disabled type="date" class="form-control input-sm" id="dateFechaProgramacion' + row.Id + '" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" value="' + row.FechaProgramacion + '">';
-                        if ($tipoproceso.val() == "U") {
-                            html += '<a style="cursor:pointer;background-color: #096bff;color: white;" class="input-group-addon input-sm" id="activeFechaProgramacion' + row.Id + '" title="Ingresar Fecha Programación" href="javascript:registroInstalacionTec.activarFechaProgramacion(' + row.Id + ')">' +
-                                        '<i class="fa fa-pencil" aria-hidden="true"></i>' +
-                                    '</a>';
-                            html += '<a disabled style="pointer-events:none; background-color: gray;color: white;" class="input-group-addon input-sm" id="cancelFechaProgramacion' + row.Id + '" href="javascript:registroInstalacionTec.desactivarFechaProgramacion(' + row.Id + ')"" >' +
-                                        '<i class="fa fa-times" aria-hidden="true"></i>' +
-                                    '</a>';
-                        }
-                        else if ($tipoproceso.val() == "V") {
-                            html += '<a style="cursor:pointer; pointer-events:none ;background-color: gray;color: black;" class="input-group-addon input-sm" id="activeFechaProgramacion' + row.Id + '" >' +
-                                        '<i class="fa fa-pencil" aria-hidden="true"></i>' +
-                                    '</a>';
-                            html += '<a disabled style="pointer-events:none; background-color: gray;color: black;" class="input-group-addon input-sm" id="cancelFechaProgramacion' + row.Id + '" >' +
-                                        '<i class="fa fa-times" aria-hidden="true"></i>' +
-                                    '</a>';
-                        }
-                        html += '</div>';
-                        html += '</div>';
-                        return '<center>' + html + '</cemter>';
-                    }
-                },
-                {
-                    data: "FechaInstalacion",
-                    render: function (data, type, row) {
-                        var html = "";
-                        html += '<div class="form-group">' +
-                                    '<div class="input-group input-group-sm date">' +
-                            '<input disabled type="date" class="form-control input-sm" id="dateFechaInstalacion' + row.Id + '" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" value="' + row.FechaInstalacion + '">';
-
-                        if ($tipoproceso.val() == "U") {
-                            html += '<a style="cursor:pointer;background-color: #096bff;color: white;" class="input-group-addon input-sm" id="activeFechaInstalacion' + row.Id + '" title="Ingresar Fecha Instalación" href="javascript:registroInstalacionTec.activarFechaInstalacion(' + row.Id + ')">' +
-                                        '<i class="fa fa-pencil" aria-hidden="true"></i>' +
-                                    '</a>';
-                            html += '<a disabled style="pointer-events:none; background-color: gray;color: white;" class="input-group-addon input-sm" id="cancelEditInstalacion' + row.Id + '" href="javascript:registroInstalacionTec.desactivarFechaInstalacion(' + row.Id + ')"" >' +
-                                        '<i class="fa fa-times" aria-hidden="true"></i>' +
-                                    '</a>';
-                        }
-                        else if ($tipoproceso.val() == "V") {
-                            html += '<a style="cursor:pointer; pointer-events:none ;background-color: gray;color: black;" class="input-group-addon input-sm" id="activeFechaInstalacion' + row.Id + '" >' +
-                                        '<i class="fa fa-pencil" aria-hidden="true"></i>' +
-                                    '</a>';
-                            html += '<a disabled style="pointer-events:none; background-color: gray;color: black;" class="input-group-addon input-sm" id="cancelEditInstalacion' + row.Id + '" >' +
-                                        '<i class="fa fa-times" aria-hidden="true"></i>' +
-                                    '</a>';
-                        };
-                        html += '</div>';
-                        html += '</div>';
-                        return '<center>' + html + '</center>';
-                    }
+            },
+            {
+                data: "DescProducto",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
                 }
-            ];
-        }
+            },
+            {
+                data: "Marca",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "Modelo",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "Cantidad",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "IndCalibracion",
+                render: function (data, type, row) {
+                    var rpta = ""
+                    if (data == true) {
+                        rpta = "Sí";
+                    }
+                    else if (rpta == false) {
+                        rpta = "No";
+                    }
+                    return '<center>' + rpta + '</center>'
+                }
+            },
+            {
+                data: "IndLLaveMano",
+                render: function (data, type, row) {
+                    var rpta = ""
+                    if (data == true) {
+                        rpta = "Sí";
+                    }
+                    else if (rpta == false) {
+                        rpta = "No";
+                    }
+                    return '<center>' + rpta + '</center>'
+                }
+            },
+            {
+                data: "IndRequierePlaca",
+                render: function (data, type, row) {
+                    var rpta = ""
+                    if (data == true) {
+                        rpta = "Sí";
+                    }
+                    else if (rpta == false) {
+                        rpta = "No";
+                    }
+                    return '<center>' + rpta + '</center>'
+                }
+            },
+            {
+                data: "NumFianza",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "Id",
+                render: function (data, type, row) {
+                    var verElementosDeProducto = '<a id="btnVerElementos" class="btn btn-primary btn-xs" title="Ver Elementos" href="javascript: registroInstalacionTec.VerElementosdeProducto(' + data + ')"><i class="fa fa-cubes" aria-hidden="true"></i></a>';
+                    var detalleAdic = '<a id="btnInfoDetail" class="btn btn-primary btn-xs" title="Información Adicional" ><i class="fa fa-file-text" aria-hidden="true"></i></a>'
+                    return '<center>' + verElementosDeProducto + ' ' +detalleAdic +'</center>'
+                }
+            }
+        ];
 
         var columnDefs = [
             {
                 targets: [0],
-                visible: true
+                visible: false
             }
         ];
         app.llenarTabla($tblMainProducts, data, columns, columnDefs, "#tblMainProducts");
@@ -1141,7 +1075,7 @@
             Modelo:"",
             Serie:"",
             NumFianza:"", 
-            CantidadPreventivo:0,
+            CantPreventivo:0,
             CodCicloPreventivo:"",
             GarantiaAdicional:"",
             FechaProgramacion: fechaProgramacion,
@@ -1162,7 +1096,7 @@
 
             app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
         };
-        return app.message.confirm("Confirmación", "¿Desea realizar establecer la fecha seleccionada como: 'Fecha de Programación'?", "Sí","No",fnSi,null);
+        return app.message.confirm("Confirmación", "¿Desea establecer la fecha seleccionada como: 'Fecha de Programación' ?", "Sí","No",fnSi,null);
     }
 
     function guardarFechaInstalacion(id) {
@@ -1184,13 +1118,17 @@
         };
 
         if ($('#dateFechaInstalacion' + id).val() == "" || $('#dateFechaInstalacion' + id).val() == null) {
-            app.message.error("Validación", "Debe de ingresar una fecha de instalación");
+            app.message.error("Validación", "Para registrar la Fecha de Instalación, debe de estar registrada la Fecha de Programación");
             return;
         };
 
         if ($('#dateFechaInstalacion' + id).val() < $('#dateFechaProgramacion' + id).val()) {
             app.message.error("Validación", "La Fecha de Instalación no puede ser menor a la Fecha de Programación");
             return
+        };
+
+        if ($('#dateFechaProgramacion' + id).val() == "" || $('#dateFechaProgramacion' + id).val() == null) {
+            app.message.error("","")
         };
 
         var idDetalle = id;
@@ -1209,7 +1147,7 @@
             Modelo: "",
             Serie: "",
             NumFianza: "",
-            CantidadPreventivo: 0,
+            CantPreventivo: 0,
             CodCicloPreventivo: "",
             GarantiaAdicional: "",
             FechaProgramacion: fechaProgramacion,
@@ -1230,7 +1168,7 @@
 
             app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
         };
-        return app.message.confirm("Confirmación", "¿Desea realizar establecer la fecha seleccionada como: 'Fecha de Instalación'?", "Sí", "No", fnSi, null);
+        return app.message.confirm("Confirmación", "¿Desea establecer la fecha seleccionada como: 'Fecha de Instalación'?", "Sí", "No", fnSi, null);
     }
     function AgregarTecnicoExterno() {
         $divEmpresaTecnico.css('display', 'block');
@@ -1304,7 +1242,10 @@
             var filters2 = {};
             filters2.placeholder = "--Seleccionar--";
             filters2.allowClear = false;
-            app.llenarComboMultiResult($cmbTipVenta, data.Result.TipVenta, null, "", "--Seleccionar--",filters2);
+            app.llenarComboMultiResult($cmbTipVenta, data.Result.TipVenta, null, "", "--Seleccionar--", filters2);
+
+            app.llenarComboMultiResult($cmbPeriodos, data.Result.Periodos, null, 0, "--Seleccionar--", filters2);
+
         };
 
         var fnFailCallBack = function () {
@@ -1342,7 +1283,7 @@
         var btnCancelar = document.getElementById("btnCancelarReq");
 
         $cmbDestino.val(destinos_select).trigger("change.select2");
-        $dateSolicitud.val(registroInstalacionTec.requerimiento.FechaMax);
+        $dateSolicitud.val(app.obtenerFecha(registroInstalacionTec.requerimiento.FechaMax));
 
         $cmbDestino.prop("disabled", true);
         $dateSolicitud.prop("disabled", true);
@@ -1496,6 +1437,10 @@
 
     function eliminarDocTemp(cont) {
 
+        var fnSi = function () {
+
+        }
+        return app.message.confirm("Confirmación", "¿Está seguro(a) que desea eliminar el documento adjunto?", "Sí", "No", fnSi, null);
         adjuntos.forEach(function (currentValue, index, arr) {
             if (adjuntos[index].Id == cont) {
                 adjuntos.splice(index, 1);
@@ -1705,7 +1650,7 @@
                 }
             },
             {
-                data: "nomFlujo",
+                data: "NombreTipoVenta",
                 render: function (data, type, row) {
                     return '<center>' + data + '</center>';
                 }
@@ -1778,27 +1723,40 @@
                     productos.push({
                         Id: data.Result.DetalleInstalacion[i].Id,
                         Cantidad: data.Result.DetalleInstalacion[i].Cantidad,
-                        CodProducto: data.Result.DetalleInstalacion[i].CodProducto,
+                        CodProducto: data.Result.DetalleInstalacion[i].CodItem,
                         DescProducto: data.Result.DetalleInstalacion[i].DescProducto,
                         Marca: data.Result.DetalleInstalacion[i].Marca,
                         Modelo: data.Result.DetalleInstalacion[i].Modelo,
                         Serie: data.Result.DetalleInstalacion[i].Serie,
+                        IndFianza: data.Result.DetalleInstalacion[i].IndFianza,
                         NumFianza: data.Result.DetalleInstalacion[i].NumFianza,
-                        CantidadPreventivo: data.Result.DetalleInstalacion[i].CantidadPreventivo,
+                        CantPreventivo: data.Result.DetalleInstalacion[i].CantPreventivo,
                         CodCicloPreventivo: data.Result.DetalleInstalacion[i].CodCicloPreventivo,
-                        GarantiaAdicional: data.Result.DetalleInstalacion[i].GarantiaAdic,
+                        GarantiaAdicional: data.Result.DetalleInstalacion[i].GarantiaAdicional,
+                        IndLLaveMano: data.Result.DetalleInstalacion[i].IndLLaveMano,
+                        IndRequierePlaca: data.Result.DetalleInstalacion[i].IndRequierePlaca,
+                        IndCalibracion: data.Result.DetalleInstalacion[i].IndCalibracion,
+                        CodUbigeoDestino: data.Result.DetalleInstalacion[i].CodUbigeoDestino,
+                        DescUbigeoDestino: data.Result.DetalleInstalacion[i].DescUbigeoDestino,
+                        Direccion: data.Result.DetalleInstalacion[i].Direccion,
+                        NroPiso: data.Result.DetalleInstalacion[i].NroPiso,
+                        Dimensiones: data.Result.DetalleInstalacion[i].Dimensiones,
+                        MontoPrestAcc: data.Result.DetalleInstalacion[i].MontoPrestAcc,
+                        MontoPrestPrin: data.Result.DetalleInstalacion[i].MontoPrestPrin,
                         FechaProgramacion: data.Result.DetalleInstalacion[i].FechaProgramacion,
                         FechaInstalacion: data.Result.DetalleInstalacion[i].FechaInstalacion,
+                        FecLimInsta: app.obtenerFecha(data.Result.DetalleInstalacion[i].FecLimInsta),
                         Tecnicos: data.Result.DetalleInstalacion[i].Tecnicos
+
                     })
                 };
 
 
                 cargarBandejaProductos(productos);
-                $tblObservaciones.empty();
                 registroInstalacionTec.contadorObservaciones = data.Result.Observaciones.length;
                 observaciones = data.Result.Observaciones;
                 if (registroInstalacionTec.contadorObservaciones > 0) {
+                    $tbodyObservaciones.empty();
                     for (var i = 0; i < data.Result.Observaciones.length; i++) {
                         var nuevoTr = "<tr id='row" + data.Result.Observaciones[i].Id + "'>" +
                             "<th style='text-align: center;'>" + data.Result.Observaciones[i].Nombre_Usuario + "</th>" +
@@ -1811,12 +1769,12 @@
                     }
                     $NoExisteRegObs.hide();
                 }
-
-                $tblDocumentosCargados.empty()
+                cargarBtnInfoAdicional();
                 var docs = data.Result.Adjuntos.length;
                 adjuntos = data.Result.Adjuntos;
                 $contadordoc.val(docs);
                 if (docs > 0) {
+                    $tbodyDocAdjuntos.empty()
                     for (i = 0; i < data.Result.Adjuntos.length; i++) {
                         var html = '<div class="text-center">';
                         //var d = "'" + data.Result.Adjuntos[i].CodigoDocumento + "','" + data.Result.Adjuntos[i].RutaDocumento + "'";
@@ -1845,29 +1803,6 @@
             app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
         }
     };
-
-    function detalleHijo(id) {
-        var Codigo = id;
-        var tr = $(this).closest('tr');
-        var row = $('#tblMainProducts').dataTable().api().row(tr);
-
-
-
-        if (row.child.isShown()) {
-            // Si la fila hija está visible, ocultarla
-            row.child.hide();
-            tr.removeClass('shown');
-        } else {
-            // Si no, mostrar la fila hija
-            row.child(format(Codigo)).show();
-            //row.child(format(2)).show();
-            tr.addClass('shown');
-        }
-        function format(data) {
-            return '<a class="btn btn-default btn-xs" title="Añadir" href="javascript:registroInstalacionTec.añadirTecnico(' + data + ')"><i class="fa fa-plus" aria-hidden="true"></i> Asignar Técnico</a>&nbsp;';
-        };
-    }
-
     function limpiarAsignacionTecnicos() {
         $txtNombreTecnico.val("");
         $txtApellidoPaternoTec.val("");
@@ -1894,7 +1829,6 @@
         $modalAsignacion.modal('toggle');
         $hdnIdProduct.val(codigo);
     };
-
     function BuscarTecnicos() {
         var method = "POST";
         var url = "BandejaInstalacionTecnica/ObtenerTecnico"
@@ -1926,7 +1860,6 @@
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
     }
-
     function cargarBandejaTecnicos(data) {
         var columns = [
             {
@@ -2065,8 +1998,9 @@
 
         var fnSi = function () {
 
-            var fnDoneCallBack = function () {
+            var fnDoneCallBack = function (data) {
                 app.message.success("Éxito", "Se realizó la des-asignación con éxito.");
+                $hdnIdTecnico.val(data.Result.Codigo);
                 obtenerDetalleInstalacion();
             };
 
@@ -2123,7 +2057,6 @@
         }
 
     }
-
     function EditarRequerimiento() {
         var btnEditr = document.getElementById("btnEditarReq");
         var btnRegresar = document.getElementById("btnRegresar");
@@ -2190,7 +2123,7 @@
             Destino: destinos_select.toString(),
             Estado: $estadoReq.val(),
             OrdenCompra:$txtOrdCompra.val(),
-            NumProceso: $txtProceso.val(),
+            NroProceso: $txtProceso.val(),
             Contrato: $txtContrato.val()
         };
 
@@ -2222,6 +2155,46 @@
             app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
         };
         return app.message.confirm("Confirmación", "¿Desea grabar los cambios realizados en el requerimiento?", "Sí", "No", fnSi, null);
+    }
+
+    function cargarBtnInfoAdicional() {
+        $('#tblMainProducts tbody').on('click', 'td #btnInfoDetail', function () {
+
+            limpiarDetalleInfoAdcional()
+
+            var tr = $(this).closest('tr');
+            var row = $('#tblMainProducts').dataTable().api().row(tr);
+            var info = row.data();
+
+            $modalDetalleInstalacion.modal('toggle');
+
+            cargarDetalleInfoAdicional(info);
+        });
+    }
+    function cargarDetalleInfoAdicional(data) {
+        $txtCantPrev.val(data.CantPreventivo);
+        $cmbPeriodos.val(data.CodCicloPreventivo).trigger('change.select2');
+        $txtGarantiaAdicional.val(data.GarantiaAdicional);
+        $txtUbigeDestinoc.val(data.DescUbigeoDestino);
+        $hdnCodUbigeoDestino.val(data.CodUbigeoDestino);
+        $txtDireccionInstall.val(data.Direccion);
+        $txtNroPiso.val(data.NroPiso);
+        $txtDimensiones.val(data.Dimensiones);
+        $txtMontoPrestAcc.val(data.MontoPrestAcc);
+        $txtMontoPrestPrin.val(data.MontoPrestPrin);
+    };
+
+    function limpiarDetalleInfoAdcional() {
+        $txtCantPrev.val("");
+        $cmbPeriodos.val(0).trigger('change.select2');
+        $txtGarantiaAdicional.val("");
+        $txtUbigeDestinoc.val("");
+        $hdnCodUbigeoDestino.val("");
+        $txtDireccionInstall.val("");
+        $txtNroPiso.val("");
+        $txtDimensiones.val("");
+        $txtMontoPrestAcc.val("");
+        $txtMontoPrestPrin.val("");
     }
 
     function cambiarEstadoProceso() {
@@ -2262,7 +2235,7 @@
                 Destino: destinos_select.toString(),
                 Estado: "STEPI",
                 OrdenCompra: $txtOrdCompra.val(),
-                NumProceso: $txtProceso.val(),
+                NroProceso: $txtProceso.val(),
                 Contrato: $txtContrato.val()
             };
 
@@ -2282,6 +2255,140 @@
             }
             return app.message.confirm("Confirmación", "¿Desea realizar el cambio de estado a: En proceso de Instalación. ?", "Si", "No", fnSi, null);
         };
+    };
+
+    function VerElementosdeProducto(codigo) {
+        $modalElementosDeProducto.modal('toggle');
+        var elementos = [];
+        if ($numeroReq.val() == "") {
+            var detalle = productos.filter(producto => producto.Id == codigo)
+            elementos = detalle[0].Elementos;
+            return
+        }
+        else if ($numeroReq.val() != "") {
+            btnCheck();
+            $modalElementosDeProducto.modal('toggle');
+            $hdnIdProduct.val(codigo);
+            var method = "POST";
+            var url = "BandejaInstalacionTecnica/ObtenerElementosdeProducto";
+            var objElemento = {
+                IdProducto: codigo
+            };
+
+            var objParam = JSON.stringify(objElemento);
+
+            var fnDoneCallBack = function (data) {
+                elementos = data.Result;
+            };
+
+            var fnFailCallBack = function () {
+                app.message.error("Validación", "Se presentó un error al generar los elementos del producto seleccionado, por favor revisar.");
+                return;
+            };
+
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+        }
+
+        cargarTablaElementosdDeProducto(elementos);
+    };
+
+    function cargarTablaElementosdDeProducto(listProductos) {
+        var data = {}
+        data.Result = [];
+        data.Result = listProductos;
+
+        if ($tipoproceso.val() == "") {
+            var columns = [
+                {
+                    data: "Cliente.ID",
+                    render: function (data, type, row) {
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "",
+                    render: function (data, type, row) {
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "Cliente.RUC",
+                    render: function (data, type, row) {
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "Cliente.NomEmpresa",
+                    render: function (data, type, row) {
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "Empleado.NombresCompletosEmpleado",
+                    render: function (data, type, row) {
+                        return '<center>' + data + '</center>';
+                    }
+                }
+            ];
+        }
+        else if ($tipoproceso.val() == "U") {
+            var columns = [
+                {
+                    data: "Cliente.ID",
+                    render: function (data, type, row) {
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: {
+                        cliente: "Cliente.ID",
+                        estado: "Cliente.Estado"
+                    },
+                    render: function (data, type, row) {
+                        if (data.Cliente.Estado == true) {
+                            var seleccionar = '<input class="form-check-input cheks" name="checkSeleccionar" type="checkbox" value="' + data.Cliente.ID + '" id="checkSeleccionar">';
+                        }
+                        else {
+                            var seleccionar = '<input disabled class="form-check-input cheks" name="" type="checkbox" title="inactivo">';
+                        }
+                        return '<center>' + seleccionar + '</center>';
+
+                    }
+                },
+                {
+                    data: "Cliente.RUC",
+                    render: function (data, type, row) {
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "Cliente.NomEmpresa",
+                    render: function (data, type, row) {
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "Empleado.NombresCompletosEmpleado",
+                    render: function (data, type, row) {
+                        if (data != "") {
+                            return '<center>' + data + '</center>';
+                        }
+                        else {
+                            return '<center>' + "Sin asignar" + '</center>';
+                        }
+                    }
+                }
+            ];
+        }
+
+        
+        var columnsDefs = [
+            {
+                targets: [0],
+                visible: false
+            }
+        ];
+        app.llenarTabla($tblElementosDeProducto, data, columns, columnsDefs, "#tblElementosDeProducto")
     };
     function CerrarRequerimiento() {
         var validador = 0;
@@ -2327,7 +2434,7 @@
                 Destino: destinos_select.toString(),
                 Estado: "STINS",
                 OrdenCompra: $txtOrdCompra.val(),
-                NumProceso: $txtProceso.val(),
+                NroProceso: $txtProceso.val(),
                 Contrato: $txtContrato.val()
             };
 
@@ -2350,21 +2457,18 @@
     }
 
     return {
-        //visualizar: visualizar,
         eliminarObsTmp: eliminarObsTmp,
         eliminarDocTemp: eliminarDocTemp,
         eliminarDocumento: eliminarDocumento,
         download: download,
+        VerElementosdeProducto: VerElementosdeProducto,
         seleccionarSolicitud: seleccionarSolicitud,
         seleccionarTecnico: seleccionarTecnico,
-        //asignarTecnico: asignarTecnico,
         activarFechaProgramacion: activarFechaProgramacion,
         desactivarFechaProgramacion: desactivarFechaProgramacion,
         activarFechaInstalacion: activarFechaInstalacion,
         desactivarFechaInstalacion: desactivarFechaInstalacion,
-        detalleHijo: detalleHijo,
         añadirTecnico: añadirTecnico,
         DesasignarTécnicoTmp: DesasignarTécnicoTmp
-
     }
 })(window.jQuery, window, document);

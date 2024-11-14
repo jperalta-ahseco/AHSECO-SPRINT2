@@ -76,7 +76,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row container-fluid" style="background-color: #00aeef0f; border-radius: 10px;">
+                    <div class="row container-fluid" style="background-color: #0079ef24; border-radius: 10px;">
                         <div class="col-md-4 col-sm-12">
                             <label for="txtRuc">R.U.C:</label>
                             <div class="form-group">
@@ -155,7 +155,10 @@
                             }
                             else if (numReq != "")
                             {
+                                if(tipoProceso == "U")
+                                {               
                                 <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnEditarReq" tabindex="14"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;Editar Requerimiento</button>
+                                }
                             }
                             <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegresar" tabindex="14"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Regresar</button>
                         </div>
@@ -183,18 +186,19 @@
                                     <table id="tblMainProducts" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                         <thead>
                                             <tr>
-                                                @if (numReq != "")
-                                                {
-                                                    <th style="width:1%"><center><i class="fa fa-address-book-o" aria-hidden="true"></i></center></th>
-                                                }
-                                                @for (var i = 0; i < @ViewBag.cabecera.Length; i++)
-                                                {
-                                                    string[] cabecera = ViewBag.Cabecera[i].Split(',');
-                                                    <th style="text-align:center; width:@(cabecera[1]+"%")">@cabecera[0]</th>
-                                                }
+                                                <th style="text-align:center; width: 5%">Id</th>
+                                                <th style="text-align:center; width: 10%">Descripci&oacute;n</th>
+                                                <th style="text-align:center; width: 10%">Marca</th>
+                                                <th style="text-align:center; width: 5%">Modelo</th>
+                                                <th style="text-align:center; width: 5%">Cantidad</th>
+                                                <th style="text-align:center; width: 5%">Calibraci&oacute;n</th>
+                                                <th style="text-align:center; width: 5%">Llave en Mano</th>
+                                                <th style="text-align:center; width: 5%">Requiere Placa</th>
+                                                <th style="text-align:center; width: 5%">N&uacute;mero Fianza</th>
+                                                <th style="text-align:center; width: 5%">Acciones</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody id="tbodyProductos">
                                             <tr id="NoExisteProductos">
                                                 <td colspan="10"><center>No hay data que mostrar</center></td>
                                             </tr>
@@ -203,6 +207,8 @@
                                 </div>
                                 @if (numReq != "")
                                 {
+                                    if(tipoProceso != "V")
+                                    {                       
                                     <div class="row container-fluid">
                                         <div class="text-right">
                                             @if (codEstado == "STREG")
@@ -215,6 +221,7 @@
                                             }
                                         </div>
                                     </div>
+                                    }
                                 }
                             </div>
                         </div>
@@ -300,6 +307,20 @@
         Html.RenderPartial("_Ubigeo");
     }
 </div>
+
+<div class="modal fade" id="modalDetalleInstalacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    @{ 
+        Html.RenderPartial("_DetalleInstalacionTecnica");
+    }
+</div>
+
+<div class="modal fade" id="modalElementosDeProducto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">>
+    @{ 
+        Html.RenderPartial("_ElementosDeProducto");
+    }
+</div>
+
+
 @section scripts{
     <script type="text/javascript" src="~/resources/js/app/ServicioTecnico/BandejaInstalacionTecnica/registroInstalacionTecnica.js"></script>
 }

@@ -108,17 +108,22 @@
     function BuscarClick() {
         var method = "POST";
         var url = "BandejaInstalacionTecnica/ObtenerInstalacionesTec";
+
+        var codDepartamento = sessionStorage.getItem('codDepartamento');
+        var codProvincia = sessionStorage.getItem('codProvincia');
+        var codDistrito = sessionStorage.getItem('codDistrito');
+
         var objBuscar = {
             FecIni: $dateFecIni.val(),
             FecFin: $dateFecFin.val(),
             NumReq: $txtNumReq.val() == "" ? "0" : $txtNumReq.val(),
             Estado: $cmbEstado.val() == 0 ? "" : $cmbEstado.val(),
-            Destino: $txtUbicacion.val(),
+            Destino: codDepartamento,
             Vendedor: $cmbVendedor.val() == 0 ? "" : $cmbVendedor.val(),
             RucEmpresa: $cmbCliente.val() == 0 ? "" : $cmbCliente.val(),
             CodEmpresa: $cmbempresa.val() == 0 ? "" : $cmbempresa.val(),
-            Id_Flujo: $cmbTipVenta.val() == 0 ? "0" : $cmbTipVenta.val(),
-            NumProceso: $txtNumProc.val(),
+            TipoVenta: $cmbTipVenta.val() == "" ? "0" : $cmbTipVenta.val(),
+            NroProceso: $txtNumProc.val(),
             Contrato: $txtNumContrato.val(),
             OrdenCompra: $txtNumOrdCompra.val(),
             NumFianza: $txtNumFianza.val(),
@@ -160,8 +165,8 @@
         $("<input>", { type: "hidden", name: "Vendedor", value: $cmbVendedor.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "RucEmpresa", value: $cmbCliente.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "CodEmpresa", value: $cmbempresa.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "Id_Flujo", value: $cmbTipVenta.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "NumProceso", value: $txtNumProc.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "TipoVenta", value: $cmbTipVenta.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "NroProceso", value: $txtNumProc.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "Contrato", value: $txtNumContrato.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "OrdenCompra", value: $txtNumOrdCompra.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "NumFianza", value: $txtNumFianza.val() }).appendTo("#hidden_fields");
@@ -524,7 +529,7 @@
             {
                 data: "FechaMax",
                 render : function (data, type, row) {
-                    return '<center>' + data + '</center>'
+                    return '<center>' + app.obtenerFecha(data) + '</center>'
                 }
             },
             {

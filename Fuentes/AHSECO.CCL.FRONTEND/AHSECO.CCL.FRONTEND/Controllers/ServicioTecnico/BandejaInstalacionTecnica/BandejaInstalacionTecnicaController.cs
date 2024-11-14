@@ -25,6 +25,7 @@ using System.Configuration;
 using static AHSECO.CCL.COMUN.ConstantesDTO;
 using System.Web.Http.Results;
 using Microsoft.Ajax.Utilities;
+using System.Data.SqlTypes;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecnica
 {
@@ -80,50 +81,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
         }
         public ActionResult RegistroInstallTec()
         {
-            string[] cabeceraProductos1 = //tener en consideración que después de la coma, se define el ancho de la columna en %, ejemplo : 5%
-            {
-                "Id,5",
-                "Descripcion,10",
-                "Marca,10",
-                "Modelo,10",
-                "Serie,10",
-                "Cantidad,10",
-                "Cantidad Prev.,12",
-                "Periodicidad,10",
-                "Garantia,10",
-                "Numero Fianza,10",
-            };
-
-            string[] cabeceraProductos2 = //tener en consideración que después de la coma, se define el ancho de la columna en %, ejemplo : 5%
-            {
-                "Id,5",
-                "Descripción,10",
-                "Marca,10",
-                "Modelo,10",
-                "Serie,10",
-                "Cantidad,5",
-                "Cantidad Prev,5",
-                "Periodicidad,5",
-                "Garantia,5",
-                "Numero Fianza,5",
-                "Fecha Programación,15",
-                "Fecha Instalacion,15"
-            };
-
-            var tipoProceso = VariableSesion.getCadena("TipoProceso");
-
-            if (tipoProceso == "U")
-            {
-                ViewBag.cabecera = cabeceraProductos2;
-            }
-            else if (tipoProceso =="V")
-            {
-                ViewBag.cabecera = cabeceraProductos2;
-            }
-            else{
-                ViewBag.cabecera = cabeceraProductos1;
-            }
-
             return View();
         }
 
@@ -558,7 +515,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
                 return Json(result);
             }
         }
-
         public JsonResult CerrarInstalacion(InstalacionTecnicaDTO instalacion)
         {
             var result = new RespuestaDTO();
@@ -620,6 +576,13 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
                 result.Mensaje = ex.Message;
                 return Json(result);
             }
+        }
+
+        public JsonResult ObtenerElementosdeProducto(long IdProducto)
+        {
+            var instalacionTecnicaBL = new InstalacionTecnicaBL();
+            var result = instalacionTecnicaBL.ObtenerElementosdeProducto(IdProducto);
+            return Json(result);
         }
 
         #region Tecnico/Empleados
