@@ -34,58 +34,61 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 NombresCompletosEmpleado = ""
             };
 
-            VariableSesion.setCadena("VENTA_NOMBRE_ROL",roles.NombreRol);
-            ViewBag.CodigoArea = roles.CodigoArea;
+            if (roles != null)
+            {
+                VariableSesion.setCadena("VENTA_NOMBRE_ROL", roles.NombreRol);
+                ViewBag.CodigoArea = roles.CodigoArea;
+            }
 
-                var usuarioBL = new UsuarioBL();
-                var empleadosBL = new EmpleadosBL();
+            var usuarioBL = new UsuarioBL();
+            var empleadosBL = new EmpleadosBL();
 
-                List<IEnumerable<UsuarioDTO>> usuarios = new List<IEnumerable<UsuarioDTO>>();
-                List<IEnumerable<EmpleadoDTO>> empleados = new List<IEnumerable<EmpleadoDTO>>();
+            List<IEnumerable<UsuarioDTO>> usuarios = new List<IEnumerable<UsuarioDTO>>();
+            List<IEnumerable<EmpleadoDTO>> empleados = new List<IEnumerable<EmpleadoDTO>>();
 
-                var usuarioDTO = new UsuarioDTO()
+            var usuarioDTO = new UsuarioDTO()
+            {
+                Id = Int32.Parse(idUsuario)
+            };
+
+            usuarios.Add(usuarioBL.Obtener(usuarioDTO).Result);
+
+            foreach (var usuario in usuarios)
+            {
+                foreach (var detalle in usuario)
                 {
-                    Id = Int32.Parse(idUsuario)
-                };
+                    NumeroDocumento = detalle.NumeroDocumento; //Obtengo número de documento del trabajador en la TBM_SEGURIDAD_USUARIO
+                }
+            };
 
-                usuarios.Add(usuarioBL.Obtener(usuarioDTO).Result);
+            var empleadosDTO = new FiltroEmpleadosDTO()
+            {
+                CodigoEmpleado = 0,
+                NombreEmpleado = null,
+                ApellidoPaternoEmpleado = null,
+                ApellidoMaternoEmpleado = null,
+                CodigoCargo = null,
+                TipoDocumento = null,
+                TipoEmpleado = null,
+                NumeroDocumento = NumeroDocumento,
+                Estado = 2,
+                FechaInicio = null,
+                FechaFinal = null,
+            };
 
-                foreach (var usuario in usuarios)
+            empleados.Add(empleadosBL.ListarEmpleados(empleadosDTO).Result);
+
+            foreach (var empleado in empleados)
+            {
+                foreach (var detalle in empleado)
                 {
-                    foreach (var detalle in usuario)
-                    {
-                        NumeroDocumento = detalle.NumeroDocumento; //Obtengo número de documento del trabajador en la TBM_SEGURIDAD_USUARIO
-                    }
+                    ViewBag.CodEmpleado = detalle.CodigoEmpleado.ToString(); ////Obtengo código de empleado de TBM_EMPLEADO.
+                    ViewBag.Asesor = detalle.NombresCompletosEmpleado;
+
+                    detalleEmpleado.CodigoEmpleado = detalle.CodigoEmpleado;
+                    detalleEmpleado.NombresCompletosEmpleado = detalle.NombresCompletosEmpleado;
                 };
-
-                var empleadosDTO = new FiltroEmpleadosDTO()
-                {
-                    CodigoEmpleado = 0,
-                    NombreEmpleado = null,
-                    ApellidoPaternoEmpleado = null,
-                    ApellidoMaternoEmpleado = null,
-                    CodigoCargo = null,
-                    TipoDocumento = null,
-                    TipoEmpleado = null,
-                    NumeroDocumento = NumeroDocumento,
-                    Estado = 2,
-                    FechaInicio = null,
-                    FechaFinal = null,
-                };
-
-                empleados.Add(empleadosBL.ListarEmpleados(empleadosDTO).Result);
-
-                foreach (var empleado in empleados)
-                {
-                    foreach (var detalle in empleado)
-                    {
-                        ViewBag.CodEmpleado = detalle.CodigoEmpleado.ToString(); ////Obtengo código de empleado de TBM_EMPLEADO.
-                        ViewBag.Asesor = detalle.NombresCompletosEmpleado;
-
-                        detalleEmpleado.CodigoEmpleado = detalle.CodigoEmpleado;
-                        detalleEmpleado.NombresCompletosEmpleado = detalle.NombresCompletosEmpleado;
-                    };
-                };
+            };
 
             VariableSesion.setObject("VENTA_EMPLEADO", detalleEmpleado); //Encapsulamos información relevante del empleado.
             return View();

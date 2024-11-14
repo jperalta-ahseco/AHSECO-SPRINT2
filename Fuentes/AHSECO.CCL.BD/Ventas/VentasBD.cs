@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using static AHSECO.CCL.COMUN.ConstantesDTO.CotizacionVentaDetalle;
 
 namespace AHSECO.CCL.BD.Ventas
 {
@@ -155,7 +156,27 @@ namespace AHSECO.CCL.BD.Ventas
                         PorcentajeGanancia = i.Single(d => d.Key.Equals("PORCGANANCIA")).Value.Parse<decimal?>(),
                         VentaTotalSinIGVConGanacia = i.Single(d => d.Key.Equals("VVTOTALSIGVCGAN")).Value.Parse<decimal?>(),
                         MontoDescuento = i.Single(d => d.Key.Equals("MONTODSCTO")).Value.Parse<decimal?>(),
-                        VentaTotalSinIGVDscto = i.Single(d => d.Key.Equals("VVTOTALSIGVDSCTO")).Value.Parse<decimal?>()
+                        VentaTotalSinIGVDscto = i.Single(d => d.Key.Equals("VVTOTALSIGVDSCTO")).Value.Parse<decimal?>(),
+                        CotizacionDespacho = new CotDetDespachoDTO()
+                        {
+                            Id = Utilidades.Parse<int>(i.Single(d => d.Key.Equals("ID_COTDETDESPACHO")).Value),
+                            IndInfoVideo = Utilidades.TransformObjectToBool(i.Single(d => d.Key.Equals("INDINFOVIDEO")).Value.Parse<string>()),
+                            IndInfoManual = Utilidades.TransformObjectToBool(i.Single(d => d.Key.Equals("INDINFOMANUAL")).Value.Parse<string>()),
+                            IndInstaCapa = Utilidades.TransformObjectToBool(i.Single(d => d.Key.Equals("INDINFOMANUAL")).Value.Parse<string>()),
+                            GarantiaAdicional = i.Single(d => d.Key.Equals("GARANTIAADIC")).Value.Parse<string>(),
+                            IndLLaveMano = Utilidades.TransformObjectToBool(i.Single(d => d.Key.Equals("INDLLAVEMANO")).Value.Parse<string>()),
+                            Dimensiones = i.Single(d => d.Key.Equals("DIMENSIONES")).Value.Parse<string>(),
+                            IndCompraLocal = Utilidades.TransformObjectToBool(i.Single(d => d.Key.Equals("INDCOMPRALOCAL")).Value.Parse<string>()),
+                            ObsCliente = i.Single(d => d.Key.Equals("OBSCLIENTE")).Value.Parse<string>(),
+                            IndRequierePlaca = Utilidades.TransformObjectToBool(i.Single(d => d.Key.Equals("INDREQUIEREPLACA")).Value.Parse<string>()),
+                            ObsDespacho = i.Single(d => d.Key.Equals("OBSDESPACHO")).Value.Parse<string>(),
+                            FecLimInsta = i.Single(d => d.Key.Equals("FECLIMINSTA")).Value.Parse<DateTime?>(),
+                            MontoTotalCosto = i.Single(d => d.Key.Equals("MTOTOTALCOSTO")).Value.Parse<decimal?>(),
+                            IndFianza = Utilidades.TransformObjectToBool(i.Single(d => d.Key.Equals("INDFIANZA")).Value.Parse<string>()),
+                            NumFianza = i.Single(d => d.Key.Equals("NUMFIANZA")).Value.Parse<string>(),
+                            MontoPrestPrin = i.Single(d => d.Key.Equals("MONTOPPRINC")).Value.Parse<decimal?>(),
+                            MontoPrestAcc = i.Single(d => d.Key.Equals("MONTOPACCE")).Value.Parse<decimal?>()
+                        }
                     });
 
                 connection.Close();
@@ -268,21 +289,13 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("isUNDMED", detalleCotizacion.CodUnidad);
                 parameters.Add("isCANTIDAD", detalleCotizacion.Cantidad);
                 if (detalleCotizacion.CostoFOB.HasValue)
-                {
-                    parameters.Add("isCOSTOFOB", detalleCotizacion.CostoFOB.Value);
-                }
+                { parameters.Add("isCOSTOFOB", detalleCotizacion.CostoFOB.Value); }
                 else
-                {
-                    parameters.Add("isCOSTOFOB", DBNull.Value, DbType.Decimal);
-                }
+                { parameters.Add("isCOSTOFOB", DBNull.Value, DbType.Decimal); }
                 if (detalleCotizacion.VentaUnitaria.HasValue)
-                {
-                    parameters.Add("isVVENTAUNI", detalleCotizacion.VentaUnitaria.Value);
-                }
+                { parameters.Add("isVVENTAUNI", detalleCotizacion.VentaUnitaria.Value); }
                 else
-                {
-                    parameters.Add("isVVENTAUNI", DBNull.Value, DbType.Decimal);
-                }
+                { parameters.Add("isVVENTAUNI", DBNull.Value, DbType.Decimal); }
                 parameters.Add("isUsrEjecuta",detalleCotizacion.UsuarioRegistra);
                 parameters.Add("isFecEjecuta", detalleCotizacion.FechaRegistro);
 

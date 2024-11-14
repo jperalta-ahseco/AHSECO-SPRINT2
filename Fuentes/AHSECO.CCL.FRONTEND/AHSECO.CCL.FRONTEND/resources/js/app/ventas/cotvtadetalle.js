@@ -4,6 +4,14 @@ var cotvtadet = (function ($, win, doc) {
     var $idCotizacion = $("#idCotizacion");
     var $idRolUsuario = $("#idRolUsuario");
     var $idWorkFlow = $("#idWorkFlow");
+    var $RolVenta_Asesor = $("#RolVenta_Asesor");
+    var $RolVenta_Jefe = $("#RolVenta_Jefe");
+    var $RolVenta_Coordinadora = $("#RolVenta_Coordinadora");
+    var $RolVenta_ServTecnio = $("#RolVenta_ServTecnio");
+    var $RolVenta_Gerente = $("#RolVenta_Gerente");
+    var $RolVenta_Importacion = $("#RolVenta_Importacion");
+    var $RolVenta_Costos = $("#RolVenta_Costos");
+    var $RolVenta_Logistica = $("#RolVenta_Logistica");
 
     var $cmbTipo = $('#cmbTipo');
 
@@ -80,7 +88,7 @@ var cotvtadet = (function ($, win, doc) {
         $DI_btnCerrar.click(cerrarModalDetItem);
         $DC_btnCerrar.click(cerrarModalDetCot);
         $btnEnviarCotizacion.click(enviarCotizacion);
-        listarItemsCotDet();
+        listarCotDetItems();
         cargarCiclosPreventivos();
 
     }
@@ -657,32 +665,10 @@ var cotvtadet = (function ($, win, doc) {
         var bVideos = false;
         var bInstaCapa = false;
 
-        if ($.trim($DI_txtCodigo.val()) == "") {
-            app.message.error("Validaci&oacute;n", "Campo C&oacute;digo no puede ser vac&iacute;o");
-            return false;
-        }
-
-        if ($DI_txtCantidad.val() == "") {
-            app.message.error("Validaci&oacute;n", "Campo Cantidad no puede ser vac&iacute;o");
-            return false;
-        }
-        else {
-            if (!app.validaNumeroEntero($DI_txtCantidad.val())) {
-                app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Cantidad");
-                return false;
-            }
-            else {
-                if (parseInt($DI_txtCantidad.val()) <= 0) {
-                    app.message.error("Validaci&oacute;n", "La cantidad debe ser mayor a 0.");
-                    return false;
-                }
-            }
-        }
-
-        if ($idRolUsuario.val() == "SGI_VENTA_GERENTE" || $idRolUsuario.val() == "SGI_VENTA_COSTOS") {
+        if ($idRolUsuario.val() == $RolVenta_Gerente.val() || $idRolUsuario.val() == $RolVenta_Costos.val()) {
 
             if ($DI_txtCostoFOB.val() == "" && $DI_txtValorUnitario.val() == "") {
-                app.message.error("Validaci&oacute;n", "Se debe llenar mínimo 1 campo de COSTOS");
+                app.message.error("Validaci&oacute;n", "Se debe llenar m&iacute;nimo 1 campo de COSTOS");
                 return false;
             }
 
@@ -700,23 +686,48 @@ var cotvtadet = (function ($, win, doc) {
             }
 
         }
+        else {
 
-        if ($DI_txtGanancia.val() != "") {
-            if (!app.validaNumeroDecimal($DI_txtGanancia.val())) {
-                app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Ganancia");
+            if ($.trim($DI_txtCodigo.val()) == "") {
+                app.message.error("Validaci&oacute;n", "Campo C&oacute;digo no puede ser vac&iacute;o");
+                return false;
+            }
+
+            if ($DI_txtCantidad.val() == "") {
+                app.message.error("Validaci&oacute;n", "Campo Cantidad no puede ser vac&iacute;o");
                 return false;
             }
             else {
-                if (parseInt($DI_txtGanancia.val()) <= 0) {
-                    app.message.error("Validaci&oacute;n", "La ganancia no debe ser menor a 0.");
+                if (!app.validaNumeroEntero($DI_txtCantidad.val())) {
+                    app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Cantidad");
                     return false;
                 }
+                else {
+                    if (parseInt($DI_txtCantidad.val()) <= 0) {
+                        app.message.error("Validaci&oacute;n", "La cantidad debe ser mayor a 0.");
+                        return false;
+                    }
+                }
             }
-        }
 
-        if (!$DI_radLLaveEnMano_Si.is(':checked') && !$DI_radLLaveEnMano_No.is(':checked')) {
-            app.message.error("Validaci&oacute;n", "Elija Si o No en campo LLave en Mano");
-            return false;
+            if ($DI_txtGanancia.val() != "") {
+                if (!app.validaNumeroDecimal($DI_txtGanancia.val())) {
+                    app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Ganancia");
+                    return false;
+                }
+                else {
+                    if (parseInt($DI_txtGanancia.val()) <= 0) {
+                        app.message.error("Validaci&oacute;n", "La ganancia no debe ser menor a 0.");
+                        return false;
+                    }
+                }
+            }
+
+            if (!$DI_radLLaveEnMano_Si.is(':checked') && !$DI_radLLaveEnMano_No.is(':checked')) {
+                app.message.error("Validaci&oacute;n", "Elija Si o No en campo LLave en Mano");
+                return false;
+            }
+
         }
 
         //if (sessionStorage.getItem('codDistrito') == null) {
@@ -858,7 +869,7 @@ var cotvtadet = (function ($, win, doc) {
 
         var columns = [];
 
-        if ($idRolUsuario.val() == "SGI_VENTA_GERENTE" || $idRolUsuario.val() == "SGI_VENTA_COSTOS") {
+        if ($idRolUsuario.val() == $RolVenta_Gerente.val() || $idRolUsuario.val() == $RolVenta_Costos.val()) {
 
             columns = [
                 {
@@ -1031,7 +1042,9 @@ var cotvtadet = (function ($, win, doc) {
 
         //Se quita los campos para edición de registros
         if ($estadoSol.val() == "CVAL") {
-            columns.pop();
+            if ($idRolUsuario.val() == $RolVenta_Asesor.val()) {
+                columns.pop();
+            }
         }
 
         var columnDefs =
@@ -1098,17 +1111,47 @@ var cotvtadet = (function ($, win, doc) {
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
     }
 
-    function listarItemsCotDet() {
+    function listarCotDetItems() {
         method = "POST";
-        url = "BandejaSolicitudesVentas/ListarItemsCotDet";
+        url = "BandejaSolicitudesVentas/ListarCotDetItems";
         var objFiltros = {
+            opcGrillaItems: "2"
         };
         var objParam = JSON.stringify(objFiltros);
 
         var fnDoneCallBack = function (data) {
             cargarTablaCotDet(data);
             cargarTablaDetCotCostos(data);
-            $btnEnviarCotizacion.css("display", "");
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+    }
+
+    function listarCotDetItemsTemp() {
+        method = "POST";
+        url = "BandejaSolicitudesVentas/ListarCotDetItems";
+        var objFiltros = {
+            opcGrillaItems: "1"
+        };
+        var objParam = JSON.stringify(objFiltros);
+
+        var fnDoneCallBack = function (data) {
+            cargarTablaDetCotCostos(data);
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+    }
+
+    function listarCotDetItemsCostos() {
+        method = "POST";
+        url = "BandejaSolicitudesVentas/ListarCotDetItems";
+        var objFiltros = {
+            opcGrillaItems: "2"
+        };
+        var objParam = JSON.stringify(objFiltros);
+
+        var fnDoneCallBack = function (data) {
+            cargarTablaDetCotCostos(data);
         };
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
@@ -1132,7 +1175,9 @@ var cotvtadet = (function ($, win, doc) {
         cargarTablaDetCotCostos: cargarTablaDetCotCostos,
         cerrarModalDetCot: cerrarModalDetCot,
         enviarCotizacion: enviarCotizacion,
-        listarItemsCotDet: listarItemsCotDet,
+        listarCotDetItems: listarCotDetItems,
+        listarCotDetItemsTemp: listarCotDetItemsTemp,
+        listarCotDetItemsCostos: listarCotDetItemsCostos,
         recotizarSolicitud: recotizarSolicitud
     }
 })(window.jQuery, window, document);

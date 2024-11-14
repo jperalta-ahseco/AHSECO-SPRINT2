@@ -361,7 +361,9 @@ var app = (function ($, win, doc) {
     var timerCallingLoading;
 
     function ValidateKeepLoading() {
-        timerCallingLoading = setInterval(TerminateLoading, 3000);
+        if (timerCallingLoading != null) {
+            timerCallingLoading = setInterval(TerminateLoading, 3000);
+        }
     }
 
     function TerminateLoading() {
@@ -369,6 +371,7 @@ var app = (function ($, win, doc) {
             swAllowLoading = true;
             $modalLoading.hide();
             clearInterval(timerCallingLoading);
+            timerCallingLoading = null;
         }
     }
 
@@ -416,6 +419,34 @@ var app = (function ($, win, doc) {
                 ValidateKeepLoading();
             }
             swCallingAjax = false;
+        });
+    }
+
+    function llamarAjaxNoLoading(method, url, data, fnDoneCallback, fnFailCallback, fnAlwaysCallback, messageWait) {
+        var m = method || "POST";
+        var u = baseUrl + url;
+        var d = data || "";
+        
+        return $.ajax({
+            method: m,
+            url: u,
+            data: d,
+            contentType: 'application/json',
+            dataType: "json"
+        }).done(function (data, textStatus, jqXhr) {
+            if (data.Status === 1) {
+                if (typeof (fnDoneCallback) != "undefined" || fnDoneCallback != null) {
+                    fnDoneCallback(data);
+                }
+            } else if (data.Status === 0) {
+                message.error("Error", data.CurrentException, "Aceptar", fnFailCallback);
+            }
+        }).fail(function (jqXhr, textStatus, errorThrow) {
+            message.error("Error inesperado", errorThrow, "Aceptar", fnFailCallback);
+        }).always(function () {
+            if (typeof (fnAlwaysCallback) !== "undefined" && fnAlwaysCallback != null) {
+                fnAlwaysCallback();
+            }
         });
     }
     
@@ -802,6 +833,7 @@ var app = (function ($, win, doc) {
         loading: loading,
         obtenerMayorZIndex: obtenerMayorZIndex,
         llamarAjax: llamarAjax,
+        llamarAjaxNoLoading: llamarAjaxNoLoading,
         llenarTabla: llenarTabla,
         obtenerValorCeldaTabla: obtenerValorCeldaTabla,
         llenarCombo: llenarCombo,

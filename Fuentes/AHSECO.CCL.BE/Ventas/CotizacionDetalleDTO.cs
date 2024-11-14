@@ -31,7 +31,7 @@ namespace AHSECO.CCL.BE.Ventas
         public bool EsItemPadre { get; set; }
         public int CantSubItem { get; set; }
         public CotDetDespachoDTO CotizacionDespacho { get; set; }
-        public CotizacionCostoDTO CotizacionCosto { get; set; }
+        public CotizacionCostoDTO[] CotizacionCostos { get; set; }
         public bool IsTempRecord { get; set; }
         public bool IsUpdated { get; set; }
         public bool CodItem_IsUpdatable { get; set; }

@@ -689,5 +689,32 @@ namespace AHSECO.CCL.COMUN
             string passwordHash = BCrypt.Net.BCrypt.EnhancedHashPassword(text, 13);
             return passwordHash;
         }
+
+        public static string TransformBoolToString(bool? sw)
+        {
+            if (sw.HasValue)
+            {
+                if (sw.Value)
+                { return "S"; }
+                else
+                { return "N"; }
+            }
+            return null;
+        }
+
+        public static bool? TransformObjectToBool(object str)
+        {
+            if (str != null && str != DBNull.Value)
+            {
+                if (str.ToString().ToUpper().Trim() == "S" || str.ToString().ToUpper().Trim() == "Y" 
+                    || str.ToString().ToUpper().Trim() == "1" || str.ToString().ToUpper().Trim() == true.ToString().ToUpper().Trim())
+                { return true; }
+                if (str.ToString().ToUpper().Trim() == "N" 
+                    || str.ToString().ToUpper().Trim() == "0" || str.ToString().ToUpper().Trim() == false.ToString().ToUpper().Trim())
+                { return false; }
+            }
+            return null;
+        }
+
     }
 }

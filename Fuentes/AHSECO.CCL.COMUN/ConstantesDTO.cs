@@ -11,22 +11,32 @@ namespace AHSECO.CCL.COMUN
     public static class ConstantesDTO
     {
 
-        public static string Activo = "Activo";
-
-
-        public static string Inactivo = "Inactivo";
-
-
-        public static string Eliminado = "Eliminado";
-
-
-        public static string NoDefinido = "No Definido";
-
-
-        public static string AplicacionInterna = "Aplicación Interna";
-
-
-        public static string AplicacionExterna = "Aplicación Externa";
+        public struct WorkflowRol
+        {
+            public struct Venta
+            {
+                public static string Asesor = "SGI_VENTA_ASESOR";
+                public static string Jefe = "SGI_VENTA_JEFE";
+                public static string CoordVta= "SGI_VENTA_COORDINAVENTA";
+                public static string ServTecnico = "SGI_VENTA_SERVICIOTECNICO";
+                public static string Gerente = "SGI_VENTA_GERENTE";
+                public static string Importacion = "SGI_VENTA_IMPORTACION";
+                public static string Costos = "SGI_VENTA_COSTOS";
+                public static string Logistica = "SGI_VENTA_LOGISTICA";
+                public static string CoordServ = "SGI_VENTA_COORDINASERV";
+                public static string CoordAtc = "SGI_VENTA_COORDINAATC";
+            }
+            public struct Viatico
+            {
+                public static string Gerente = "SGI_VIAT_GERENTE";
+                public static string Solicitante = "SGI_VIAT_SOLICITANTE";
+                public static string Contador = "SGI_VIAT_CONTADOR";
+                public static string Admin = "SGI_VIAT_ADMINISTRADOR";
+                public static string Importacion = "SGI_VENTA_IMPORTACION";
+                public static string Costos = "SGI_VENTA_COSTOS";
+                public static string Logistica = "SGI_VENTA_LOGISTICA";
+            }
+        }
 
         public struct Mensajes
         {

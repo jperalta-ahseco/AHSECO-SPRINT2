@@ -213,7 +213,8 @@
             return;
         };
 
-        app.llamarAjax(method, url, objParam, fnDoneCallBackSol, fnFailCallBackSol, null, null);
+        app.mostrarLoading();
+        app.llamarAjaxNoLoading(method, url, objParam, fnDoneCallBackSol, fnFailCallBackSol, null, null);
     };
     function btnNuevoClick() {
         app.redirectTo("BandejaSolicitudesVentas/SolicitudVenta");

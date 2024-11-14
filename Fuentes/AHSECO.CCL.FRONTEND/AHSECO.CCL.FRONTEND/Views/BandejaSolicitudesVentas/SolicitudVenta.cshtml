@@ -1,11 +1,20 @@
 ﻿@using AHSECO.CCL.FRONTEND.Core;
 @using AHSECO.CCL.BE.Mantenimiento;
 @using AHSECO.CCL.BE;
+@using AHSECO.CCL.COMUN;
 @using Newtonsoft.Json;
 @{
     ViewBag.Title = "Solicitud de Venta";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var NombreRol = VariableSesion.getCadena("VENTA_NOMBRE_ROL");
+    var RolVenta_Asesor = ConstantesDTO.WorkflowRol.Venta.Asesor;
+    var RolVenta_Jefe = ConstantesDTO.WorkflowRol.Venta.Jefe;
+    var RolVenta_CoordVta = ConstantesDTO.WorkflowRol.Venta.CoordVta;
+    var RolVenta_ServTecnico = ConstantesDTO.WorkflowRol.Venta.ServTecnico;
+    var RolVenta_Gerente = ConstantesDTO.WorkflowRol.Venta.Gerente;
+    var RolVenta_Importacion = ConstantesDTO.WorkflowRol.Venta.Importacion;
+    var RolVenta_Costos = ConstantesDTO.WorkflowRol.Venta.Costos;
+    var RolVenta_Logistica = ConstantesDTO.WorkflowRol.Venta.Logistica;
     var cliente = VariableSesion.getObject("VENTA_CLIENTE") as ClienteDTO;
     var empleado = VariableSesion.getObject("VENTA_EMPLEADO") as EmpleadoDTO;
     var numSol = VariableSesion.getCadena("numSol");
@@ -40,6 +49,15 @@
 <input type="hidden" id="idWorkFlow" value="@idWorkFlow" />
 <input type="hidden" id="idCotizacion" value="@idCotizacion" />
 <input type="hidden" id="idRolUsuario" value="@NombreRol" />
+<input type="hidden" id="RolVenta_Asesor" value="@RolVenta_Asesor" />
+<input type="hidden" id="RolVenta_Gerente" value="@RolVenta_Gerente" />
+<input type="hidden" id="RolVenta_Jefe" value="@RolVenta_Jefe" />
+<input type="hidden" id="RolVenta_CoordVta" value="@RolVenta_CoordVta" />
+<input type="hidden" id="RolVenta_ServTecnio" value="@RolVenta_ServTecnico" />
+<input type="hidden" id="RolVenta_Gerente" value="@RolVenta_Gerente" />
+<input type="hidden" id="RolVenta_Importacion" value="@RolVenta_Importacion" />
+<input type="hidden" id="RolVenta_Costos" value="@RolVenta_Costos" />
+<input type="hidden" id="RolVenta_Logistica" value="@RolVenta_Logistica" />
 
 <div class="container-fluid">
     <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
@@ -162,23 +180,23 @@
                         </div>
 
                     </div>
-                        <br />
-                        <div class="row container-fluid">
-                            <div class="text-right">
-                                @if (NombreRol == "SGI_VENTA_ASESOR" || NombreRol == "SGI_VENTA_COORDINASERV" || NombreRol == "SGI_VENTA_COORDINAATC")
+                    <br />
+                    <div class="row container-fluid">
+                        <div class="text-right">
+                            @if (NombreRol == RolVenta_Asesor || NombreRol == "SGI_VENTA_COORDINASERV" || NombreRol == "SGI_VENTA_COORDINAATC")
+                            {
+                                if (numSol != null)
                                 {
-                                    if (numSol != null)
-                                    {
-                                        <button style="@(ViewBag.PermitirCancelarCot ? "" : "display:none")" class="btn btn-danger btn-sm" type="button" data-dismiss="modal" id="btnEliminarSol" tabindex="14"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;Cancelar Solicitud</button>
-                                    }
-                                    else
-                                    {
-                                        <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnRegistrar" tabindex="14"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Registrar</button>
-                                    }
+                                    <button style="@(ViewBag.PermitirCancelarCot ? "" : "display:none")" class="btn btn-danger btn-sm" type="button" data-dismiss="modal" id="btnEliminarSol" tabindex="14"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;Cancelar Solicitud</button>
                                 }
-                                <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegresar" tabindex="14"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Regresar</button>
-                            </div>
+                                else
+                                {
+                                    <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnRegistrar" tabindex="14"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Registrar</button>
+                                }
+                            }
+                            <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegresar" tabindex="14"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Regresar</button>
                         </div>
+                    </div>
                 </form>
                 <ul class="nav nav-tabs" style="padding-top: 5px;">
                     @if (numSol != null)
@@ -225,7 +243,7 @@
                                                                 <label for="nombreContacto">Contacto: </label>
                                                                 <div class="form-group">
                                                                     <div class="@(ViewBag.PermitirEditarCotizacion ? "input-group input-group-sm date" : "input-group-sm date")">
-                                                                        <input readonly @(ViewBag.PermitirEditarCotizacion ? "" : "disabled") type="text" class="@(ViewBag.PermitirEditarCotizacion ? "" : "form-group") form-control input-sm col-md-10" id="nombreContacto" value="@ViewBag.NombreContacto" placeholder="--Ingrese Nombre de Contacto--" aria-describedby="sizing-addon3" />
+                                                                        <input @(ViewBag.PermitirEditarCotizacion ? "readonly" : "disabled") type="text" class="@(ViewBag.PermitirEditarCotizacion ? "" : "form-group") form-control input-sm col-md-10" id="nombreContacto" value="@ViewBag.NombreContacto" placeholder="--Ingrese Nombre de Contacto--" aria-describedby="sizing-addon3" />
                                                                         <span style="@(ViewBag.PermitirEditarCotizacion ? "cursor:pointer" : "display:none")" class="input-group-addon input-sm" id="searchContacto" title="Buscar Contacto" data-toggle="modal" data-target="#modalContactos">
                                                                             <i class="fa fa-search"></i>
                                                                         </span>
@@ -330,7 +348,7 @@
                                                     </div>
                                                 </div>
                                                 <br />
-                                                <div class="box-inner" style="@(ViewBag.VerTabCotDet ? "" : "display:none")">
+                                                <div class="box-inner" style="@(ViewBag.MostrarCotizacionDetalle ? "" : "display:none")">
                                                     <div class="box-header well" data-original-title="">
                                                         <div style="display: flex;justify-content: space-between;">
                                                             <h2><i class="fa fa-list" aria-hidden="true"></i> Detalle</h2>
