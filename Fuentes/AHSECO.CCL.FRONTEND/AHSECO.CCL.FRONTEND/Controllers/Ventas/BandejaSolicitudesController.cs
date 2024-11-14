@@ -248,12 +248,17 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     ViewBag.PermitirModificarCodItem = false;
                 }
 
-                if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.CotAprob || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnProcVentas || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.VentaProg || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Finalizado)
+                if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.CotAprob 
+                    || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnProcVentas 
+                    || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.VentaProg 
+                    || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Finalizado)
                 {
                     ViewBag.VerGestionVenta = true;
                 }
 
-                if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnProcVentas || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.VentaProg || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Finalizado)
+                if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnProcVentas 
+                    || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.VentaProg 
+                    || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Finalizado)
                 {
                     ViewBag.VerGestionLogistica = true;
                 }
@@ -972,7 +977,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 var rptaEst = ventasBL.ObtenerEstadosProcesos(new ProcesoEstadoDTO
                 { IdProceso = ConstantesDTO.Procesos.Ventas.ID, CodigoEstado = ConstantesDTO.EstadosProcesos.ProcesoVenta.EnCotizacion });
 
-                if (rptaEst.Result.Any()) { VariableSesion.setCadena("estadoAbrev", rptaEst.Result.First().AbreviaturaEstado); }
+                if (rptaEst.Result.Any())
+                {
+                    VariableSesion.setCadena("estadoAbrev", rptaEst.Result.First().AbreviaturaEstado);
+                    VariableSesion.setCadena("estadoSol", rptaEst.Result.First().CodigoEstado);
+                }
 
                 ViewBag.EstadoSolicitud = ConstantesDTO.EstadosProcesos.ProcesoVenta.EnCotizacion;
                 ViewBag.IdCotizacion = resultCV.Result.Codigo;
@@ -1648,7 +1657,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 var rptaEst = ventasBL.ObtenerEstadosProcesos(new ProcesoEstadoDTO
                 { IdProceso = ConstantesDTO.Procesos.Ventas.ID, CodigoEstado = ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion });
 
-                if (rptaEst.Result.Any()) { VariableSesion.setCadena("estadoAbrev", rptaEst.Result.First().AbreviaturaEstado); }
+                if (rptaEst.Result.Any())
+                {
+                    VariableSesion.setCadena("estadoAbrev", rptaEst.Result.First().AbreviaturaEstado);
+                    VariableSesion.setCadena("estadoSol", rptaEst.Result.First().CodigoEstado);
+                }
 
                 ViewBag.EstadoSolicitud = ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion;
                 ViewBag.IdCotizacion = cotizacionDTO.IdCotizacion;

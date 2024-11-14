@@ -362,7 +362,7 @@ var app = (function ($, win, doc) {
 
     function ValidateKeepLoading() {
         if (timerCallingLoading != null) {
-            timerCallingLoading = setInterval(TerminateLoading, 3000);
+            timerCallingLoading = setInterval(TerminateLoading, 10000);
         }
     }
 
