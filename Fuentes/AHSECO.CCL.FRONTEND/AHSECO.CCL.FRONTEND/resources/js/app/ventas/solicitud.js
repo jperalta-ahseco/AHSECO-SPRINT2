@@ -174,7 +174,8 @@
         $dateOrdenCompra.datepicker({
             viewMode: 0,
             minViewMode: 0,
-            format: 'dd/mm/yyyy'
+            format: 'dd/mm/yyyy',
+            startDate: hoy()
         });
 
         $dateSolicitud.val(hoy());

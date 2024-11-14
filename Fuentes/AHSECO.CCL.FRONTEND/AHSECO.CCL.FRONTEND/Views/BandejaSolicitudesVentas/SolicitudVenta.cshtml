@@ -465,13 +465,13 @@
                                                     <div class="col-md-4 col-sm-12">
                                                         <label for="txtNroOrdenCompra">N° Orden de Compra: </label>
                                                         <div class="form-group">
-                                                            <input placeholder="Ingresar número de orden de compra" type="text" class="form-control input-sm" id="txtNroOrdenCompra" @ViewBag.TxtOrdenCompra>
+                                                            <input placeholder="Ingresar número de orden de compra" type="text" class="form-control input-sm" maxlength="50" id="txtNroOrdenCompra" @ViewBag.TxtOrdenCompra>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4 col-sm-12">
                                                         <label for="dateOrdenCompra">Fecha Orden de Compra: </label>
                                                         <div class="input-group date">
-                                                            <input type="text" class="form-control input-sm" id="dateOrdenCompra" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10" @ViewBag.TxtFecOrdenCompra>
+                                                            <input type="text" class="form-control input-sm" id="dateOrdenCompra" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" readonly maxlength="10" @ViewBag.TxtFecOrdenCompra>
                                                             <span class="input-group-addon input-sm" id="openRegdateOrdenCompra" @ViewBag.TxtFecOrdenCompra>
                                                                 <i class="fa fa-calendar"></i>
                                                             </span>
