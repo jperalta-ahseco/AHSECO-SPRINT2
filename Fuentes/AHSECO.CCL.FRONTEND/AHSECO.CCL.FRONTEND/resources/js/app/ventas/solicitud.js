@@ -108,8 +108,11 @@
     var $btnHistorial = $("#btnHistorial");
     var $btnBuscarHistorial = $("#btnBuscarHistorial");
 
+    /** Seccion de Despacho*/
     var $dateOrdenCompra = $("#dateOrdenCompra");
     var $openRegdateOrdenCompra = $("#openRegdateOrdenCompra");
+    var $txtFechaEntregaMax = $("#txtFechaEntregaMax");
+
 
     var mensajes = {
         consultaContactos: "Consultando contactos, por favor espere....",
@@ -171,7 +174,8 @@
         $dateOrdenCompra.datepicker({
             viewMode: 0,
             minViewMode: 0,
-            format: 'dd/mm/yyyy'
+            format: 'dd/mm/yyyy',
+            startDate: hoy()
         });
 
         $dateSolicitud.val(hoy());
@@ -200,8 +204,27 @@
         $btnGuiaBO.click($btnGuiaBO_click);
         $btnGuiaPedido.click($btnGuiaPedido_click);
         $cmbTipoVenta.on("change", changeTipoVenta);
+        $dateOrdenCompra.on("change", $dateOrdenCompra_change);
 
+        CalcularFechaEntregaMaxima();
     };
+
+    function CalcularFechaEntregaMaxima() {
+        var dias = Number($txtPlazoEntrega.val());
+        var fecha = $dateOrdenCompra.val();
+        const partes = fecha.split('/');
+        let nuevaFecha = new Date(partes[2], partes[1] - 1, partes[0]);
+        nuevaFecha.setDate(nuevaFecha.getDate() + dias);
+        var dia = String(nuevaFecha.getDate()).padStart(2, '0');
+        var mes = String(nuevaFecha.getMonth() + 1).padStart(2, '0');
+        var year = nuevaFecha.getFullYear();
+        $txtFechaEntregaMax.val(`${dia}/${mes}/${year}`);
+    }
+
+    function $dateOrdenCompra_change() {
+        CalcularFechaEntregaMaxima();
+    }
+
 
     function changeTipoVenta() {
         var tipo_venta = $cmbTipoVenta.val();
