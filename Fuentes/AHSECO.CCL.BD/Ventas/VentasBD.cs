@@ -924,5 +924,53 @@ namespace AHSECO.CCL.BD.Ventas
 
             }
         }
+
+
+        public RespuestaDTO MantenimientoDespacho(DatosDespachoDTO datosDespachoDTO)
+        {
+            var rpta = new RespuestaDTO();
+            Log.TraceInfo(Utilidades.GetCaller());
+
+
+            using (var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("TIPO", datosDespachoDTO.Tipo);
+                parameters.Add("CODSOLICITUD", datosDespachoDTO.CodigoSolicitud);
+                parameters.Add("CODCOTIZACION", datosDespachoDTO.CodigoCotizacion);
+                parameters.Add("ID_WORKFLOW", datosDespachoDTO.CodigoWorkFlow);
+                parameters.Add("NOMPERFIL", datosDespachoDTO.NombrePerfil == null ? "" : datosDespachoDTO.NombrePerfil);
+                parameters.Add("NUMRODEN", datosDespachoDTO.NumeroOrden == null ? "" : datosDespachoDTO.NumeroOrden);
+                parameters.Add("FECHAORDEN", datosDespachoDTO.FechaOrden);
+                parameters.Add("FECHAMAX", datosDespachoDTO.FechaMaxima);
+                parameters.Add("STOCK", datosDespachoDTO.Stock);
+                parameters.Add("FECHAENTREGA", datosDespachoDTO.FechaEntrega);
+                parameters.Add("NUMFACTURA", datosDespachoDTO.NumeroFactura);
+                parameters.Add("NUMGUIAREM", datosDespachoDTO.NumeroGuiaRemision);
+                parameters.Add("NUMPEDIDO", datosDespachoDTO.NumeroPedido);
+                parameters.Add("FECHAINGRESO", datosDespachoDTO.FechaIngreso);
+                parameters.Add("ESTAPROB", datosDespachoDTO.EstadoAprobacion);
+                parameters.Add("OBSERVACION", datosDespachoDTO.Observacion);
+                parameters.Add("USRREG", datosDespachoDTO.UsuarioRegistro);
+
+                var result = connection.Query
+                (
+                    sql: "USP_MANT_DESPACHOVENTAS",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure
+                )
+                 .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new RespuestaDTO
+                    {
+                        Codigo = i.Single(d => d.Key.Equals("COD")).Value.Parse<int>(),
+                        Mensaje = i.Single(d => d.Key.Equals("MSG")).Value.Parse<string>()
+
+                    }).FirstOrDefault();
+
+                return result;
+            }
+        }
     }
 }

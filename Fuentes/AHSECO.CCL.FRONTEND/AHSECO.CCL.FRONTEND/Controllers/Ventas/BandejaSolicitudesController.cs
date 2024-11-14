@@ -1762,5 +1762,16 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
         }
 
+
+        [HttpPost]
+        public JsonResult MantenimientoDespacho(DatosDespachoDTO datosDespachoDTO)
+        {
+            var ventasBL = new VentasBL();
+            datosDespachoDTO.UsuarioRegistro = User.ObtenerUsuario();
+            datosDespachoDTO.NombrePerfil = User.ObtenerPerfil();
+            var response = ventasBL.MantenimientoDespacho(datosDespachoDTO);
+            return Json(response);
+        }
+
     }
 }
