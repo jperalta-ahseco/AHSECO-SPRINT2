@@ -690,19 +690,54 @@ namespace AHSECO.CCL.COMUN
             return passwordHash;
         }
 
-        public static string TransformBoolToString(bool? sw)
+        public static string ParseStringSN<T>(object sw)
         {
-            if (sw.HasValue)
+            
+            if (sw == DBNull.Value) { return null; }
+
+            if (typeof(T) == typeof(string))
             {
-                if (sw.Value)
-                { return "S"; }
-                else
-                { return "N"; }
+                return sw.ToString().ToUpper();
             }
+
+            if (typeof(T) == typeof(bool))
+            {
+                if (bool.Parse(sw.ToString()) == true) { return "S"; }
+                if (bool.Parse(sw.ToString()) == false) { return "N"; }
+            }
+
+            if (typeof(T) == typeof(bool?))
+            {
+                if (((bool?)sw).HasValue)
+                {
+                    if (((bool?)sw).Value)
+                    { return "S"; }
+                    else
+                    { return "N"; }
+                }
+            }
+
+            if (typeof(T) == typeof(int))
+            {
+                if (int.Parse(sw.ToString()) == 1) { return "S"; }
+                if (int.Parse(sw.ToString()) == 0) { return "N"; }
+            }
+
+            if (typeof(T) == typeof(int?))
+            {
+                if (((int?)sw).HasValue)
+                {
+                    if (((int?)sw).Value == 1)
+                    { return "S"; }
+                    if (((int?)sw).Value == 0)
+                    { return "N"; }
+                }
+            }
+
             return null;
         }
 
-        public static bool? TransformObjectToBool(object str)
+        public static bool? parseObjectToBool(object str)
         {
             if (str != null && str != DBNull.Value)
             {

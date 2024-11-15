@@ -363,14 +363,23 @@
                                                             <li class="" id="tabDetCot" style="@(ViewBag.PermitirTabDetCot ? "" : "display:none")">
                                                                 <a href="#navCotDet" data-toggle="tab" style="font-weight:bold; color:black;" tabindex="20"><i class="fa fa-cubes" aria-hidden="true"></i> Detalle de Productos</a>
                                                             </li>
-                                                            <li class="" id="tabCalib" style="@(ViewBag.PermitirTabCalib ? "" : "display:none")">
-                                                                <a href="#navCalib" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-wrench" aria-hidden="true"></i> Calibraci&oacute;n</a>
-                                                            </li>
                                                             <li class="" id="tabInsta" style="@(ViewBag.PermitirTabInsta ? "" : "display:none")">
                                                                 <a href="#navInsta" data-toggle="tab" style="font-weight: bold; color: black; " tabindex="20"><i class="fa fa-gears" aria-hidden="true"></i> Instalaci&oacute;n</a>
                                                             </li>
                                                             <li class="" id="tabMantPrevent" style="@(ViewBag.PermitirTabMantPrevent ? "" : "display:none")">
                                                                 <a href="#navMantPrevent" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-male" aria-hidden="true"></i> Mantenimiento</a>
+                                                            </li>
+                                                            <li class="" id="tabLLaveMano" style="@(ViewBag.PermitirTabLLaveMano ? "" : "display:none")">
+                                                                <a href="#navLLaveMano" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-wrench" aria-hidden="true"></i> LLave en mano</a>
+                                                            </li>
+                                                            <li class="" id="tabManualVideos" style="@(ViewBag.PermitirTabManualVideos ? "" : "display:none")">
+                                                                <a href="#navManualVideos" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-wrench" aria-hidden="true"></i> Manuales y Videos</a>
+                                                            </li>
+                                                            <li class="" id="tabGarantiaAdic" style="@(ViewBag.PermitirTabGarantiaAdic ? "" : "display:none")">
+                                                                <a href="#navGarantiaAdic" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-wrench" aria-hidden="true"></i> Garantía Adicional</a>
+                                                            </li>
+                                                            <li class="" id="tabCalib" style="@(ViewBag.PermitirTabCalib ? "" : "display:none")">
+                                                                <a href="#navCalib" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-wrench" aria-hidden="true"></i> Calibraci&oacute;n</a>
                                                             </li>
                                                             <li class="" id="tabFlete" style="@(ViewBag.PermitirTabFlete ? "" : "display:none")">
                                                                 <a href="#navFlete" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-truck" aria-hidden="true"></i>  Flete</a>
@@ -393,31 +402,18 @@
                                                                     </table>
                                                                 </div>
                                                             </div>
-                                                            <div id="navCalib" class="tab-pane fade">
-                                                                <div class="table-responsive">
-                                                                    <table id="tblCalibCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
-                                                                        <thead>
-                                                                            <tr>
-                                                                                @for (var i = 0; i < @ViewBag.Cabecera.Length; i++)
-                                                                                {
-                                                                                    <th style="text-align:center">@ViewBag.Cabecera[i]</th>
-                                                                                }
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
-                                                            </div>
                                                             <div id="navInsta" class="tab-pane fade">
                                                                 <div class="table-responsive">
                                                                     <table id="tblInstaCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                                                         <thead>
                                                                             <tr>
-                                                                                @for (var i = 0; i < @ViewBag.Cabecera.Length; i++)
-                                                                                {
-                                                                                    <th style="text-align:center">@ViewBag.Cabecera[i]</th>
-                                                                                }
+                                                                                <th style="text-align:center; width:5%">Producto</th>
+                                                                                <th style="text-align:center; width:5%">Unidad Medida</th>
+                                                                                <th style="text-align:center; width:5%">Ubigeo Destino</th>
+                                                                                <th style="text-align:center; width:5%">Dirección</th>
+                                                                                <th style="text-align:center; width:5%">Ambiente Destino</th>
+                                                                                <th style="text-align:center; width:5%">Cantidad</th>
+                                                                                <th style="text-align:center; width:5%">Costo</th>
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
@@ -430,10 +426,88 @@
                                                                     <table id="tblMantPreventCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                                                         <thead>
                                                                             <tr>
-                                                                                @for (var i = 0; i < @ViewBag.Cabecera.Length; i++)
-                                                                                {
-                                                                                    <th style="text-align:center">@ViewBag.Cabecera[i]</th>
-                                                                                }
+                                                                                <th style="text-align:center; width:5%">Producto</th>
+                                                                                <th style="text-align:center; width:5%">Unidad Medida</th>
+                                                                                <th style="text-align:center; width:5%">Ubigeo Destino</th>
+                                                                                <th style="text-align:center; width:5%">Dirección</th>
+                                                                                <th style="text-align:center; width:5%">Ambiente Destino</th>
+                                                                                <th style="text-align:center; width:5%">Cant. a Despachar</th>
+                                                                                <th style="text-align:center; width:5%">Cant. de Preventivo</th>
+                                                                                <th style="text-align:center; width:5%">Ciclo de Preventivo</th>
+                                                                                <th style="text-align:center; width:5%">Costo</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                            <div id="navLLaveMano" class="tab-pane fade">
+                                                                <div class="table-responsive">
+                                                                    <table id="tblLLaveManoCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th style="text-align:center; width:5%">Producto</th>
+                                                                                <th style="text-align:center; width:5%">Unidad Medida</th>
+                                                                                <th style="text-align:center; width:5%">Ubigeo Destino</th>
+                                                                                <th style="text-align:center; width:5%">Dirección</th>
+                                                                                <th style="text-align:center; width:5%">Ambiente Destino</th>
+                                                                                <th style="text-align:center; width:5%">Cantidad</th>
+                                                                                <th style="text-align:center; width:5%">Costo</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                            <div id="navManualVideos" class="tab-pane fade">
+                                                                <div class="table-responsive">
+                                                                    <table id="tblManualVideosCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th style="text-align:center; width:5%">Producto</th>
+                                                                                <th style="text-align:center; width:5%">Unidad Medida</th>
+                                                                                <th style="text-align:center; width:5%">Cantidad</th>
+                                                                                <th style="text-align:center; width:5%">Costo</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                            <div id="navGarantiaAdic" class="tab-pane fade">
+                                                                <div class="table-responsive">
+                                                                    <table id="tblGarantiaAdicCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th style="text-align:center; width:5%">Producto</th>
+                                                                                <th style="text-align:center; width:5%">Unidad Medida</th>
+                                                                                <th style="text-align:center; width:5%">Ubigeo Destino</th>
+                                                                                <th style="text-align:center; width:5%">Dirección</th>
+                                                                                <th style="text-align:center; width:5%">Ambiente Destino</th>
+                                                                                <th style="text-align:center; width:5%">Cantidad</th>
+                                                                                <th style="text-align:center; width:5%">Costo</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                            <div id="navCalib" class="tab-pane fade">
+                                                                <div class="table-responsive">
+                                                                    <table id="tblCalibCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th style="text-align:center; width:5%">Producto</th>
+                                                                                <th style="text-align:center; width:5%">Unidad Medida</th>
+                                                                                <th style="text-align:center; width:5%">Ubigeo Destino</th>
+                                                                                <th style="text-align:center; width:5%">Dirección</th>
+                                                                                <th style="text-align:center; width:5%">Ambiente Destino</th>
+                                                                                <th style="text-align:center; width:5%">Cantidad</th>
+                                                                                <th style="text-align:center; width:5%">Costo</th>
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
@@ -446,10 +520,13 @@
                                                                     <table id="tblFleteCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                                                         <thead>
                                                                             <tr>
-                                                                                @for (var i = 0; i < @ViewBag.Cabecera.Length; i++)
-                                                                                {
-                                                                                    <th style="text-align:center">@ViewBag.Cabecera[i]</th>
-                                                                                }
+                                                                                <th style="text-align:center; width:5%">Producto</th>
+                                                                                <th style="text-align:center; width:5%">Unidad Medida</th>
+                                                                                <th style="text-align:center; width:5%">Ubigeo Destino</th>
+                                                                                <th style="text-align:center; width:5%">Dirección</th>
+                                                                                <th style="text-align:center; width:5%">Ambiente Destino</th>
+                                                                                <th style="text-align:center; width:5%">Cantidad</th>
+                                                                                <th style="text-align:center; width:5%">Costo</th>
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
@@ -514,7 +591,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="box-content"  style="@(ViewBag.VerGestionLogistica ? "" : "display:none");">
+                                            <div class="box-content" style="@(ViewBag.VerGestionLogistica ? "" : "display:none");">
                                                 <ul class="nav nav-tabs" style="padding-top: 5px;">
                                                     <li class="" id="tabConStock">
                                                         <a href="#navConStock" data-toggle="tab" style="font-weight:bold; color:black;" tabindex="220"><i class="fa fa-cubes" aria-hidden="true"></i> Con Stock</a>
@@ -742,6 +819,12 @@
 <div data-backdrop="static" data-keyboard="false" class="modal fade" id="modalUbigeo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
     @{
         Html.RenderPartial("_Ubigeo");
+    }
+</div>
+
+<div class="modal fade" id="modalCostoItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_SolicitudCostoItem");
     }
 </div>
 

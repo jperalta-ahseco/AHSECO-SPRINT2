@@ -111,6 +111,20 @@ namespace AHSECO.CCL.BL.Ventas
             }
         }
 
+        public ResponseDTO<RespuestaDTO> MantenimientoCotiDetDespacho(CotDetDespachoDTO detCotDespacho)
+        {
+            try
+            {
+                var result = Repository.MantenimientoCotiDetDespacho(detCotDespacho);
+                return new ResponseDTO<RespuestaDTO>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceInfo(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<RespuestaDTO>(ex);
+            }
+        }
+
         public ResponseDTO<RespuestaDTO> MantenimientoObservaciones(ObservacionDTO observacion)
         {
             try

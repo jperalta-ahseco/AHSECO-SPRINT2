@@ -163,12 +163,16 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.VerGestionVenta = false;
             ViewBag.VerGestionLogistica = false;
             VariableSesion.setObject(TAG_CDI, new List<CotizacionDetalleDTO>());
+            ViewBag.PermitirModificarCodItem = true;
+
             ViewBag.PermitirTabDetCot = true;
-            ViewBag.PermitirTabCalib = true;
             ViewBag.PermitirTabInsta = true;
             ViewBag.PermitirTabMantPrevent = true;
+            ViewBag.PermitirTabLLaveMano = true;
+            ViewBag.PermitirTabManualVideos = true;
+            ViewBag.PermitirTabGarantiaAdic = true;
+            ViewBag.PermitirTabCalib = true;
             ViewBag.PermitirTabFlete = true;
-            ViewBag.PermitirModificarCodItem = true;
 
             if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Gerente || NombreRol == ConstantesDTO.WorkflowRol.Venta.Costos)
             {
@@ -186,7 +190,12 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 var rptaSoli = ventasBL.ObtenerSolicitudes(new SolicitudDTO() { Id_Solicitud = int.Parse(numSol) });
                 var soli = rptaSoli.Result.First();
                 ViewBag.EstadoSolicitud = soli.Estado;
+                VariableSesion.setCadena("estadoSol", soli.Estado);
 
+                var rptaEst = ventasBL.ObtenerEstadosProcesos(new ProcesoEstadoDTO
+                { IdProceso = ConstantesDTO.Procesos.Ventas.ID, CodigoEstado = soli.Estado });
+
+                if (rptaEst.Result.Any()) { VariableSesion.setCadena("estadoAbrev", rptaEst.Result.First().AbreviaturaEstado); }
 
                 if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ 
                     || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc)
@@ -213,7 +222,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     ViewBag.Btn_Aprobar = "inline-block";
                     ViewBag.Btn_Observar = "inline-block";
                 }
-                else if (NombreRol == "SGI_VENTA_LOGISTICA")
+                else if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Logistica)
                 {
                     ViewBag.Btn_GuardarDespacho = "inline-block";
                     ViewBag.FechaEntregaPedidoSE = "";
@@ -225,27 +234,26 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     ViewBag.TxtNumeroGuiaRemisionCE = "";
                     ViewBag.TxtNumeroSerieCE = "";
                 }
-                else if (NombreRol == "SGI_VENTA_IMPORTACION")
+                else if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Importacion)
                 {
                     ViewBag.TxtCodigoPedido = "";
                     ViewBag.IngresoAlmacen = "";
                     ViewBag.Btn_GuardarDespacho = "inline-block";
                 }
 
-                var rptaEst = ventasBL.ObtenerEstadosProcesos(new ProcesoEstadoDTO
-                { IdProceso = ConstantesDTO.Procesos.Ventas.ID, CodigoEstado = soli.Estado });
-
-                if (rptaEst.Result.Any()) { VariableSesion.setCadena("estadoAbrev", rptaEst.Result.First().AbreviaturaEstado); }
-
                 if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Registrado
                     || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnCotizacion)
                 {
+                    ViewBag.PermitirModificarCodItem = false;
                     ViewBag.PermitirReCotizacion = false;
-                    ViewBag.PermitirTabCalib = false;
+
                     ViewBag.PermitirTabInsta = false;
                     ViewBag.PermitirTabMantPrevent = false;
+                    ViewBag.PermitirTabLLaveMano = false;
+                    ViewBag.PermitirTabManualVideos = false;
+                    ViewBag.PermitirTabGarantiaAdic = false;
+                    ViewBag.PermitirTabCalib = false;
                     ViewBag.PermitirTabFlete = false;
-                    ViewBag.PermitirModificarCodItem = false;
                 }
 
                 if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.CotAprob 
@@ -267,13 +275,43 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 {
                     ViewBag.PermitirAgregarCotDet = false;
                     ViewBag.PermitirEnvioCotizacion = false;
+
                     //Se quita la ultima columna
-                    if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
+                    if (NombreRol != ConstantesDTO.WorkflowRol.Venta.Gerente && NombreRol != ConstantesDTO.WorkflowRol.Venta.Costos)
                     {
                         string[] arrCotDetCols = ViewBag.CabeceraCotDet;
                         int indexToRemove = arrCotDetCols.Length - 1;
                         ViewBag.CabeceraCotDet = arrCotDetCols.Where((source, index) => index != indexToRemove).ToArray();
                     }
+
+                    ViewBag.PermitirTabInsta = false;
+                    ViewBag.PermitirTabMantPrevent = false;
+                    ViewBag.PermitirTabLLaveMano = false;
+                    ViewBag.PermitirTabManualVideos = false;
+                    ViewBag.PermitirTabGarantiaAdic = false;
+                    ViewBag.PermitirTabCalib = false;
+                    ViewBag.PermitirTabFlete = false;
+
+                    if (NombreRol == ConstantesDTO.WorkflowRol.Venta.ServTecnico)
+                    {
+                        ViewBag.PermitirTabInsta = true;
+                        ViewBag.PermitirTabMantPrevent = true;
+                        ViewBag.PermitirTabLLaveMano = true;
+                        ViewBag.PermitirTabManualVideos = true;
+                        ViewBag.PermitirTabGarantiaAdic = true;
+                    }
+
+                    if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
+                    {
+                        ViewBag.PermitirTabCalib = true;
+                        ViewBag.PermitirTabFlete = true;
+                    }
+
+                    if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Logistica)
+                    {
+                        ViewBag.PermitirTabFlete = true;
+                    }
+
                 }
 
                 if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.CotAprob 
@@ -442,7 +480,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             x.CotizacionDespacho.IndInfoVideo = CotDet.CotizacionDespacho.IndInfoVideo;
                             x.CotizacionDespacho.IndInfoManual = CotDet.CotizacionDespacho.IndInfoManual;
                             x.CotizacionDespacho.IndInstaCapa = CotDet.CotizacionDespacho.IndInstaCapa;
-                            x.CotizacionDespacho.GarantiaAdicional = CotDet.CotizacionDespacho.GarantiaAdicional;
+                            x.CotizacionDespacho.IndGarantiaAdicional = CotDet.CotizacionDespacho.IndGarantiaAdicional;
                             x.CotizacionDespacho.IndLLaveMano = CotDet.CotizacionDespacho.IndLLaveMano;
                             //x.CotizacionDespacho.CodUbigeoDestino = CotDet.CotizacionDespacho.CodUbigeoDestino;
                             //x.CotizacionDespacho.DescUbigeoDestino = CotDet.CotizacionDespacho.DescUbigeoDestino;
@@ -1483,7 +1521,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             x.CotizacionDespacho.IndInfoVideo = CotDet.CotizacionDespacho.IndInfoVideo;
                             x.CotizacionDespacho.IndInfoManual = CotDet.CotizacionDespacho.IndInfoManual;
                             x.CotizacionDespacho.IndInstaCapa = CotDet.CotizacionDespacho.IndInstaCapa;
-                            x.CotizacionDespacho.GarantiaAdicional = CotDet.CotizacionDespacho.GarantiaAdicional;
+                            x.CotizacionDespacho.IndGarantiaAdicional = CotDet.CotizacionDespacho.IndGarantiaAdicional;
                             x.CotizacionDespacho.IndLLaveMano = CotDet.CotizacionDespacho.IndLLaveMano;
                             //x.CotizacionDespacho.CodUbigeoDestino = CotDet.CotizacionDespacho.CodUbigeoDestino;
                             //x.CotizacionDespacho.DescUbigeoDestino = CotDet.CotizacionDespacho.DescUbigeoDestino;
@@ -1491,7 +1529,13 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             //x.CotizacionDespacho.NroPiso = CotDet.CotizacionDespacho.NroPiso;
                             x.CotizacionDespacho.Dimensiones = CotDet.CotizacionDespacho.Dimensiones;
                             x.CotizacionDespacho.IndCompraLocal = CotDet.CotizacionDespacho.IndCompraLocal;
+                            x.CotizacionDespacho.ObsCliente = CotDet.CotizacionDespacho.ObsCliente;
+                            x.CotizacionDespacho.IndRequierePlaca = CotDet.CotizacionDespacho.IndRequierePlaca;
+                            x.CotizacionDespacho.ObsDespacho = CotDet.CotizacionDespacho.ObsDespacho;
+                            x.CotizacionDespacho.FecLimInsta = CotDet.CotizacionDespacho.FecLimInsta;
+                            x.CotizacionDespacho.MontoTotalCosto = CotDet.CotizacionDespacho.MontoTotalCosto;
                             x.CotizacionDespacho.IndFianza = CotDet.CotizacionDespacho.IndFianza;
+                            x.CotizacionDespacho.NumFianza = CotDet.CotizacionDespacho.NumFianza;
                             x.CotizacionDespacho.MontoPrestPrin = CotDet.CotizacionDespacho.MontoPrestPrin;
                             x.CotizacionDespacho.MontoPrestAcc = CotDet.CotizacionDespacho.MontoPrestAcc;
                         }
@@ -1673,7 +1717,16 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     itemCD.IdCotizacion = cotizacionDTO.IdCotizacion;
                     itemCD.UsuarioRegistra = User.ObtenerUsuario();
                     itemCD.FechaRegistro = DateTime.Now;
-                    ventasBL.MantenimientoCotizacionDetalle(itemCD);
+                    var resCD = ventasBL.MantenimientoCotizacionDetalle(itemCD);
+                    if (itemCD.CotizacionDespacho != null)
+                    {
+                        var itemCDD = itemCD.CotizacionDespacho;
+                        itemCDD.TipoProceso = ConstantesDTO.CotizacionDespacho.TipoProceso.Insertar;
+                        itemCDD.IdCotizacionDetalle = resCD.Result.Codigo;
+                        itemCDD.UsuarioRegistra = User.ObtenerUsuario();
+                        itemCDD.FechaRegistro = DateTime.Now;
+                        ventasBL.MantenimientoCotiDetDespacho(itemCDD);
+                    }
                 }
 
                 return Json(new { Status = 1, Mensaje = "Cotización Enviada correctamente" });

@@ -8,11 +8,11 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_MANT_TBM_COTDET_DESPACHO]
 @pIndInfoVideo CHAR(1),
 @pIndInfoManual CHAR(1),
 @pIndInstaCapa CHAR(1),
-@pGarantiaAdic VARCHAR(50),
+@pIndGarantiaAdic CHAR(1),
+@pIndMantPrevent CHAR(1),
 @pIndLLaveMano CHAR(1),
 @pDimensiones VARCHAR(50),
 @pIndCompraLocal CHAR(1),
-@pIndCalibracion CHAR(1),
 @pObsCliente VARCHAR(2000),
 @pIndReqPlaca CHAR(1),
 @pObsDespacho VARCHAR(2000),
@@ -39,16 +39,16 @@ BEGIN
 		INSERT INTO [dbo].[TBM_COTDET_DESPACHO]
 		([ID_COTDETALLE],
 		[INDINFOVIDEO],[INDINFOMANUAL],[INDINSTACAPA],
-		[GARANTIAADIC],[INDLLAVEMANO],[DIMENSIONES],
-		[INDCOMPRALOCAL],[INDCALIBRACION],[OBSCLIENTE],
-		[INDREQUIEREPLACA],[OBSDESPACHO],[FECLIMINSTA],
+		[INDGARANADIC],[INDLLAVEMANO],[DIMENSIONES],
+		[INDCOMPRALOCAL],[OBSCLIENTE],[INDMANTPREVENT],
+		[INDREQPLACA],[OBSDESPACHO],[FECLIMINSTA],
 		[MTOTOTALCOSTO],[INDFIANZA],[NUMFIANZA],
 		[MONTOPPRINC],[MONTOPACCE],[USR_REG],[FEC_REG])
 		VALUES
 		(@pId_CodDetalle,
 		@pIndInfoVideo,@pIndInfoManual,@pIndInstaCapa,
-		@pGarantiaAdic,@pIndLLaveMano,@pDimensiones,
-		@pIndCompraLocal,@pIndCalibracion,@pObsCliente,
+		@pIndGarantiaAdic,@pIndLLaveMano,@pDimensiones,
+		@pIndCompraLocal,@pObsCliente,@pIndMantPrevent,
 		@pIndReqPlaca,@pObsDespacho,@pFecLimInsta,
 		@pMontoTotalCosto,@pIndFianza,@pNumFianza,
 		@pMontoPPrinc,@pMontoPAcce,
@@ -62,9 +62,9 @@ BEGIN
 		
 		UPDATE [dbo].[TBM_COTDET_DESPACHO]
 		SET INDINFOVIDEO = @pIndInfoVideo, INDINFOMANUAL = @pIndInfoManual, INDINSTACAPA = @pIndInstaCapa, 
-		GARANTIAADIC = @pGarantiaAdic, INDLLAVEMANO = @pIndLLaveMano, DIMENSIONES = @pDimensiones, 
-		INDCOMPRALOCAL = @pIndCompraLocal, INDCALIBRACION = @pIndCalibracion, OBSCLIENTE = @pObsCliente, 
-		INDREQUIEREPLACA = @pIndReqPlaca, OBSDESPACHO = @pObsDespacho, FECLIMINSTA = @pFecLimInsta, 
+		INDGARANADIC = @pIndGarantiaAdic, INDLLAVEMANO = @pIndLLaveMano, DIMENSIONES = @pDimensiones, 
+		INDCOMPRALOCAL = @pIndCompraLocal, OBSCLIENTE = @pObsCliente, INDMANTPREVENT = @pIndMantPrevent,
+		INDREQPLACA = @pIndReqPlaca, OBSDESPACHO = @pObsDespacho, FECLIMINSTA = @pFecLimInsta, 
 		MTOTOTALCOSTO = @pMontoTotalCosto, INDFIANZA = @pIndFianza, NUMFIANZA = @pNumFianza, 
 		MONTOPPRINC = @pMontoPPrinc, MONTOPACCE = @pMontoPAcce,
 		USR_MOD = @pUsuarioRegistro, FEC_MOD = GETDATE()

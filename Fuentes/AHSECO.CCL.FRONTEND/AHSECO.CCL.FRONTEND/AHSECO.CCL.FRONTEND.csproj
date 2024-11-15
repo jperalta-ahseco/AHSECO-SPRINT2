@@ -538,6 +538,7 @@
     <Content Include="resources\js\app\uploadFile.js" />
     <Content Include="resources\js\app\ventas\bandejaSolicitudes.js" />
     <Content Include="resources\js\app\ventas\bandejaVentas.js" />
+    <Content Include="resources\js\app\ventas\cotvtacostos.js" />
     <Content Include="resources\js\app\ventas\cotvtadetalle.js" />
     <Content Include="resources\js\app\ventas\solicitud.js" />
     <Content Include="resources\js\app\viaticos\registroviaticos.js" />
@@ -948,6 +949,7 @@
     <Content Include="Views\BandejaGarantia\RegistroGarantia.cshtml" />
     <Content Include="Views\BandejaPreventivo\Index.cshtml" />
     <Content Include="Views\BandejaPreventivo\RegistroPreventivo.cshtml" />
+    <Content Include="Views\BandejaSolicitudesVentas\_SolicitudCostoItem.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\css\font\" />

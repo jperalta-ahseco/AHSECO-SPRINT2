@@ -130,6 +130,11 @@ namespace AHSECO.CCL.COMUN
 
         public struct CotizacionDespacho
         {
+            public struct TipoProceso
+            {
+                public static string Insertar { get { return "I"; } }
+                public static string Modificar { get { return "U"; } }
+            }
             public struct CicloPreventivo
             {
                 public static string Diario { get { return "CIPR0001"; } }

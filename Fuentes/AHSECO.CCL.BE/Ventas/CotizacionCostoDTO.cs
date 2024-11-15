@@ -8,6 +8,7 @@ namespace AHSECO.CCL.BE.Ventas
 {
     public class CotizacionCostoDTO : CamposAuditoriaDTO
     {
+        public string TipoProceso { get; set; }
         public long Id { get; set; }
         public long IdCotizacionDetalle { get; set; }
         public int NumSecuencia { get; set; }

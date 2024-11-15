@@ -506,7 +506,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                                 NumFianza = reader.IsDBNull(reader.GetOrdinal("NUMFIANZA")) ? "" : reader.GetString(reader.GetOrdinal("NUMFIANZA")),
                                 //CantPreventivo = reader.IsDBNull(reader.GetOrdinal("CANTPREVENTIVO")) ? 0 : reader.GetInt32(reader.GetOrdinal("CANTPREVENTIVO")),
                                 //CodCicloPreventivo = reader.IsDBNull(reader.GetOrdinal("CODCICLOPREVENTIVO")) ? "" : reader.GetString(reader.GetOrdinal("CODCICLOPREVENTIVO")),
-                                GarantiaAdicional = reader.IsDBNull(reader.GetOrdinal("GARANTIAADIC")) ? "" : reader.GetString(reader.GetOrdinal("GARANTIAADIC")),
+                                IndGarantiaAdicional = reader.IsDBNull(reader.GetOrdinal("INDGARANADIC")) ? true : reader.GetBoolean(reader.GetOrdinal("INDGARANADIC")),
                                 IndLLaveMano = reader.IsDBNull(reader.GetOrdinal("INDLLAVEMANO")) ? true : reader.GetBoolean(reader.GetOrdinal("INDLLAVEMANO")),
                                 //CodUbigeoDestino = reader.IsDBNull(reader.GetOrdinal("INDLLAVEMANO")) ? "" : reader.GetString(reader.GetOrdinal("INDLLAVEMANO")),
                                 //DescUbigeoDestino = reader.IsDBNull(reader.GetOrdinal("CODUBIGEODEST")) ? "" : reader.GetString(reader.GetOrdinal("CODUBIGEODEST")),

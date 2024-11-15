@@ -8,12 +8,14 @@ namespace AHSECO.CCL.BE.Ventas
 {
     public class CotDetDespachoDTO : CamposAuditoriaDTO
     {
+        public string TipoProceso { get; set; }
         public long Id { get; set; }
         public long IdCotizacionDetalle { get; set; }
         public bool? IndInfoVideo { get; set; }
         public bool? IndInfoManual { get; set; }
         public bool? IndInstaCapa { get; set; }
-        public string GarantiaAdicional { get; set; }
+        public bool? IndGarantiaAdicional { get; set; }
+        public bool? IndMantPreventivo { get; set; }
         public bool? IndLLaveMano { get; set; }
         public string Dimensiones { get; set; }
         public bool? IndCompraLocal { get; set; }

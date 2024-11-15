@@ -39,11 +39,17 @@ var cotvtadet = (function ($, win, doc) {
     var $DI_radLLaveEnMano_No = $("#DI_radLLaveEnMano_No");
     var $DI_radCompraLocal_Si = $("#DI_radCompraLocal_Si");
     var $DI_radCompraLocal_No = $("#DI_radCompraLocal_No");
-    var $DI_txtDireccion = $("#DI_txtDireccion");
-    var $DI_txtNroPiso = $("#DI_txtNroPiso");
+    //var $txtUbicacion = $("#txtUbicacion"); //Ubigeo
+    //var $DI_txtDireccion = $("#DI_txtDireccion");
+    //var $DI_txtNroPiso = $("#DI_txtNroPiso");
     var $DI_txtDimensiones = $("#DI_txtDimensiones");
-    var $DI_txtCantPreventivo = $("#DI_txtCantPreventivo");
-    var $DI_cmbCicloPreventivo = $("#DI_cmbCicloPreventivo");
+    var $DI_radMantPrevent_Si = $("#DI_radMantPrevent_Si");
+    var $DI_radMantPrevent_No = $("#DI_radMantPrevent_No");
+    var $DI_txtFechaLimite = $("#DI_txtFechaLimite");
+    var $DI_radGarantAdic_Si = $("#DI_radGarantAdic_Si");
+    var $DI_radGarantAdic_No = $("#DI_radGarantAdic_No");
+    //var $DI_txtCantPreventivo = $("#DI_txtCantPreventivo");
+    //var $DI_cmbCicloPreventivo = $("#DI_cmbCicloPreventivo");
     var $DI_radManuales_Si = $("#DI_radManuales_Si");
     var $DI_radManuales_No = $("#DI_radManuales_No");
     var $DI_radVideos_Si = $("#DI_radVideos_Si");
@@ -51,9 +57,9 @@ var cotvtadet = (function ($, win, doc) {
     var $DI_radInstaCapa_Si = $("#DI_radInstaCapa_Si");
     var $DI_radInstaCapa_No = $("#DI_radInstaCapa_No");
     var $DI_txtGarantiaAdic = $("#DI_txtGarantiaAdic");
-
-    var $txtUbicacion = $("#txtUbicacion");
-
+    var $DI_txtReqCliente = $("#DI_txtReqCliente");
+    var $DI_txtObsInsta = $("#DI_txtObsInsta");
+    
     var $DI_btnGuardar = $("#DI_btnGuardar");
     var $DI_btnCerrar = $("#DI_btnCerrar");
 
@@ -78,6 +84,8 @@ var cotvtadet = (function ($, win, doc) {
         BuscandoPrecios: "Buscando Precios, porfavor espere...",
         obteniendoFiltros: "Obteniendo filtros de lista de precios..."
     }
+
+    var opcGrillaItems = 0;
     
     $(Initialize);
     function Initialize() {
@@ -88,8 +96,15 @@ var cotvtadet = (function ($, win, doc) {
         $DI_btnCerrar.click(cerrarModalDetItem);
         $DC_btnCerrar.click(cerrarModalDetCot);
         $btnEnviarCotizacion.click(enviarCotizacion);
+
+        $DI_txtFechaLimite.datepicker({
+            viewMode: 0,
+            minViewMode: 0,
+            format: 'dd/mm/yyyy'
+        });
+
         listarCotDetItems();
-        cargarCiclosPreventivos();
+        //cargarCiclosPreventivos();
 
     }
 
@@ -370,6 +385,7 @@ var cotvtadet = (function ($, win, doc) {
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
     }
 
+    /*
     function cargarCiclosPreventivos() {
         var method = "POST";
         var url = "BandejaSolicitudesVentas/ObtenerCiclosPreventivos";
@@ -383,6 +399,7 @@ var cotvtadet = (function ($, win, doc) {
         }
         return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, null);
     }
+    */
 
     function LimpiarModalDetItem() {
         $DI_txtCantidad.val("");
@@ -391,12 +408,12 @@ var cotvtadet = (function ($, win, doc) {
         $DI_radLLaveEnMano_Si.removeAttr("checked");
         $DI_radLLaveEnMano_No.removeAttr("checked");
         sessionStorage.setItem('codDistrito', "");
-        $txtUbicacion.val("");
-        $DI_txtDireccion.val("");
-        $DI_txtNroPiso.val("");
+        //$txtUbicacion.val("");
+        //$DI_txtDireccion.val("");
+        //$DI_txtNroPiso.val("");
         $DI_txtDimensiones.val("");
-        $DI_txtCantPreventivo.val("");
-        $DI_cmbCicloPreventivo.val(" ").trigger("change.select2"); // Opcion Ninguno es ESPACIO
+        //$DI_txtCantPreventivo.val("");
+        //$DI_cmbCicloPreventivo.val(" ").trigger("change.select2"); // Opcion Ninguno es ESPACIO
         $DI_radManuales_Si.removeAttr("checked");
         $DI_radManuales_No.removeAttr("checked");
         $DI_radVideos_Si.removeAttr("checked");
@@ -465,7 +482,6 @@ var cotvtadet = (function ($, win, doc) {
         }
     }
 
-    var opcGrillaItems = 0;
     function editarItem(CodigoItem, opc) {
         $DI_hdnCodigoPadre.val("");
 
@@ -664,6 +680,8 @@ var cotvtadet = (function ($, win, doc) {
         var bManuales = false;
         var bVideos = false;
         var bInstaCapa = false;
+        var bGarantiaAdic = false;
+        var bMantPrevent = false;
 
         if ($idRolUsuario.val() == $RolVenta_Gerente.val() || $idRolUsuario.val() == $RolVenta_Costos.val()) {
 
@@ -728,6 +746,52 @@ var cotvtadet = (function ($, win, doc) {
                 return false;
             }
 
+            if ($DI_txtFechaLimite.val() != "") {
+                if ($DI_txtFechaLimite.val().trim().length <= 0 || $DI_txtFechaLimite.val().trim() == null) {
+                    app.message.error("Validación", "Fecha l&iacute;mite de instalaci&oacute;n inv&aacute;lida.");
+                    return;
+                };
+            }
+
+            if (!$DI_radManuales_Si.is(':checked') && !$DI_radManuales_No.is(':checked')) {
+                app.message.error("Validaci&oacute;n", "Elija Si o No en campo Manuales");
+                return false;
+            }
+
+            if (!$DI_radVideos_Si.is(':checked') && !$DI_radVideos_No.is(':checked')) {
+                app.message.error("Validaci&oacute;n", "Elija Si o No en campo Videos");
+                return false;
+            }
+
+            if (!$DI_radInstaCapa_Si.is(':checked') && !$DI_radInstaCapa_No.is(':checked')) {
+                app.message.error("Validaci&oacute;n", "Elija Si o No en campo Instalaci&oacute;n y Capacitaci&oacute;n");
+                return false;
+            }
+
+            if (!$DI_radGarantAdic_Si.is(':checked') && !$DI_radGarantAdic_No.is(':checked')) {
+                app.message.error("Validaci&oacute;n", "Elija Si o No en campo Garant&iacute;a adicional");
+                return false;
+            }
+
+            if (!$DI_radMantPrevent_Si.is(':checked') && !$DI_radMantPrevent_No.is(':checked')) {
+                app.message.error("Validaci&oacute;n", "Elija Si o No en campo Mantenimiento Preventivo");
+                return false;
+            }
+
+            if ($DI_radLLaveEnMano_Si.is(':checked')) { bLLaveMano = true; }
+
+            if ($DI_radCompraLocal_Si.is(':checked')) { bCompraLocal = true; }
+
+            if ($DI_radManuales_Si.is(':checked')) { bManuales = true; }
+
+            if ($DI_radVideos_Si.is(':checked')) { bVideos = true; }
+
+            if ($DI_radInstaCapa_Si.is(':checked')) { bInstaCapa = true; }
+
+            if ($DI_radMantPrevent_Si.is(':checked')) { bMantPrevent = true; }
+
+            if ($DI_radGarantAdic_Si.is(':checked')) { bGarantiaAdic = true; }
+
         }
 
         //if (sessionStorage.getItem('codDistrito') == null) {
@@ -762,31 +826,6 @@ var cotvtadet = (function ($, win, doc) {
         //    }
         //}
 
-        if (!$DI_radManuales_Si.is(':checked') && !$DI_radManuales_No.is(':checked')) {
-            app.message.error("Validaci&oacute;n", "Elija Si o No en campo Manuales");
-            return false;
-        }
-
-        if (!$DI_radVideos_Si.is(':checked') && !$DI_radVideos_No.is(':checked')) {
-            app.message.error("Validaci&oacute;n", "Elija Si o No en campo Videos");
-            return false;
-        }
-
-        if (!$DI_radInstaCapa_Si.is(':checked') && !$DI_radInstaCapa_No.is(':checked')) {
-            app.message.error("Validaci&oacute;n", "Elija Si o No en campo Instalaci&oacute;n y Capacitaci&oacute;n");
-            return false;
-        }
-
-        if ($DI_radLLaveEnMano_Si.is(':checked')) { bLLaveMano = true; }
-
-        if ($DI_radCompraLocal_Si.is(':checked')) { bCompraLocal = true; }
-
-        if ($DI_radManuales_Si.is(':checked')) { bManuales = true; }
-
-        if ($DI_radVideos_Si.is(':checked')) { bVideos = true; }
-
-        if ($DI_radInstaCapa_Si.is(':checked')) { bInstaCapa = true; }
-
         method = "POST";
         url = "BandejaSolicitudesVentas/GrabarDatosCotDetItem";
         var objDatos = {
@@ -799,18 +838,18 @@ var cotvtadet = (function ($, win, doc) {
                 CostoFOB: $DI_txtCostoFOB.val(),
                 VentaUnitaria: $DI_txtValorUnitario.val(),
                 PorcentajeGanancia: $DI_txtGanancia.val(),
-                LLaveEnMano: bLLaveMano,
+                //LLaveEnMano: bLLaveMano,
                 //CodUbigeoDestino: sessionStorage.getItem('codDistrito'),
                 //DescUbigeoDestino: $txtUbicacion.val(),
                 //Direccion: $DI_txtDireccion.val(),
                 //NroPiso: $DI_txtNroPiso.val(),
-                Dimension: $DI_txtDimensiones.val(),
+                //Dimension: $DI_txtDimensiones.val(),
                 //CantidadPreventivo: $DI_txtCantPreventivo.val(),
                 //CodCicloPreventivo: $DI_cmbCicloPreventivo.val(),
-                Manuales: bManuales,
-                Videos: bVideos,
-                InstCapa: bInstaCapa,
-                GarantiaAdic: $DI_txtGarantiaAdic.val(),
+                //Manuales: bManuales,
+                //Videos: bVideos,
+                //InstCapa: bInstaCapa,
+                //GarantiaAdic: $DI_txtGarantiaAdic.val(),
                 CotizacionDespacho: {
                     IndLLaveMano: bLLaveMano,
                     //CodUbigeoDestino: sessionStorage.getItem('codDistrito'),
@@ -820,11 +859,15 @@ var cotvtadet = (function ($, win, doc) {
                     Dimensiones: $DI_txtDimensiones.val(),
                     //CantPreventivo: $DI_txtCantPreventivo.val(),
                     //CodCicloPreventivo: $DI_cmbCicloPreventivo.val(),
+                    IndCompraLocal: bCompraLocal,
                     IndInfoManual: bManuales,
                     IndInfoVideo: bVideos,
                     IndInstaCapa: bInstaCapa,
-                    GarantiaAdicional: $DI_txtGarantiaAdic.val(),
-                    IndCompraLocal: bCompraLocal
+                    //GarantiaAdicional: $DI_txtGarantiaAdic.val(),
+                    IndGarantiaAdicional: bGarantiaAdic,
+                    IndMantPreventivo: bMantPrevent,
+                    ObsCliente: $DI_txtReqCliente.val(),
+                    ObsDespacho: $DI_txtObsInsta.val()
                 }
             },
             opcGrillaItems: opcGrillaItems
@@ -1042,7 +1085,7 @@ var cotvtadet = (function ($, win, doc) {
 
         //Se quita los campos para edición de registros
         if ($estadoSol.val() == "CVAL") {
-            if ($idRolUsuario.val() == $RolVenta_Asesor.val()) {
+            if ($idRolUsuario.val() != $RolVenta_Gerente.val() && $idRolUsuario.val() != $RolVenta_Costos.val()) {
                 columns.pop();
             }
         }
@@ -1084,7 +1127,7 @@ var cotvtadet = (function ($, win, doc) {
         };
         
         var fnDoneCallBack = function (data) {
-            app.message.success("Cotización", "Se envi&oacute; la cotizaci&oacute;n correctamente.", "Aceptar", redirect);
+            app.message.success("Cotizaci&oacute;n", "Se envi&oacute; la cotizaci&oacute;n correctamente.", "Aceptar", redirect);
         };
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
@@ -1105,7 +1148,7 @@ var cotvtadet = (function ($, win, doc) {
         };
 
         var fnDoneCallBack = function (data) {
-            app.message.success("Cotización", "Se gener&oacute; una nueva cotizaci&oacute;n correctamente.", "Aceptar", redirect);
+            app.message.success("Cotizaci&oacute;n", "Se gener&oacute; una nueva cotizaci&oacute;n correctamente.", "Aceptar", redirect);
         };
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
@@ -1163,7 +1206,7 @@ var cotvtadet = (function ($, win, doc) {
         RecargarFiltroFamilia: RecargarFiltroFamilia,
         agregarItem: agregarItem,
         quitarItem: quitarItem,
-        cargarCiclosPreventivos: cargarCiclosPreventivos,
+        //cargarCiclosPreventivos: cargarCiclosPreventivos,
         editarItem: editarItem,
         quitarSubItem: quitarSubItem,
         editarSubItem: editarSubItem,
