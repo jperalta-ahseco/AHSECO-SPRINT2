@@ -130,6 +130,7 @@ namespace AHSECO.CCL.BL.Ventas
             try
             {
                 var result = Repository.VerDetalleSolicitud(solicitudDTO);
+
                 return new ResponseDTO<SolicitudVentaGrupoDTO>(result);
             }
             catch( Exception ex)
