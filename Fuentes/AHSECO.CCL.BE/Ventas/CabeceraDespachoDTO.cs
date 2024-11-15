@@ -35,5 +35,8 @@ namespace AHSECO.CCL.BE.Ventas
         public string NumeroOrden { get; set; }
         public string FechaOrden { get; set; }
         public string FechaMaxima { get; set; }
+
+        public int NumeroConStock { get; set; }
+        public int NumeroSinStock { get; set; }
     }
 }

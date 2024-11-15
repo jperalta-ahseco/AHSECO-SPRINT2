@@ -112,7 +112,18 @@
     var $dateOrdenCompra = $("#dateOrdenCompra");
     var $openRegdateOrdenCompra = $("#openRegdateOrdenCompra");
     var $txtFechaEntregaMax = $("#txtFechaEntregaMax");
+    var $txtNroOrdenCompra = $("#txtNroOrdenCompra");
+    var $btnGuardarGestion = $("#btnGuardarGestion");
+    var $NoRegSeries = $("#NoRegSeries");
+    var $tblSeriesCS = $("#tblSeriesCS");
 
+    var $modalSeries = $("#modalSeries");
+    var $txtCodigoProductoSerie = $("#txtCodigoProductoSerie");
+    var $txtMarcaSerie = $("#txtMarcaSerie");
+    var $txtDescripcion = $("#txtDescripcion");
+    var $txtSerie = $("#txtSerie");
+    var $codDetalleDespacho = $("#codDetalleDespacho");
+    var $btnRegistrarSerie = $("#btnRegistrarSerie");
 
     var mensajes = {
         consultaContactos: "Consultando contactos, por favor espere....",
@@ -128,7 +139,10 @@
         BuscandoHistorial: "Buscando Historial de cotizaciones, por favor espere....",
         GenerarCotizacion: "Realizando la generación de la cotización, por favor espere...",
         GenerarGuiaPedidos: "Generando la guía de pedidos, por favor espere...",
-        GenerarBO: "Generando BO, por favor espere..."
+        GenerarBO: "Generando BO, por favor espere...",
+        RegistrarGestionVenta: "Realizando registro de orden de compra, por favor espere...",
+        consultaDetalleDespacho: "Consultando detalle de despacho, por favor espere...",
+        actualizarSerie: "Actualizando el número de serie, por favor espere..."
     };
 
     $(Initialize);
@@ -203,11 +217,51 @@
         $btnImprimirCotizacion.click($btnImprimirCotizacion_click);
         $btnGuiaBO.click($btnGuiaBO_click);
         $btnGuiaPedido.click($btnGuiaPedido_click);
+        $btnGuardarGestion.click($btnGuardarGestion_click);
         $cmbTipoVenta.on("change", changeTipoVenta);
         $dateOrdenCompra.on("change", $dateOrdenCompra_change);
+        $btnRegistrarSerie.click($btnRegistrarSerie_click);
 
         CalcularFechaEntregaMaxima();
     };
+
+    function $btnGuardarGestion_click() {
+
+        if ($txtNroOrdenCompra.val() === "" || $txtNroOrdenCompra.val() == null) {
+            app.message.error("Validación", "Debe ingresar el número de orden de compra.");
+            return false;
+        }
+        var fnSi = function () {
+
+            var m = "POST";
+            var url = "BandejaSolicitudesVentas/MantenimientoDespacho";
+            var obj = {
+                Tipo: "I",
+                CodigoSolicitud: $numeroSolicitud.val(),
+                CodigoCotizacion: $idCotizacion.val(),
+                CodigoWorkFlow: $codigoWorkflow.val(),
+                NumeroOrden: $txtNroOrdenCompra.val(),
+                FechaOrden: $dateOrdenCompra.val(),
+                FechaMaxima: $txtFechaEntregaMax.val(),
+                Stock: ""
+            }
+            var objParam = JSON.stringify(obj);
+            var fnDoneCallback = function (data) {
+                var fnCallback = function () {
+                    location.reload();
+                };
+                if (data.Result.Codigo > 0) {
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+                else {
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+
+            };
+            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.RegistrarGestionVenta);
+        }
+        return app.message.confirm("Ventas", "¿Está seguro que desea iniciar el proceso de ventas?", "Sí", "No", fnSi, null);
+    }
 
     function CalcularFechaEntregaMaxima() {
         var dias = Number($txtPlazoEntrega.val());
@@ -1481,6 +1535,36 @@
                     $btnHistorial.show();
                 }
 
+                //para despacho:
+                $txtNroOrdenCompra.val(data.Result.ContadorCabecera.NumeroOrden);
+                $dateOrdenCompra.val(data.Result.ContadorCabecera.FechaOrden);
+                $txtFechaEntregaMax.val(data.Result.ContadorCabecera.FechaMaxima);
+
+
+
+                if (data.Result.ContadorCabecera.NumeroConStock > 0) {
+
+                    for (i = 0; i < data.Result.ContadorCabecera.NumeroConStock; i++) {
+                        var html = '<div class="text-center">';
+                        //if (sessionStorage.getItem('tipoRegViatico') == "U" && data.Result.CabeceraViatico.CodigoEstado != "EAC") {
+                        html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleConStock[i].Id +'" href="javascript:solicitud.editarSeries(' + data.Result.DespachoDetalleConStock[i].Id + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';
+                        html += ' <a class="btn btn-default btn-xs" title="Guardar" id="Boton' + data.Result.DespachoDetalleConStock[i].Id +'" style="display:none"  href="javascript:solicitud.guardarSeries(' + data.Result.DespachoDetalleConStock[i].Id + ')"><i class="fa fa-save" aria-hidden="true"></i></a>&nbsp;';
+                        //}
+                        html += '</div>';
+                        var nuevoTr = "<tr bgcolor='d0f2f7' id='fila" + data.Result.DespachoDetalleConStock[i].Id + "'>" +
+                            "<th>" + data.Result.DespachoDetalleConStock[i].RowNumber + "</th>" +
+                            "<th>" + data.Result.DespachoDetalleConStock[i].CodigoEquipo + "</th>" +
+                            "<th>" + data.Result.DespachoDetalleConStock[i].DescripcionEquipo + "</th>" +
+                            "<th>" + data.Result.DespachoDetalleConStock[i].Marca + "</th>" +
+                            "<th><input type='text' style='border: none;background-color: transparent; outline: none;' readonly id='Serie" + data.Result.DespachoDetalleConStock[i].Id+"' value='" + data.Result.DespachoDetalleConStock[i].NumeroSerie + "'></th>" +
+                            "<th>" + html + "</th>" +
+                            "</tr>";
+
+                        $NoRegSeries.hide();
+                        $tblSeriesCS.append(nuevoTr);
+                    }
+                }
+
 
 
                 cotvtadet.RecargarFiltroFamilia();
@@ -1573,6 +1657,100 @@
         };
     };
 
+    function editarSeries(codDetalleDespacho) {
+
+        $('#Serie' + codDetalleDespacho).removeAttr('readonly');
+        $('#Serie' + codDetalleDespacho).css('border', '1px solid ');
+        $('#Serie' + codDetalleDespacho).css('background-color', 'white');
+        $('#Boton' + codDetalleDespacho).css('display', 'inline-block');
+        $('#Edi' + codDetalleDespacho).css('display', 'none');
+       // $('#Boton' + codDetalleDespacho).css('width', '30px');
+        return;
+        $modalSeries.modal("show");
+        var m = "POST";
+        var url = "BandejaSolicitudesVentas/VerDetalleItemDespacho?codDetalleDespacho=" + codDetalleDespacho;
+        var objParam = "";
+        var fnDoneCallback = function (data) {
+            $codDetalleDespacho.val(data.Result.Id);
+            $txtCodigoProductoSerie.val(data.Result.CodigoEquipo);
+            $txtMarcaSerie.val(data.Result.Marca);
+            $txtDescripcion.val(data.Result.DescripcionEquipo);
+            $txtSerie.val(data.Result.NumeroSerie);       
+        };
+        return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.consultaDetalleDespacho);
+    }
+
+    function $btnRegistrarSerie_click() {
+        if ($txtSerie.val() === "" || $txtSerie.val() == null) {
+            app.message.error("Validación", "Debe ingresar el número de serie.");
+            return false;
+        }
+        var fnSi = function () {
+
+            var m = "POST";
+            var url = "BandejaSolicitudesVentas/ActualizarNumeroSerie";
+            var obj = {
+                codDetalleDespacho: $codDetalleDespacho.val(),
+                NumeroSerie: $txtSerie.val()
+            }
+            var objParam = JSON.stringify(obj);
+            var fnDoneCallback = function (data) {
+                var fnCallback = function () {
+                    location.reload();
+                };
+                if (data.Result.Codigo > 0) {
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+                else {
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+
+            };
+            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.actualizarSerie);
+        }
+        return app.message.confirm("Ventas", "¿Está seguro que registrar el número de serie?", "Sí", "No", fnSi, null);
+
+    }
+
+    function guardarSeries(codDetalleDespacho) {
+        var serie = $('#Serie' + codDetalleDespacho).val();
+        if (serie === "" || serie == null) {
+            app.message.error("Validación", "Debe ingresar el número de serie.");
+            return false;
+        }
+        var fnSi = function () {
+
+            var m = "POST";
+            var url = "BandejaSolicitudesVentas/ActualizarNumeroSerie";
+            var obj = {
+                codDetalleDespacho: codDetalleDespacho,
+                NumeroSerie: serie
+            }
+            var objParam = JSON.stringify(obj);
+            var fnDoneCallback = function (data) {
+                var fnCallback = function () {
+                    $('#Serie' + codDetalleDespacho).attr('readonly', true);
+                    $('#Serie' + codDetalleDespacho).css('border', 'none ');
+                    $('#Serie' + codDetalleDespacho).css('background-color', 'transparent');
+                    $('#Boton' + codDetalleDespacho).css('display', 'none');
+                    $('#Edi' + codDetalleDespacho).css('display', 'inline-block');
+
+                    //style='border: none;background-color: transparent; outline: none;'
+                };
+                if (data.Result.Codigo > 0) {
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+                else {
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+
+            };
+            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.actualizarSerie);
+        }
+        return app.message.confirm("Ventas", "¿Está seguro que registrar el número de serie?", "Sí", "No", fnSi, null);
+
+    }
+
     return {
         seleccionar: seleccionar,
         eliminarObsTmp: eliminarObsTmp,
@@ -1581,6 +1759,8 @@
         download: download,
         seleccionarProduct: seleccionarProduct,
         reducirCantidad: reducirCantidad,
-        verHistorial: verHistorial
+        verHistorial: verHistorial,
+        editarSeries: editarSeries,
+        guardarSeries: guardarSeries
     }
 })(window.jQuery, window, document);
