@@ -6,7 +6,7 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_SEL_MAIN_SOLICITUD]
 /*=======================================================================================================
 	Nombre:				Fecha:			Descripcion:
 	Diego Bazalar		03.10.24		Realiza el multi-select relacionados con la solicitud.
-	EXEC [USP_SEL_MAIN_SOLICITUD] 11,41,1
+	EXEC [USP_SEL_MAIN_SOLICITUD] 20,41,1
 	exec USP_SEL_MAIN_SOLICITUD @isIdSolicitud=3, @isIdCliente=6, @isIdWorkFlow=18 
 =======================================================================================================*/
 	@isIdSolicitud BIGINT,
@@ -43,4 +43,7 @@ BEGIN
 
 	--Seguimiento de flujo de ventas:
 	EXEC [USP_CONSULTA_WORKFLOWLOG] @isIdWorkFlow
+
+	--DESPACHO:
+	EXEC [USP_SEL_DESPACHO]  @isIdSolicitud
 END

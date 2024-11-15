@@ -144,6 +144,7 @@ namespace AHSECO.CCL.BL.Ventas
             try
             {
                 var result = Repository.VerDetalleSolicitud(solicitudDTO);
+
                 return new ResponseDTO<SolicitudVentaGrupoDTO>(result);
             }
             catch( Exception ex)
@@ -259,6 +260,20 @@ namespace AHSECO.CCL.BL.Ventas
             {
                 Log.TraceError(Utilidades.GetCaller() + ":: " + ex.Message);
                 return new ResponseDTO<GuiaDTO>(ex);
+            };
+        }
+
+        public ResponseDTO<RespuestaDTO> MantenimientoDespacho(DatosDespachoDTO datosDespachoDTO)
+        {
+            try
+            {
+                var result = Repository.MantenimientoDespacho(datosDespachoDTO);
+                return new ResponseDTO<RespuestaDTO>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + ":: " + ex.Message);
+                return new ResponseDTO<RespuestaDTO>(ex);
             };
         }
 

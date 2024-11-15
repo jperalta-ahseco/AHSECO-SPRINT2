@@ -10,6 +10,7 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica
     public class GrupoSolicitudVentaTecDTO
     {
         public SolicitudVentaTecDTO Solicitud { get; set; }
-        public List<CotizacionDetalleDTO> DetalleCotizacion { get; set; }
+        public List<CotizacionDetalleTecDTO> DetalleCotizacion { get; set; }
+        public List<ElementosxProductoDTO> ElementosDeProducto { get; set; }
     }
 }

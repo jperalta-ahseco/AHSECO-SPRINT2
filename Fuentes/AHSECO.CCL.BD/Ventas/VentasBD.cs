@@ -515,10 +515,118 @@ namespace AHSECO.CCL.BD.Ventas
                         };
                         _listaSeguimiento.Add(seguimiento);
                     };
+
+                    reader.NextResult();
+                    CabeceraDespachoDTO cabeceraDespachoconStock = new CabeceraDespachoDTO();
+                    if (reader.HasRows)
+                    {
+                        reader.Read();
+                        CabeceraDespachoDTO cabeceraDesconStock = new CabeceraDespachoDTO
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("ID")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID")),
+                            CodigoSolicitud = reader.IsDBNull(reader.GetOrdinal("ID_SOLICITUD")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_SOLICITUD")),
+                            Stock = reader.IsDBNull(reader.GetOrdinal("STOCK")) ? "" : reader.GetString(reader.GetOrdinal("STOCK")),
+                            NumeroOrden = reader.IsDBNull(reader.GetOrdinal("NUMORDEN")) ? "" : reader.GetString(reader.GetOrdinal("NUMORDEN")),
+                            FechaOrden = reader.IsDBNull(reader.GetOrdinal("FECHAORDEN")) ? "" : reader.GetString(reader.GetOrdinal("FECHAORDEN")),
+                            FechaMaxima = reader.IsDBNull(reader.GetOrdinal("FECHAMAX")) ? "" : reader.GetString(reader.GetOrdinal("FECHAMAX")),
+                            FechaEntrega = reader.IsDBNull(reader.GetOrdinal("FECHAENTREGA")) ? "" : reader.GetString(reader.GetOrdinal("FECHAENTREGA")),
+                            NumeroFactura = reader.IsDBNull(reader.GetOrdinal("NUMFACTURA")) ? "" : reader.GetString(reader.GetOrdinal("NUMFACTURA")),
+                            NumeroGuiaRemision = reader.IsDBNull(reader.GetOrdinal("NUMGUIAREM")) ? "" : reader.GetString(reader.GetOrdinal("NUMGUIAREM")),
+                            NumeroPedido = reader.IsDBNull(reader.GetOrdinal("NUMPEDIDO")) ? "" : reader.GetString(reader.GetOrdinal("NUMPEDIDO")),
+                            FechaIngreso = reader.IsDBNull(reader.GetOrdinal("FECHAINGRESO")) ? "" : reader.GetString(reader.GetOrdinal("FECHAINGRESO")),
+                            EstadoAprobacion = reader.IsDBNull(reader.GetOrdinal("ESTAPROB")) ? "" : reader.GetString(reader.GetOrdinal("ESTAPROB")),
+                            FechaAprobacion = reader.IsDBNull(reader.GetOrdinal("FECAPROB")) ? "" : reader.GetString(reader.GetOrdinal("FECAPROB")),
+                            Observacion = reader.IsDBNull(reader.GetOrdinal("OBSERVACION")) ? "" : reader.GetString(reader.GetOrdinal("OBSERVACION")),
+                            UsuarioRegistra = reader.IsDBNull(reader.GetOrdinal("USR_REG")) ? "" : reader.GetString(reader.GetOrdinal("USR_REG")),
+                            FechaRegistro = reader.IsDBNull(reader.GetOrdinal("FEC_REG")) ? DateTime.Now : reader.GetDateTime(reader.GetOrdinal("FEC_REG")),
+                            UsuarioModifica = reader.IsDBNull(reader.GetOrdinal("USR_MOD")) ? "" : reader.GetString(reader.GetOrdinal("USR_MOD")),
+                            FechaModifica = reader.IsDBNull(reader.GetOrdinal("FEC_MOD")) ? DateTime.Now : reader.GetDateTime(reader.GetOrdinal("FEC_MOD"))
+                        };
+
+                        cabeceraDespachoconStock = cabeceraDesconStock;
+                    }
+                   
+
+                    reader.NextResult();
+
+                    List<DetalleDespachoDTO> _listaDetalleDespachoconStock = new List<DetalleDespachoDTO>();
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            var detalleDespachoConStock = new DetalleDespachoDTO()
+                            {
+                                RowNumber = reader.IsDBNull(reader.GetOrdinal("ROWNUM")) ? 0 : reader.GetInt64(reader.GetOrdinal("ROWNUM")),
+                                CodigoEquipo = reader.IsDBNull(reader.GetOrdinal("CODEQUIPO")) ? "" : reader.GetString(reader.GetOrdinal("CODEQUIPO")),
+                                DescripcionEquipo = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION")),
+                                Marca = reader.IsDBNull(reader.GetOrdinal("MARCA")) ? "" : reader.GetString(reader.GetOrdinal("MARCA")),
+                                NumeroSerie = reader.IsDBNull(reader.GetOrdinal("NUMSERIE")) ? "" : reader.GetString(reader.GetOrdinal("NUMSERIE"))
+                            };
+                            _listaDetalleDespachoconStock.Add(detalleDespachoConStock);
+                        };
+                    }
+                   
+
+                    reader.NextResult();
+                    CabeceraDespachoDTO cabeceraDespachosinStock = new CabeceraDespachoDTO();
+                    if (reader.HasRows)
+                    {
+                        reader.Read();
+                        CabeceraDespachoDTO cabeceraDessinStock = new CabeceraDespachoDTO
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("ID")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID")),
+                            CodigoSolicitud = reader.IsDBNull(reader.GetOrdinal("ID_SOLICITUD")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_SOLICITUD")),
+                            Stock = reader.IsDBNull(reader.GetOrdinal("STOCK")) ? "" : reader.GetString(reader.GetOrdinal("STOCK")),
+                            NumeroOrden = reader.IsDBNull(reader.GetOrdinal("NUMORDEN")) ? "" : reader.GetString(reader.GetOrdinal("NUMORDEN")),
+                            FechaOrden = reader.IsDBNull(reader.GetOrdinal("FECHAORDEN")) ? "" : reader.GetString(reader.GetOrdinal("FECHAORDEN")),
+                            FechaMaxima = reader.IsDBNull(reader.GetOrdinal("FECHAMAX")) ? "" : reader.GetString(reader.GetOrdinal("FECHAMAX")),
+                            FechaEntrega = reader.IsDBNull(reader.GetOrdinal("FECHAENTREGA")) ? "" : reader.GetString(reader.GetOrdinal("FECHAENTREGA")),
+                            NumeroFactura = reader.IsDBNull(reader.GetOrdinal("NUMFACTURA")) ? "" : reader.GetString(reader.GetOrdinal("NUMFACTURA")),
+                            NumeroGuiaRemision = reader.IsDBNull(reader.GetOrdinal("NUMGUIAREM")) ? "" : reader.GetString(reader.GetOrdinal("NUMGUIAREM")),
+                            NumeroPedido = reader.IsDBNull(reader.GetOrdinal("NUMPEDIDO")) ? "" : reader.GetString(reader.GetOrdinal("NUMPEDIDO")),
+                            FechaIngreso = reader.IsDBNull(reader.GetOrdinal("FECHAINGRESO")) ? "" : reader.GetString(reader.GetOrdinal("FECHAINGRESO")),
+                            EstadoAprobacion = reader.IsDBNull(reader.GetOrdinal("ESTAPROB")) ? "" : reader.GetString(reader.GetOrdinal("ESTAPROB")),
+                            FechaAprobacion = reader.IsDBNull(reader.GetOrdinal("FECAPROB")) ? "" : reader.GetString(reader.GetOrdinal("FECAPROB")),
+                            Observacion = reader.IsDBNull(reader.GetOrdinal("OBSERVACION")) ? "" : reader.GetString(reader.GetOrdinal("OBSERVACION")),
+                            UsuarioRegistra = reader.IsDBNull(reader.GetOrdinal("USR_REG")) ? "" : reader.GetString(reader.GetOrdinal("USR_REG")),
+                            FechaRegistro = reader.IsDBNull(reader.GetOrdinal("FEC_REG")) ? DateTime.Now : reader.GetDateTime(reader.GetOrdinal("FEC_REG")),
+                            UsuarioModifica = reader.IsDBNull(reader.GetOrdinal("USR_MOD")) ? "" : reader.GetString(reader.GetOrdinal("USR_MOD")),
+                            FechaModifica = reader.IsDBNull(reader.GetOrdinal("FEC_MOD")) ? DateTime.Now : reader.GetDateTime(reader.GetOrdinal("FEC_MOD"))
+                        };
+                        cabeceraDespachosinStock = cabeceraDessinStock;
+                    }
+                   
+
+                    reader.NextResult();
+
+                    List<DetalleDespachoDTO> _listaDetalleDespachosinStock = new List<DetalleDespachoDTO>();
+
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            var detalleDespachoSinStock = new DetalleDespachoDTO()
+                            {
+                                RowNumber = reader.IsDBNull(reader.GetOrdinal("ROWNUM")) ? 0 : reader.GetInt64(reader.GetOrdinal("ROWNUM")),
+                                CodigoEquipo = reader.IsDBNull(reader.GetOrdinal("CODEQUIPO")) ? "" : reader.GetString(reader.GetOrdinal("CODEQUIPO")),
+                                DescripcionEquipo = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION")),
+                                Marca = reader.IsDBNull(reader.GetOrdinal("MARCA")) ? "" : reader.GetString(reader.GetOrdinal("MARCA")),
+                                NumeroSerie = reader.IsDBNull(reader.GetOrdinal("NUMSERIE")) ? "" : reader.GetString(reader.GetOrdinal("NUMSERIE"))
+                            };
+                            _listaDetalleDespachosinStock.Add(detalleDespachoSinStock);
+                        };
+                    }
+                    
+
+
                     result.Solicitud = solicitud;
                     result.Adjuntos = _listaAdjuntos;
                     result.Observaciones = _listaObservaciones;
                     result.Seguimiento = _listaSeguimiento;
+                    result.DespachoCabeceraConStock = cabeceraDespachoconStock;
+                    result.DespachoDetalleConStock = _listaDetalleDespachoconStock;
+                    result.DespachoCabeceraSinStock = cabeceraDespachosinStock;
+                    result.DespachoDetalleSinStock = _listaDetalleDespachosinStock;
                 };
                 return result;
             };
@@ -984,6 +1092,54 @@ namespace AHSECO.CCL.BD.Ventas
 
                 return result;
 
+            }
+        }
+
+
+        public RespuestaDTO MantenimientoDespacho(DatosDespachoDTO datosDespachoDTO)
+        {
+            var rpta = new RespuestaDTO();
+            Log.TraceInfo(Utilidades.GetCaller());
+
+
+            using (var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("TIPO", datosDespachoDTO.Tipo);
+                parameters.Add("CODSOLICITUD", datosDespachoDTO.CodigoSolicitud);
+                parameters.Add("CODCOTIZACION", datosDespachoDTO.CodigoCotizacion);
+                parameters.Add("ID_WORKFLOW", datosDespachoDTO.CodigoWorkFlow);
+                parameters.Add("NOMPERFIL", datosDespachoDTO.NombrePerfil == null ? "" : datosDespachoDTO.NombrePerfil);
+                parameters.Add("NUMRODEN", datosDespachoDTO.NumeroOrden == null ? "" : datosDespachoDTO.NumeroOrden);
+                parameters.Add("FECHAORDEN", datosDespachoDTO.FechaOrden);
+                parameters.Add("FECHAMAX", datosDespachoDTO.FechaMaxima);
+                parameters.Add("STOCK", datosDespachoDTO.Stock);
+                parameters.Add("FECHAENTREGA", datosDespachoDTO.FechaEntrega);
+                parameters.Add("NUMFACTURA", datosDespachoDTO.NumeroFactura);
+                parameters.Add("NUMGUIAREM", datosDespachoDTO.NumeroGuiaRemision);
+                parameters.Add("NUMPEDIDO", datosDespachoDTO.NumeroPedido);
+                parameters.Add("FECHAINGRESO", datosDespachoDTO.FechaIngreso);
+                parameters.Add("ESTAPROB", datosDespachoDTO.EstadoAprobacion);
+                parameters.Add("OBSERVACION", datosDespachoDTO.Observacion);
+                parameters.Add("USRREG", datosDespachoDTO.UsuarioRegistro);
+
+                var result = connection.Query
+                (
+                    sql: "USP_MANT_DESPACHOVENTAS",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure
+                )
+                 .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new RespuestaDTO
+                    {
+                        Codigo = i.Single(d => d.Key.Equals("COD")).Value.Parse<int>(),
+                        Mensaje = i.Single(d => d.Key.Equals("MSG")).Value.Parse<string>()
+
+                    }).FirstOrDefault();
+
+                return result;
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica;
+﻿using AHSECO.CCL.BD;
+using AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica;
 using AHSECO.CCL.BE;
 using AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica;
 using AHSECO.CCL.BE.Ventas;
@@ -165,5 +166,20 @@ namespace AHSECO.CCL.BL.ServicioTecnico.BandejaInstalacionTecnica
                 return new ResponseDTO<GrupoInstalacionTecnicaDTO> (ex);
             }
         }
+
+        public ResponseDTO<IEnumerable<InstalacionTecnicaDetalleDTO>> ObtenerElementosdeProducto(long IdProducto)
+        {
+            try
+            {
+                var result = Repository.ObtenerElementosdeProducto(IdProducto);
+                return new ResponseDTO<IEnumerable<InstalacionTecnicaDetalleDTO>>(result);
+            }
+            catch(Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + " :: " + ex.Message);
+                return new ResponseDTO<IEnumerable<InstalacionTecnicaDetalleDTO>>(ex);
+            }
+        }
+
     }
 }
