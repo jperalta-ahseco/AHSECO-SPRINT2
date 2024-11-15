@@ -591,7 +591,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="box-content" style="@(ViewBag.VerGestionLogistica ? "" : "display:none");">
+                                            <div class="box-content"  style="@(ViewBag.VerGestionLogistica ? "" : "display:none");">
                                                 <ul class="nav nav-tabs" style="padding-top: 5px;">
                                                     <li class="" id="tabConStock">
                                                         <a href="#navConStock" data-toggle="tab" style="font-weight:bold; color:black;" tabindex="220"><i class="fa fa-cubes" aria-hidden="true"></i> Con Stock</a>
@@ -602,8 +602,12 @@
                                                 </ul>
                                                 <div class="tab-content">
                                                     <div id="navConStock" class="tab-pane fade in active">
+                                                        
                                                         <div class="row container-fluid">
-                                                            <div class="col-md-6 col-sm-12">
+                                                            &nbsp;
+                                                        </div>
+                                                        <div class="row container-fluid">
+                                                            <div class="col-md-4 col-sm-12">
                                                                 <label for="dateEntregaPedidoCE">Fecha de Entrega de Pedido: </label>
                                                                 <div class="input-group date">
                                                                     <input type="text" class="form-control input-sm" id="dateEntregaPedidoCE" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10" @ViewBag.FechaEntregaPedidoCE>
@@ -612,37 +616,33 @@
                                                                     </span>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-6 col-sm-12">
+                                                            <div class="col-md-4 col-sm-12">
                                                                 <label for="txtNumeroFacturaCE">N° de Factura: </label>
                                                                 <div class="form-group">
                                                                     <input type="text" class="form-control input-sm" id="txtNumeroFacturaCE" placeholder="Ingresar Número de Factura" @ViewBag.TxtNumeroFacturaCE>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="row container-fluid">
-                                                            <div class="col-md-6 col-sm-12">
+                                                            <div class="col-md-4 col-sm-12">
                                                                 <label for="txtNumeroGuiaRemisionCE">N° de Gu&iacute;a de Remisi&oacute;n: </label>
                                                                 <div class="form-group">
                                                                     <input type="text" class="form-control input-sm" id="txtNumeroGuiaRemisionCE" placeholder="Ingresar N° Guia de Remisión" @ViewBag.TxtNumeroGuiaRemisionCE>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-6 col-sm-12">
-                                                                <label for="txtNumeroSerieCE">N° de Serie: </label>
-                                                                <div class="form-group">
-                                                                    <input type="text" class="form-control input-sm" id="txtNumeroSerieCE" placeholder="Ingresar Número de Serie" @ViewBag.TxtNumeroSerieCE>
-                                                                </div>
-                                                            </div>
                                                         </div>
+                                                      
                                                     </div>
                                                     <div id="navSinStock" class="tab-pane fade">
                                                         <div class="row container-fluid">
-                                                            <div class="col-md-6 col-sm-12">
+                                                            &nbsp;
+                                                        </div>
+                                                        <div class="row container-fluid">
+                                                            <div class="col-md-4 col-sm-12">
                                                                 <label for="txtCodigoPedidoSE">C&oacute;digo de Pedido: </label>
                                                                 <div class="form-group">
                                                                     <input type="text" class="form-control input-sm" id="txtCodigoPedidoSE" placeholder="Ingresar Código de Pedido" @ViewBag.TxtCodigoPedido>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-6 col-sm-12">
+                                                            <div class="col-md-4 col-sm-12">
                                                                 <label for="dateIngresoAlmacenSE">Fecha de Ingreso de Almacen: </label>
                                                                 <div class="input-group date">
                                                                     <input type="text" class="form-control input-sm" id="dateIngresoAlmacenSE" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10" @ViewBag.IngresoAlmacen>
@@ -653,7 +653,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="row container-fluid">
-                                                            <div class="col-md-6 col-sm-12">
+                                                            <div class="col-md-4 col-sm-12">
                                                                 <label for="dateEntregaPedidoSE">Fecha de Entrega de Pedido: </label>
                                                                 <div class="input-group date">
                                                                     <input type="text" class="form-control input-sm" id="dateEntregaPedidoSE" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10" @ViewBag.FechaEntregaPedidoSE>
@@ -662,27 +662,20 @@
                                                                     </span>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-6 col-sm-12">
+                                                            <div class="col-md-4 col-sm-12">
                                                                 <label for="txtNumeroFacturaSE">N° de Factura: </label>
                                                                 <div class="form-group">
                                                                     <input type="text" class="form-control input-sm" id="txtNumeroFacturaSE" placeholder="Ingresar Número de Factura" @ViewBag.TxtNumeroFacturaSE>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="row container-fluid">
-                                                            <div class="col-md-6 col-sm-12">
+                                                            <div class="col-md-4 col-sm-12">
                                                                 <label for="txtNumeroGuiaRemisionSE">N° de Gu&iacute;a de Remisi&oacute;n: </label>
                                                                 <div class="form-group">
                                                                     <input type="text" class="form-control input-sm" id="txtNumeroGuiaRemisionSE" placeholder="Ingresar N° Guia de Remisión" @ViewBag.TxtNumeroGuiaRemisionSE>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-6 col-sm-12">
-                                                                <label for="txtNumeroSerieSE">N° de Serie: </label>
-                                                                <div class="form-group">
-                                                                    <input type="text" class="form-control input-sm" id="txtNumeroSerieSE" placeholder="Ingresar Número de Serie" @ViewBag.TxtNumeroSerieSE>
-                                                                </div>
-                                                            </div>
                                                         </div>
+
                                                     </div>
                                                 </div>
                                             </div>

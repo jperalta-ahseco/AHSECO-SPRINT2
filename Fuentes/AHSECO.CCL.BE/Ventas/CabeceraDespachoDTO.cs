@@ -25,4 +25,15 @@ namespace AHSECO.CCL.BE.Ventas
         public string Observacion { get; set; }
 
     }
+
+    public class ContadorCabeceraDespacho
+    {
+        public long CodigoSolicitud { get; set; }
+        public int ContadorConStock { get; set; }
+        public int ContadorSinStock { get; set;}
+
+        public string NumeroOrden { get; set; }
+        public string FechaOrden { get; set; }
+        public string FechaMaxima { get; set; }
+    }
 }

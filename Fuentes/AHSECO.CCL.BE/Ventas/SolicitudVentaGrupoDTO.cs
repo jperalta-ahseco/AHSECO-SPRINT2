@@ -14,7 +14,7 @@ namespace AHSECO.CCL.BE.Ventas
         public List<ObservacionDTO> Observaciones { get; set; }
         public List<WorkflowLogDTO> Seguimiento { get; set; }
         public List<DocumentoDTO> Adjuntos { get; set; }
-
+        public ContadorCabeceraDespacho ContadorCabecera { get; set; }
         public CabeceraDespachoDTO DespachoCabeceraConStock { get; set; }
         public List<DetalleDespachoDTO> DespachoDetalleConStock { get; set; }
         public CabeceraDespachoDTO DespachoCabeceraSinStock { get; set; }

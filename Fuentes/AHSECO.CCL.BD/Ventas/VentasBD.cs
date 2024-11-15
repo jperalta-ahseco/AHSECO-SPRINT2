@@ -517,6 +517,19 @@ namespace AHSECO.CCL.BD.Ventas
                     };
 
                     reader.NextResult();
+                    reader.Read();
+                    ContadorCabeceraDespacho contadorCabecera = new ContadorCabeceraDespacho()
+                    {
+                        CodigoSolicitud = reader.IsDBNull(reader.GetOrdinal("ID_SOLICITUD")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_SOLICITUD")),
+                        NumeroOrden = reader.IsDBNull(reader.GetOrdinal("NUMORDEN")) ? "" : reader.GetString(reader.GetOrdinal("NUMORDEN")),
+                        FechaOrden = reader.IsDBNull(reader.GetOrdinal("FECHAORDEN")) ? "" : reader.GetString(reader.GetOrdinal("FECHAORDEN")),
+                        FechaMaxima = reader.IsDBNull(reader.GetOrdinal("FECHAMAX")) ? "" : reader.GetString(reader.GetOrdinal("FECHAMAX")),
+                        ContadorConStock = reader.IsDBNull(reader.GetOrdinal("CONT_CS")) ? 0 : reader.GetInt32(reader.GetOrdinal("CONT_CS")),
+                        ContadorSinStock = reader.IsDBNull(reader.GetOrdinal("CONT_SS")) ? 0 : reader.GetInt32(reader.GetOrdinal("CONT_SS"))
+                    };
+
+
+                    reader.NextResult();
                     CabeceraDespachoDTO cabeceraDespachoconStock = new CabeceraDespachoDTO();
                     if (reader.HasRows)
                     {
@@ -623,6 +636,7 @@ namespace AHSECO.CCL.BD.Ventas
                     result.Adjuntos = _listaAdjuntos;
                     result.Observaciones = _listaObservaciones;
                     result.Seguimiento = _listaSeguimiento;
+                    result.ContadorCabecera = contadorCabecera;
                     result.DespachoCabeceraConStock = cabeceraDespachoconStock;
                     result.DespachoDetalleConStock = _listaDetalleDespachoconStock;
                     result.DespachoCabeceraSinStock = cabeceraDespachosinStock;
