@@ -211,6 +211,7 @@ GO
 CREATE TABLE [dbo].[TBD_DESPACHO_DIST]
 (
 	[ID] [bigint] IDENTITY(1,1) NOT NULL,
+	[ID_DESPACHO][bigint] NOT NULL,
 	[ID_COTCOSTOS] [bigint] NOT NULL,
 	[NUMSEC] [int] NOT NULL,
 	[NUMSERIE] [varchar](100) NULL,
