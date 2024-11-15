@@ -163,6 +163,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.TabAcordionCollapsedGest = "collapse";
             ViewBag.VerGestionVenta = false;
             ViewBag.VerGestionLogistica = false;
+            ViewBag.VerNavConStock = false;
+            ViewBag.VerNavSinStock = false;
             VariableSesion.setObject(TAG_CDI, new List<CotizacionDetalleDTO>());
             ViewBag.PermitirModificarCodItem = true;
             ViewBag.PermitirModificarCantidad = false;
@@ -194,6 +196,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 ViewBag.EstadoSolicitud = soli.Estado;
                 VariableSesion.setCadena("estadoSol", soli.Estado);
 
+                //Para Gestion:
+                var validarDespacho = ventasBL.ValidarDespacho(int.Parse(numSol));
+              
+
                 var rptaEst = ventasBL.ObtenerEstadosProcesos(new ProcesoEstadoDTO
                 { IdProceso = ConstantesDTO.Procesos.Ventas.ID, CodigoEstado = soli.Estado });
 
@@ -213,7 +219,19 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     {
                         ViewBag.Btn_EnviarGuia = "inline-block";
                         ViewBag.Btn_GuiaPedido = "inline-block";
-                        ViewBag.Btn_GuiaBO = "inline-block";
+
+                        if (validarDespacho.Result != null)
+                        {
+                            if (validarDespacho.Result.ContadorSinStock > 0)
+                            {
+                                ViewBag.Btn_GuiaBO = "inline-block";
+                                ViewBag.VerNavSinStock = true;
+                            }
+                            if (validarDespacho.Result.ContadorConStock > 0)
+                            {
+                                ViewBag.VerNavConStock = true;
+                            }
+                        }
                     }
 
                     ViewBag.TxtOrdenCompra = "";
@@ -446,6 +464,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             VariableSesion.setObject(TAG_CDI, lstItems.ToList());
                         }
                     }
+
+
                 }
             }
 
@@ -1856,5 +1876,20 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             return Json(response);
         }
 
+        [HttpPost]
+        public JsonResult VerDetalleItemDespacho(long codDetalleDespacho)
+        {
+            var ventasBL = new VentasBL();
+            var response = ventasBL.VerDetalleItemDespacho(codDetalleDespacho);
+            return Json(response);
+        }
+
+        [HttpPost]
+        public JsonResult ActualizarNumeroSerie(DatosActualizarSerieSTO datos)
+        {
+            var ventasBL = new VentasBL();
+            var response = ventasBL.ActualizarNumeroSerie(datos);
+            return Json(response);
+        }
     }
 }

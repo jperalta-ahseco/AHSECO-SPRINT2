@@ -531,7 +531,9 @@ namespace AHSECO.CCL.BD.Ventas
                             FechaOrden = reader.IsDBNull(reader.GetOrdinal("FECHAORDEN")) ? "" : reader.GetString(reader.GetOrdinal("FECHAORDEN")),
                             FechaMaxima = reader.IsDBNull(reader.GetOrdinal("FECHAMAX")) ? "" : reader.GetString(reader.GetOrdinal("FECHAMAX")),
                             ContadorConStock = reader.IsDBNull(reader.GetOrdinal("CONT_CS")) ? 0 : reader.GetInt32(reader.GetOrdinal("CONT_CS")),
-                            ContadorSinStock = reader.IsDBNull(reader.GetOrdinal("CONT_SS")) ? 0 : reader.GetInt32(reader.GetOrdinal("CONT_SS"))
+                            ContadorSinStock = reader.IsDBNull(reader.GetOrdinal("CONT_SS")) ? 0 : reader.GetInt32(reader.GetOrdinal("CONT_SS")),
+                            NumeroConStock = reader.IsDBNull(reader.GetOrdinal("NUM_CS")) ? 0 : reader.GetInt32(reader.GetOrdinal("NUM_CS")),
+                            NumeroSinStock = reader.IsDBNull(reader.GetOrdinal("NUM_SS")) ? 0 : reader.GetInt32(reader.GetOrdinal("NUM_SS"))
                         };
                     }
 
@@ -580,7 +582,8 @@ namespace AHSECO.CCL.BD.Ventas
                                 CodigoEquipo = reader.IsDBNull(reader.GetOrdinal("CODEQUIPO")) ? "" : reader.GetString(reader.GetOrdinal("CODEQUIPO")),
                                 DescripcionEquipo = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION")),
                                 Marca = reader.IsDBNull(reader.GetOrdinal("MARCA")) ? "" : reader.GetString(reader.GetOrdinal("MARCA")),
-                                NumeroSerie = reader.IsDBNull(reader.GetOrdinal("NUMSERIE")) ? "" : reader.GetString(reader.GetOrdinal("NUMSERIE"))
+                                NumeroSerie = reader.IsDBNull(reader.GetOrdinal("NUMSERIE")) ? "" : reader.GetString(reader.GetOrdinal("NUMSERIE")),
+                                Id = reader.IsDBNull(reader.GetOrdinal("ID")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID"))
                             };
                             _listaDetalleDespachoconStock.Add(detalleDespachoConStock);
                         };
@@ -1158,6 +1161,107 @@ namespace AHSECO.CCL.BD.Ventas
                         Codigo = i.Single(d => d.Key.Equals("COD")).Value.Parse<int>(),
                         Mensaje = i.Single(d => d.Key.Equals("MSG")).Value.Parse<string>()
 
+                    }).FirstOrDefault();
+
+                return result;
+            }
+        }
+
+        public ContadorCabeceraDespacho ValidarDespacho(long CodigoSolicitud)
+        {
+            var rpta = new RespuestaDTO();
+            Log.TraceInfo(Utilidades.GetCaller());
+
+
+            using (var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("isIdSolicitud", CodigoSolicitud);
+
+                var result = connection.Query
+                (
+                    sql: "USP_VAL_DESPACHO",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure
+                )
+                 .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new ContadorCabeceraDespacho
+                    {
+                        CodigoSolicitud = i.Single(d => d.Key.Equals("ID_SOLICITUD")).Value.Parse<long>(),
+                        NumeroOrden = i.Single(d => d.Key.Equals("NUMORDEN")).Value.Parse<string>(),
+                        FechaOrden = i.Single(d => d.Key.Equals("FECHAORDEN")).Value.Parse<string>(),
+                        FechaMaxima = i.Single(d => d.Key.Equals("FECHAMAX")).Value.Parse<string>(),
+                        ContadorConStock = i.Single(d => d.Key.Equals("CONT_CS")).Value.Parse<int>(),
+                        ContadorSinStock = i.Single(d => d.Key.Equals("CONT_SS")).Value.Parse<int>(),
+                        NumeroConStock = i.Single(d => d.Key.Equals("NUM_CS")).Value.Parse<int>(),
+                        NumeroSinStock = i.Single(d => d.Key.Equals("NUM_SS")).Value.Parse<int>()
+                    }).FirstOrDefault();
+
+                return result;
+            }
+        }
+
+        public DetalleDespachoDTO VerDetalleItemDespacho(long codDetalleDespacho)
+        {
+            var rpta = new RespuestaDTO();
+            Log.TraceInfo(Utilidades.GetCaller());
+
+
+            using (var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("IDDETALLEDESPACHO", codDetalleDespacho);
+
+                var result = connection.Query
+                (
+                    sql: "USP_CONSULTA_DETALLEDESPACHO",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure
+                )
+                 .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new DetalleDespachoDTO
+                    {
+                        Id = i.Single(d => d.Key.Equals("ID")).Value.Parse<long>(),
+                        CodigoDespacho= i.Single(d => d.Key.Equals("ID_DESPACHO")).Value.Parse<long>(),
+                        RowNumber = i.Single(d => d.Key.Equals("ROWNUM")).Value.Parse<int>(),
+                        CodigoEquipo = i.Single(d => d.Key.Equals("CODEQUIPO")).Value.Parse<string>(),
+                        DescripcionEquipo = i.Single(d => d.Key.Equals("DESCRIPCION")).Value.Parse<string>(),
+                        Marca = i.Single(d => d.Key.Equals("MARCA")).Value.Parse<string>(),
+                        NumeroSerie = i.Single(d => d.Key.Equals("NUMSERIE")).Value.Parse<string>()
+                    }).FirstOrDefault();
+
+                return result;
+            }
+        }
+
+        public RespuestaDTO ActualizarNumeroSerie(DatosActualizarSerieSTO datos)
+        {
+            var rpta = new RespuestaDTO();
+            Log.TraceInfo(Utilidades.GetCaller());
+
+
+            using (var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("IDDETALLEDESPACHO", datos.codDetalleDespacho);
+                parameters.Add("NUMSERIE", datos.NumeroSerie);
+                var result = connection.Query
+                (
+                    sql: "USP_ACTUALIZAR_SERIE",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure
+                )
+                 .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new RespuestaDTO
+                    {
+                        Codigo = i.Single(d => d.Key.Equals("COD")).Value.Parse<int>(),
+                        Mensaje = i.Single(d => d.Key.Equals("MSG")).Value.Parse<string>()
                     }).FirstOrDefault();
 
                 return result;
