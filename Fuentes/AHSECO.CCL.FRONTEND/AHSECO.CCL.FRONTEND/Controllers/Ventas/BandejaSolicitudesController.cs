@@ -151,8 +151,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.PermitirEnvioCotizacion = true;
             ViewBag.PermitirReCotizacion = true;
             ViewBag.MostrarCotizacionDetalle = false;
-            ViewBag.MostrarCDI_EspCarac = true;
-            ViewBag.MostrarCDI_Costos = true;
+            ViewBag.PermitirModificarEspCarac = true;
+            ViewBag.MostrarCDI_Costos_R1 = true;
+            ViewBag.MostrarCDI_Costos_R2 = true;
             ViewBag.MostrarCDI_Ganancia = true;
             ViewBag.MostrarCDI_InfoEnvio = true;
             ViewBag.MostrarCDI_InfoAdic = true;
@@ -164,6 +165,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.VerGestionLogistica = false;
             VariableSesion.setObject(TAG_CDI, new List<CotizacionDetalleDTO>());
             ViewBag.PermitirModificarCodItem = true;
+            ViewBag.PermitirModificarCantidad = false;
 
             ViewBag.PermitirTabDetCot = true;
             ViewBag.PermitirTabInsta = true;
@@ -176,13 +178,13 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Gerente || NombreRol == ConstantesDTO.WorkflowRol.Venta.Costos)
             {
-                ViewBag.MostrarCDI_EspCarac = false;
                 ViewBag.MostrarCDI_InfoEnvio = false;
                 ViewBag.MostrarCDI_InfoAdic = false;
+                ViewBag.MostrarCDI_Costos_R2 = false;
             }
             else
             {
-                ViewBag.MostrarCDI_Costos = false;
+                ViewBag.MostrarCDI_Costos_R1 = false;
             }
 
             if (numSol != null)
@@ -245,6 +247,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnCotizacion)
                 {
                     ViewBag.PermitirModificarCodItem = false;
+                    ViewBag.PermitirModificarCantidad = true;
                     ViewBag.PermitirReCotizacion = false;
 
                     ViewBag.PermitirTabInsta = false;
@@ -252,6 +255,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     ViewBag.PermitirTabLLaveMano = false;
                     ViewBag.PermitirTabManualVideos = false;
                     ViewBag.PermitirTabGarantiaAdic = false;
+                    ViewBag.PermitirTabCalib = false;
+                    ViewBag.PermitirTabFlete = false;
                     ViewBag.PermitirTabCalib = false;
                     ViewBag.PermitirTabFlete = false;
                 }
@@ -273,6 +278,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                 if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion)
                 {
+                    ViewBag.PermitirModificarEspCarac = false;
                     ViewBag.PermitirAgregarCotDet = false;
                     ViewBag.PermitirEnvioCotizacion = false;
 
@@ -418,13 +424,16 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 if (x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto ||
                                 x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio)
                                 {
-                                    var oArticulo = resArticulos.Result.FirstOrDefault();
+                                    var oArticulo = resArticulos.Result.FirstOrDefault(o => o.CodArticulo.Trim() == x.CodItem.Trim());
                                     if (oArticulo != null)
                                     {
                                         x.DescUnidad = oArticulo.DescUnidad;
                                     }
                                 }
                             });
+
+                            lstItems = TotalizacionCotDet(lstItems);
+
                             var lstItems_Tmp = new List<CotizacionDetalleDTO>();
                             lstItems.ForEach(x =>
                             {
@@ -529,27 +538,25 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         {
 
             var ventaBL = new VentasBL();
-            var oArticulo = new ArticuloDTO();
+            ArticuloDTO oArticulo = null;
 
-            var swLstTemp = false;
             if (VariableSesion.getObject(TAG_ConceptosVenta) != null)
             {
-                if (((List<ArticuloDTO>)VariableSesion.getObject(TAG_ConceptosVenta)).Any()) { swLstTemp = true; }
+                if (((List<ArticuloDTO>)VariableSesion.getObject(TAG_ConceptosVenta)).Any())
+                {
+                    var lstArticulos = (List<ArticuloDTO>)VariableSesion.getObject(TAG_ConceptosVenta);
+                    //Articulo Seleccionado
+                    if (lstArticulos.Any(x => x.CodArticulo.Trim() == CodItem.Trim()))
+                    { oArticulo = lstArticulos.First(x => x.CodArticulo.Trim() == CodItem.Trim()); }
+                }
             }
 
-            if (swLstTemp)
-            {
-                var lstArticulos = (List<ArticuloDTO>)VariableSesion.getObject(TAG_ConceptosVenta);
-                //Articulo Seleccionado
-                if (lstArticulos.Any(x => x.CodArticulo == CodItem))
-                { oArticulo = lstArticulos.First(x => x.CodArticulo == CodItem); }
-            }
-            else
+            if (oArticulo == null)
             {
                 var respArt = ventaBL.ObtenerArticulosxFiltro(new FiltroArticuloDTO { CodsArticulo = CodItem });
                 //Articulo Seleccionado
                 if (respArt.Result.Any(x => x.CodArticulo == CodItem))
-                { oArticulo = respArt.Result.First(x => x.CodArticulo == CodItem); }
+                { oArticulo = respArt.Result.First(x => x.CodArticulo.Trim() == CodItem.Trim()); }
             }
 
             return oArticulo;
@@ -1194,7 +1201,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     }
                 });
 
-                lstItems = ReconteoSubItemsCotDet(lstItems);
+                lstItems = TotalizacionCotDet(lstItems);
 
                 lstItems.ForEach(x =>
                 {
@@ -1265,7 +1272,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     AddModifyCDI(select);
                 }
 
-                lstItems = ReconteoSubItemsCotDet(lstItems);
+                lstItems = TotalizacionCotDet(lstItems);
                 lstItems = GetCDIList("1");
 
                 //Solo cargar los productos en pantalla
@@ -1422,7 +1429,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 {
                     lstItems = lstItems.Where(x => x.NroItem == itemPadre.NroItem && x.CodItem.Trim() != CodItem.Trim()).ToList();
                     lstItems.AddRange(lstItems_2);
-                    lstItems = ReconteoSubItemsCotDet(lstItems);
+                    lstItems = TotalizacionCotDet(lstItems);
                     VariableSesion.setObject(TAG_CDI, lstItems);
                 }
                 lstItems = GetCDIList("1");
@@ -1462,21 +1469,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
         }
 
-        private List<CotizacionDetalleDTO> ReconteoSubItemsCotDet(List<CotizacionDetalleDTO> lstItems)
-        {
-            if (lstItems != null)
-            {
-                foreach (CotizacionDetalleDTO item in lstItems)
-                {
-                    if (item.EsItemPadre)
-                    {
-                        item.CantSubItem = lstItems.Where(x => x.CodItem != item.CodItem && x.NroItem == item.NroItem).Count();
-                    }
-                }
-            }
-            return lstItems;
-        }
-
         [HttpPost]
         public JsonResult GrabarDatosCotDetItem(string CodItemPadre, CotizacionDetalleDTO CotDet, string opcGrillaItems)
         {
@@ -1509,6 +1501,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         x.CodItem = CotDet.CodItemTemp;
                         x.CodItemTemp = CotDet.CodItemTemp;
                         x.CodItem_IsUpdatable = false;
+                        x.DescripcionAdicional = CotDet.DescripcionAdicional;
                         x.Cantidad = CotDet.Cantidad;
                         x.CostoFOB = CotDet.CostoFOB;
                         x.VentaUnitaria = CotDet.VentaUnitaria;
@@ -1518,21 +1511,22 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             if (x.CotizacionDespacho == null) { x.CotizacionDespacho = new CotDetDespachoDTO(); }
                             //x.CotizacionDespacho.CantPreventivo = CotDet.CotizacionDespacho.CantPreventivo;
                             //x.CotizacionDespacho.CodCicloPreventivo = CotDet.CotizacionDespacho.CodCicloPreventivo;
-                            x.CotizacionDespacho.IndInfoVideo = CotDet.CotizacionDespacho.IndInfoVideo;
-                            x.CotizacionDespacho.IndInfoManual = CotDet.CotizacionDespacho.IndInfoManual;
-                            x.CotizacionDespacho.IndInstaCapa = CotDet.CotizacionDespacho.IndInstaCapa;
-                            x.CotizacionDespacho.IndGarantiaAdicional = CotDet.CotizacionDespacho.IndGarantiaAdicional;
+                            x.CotizacionDespacho.IndCompraLocal = CotDet.CotizacionDespacho.IndCompraLocal;
                             x.CotizacionDespacho.IndLLaveMano = CotDet.CotizacionDespacho.IndLLaveMano;
+                            x.CotizacionDespacho.Dimensiones = CotDet.CotizacionDespacho.Dimensiones;
+                            x.CotizacionDespacho.IndRequierePlaca = CotDet.CotizacionDespacho.IndRequierePlaca;
+                            x.CotizacionDespacho.IndInfoManual = CotDet.CotizacionDespacho.IndInfoManual;
+                            x.CotizacionDespacho.IndInfoVideo = CotDet.CotizacionDespacho.IndInfoVideo;
+                            x.CotizacionDespacho.IndMantPreventivo = CotDet.CotizacionDespacho.IndMantPreventivo;
+                            x.CotizacionDespacho.IndGarantiaAdicional = CotDet.CotizacionDespacho.IndGarantiaAdicional;
+                            x.CotizacionDespacho.IndInstaCapa = CotDet.CotizacionDespacho.IndInstaCapa;
+                            x.CotizacionDespacho.FecLimInsta = CotDet.CotizacionDespacho.FecLimInsta;
                             //x.CotizacionDespacho.CodUbigeoDestino = CotDet.CotizacionDespacho.CodUbigeoDestino;
                             //x.CotizacionDespacho.DescUbigeoDestino = CotDet.CotizacionDespacho.DescUbigeoDestino;
                             //x.CotizacionDespacho.Direccion = CotDet.CotizacionDespacho.Direccion;
                             //x.CotizacionDespacho.NroPiso = CotDet.CotizacionDespacho.NroPiso;
-                            x.CotizacionDespacho.Dimensiones = CotDet.CotizacionDespacho.Dimensiones;
-                            x.CotizacionDespacho.IndCompraLocal = CotDet.CotizacionDespacho.IndCompraLocal;
                             x.CotizacionDespacho.ObsCliente = CotDet.CotizacionDespacho.ObsCliente;
-                            x.CotizacionDespacho.IndRequierePlaca = CotDet.CotizacionDespacho.IndRequierePlaca;
                             x.CotizacionDespacho.ObsDespacho = CotDet.CotizacionDespacho.ObsDespacho;
-                            x.CotizacionDespacho.FecLimInsta = CotDet.CotizacionDespacho.FecLimInsta;
                             x.CotizacionDespacho.MontoTotalCosto = CotDet.CotizacionDespacho.MontoTotalCosto;
                             x.CotizacionDespacho.IndFianza = CotDet.CotizacionDespacho.IndFianza;
                             x.CotizacionDespacho.NumFianza = CotDet.CotizacionDespacho.NumFianza;
@@ -1543,7 +1537,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 }
                 );
 
-                lstItems = ReconteoSubItemsCotDet(lstItems);
+                lstItems = TotalizacionCotDet(lstItems);
                 lstItems.ForEach(x =>
                 {
                     AddModifyCDI(x);
@@ -1561,12 +1555,35 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         {
             if (lstItems != null)
             {
-                var lstItemsPadre = lstItems.Where(x => x.EsItemPadre).ToList();
                 foreach (CotizacionDetalleDTO item in lstItems)
                 {
                     if (item.EsItemPadre)
                     {
+                        if (string.IsNullOrEmpty(item.DescUnidad))
+                        {
+                            var oArticulo = findSaleItemRecord(item.CodItem);
+                            if (oArticulo != null)
+                            {
+                                item.CodUnidad = oArticulo.CodUnidad;
+                                item.DescUnidad = oArticulo.DescUnidad;
+                            }
+                        }
                         item.CantSubItem = lstItems.Where(x => x.CodItem != item.CodItem && x.NroItem == item.NroItem).Count();
+                        item.VentaTotalSinIGV = lstItems.Where(x => x.NroItem == item.NroItem && x.VentaUnitaria.HasValue).Select(y => y.VentaUnitaria.Value * y.Cantidad).Sum();
+                        if (item.VentaTotalSinIGV.HasValue)
+                        {
+                            if (item.PorcentajeGanancia.HasValue)
+                            {
+                                if (item.PorcentajeGanancia.Value > 0)
+                                {
+                                    item.VentaTotalSinIGVConGanacia = item.VentaTotalSinIGV.Value * (item.PorcentajeGanancia.Value / 100);
+                                }
+                                else
+                                {
+                                    item.VentaTotalSinIGVConGanacia = item.VentaTotalSinIGV.Value;
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1584,51 +1601,54 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                 if (!lstItems.Any()) { throw new Exception("No se ha agregado ning&uacute;n producto o servicio"); }
 
-                List<CotizacionDetalleDTO> lstItemsPadre = lstItems.Where(x => x.EsItemPadre).ToList();
+                //List<CotizacionDetalleDTO> lstItemsPadre = lstItems.Where(x => x.EsItemPadre).ToList();
 
                 //Se realiza lo siguiente:
                 //1. Se totaliza el precio por cada registro de cotizacion detalle (Monto del Producto o Servicio más sus accesorios)
                 //2. La ganancia por registro de Cotizacion Detalle
                 //3. El descuento total de la venta pero se le divide entre cada uno de los registros de cotizacion detalle
-                foreach (CotizacionDetalleDTO itemPadre in lstItemsPadre)
-                {
-                    var oArticulo = findSaleItemRecord(itemPadre.CodItem);
 
-                    itemPadre.Stock = oArticulo.StockDisponible;
-                    if (itemPadre.EsItemPadre)
-                    {
-                        itemPadre.VentaTotalSinIGV = lstItems.Where(x => x.NroItem == itemPadre.NroItem && x.VentaUnitaria.HasValue).Select(y => y.VentaUnitaria.Value * y.Cantidad).Sum();
-                        if (itemPadre.VentaTotalSinIGV.HasValue)
-                        {
-                            if (itemPadre.PorcentajeGanancia.HasValue)
-                            {
-                                if (itemPadre.PorcentajeGanancia.Value > 0)
-                                {
-                                    itemPadre.VentaTotalSinIGVConGanacia = itemPadre.VentaTotalSinIGV.Value * (itemPadre.PorcentajeGanancia.Value / 100);
-                                }
-                                else
-                                {
-                                    itemPadre.VentaTotalSinIGVConGanacia = itemPadre.VentaTotalSinIGV.Value;
-                                }
-                            }
-                        }
-                    }
-                    itemPadre.CodUnidad = oArticulo.CodUnidad;
-                    itemPadre.DescUnidad = oArticulo.DescUnidad;
-                }
+                lstItems = TotalizacionCotDet(lstItems);
+
+                //foreach (CotizacionDetalleDTO itemPadre in lstItemsPadre)
+                //{
+                //    var oArticulo = findSaleItemRecord(itemPadre.CodItem);
+
+                //    itemPadre.Stock = oArticulo.StockDisponible;
+                //    if (itemPadre.EsItemPadre)
+                //    {
+                //        itemPadre.VentaTotalSinIGV = lstItems.Where(x => x.NroItem == itemPadre.NroItem && x.VentaUnitaria.HasValue).Select(y => y.VentaUnitaria.Value * y.Cantidad).Sum();
+                //        if (itemPadre.VentaTotalSinIGV.HasValue)
+                //        {
+                //            if (itemPadre.PorcentajeGanancia.HasValue)
+                //            {
+                //                if (itemPadre.PorcentajeGanancia.Value > 0)
+                //                {
+                //                    itemPadre.VentaTotalSinIGVConGanacia = itemPadre.VentaTotalSinIGV.Value * (itemPadre.PorcentajeGanancia.Value / 100);
+                //                }
+                //                else
+                //                {
+                //                    itemPadre.VentaTotalSinIGVConGanacia = itemPadre.VentaTotalSinIGV.Value;
+                //                }
+                //            }
+                //        }
+                //    }
+                //    itemPadre.CodUnidad = oArticulo.CodUnidad;
+                //    itemPadre.DescUnidad = oArticulo.DescUnidad;
+                //}
 
                 //Se actualiza los datos de la cotizacion
-                lstItems.ForEach(x =>
-                {
-                    var itemPadre = lstItemsPadre.FirstOrDefault(y => y.NroItem == x.NroItem && y.CodItem == x.CodItem);
-                    if (itemPadre != null)
-                    {
-                        x.VentaTotalSinIGV = itemPadre.VentaTotalSinIGV;
-                        x.VentaTotalSinIGVConGanacia = itemPadre.VentaTotalSinIGVConGanacia;
-                        x.CodUnidad = itemPadre.CodUnidad;
-                        x.DescUnidad = itemPadre.DescUnidad;
-                    }
-                });
+                //lstItems.ForEach(x =>
+                //{
+                //    var itemPadre = lstItemsPadre.FirstOrDefault(y => y.NroItem == x.NroItem && y.CodItem == x.CodItem);
+                //    if (itemPadre != null)
+                //    {
+                //        x.VentaTotalSinIGV = itemPadre.VentaTotalSinIGV;
+                //        x.VentaTotalSinIGVConGanacia = itemPadre.VentaTotalSinIGVConGanacia;
+                //        x.CodUnidad = itemPadre.CodUnidad;
+                //        x.DescUnidad = itemPadre.DescUnidad;
+                //    }
+                //});
 
                 var lstItems_1 = lstItems;
                 var lstItems_2 = new List<CotizacionDetalleDTO>();
@@ -1721,7 +1741,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     if (itemCD.CotizacionDespacho != null)
                     {
                         var itemCDD = itemCD.CotizacionDespacho;
-                        itemCDD.TipoProceso = ConstantesDTO.CotizacionDespacho.TipoProceso.Insertar;
+                        itemCDD.TipoProceso = ConstantesDTO.CotizacionDetalleDespacho.TipoProceso.Insertar;
                         itemCDD.IdCotizacionDetalle = resCD.Result.Codigo;
                         itemCDD.UsuarioRegistra = User.ObtenerUsuario();
                         itemCDD.FechaRegistro = DateTime.Now;
@@ -1802,12 +1822,22 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 //Se graba el Detalle de la Cotización
                 foreach (CotizacionDetalleDTO itemCD in lstCotDetalle)
                 {
+                    itemCD.TipoProceso = ConstantesDTO.CotizacionVentaDetalle.TipoProceso.Insertar;
                     itemCD.IdCotizacion = cotizacionDTO.IdCotizacion;
                     itemCD.UsuarioRegistra = User.ObtenerUsuario();
                     itemCD.FechaRegistro = DateTime.Now;
                     itemCD.VentaUnitaria = null;
                     itemCD.CostoFOB = null;
-                    ventasBL.MantenimientoCotizacionDetalle(itemCD);
+                    var resCD = ventasBL.MantenimientoCotizacionDetalle(itemCD);
+                    if (itemCD.CotizacionDespacho != null)
+                    {
+                        var itemCDD = itemCD.CotizacionDespacho;
+                        itemCDD.TipoProceso = ConstantesDTO.CotizacionDetalleDespacho.TipoProceso.Insertar;
+                        itemCDD.IdCotizacionDetalle = resCD.Result.Codigo;
+                        itemCDD.UsuarioRegistra = User.ObtenerUsuario();
+                        itemCDD.FechaRegistro = DateTime.Now;
+                        var resCDD = ventasBL.MantenimientoCotiDetDespacho(itemCDD);
+                    }
                 }
 
                 return Json(new { Status = 1, Mensaje = "Cotización se volvió a generar correctamente" });

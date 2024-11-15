@@ -299,6 +299,10 @@ namespace AHSECO.CCL.BD.Ventas
                 { parameters.Add("isVVENTAUNI", detalleCotizacion.VentaUnitaria.Value); }
                 else
                 { parameters.Add("isVVENTAUNI", DBNull.Value, DbType.Decimal); }
+                if (detalleCotizacion.PorcentajeGanancia.HasValue)
+                { parameters.Add("isPORCGANANCIA", detalleCotizacion.PorcentajeGanancia.Value); }
+                else
+                { parameters.Add("isPORCGANANCIA", DBNull.Value, DbType.Decimal); }
                 parameters.Add("isUsrEjecuta",detalleCotizacion.UsuarioRegistra);
                 parameters.Add("isFecEjecuta", detalleCotizacion.FechaRegistro);
 
@@ -343,7 +347,6 @@ namespace AHSECO.CCL.BD.Ventas
                 { parameters.Add("pFecLimInsta", detCotDespacho.FecLimInsta.Value, DbType.DateTime); }
                 else
                 { parameters.Add("pFecLimInsta", DBNull.Value, DbType.DateTime); }
-
                 if (detCotDespacho.MontoTotalCosto.HasValue)
                 { parameters.Add("pMontoTotalCosto", detCotDespacho.MontoTotalCosto.Value,DbType.Decimal); }
                 else
@@ -361,7 +364,7 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("pUsuarioRegistro", detCotDespacho.UsuarioRegistra);
 
                 var result = connection.Query(
-                    sql: "USP_MANT_TBD_COTIZACIONVENTA",
+                    sql: "USP_MANT_TBM_COTDET_DESPACHO",
                     param: parameters,
                     commandType: CommandType.StoredProcedure)
                     .Select(s => s as IDictionary<string, object>)

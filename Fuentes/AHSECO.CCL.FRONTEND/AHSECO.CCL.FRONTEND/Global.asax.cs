@@ -27,7 +27,7 @@ namespace AHSECO.CCL.FRONTEND
         {
             var ex = Server.GetLastError();
             Log = new CCLog();
-            Log.TraceError(ex.Message);
+            if (ex != null) { Log.TraceError(ex.Message); }
             Server.ClearError();
             Response.Clear();
             Response.Redirect("~/Error/Index");

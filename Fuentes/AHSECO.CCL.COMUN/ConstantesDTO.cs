@@ -128,7 +128,7 @@ namespace AHSECO.CCL.COMUN
             }
         }
 
-        public struct CotizacionDespacho
+        public struct CotizacionDetalleDespacho
         {
             public struct TipoProceso
             {

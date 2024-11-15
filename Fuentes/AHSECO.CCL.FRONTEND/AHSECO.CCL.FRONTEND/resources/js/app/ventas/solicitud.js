@@ -1295,6 +1295,7 @@
     function $openRegdateCotizacionClick() {
         $dateCotizacion.focus();
     }
+
     function $openRegdateOrdenCompraClick() {
         $dateOrdenCompra.focus();
     }
@@ -1560,16 +1561,13 @@
         }
         else {
             $cmbFlujo.prop("disabled", true);
-
-                var rol = $idRolUsuario.val();
-                if (rol == "SGI_VENTA_ASESOR" || rol == "SGI_VENTA_COORDINAVENTA") {
-                    $cmbFlujo.val("1").trigger("change.select2");
-                }
-                else if (rol == "SGI_VENTA_COORDINASERV" || rol == "SGI_VENTA_COORDINAATC") {
-                    $cmbFlujo.val("2").trigger("change.select2");
-                }
-
-
+            var rol = $idRolUsuario.val();
+            if (rol == "SGI_VENTA_ASESOR" || rol == "SGI_VENTA_COORDINAVENTA") {
+                $cmbFlujo.val("1").trigger("change.select2");
+            }
+            else if (rol == "SGI_VENTA_COORDINASERV" || rol == "SGI_VENTA_COORDINAATC") {
+                $cmbFlujo.val("2").trigger("change.select2");
+            }
         };
     };
 

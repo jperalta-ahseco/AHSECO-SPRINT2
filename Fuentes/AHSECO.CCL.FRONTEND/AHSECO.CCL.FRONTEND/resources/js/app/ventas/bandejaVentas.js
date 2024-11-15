@@ -180,7 +180,8 @@
         var fnFailCallBack = function () {
         };
 
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+        app.mostrarLoading();
+        app.llamarAjaxNoLoading(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
     }
 
     function cargarTabla(data) {

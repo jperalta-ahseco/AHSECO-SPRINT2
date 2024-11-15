@@ -52,7 +52,7 @@
                                 <div class="col-md-6">
                                     <div class="col-md-1"></div>
                                     <div class="col-md-11">
-                                        <div class="row container-fluid" style="@(ViewBag.MostrarCDI_EspCarac ? "" : "display:none")">
+                                        <div class="row container-fluid" style="@(ViewBag.PermitirModificarEspCarac ? "" : "display:none")">
                                             <label for="CI_txtDescripcionAdic">Especificaciones / Caracteristicas: </label>
                                             <textarea placeholder="Ingresar Especificaciones <Opcional>" rows="5" class="form-control input-sm" id="CI_txtDescripcionAdic" value=""></textarea>
                                         </div>
@@ -64,7 +64,7 @@
                     <div class="container-fluid">
                         <fieldset class="form-group">
                             <legend><b>Informaci&oacute;n de Costos</b></legend>
-                            <div class="row container-fluid form-group" style="@(ViewBag.MostrarCDI_Costos ? "" : "display:none")">
+                            <div class="row container-fluid form-group" style="@(ViewBag.MostrarCDI_Costos_R1 ? "" : "display:none")">
                                 <div class="col-md-6 col-content-middleleft">
                                     <div class="col-md-3">
                                         <label for="CI_txtCostoFOB">Costo FOB: </label>
@@ -82,7 +82,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row container-fluid col-content-bottomleft" style="@(ViewBag.MostrarCDI_Ganancia ? "" : "display:none")">
+                            <div class="row container-fluid col-content-bottomleft" style="@(ViewBag.MostrarCDI_Costos_R2 ? "" : "display:none")">
                                 <div class="col-md-6 col-content-middleleft">
                                     <div class="col-md-3">
                                         <label for="CI_txtGanancia">Ganancia (%): </label>

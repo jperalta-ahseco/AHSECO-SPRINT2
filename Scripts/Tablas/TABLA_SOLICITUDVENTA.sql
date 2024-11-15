@@ -124,7 +124,7 @@ CREATE TABLE [dbo].[TBD_COTIZACIONVENTA](
 	[COSTOFOB] [decimal](18, 9) NULL,
 	[VVENTAUNI] [decimal](18, 9) NULL,
 	[VVTOTALSIGV] [decimal](18, 9) NULL,
-	[PORCGANANCIA] [decimal](9, 9) NULL,
+	[PORCGANANCIA] [decimal](18, 9) NULL,
 	[VVTOTALSIGVCGAN] [decimal](18, 9) NULL,
 	[MONTODSCTO] [decimal](18, 9) NULL,
 	[VVTOTALSIGVDSCTO] [decimal](18, 9) NULL,

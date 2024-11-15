@@ -45,16 +45,16 @@
                                             <label for="DI_txtCantidad">Cantidad: </label>
                                         </div>
                                         <div class="col-md-2">
-                                            <input placeholder="Cantidad" type="text" maxlength="8" class="form-control input-sm" id="DI_txtCantidad" value="">
+                                            <input @(ViewBag.PermitirModificarCantidad ? "" : "disabled") placeholder="Cantidad" type="text" maxlength="8" class="form-control input-sm" id="DI_txtCantidad" value="">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="col-md-1"></div>
                                     <div class="col-md-11">
-                                        <div class="row container-fluid" style="@(ViewBag.MostrarCDI_EspCarac ? "" : "display:none")">
+                                        <div class="row container-fluid">
                                             <label for="DI_txtDescripcionAdic">Especificaciones / Caracteristicas: </label>
-                                            <textarea placeholder="Ingresar Especificaciones <Opcional>" rows="5" class="form-control input-sm" id="DI_txtDescripcionAdic" value=""></textarea>
+                                            <textarea @(ViewBag.PermitirModificarEspCarac ? "" : "disabled") placeholder="Ingresar Especificaciones <Opcional>" rows="5" class="form-control input-sm" id="DI_txtDescripcionAdic" value=""></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -64,7 +64,7 @@
                     <div class="container-fluid">
                         <fieldset class="form-group">
                             <legend><b>Informaci&oacute;n de Costos</b></legend>
-                            <div class="row container-fluid form-group" style="@(ViewBag.MostrarCDI_Costos ? "" : "display:none")">
+                            <div class="row container-fluid form-group" style="@(ViewBag.MostrarCDI_Costos_R1 ? "" : "display:none")">
                                 <div class="col-md-6 col-content-middleleft">
                                     <div class="col-md-3">
                                         <label for="DI_txtCostoFOB">Costo FOB: </label>
@@ -82,7 +82,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row container-fluid col-content-middleleft" style="@(ViewBag.MostrarCDI_Ganancia ? "" : "display:none")">
+                            <div class="row container-fluid col-content-middleleft" style="@(ViewBag.MostrarCDI_Costos_R2 ? "" : "display:none")">
                                 <div class="col-md-6 col-content-middleleft">
                                     <div class="col-md-3">
                                         <label for="DI_txtGanancia">Ganancia (%): </label>
@@ -146,6 +146,27 @@
                                     </div>
                                     <div class="col-md-7">
                                         <input placeholder="Ingresar Dimensiones" type="text" maxlength="50" class="form-control input-sm" id="DI_txtDimensiones" value="">
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-content-middleleft">
+                                    <div class="col-md-7">
+                                        <label for="DI_radReqPlaca" style="flex: 0 0 120px">Requiere Placa: </label>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <table style="width:100%">
+                                            <tr>
+                                                <td><input type="radio" name="DI_radReqPlaca" class="input-sm" id="DI_radReqPlaca_Si"></td>
+                                                <td style="padding-top:5px"><label>SI</label></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <table style="width:100%">
+                                            <tr>
+                                                <td><input type="radio" name="DI_radReqPlaca" class="input-sm inp" id="DI_radReqPlaca_No"></td>
+                                                <td style="padding-top:5px"><label>NO</label></td>
+                                            </tr>
+                                        </table>
                                     </div>
                                 </div>
                             </div>

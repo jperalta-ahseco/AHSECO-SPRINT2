@@ -162,6 +162,7 @@ var app = (function ($, win, doc) {
 
         // Muestra un mensaje modal predeterminado
         function defaults(message) {
+            ocultarLoading();
             $modal.attr("class", defaultsOptions.style.defaultValue);
             $header.attr("class", defaultsOptions.styleHeader.Default);
             $title.text(defaultsOptions.title);
@@ -179,6 +180,7 @@ var app = (function ($, win, doc) {
 
         // Muestra un mensaje modal de informacion
         function info(title, message, textButtonAccept, fnCallback) {
+            ocultarLoading();
             $modal.attr("class", defaultsOptions.style.info);
             $header.attr("class", defaultsOptions.styleHeader.error);
             $title.text(title || defaultsOptions.title);
@@ -196,6 +198,7 @@ var app = (function ($, win, doc) {
 
         // Muestra un mensaje modal satisactorio
         function success(title, message, textButtonAccept, fnCallback) {
+            ocultarLoading();
             $modal.attr("class", defaultsOptions.style.success);
             $header.attr("class", defaultsOptions.styleHeader.error);
             $title.text(title || defaultsOptions.title);
@@ -213,6 +216,7 @@ var app = (function ($, win, doc) {
 
         // Muestra un mensaje modal de confirmacion
         function confirm(title, message, textButtonAccept, textButtonCancel, fnAceptarCallback, fnCerrarCallback) {
+            ocultarLoading();
             $modal.attr("class", defaultsOptions.style.confirm);
             $header.attr("class", defaultsOptions.styleHeader.error);
             $title.text(title || defaultsOptions.title);
@@ -230,6 +234,7 @@ var app = (function ($, win, doc) {
 
         // Muestra un mensaje modal de error
         function error(title, message, textButtonAccept, fnCallback) {
+            ocultarLoading();
             $modal.attr("class", defaultsOptions.style.error);
             $header.attr("class", defaultsOptions.styleHeader.error);
             $title.text(title || defaultsOptions.title);
@@ -361,8 +366,8 @@ var app = (function ($, win, doc) {
     var timerCallingLoading;
 
     function ValidateKeepLoading() {
-        if (timerCallingLoading != null) {
-            timerCallingLoading = setInterval(TerminateLoading, 10000);
+        if (timerCallingLoading == null || timerCallingLoading == undefined) {
+            timerCallingLoading = setInterval(TerminateLoading, 1000);
         }
     }
 
@@ -396,13 +401,13 @@ var app = (function ($, win, doc) {
             dataType: "json"
         }).done(function (data, textStatus, jqXhr) {
             //$modalLoading.hide();
-            if (typeof (fnDoneCallback) == "undefined" || fnDoneCallback == null) { ValidateKeepLoading(); }
-            else { $modalLoading.hide(); }
             if (data.Status === 1) {
                 if (typeof (fnDoneCallback) != "undefined" || fnDoneCallback != null) {
+                    ValidateKeepLoading();
                     fnDoneCallback(data);
                 }
             } else if (data.Status === 0) {
+                TerminateLoading();
                 message.error("Error", data.CurrentException, "Aceptar", fnFailCallback);
             }
             swCallingAjax = false;
