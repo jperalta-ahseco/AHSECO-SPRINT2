@@ -58,6 +58,8 @@
 <input type="hidden" id="RolVenta_Importacion" value="@RolVenta_Importacion" />
 <input type="hidden" id="RolVenta_Costos" value="@RolVenta_Costos" />
 <input type="hidden" id="RolVenta_Logistica" value="@RolVenta_Logistica" />
+<input type="hidden" id="HabilitarValorizacionCotDet" value="@ViewBag.HabilitarValorizacionCotDet" />
+<input type="hidden" id="EsCotizacionValorizada" value="@ViewBag.EsCotizacionValorizada" />
 
 <div class="container-fluid">
     <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
@@ -539,6 +541,7 @@
                                                             <div class="text-right">
                                                                 <button style="@(ViewBag.PermitirEnvioCotizacion ? "" : "display:none")" class="btn btn-default btn-sm" type="button" id="btnEnviarCotizacion"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Enviar Cotizaci&oacute;n</button>
                                                                 <button style="@(ViewBag.PermitirReCotizacion ? "" : "display:none")" class="btn btn-default btn-sm" type="button" id="btnRecotizacion"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Generar Nueva Cotizaci&oacute;n</button>
+                                                                <button style="@(ViewBag.PermitirGuardarValorizacion ? "" : "display:none")" class="btn btn-default btn-sm" type="button" id="btnGuardarValorizacion"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Guardar Cotizaci&oacute;n</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -591,7 +594,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="box-content"  style="@(ViewBag.VerGestionLogistica ? "" : "display:none");">
+                                            <div class="box-content" style="@(ViewBag.VerGestionLogistica ? "" : "display:none");">
                                                 <ul class="nav nav-tabs" style="padding-top: 5px;">
                                                     <li class="" id="tabConStock" style="@(ViewBag.VerNavConStock ? "":"display:none");">
                                                         <a href="#navConStock" data-toggle="tab" style="font-weight:bold; color:black;" tabindex="220"><i class="fa fa-cubes" aria-hidden="true"></i> Con Stock</a>

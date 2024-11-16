@@ -87,7 +87,14 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.TxtNumeroGuiaRemisionCE = "disabled";
             ViewBag.TxtNumeroSerieCE = "disabled";
 
+            ViewBag.HabilitarValorizacionCotDet = "N";
+            ViewBag.EsCotizacionValorizada = "N";
             if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Gerente || NombreRol == ConstantesDTO.WorkflowRol.Venta.Costos)
+            {
+                ViewBag.HabilitarValorizacionCotDet = "S";
+            }
+
+            if (ViewBag.HabilitarValorizacionCotDet == "S")
             {
                 string[] CD_Columns = 
                 {
@@ -144,19 +151,33 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.IdCotizacion = 0;
             ViewBag.IdContacto = 0;
             ViewBag.Observacion = ConstantesDTO.CotizacionVenta.Observaciones.Msj01;
+
+            VariableSesion.setObject(TAG_CDI, new List<CotizacionDetalleDTO>());
+            ViewBag.MostrarCotizacionDetalle = false;
             ViewBag.PermitirCancelarCot = true;
             ViewBag.PermitirRegistroCotizacion = true;
-            ViewBag.PermitirEditarCotizacion = true;
-            ViewBag.PermitirAgregarCotDet = true;
-            ViewBag.PermitirEnvioCotizacion = true;
-            ViewBag.PermitirReCotizacion = true;
-            ViewBag.MostrarCotizacionDetalle = false;
+            ViewBag.PermitirEditarCotizacion = true; //Se bloquea los campos de cabecera de cotización
+            ViewBag.PermitirAgregarCotDet = false;
+            ViewBag.PermitirEnvioCotizacion = false;
+            ViewBag.PermitirReCotizacion = false;
+            ViewBag.PermitirGuardarValorizacion = false;
             ViewBag.PermitirModificarEspCarac = true;
+            ViewBag.PermitirModificarCantidad = true;
             ViewBag.MostrarCDI_Costos_R1 = true;
             ViewBag.MostrarCDI_Costos_R2 = true;
             ViewBag.MostrarCDI_Ganancia = true;
             ViewBag.MostrarCDI_InfoEnvio = true;
             ViewBag.MostrarCDI_InfoAdic = true;
+
+            ViewBag.PermitirTabDetCot = true;
+            ViewBag.PermitirTabInsta = false;
+            ViewBag.PermitirTabMantPrevent = false;
+            ViewBag.PermitirTabLLaveMano = false;
+            ViewBag.PermitirTabManualVideos = false;
+            ViewBag.PermitirTabGarantiaAdic = false;
+            ViewBag.PermitirTabCalib = false;
+            ViewBag.PermitirTabFlete = false;
+
             ViewBag.AcordionCollapsedLiq = "collapsed";
             ViewBag.TabAcordionCollapsedLiq = "collapse";
             ViewBag.AcordionCollapsedGest = "collapsed";
@@ -165,29 +186,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.VerGestionLogistica = false;
             ViewBag.VerNavConStock = false;
             ViewBag.VerNavSinStock = false;
-            VariableSesion.setObject(TAG_CDI, new List<CotizacionDetalleDTO>());
-            ViewBag.PermitirModificarCodItem = true;
-            ViewBag.PermitirModificarCantidad = false;
-
-            ViewBag.PermitirTabDetCot = true;
-            ViewBag.PermitirTabInsta = true;
-            ViewBag.PermitirTabMantPrevent = true;
-            ViewBag.PermitirTabLLaveMano = true;
-            ViewBag.PermitirTabManualVideos = true;
-            ViewBag.PermitirTabGarantiaAdic = true;
-            ViewBag.PermitirTabCalib = true;
-            ViewBag.PermitirTabFlete = true;
-
-            if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Gerente || NombreRol == ConstantesDTO.WorkflowRol.Venta.Costos)
-            {
-                ViewBag.MostrarCDI_InfoEnvio = false;
-                ViewBag.MostrarCDI_InfoAdic = false;
-                ViewBag.MostrarCDI_Costos_R2 = false;
-            }
-            else
-            {
-                ViewBag.MostrarCDI_Costos_R1 = false;
-            }
 
             if (numSol != null)
             {
@@ -264,19 +262,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Registrado
                     || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnCotizacion)
                 {
-                    ViewBag.PermitirModificarCodItem = false;
-                    ViewBag.PermitirModificarCantidad = true;
-                    ViewBag.PermitirReCotizacion = false;
-
-                    ViewBag.PermitirTabInsta = false;
-                    ViewBag.PermitirTabMantPrevent = false;
-                    ViewBag.PermitirTabLLaveMano = false;
-                    ViewBag.PermitirTabManualVideos = false;
-                    ViewBag.PermitirTabGarantiaAdic = false;
-                    ViewBag.PermitirTabCalib = false;
-                    ViewBag.PermitirTabFlete = false;
-                    ViewBag.PermitirTabCalib = false;
-                    ViewBag.PermitirTabFlete = false;
+                    ViewBag.PermitirAgregarCotDet = true;
+                    ViewBag.PermitirEnvioCotizacion = true;
                 }
 
                 if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.CotAprob 
@@ -296,25 +283,19 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                 if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion)
                 {
-                    ViewBag.PermitirModificarEspCarac = false;
-                    ViewBag.PermitirAgregarCotDet = false;
-                    ViewBag.PermitirEnvioCotizacion = false;
 
-                    //Se quita la ultima columna
-                    if (NombreRol != ConstantesDTO.WorkflowRol.Venta.Gerente && NombreRol != ConstantesDTO.WorkflowRol.Venta.Costos)
+                    if (ViewBag.HabilitarValorizacionCotDet == "S")
                     {
-                        string[] arrCotDetCols = ViewBag.CabeceraCotDet;
-                        int indexToRemove = arrCotDetCols.Length - 1;
-                        ViewBag.CabeceraCotDet = arrCotDetCols.Where((source, index) => index != indexToRemove).ToArray();
+                        ViewBag.PermitirModificarEspCarac = false;
+                        ViewBag.PermitirModificarCantidad = false;
+                        ViewBag.MostrarCDI_Costos_R2 = false;
+                        ViewBag.MostrarCDI_InfoEnvio = false;
+                        ViewBag.MostrarCDI_InfoAdic = false;
                     }
-
-                    ViewBag.PermitirTabInsta = false;
-                    ViewBag.PermitirTabMantPrevent = false;
-                    ViewBag.PermitirTabLLaveMano = false;
-                    ViewBag.PermitirTabManualVideos = false;
-                    ViewBag.PermitirTabGarantiaAdic = false;
-                    ViewBag.PermitirTabCalib = false;
-                    ViewBag.PermitirTabFlete = false;
+                    else
+                    {
+                        ViewBag.MostrarCDI_Costos_R1 = false;
+                    }
 
                     if (NombreRol == ConstantesDTO.WorkflowRol.Venta.ServTecnico)
                     {
@@ -362,6 +343,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 if (rptaCotizacion.Result.Any())
                 {
 
+                    ViewBag.MostrarCotizacionDetalle = true;
                     ViewBag.PermitirRegistroCotizacion = false;
                     ViewBag.PermitirEditarCotizacion = false;
 
@@ -377,7 +359,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         ViewBag.TabAcordionCollapsedGest = "";
                     }
 
-                    ViewBag.MostrarCotizacionDetalle = true;
                     var oCotizacion = rptaCotizacion.Result.First();
                     ViewBag.IdCotizacion = oCotizacion.IdCotizacion;
                     ViewBag.NombreContacto = oCotizacion.NombreContacto;
@@ -409,28 +390,53 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         if (resCotDet.Result.Any())
                         {
 
-                            var swCostoFOB = false;
-                            var swVentaUnitaria = false;
+                            var swCostoFOB = true;
+                            var swVentaUnitaria = true;
 
-                            if (resCotDet.Result.Any(x => x.CostoFOB.HasValue))
+                            if (resCotDet.Result.Any(x => !x.CostoFOB.HasValue))
+                            { swCostoFOB = false; }
+                            else
                             {
-                                if (resCotDet.Result.Where(o => o.CostoFOB.HasValue).Any(x => x.CostoFOB.Value > 0)) { swCostoFOB = true; }
+                                if (resCotDet.Result.Where(o => o.CostoFOB.HasValue).Any(x => x.CostoFOB.Value <= 0)) { swCostoFOB = false; }
                             }
-                            if (resCotDet.Result.Any(x => x.VentaUnitaria.HasValue))
+                            if (resCotDet.Result.Any(x => !x.VentaUnitaria.HasValue))
+                            { swVentaUnitaria = false; }
+                            else
                             {
-                                if (resCotDet.Result.Where(o => o.VentaUnitaria.HasValue).Any(x => x.VentaUnitaria.Value > 0)) { swVentaUnitaria = true; }
+                                if (resCotDet.Result.Where(o => o.VentaUnitaria.HasValue).Any(x => x.VentaUnitaria.Value <= 0)) { swVentaUnitaria = false; }
                             }
 
                             //Solo se puede recotizar la venta si se ingresó los costos de venta de cada item seleccionado para la cotización
-                            ViewBag.PermitirReCotizacion = false;
                             if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion)
                             {
                                 if (swCostoFOB && swVentaUnitaria)
+                                { ViewBag.EsCotizacionValorizada = "S"; }
+
+                                //Se quita la ultima columna solo si no es para valorización
+                                if (ViewBag.HabilitarValorizacionCotDet == "N" || ViewBag.EsCotizacionValorizada == "S")
+                                {
+                                    string[] arrCotDetCols = ViewBag.CabeceraCotDet;
+                                    int indexToRemove = arrCotDetCols.Length - 1;
+                                    ViewBag.CabeceraCotDet = arrCotDetCols.Where((source, index) => index != indexToRemove).ToArray();
+                                }
+                            }
+
+                            if (ViewBag.EsCotizacionValorizada == "S")
+                            {
+                                if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
                                 {
                                     ViewBag.PermitirReCotizacion = true;
                                 }
                             }
+                            else
+                            {
+                                if (ViewBag.HabilitarValorizacionCotDet == "S")
+                                {
+                                    ViewBag.PermitirGuardarValorizacion = true;
+                                }
+                            }
 
+                            //Se carga el detalle de la cotizacion
                             var lstItems = resCotDet.Result.ToList();
                             var resArticulos = ventasBL.ObtenerArticulosxFiltro(new FiltroArticuloDTO() { CodsArticulo = string.Join(";", lstItems.Select(o => o.CodItem).ToArray()) });
                             lstItems.ForEach(x =>
@@ -464,8 +470,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             VariableSesion.setObject(TAG_CDI, lstItems.ToList());
                         }
                     }
-
-
                 }
             }
 
@@ -493,7 +497,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                     if (swEdit)
                     {
-                        x.Id = x.NroItem * -1;
+                        if (x.Id <= 0) { x.Id = x.NroItem * -1; }
                         x.Cantidad = CotDet.Cantidad;
                         x.CostoFOB = CotDet.CostoFOB;
                         x.VentaUnitaria = CotDet.VentaUnitaria;
@@ -1272,13 +1276,13 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 {
                     var lstItemsPadre = lstItems.Where(x => x.Select).ToList();
                     if (!lstItemsPadre.Any()) { throw new Exception("Para agregar un accesorio a la cotización deberá previamente seleccionar un producto para asociarlo. Favor de seleccionar un producto."); }
-                    foreach(CotizacionDetalleDTO itemPadre in lstItemsPadre)
+                    foreach (CotizacionDetalleDTO itemPadre in lstItemsPadre)
                     {
                         if (lstItems.Any(x => x.NroItem == itemPadre.NroItem && x.CodItem.TrimEnd() == CodItem.TrimEnd()))
                         { throw new Exception("Accesorio ya fue selecionado"); }
                         CotizacionDetalleDTO item = select;
                         item.NroItem = itemPadre.NroItem;
-                        item.Id = item.NroItem * -1;
+                        if (item.Id <= 0) { item.Id = item.NroItem * -1; }
                         AddModifyCDI(item);
                     }
                 }
@@ -1288,7 +1292,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     else { select.NroItem = 1; }
                     if (lstItems.Any(x => x.CodItem.TrimEnd() == CodItem.TrimEnd()))
                     { throw new Exception("Producto y/o Servicio ya fue selecionado"); }
-                    select.Id = select.NroItem * -1;
+                    if (select.Id <= 0) { select.Id = select.NroItem * -1; }
                     AddModifyCDI(select);
                 }
 
@@ -1517,7 +1521,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 {
                     if (x.NroItem == oItem.NroItem && x.CodItem.Trim() == oItem.CodItem.Trim())
                     {
-                        x.Id = x.NroItem * -1;
+                        if (x.Id <= 0) { x.Id = x.NroItem * -1; }
                         x.CodItem = CotDet.CodItemTemp;
                         x.CodItemTemp = CotDet.CodItemTemp;
                         x.CodItem_IsUpdatable = false;
@@ -1775,6 +1779,48 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         }
 
         [HttpPost]
+        public JsonResult GuardarValorizacion(int IdCotizacion)
+        {
+            try
+            {
+                if (IdCotizacion <= 0) { throw new Exception("Cotización no registrada"); }
+
+                List<CotizacionDetalleDTO> lstItems = GetCDIList("2");
+
+                var swCDItems = true;
+                if (lstItems == null) { swCDItems = false; }
+                else
+                {
+                    if (!lstItems.Any()) { swCDItems = false; }
+                    else
+                    {
+                        if (lstItems.Any(x => x.Cantidad == 0)) { swCDItems = false; }
+                    }
+                }
+
+                if (!swCDItems) { throw new Exception("La cotización no contiene servicios o productos para la venta."); }
+
+                var ventasBL = new VentasBL();
+                var procesoBL = new ProcesosBL();
+
+                lstItems = TotalizacionCotDet(lstItems);
+
+                //Se graba el Detalle de la Cotización
+                foreach (CotizacionDetalleDTO itemCD in lstItems)
+                {
+                    itemCD.TipoProceso = ConstantesDTO.CotizacionVentaDetalle.TipoProceso.Modificar;
+                    itemCD.IdCotizacion = IdCotizacion;
+                    itemCD.UsuarioRegistra = User.ObtenerUsuario();
+                    itemCD.FechaRegistro = DateTime.Now;
+                    var resCD = ventasBL.MantenimientoCotizacionDetalle(itemCD);
+                }
+
+                return Json(new { Status = 1, Mensaje = "Cotización guardada correctamente" });
+            }
+            catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
+        }
+
+        [HttpPost]
         public JsonResult RecotizarSolicitud(int IdCotizacion, int IdWorkFlow)
         {
             try
@@ -1864,7 +1910,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             }
             catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
         }
-
 
         [HttpPost]
         public JsonResult MantenimientoDespacho(DatosDespachoDTO datosDespachoDTO)

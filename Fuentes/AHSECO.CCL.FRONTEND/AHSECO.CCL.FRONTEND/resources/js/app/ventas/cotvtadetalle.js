@@ -12,6 +12,8 @@ var cotvtadet = (function ($, win, doc) {
     var $RolVenta_Importacion = $("#RolVenta_Importacion");
     var $RolVenta_Costos = $("#RolVenta_Costos");
     var $RolVenta_Logistica = $("#RolVenta_Logistica");
+    var $HabilitarValorizacionCotDet = $("#HabilitarValorizacionCotDet");
+    var $EsCotizacionValorizada = $("#EsCotizacionValorizada");
 
     var $cmbTipo = $('#cmbTipo');
 
@@ -69,6 +71,7 @@ var cotvtadet = (function ($, win, doc) {
     var $DC_btnCerrar = $("#DC_btnCerrar");
 
     var $btnEnviarCotizacion = $("#btnEnviarCotizacion");
+    var $btnGuardarValorizacion = $("#btnGuardarValorizacion");
 
     var $tabDetCot = $("#tabDetCot");
     var $tabCalib = $("#tabCalib");
@@ -98,6 +101,7 @@ var cotvtadet = (function ($, win, doc) {
         $DI_btnCerrar.click(cerrarModalDetItem);
         $DC_btnCerrar.click(cerrarModalDetCot);
         $btnEnviarCotizacion.click(enviarCotizacion);
+        $btnGuardarValorizacion.click(guardarValorizacion);
 
         $DI_txtFechaLimite.datepicker({
             viewMode: 0,
@@ -946,7 +950,7 @@ var cotvtadet = (function ($, win, doc) {
 
         var columns = [];
 
-        if ($idRolUsuario.val() == $RolVenta_Gerente.val() || $idRolUsuario.val() == $RolVenta_Costos.val()) {
+        if ($HabilitarValorizacionCotDet.val() == "S") {
 
             columns = [
                 {
@@ -1119,7 +1123,7 @@ var cotvtadet = (function ($, win, doc) {
 
         //Se quita los campos para edición de registros
         if ($estadoSol.val() == "CVAL") {
-            if ($idRolUsuario.val() != $RolVenta_Gerente.val() && $idRolUsuario.val() != $RolVenta_Costos.val()) {
+            if ($HabilitarValorizacionCotDet.val() == "N" || $EsCotizacionValorizada.val() == "S") {
                 columns.pop();
             }
         }
@@ -1233,7 +1237,27 @@ var cotvtadet = (function ($, win, doc) {
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
     }
-    
+
+    function guardarValorizacion() {
+
+        method = "POST";
+        url = "BandejaSolicitudesVentas/GuardarValorizacion";
+        var objDatos = {
+            IdCotizacion: $idCotizacion.val()
+        };
+        var objParam = JSON.stringify(objDatos);
+
+        function redirect() {
+            app.redirectTo("BandejaSolicitudesVentas/SolicitudVenta");
+        };
+
+        var fnDoneCallBack = function (data) {
+            app.message.success("Cotizacion", "Se guard&oacute; la cotizaci&oacute;n correctamente.", "Aceptar", redirect);
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+    }
+
     return {
         buscarItems: buscarItems,
         ObtenerFiltrosPrecios: ObtenerFiltrosPrecios,
