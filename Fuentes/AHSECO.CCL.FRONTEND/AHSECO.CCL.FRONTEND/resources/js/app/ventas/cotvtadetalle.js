@@ -71,6 +71,7 @@ var cotvtadet = (function ($, win, doc) {
     var $DC_btnCerrar = $("#DC_btnCerrar");
 
     var $btnEnviarCotizacion = $("#btnEnviarCotizacion");
+    var $btnRecotizacion = $("#btnRecotizacion");
     var $btnGuardarValorizacion = $("#btnGuardarValorizacion");
 
     var $tabDetCot = $("#tabDetCot");
@@ -101,6 +102,7 @@ var cotvtadet = (function ($, win, doc) {
         $DI_btnCerrar.click(cerrarModalDetItem);
         $DC_btnCerrar.click(cerrarModalDetCot);
         $btnEnviarCotizacion.click(enviarCotizacion);
+        $btnRecotizacion.click(recotizarSolicitud);
         $btnGuardarValorizacion.click(guardarValorizacion);
 
         $DI_txtFechaLimite.datepicker({
@@ -1186,7 +1188,7 @@ var cotvtadet = (function ($, win, doc) {
         };
 
         var fnDoneCallBack = function (data) {
-            app.message.success("Cotizaci&oacute;n", "Se gener&oacute; una nueva cotizaci&oacute;n correctamente.", "Aceptar", redirect);
+            app.message.success("Cotizacion", "Se gener&oacute; una nueva cotizaci&oacute;n correctamente.", "Aceptar", redirect);
         };
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
