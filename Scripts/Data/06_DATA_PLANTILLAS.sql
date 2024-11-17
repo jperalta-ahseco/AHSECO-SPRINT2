@@ -43,3 +43,23 @@ VALUES('PLANINSTECVEN',3,'Plantilla de instalación técnica para vendedor','','pm
 {DETALLE_EQUIPOS}
 <p>Se adjunta el documento: Acta de Instalación, que contiene un mayor detalle.</p>
 <p>Por favor ingrese al sistema para continuar con el flujo de venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
+
+-- para despacho:
+INSERT INTO TBM_PLANTILLAS
+VALUES('PLANGUIAPE',1,'Plantilla de Envio de Guia de Pedidos','logistica@ahsecoperu.com','','GUIA DE PEDIDOS - N° SOLICITUD {NRO_SOL}',
+			   '<p>Estimado Logistica,</p>
+<p>Se realiza el envio de la guía de pedidos de la solicitud N°{NRO_SOL} para el cliente {CLIENTE}.</p>
+<p>Su apoyo con la atención de lo solicitado.</p>
+<p>Por favor ingrese al sistema para continuar con el flujo de venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
+
+INSERT INTO TBM_PLANTILLAS
+VALUES('PLANATLOCS',1,'Plantilla de Atencion de Logistica Con Stock','','','ATENCION PRODUCTOS CON STOCK - N° SOLICITUD {NRO_SOL}',
+			   '<p>Sr. Vendedor, {NOM_VENDEDOR}</p>
+<p>Se realiza la atención del despacho de la solicitud N°{NRO_SOL} para el cliente {CLIENTE}.</p>
+<p>Por favor ingrese al sistema para continuar con el flujo de venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
+
+INSERT INTO TBM_PLANTILLAS
+VALUES('PLANATLOSS',1,'Plantilla de Atencion de Logistica Sin Stock','','','ATENCION PRODUCTOS SIN STOCK - N° SOLICITUD {NRO_SOL}',
+			   '<p>Sr. Vendedor, {NOM_VENDEDOR}</p>
+<p>Se realiza la atención del despacho de la solicitud N°{NRO_SOL} para el cliente {CLIENTE}.</p>
+<p>Por favor ingrese al sistema para continuar con el flujo de venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
