@@ -116,6 +116,7 @@ namespace AHSECO.CCL.COMUN
             {
                 public static string Insertar { get { return "I"; } }
                 public static string Modificar { get { return "U"; } }
+                public static string Eliminar { get { return "D"; } }
             }
             public struct CodigoItem
             {
@@ -134,6 +135,7 @@ namespace AHSECO.CCL.COMUN
             {
                 public static string Insertar { get { return "I"; } }
                 public static string Modificar { get { return "U"; } }
+                public static string Eliminar { get { return "D"; } }
             }
             public struct CicloPreventivo
             {

@@ -112,6 +112,8 @@ namespace AHSECO.CCL.BD.Ventas
                         MontoIGV = Utilidades.Parse<decimal?>(i.Single(d => d.Key.Equals("MONTOIGV")).Value),
                         TotalVenta = Utilidades.Parse<decimal?>(i.Single(d => d.Key.Equals("TOTALVENTA")).Value),
                         Estado = i.Single(d => d.Key.Equals("ESTADO")).Value.Parse<string>(),
+                        IndValorizado = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDVALORIZADO")).Value.Parse<string>()),
+                        IndCosteado = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDCOSTEADO")).Value.Parse<string>()),
                         UsuarioRegistra = i.Single(d => d.Key.Equals("USR_REG")).Value.Parse<string>(),
                         FechaRegistro = i.Single(d => d.Key.Equals("FEC_REG")).Value.Parse<DateTime>(),
                         UsuarioModifica = Utilidades.Parse<string>(i.Single(d => d.Key.Equals("USR_MOD")).Value),
@@ -331,17 +333,41 @@ namespace AHSECO.CCL.BD.Ventas
                 var parameters = new DynamicParameters();
 
                 parameters.Add("pTipoProceso", detCotDespacho.TipoProceso);
+                parameters.Add("pId", detCotDespacho.Id);
                 parameters.Add("pId_CodDetalle", detCotDespacho.IdCotizacionDetalle);
-                parameters.Add("pIndInfoVideo", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndInfoVideo), DbType.String);
-                parameters.Add("pIndInfoManual", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndInfoManual), DbType.String);
-                parameters.Add("pIndInstaCapa", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndInstaCapa), DbType.String);
-                parameters.Add("pIndGarantiaAdic", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndGarantiaAdicional), DbType.String);
-                parameters.Add("pIndMantPrevent", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndMantPreventivo), DbType.String);
-                parameters.Add("pIndLLaveMano", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndLLaveMano), DbType.String);
+
+                if (detCotDespacho.IndInfoVideo.HasValue)
+                { parameters.Add("pIndInfoVideo", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndInfoVideo), DbType.String); }
+                else
+                { parameters.Add("pIndInfoVideo", DBNull.Value, DbType.String); }
+                if (detCotDespacho.IndInfoManual.HasValue)
+                { parameters.Add("pIndInfoManual", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndInfoManual), DbType.String); }
+                else
+                { parameters.Add("pIndInfoManual", DBNull.Value, DbType.String); }
+                if (detCotDespacho.IndInstaCapa.HasValue)
+                { parameters.Add("pIndInstaCapa", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndInstaCapa), DbType.String); }
+                else
+                { parameters.Add("pIndInstaCapa", DBNull.Value, DbType.String); }
+                if (detCotDespacho.IndGarantiaAdicional.HasValue)
+                { parameters.Add("pIndGarantiaAdic", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndGarantiaAdicional), DbType.String); }
+                else
+                { parameters.Add("pIndGarantiaAdic", DBNull.Value, DbType.String); }
+                if (detCotDespacho.IndMantPreventivo.HasValue)
+                { parameters.Add("pIndMantPrevent", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndMantPreventivo), DbType.String); }
+                else
+                { parameters.Add("pIndMantPrevent", DBNull.Value, DbType.String); }
+                if (detCotDespacho.IndLLaveMano.HasValue)
+                { parameters.Add("pIndLLaveMano", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndLLaveMano), DbType.String); }
+                else
+                { parameters.Add("pIndLLaveMano", DBNull.Value, DbType.String); }
                 parameters.Add("pDimensiones", detCotDespacho.Dimensiones);
-                parameters.Add("pIndCompraLocal", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndCompraLocal), DbType.String);
+                if (detCotDespacho.IndCompraLocal.HasValue)
+                { parameters.Add("pIndCompraLocal", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndCompraLocal), DbType.String); }
+                else
+                { parameters.Add("pIndCompraLocal", DBNull.Value, DbType.String); }
                 parameters.Add("pObsCliente", detCotDespacho.ObsCliente);
-                parameters.Add("pIndReqPlaca", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndRequierePlaca), DbType.String);
+                if (detCotDespacho.IndRequierePlaca.HasValue)
+                { parameters.Add("pIndReqPlaca", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndRequierePlaca), DbType.String); }
                 parameters.Add("pObsDespacho", detCotDespacho.ObsDespacho);
                 if (detCotDespacho.FecLimInsta.HasValue)
                 { parameters.Add("pFecLimInsta", detCotDespacho.FecLimInsta.Value, DbType.DateTime); }
@@ -351,7 +377,10 @@ namespace AHSECO.CCL.BD.Ventas
                 { parameters.Add("pMontoTotalCosto", detCotDespacho.MontoTotalCosto.Value,DbType.Decimal); }
                 else
                 { parameters.Add("pMontoTotalCosto", DBNull.Value, DbType.Decimal); }
-                parameters.Add("pIndFianza", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndFianza), DbType.String);
+                if (detCotDespacho.IndFianza.HasValue)
+                { parameters.Add("pIndFianza", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndFianza), DbType.String); }
+                else
+                { parameters.Add("pIndFianza", DBNull.Value, DbType.String); }
                 parameters.Add("pNumFianza", detCotDespacho.NumFianza);
                 if (detCotDespacho.MontoPrestPrin.HasValue)
                 { parameters.Add("pMontoPPrinc", detCotDespacho.MontoPrestPrin.Value, DbType.Decimal); }

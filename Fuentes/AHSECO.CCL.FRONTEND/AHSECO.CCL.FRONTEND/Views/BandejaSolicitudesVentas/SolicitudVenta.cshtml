@@ -357,9 +357,6 @@
                                                         </div>
                                                     </div>
                                                     <div class="box-content">
-                                                        <div class="text-right">
-                                                            <button style="@(ViewBag.PermitirAgregarCotDet ? "" : "display:none")" class="btn btn-default btn-sm" type="button" data-target="#modalDetalleCotizacion" data-toggle="modal" id="btnAgregarDetalle" tabindex="14"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar / Modificar Detalle</button>
-                                                        </div>
                                                         <br />
                                                         <ul class="nav nav-tabs" style="padding-top: 5px;">
                                                             <li class="" id="tabDetCot" style="@(ViewBag.PermitirTabDetCot ? "" : "display:none")">
@@ -389,6 +386,9 @@
                                                         </ul>
                                                         <div class="tab-content">
                                                             <div id="navCotDet" class="tab-pane fade in active">
+                                                                <div class="text-right" style="padding-top: 10px; padding-bottom: 10px">
+                                                                    <button style="@(ViewBag.PermitirAgregarCotDet ? "" : "display:none")" class="btn btn-default btn-sm" type="button" data-target="#modalDetalleCotizacion" data-toggle="modal" id="btnAgregarDetalle" tabindex="14"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar / Modificar Detalle</button>
+                                                                </div>
                                                                 <div class="table-responsive">
                                                                     <table id="tblDetCotCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                                                         <thead>
@@ -403,8 +403,18 @@
                                                                         </tbody>
                                                                     </table>
                                                                 </div>
+                                                                <div class="row container-fluid">
+                                                                    <div class="text-right">
+                                                                        <button style="@(ViewBag.PermitirEnvioCotizacion ? "" : "display:none")" class="btn btn-default btn-sm" type="button" id="btnEnviarCotizacion"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Enviar Cotizaci&oacute;n</button>
+                                                                        <button style="@(ViewBag.PermitirReCotizacion ? "" : "display:none")" class="btn btn-default btn-sm" type="button" id="btnRecotizacion"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Generar Nueva Cotizaci&oacute;n</button>
+                                                                        <button style="@(ViewBag.PermitirGuardarValorizacion ? "" : "display:none")" class="btn btn-default btn-sm" type="button" id="btnGuardarValorizacion"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Guardar Cotizaci&oacute;n</button>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                             <div id="navInsta" class="tab-pane fade">
+                                                                <div class="text-right" style="padding-top: 10px; padding-bottom: 10px">
+                                                                    <button class="btn btn-default btn-sm" type="button" data-target="#modalCostoItem" data-toggle="modal" id="btnAC_Insta" tabindex="14"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar Costo</button>
+                                                                </div>
                                                                 <div class="table-responsive">
                                                                     <table id="tblInstaCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                                                         <thead>
@@ -424,6 +434,9 @@
                                                                 </div>
                                                             </div>
                                                             <div id="navMantPrevent" class="tab-pane fade">
+                                                                <div class="text-right" style="padding-top: 10px; padding-bottom: 10px">
+                                                                    <button class="btn btn-default btn-sm" type="button" data-target="#modalCostoItem" data-toggle="modal" id="btnAC_MantPrevent" tabindex="14"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar Costo</button>
+                                                                </div>
                                                                 <div class="table-responsive">
                                                                     <table id="tblMantPreventCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                                                         <thead>
@@ -445,6 +458,9 @@
                                                                 </div>
                                                             </div>
                                                             <div id="navLLaveMano" class="tab-pane fade">
+                                                                <div class="text-right" style="padding-top: 10px; padding-bottom: 10px">
+                                                                    <button class="btn btn-default btn-sm" type="button" data-target="#modalCostoItem" data-toggle="modal" id="btnAC_LLaveMano" tabindex="14"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar Costo</button>
+                                                                </div>
                                                                 <div class="table-responsive">
                                                                     <table id="tblLLaveManoCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                                                         <thead>
@@ -464,6 +480,9 @@
                                                                 </div>
                                                             </div>
                                                             <div id="navManualVideos" class="tab-pane fade">
+                                                                <div class="text-right" style="padding-top: 10px; padding-bottom: 10px">
+                                                                    <button class="btn btn-default btn-sm" type="button" data-target="#modalCostoItem" data-toggle="modal" id="btnAC_ManualVideo" tabindex="14"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar Costo</button>
+                                                                </div>
                                                                 <div class="table-responsive">
                                                                     <table id="tblManualVideosCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                                                         <thead>
@@ -480,6 +499,9 @@
                                                                 </div>
                                                             </div>
                                                             <div id="navGarantiaAdic" class="tab-pane fade">
+                                                                <div class="text-right" style="padding-top: 10px; padding-bottom: 10px">
+                                                                    <button class="btn btn-default btn-sm" type="button" data-target="#modalCostoItem" data-toggle="modal" id="btnAC_GarantAdic" tabindex="14"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar Costo</button>
+                                                                </div>
                                                                 <div class="table-responsive">
                                                                     <table id="tblGarantiaAdicCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                                                         <thead>
@@ -499,6 +521,9 @@
                                                                 </div>
                                                             </div>
                                                             <div id="navCalib" class="tab-pane fade">
+                                                                <div class="text-right" style="padding-top: 10px; padding-bottom: 10px">
+                                                                    <button class="btn btn-default btn-sm" type="button" data-target="#modalCostoItem" data-toggle="modal" id="btnAC_Calib" tabindex="14"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar Costo</button>
+                                                                </div>
                                                                 <div class="table-responsive">
                                                                     <table id="tblCalibCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                                                         <thead>
@@ -518,6 +543,9 @@
                                                                 </div>
                                                             </div>
                                                             <div id="navFlete" class="tab-pane fade">
+                                                                <div class="text-right" style="padding-top: 10px; padding-bottom: 10px">
+                                                                    <button class="btn btn-default btn-sm" type="button" data-target="#modalCostoItem" data-toggle="modal" id="btnAC_Flete" tabindex="14"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar Costo</button>
+                                                                </div>
                                                                 <div class="table-responsive">
                                                                     <table id="tblFleteCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                                                         <thead>
@@ -535,13 +563,6 @@
                                                                         </tbody>
                                                                     </table>
                                                                 </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row container-fluid">
-                                                            <div class="text-right">
-                                                                <button style="@(ViewBag.PermitirEnvioCotizacion ? "" : "display:none")" class="btn btn-default btn-sm" type="button" id="btnEnviarCotizacion"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Enviar Cotizaci&oacute;n</button>
-                                                                <button style="@(ViewBag.PermitirReCotizacion ? "" : "display:none")" class="btn btn-default btn-sm" type="button" id="btnRecotizacion"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Generar Nueva Cotizaci&oacute;n</button>
-                                                                <button style="@(ViewBag.PermitirGuardarValorizacion ? "" : "display:none")" class="btn btn-default btn-sm" type="button" id="btnGuardarValorizacion"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Guardar Cotizaci&oacute;n</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -914,5 +935,6 @@
 @section scripts{
     <script type="text/javascript" src="~/resources/js/app/ventas/solicitud.js"></script>
     <script type="text/javascript" src="~/resources/js/app/ventas/cotvtadetalle.js"></script>
+    <script type="text/javascript" src="~/resources/js/app/ventas/cotvtacostos.js"></script>
     <script type="text/javascript" src="~/resources/js/app/mantenimientos/cliente/bandejaCliente.js"></script>
 }

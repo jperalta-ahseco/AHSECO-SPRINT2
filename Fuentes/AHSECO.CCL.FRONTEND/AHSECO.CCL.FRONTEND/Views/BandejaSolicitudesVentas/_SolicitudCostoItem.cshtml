@@ -11,7 +11,7 @@
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
-            <h4 class="modal-title" id="tituloModal"><i class="fa fa-cubes"></i>Detalle de Producto / Servicio</h4>
+            <h4 class="modal-title" id="tituloModal"><i class="fa fa-cubes"></i>Costo de Despacho de Producto / Servicio</h4>
         </div>
         <!-- Modal content body -->
         <div class="modal-body d-flex justify-content-center" align-items-center>
@@ -40,23 +40,6 @@
                                             <input disabled placeholder="Ingresar nombre de producto" type="text" class="form-control input-sm" id="CI_txtDescripcion" value="">
                                         </div>
                                     </div>
-                                    <div class="row container-fluid col-content-middleleft form-group">
-                                        <div class="col-md-3">
-                                            <label for="CI_txtCantidad">Cantidad: </label>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <input placeholder="Cantidad" type="text" maxlength="8" class="form-control input-sm" id="CI_txtCantidad" value="">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="col-md-1"></div>
-                                    <div class="col-md-11">
-                                        <div class="row container-fluid" style="@(ViewBag.PermitirModificarEspCarac ? "" : "display:none")">
-                                            <label for="CI_txtDescripcionAdic">Especificaciones / Caracteristicas: </label>
-                                            <textarea placeholder="Ingresar Especificaciones <Opcional>" rows="5" class="form-control input-sm" id="CI_txtDescripcionAdic" value=""></textarea>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </fieldset>
@@ -64,31 +47,21 @@
                     <div class="container-fluid">
                         <fieldset class="form-group">
                             <legend><b>Informaci&oacute;n de Costos</b></legend>
-                            <div class="row container-fluid form-group" style="@(ViewBag.MostrarCDI_Costos_R1 ? "" : "display:none")">
-                                <div class="col-md-6 col-content-middleleft">
-                                    <div class="col-md-3">
-                                        <label for="CI_txtCostoFOB">Costo FOB: </label>
+                            <div class="row container-fluid col-content-bottomleft">
+                                <div class="col-md-4 col-content-middleleft">
+                                    <div class="col-md-5">
+                                        <label for="CI_txtCantidad">Cantidad a Despachar: </label>
                                     </div>
-                                    <div class="col-md-4">
-                                        <input placeholder="Ingresar Costo" type="text" maxlength="20" class="form-control input-sm" id="CI_txtCostoFOB" value="">
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-content-middleleft">
-                                    <div class="col-md-3">
-                                        <label for="CI_txtValorUnitario">Val. Unitario: </label>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <input placeholder="Ingresar Val. Unt." type="text" maxlength="20" class="form-control input-sm" id="CI_txtValorUnitario" value="">
+                                    <div class="col-md-6">
+                                        <input placeholder="Cantidad" type="text" maxlength="8" class="form-control input-sm" id="CI_txtCantidad" value="">
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row container-fluid col-content-bottomleft" style="@(ViewBag.MostrarCDI_Costos_R2 ? "" : "display:none")">
-                                <div class="col-md-6 col-content-middleleft">
-                                    <div class="col-md-3">
-                                        <label for="CI_txtGanancia">Ganancia (%): </label>
+                                <div class="col-md-4 col-content-middleleft">
+                                    <div class="col-md-5">
+                                        <label for="CI_txtCosto">Monto de Costo: </label>
                                     </div>
-                                    <div class="col-md-4">
-                                        <input placeholder="Ingrese Ganancia (%)" type="text" maxlength="15" class="form-control input-sm" id="CI_txtGanancia" value="">
+                                    <div class="col-md-6">
+                                        <input placeholder="Costo" type="text" maxlength="8" class="form-control input-sm" id="CI_txtCosto" value="">
                                     </div>
                                 </div>
                             </div>

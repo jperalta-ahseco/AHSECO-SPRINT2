@@ -4,6 +4,7 @@ GO
 CREATE OR ALTER PROCEDURE [dbo].[USP_MANT_TBM_COTDET_DESPACHO]
 (
 @pTipoProceso CHAR(1),
+@pId BIGINT,
 @pId_CodDetalle BIGINT,
 @pIndInfoVideo CHAR(1),
 @pIndInfoManual CHAR(1),
@@ -58,6 +59,7 @@ BEGIN
 		SET @MSG ='Registro Insertado con éxito'
 		
 	END
+
 	IF (@pTipoProceso = 'U') BEGIN
 		
 		UPDATE [dbo].[TBM_COTDET_DESPACHO]
@@ -72,6 +74,12 @@ BEGIN
 		
 		SET @MSG ='Registro Modificado con éxito'
 		
+	END
+
+	IF (@pTipoProceso = 'D') BEGIN
+		
+		DELETE FROM [dbo].[TBM_COTDET_DESPACHO] WHERE ID = @pId
+
 	END
 	
 	SELECT @CODIGO COD, @MSG MSG

@@ -94,6 +94,7 @@ var cotvtadet = (function ($, win, doc) {
     var opcGrillaItems = 0;
     
     $(Initialize);
+
     function Initialize() {
 
         $btnBuscarItems.click(buscarItems);
@@ -704,14 +705,14 @@ var cotvtadet = (function ($, win, doc) {
 
     function grabarDatosCotDetItem() {
 
-        var bCompraLocal = false;
-        var bLLaveMano = false;
-        var bReqPlaca = false;
-        var bManuales = false;
-        var bVideos = false;
-        var bInstaCapa = false;
-        var bGarantiaAdic = false;
-        var bMantPrevent = false;
+        var bCompraLocal = null;
+        var bLLaveMano = null;
+        var bReqPlaca = null;
+        var bManuales = null;
+        var bVideos = null;
+        var bInstaCapa = null;
+        var bGarantiaAdic = null;
+        var bMantPrevent = null;
 
         if ($idRolUsuario.val() == $RolVenta_Gerente.val() || $idRolUsuario.val() == $RolVenta_Costos.val()) {
 
@@ -814,20 +815,28 @@ var cotvtadet = (function ($, win, doc) {
             }
 
             if ($DI_radLLaveEnMano_Si.is(':checked')) { bLLaveMano = true; }
+            if ($DI_radLLaveEnMano_No.is(':checked')) { bLLaveMano = false; }
 
             if ($DI_radReqPlaca_Si.is(':checked')) { bReqPlaca = true; }
+            if ($DI_radReqPlaca_No.is(':checked')) { bReqPlaca = false; }
 
             if ($DI_radCompraLocal_Si.is(':checked')) { bCompraLocal = true; }
+            if ($DI_radCompraLocal_No.is(':checked')) { bCompraLocal = false; }
 
             if ($DI_radManuales_Si.is(':checked')) { bManuales = true; }
+            if ($DI_radManuales_No.is(':checked')) { bManuales = false; }
 
             if ($DI_radVideos_Si.is(':checked')) { bVideos = true; }
+            if ($DI_radVideos_No.is(':checked')) { bVideos = false; }
 
             if ($DI_radInstaCapa_Si.is(':checked')) { bInstaCapa = true; }
+            if ($DI_radInstaCapa_No.is(':checked')) { bInstaCapa = false; }
 
             if ($DI_radMantPrevent_Si.is(':checked')) { bMantPrevent = true; }
+            if ($DI_radMantPrevent_No.is(':checked')) { bMantPrevent = false; }
 
             if ($DI_radGarantAdic_Si.is(':checked')) { bGarantiaAdic = true; }
+            if ($DI_radGarantAdic_No.is(':checked')) { bGarantiaAdic = false; }
 
         }
 
@@ -1037,8 +1046,9 @@ var cotvtadet = (function ($, win, doc) {
                     render: function (data) {
                         var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
                         var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                        var quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
-                        return '<center>' + hidden + editar + ' ' + quitar + '</center>';
+                        //var quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                        //return '<center>' + hidden + editar + ' ' + quitar + '</center>';
+                        return '<center>' + hidden + editar + '</center>';
                     }
                 }
             ];
@@ -1114,9 +1124,10 @@ var cotvtadet = (function ($, win, doc) {
                     data: "CodItem",
                     render: function (data) {
                         var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
-                        var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                        //var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
                         var quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
-                        return '<center>' + hidden + editar + ' ' + quitar + '</center>';
+                        //return '<center>' + hidden + editar + ' ' + quitar + '</center>';
+                        return '<center>' + hidden + quitar + '</center>';
                     }
                 }
             ];
