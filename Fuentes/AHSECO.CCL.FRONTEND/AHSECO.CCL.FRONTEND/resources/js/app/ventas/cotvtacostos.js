@@ -20,6 +20,6 @@
     $(Initialize);
 
     function Initialize() {
-
+      
     }
-}
+})(window.jQuery, window, document);

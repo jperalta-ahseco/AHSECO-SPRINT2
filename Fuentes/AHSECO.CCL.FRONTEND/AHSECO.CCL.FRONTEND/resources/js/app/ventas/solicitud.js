@@ -124,6 +124,9 @@
     var $txtSerie = $("#txtSerie");
     var $codDetalleDespacho = $("#codDetalleDespacho");
     var $btnRegistrarSerie = $("#btnRegistrarSerie");
+    var $btnActualizarGestion = $("#btnActualizarGestion");
+    var $btnEditarGestion = $("#btnEditarGestion");
+    var $btnEnviarGuia = $("#btnEnviarGuia");
 
     var mensajes = {
         consultaContactos: "Consultando contactos, por favor espere....",
@@ -152,6 +155,7 @@
     let adjuntos = [];
     let codigoInit = "";
     function Initialize() {
+       
         solicitud.contadorObservaciones = 0;
         solicitud.contactos = [];
         solicitud.observaciones = [];
@@ -165,7 +169,7 @@
         solicitud.nuevoContacto = false;
         cargaCombos();
         cotvtadet.ObtenerFiltrosPrecios();
-        CargarTipoDocumento(4); //Tipo de Proceso "Ventas"
+        CargarTipoDocumento(1); //Tipo de Proceso "Ventas"
         
 
         setTimeout(function () {
@@ -221,14 +225,83 @@
         $cmbTipoVenta.on("change", changeTipoVenta);
         $dateOrdenCompra.on("change", $dateOrdenCompra_change);
         $btnRegistrarSerie.click($btnRegistrarSerie_click);
-
+        $btnEditarGestion.click($btnEditarGestion_click);
+        $btnActualizarGestion.click($btnActualizarGestion_click);
+        $btnEnviarGuia.click($btnEnviarGuia_click);
         CalcularFechaEntregaMaxima();
     };
 
-    function $btnGuardarGestion_click() {
+    function $btnEnviarGuia_click() {
+        var documento_guiaPedido = 0;
+        adjuntos.forEach(function (currentValue, index, arr) {
+            if (adjuntos[index].CodigoTipoDocumento == "DVT04") {
+                documento_guiaPedido = 1;
+            }
+        });
 
+        if (documento_guiaPedido === 0) {
+            app.message.error("Validación", "Debe adjuntar un documento de guía de pedido.");
+            return false;
+        }
+    }
+
+    function $btnEditarGestion_click() {
+        $txtNroOrdenCompra.prop('disabled', false);
+        $dateOrdenCompra.prop('disabled', false);
+        $openRegdateOrdenCompra.prop('disabled', false);
+        $btnEditarGestion.hide();
+        $btnActualizarGestion.show();
+    }
+
+    function $btnActualizarGestion_click() {
         if ($txtNroOrdenCompra.val() === "" || $txtNroOrdenCompra.val() == null) {
             app.message.error("Validación", "Debe ingresar el número de orden de compra.");
+            return false;
+        }
+        if ($dateOrdenCompra.val() === "" || $dateOrdenCompra.val() == null) {
+            app.message.error("Validación", "Debe ingresar la fecha de orden de compra.");
+            return false;
+        }
+        var fnSi = function () {
+
+            var m = "POST";
+            var url = "BandejaSolicitudesVentas/MantenimientoDespacho";
+            var obj = {
+                Tipo: "U",
+                CodigoSolicitud: $numeroSolicitud.val(),
+                CodigoCotizacion: $idCotizacion.val(),
+                CodigoWorkFlow: $codigoWorkflow.val(),
+                NumeroOrden: $txtNroOrdenCompra.val(),
+                FechaOrden: $dateOrdenCompra.val(),
+                FechaMaxima: $txtFechaEntregaMax.val(),
+                Stock: ""
+            }
+            var objParam = JSON.stringify(obj);
+            var fnDoneCallback = function (data) {
+                var fnCallback = function () {
+                    location.reload();
+                };
+                if (data.Result.Codigo > 0) {
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+                else {
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+
+            };
+            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.RegistrarGestionVenta);
+        }
+        return app.message.confirm("Ventas", "¿Está seguro que desea actualizar los datos de despacho?", "Sí", "No", fnSi, null);
+    }
+
+    function $btnGuardarGestion_click() {
+        
+        if ($txtNroOrdenCompra.val() === "" || $txtNroOrdenCompra.val() == null) {
+            app.message.error("Validación", "Debe ingresar el número de orden de compra.");
+            return false;
+        }
+        if ($dateOrdenCompra.val() === "" || $dateOrdenCompra.val() == null) {
+            app.message.error("Validación", "Debe ingresar la fecha de orden de compra.");
             return false;
         }
         var fnSi = function () {
@@ -1540,7 +1613,9 @@
                 $txtNroOrdenCompra.val(data.Result.ContadorCabecera.NumeroOrden);
                 $dateOrdenCompra.val(data.Result.ContadorCabecera.FechaOrden);
                 $txtFechaEntregaMax.val(data.Result.ContadorCabecera.FechaMaxima);
-
+                $txtNroOrdenCompra.prop('disabled', true);
+                $dateOrdenCompra.prop('disabled', true);
+                $openRegdateOrdenCompra.prop('disabled', true);
 
 
                 if (data.Result.ContadorCabecera.NumeroConStock > 0) {
@@ -1614,6 +1689,7 @@
 
                 var docs = data.Result.Adjuntos.length;
                 adjuntos = data.Result.Adjuntos;
+
                 $contadordoc.val(docs);
                 if (docs > 0) {
                     for (i = 0; i < data.Result.Adjuntos.length; i++) {
@@ -1745,7 +1821,7 @@
             };
             return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.actualizarSerie);
         }
-        return app.message.confirm("Ventas", "¿Está seguro que registrar el número de serie?", "Sí", "No", fnSi, null);
+        return app.message.confirm("Ventas", "¿Está seguro que desea registrar el número de serie?", "Sí", "No", fnSi, null);
 
     }
 

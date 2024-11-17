@@ -74,6 +74,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.Btn_GuiaBO = "none";
             ViewBag.Btn_Aprobar = "none";
             ViewBag.Btn_Observar = "none";
+            ViewBag.Btn_EditarDespacho = "none";
             ViewBag.TxtOrdenCompra = "disabled";
             ViewBag.TxtFecOrdenCompra = "disabled";
             ViewBag.TxtCodigoPedido = "disabled";
@@ -205,17 +206,18 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ 
                     || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc)
                 {
-                    if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.VentaProg)
+                    if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.CotAprob)
                     {
-                        ViewBag.Btn_FinalizarVenta = "inline-block";
+                        ViewBag.Btn_GuardarDespacho = "inline-block";
+                        ViewBag.TxtOrdenCompra = "";
+                        ViewBag.TxtFecOrdenCompra = "";
                     }
-
-                    ViewBag.Btn_GuardarDespacho = "inline-block";
 
                     if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnProcVentas)
                     {
                         ViewBag.Btn_EnviarGuia = "inline-block";
                         ViewBag.Btn_GuiaPedido = "inline-block";
+                        ViewBag.Btn_EditarDespacho = "inline-block";
 
                         if (validarDespacho.Result != null)
                         {
@@ -230,9 +232,20 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             }
                         }
                     }
+                    
+                    if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.VentaProg)
+                    {
+                        ViewBag.Btn_FinalizarVenta = "inline-block";
+                        ViewBag.Btn_EditarDespacho = "inline-block";
+                        ViewBag.VerGestionLogistica = true;
 
-                    ViewBag.TxtOrdenCompra = "";
-                    ViewBag.TxtFecOrdenCompra = "";
+                    }
+
+                    if(soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Finalizado)
+                    {
+                        ViewBag.VerGestionLogistica = true;
+                    }
+  
                 }
                 else if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Gerente)
                 {
@@ -250,6 +263,13 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     ViewBag.TxtNumeroFacturaCE = "";
                     ViewBag.TxtNumeroGuiaRemisionCE = "";
                     ViewBag.TxtNumeroSerieCE = "";
+
+                    if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnProcVentas
+                   || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.VentaProg
+                   || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Finalizado)
+                    {
+                        ViewBag.VerGestionLogistica = true;
+                    }
                 }
                 else if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Importacion)
                 {
@@ -277,12 +297,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     ViewBag.VerGestionVenta = true;
                 }
 
-                if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnProcVentas 
-                    || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.VentaProg 
-                    || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Finalizado)
-                {
-                    ViewBag.VerGestionLogistica = true;
-                }
+               
 
                 if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion)
                 {

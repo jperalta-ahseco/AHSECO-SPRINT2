@@ -950,6 +950,9 @@
     <Content Include="Views\BandejaPreventivo\Index.cshtml" />
     <Content Include="Views\BandejaPreventivo\RegistroPreventivo.cshtml" />
     <Content Include="Views\BandejaSolicitudesVentas\_SolicitudCostoItem.cshtml" />
+    <Content Include="Views\Shared\_ElementosDeProducto.cshtml" />
+    <Content Include="Views\Shared\_DetalleInstalacionTecnica.cshtml" />
+    <Content Include="Views\Shared\_BuscarTecnico.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\css\font\" />
