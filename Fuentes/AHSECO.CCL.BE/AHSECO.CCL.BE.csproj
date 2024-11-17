@@ -80,11 +80,11 @@
     <Compile Include="ServicioTecnico\BandejaInstalacionTecnica\TecnicoInstalacionDTO.cs" />
     <Compile Include="FiltroArticuloDTO.cs" />
     <Compile Include="AlmacenDTO.cs" />
+    <Compile Include="Ventas\CotDetCostoDTO.cs" />
     <Compile Include="Ventas\DetalleDespachoDTO.cs" />
     <Compile Include="Ventas\CotDetDespachoDTO.cs" />
     <Compile Include="Ventas\CabeceraDespachoDTO.cs" />
     <Compile Include="Ventas\DatosDespachoDTO.cs" />
-    <Compile Include="Ventas\CotizacionCostoDTO.cs" />
     <Compile Include="Ventas\CotizacionDetalleDTO.cs" />
     <Compile Include="Ventas\CotizacionDTO.cs" />
     <Compile Include="Ventas\DatosActualizarSerieSTO.cs" />

@@ -726,11 +726,24 @@ var cotvtadet = (function ($, win, doc) {
                     app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Costo FOB");
                     return false;
                 }
+                else {
+                    if (parseFloat($DI_txtCostoFOB.val()) <= 0) {
+                        app.message.error("Validaci&oacute;n", "el costo FOB debe ser mayor a 0.");
+                        return false;
+                    }
+                }
             }
+
             if ($DI_txtValorUnitario.val() != "") {
                 if (!app.validaNumeroDecimal($DI_txtValorUnitario.val())) {
                     app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Valor Unitario");
                     return false;
+                }
+                else {
+                    if (parseFloat($DI_txtValorUnitario.val()) <= 0) {
+                        app.message.error("Validaci&oacute;n", "el valor unitario debe ser mayor a 0.");
+                        return false;
+                    }
                 }
             }
 
@@ -765,7 +778,7 @@ var cotvtadet = (function ($, win, doc) {
                     return false;
                 }
                 else {
-                    if (parseInt($DI_txtGanancia.val()) <= 0) {
+                    if (parseFloat($DI_txtGanancia.val()) <= 0) {
                         app.message.error("Validaci&oacute;n", "La ganancia no debe ser menor a 0.");
                         return false;
                     }

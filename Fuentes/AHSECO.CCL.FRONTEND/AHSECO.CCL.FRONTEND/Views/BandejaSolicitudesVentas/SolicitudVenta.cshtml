@@ -25,6 +25,7 @@
     var idflujo = VariableSesion.getCadena("idFlujo");
     var idWorkFlow = VariableSesion.getCadena("idWorkFlow");
     var idCotizacion = ViewBag.IdCotizacion;
+
     ViewBag.disabled = false; //
     if (NombreRol != "SGI_VENTA_ASESOR" && NombreRol != "SGI_VENTA_COORDINASERV" && NombreRol != "SGI_VENTA_COORDINAATC") //habilitado solo cuando es nuevo y con  los perfiles de vendedores
     {
@@ -936,5 +937,6 @@
     <script type="text/javascript" src="~/resources/js/app/ventas/solicitud.js"></script>
     <script type="text/javascript" src="~/resources/js/app/ventas/cotvtadetalle.js"></script>
     <script type="text/javascript" src="~/resources/js/app/ventas/cotvtacostos.js"></script>
+    <script type="text/javascript" src="~/resources/js/app/ubigeo/ubigeo.js"></script>
     <script type="text/javascript" src="~/resources/js/app/mantenimientos/cliente/bandejaCliente.js"></script>
 }

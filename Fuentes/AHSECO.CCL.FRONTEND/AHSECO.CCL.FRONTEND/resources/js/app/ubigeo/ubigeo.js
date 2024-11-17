@@ -6,6 +6,8 @@ var ubigeo = (function ($, win, doc) {
     var $txtUbigeo = $("#txtUbigeo");
     var $btnSeleccionar = $('#btnGuardarUbigeo')
     var $tituloModal = $("#tituloModal")
+    var $UbigeoId = null;
+    var $UbigeoText = null;
 
     var mensajes = {
         procesandoUbigeo: "Procesando Ubigeo, por favor espere...",
@@ -13,20 +15,28 @@ var ubigeo = (function ($, win, doc) {
         guardarUbigeo: "Guardando datos del ubigeo , por favor espere...",
         guardarUsuario: "Los datos del usuario se guardaron satisfactoriamente."
     };
-    $(Initialize);
 
+    $(Initialize);
 
     function Initialize() {
         logicUbigeo();
         $btnSeleccionar.click(seleccionar);
     }
+    
+    function setTxtUbigeo_Id(inputId) {
+        $UbigeoId = $("#" + inputId);
+    }
 
+    function setTxtUbigeo_Text(inputId) {
+        $UbigeoText = $("#" + inputId);
+    }
 
     function logicUbigeo() {
         $cmbProvincia.prop("disabled", true);
         $cmbDistrito.prop("disabled", true);
         obtenerDepartamento();
     }
+
     function obtenerDepartamento() {
         var method = "POST";
         var url = "Ubigeo/ObtenerUbigeo";
@@ -60,7 +70,7 @@ var ubigeo = (function ($, win, doc) {
                     obtenerProvincia(codDepartamento, data);
                 }
             });
-            app.llenarCombo($cmbDepartamento, resultado, $modalUbigeo, null, "<--Todos-->", null);
+            app.llenarCombo($cmbDepartamento, resultado, $modalUbigeo, " ", "<--Todos-->", null);
         }
         var fnFailCallback = function () {
             app.mensajes.error("Error", "No se ejecutó correctamente la carga de departamentos")
@@ -68,6 +78,7 @@ var ubigeo = (function ($, win, doc) {
         return app.llamarAjax(method, url, objParam, fnDoneCallback, fnFailCallback, null, mensajes.procesandoUbigeo)
 
     }
+
     function obtenerProvincia(codDepartamento, data) {
         var provincias = { Result: [] };
         for (let i = 0; i < data.Result.length; i++) {
@@ -98,8 +109,9 @@ var ubigeo = (function ($, win, doc) {
         });
 
 
-        app.llenarCombo($cmbProvincia, provincias, $modalUbigeo, null, "<--Todos-->", null)
+        app.llenarCombo($cmbProvincia, provincias, $modalUbigeo, " ", "<--Todos-->", null)
     }
+
     function obtenerDistrito(codProvincia, data) {
         var distritos = { Result: [] };
         for (let i = 0; i < data.Result.length; i++) {
@@ -124,13 +136,25 @@ var ubigeo = (function ($, win, doc) {
             sessionStorage.setItem('codDistrito', `${codDistrito}`)
         });
 
-        app.llenarCombo($cmbDistrito, distritos, $modalUbigeo, null, "<--Todos-->", null)
+        app.llenarCombo($cmbDistrito, distritos, $modalUbigeo, " ", "<--Todos-->", null)
     }
 
     function seleccionar() {
         var codDistrito = sessionStorage.getItem('codDistrito')
-        $txtUbigeo.val(codDistrito);
+        if ($UbigeoId != null && $UbigeoId != undefined) {
+            $UbigeoId.val(codDistrito);
+            $UbigeoText.val($("#select2-cmbDepartamento-container").attr("title") + ' / ' +
+                $("#select2-cmbProvincia-container").attr("title") + ' / ' + $("#select2-cmbDistrito-container").attr("title"));
+        }
+        else {
+            $txtUbigeo.val(codDistrito);
+        }
         $modalUbigeo.modal('hide');
+    }
+
+    return {
+        setTxtUbigeo_Id: setTxtUbigeo_Id,
+        setTxtUbigeo_Text: setTxtUbigeo_Text
     }
 
 })(window.jQuery, window, document);

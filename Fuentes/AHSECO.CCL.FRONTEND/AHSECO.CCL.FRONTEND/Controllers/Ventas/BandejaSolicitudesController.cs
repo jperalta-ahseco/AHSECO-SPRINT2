@@ -42,6 +42,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
     {
 
         const string TAG_CDI = "CDItems";
+        const string TAG_CDCI = "CDCItems";
         const string TAG_ConceptosVenta = "ConceptosVenta";
 
         // GET BandejaSolicitudesVentas
@@ -153,6 +154,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.Observacion = ConstantesDTO.CotizacionVenta.Observaciones.Msj01;
 
             VariableSesion.setObject(TAG_CDI, new List<CotizacionDetalleDTO>());
+            VariableSesion.setObject(TAG_CDCI, new List<CotDetCostoDTO>());
             ViewBag.MostrarCotizacionDetalle = false;
             ViewBag.PermitirCancelarCot = true;
             ViewBag.PermitirRegistroCotizacion = true;
@@ -1876,6 +1878,34 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 return Json(new { Status = 1, Mensaje = "Cotización se volvió a generar correctamente" });
             }
             catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
+        }
+
+        [HttpPost]
+        public JsonResult CargarComboCotDetItems()
+        {
+            var lstItems = GetCDIList("2");
+            List<ComboDTO> lst = new List<ComboDTO>();
+            if (lstItems != null)
+            {
+                lstItems.ForEach(x =>
+                {
+                    lst.Add(new ComboDTO() { Id = x.CodItem, Text = x.Descripcion });
+                });
+            }
+            ResponseDTO<List<ComboDTO>> res = new ResponseDTO<List<ComboDTO>>(lst);
+            return Json(res);
+        }
+
+        [HttpPost]
+        public JsonResult GrabarDatosCostoItem()
+        {
+            List<CotDetCostoDTO> lstItems = new List<CotDetCostoDTO>();
+            if (VariableSesion.getObject(TAG_CDCI) != null) { lstItems = (List<CotDetCostoDTO>)VariableSesion.getObject(TAG_CDCI); }
+
+            //Solo cargar los productos en pantalla
+            var response = new ResponseDTO<IEnumerable<CotDetCostoDTO>>(lstItems);
+
+            return Json(response);
         }
 
         [HttpPost]

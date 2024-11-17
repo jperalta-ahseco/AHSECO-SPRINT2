@@ -164,7 +164,7 @@ var app = (function ($, win, doc) {
         function defaults(message) {
             ocultarLoading();
             $modal.attr("class", defaultsOptions.style.defaultValue);
-            $header.attr("class", defaultsOptions.styleHeader.Default);
+            $header.attr("class", defaultsOptions.styleHeader.defaultValue);
             $title.text(defaultsOptions.title);
             $body.html(message || defaultsOptions.message);
             $btnAccept.show().html(defaultsOptions.textButtonAccept);
@@ -182,7 +182,7 @@ var app = (function ($, win, doc) {
         function info(title, message, textButtonAccept, fnCallback) {
             ocultarLoading();
             $modal.attr("class", defaultsOptions.style.info);
-            $header.attr("class", defaultsOptions.styleHeader.error);
+            $header.attr("class", defaultsOptions.styleHeader.info);
             $title.text(title || defaultsOptions.title);
             $body.html(message || defaultsOptions.message);
             $btnAccept.show().html(textButtonAccept || defaultsOptions.textButtonAccept);
@@ -200,7 +200,7 @@ var app = (function ($, win, doc) {
         function success(title, message, textButtonAccept, fnCallback) {
             ocultarLoading();
             $modal.attr("class", defaultsOptions.style.success);
-            $header.attr("class", defaultsOptions.styleHeader.error);
+            $header.attr("class", defaultsOptions.styleHeader.success);
             $title.text(title || defaultsOptions.title);
             $body.html(message || defaultsOptions.message);
             $btnAccept.show().html(textButtonAccept || defaultsOptions.textButtonAccept);
@@ -218,7 +218,7 @@ var app = (function ($, win, doc) {
         function confirm(title, message, textButtonAccept, textButtonCancel, fnAceptarCallback, fnCerrarCallback) {
             ocultarLoading();
             $modal.attr("class", defaultsOptions.style.confirm);
-            $header.attr("class", defaultsOptions.styleHeader.error);
+            $header.attr("class", defaultsOptions.styleHeader.confirm);
             $title.text(title || defaultsOptions.title);
             $body.html(message || defaultsOptions.message);
             $btnAccept.show().html(textButtonAccept || defaultsOptions.textButtonAccept);

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AHSECO.CCL.BE.Ventas
 {
-    public class CotizacionCostoDTO : CamposAuditoriaDTO
+    public class CotDetCostoDTO : CamposAuditoriaDTO
     {
         public string TipoProceso { get; set; }
         public long Id { get; set; }

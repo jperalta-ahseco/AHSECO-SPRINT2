@@ -3,7 +3,7 @@
     ViewBag.Title = "Costo de Item";
 }
 
-<div style="width:80%" class="modal-dialog modal-lg container-fluid" role="document">
+<div style="width:50%" class="modal-dialog modal-lg container-fluid" role="document">
     <!-- Modal content -->
     <div class="modal-content">
         <!-- Modal content header -->
@@ -21,24 +21,65 @@
                         <fieldset>
                             <legend><b>Informaci&oacute;n General</b></legend>
                             <div class="row container-fluid">
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <div class="row container-fluid col-content-middleleft form-group">
                                         <div class="col-md-3">
-                                            <label for="CI_txtCodigo">C&oacute;digo: </label>
+                                            <label for="CI_cmbCDItem">Producto / Servicio: </label>
                                         </div>
-                                        <div class="col-md-6">
-                                            <input disabled placeholder="Ingresar código de producto" type="text" class="form-control input-sm" id="CI_txtCodigo" value="">
-                                            <input type="hidden" id="CI_hdnCodigo" value="" />
-                                            <input type="hidden" id="CI_hdnCodigoPadre" value="" />
+                                        <div class="col-md-9">
+                                            <select class="form-control select2 input-sm" style="width:100%;" id="CI_cmbCDItem" data-selected="">
+                                            </select>
                                         </div>
                                     </div>
-                                    <div class="row container-fluid col-content-middleleft form-group">
-                                        <div class="col-md-3">
-                                            <label for="CI_txtDescripcion">Descripci&oacute;n: </label>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="container-fluid">
+                        <fieldset class="form-group">
+                            <legend><b>Información del Env&iacute;o</b></legend>
+                            <div class="row container-fluid form-group col-content-middleleft">
+                                <div class="col-md-12 col-content-middleleft">
+                                    <div class="col-md-3">
+                                        <label for="CI_txtUbicacion">Ubigeo Destino :</label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="input-group">
+                                            <input type="hidden" id="CI_hdnUbicacion" value="" />
+                                            <input readonly placeholder="Seleccione Ubigeo Destino" maxlength="6" type="text" class="form-control input-sm" id="CI_txtUbicacion" value="" aria-describedby="sizing-addon3" style="cursor:pointer" data-toggle="modal" data-target="#modalUbigeo" />
+                                            <span style="cursor:pointer" class="input-group-addon input-sm" id="searchUbigeo" data-toggle="modal" data-target="#modalUbigeo">
+                                                <i class="fa fa-search"></i>
+                                            </span>
                                         </div>
-                                        <div class="col-md-8">
-                                            <input disabled placeholder="Ingresar nombre de producto" type="text" class="form-control input-sm" id="CI_txtDescripcion" value="">
-                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row container-fluid form-group col-content-middleleft">
+                                <div class="col-md-12 col-content-middleleft">
+                                    <div class="col-md-3">
+                                        <label for="CI_txtDireccion">Direcci&oacute;n :</label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <input placeholder="Ingresar Dirección" type="text" maxlength="150" class="form-control input-sm" id="CI_txtDireccion" value="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row container-fluid form-group col-content-middleleft">
+                                <div class="col-md-9 col-content-middleleft">
+                                    <div class="col-md-4">
+                                        <label for="CI_txtAmbDestino">Local a envíar: </label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input placeholder="Ingresar Ambiente Destino" type="text" maxlength="200" class="form-control input-sm" id="CI_txtAmbDestino" value="">
+                                    </div>
+                                </div>
+                                <div class="col-md-1 col-content-middleleft">&nbsp;</div>
+                                <div class="col-md-2 col-content-middleleft">
+                                    <div class="col-md-6">
+                                        <label for="CI_txtNroPiso">Piso: </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input placeholder="Nro." type="text" maxlength="2" class="form-control input-sm" id="CI_txtNroPiso" value="">
                                     </div>
                                 </div>
                             </div>
@@ -48,229 +89,21 @@
                         <fieldset class="form-group">
                             <legend><b>Informaci&oacute;n de Costos</b></legend>
                             <div class="row container-fluid col-content-bottomleft">
-                                <div class="col-md-4 col-content-middleleft">
-                                    <div class="col-md-5">
+                                <div class="col-md-6 col-content-middleleft">
+                                    <div class="col-md-7">
                                         <label for="CI_txtCantidad">Cantidad a Despachar: </label>
                                     </div>
-                                    <div class="col-md-6">
-                                        <input placeholder="Cantidad" type="text" maxlength="8" class="form-control input-sm" id="CI_txtCantidad" value="">
+                                    <div class="col-md-3">
+                                        <input placeholder="Cantidad" type="text" maxlength="3" class="form-control input-sm" id="CI_txtCantidad" value="">
                                     </div>
                                 </div>
-                                <div class="col-md-4 col-content-middleleft">
-                                    <div class="col-md-5">
+                                <div class="col-md-6 col-content-middleleft">
+                                    <div class="col-md-6">
                                         <label for="CI_txtCosto">Monto de Costo: </label>
                                     </div>
                                     <div class="col-md-6">
                                         <input placeholder="Costo" type="text" maxlength="8" class="form-control input-sm" id="CI_txtCosto" value="">
                                     </div>
-                                </div>
-                            </div>
-                        </fieldset>
-                    </div>
-                    <div class="container-fluid" style="@(ViewBag.MostrarCDI_InfoEnvio ? "" : "display:none")">
-                        <fieldset class="form-group">
-                            <legend><b>Información del Env&iacute;o</b></legend>
-                            <div class="row container-fluid col-content-middleleft">
-                                <div class="col-md-4 col-content-middleleft">
-                                    <div class="col-md-7">
-                                        <label for="CI_radLLaveEnMano">LLave en mano: </label>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <table style="width:100%">
-                                            <tr>
-                                                <td><input type="radio" name="CI_radLLaveEnMano" class="input-sm" id="CI_radLLaveEnMano_Si"></td>
-                                                <td style="padding-top:5px"><label>SI</label></td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <table style="width:100%">
-                                            <tr>
-                                                <td><input type="radio" name="CI_radLLaveEnMano" class="input-sm" id="CI_radLLaveEnMano_No"></td>
-                                                <td style="padding-top:5px"><label>NO</label></td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="col-md-8 col-content-middleleft">
-                                    <div class="col-md-3">
-                                        <label for="txtUbicacion">Ubigeo Destino :</label>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <div class="input-group">
-                                            <input readonly placeholder="Seleccione Ubigeo Destino" maxlength="6" type="text" class="form-control input-sm" id="txtUbicacion" value="" aria-describedby="sizing-addon3" style="cursor:pointer" data-toggle="modal" data-target="#modalUbigeo" />
-                                            <span style="cursor:pointer" class="input-group-addon input-sm" id="searchUbigeo" data-toggle="modal" data-target="#modalUbigeo">
-                                                <i class="fa fa-search"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row container-fluid col-content-middleleft">
-                                <div class="col-md-4 col-content-middleleft">
-                                    <div class="col-md-7">
-                                        <label for="CI_radCompraLocal">Compra Local: </label>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <table style="width:100%">
-                                            <tr>
-                                                <td><input type="radio" name="CI_radCompraLocal" class="input-sm" id="CI_radCompraLocal_Si"></td>
-                                                <td style="padding-top:5px"><label>SI</label></td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <table style="width:100%">
-                                            <tr>
-                                                <td><input type="radio" name="CI_radCompraLocal" class="input-sm" id="CI_radCompraLocal_No"></td>
-                                                <td style="padding-top:5px"><label>NO</label></td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="col-md-8 col-content-middleleft">
-                                    <div class="col-md-3">
-                                        <label for="CI_txtDireccion">Direcci&oacute;n :</label>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <input placeholder="Ingresar Dirección" type="text" maxlength="150" class="form-control input-sm" id="CI_txtDireccion" value="">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row container-fluid">
-                                <div class="col-md-4 col-content-middleleft">&nbsp;</div>
-                                <div class="col-md-3 col-content-middleleft">
-                                    <div class="col-md-8">
-                                        <label for="CI_txtNroPiso">Piso: </label>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <input placeholder="Nro." type="text" maxlength="2" class="form-control input-sm" id="CI_txtNroPiso" value="">
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-content-middleleft">
-                                    <div class="col-md-5">
-                                        <label for="CI_txtDimensiones">Dimensiones: </label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <input placeholder="Ingresar Dimensiones" type="text" maxlength="50" class="form-control input-sm" id="CI_txtDimensiones" value="">
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
-                    </div>
-                    <div class="container-fluid" style="@(ViewBag.MostrarCDI_InfoAdic ? "" : "display:none")">
-                        <fieldset class="form-group">
-                            <legend><b>Información Adicional</b></legend>
-                            <div class="row container-fluid col-content-middleleft">
-                                <div class="col-md-4 col-content-middleleft">
-                                    <div class="col-md-7">
-                                        <label for="CI_radManuales" style="flex: 0 0 120px">Manuales: </label>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <table style="width:100%">
-                                            <tr>
-                                                <td><input type="radio" name="CI_radManuales" class="input-sm" id="CI_radManuales_Si"></td>
-                                                <td style="padding-top:5px"><label>SI</label></td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <table style="width:100%">
-                                            <tr>
-                                                <td><input type="radio" name="CI_radManuales" class="input-sm inp" id="CI_radManuales_No"></td>
-                                                <td style="padding-top:5px"><label>NO</label></td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-content-middleleft">
-                                    <div class="col-md-6">
-                                        <label for="CI_txtCantPreventivo">Cantidad Preventivo: </label>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input placeholder="Cant." type="text" maxlength="2" class="form-control input-sm" id="CI_txtCantPreventivo" value="">
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-content-middleleft">
-                                    <div class="col-md-6">
-                                        <label for="CI_cmbCicloPreventivo">Ciclo de Preventivo: </label>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <select class="form-control select2 input-sm" style="width:100%;" id="CI_cmbCicloPreventivo" data-selected=""></select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row container-fluid col-content-middleleft">
-                                <div class="col-md-4 col-content-middleleft">
-                                    <div class="col-md-7">
-                                        <label for="CI_radVideos">Videos: </label>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <table style="width:100%">
-                                            <tr>
-                                                <td><input type="radio" name="CI_radVideos" class="input-sm" id="CI_radVideos_Si"></td>
-                                                <td style="padding-top:5px"><label>SI</label></td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <table style="width:100%">
-                                            <tr>
-                                                <td><input type="radio" name="CI_radVideos" class="input-sm" id="CI_radVideos_No"></td>
-                                                <td style="padding-top:5px"><label>NO</label></td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-content-middleleft">
-                                    <div class="col-md-6">
-                                        <label for="CI_txtGarantiaAdic">Garant&iacute;a Adicional: </label>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <input placeholder="Garantía Adic." type="text" maxlength="50" class="form-control input-sm" id="CI_txtGarantiaAdic" value="">
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-content-middleleft">
-                                    <div class="col-md-6">
-                                        <label for="CI_txtFechaLimite">Fecha L&iacute;mite Instalaci&oacute;n: </label>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <input placeholder="Garantía Adic." type="text" maxlength="8" class="form-control input-sm" id="CI_txtFechaLimite" value="">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row container-fluid col-content-middleleft">
-                                <div class="col-md-4 col-content-middleleft">
-                                    <div class="col-md-7">
-                                        <label for="CI_radInstaCapa">Instalaci&oacute;n y Capacitaci&oacute;n: </label>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <table style="width:100%">
-                                            <tr>
-                                                <td><input type="radio" name="CI_radInstaCapa" class="input-sm" id="CI_radInstaCapa_Si"></td>
-                                                <td style="padding-top:5px"><label>SI</label></td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <table style="width:100%">
-                                            <tr>
-                                                <td><input type="radio" name="CI_radInstaCapa" class="input-sm" id="CI_radInstaCapa_No"></td>
-                                                <td style="padding-top:5px"><label>NO</label></td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-content-middleleft">
-                                    <div class="col-md-6">
-                                        <label for="CI_txtAmbienteInsta">Ambiente a Instalar: </label>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <input placeholder="Garantía Adic." type="text" maxlength="150" class="form-control input-sm" id="CI_txtAmbienteInsta" value="">
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-content-middleleft">
-
                                 </div>
                             </div>
                         </fieldset>
