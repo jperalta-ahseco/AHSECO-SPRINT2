@@ -2006,7 +2006,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         public JsonResult GrabarDatosCostoItem(CotDetCostoDTO cotdetCosto)
         {
             List<CotDetCostoDTO> lstItems = new List<CotDetCostoDTO>();
-            if (VariableSesion.getObject(TAG_CDCI) != null) { lstItems = (List<CotDetCostoDTO>)VariableSesion.getObject(TAG_CDCI); }
+            if (VariableSesion.getObject("TAG_CDCI") != null) { lstItems = (List<CotDetCostoDTO>)VariableSesion.getObject("TAG_CDCI"); }
 
             //Solo cargar los productos en pantalla
             var response = new ResponseDTO<IEnumerable<CotDetCostoDTO>>(lstItems);

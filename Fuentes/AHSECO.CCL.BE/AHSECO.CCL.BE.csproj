@@ -46,6 +46,7 @@
     <Compile Include="Consultas\PrecioDTO.cs" />
     <Compile Include="Consultas\StockDTO.cs" />
     <Compile Include="DetalleServicioDTO.cs" />
+    <Compile Include="ElementosxProductoDTO.cs" />
     <Compile Include="FiltroGrupoEmpledosDTO.cs" />
     <Compile Include="FiltroInstalacionTecnica.cs" />
     <Compile Include="FiltroPlantillaDTO.cs" />
@@ -70,7 +71,6 @@
     <Compile Include="ReportParamsDTO.cs" />
     <Compile Include="ServicioDTO.cs" />
     <Compile Include="ServicioTecnico\BandejaInstalacionTecnica\CotizacionDetalleTecDTO.cs" />
-    <Compile Include="ServicioTecnico\BandejaInstalacionTecnica\ElementosxProductoDTO.cs" />
     <Compile Include="ServicioTecnico\BandejaInstalacionTecnica\FiltroInstalacionTecDTO.cs" />
     <Compile Include="ServicioTecnico\BandejaInstalacionTecnica\GrupoInstalacionTecnicaDTO.cs" />
     <Compile Include="ServicioTecnico\BandejaInstalacionTecnica\GrupoSolicitudVentaTecDTO.cs" />
