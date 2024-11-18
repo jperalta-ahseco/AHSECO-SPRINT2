@@ -20,6 +20,7 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica
         public string Ubigeo { get; set; }
         public string AsesorVenta { get; set; }
         public string TipoVenta { get; set; }
+        public string Garantia { get; set; }
         public string Fecha_Sol { get; set; }
         public string nomEstado { get; set; }
         public string NombreContacto { get; set; }

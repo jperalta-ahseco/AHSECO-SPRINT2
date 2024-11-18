@@ -126,12 +126,26 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                         _periodos.Add(periodo);
                     }
 
+                    reader.NextResult();
+                    List<ComboDTO> _garantias = new List<ComboDTO>();
+                    while (reader.Read())
+                    {
+                        var garantia = new ComboDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("CODGARANTIA")) ? "" : reader.GetString(reader.GetOrdinal("CODGARANTIA")),
+                            Text = reader.IsDBNull(reader.GetOrdinal("DESCGARANTIA")) ? "" : reader.GetString(reader.GetOrdinal("DESCGARANTIA"))
+                        };
+                        _garantias.Add(garantia);
+                    }
+
+
                     result.Periodos = _periodos;
                     result.Empresas = _listEmpresa;
                     result.Estados = _Estados;
                     result.Clientes = _Clientes;
                     result.TipVenta = _tiposVenta;
                     result.TipoEmpleado = _tipoEmpleado;
+                    result.Garantias = _garantias;
 
                     return result;
                 };
@@ -566,6 +580,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                 parameters.Add("isIdSolicitud", solicitudDTO.Id_Solicitud);
                 parameters.Add("isEstado", solicitudDTO.Estado);
                 parameters.Add("isTipoSol", solicitudDTO.Tipo_Sol);
+                parameters.Add("IsTipoIngreso", "3");
 
                 var result = connection.Query(
                     sql: "USP_SEL_SOLICITUDES",
@@ -626,6 +641,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                         AsesorVenta = reader.IsDBNull(reader.GetOrdinal("ASESORVENTA")) ? "" : reader.GetString(reader.GetOrdinal("ASESORVENTA")),
                         NombreContacto = reader.IsDBNull(reader.GetOrdinal("NOMBRECONTACTO")) ? "" : reader.GetString(reader.GetOrdinal("NOMBRECONTACTO")),
                         TelefonoContacto = reader.IsDBNull(reader.GetOrdinal("TELEFONOCONTACTO")) ? "" : reader.GetString(reader.GetOrdinal("TELEFONOCONTACTO")),
+                        Garantia = reader.IsDBNull(reader.GetOrdinal("GARANTIA")) ? "" : reader.GetString(reader.GetOrdinal("GARANTIA")),
                         Establecimiento = reader.IsDBNull(reader.GetOrdinal("ESTABLECIMIENTO")) ? "" : reader.GetString(reader.GetOrdinal("ESTABLECIMIENTO")),
                         CargoContacto = reader.IsDBNull(reader.GetOrdinal("CARGOCONTACTO")) ? "" : reader.GetString(reader.GetOrdinal("CARGOCONTACTO")),
                         TipoVenta = reader.IsDBNull(reader.GetOrdinal("TIPOVENTA")) ? "" : reader.GetString(reader.GetOrdinal("TIPOVENTA")),
