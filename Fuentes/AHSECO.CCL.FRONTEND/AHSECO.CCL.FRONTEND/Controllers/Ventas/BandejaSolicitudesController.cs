@@ -207,13 +207,14 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                 //Para Gestion:
                 var validarDespacho = ventasBL.ValidarDespacho(int.Parse(numSol));
-                if (validarDespacho.Result != null)
+                if(validarDespacho.Result != null)
                 {
                     ViewBag.ContadorSeriesConStock = validarDespacho.Result.ContadorSeriesConStock;
                     ViewBag.ContadorSeriesSinStock = validarDespacho.Result.ContadorSeriesSinStock;
                     ViewBag.TotalSeriesConStock = validarDespacho.Result.NumeroConStock;
                     ViewBag.TotalSeriesSinStock = validarDespacho.Result.NumeroSinStock;
                 }
+              
 
                 var rptaEst = ventasBL.ObtenerEstadosProcesos(new ProcesoEstadoDTO
                 { IdProceso = ConstantesDTO.Procesos.Ventas.ID, CodigoEstado = soli.Estado });
