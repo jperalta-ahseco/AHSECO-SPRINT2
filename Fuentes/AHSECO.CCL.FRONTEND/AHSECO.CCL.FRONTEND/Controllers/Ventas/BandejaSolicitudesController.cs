@@ -179,7 +179,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.PermitirTabInsta = false;
             ViewBag.PermitirTabMantPrevent = false;
             ViewBag.PermitirTabLLaveMano = false;
-            ViewBag.PermitirTabManualVideos = false;
+            ViewBag.PermitirTabManuales = false;
+            ViewBag.PermitirTabVideos = false;
             ViewBag.PermitirTabGarantiaAdic = false;
             ViewBag.PermitirTabCalib = false;
             ViewBag.PermitirTabFlete = false;
@@ -202,10 +203,13 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                 //Para Gestion:
                 var validarDespacho = ventasBL.ValidarDespacho(int.Parse(numSol));
-                ViewBag.ContadorSeriesConStock = validarDespacho.Result.ContadorSeriesConStock;
-                ViewBag.ContadorSeriesSinStock = validarDespacho.Result.ContadorSeriesSinStock;
-                ViewBag.TotalSeriesConStock = validarDespacho.Result.NumeroConStock;
-                ViewBag.TotalSeriesSinStock = validarDespacho.Result.NumeroSinStock;
+                if(validarDespacho.Result != null)
+                {
+                    ViewBag.ContadorSeriesConStock = validarDespacho.Result.ContadorSeriesConStock;
+                    ViewBag.ContadorSeriesSinStock = validarDespacho.Result.ContadorSeriesSinStock;
+                    ViewBag.TotalSeriesConStock = validarDespacho.Result.NumeroConStock;
+                    ViewBag.TotalSeriesSinStock = validarDespacho.Result.NumeroSinStock;
+                }
 
                 var rptaEst = ventasBL.ObtenerEstadosProcesos(new ProcesoEstadoDTO
                 { IdProceso = ConstantesDTO.Procesos.Ventas.ID, CodigoEstado = soli.Estado });
@@ -413,7 +417,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         ViewBag.PermitirTabInsta = true;
                         ViewBag.PermitirTabMantPrevent = true;
                         ViewBag.PermitirTabLLaveMano = true;
-                        ViewBag.PermitirTabManualVideos = true;
+                        ViewBag.PermitirTabManuales = true;
+                        ViewBag.PermitirTabVideos = true;
                         ViewBag.PermitirTabGarantiaAdic = true;
                     }
 
