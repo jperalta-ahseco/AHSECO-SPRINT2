@@ -189,12 +189,13 @@
                                                 <th style="text-align:center; width: 5%">Id</th>
                                                 <th style="text-align:center; width: 10%">Descripci&oacute;n</th>
                                                 <th style="text-align:center; width: 10%">Marca</th>
-                                                <th style="text-align:center; width: 5%">Modelo</th>
-                                                <th style="text-align:center; width: 5%">Cantidad</th>
-                                                <th style="text-align:center; width: 5%">Calibraci&oacute;n</th>
+                                                <th style="text-align:center; width: 3%">Cantidad</th>
                                                 <th style="text-align:center; width: 5%">Llave en Mano</th>
-                                                <th style="text-align:center; width: 5%">Requiere Placa</th>
+                                                <th style="text-align:center; width: 5%">Dimensiones</th>
                                                 <th style="text-align:center; width: 5%">N&uacute;mero Fianza</th>
+                                                <th style="text-align:center; width: 10%">Monto Prest. Acce.</th>
+                                                <th style="text-align:center; width: 10%">Monto Prest. Prin.</th>
+                                                <th style="text-align:center; width: 10%">Fecha L&igrave;mite de Instalaci&oacute;n</th>
                                                 <th style="text-align:center; width: 5%">Acciones</th>
                                             </tr>
                                         </thead>
@@ -213,9 +214,9 @@
                                         <div class="text-right">
                                             @if (codEstado == "STREG")
                                             {
-                                                <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnProcesoInst" tabindex="14"><i class="fa fa-cog" aria-hidden="true"></i>&nbsp;Cambiar a Estado: En Proceso de Instalación</button>
+                                                <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnProcesoInst" tabindex="14"><i class="fa fa-cog" aria-hidden="true"></i>&nbsp;Cambiar a Estado</button>
                                             }
-                                            @if (codEstado == "STEPI")
+                                            @if (codEstado == "STEPI" || codEstado == "STEPP")
                                             {
                                                 <button class="btn btn-default btn-sm" type="button" id="btnFinalizarReq"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Finalizar Requerimiento</button>
                                             }

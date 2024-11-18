@@ -139,6 +139,19 @@ namespace AHSECO.CCL.BL.ServicioTecnico.BandejaInstalacionTecnica
                 return new ResponseDTO<RespuestaDTO>(ex);
             }
         }
+        public ResponseDTO<RespuestaDTO> SetDatosElementos(ElementosxProductoDTO elemento)
+        {
+            try
+            {
+                var result = Repository.SetDatosElementos(elemento);
+                return new ResponseDTO<RespuestaDTO>(result);
+            }
+            catch(Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + "::<"+ ex.Message);
+                return new ResponseDTO<RespuestaDTO>(ex);
+            }
+        }
         public ResponseDTO<IEnumerable<InstalacionTecnicaDTO>> ObtenerInstalacionesTec(FiltroInstalacionTecDTO filtros)
         {
             try

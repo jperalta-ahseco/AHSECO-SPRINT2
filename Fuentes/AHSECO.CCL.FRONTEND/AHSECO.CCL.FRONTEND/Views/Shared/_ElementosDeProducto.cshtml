@@ -3,12 +3,13 @@
 @{
     ViewBag.Title = "Productos";
     var numReq = VariableSesion.getCadena("NumReq");
+    var tipoProceso = VariableSesion.getCadena("TipoProceso");
 
 }
 <input hidden id="hdnIdProduct" />
 <input hidden id="hdnIdTecnico" />
 
-<div class="modal-dialog modal-lg container-fluid" role="document">
+<div class="modal-dialog modal-lg container-fluid" role="document" style="width: 90%">
     <!-- Modal content -->
     <div class="modal-content" id="modalContent">
         <!-- Modal content header -->
@@ -22,56 +23,65 @@
         <div class="modal-body d-flex justify-content-center" align-items-center>
             <form id="formElementos" class="d-flex flex-row">
                 <div class="row container-fluid d-flex justify-content-center">
-                    <div class="row container-fluid">
-                        <div class="col-md-4 col-sm-12">
-                            <label for="txtNombreTecnico">T&eacute;cnico: </label>
-                            <div class="form-group">
-                                <div class="input-group input-group-sm date">
-                                    <input type="text" class="form-control input-sm" id="txtNombreTecnico" value="" placeholder="--Ingrese Nombre del Técnico--" aria-describedby="sizing-addon3" disabled="disabled" />
-                                    <span style="cursor:pointer" class="input-group-addon input-sm" id="searchTecnico" title="Buscar Tecnico" data-toggle="modal" data-target="#modalBusquedaTecnico">
-                                        <i class="fa fa-search"></i>
-                                    </span>
-                                    <span style="cursor:pointer" class="input-group-addon input-sm" id="agregarTecnico" title="Agregar Tecnico" data-toggle="modal">
-                                        <i class="fa fa-plus"></i>
-                                    </span>
-                                    <input type="hidden" id="txtCodTecnico" value="" />
+                    @if (tipoProceso == "U")
+                    {
+                        <div class="row container-fluid">
+                            <div class="col-md-4 col-sm-12">
+                                <label for="txtNombreTecnico">T&eacute;cnico: </label>
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm date">
+                                        <input type="text" class="form-control input-sm" id="txtTecnico" value="" placeholder="--Ingrese Nombre del Técnico--" aria-describedby="sizing-addon3" disabled="disabled" />
+                                        <span style="cursor:pointer" class="input-group-addon input-sm" id="searchTecnico" title="Buscar Tecnico" data-toggle="modal" data-target="#modalBusquedaTecnico">
+                                            <i class="fa fa-search"></i>
+                                        </span>
+                                        <span style="cursor:pointer" class="input-group-addon input-sm" id="agregarTecnico" title="Agregar Tecnico" data-toggle="modal" data-target="#modalAsignacion">
+                                            <i class="fa fa-plus"></i>
+                                        </span>
+                                        <input type="hidden" id="txtCodTecnico" value="" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <label for="txtEmpresaTecnico">Empresa: </label>
+                                <div class="form-group">
+                                    <input disabled placeholder="--Ingresar empresa--" type="text" class="form-control input-sm" id="txtEmpresaTecnico" />
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="text-right">
-                        <button class="btn btn-primary btn-sm" type="button" id="btnAsignarTecnico"><i class="fa fa-handshake-o"></i> Asignar</button>
-                    </div>
-                    <br />
-                    <div class="row container-fluid">
-                        <div class="table-responsive">
-                            <table id="tblElementosDeProducto" class="table table-hover table-condensed table-striped table-bordered" width="100%">
-                                <thead>
-                                    <tr>
-                                        <th style="text-align:center; width: 5%">Id</th>
-                                        @if (numReq != "")
-                                        {
-                                            <th style="text-align: center; width: 5%;">Todos: <input class="form-check-input" type="checkbox" value="" id="checkSeleccionarTodos"></th>
-                                        }
-                                        <th style="text-align:center; width: 5%">C&oacute;digo de Producto</th>
-                                        <th style="text-align:center; width: 10%">Descripci&oacute;n</th>
-                                        <th style="text-align:center; width: 10%">Marca</th>
-                                        <th style="text-align:center; width: 5%">Serie</th>
-                                        <th style="text-align:center; width: 5%">Cantidad</th>
-                                        @if (numReq != "")
-                                        {
-                                            <th style="text-align:center; width: 5%">Fecha de Programaci&oacute;n</th>
-                                            <th style="text-align:center; width: 5%">Fecha de Instalaci&oacute;n</th>
-                                        }
-                                    </tr>
-                                </thead>
-                                <tbody id="tbodyElementosdeProducto">
-                                    <tr id="NoExisteElementos">
-                                        <td colspan="13"><center>No hay datos que mostrar</center></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <div class="text-right">
+                            <button class="btn btn-primary btn-sm" type="button" id="btnAsignarTecnico"><i class="fa fa-handshake-o"></i> Asignar</button>
                         </div>
+                    }
+                    <br />
+                    <div class="table-responsive">
+                        <table id="tblElementosDeProducto" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                            <thead>
+                                <tr>
+                                    <th hidden style="text-align:center; width: 5%">Id</th>
+                                    @if (tipoProceso == "U")
+                                    {
+                                        <th style="text-align: center; width: 5%;">Todos: <input class="form-check-input" type="checkbox" value="" id="checkSeleccionarTodos"></th>
+                                    }
+                                    <th style="text-align:center; width: 10%">C&oacute;digo de Producto</th>
+                                    <th style="text-align:center; width: 10%">Descripci&oacute;n</th>
+                                    <th style="text-align:center; width: 7%">Marca</th>
+                                    <th style="text-align:center; width: 5%">Serie</th>
+                                    @if (numReq != "")
+                                    {
+                                        <th style="text-align:center; width: 15%">T&eacute;cnico Asignado</th>
+                                        <th style="text-align:center; width: 15%">Empresa</th>
+                                        <th style="text-align:center; width: 5%">Fecha de Programaci&oacute;n</th>
+                                        <th style="text-align:center; width: 5%">Fecha de Instalaci&oacute;n</th>
+                                    }
+                                    <th style="text-align:center; width: 5%">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyElementosdeProducto">
+                                <tr id="NoExisteElementos">
+                                    <td colspan="13"><center>No hay datos que mostrar</center></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
                 <br />

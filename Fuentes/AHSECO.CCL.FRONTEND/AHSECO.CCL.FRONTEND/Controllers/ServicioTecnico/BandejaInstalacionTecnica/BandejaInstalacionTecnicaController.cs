@@ -120,6 +120,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
                 workflow.SubTipo = "";
 
                 var rpta = procesoBL.InsertarWorkflow(workflow);
+
+
                 grupoInstalacionTecnicaDTO.CabeceraInstalacion.Id_WorkFlow = rpta.Result;
                 grupoInstalacionTecnicaDTO.CabeceraInstalacion.UsuarioRegistra = User.ObtenerUsuario();
 
@@ -173,7 +175,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
                 var log = new FiltroWorkflowLogDTO();
                 log.CodigoWorkflow = rpta.Result;
                 log.Usuario = User.ObtenerUsuario();
-                log.CodigoEstado = "REG";
+                log.CodigoEstado = "STREG";
                 log.UsuarioRegistro = User.ObtenerUsuario();
                 var result2 = procesoBL.InsertarWorkflowLog(log);
 
@@ -224,6 +226,32 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
             var instalacionTecnicaBL = new InstalacionTecnicaBL();
             tecnico.UsuarioRegistra = User.ObtenerUsuario();
             var result = instalacionTecnicaBL.MantTecnicoxDetalle(tecnico);
+            return Json(result);
+        }
+
+        public JsonResult SetDatosElementos(ElementosxProductoDTO elemento)
+        {
+            var rpta = new RespuestaDTO();
+            var result = new ResponseDTO<RespuestaDTO>(rpta);
+
+            var instalacionTecnicaBL = new InstalacionTecnicaBL();
+            elemento.UsuarioModifica = User.ObtenerUsuario();
+            if (elemento.Id_DespachoList == null)
+            {
+                result = instalacionTecnicaBL.SetDatosElementos(elemento);
+            }
+            else
+            {
+                foreach (var producto in elemento.Id_DespachoList)
+                {
+                    elemento.Id = producto.Parse<long>();
+                    result = instalacionTecnicaBL.SetDatosElementos(elemento);
+                    if (result.Result.Codigo == 0)
+                    {
+                        return Json(result);
+                    };
+                }
+            }
             return Json(result);
         }
                
@@ -498,21 +526,29 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
 
                 //Se realiza el registro de seguimiento de workflow:
                 var log = new FiltroWorkflowLogDTO();
-                log.CodigoWorkflow = response.Result.Codigo;
+                log.CodigoWorkflow = instalacion.Id_WorkFlow;
                 log.Usuario = User.ObtenerUsuario();
-                log.CodigoEstado = "STEPI";
+                log.CodigoEstado = "STEPP";
                 log.UsuarioRegistro = User.ObtenerUsuario();
                 procesosBL.InsertarWorkflowLog(log);
 
                 result.Codigo = 1;
                 result.Mensaje = "Se realizó el cambio de estado satisfactoriamente";
-                return Json(result);
+                return Json(new
+                {
+                    Status = 1,
+                    Message = result.Mensaje
+                });
             }
             catch(Exception ex)
             {
                 result.Codigo = 0;
-                result.Mensaje = "Ocurrió un error al realizar el cambio de estado, por favor revisar.";
-                return Json(result);
+                result.Mensaje = "Ocurrió un error al realizar el cambio de estado, por favor revisar." + ex.Message;
+                return Json(new
+                {
+                    Status = 0, 
+                    Message = result.Mensaje
+                });
             }
         }
         public JsonResult CerrarInstalacion(InstalacionTecnicaDTO instalacion)

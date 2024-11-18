@@ -1,5 +1,4 @@
-﻿using AHSECO.CCL.BE.Ventas;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,8 +22,6 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica
         public DateTime? FecLimInsta { get; set; }
         public decimal? MontoPrestPrin { get; set; }
         public decimal? MontoPrestAcc { get; set; }
-        public string Serie { get; set; }
-        public CotDetDespachoDTO CotizacionDespacho { get; set; }
 
     }
 }

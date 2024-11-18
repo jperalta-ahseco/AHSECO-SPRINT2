@@ -15,6 +15,7 @@
     var $btnFinalizarReq = $('#btnFinalizarReq');
     var $btnActualizar = $('#btnActualizar');
     var $btnProcesoInst = $('#btnProcesoInst');
+    var $btnGuardarUbigeo = $('#btnGuardarUbigeo');
     //TxT
     var $txtNomContacto = $('#txtNomContacto');
     var $txtTelefContacto = $('#txtTelefContacto');
@@ -46,11 +47,15 @@
     //HiddenIds
     var $hdnIdProduct = $('#hdnIdProduct');
     var $hdnCodEmpresa = $('#hdnCodEmpresa');
+    var $hdnIdElemento = $('#hdnIdElemento');
     //var $hdnCodTipVenta = $('#hdnCodTipVenta');
     var $hdnIdTecnico = $('#hdnIdTecnico');
     var $txtCodUbicacion = $('#txtCodUbicacion');
 
     //Combos
+    var $cmbDepartamento = $('#cmbDepartamento');
+    var $cmbProvincia = $('#cmbProvincia');
+    var $cmbDistrito = $('#cmbDistrito');
     var $cmbDestino = $('#cmbDestino');
     var $dateSolicitud = $('#dateSolicitud');
     var $openRegdateSolicitud = $('#openRegdateSolicitud');
@@ -74,10 +79,14 @@
     var $modalZona = $('#modalZona');
     var $modalDetalleInstalacion = $('#modalDetalleInstalacion');
     var $modalElementosDeProducto = $('#modalElementosDeProducto');
+    var $modalUbigeo = $('#modalUbigeo');
 
     /*ModalElementos de Producto */
     var $tblElementosDeProducto = $('#tblElementosDeProducto');
-    
+    var $txtTecnico = $('#txtTecnico');
+    var $checkSeleccionar = $('#checkSeleccionar');
+    var $checkSeleccionarTodos = $('#checkSeleccionarTodos');
+
 
     /**Modal Detalle Adicional de Instalación*/
     var $tituloModal = $('#tituloModal');
@@ -146,7 +155,7 @@
     var $txtApellidoPaternoTec = $('#txtApellidoPaternoTec');
     var $txtApellidoMaternoTec = $('#txtApellidoMaternoTec');
     var $txtEmpresaTecnico = $('#txtEmpresaTecnico');
-    var $divEmpresaTecnico = $('#divEmpresaTecnico');
+    //var $divEmpresaTecnico = $('#divEmpresaTecnico');
     var $btnRegistrarTecnicoExterno = $('#btnRegistrarTecnicoExterno');
     var $btnAsignarTecnico = $('#btnAsignarTecnico');
 
@@ -184,8 +193,9 @@
         });
         $btnProcesoInst.click(cambiarEstadoProceso);
         $btnFinalizarReq.click(CerrarRequerimiento);
+        $btnGuardarUbigeo.click(seleccionar);
         $btnEditarReq.click(EditarRequerimiento);
-        $btnRegistrarTecnico.click(AsignarTecnico_a_Producto);
+        //$btnRegistrarTecnico.click(AsignarTecnico_a_Producto);
         $btnAgregarObservacion.click($modalObservacionClick);
         $btnGuardarObservacionReq.click(GuardarObservacionReqClick);
         $btnAgregarDocumento.click($modalCargaDocumentoClick);
@@ -197,9 +207,12 @@
         $searchTecnico.click(abrirModalTecnicos);
         $agregarTecnico.click(AgregarTecnicoExterno);
         $btnBuscarTecnico.click(BuscarTecnicos);
+        $btnRegistrarTecnicoExterno.click(CrearTecnico3ro_a_Producto);
+        $btnAsignarTecnico.click(btnEjecutarAsignacionClick);
         $dateSolicitud.val(hoy());
         $fileCargaDocumentoSustento.on("change", $fileCargaDocumentoSustento_change);
         CargarTipoDocumento(3); //Cambiar a tipo de proceso Instalación Técnica.
+        logicUbigeo();
         $cmbTipoCredencial.on('change', function (e) {
             if (e.target.value === "GETD0001") {
                 $txtNumDocumento.attr("maxlength", '8');
@@ -212,19 +225,295 @@
             }
         })
         cargarDatos();
+        btnCheck();
     };
 
-    function AsignarTecnico_a_Producto() {
-        var idProducto = $hdnIdProduct.val();
-        var idEmpleado = $hdnIdTecnico.val();
 
+    function logicUbigeo() {
+        $cmbProvincia.prop("disabled", true);
+        $cmbDistrito.prop("disabled", true);
+        getDepartamento();
+    }
+    function getDepartamento() {
+        var method = "POST";
+        var url = "Ubigeo/ObtenerUbigeo";
+        var ubigeoObj = {}
+
+        var objParam = JSON.stringify(ubigeoObj);
+        var fnDoneCallback = function (data) {
+
+            var resultado = { Result: [] };
+
+            var distritos = { Result: [] };
+            for (let i = 0; i < data.Result.length; i++) {
+                var departamento = {
+                    Id: data.Result[i].CodDepartamento,
+                    Text: data.Result[i].NombreDepartamento,
+                }
+                resultado.Result.push(departamento);
+            }
+
+            resultado.Result = resultado.Result.reduce((acumulador, itemActual) => {
+                // Verificar si el Id ya está en el acumulador
+                if (!acumulador.some(item => item.Id === itemActual.Id)) {
+                    acumulador.push(itemActual);
+                }
+                return acumulador;
+            }, []);
+            $cmbDepartamento.on('change', function () {
+                const codDepartamento = $(this).val();
+                const nomDepartamento = $('select[id="cmbDepartamento"] option:selected').text();
+                sessionStorage.setItem('nomDepartamento', `${nomDepartamento}`);
+                if (!codDepartamento === null || !codDepartamento === '') {
+                    $(this).prop('disabled', false);
+
+                } else {
+                    $cmbProvincia.prop('disabled', false);
+                    obtenerProvincia(codDepartamento, data);
+                    $cmbDistrito.prop("disabled", true);
+                }
+                $cmbDistrito.val("").trigger("change");
+            });
+            var filters = {};
+            filters.placeholder = "-- Seleccione --";
+            filters.allowClear = false;
+            app.llenarCombo($cmbDepartamento, resultado, $modalUbigeo, "", "<--Seleccione-->", filters);
+        }
+        var fnFailCallback = function () {
+            app.mensajes.error("Error", "No se ejecutó correctamente la carga de departamentos")
+        }
+        return app.llamarAjax(method, url, objParam, fnDoneCallback, fnFailCallback, null, mensajes.procesandoUbigeo)
+
+    }
+    function obtenerProvincia(codDepartamento, data) {
+        var provincias = { Result: [] };
+        for (let i = 0; i < data.Result.length; i++) {
+            var provincia = {
+                Id: data.Result[i].CodProvincia,
+                Text: data.Result[i].NombreProvincia,
+            }
+            provincias.Result.push(provincia);
+
+        }
+        provincias.Result = provincias.Result.reduce((acumulador, itemActual) => {
+            const isDuplicate = acumulador.some(item => item.Id === itemActual.Id);
+            const startsWithCodDepartamento = itemActual.Id.startsWith(codDepartamento);
+            if (!isDuplicate && startsWithCodDepartamento) {
+                acumulador.push(itemActual);
+            }
+            return acumulador;
+        }, []);
+        $cmbProvincia.on('change', function () {
+            const codProvincia = $(this).val();
+            const nomProvincia = $('select[id="cmbProvincia"] option:selected').text();
+            sessionStorage.setItem('nomProvincia', `${nomProvincia}`);
+
+            if (!codProvincia === null || !codProvincia === '') {
+                $(this).prop('disabled', false);
+
+            } else {
+                $cmbProvincia.prop('disabled', false);
+                $cmbDistrito.prop('disabled', false)
+                obtenerDistrito(codProvincia, data);
+            }
+        });
+
+        var filters = {};
+        filters.placeholder = "-- Seleccione --";
+        filters.allowClear = false;
+        app.llenarCombo($cmbProvincia, provincias, $modalUbigeo, "", "<--Seleccione-->", filters)
+    }
+
+    function obtenerDistrito(codProvincia, data) {
+        var distritos = { Result: [] };
+        for (let i = 0; i < data.Result.length; i++) {
+            var distrito = {
+                Id: data.Result[i].UbigeoId,
+                Text: data.Result[i].NombreDistrito,
+            }
+            distritos.Result.push(distrito);
+
+        }
+        distritos.Result = distritos.Result.reduce((acumulador, itemActual) => {
+            const isDuplicate = acumulador.some(item => item.Id === itemActual.Id);
+            const startsWithCodProvincia = itemActual.Id.startsWith(codProvincia);
+            if (!isDuplicate && startsWithCodProvincia) {
+                acumulador.push(itemActual);
+            }
+            return acumulador;
+        }, []);
+
+        $cmbDistrito.on('change', function () {
+            const codDistrito = $(this).val();
+            const nombreDistrito = $('select[id="cmbDistrito"] option:selected').text();
+            sessionStorage.setItem('codDistrito', `${codDistrito}`);
+            sessionStorage.setItem('nombreDistrito', `${nombreDistrito}`);
+            $txtCodUbicacion.val(codDistrito);
+        });
+
+        var filters = {};
+        filters.placeholder = "-- Seleccione --";
+        filters.allowClear = false;
+        app.llenarCombo($cmbDistrito, distritos, $modalUbigeo, "", "<--Seleccione-->", filters)
+    };
+
+    function seleccionar() {
+
+        var nomDepartamento = sessionStorage.getItem('nomDepartamento')
+        var nomProvincia = sessionStorage.getItem('nomProvincia');
+        var nomDistrito = sessionStorage.getItem('nombreDistrito');
+
+        if ($cmbDepartamento.val().trim() === "" || $cmbDepartamento.val().trim() === null || $cmbDepartamento.val().trim() === undefined) {
+            app.message.error("Validacion", "Debe seleccionar un departamento");
+            return;
+        }
+
+        if ($cmbProvincia.val().trim() === "" || $cmbProvincia.val().trim() === null || $cmbProvincia.val().trim() === undefined) {
+            app.message.error("Validacion", "Debe seleccionar una provincia");
+            return;
+        }
+
+        if ($cmbDistrito.val().trim() === "" || $cmbDistrito.val().trim() === null || $cmbDistrito.val().trim() === undefined) {
+            app.message.error("Validacion", "Debe seleccionar un distrito");
+            return;
+        }
+
+        $txtZona.val(nomDepartamento + ' / ' + nomProvincia + ' / ' + nomDistrito);
+        $modalUbigeo.modal('hide');
+    }
+    function btnCheck() {
+        $(document).on('change', '#checkSeleccionar', function (e) {
+            if (this.checked) {
+                registroInstalacionTec.xasignar.push(this.value);
+            }
+            else {
+                registroInstalacionTec.xasignar = registroInstalacionTec.xasignar.filter(valor => valor != this.value);
+            }
+        });
+
+        $(document).on('change', '#checkSeleccionarTodos', function (e) {
+            if (this.checked) {
+                $checkSeleccionar.prop('checked', true);
+                $('input').filter('#checkSeleccionar').prop('checked', true);
+                var ids = document.querySelectorAll("input[name='checkSeleccionar']:checked");
+                var a = [];
+                for (var i = 0; i < ids.length; i++) {
+                    registroInstalacionTec.xasignar.push(ids[i].value);
+                }
+            }
+            else {
+                $('input').filter('#checkSeleccionar').prop('checked', false);
+                registroInstalacionTec.xasignar = []
+            }
+        });
+    }
+
+    function btnEjecutarAsignacionClick() {
+
+        if (registroInstalacionTec.xasignar.length === 0) {
+            app.message.error("Validación", "Debe de seleccionar por lo menos un producto a asignar.")
+            return
+        };
+
+
+        if ($hdnIdTecnico.val() == "" || $txtTecnico.val() == "") {
+            app.message.error("Validación", "Debe de seleccionar por lo menos un técnico.")
+            return;
+        };
+        
+        if ($txtEmpresa.val() == "") {
+            app.message.error("Validación", "Debe de ingresar el campo Empresa.");
+            return;
+        }
+        var fnSi = function () {
+            asignar(registroInstalacionTec.xasignar);
+            app.message.success("Instalación Técnica", "Se realizo la asignacion correctamente.");
+            registroInstalacionTec.xasignar = [];
+            $checkSeleccionarTodos.prop("checked", false);
+        };
+        return app.message.confirm("Confirmación", "Esta seguro que desea asignar el(los) productos(s) al técnico?", "Si", "No", fnSi, null);
+    }
+
+    function asignar(productos) {
+        var method = "POST";
+        var url = "BandejaInstalacionTecnica/SetDatosElementos";
+
+        var objAsignacion = {
+            Id_DespachoList: productos,
+            CodTecnico: $hdnIdTecnico.val(),
+            TipoProceso: "T",
+            Empresa: $txtNomEmpresa.val(),
+            Id: null,
+            FechaProgramacion: null,
+            FechaInstalacion: null
+        }
+
+        var objParams = JSON.stringify(objAsignacion);
+        var fnDoneCallback = function () {
+            obtenerDetalleInstalacion();
+            //ObtenerListClientevsAsesor();
+        }
+        var fnFailCallBack = function () {
+            app.message.error("Validación", "Se produjo un error en la asignación.");
+            return;
+        }
+
+        app.llamarAjax(method, url, objParams, fnDoneCallback, fnFailCallBack, null, mensajes.llenarAsignaciones);
+    }
+
+    function obtenerDetalleInstalacion() {
+        registroInstalacionTec.childProductos = [];
+        var codigo = $hdnIdProduct.val();
+        productos = [];
+
+        var method = "POST";
+        var url = "BandejaInstalacionTecnica/ObtenerDetalleInstalacion";
+        var objDetalle = {
+            NumReq: $numeroReq.val()
+        }
+        var objParam = JSON.stringify(objDetalle);
+
+        var fnDoneCallBack = function (data) {
+            for (var i = 0; i < data.Result.length; i++) {
+                productos.push({
+                    Id: data.Result[i].Id,
+                    Cantidad: data.Result[i].Cantidad,
+                    CodProducto: data.Result[i].CodProducto,
+                    DescProducto: data.Result[i].DescProducto,
+                    Marca: data.Result[i].Marca,
+                    IndFianza: data.Result[i].IndFianza,
+                    NumFianza: data.Result[i].NumFianza,
+                    IndLLaveMano: data.Result[i].IndLLaveMano,
+                    Dimensiones: data.Result[i].Dimensiones,
+                    MontoPrestAcc: data.Result[i].MontoPrestAcc,
+                    MontoPrestPrin: data.Result[i].MontoPrestPrin,
+                    FechaInstalacion: data.Result[i].FechaInstalacion,
+                    Elementos: data.Result[i].Elementos
+                });
+                registroInstalacionTec.childProductos.push(data.Result[i].Elementos)
+            };
+            var elemento = productos.find(elemento => elemento.Id == codigo);
+
+            cargarTablaElementosdDeProducto(elemento.Elementos);
+            //cargarBandejaProductos(productos);
+        };
+
+        var fnFailCallBack = function () {
+            app.message.error("Error", "Hubo un error al traer el detalle de instalación, por favor revisar.");
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+    }
+
+
+    function CrearTecnico3ro_a_Producto() {
+        //var idProducto = $hdnIdProduct.val();
         if ($txtNombreTecnico.val() == "" || $txtNombreTecnico.val() == null || $txtNombreTecnico.val().trim().length == 0) {
             app.message.error("Validación", "Debe de seleccionar un técnico o ingresar el nombre de uno nuevo.");
             return;
         };
 
-        if ($txtNombreTecnico.val() == "" && $txtApellidoPaternoTec.val() == "" && $txtApellidoMaternoTec.val() == "")
-        {
+        if ($txtNombreTecnico.val() == "" && $txtApellidoPaternoTec.val() == "" && $txtApellidoMaternoTec.val() == "") {
             app.message.error("Validación", "Debe de registrar por lo menos el nombre del técnico.");
             return;
         }
@@ -264,132 +553,6 @@
             return;
         };
 
-        if (idEmpleado == "") {
-            var fnSi = function () {
-                AsignarTecnico3ro_a_Producto();
-            };
-            return app.message.confirm("Confirmación", "¿Está seguro(a) de asignar un técnico externo a la instalación de este equipo?", "Sí", "No", fnSi, null);
-        }
-        else {
-            var fnSi = function () {
-                var method = "POST";
-                var url = "BandejaInstalacionTecnica/MantTecnicoxDetalle";
-                var objAsignacion = {
-                    TipoProceso: "I"
-                    , Id: 0
-                    , Id_Detalle: idProducto
-                    , Cod_Tecnico: idEmpleado
-                    , NombreTecnico: $txtNombreTecnico.val()
-                    , ApellidoPaterno: $txtApellidoPaternoTec.val()
-                    , ApellidoMaterno: $txtApellidoMaternoTec.val()
-                    , Documento: $txtNumDocumento.val()
-                    , TipDocumento: $cmbTipoCredencial.val()
-                    , Correo: $txtCorreo.val()
-                    , Telefono: $txtTelefono.val()
-                    , Zona: $txtCodUbicacion.val()
-                    , Empresa: ''
-                    , TipoTecnico: $hdnTipoEmpleado.val()
-                    , Estado: 1
-                }
-                var objParam = JSON.stringify(objAsignacion);
-
-                var fnDoneCallBack = function () {
-                    app.message.success("Éxito", "Se realizó la asignación satisfactoriamente.");
-                    obtenerDetalleInstalacion();
-                    $modalAsignacion.modal('toggle');
-                };
-
-                var fnFailCallBack = function () {
-                    app.message.error("Validación", "Error en la asignación de técnico a equipo, por favor resvisar.");
-                };
-                app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
-            }
-            return app.message.confirm("Confirmación", "¿Está seguro(a) que desea asignar al técnico a la instalación de este equipo", "Sí", "No", fnSi, null);
-        }
-    };
-
-    function btnCheck() {
-        $(document).on('change', '#checkSeleccionar', function (e) {
-            if (this.checked) {
-                asignacionTerritorial.xasignar.push(this.value);
-            }
-            else {
-                asignacionTerritorial.xasignar = asignacionTerritorial.xasignar.filter(valor => valor != this.value);
-            }
-        });
-
-        $(document).on('change', '#checkSeleccionarTodos', function (e) {
-            if (this.checked) {
-                $checkSeleccionar.prop('checked', true);
-                $('input').filter('#checkSeleccionar').prop('checked', true);
-                var ids = document.querySelectorAll("input[name='checkSeleccionar']:checked");
-                var a = [];
-                for (var i = 0; i < ids.length; i++) {
-                    asignacionTerritorial.xasignar.push(ids[i].value);
-                }
-            }
-            else {
-                $('input').filter('#checkSeleccionar').prop('checked', false);
-                asignacionTerritorial.xasignar = []
-            }
-        });
-    }
-
-
-    function obtenerDetalleInstalacion() {
-        productos = [];
-
-        var method = "POST";
-        var url = "BandejaInstalacionTecnica/ObtenerDetalleInstalacion";
-        var objDetalle = {
-            NumReq: $numeroReq.val()
-        }
-        var objParam = JSON.stringify(objDetalle);
-
-        var fnDoneCallBack = function (data) {
-            for (var i = 0; i < data.Result.length; i++) {
-                productos.push({
-                    Id: data.Result[i].Id,
-                    Cantidad: data.Result[i].Cantidad,
-                    CodProducto: data.Result[i].CodProducto,
-                    DescProducto: data.Result[i].DescProducto,
-                    Marca: data.Result[i].Marca,
-                    Modelo: data.Result[i].Modelo,
-                    Serie: data.Result[i].Serie,
-                    IndFianza: data.Result[i].IndFianza, 
-                    NumFianza: data.Result[i].NumFianza,
-                    CantPreventivo: data.Result[i].CantPreventivo,
-                    CodCicloPreventivo: data.Result[i].CodCicloPreventivo,
-                    GarantiaAdicional: data.Result[i].GarantiaAdicional,
-                    IndLLaveMano: data.Result[i].IndLLaveMano,
-                    IndRequierePlaca: data.Result[i].IndRequierePlaca,
-                    IndCalibracion: data.Result[i].IndCalibracion,
-                    CodUbigeoDestino: data.Result[i].CodUbigeoDestino,
-                    DescUbigeoDestino: data.Result[i].DescUbigeoDestino,
-                    Direccion: data.Result[i].Direccion,
-                    NroPiso: data.Result[i].NroPiso,
-                    Dimensiones: data.Result[i].Dimensiones,
-                    MontoPrestAcc: data.Result[i].MontoPrestAcc,
-                    MontoPrestPrin: data.Result[i].MontoPrestPrin,
-                    FecLimInsta: app.obtenerFecha(data.Result[i].FecLimInsta),
-                    FechaProgramacion: data.Result[i].FechaProgramacion,
-                    FechaInstalacion: data.Result[i].FechaInstalacion,
-                    Tecnicos: data.Result[i].Tecnicos
-                })
-            };
-            cargarBandejaProductos(productos);
-        };
-
-        var fnFailCallBack = function () {
-            app.message.error("Error", "Hubo un error al traer el detalle de instalación, por favor revisar.");
-        };
-
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
-    }
-
-
-    function AsignarTecnico3ro_a_Producto() {
-        var idProducto = $hdnIdProduct.val();
 
         var method = "POST";
         var url = "BandejaEmpleados/MantenimientoEmpleados";
@@ -408,7 +571,7 @@
             },
             FechaNacimiento: null,
             LugarLaboral: {
-                UbigeoId: "",
+                UbigeoId: $txtCodUbicacion.val(),
             },
             TelefonoEmpleado: $txtTelefono.val(),
             EmailEmpleado: $txtCorreo.val(),
@@ -419,7 +582,7 @@
             },
             NumeroDocumento: $txtNumDocumento.val(),
             Empresa: {
-                CodValor1: "",
+                CodValor1: null,
             },
             CodigoJefe: "",
             FechaIngreso: "",
@@ -431,38 +594,11 @@
         var objEmpleado = JSON.stringify(objParam);
 
         var fnDoneCallback = function (data) {
-            var method = "POST";
-            var url = "BandejaInstalacionTecnica/MantTecnicoxDetalle";
-            var objAsignacion = {
-                TipoProceso: "I"
-                , Id: 0
-                , Id_Detalle: idProducto
-                , Cod_Tecnico: data.Result.Codigo
-                , NombreTecnico: $txtNombreTecnico.val()
-                , ApellidoPaterno: $txtApellidoPaternoTec.val()
-                , ApellidoMaterno: $txtApellidoMaternoTec.val()
-                , Documento: $txtNumDocumento.val()
-                , TipDocumento: $cmbTipoCredencial.val()
-                , Correo: $txtCorreo.val()
-                , Telefono: $txtTelefono.val()
-                , Zona: $txtCodUbicacion.val()
-                , Empresa: $txtEmpresaTecnico.val()
-                , TipoTecnico: $hdnTipoEmpleado.val()
-                , Estado: 1
-            };
-
-            var objParam = JSON.stringify(objAsignacion);
-
-            var fnDoneCallBack = function () {
-                app.message.success("Éxito", "Se realizó la asignación satisfactoriamente.");
-                obtenerDetalleInstalacion();
-                $modalAsignacion.modal('toggle');
-            };
-
-            var fnFailCallBack = function () {
-                app.message.error("Validación", "Error en la asignación de técnico a equipo, por favor resvisar.");
-            };
-            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+            app.message.confirm("Éxito", "Se realizó la creación del técnico satisfactoriamente.");
+            $modalAsignacion.modal('toggle');
+            $hdnIdTecnico.val(data.Result.Codigo);
+            $txtTecnico.val($txtNombreTecnico.val().trim() + ' ' + $txtApellidoPaternoTec.val().trim() + ' ' + $txtApellidoMaternoTec.val().trim());
+            $txtNomEmpresa.prop('disabled', false);
         };
         var fnFailCallback = function () {
             app.message.error("Error", "Error en la inserción del nuevo técnico externo.");
@@ -653,28 +789,17 @@
 
                     productos.push({
                         Id: data.Result.DetalleCotizacion[i].Id,
-                        Cantidad: data.Result.DetalleCotizacion[i].Cantidad,
                         CodProducto: data.Result.DetalleCotizacion[i].CodItem,
                         DescProducto: data.Result.DetalleCotizacion[i].Descripcion,
                         Marca: data.Result.DetalleCotizacion[i].Marca,
-                        Modelo: data.Result.DetalleCotizacion[i].Modelo,
-                        Serie: data.Result.DetalleCotizacion[i].Serie,
-                        IndFianza: data.Result.DetalleCotizacion[i].CotizacionDespacho.IndFianza,
-                        NumFianza: data.Result.DetalleCotizacion[i].CotizacionDespacho.NumFianza,
-                        CantPreventivo: data.Result.DetalleCotizacion[i].CotizacionDespacho.CantPreventivo,
-                        CodCicloPreventivo: data.Result.DetalleCotizacion[i].CotizacionDespacho.CodCicloPreventivo,
-                        GarantiaAdicional: data.Result.DetalleCotizacion[i].CotizacionDespacho.GarantiaAdicional,
-                        IndLLaveMano: data.Result.DetalleCotizacion[i].CotizacionDespacho.IndLLaveMano,
-                        IndRequierePlaca: data.Result.DetalleCotizacion[i].CotizacionDespacho.IndRequierePlaca,
-                        IndCalibracion: data.Result.DetalleCotizacion[i].CotizacionDespacho.IndCalibracion,
-                        CodUbigeoDestino: data.Result.DetalleCotizacion[i].CotizacionDespacho.CodUbigeoDestino,
-                        DescUbigeoDestino: data.Result.DetalleCotizacion[i].CotizacionDespacho.DescUbigeoDestino,
-                        Direccion: data.Result.DetalleCotizacion[i].CotizacionDespacho.Direccion,
-                        NroPiso: data.Result.DetalleCotizacion[i].CotizacionDespacho.NroPiso,
-                        Dimensiones: data.Result.DetalleCotizacion[i].CotizacionDespacho.Dimensiones,
-                        MontoPrestAcc: data.Result.DetalleCotizacion[i].CotizacionDespacho.MontoPrestAcc,
-                        MontoPrestPrin: data.Result.DetalleCotizacion[i].CotizacionDespacho.MontoPrestPrin,
-                        FecLimInsta: app.obtenerFecha(data.Result.DetalleCotizacion[i].CotizacionDespacho.FecLimInsta),
+                        Cantidad: data.Result.DetalleCotizacion[i].Cantidad,
+                        IndFianza: data.Result.DetalleCotizacion[i].IndFianza,
+                        NumFianza: data.Result.DetalleCotizacion[i].NumFianza,
+                        IndLLaveMano: data.Result.DetalleCotizacion[i].IndLLaveMano,
+                        Dimensiones: data.Result.DetalleCotizacion[i].Dimensiones,
+                        MontoPrestAcc: data.Result.DetalleCotizacion[i].MontoPrestAcc,
+                        MontoPrestPrin: data.Result.DetalleCotizacion[i].MontoPrestPrin,
+                        FecLimInsta: app.obtenerFecha(data.Result.DetalleCotizacion[i].FecLimInsta),
                         Elementos : elementos
                 })
             };
@@ -849,28 +974,9 @@
                 }
             },
             {
-                data: "Modelo",
-                render: function (data, type, row) {
-                    return '<center>' + data + '</center>'
-                }
-            },
-            {
                 data: "Cantidad",
                 render: function (data, type, row) {
                     return '<center>' + data + '</center>'
-                }
-            },
-            {
-                data: "IndCalibracion",
-                render: function (data, type, row) {
-                    var rpta = ""
-                    if (data == true) {
-                        rpta = "Sí";
-                    }
-                    else if (rpta == false) {
-                        rpta = "No";
-                    }
-                    return '<center>' + rpta + '</center>'
                 }
             },
             {
@@ -887,16 +993,9 @@
                 }
             },
             {
-                data: "IndRequierePlaca",
+                data: "Dimensiones",
                 render: function (data, type, row) {
-                    var rpta = ""
-                    if (data == true) {
-                        rpta = "Sí";
-                    }
-                    else if (rpta == false) {
-                        rpta = "No";
-                    }
-                    return '<center>' + rpta + '</center>'
+                    return '<center>' + data + '</center>'
                 }
             },
             {
@@ -906,11 +1005,28 @@
                 }
             },
             {
+                data: "MontoPrestAcc",
+                render: function (data, type, row) {
+                    return '<center>' + 'S/'+data + '</center>'
+                }
+            },
+            {
+                data: "MontoPrestPrin",
+                render: function (data, type, row) {
+                    return '<center>' +'S/'+data + '</center>'
+                }
+            },
+            {
+                data: "FecLimInsta",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
                 data: "Id",
                 render: function (data, type, row) {
                     var verElementosDeProducto = '<a id="btnVerElementos" class="btn btn-primary btn-xs" title="Ver Elementos" href="javascript: registroInstalacionTec.VerElementosdeProducto(' + data + ')"><i class="fa fa-cubes" aria-hidden="true"></i></a>';
-                    var detalleAdic = '<a id="btnInfoDetail" class="btn btn-primary btn-xs" title="Información Adicional" ><i class="fa fa-file-text" aria-hidden="true"></i></a>'
-                    return '<center>' + verElementosDeProducto + ' ' +detalleAdic +'</center>'
+                    return '<center>' + verElementosDeProducto +'</center>'
                 }
             }
         ];
@@ -960,9 +1076,9 @@
 
             $('#activadoFecProgram' + id).attr("id", nuevoId);
 
-            for (var i = 0; i < productos.length; i++) {
-                if (productos[i].Id == id) {
-                    $('#dateFechaProgramacion'+id).val(productos[i].FechaProgramacion);
+            for (var i = 0; i < registroInstalacionTec.childProductos.length; i++) {
+                if (registroInstalacionTec.childProductos[i].Id_Despacho == id) {
+                    $('#dateFechaProgramacion' + id).val(registroInstalacionTec.childProductos[i].FechaProgramacion);
                 };
             };
         }
@@ -1005,9 +1121,9 @@
 
             $('#activadoFecInstall' + id).attr("id", nuevoId);
 
-            for (var i = 0; i < productos.length; i++) {
-                if (productos[i].Id == id) {
-                    $('#dateFechaInstalacion' + id).val(productos[i].FechaInstalacion);
+            for (var i = 0; i < registroInstalacionTec.childProductos.length; i++) {
+                if (registroInstalacionTec.childProductos[i].Id_Despacho == id) {
+                    $('#dateFechaInstalacion' + id).val(registroInstalacionTec.childProductos[i].FechaInstalacion);
                 };
             };
         }
@@ -1060,26 +1176,17 @@
             return
         };
 
-        var idDetalle = id;
+        var idDespacho = id;
         
         var method = "POST";
-        var url = "BandejaInstalacionTecnica/MantInstalacionTecnicaDetalle";
+        var url = "BandejaInstalacionTecnica/SetDatosElementos";
         var objFecha = {
-            TipoProceso: "U",
-            Id: idDetalle,
-            NumReq: 0,
-            CodProducto: 0,
-            DescProducto: "",
-            Cantidad: 0,
-            Marca: "",
-            Modelo:"",
-            Serie:"",
-            NumFianza:"", 
-            CantPreventivo:0,
-            CodCicloPreventivo:"",
-            GarantiaAdicional:"",
+            TipoProceso: "F",
+            Id: idDespacho,
             FechaProgramacion: fechaProgramacion,
-            FechaInstalacion: fechaInstalacion
+            FechaInstalacion: fechaInstalacion,
+            CodTecnico: 0,
+            Empresa: " "
         };
 
         var objParam = JSON.stringify(objFecha);
@@ -1101,6 +1208,9 @@
 
     function guardarFechaInstalacion(id) {
         /*Al guardar alguna fecha se restablecen las demás fechas para no generar inconsistencias*/
+        var fechaProgramacion = $('#dateFechaProgramacion' + id).val();
+        var fechaInstalacion = $('#dateFechaInstalacion' + id).val();
+
         for (var i = 0; i < productos.length; i++) {
             $('#dateFechaProgramacion' + productos[i].Id).val(productos[i].FechaProgramacion);
         };
@@ -1131,27 +1241,17 @@
             app.message.error("","")
         };
 
-        var idDetalle = id;
-        var fechaProgramacion = $('#dateFechaProgramacion' + id).val();
-        var fechaInstalacion = $('#dateFechaInstalacion' + id).val();
+        var idDespacho = id;
+
         var method = "POST";
-        var url = "BandejaInstalacionTecnica/MantInstalacionTecnicaDetalle";
+        var url = "BandejaInstalacionTecnica/SetDatosElementos";
         var objFecha = {
-            TipoProceso: "U",
-            Id: idDetalle,
-            NumReq: 0,
-            CodProducto: 0,
-            DescProducto: "",
-            Cantidad: 0,
-            Marca: "",
-            Modelo: "",
-            Serie: "",
-            NumFianza: "",
-            CantPreventivo: 0,
-            CodCicloPreventivo: "",
-            GarantiaAdicional: "",
+            TipoProceso: "F",
+            Id: idDespacho,
             FechaProgramacion: fechaProgramacion,
-            FechaInstalacion: fechaInstalacion
+            FechaInstalacion: fechaInstalacion,
+            CodTecnico: 0,
+            Empresa: " "
         };
 
         var objParam = JSON.stringify(objFecha);
@@ -1171,37 +1271,12 @@
         return app.message.confirm("Confirmación", "¿Desea establecer la fecha seleccionada como: 'Fecha de Instalación'?", "Sí", "No", fnSi, null);
     }
     function AgregarTecnicoExterno() {
-        $divEmpresaTecnico.css('display', 'block');
-        $txtNombreTecnico.prop('disabled', false);
-        $txtApellidoPaternoTec.prop('disabled', false);
-        $txtApellidoMaternoTec.prop('disabled', false);
-        $txtNumDocumento.prop('disabled', false);
-        $txtTelefono.prop('disabled', false);
-        $txtCorreo.prop('disabled', false);
-        $txtZona.prop('disabled', false);
-        $cmbTipoCredencial.prop('disabled', false);
-        limpiarAsignacionTecnicos();
         $txtTipoTecnico.val("Externo");
         $hdnTipoEmpleado.val("E");
-        var searchZona = document.querySelector('#searchZona')
-        searchZona.setAttribute('style', 'cursor: pointer');
-
     };
 
     function abrirModalTecnicos() {
-        $divEmpresaTecnico.css('display', 'none');
-        limpiarAsignacionTecnicos();
-        $txtNombreTecnico.prop('disabled', true);
-        $txtApellidoPaternoTec.prop('disabled', true);
-        $txtApellidoMaternoTec.prop('disabled', true);
-        $txtNumDocumento.prop('disabled', true);
-        $txtTelefono.prop('disabled', true);
-        $txtCorreo.prop('disabled', true);
-        $txtZona.prop('disabled', true);
-        $cmbTipoCredencial.prop('disabled', true);
-
-        var searchZona = document.querySelector('#searchZona')
-        searchZona.setAttribute('style', 'pointer-events:none')
+        
     }
     function cargarTipoDoc() {
         var method = "POST";
@@ -1293,7 +1368,6 @@
         btnActualizar.id = 'btnEditarReq';
         btnCancelar.id = 'btnRegresar';
     };
-
     function $btnCargarDocumento_click() {
         if ($cmbTipoDocumentoCarga.val() == 0 || $cmbTipoDocumentoCarga.val() == "" || $cmbTipoDocumentoCarga.val() == null) {
             app.message.error('Validación', 'Debe seleccionar el tipo de documento', 'Aceptar', null);
@@ -1434,7 +1508,6 @@
         };
         $modalCargaDocumento.modal("hide");
     }
-
     function eliminarDocTemp(cont) {
 
         var fnSi = function () {
@@ -1699,6 +1772,7 @@
     };
 
     function cargarDatos() {
+        registroInstalacionTec.childProductos = [];
         if ($numeroReq.val() != "") {
             observaciones = [];
             registroInstalacionTec.contadorObservaciones = 0;
@@ -1720,39 +1794,26 @@
                 cargarCabecera(data.Result.CabeceraInstalacion);
 
                 for (var i = 0; i < data.Result.DetalleInstalacion.length; i++) {
+                    var elementos = data.Result.Elementos.filter(elemento => elemento.Id_Detalle == data.Result.DetalleInstalacion[i].Id);
                     productos.push({
                         Id: data.Result.DetalleInstalacion[i].Id,
-                        Cantidad: data.Result.DetalleInstalacion[i].Cantidad,
                         CodProducto: data.Result.DetalleInstalacion[i].CodItem,
                         DescProducto: data.Result.DetalleInstalacion[i].DescProducto,
                         Marca: data.Result.DetalleInstalacion[i].Marca,
-                        Modelo: data.Result.DetalleInstalacion[i].Modelo,
-                        Serie: data.Result.DetalleInstalacion[i].Serie,
+                        Cantidad: data.Result.DetalleInstalacion[i].Cantidad,
                         IndFianza: data.Result.DetalleInstalacion[i].IndFianza,
                         NumFianza: data.Result.DetalleInstalacion[i].NumFianza,
-                        CantPreventivo: data.Result.DetalleInstalacion[i].CantPreventivo,
-                        CodCicloPreventivo: data.Result.DetalleInstalacion[i].CodCicloPreventivo,
-                        GarantiaAdicional: data.Result.DetalleInstalacion[i].GarantiaAdicional,
                         IndLLaveMano: data.Result.DetalleInstalacion[i].IndLLaveMano,
-                        IndRequierePlaca: data.Result.DetalleInstalacion[i].IndRequierePlaca,
-                        IndCalibracion: data.Result.DetalleInstalacion[i].IndCalibracion,
-                        CodUbigeoDestino: data.Result.DetalleInstalacion[i].CodUbigeoDestino,
-                        DescUbigeoDestino: data.Result.DetalleInstalacion[i].DescUbigeoDestino,
-                        Direccion: data.Result.DetalleInstalacion[i].Direccion,
-                        NroPiso: data.Result.DetalleInstalacion[i].NroPiso,
                         Dimensiones: data.Result.DetalleInstalacion[i].Dimensiones,
                         MontoPrestAcc: data.Result.DetalleInstalacion[i].MontoPrestAcc,
                         MontoPrestPrin: data.Result.DetalleInstalacion[i].MontoPrestPrin,
-                        FechaProgramacion: data.Result.DetalleInstalacion[i].FechaProgramacion,
-                        FechaInstalacion: data.Result.DetalleInstalacion[i].FechaInstalacion,
                         FecLimInsta: app.obtenerFecha(data.Result.DetalleInstalacion[i].FecLimInsta),
-                        Tecnicos: data.Result.DetalleInstalacion[i].Tecnicos
-
-                    })
+                        Elementos: elementos
+                    });
                 };
-
-
+                registroInstalacionTec.childProductos = data.Result.Elementos;
                 cargarBandejaProductos(productos);
+
                 registroInstalacionTec.contadorObservaciones = data.Result.Observaciones.length;
                 observaciones = data.Result.Observaciones;
                 if (registroInstalacionTec.contadorObservaciones > 0) {
@@ -1816,20 +1877,20 @@
         $cmbTipoCredencial.val("").trigger('change.select2');
     };
     function añadirTecnico(codigo) {
-        BuscarTecnicos();
-        limpiarAsignacionTecnicos();
-        $txtNombreTecnico.prop('disabled', true);
-        $txtApellidoPaternoTec.prop('disabled', true);
-        $txtApellidoMaternoTec.prop('disabled', true);
-        $txtNumDocumento.prop('disabled', true);
-        $txtTelefono.prop('disabled', true);
-        $txtCorreo.prop('disabled', true);
-        $txtZona.prop('disabled', true);
-        $cmbTipoCredencial.prop('disabled', true);
-        $modalAsignacion.modal('toggle');
+        //BuscarTecnicos();
         $hdnIdProduct.val(codigo);
+        limpiarAsignacionTecnicos();
+        //$txtNombreTecnico.prop('disabled', true);
+        //$txtApellidoPaternoTec.prop('disabled', true);
+        //$txtApellidoMaternoTec.prop('disabled', true);
+        //$txtNumDocumento.prop('disabled', true);
+        //$txtTelefono.prop('disabled', true);
+        //$txtCorreo.prop('disabled', true);
+        //$txtZona.prop('disabled', true);
+        //$cmbTipoCredencial.prop('disabled', true);
+        //
     };
-    function BuscarTecnicos() {
+    function BuscarTecnicos(){
         var method = "POST";
         var url = "BandejaInstalacionTecnica/ObtenerTecnico"
         var objTecnico = {
@@ -1914,7 +1975,8 @@
             {
                 data: "CodigoEmpleado",
                 render: function (data, type, row) {
-                    var seleccionar = '<a id="btnSeleccionarTecnico" class="btn btn-default btn-xs" title="Seleccionar" href="javascript: registroInstalacionTec.seleccionarTecnico(' + data + ')"><i class="fa fa-level-down" aria-hidden="true"></i> Seleccionar</a>';
+                    var d = "'" + row.CodigoEmpleado + "','" + row.NombresCompletosEmpleado + "','" + row.Empresa.Valor1 + "'"; 
+                    var seleccionar = '<a id="btnSeleccionarTecnico" class="btn btn-default btn-xs" title="Seleccionar" href="javascript: registroInstalacionTec.seleccionarTecnico(' + d + ')"><i class="fa fa-level-down" aria-hidden="true"></i> Seleccionar</a>';
                     return '<center>' + seleccionar + '</center>';
                 }
             }
@@ -1926,92 +1988,53 @@
             }
         ]
 
-        app.llenarTabla($tblTecnicos, data, columns, columnDefs, "#tblTecnicos");
+        app.llenarTabla($tblTecnicos, data, columns, columnDefs, "#tblTecnicos", null);
     }
-    function seleccionarTecnico(codigo) {
-        var method = "POST";
-        var url = "BandejaInstalacionTecnica/ObtenerTecnico"
-
-        var objTecnico = {
-            CodigoEmpleado: codigo,
-            NombreEmpleado: "",
-            ApellidoPaternoEmpleado: "",
-            ApellidoMaternoEmpleado: "",
-            CodigoCargo: 8,//-->8 es Técnico
-            TipoDocumento: "",
-            TipoEmpleado: "",
-            NumeroDocumento: "",
-            Estado: 1,
-            FechaInicio: "",
-            FechaFinal: ""
-        };
-
-        var objParam = JSON.stringify(objTecnico);
-
-        var fnDoneCallBack = function (data) {
-            $hdnIdTecnico.val(data.Result[0].CodigoEmpleado);
-            $txtNombreTecnico.val(data.Result[0].NombresEmpleado);
-            $txtApellidoPaternoTec.val(data.Result[0].ApellidoPaternoEmpleado);
-            $txtApellidoMaternoTec.val(data.Result[0].ApellidoMaternoEmpleado);
-            $txtNumDocumento.val(data.Result[0].NumeroDocumento);
-            $txtTelefono.val(data.Result[0].TelefonoEmpleado);
-            $txtCorreo.val(data.Result[0].EmailEmpleado);
-            $txtCodUbicacion.val(data.Result[0].LugarLaboral.UbigeoId);
-            $txtZona.val(data.Result[0].LugarLaboral.NombreDepartamento + ' / ' + data.Result[0].LugarLaboral.NombreProvincia + ' / ' + data.Result[0].LugarLaboral.NombreDistrito);
-            $hdnTipoEmpleado.val(data.Result[0].CodigoTipoEmpleado);
-            $txtTipoTecnico.val(data.Result[0].TipoEmpleado);
-            $txtEmpresaTecnico.val(data.Result[0].Empresa.Valor1);
-            $cmbTipoCredencial.val(data.Result[0].Documento.Parametro).trigger("change.select2");
-
-        };
-
-        var fnFailCallBack = function () {
-            app.message.error("Validación","Error en la búsqueda de técnicos. ")
-        };
-
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
-
+    function seleccionarTecnico(codigo, nombreTecnicom, nombreEmpresa) {
+        $hdnIdTecnico.val(codigo);
+        $txtTecnico.val(nombreTecnico);
+        $txtNomEmpresa.val(nombreEmpresa);
         $modalBusquedaTecnico.modal('toggle');
     };
-    function DesasignarTécnicoTmp(id) {
-
-        var id = id.toString();
-
-        var method = "POST";
-        var url = "BandejaInstalacionTecnica/MantTecnicoxDetalle";
-        var objTecnico = {
-            TipoProceso: "D"
-            , Id: id
-            , Id_Detalle: ""
-            , Cod_Tecnico: ""
-            , NombreTecnico: ""
-            , Documento: ""
-            , TipDocumento: ""
-            , Correo: ""
-            , Telefono: ""
-            , Zona: ""
-            , TipoTecnico: ""
-            , Estado: 0
-        }
-
-        var objParam = JSON.stringify(objTecnico);
-
-        var fnSi = function () {
-
-            var fnDoneCallBack = function (data) {
-                app.message.success("Éxito", "Se realizó la des-asignación con éxito.");
-                $hdnIdTecnico.val(data.Result.Codigo);
-                obtenerDetalleInstalacion();
-            };
-
-            var fnFailCallBack = function () {
-                app.message.error("Error", "Se produjo un error al realizar la des-asignación del técnico a la instalación, por favor revisar.");
-            };
-
-            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
-        };
-        return app.message.confirm("Instalación Técnica", "¿Está seguro(a) que desea des-asignar al técnico de la instalación de este producto?", "Si", "No", fnSi, null);
-    }
+    //function DesasignarTécnicoTmp(id) {
+    //
+    //    var id = id.toString();
+    //
+    //    var method = "POST";
+    //    var url = "BandejaInstalacionTecnica/MantTecnicoxDetalle";
+    //    var objTecnico = {
+    //        TipoProceso: "D"
+    //        , Id: id
+    //        , Id_Detalle: ""
+    //        , Cod_Tecnico: ""
+    //        , NombreTecnico: ""
+    //        , Documento: ""
+    //        , TipDocumento: ""
+    //        , Correo: ""
+    //        , Telefono: ""
+    //        , Zona: ""
+    //        , TipoTecnico: ""
+    //        , Estado: 0
+    //    }
+    //
+    //    var objParam = JSON.stringify(objTecnico);
+    //
+    //    var fnSi = function () {
+    //
+    //        var fnDoneCallBack = function (data) {
+    //            app.message.success("Éxito", "Se realizó la des-asignación con éxito.");
+    //            $hdnIdTecnico.val(data.Result.Codigo);
+    //            obtenerDetalleInstalacion();
+    //        };
+    //
+    //        var fnFailCallBack = function () {
+    //            app.message.error("Error", "Se produjo un error al realizar la des-asignación del técnico a la instalación, por favor revisar.");
+    //        };
+    //
+    //        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+    //    };
+    //    return app.message.confirm("Instalación Técnica", "¿Está seguro(a) que desea des-asignar al técnico de la instalación de este producto?", "Si", "No", fnSi, null);
+    //}
     function $adjuntarDocumento_click() {
         //$fileCargaDocumentoSustento.click();
         $lblNombreArchivo.text("");
@@ -2136,12 +2159,15 @@
                 $dateSolicitud.prop('disabled', true);
 
                 var fnSiComent = function () {
+                    cancelarEditReq()
                     $modalObservacionClick()
                     $numeroReq.val(data.Result.Codigo);
                     cargarDatos();
+
                 };
 
                 var fnNo = function () {
+                    cancelarEditReq()
                     $numeroReq.val(data.Result.Codigo);
                     cargarDatos();
                 };
@@ -2158,12 +2184,12 @@
     }
 
     function cargarBtnInfoAdicional() {
-        $('#tblMainProducts tbody').on('click', 'td #btnInfoDetail', function () {
+        $('#tblElementosDeProducto tbody').on('click', 'td #btnInfoDetail', function () {
 
             limpiarDetalleInfoAdcional()
 
             var tr = $(this).closest('tr');
-            var row = $('#tblMainProducts').dataTable().api().row(tr);
+            var row = $('#tblElementosDeProducto').dataTable().api().row(tr);
             var info = row.data();
 
             $modalDetalleInstalacion.modal('toggle');
@@ -2174,53 +2200,57 @@
     function cargarDetalleInfoAdicional(data) {
         $txtCantPrev.val(data.CantPreventivo);
         $cmbPeriodos.val(data.CodCicloPreventivo).trigger('change.select2');
-        $txtGarantiaAdicional.val(data.GarantiaAdicional);
         $txtUbigeDestinoc.val(data.DescUbigeoDestino);
         $hdnCodUbigeoDestino.val(data.CodUbigeoDestino);
         $txtDireccionInstall.val(data.Direccion);
         $txtNroPiso.val(data.NroPiso);
-        $txtDimensiones.val(data.Dimensiones);
-        $txtMontoPrestAcc.val(data.MontoPrestAcc);
-        $txtMontoPrestPrin.val(data.MontoPrestPrin);
     };
 
     function limpiarDetalleInfoAdcional() {
         $txtCantPrev.val("");
         $cmbPeriodos.val(0).trigger('change.select2');
-        $txtGarantiaAdicional.val("");
         $txtUbigeDestinoc.val("");
         $hdnCodUbigeoDestino.val("");
         $txtDireccionInstall.val("");
         $txtNroPiso.val("");
-        $txtDimensiones.val("");
-        $txtMontoPrestAcc.val("");
-        $txtMontoPrestPrin.val("");
     }
 
     function cambiarEstadoProceso() {
         var validador = 0;
 
-        for (var i = 0; i < productos.length; i++) {
-            if (productos[i].Tecnicos.length > 0) {
-                validador = 1;
+        //var producto = productos.find(producto => producto.Elementos.length == 0)
+        registroInstalacionTec.childProductos.forEach(function (elemento) {
+            if (elemento.FechaProgramacion == "") {
+                validador += 1;
             };
-        };
+        });
 
-        if (validador == 0) {
-            app.message.error("Validación", "Debe de asignar por lo menos un técnico a un producto.");
+        if (registroInstalacionTec.childProductos.length == validador) {
+            app.message.error("Validación", 'Por lo menos una instalación debe de contar con "Fecha de Programación", registrada.');
             return;
         };
 
         validador = 0;
-
-        for (var i = 0; productos.length > i; i++) {
-            if ($('#dateFechaProgramacion' + productos[i].Id).val() != "") {
-                validador = 1;
+        registroInstalacionTec.childProductos.forEach(function (elemento) {
+            if (elemento.FechaInstalacion == "") {
+                validador += 1;
             };
+        });
+
+        if (registroInstalacionTec.childProductos.length == validador) {
+            app.message.error("Validación", 'Por lo menos una instalación debe de contar con "Fecha de Instalación", registrada.');
+            return;
         };
 
-        if (validador == 0) {
-            app.message.error("Validación", 'Por lo menos una instalación debe de contar con "Fecha de Programación", registrada.');
+        validador = 0;
+        registroInstalacionTec.childProductos.forEach(function (elemento) {
+            if (elemento.NombreCompletoTecnico == "  ") {
+                validador += 1;
+            };
+        });
+
+        if (registroInstalacionTec.childProductos.length == validador) {
+            app.message.error("Validación", "Debe de asignar por lo menos, un técnico a un producto.");
             return;
         };
 
@@ -2231,12 +2261,17 @@
             var objReq = {
                 TipoProceso: "U",
                 NumReq: $numeroReq.val(),
+                Id_WorkFlow: $codigoWorkflow.val(),
                 FechaMax: $dateSolicitud.val(),
                 Destino: destinos_select.toString(),
-                Estado: "STEPI",
+                Estado: "STEPP",
                 OrdenCompra: $txtOrdCompra.val(),
                 NroProceso: $txtProceso.val(),
                 Contrato: $txtContrato.val()
+            };
+
+            if (validador == 0) {
+                objReq.Estado = "STEPI";
             };
 
             var objParam = JSON.stringify(objReq);
@@ -2253,43 +2288,25 @@
                 };
                 app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
             }
-            return app.message.confirm("Confirmación", "¿Desea realizar el cambio de estado a: En proceso de Instalación. ?", "Si", "No", fnSi, null);
+            if (validador == 0) {
+                return app.message.confirm("Confirmación", "¿Desea realizar el cambio de estado a: En proceso de Instalación. ?", "Si", "No", fnSi, null);
+            }
+            else {
+                return app.message.confirm("Confirmación", "¿Desea realizar el cambio de estado a: En proceso de Instalación Parcial. ?", "Si", "No", fnSi, null);
+            }
         };
     };
 
     function VerElementosdeProducto(codigo) {
-        $modalElementosDeProducto.modal('toggle');
+        $txtTecnico.val("");
+        $hdnIdTecnico.val("");  
+        registroInstalacionTec.xasignar = [];
         var elementos = [];
-        if ($numeroReq.val() == "") {
-            var detalle = productos.filter(producto => producto.Id == codigo)
-            elementos = detalle[0].Elementos;
-            return
-        }
-        else if ($numeroReq.val() != "") {
-            btnCheck();
-            $modalElementosDeProducto.modal('toggle');
-            $hdnIdProduct.val(codigo);
-            var method = "POST";
-            var url = "BandejaInstalacionTecnica/ObtenerElementosdeProducto";
-            var objElemento = {
-                IdProducto: codigo
-            };
-
-            var objParam = JSON.stringify(objElemento);
-
-            var fnDoneCallBack = function (data) {
-                elementos = data.Result;
-            };
-
-            var fnFailCallBack = function () {
-                app.message.error("Validación", "Se presentó un error al generar los elementos del producto seleccionado, por favor revisar.");
-                return;
-            };
-
-            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
-        }
-
+        var detalle = productos.filter(producto => producto.Id == codigo)
+        elementos = detalle[0].Elementos;
+        $hdnIdProduct.val(codigo);
         cargarTablaElementosdDeProducto(elementos);
+        $modalElementosDeProducto.modal('toggle');
     };
 
     function cargarTablaElementosdDeProducto(listProductos) {
@@ -2300,120 +2317,230 @@
         if ($tipoproceso.val() == "") {
             var columns = [
                 {
-                    data: "Cliente.ID",
+                    data: "Id_Despacho",
                     render: function (data, type, row) {
                         return '<center>' + data + '</center>';
                     }
                 },
                 {
-                    data: "",
+                    data: "CodProduct",
                     render: function (data, type, row) {
                         return '<center>' + data + '</center>';
                     }
                 },
                 {
-                    data: "Cliente.RUC",
+                    data: "DescProduct",
                     render: function (data, type, row) {
                         return '<center>' + data + '</center>';
                     }
                 },
                 {
-                    data: "Cliente.NomEmpresa",
+                    data: "Marca",
                     render: function (data, type, row) {
                         return '<center>' + data + '</center>';
                     }
                 },
                 {
-                    data: "Empleado.NombresCompletosEmpleado",
+                    data: "Serie",
                     render: function (data, type, row) {
                         return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "id_Despacho",
+                    render: function () {
+                        var detalleAdic = '<a id="btnInfoDetail" class="btn btn-primary btn-xs" title="Información Adicional" ><i class="fa fa-file-text" aria-hidden="true"></i></a>'
+                        return '<center>' + detalleAdic + '</center>';
                     }
                 }
             ];
         }
+       
         else if ($tipoproceso.val() == "U") {
+            BuscarTecnicos();
             var columns = [
                 {
-                    data: "Cliente.ID",
+                    data: "Id",
                     render: function (data, type, row) {
                         return '<center>' + data + '</center>';
                     }
                 },
                 {
-                    data: {
-                        cliente: "Cliente.ID",
-                        estado: "Cliente.Estado"
-                    },
+                    data:"Id_Despacho",
                     render: function (data, type, row) {
-                        if (data.Cliente.Estado == true) {
-                            var seleccionar = '<input class="form-check-input cheks" name="checkSeleccionar" type="checkbox" value="' + data.Cliente.ID + '" id="checkSeleccionar">';
+                        var seleccionar = '<input class="form-check-input cheks" name="checkSeleccionar" type="checkbox" value="' + data + '" id="checkSeleccionar">';
+                        return '<center>' + seleccionar + '</center>';
+                    }
+                },
+                {
+                    data: "CodProduct",
+                    render: function (data, type, row) {
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "DescProduct",
+                    render: function (data, type, row) {
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "Marca",
+                    render: function (data, type, row) {
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "Serie",
+                    render: function (data, type, row) {
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "NombreCompletoTecnico",
+                    render: function (data, type, row) {
+                        if (data == "  ") {
+                            return '<center>' + 'Pendiente  de Asignar'+ '</center>';
                         }
                         else {
-                            var seleccionar = '<input disabled class="form-check-input cheks" name="" type="checkbox" title="inactivo">';
-                        }
-                        return '<center>' + seleccionar + '</center>';
-
-                    }
-                },
-                {
-                    data: "Cliente.RUC",
-                    render: function (data, type, row) {
-                        return '<center>' + data + '</center>';
-                    }
-                },
-                {
-                    data: "Cliente.NomEmpresa",
-                    render: function (data, type, row) {
-                        return '<center>' + data + '</center>';
-                    }
-                },
-                {
-                    data: "Empleado.NombresCompletosEmpleado",
-                    render: function (data, type, row) {
-                        if (data != "") {
                             return '<center>' + data + '</center>';
                         }
-                        else {
-                            return '<center>' + "Sin asignar" + '</center>';
+                    }
+                },
+                {
+                    data: "Empresa",
+                    render: function (data, type, row) {
+                        if (data == "" || data == null) {
+                            return '<center>' + 'No definido' + '</center>';
                         }
+                        else {
+                            return '<center>' + data + '</center>';
+                        }
+                    }
+                },
+                {
+                    data: "FechaProgramacion",
+                    render: function (data, type, row) {
+                        var html = '';
+                        html += '<div class="form-group">' +
+                            '<div class="input-group input-group-sm date">' +
+                            '<input disabled type="date" class="form-control input-sm" id="dateFechaProgramacion' + row.Id_Despacho + '" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" value="' + row.FechaProgramacion + '">';
+                        if ($tipoproceso.val() == "U") {
+                            html += '<a style="cursor:pointer;background-color: #096bff;color: white;" class="input-group-addon input-sm" id="activeFechaProgramacion' + row.Id_Despacho + '" title="Ingresar Fecha Programación" href="javascript:registroInstalacionTec.activarFechaProgramacion(' + row.Id_Despacho + ')">' +
+                                '<i class="fa fa-pencil" aria-hidden="true"></i>' +
+                                '</a>';
+                            html += '<a disabled style="pointer-events:none; background-color: gray;color: white;" class="input-group-addon input-sm" id="cancelFechaProgramacion' + row.Id_Despacho + '" href="javascript:registroInstalacionTec.desactivarFechaProgramacion(' + row.Id_Despacho + ')"" >' +
+                                '<i class="fa fa-times" aria-hidden="true"></i>' +
+                                '</a>';
+                        }
+                        else if ($tipoproceso.val() == "V") {
+                            html += '<a style="cursor:pointer; pointer-events:none ;background-color: gray;color: black;" class="input-group-addon input-sm" id="activeFechaProgramacion' + row.Id_Despacho + '" >' +
+                                '<i class="fa fa-pencil" aria-hidden="true"></i>' +
+                                '</a>';
+                            html += '<a disabled style="pointer-events:none; background-color: gray;color: black;" class="input-group-addon input-sm" id="cancelFechaProgramacion' + row.Id_Despacho + '" >' +
+                                '<i class="fa fa-times" aria-hidden="true"></i>' +
+                                '</a>';
+                        }
+                        html += '</div>';
+                        html += '</div>';
+                        return '<center>' + html + '</cemter>';
+                    }
+                },
+                {
+                    data: "FechaInstalacion",
+                    render: function (data, type, row) {
+                        var html = "";
+                        html += '<div class="form-group">' +
+                            '<div class="input-group input-group-sm date">' +
+                            '<input disabled type="date" class="form-control input-sm" id="dateFechaInstalacion' + row.Id_Despacho + '" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" value="' + row.FechaInstalacion + '">';
+
+                        if ($tipoproceso.val() == "U") {
+                            html += '<a style="cursor:pointer;background-color: #096bff;color: white;" class="input-group-addon input-sm" id="activeFechaInstalacion' + row.Id_Despacho + '" title="Ingresar Fecha Instalación" href="javascript:registroInstalacionTec.activarFechaInstalacion(' + row.Id_Despacho + ')">' +
+                                '<i class="fa fa-pencil" aria-hidden="true"></i>' +
+                                '</a>';
+                            html += '<a disabled style="pointer-events:none; background-color: gray;color: white;" class="input-group-addon input-sm" id="cancelEditInstalacion' + row.Id_Despacho + '" href="javascript:registroInstalacionTec.desactivarFechaInstalacion(' + row.Id_Despacho + ')"" >' +
+                                '<i class="fa fa-times" aria-hidden="true"></i>' +
+                                '</a>';
+                        }
+                        else if ($tipoproceso.val() == "V") {
+                            html += '<a style="cursor:pointer; pointer-events:none ;background-color: gray;color: black;" class="input-group-addon input-sm" id="activeFechaInstalacion' + row.Id_Despacho + '" >' +
+                                '<i class="fa fa-pencil" aria-hidden="true"></i>' +
+                                '</a>';
+                            html += '<a disabled style="pointer-events:none; background-color: gray;color: black;" class="input-group-addon input-sm" id="cancelEditInstalacion' + row.Id_Despacho + '" >' +
+                                '<i class="fa fa-times" aria-hidden="true"></i>' +
+                                '</a>';
+                        };
+                        html += '</div>';
+                        html += '</div>';
+                        return '<center>' + html + '</center>';
+                    }
+                },
+                {
+                    data: "id_Despacho",
+                    render: function () {
+                        var detalleAdic = '<a id="btnInfoDetail" class="btn btn-primary btn-xs" title="Información Adicional" ><i class="fa fa-file-text" aria-hidden="true"></i></a>'
+                        return '<center>' + detalleAdic + '</center>';
                     }
                 }
             ];
         }
 
-        
+        if ($tipoproceso.val() == "V") {
+            columns.splice(1, 1);
+        };
+
         var columnsDefs = [
             {
                 targets: [0],
                 visible: false
             }
         ];
-        app.llenarTabla($tblElementosDeProducto, data, columns, columnsDefs, "#tblElementosDeProducto")
+        app.llenarTabla($tblElementosDeProducto, data, columns, columnsDefs, "#tblElementosDeProducto",null)
     };
     function CerrarRequerimiento() {
+
         var validador = 0;
 
-        for (var i = 0; productos.length > i; i++) {
-            if ($('#dateFechaProgramacion' + productos[i].Id).val() == "") {
-                validador = 1;
-            }
-            else if ($('#dateFechaInstalacion' + productos[i].Id).val() == "") {
-                validador = 1;
-            }
-            else if (productos[0].Tecnicos.length == 0) {
+        //var producto = productos.find(producto => producto.Elementos.length == 0)
+        registroInstalacionTec.childProductos.forEach(function (elemento) {
+            if (elemento.FechaProgramacion == "") {
                 validador = 1;
             };
-        };
+        });
 
         if (validador == 1) {
-            app.message.error("Validación", 'Todas las instalaciones deben de contar con "Fecha de Programación" y "Fecha Real", registradas.');
+            app.message.error("Validación", 'Todos los productos deben de contar con Fecha de Programación.');
             return;
         };
 
-        validador = 1;
+        validador = 0;
+        registroInstalacionTec.childProductos.forEach(function (elemento) {
+            if (elemento.FechaInstalacion == "") {
+                validador = 1;
+            };
+        });
+
+        if (validador == 1) {
+            app.message.error("Validación", 'Todos los productos deben de contar con Fecha de Instalación.');
+            return;
+        };
+
+        validador = 0;
+        registroInstalacionTec.childProductos.forEach(function (elemento) {
+            if (elemento.NombreCompletoTecnico == "  ") {
+                validador = 1;
+            };
+        });
+
+        if (validador == 1) {
+            app.message.error("Validación", 'Todos los productos deben de contar con un técnico asignado.');
+            return;
+        };
+        
+        validador = 1
 
         for (var i = 0; i < adjuntos.length; i++) {
-            if (adjuntos[i].CodigoTipoDocumento == "DV05") {
+            if (adjuntos[i].CodigoTipoDocumento == "DI01") {
                 validador = 0;
             };
         };
@@ -2423,7 +2550,7 @@
             return;
         };
 
-        if ($estadoReq.val() == "STEPI") {
+        if ($estadoReq.val() == "STEPI" || $estadoReq.val() == "STEPP") {
             var method = "POST";
             var url = "BandejaInstalacionTecnica/CerrarInstalacion";
 
@@ -2468,7 +2595,7 @@
         desactivarFechaProgramacion: desactivarFechaProgramacion,
         activarFechaInstalacion: activarFechaInstalacion,
         desactivarFechaInstalacion: desactivarFechaInstalacion,
-        añadirTecnico: añadirTecnico,
-        DesasignarTécnicoTmp: DesasignarTécnicoTmp
+       //añadirTecnico: añadirTecnico,
+        //DesasignarTécnicoTmp: DesasignarTécnicoTmp
     }
 })(window.jQuery, window, document);

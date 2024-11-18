@@ -1,9 +1,6 @@
 ﻿@{
-    ViewBag.Title = "Asignación de Técnicos";
+    ViewBag.Title = "Creación de Técnicos de Externos";
 }
-
-<input hidden id="hdnIdProduct"/>
-<input hidden id="hdnIdTecnico"/>
 
 <div class="modal-dialog modal-lg container-fluid" role="document">
     <!-- Modal content -->
@@ -20,34 +17,25 @@
             <form id="formRegistro" class="d-flex flex-row">
                 <div class="row container-fluid d-flex justify-content-center">
                     <div class="text-right">
-                        <button class="btn btn-primary btn-sm" type="button" id="btnRegistrarTecnico"><i class="fa fa-handshake-o"></i> Asignar</button>
+                        <button class="btn btn-primary btn-sm" type="button" id="btnRegistrarTecnicoExterno"><i class="fa fa-handshake-o"></i> Agregar</button>
                     </div>
                     <div class="row container-fluid">
                         <div class="col-md-4 col-sm-12">
-                            <label for="txtNombreTecnico">Nombres: </label>
+                            <label for="txtNombreTecnico">Nombre: </label>
                             <div class="form-group">
-                                <div class="input-group input-group-sm date">
-                                    <input type="text" class="form-control input-sm" id="txtNombreTecnico" value="" placeholder="--Ingrese Nombre del Técnico--" aria-describedby="sizing-addon3" disabled="disabled" />
-                                    <span style="cursor:pointer" class="input-group-addon input-sm" id="searchTecnico" title="Buscar Tecnico" data-toggle="modal" data-target="#modalBusquedaTecnico">
-                                        <i class="fa fa-search"></i>
-                                    </span>
-                                    <span style="cursor:pointer" class="input-group-addon input-sm" id="agregarTecnico" title="Agregar Tecnico" data-toggle="modal">
-                                        <i class="fa fa-plus"></i>
-                                    </span>
-                                    <input type="hidden" id="txtCodTecnico" value="" />
-                                </div>
+                                <input placeholder="--Ingresar Apellido Paterno---" type="text" class="form-control input-sm" id="txtNombreTecnico" value="">
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12">
-                            <label for="txtNombreTecnico">Apellido Paterno: </label>
+                            <label for="txtApellidoPaternoTec">Apellido Paterno: </label>
                             <div class="form-group">
-                                <input placeholder="--Ingresar Apellido Paterno---" disabled type="text" class="form-control input-sm" id="txtApellidoPaternoTec" value="">
+                                <input placeholder="--Ingresar Apellido Paterno---"  type="text" class="form-control input-sm" id="txtApellidoPaternoTec" value="">
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12">
-                            <label for="txtNombreTecnico">Apellido Materno: </label>
+                            <label for="txtApellidoMaternoTec">Apellido Materno: </label>
                             <div class="form-group">
-                                 <input placeholder="--Ingresar Apellido Materno---" disabled type="text" class="form-control input-sm" id="txtApellidoMaternoTec" value="">
+                                 <input placeholder="--Ingresar Apellido Materno---"  type="text" class="form-control input-sm" id="txtApellidoMaternoTec" value="">
                             </div>
                         </div>
                     </div>
@@ -56,20 +44,20 @@
                             <label for="txtTipoTecnico">Tipo de T&eacute;cnico: </label>
                             <div class="form-group">
                                 <input hidden id="hdnTipoEmpleado"/>
-                                <input disabled type="text" class="form-control input-sm" id="txtTipoTecnico">
+                                <input  type="text" class="form-control input-sm" id="txtTipoTecnico" disabled>
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12">
                             <label for="cmbTipoCredencial">Tipo de Documento: </label>
                             <div class="form-group">
-                                <select disabled class="form-control select2 input-sm" style="width:100%;" id="cmbTipoCredencial"></select>
+                                <select  class="form-control select2 input-sm" style="width:100%;" id="cmbTipoCredencial"></select>
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12">
                             <label for="txtNumDocumento">N° Documento: </label>
                             <input hidden id="hdnTipoDoc" />
                             <div class="form-group">
-                                <input placeholder="--Ingresar número de Documento---" disabled type="text" class="form-control input-sm" id="txtNumDocumento" value="">
+                                <input placeholder="--Ingresar número de Documento---"  type="text" class="form-control input-sm" id="txtNumDocumento" value="">
                             </div>
                         </div>
                     </div>
@@ -77,13 +65,13 @@
                         <div class="col-md-4 col-sm-12">
                             <label for="txtTelefono">Tel&eacute;fono:</label>
                             <div class="form-group">
-                                <input placeholder="--Ingresar Teléfono---" disabled type="text" class="form-control input-sm" id="txtTelefono" value="">
+                                <input placeholder="--Ingresar Teléfono---" type="text" class="form-control input-sm" id="txtTelefono" value="">
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12">
                             <label for="txtCorreo">Correo: </label>
                             <div class="form-group">
-                                <input placeholder="--Ingresar Correo---" disabled type="text" class="form-control input-sm" id="txtCorreo" value="">
+                                <input placeholder="--Ingresar Correo---" type="text" class="form-control input-sm" id="txtCorreo" value="">
                             </div>
                         </div>
                         <input type="hidden" id="txtCodUbicacion" value="" />
@@ -92,18 +80,10 @@
                             <div class="form-group">
                                 <div class="input-group input-group-sm date">
                                     <input disabled maxlength="6" type="text" class="form-control input-sm" id="txtZona" placeholder="--Seleccionar Zona--" aria-describedby="sizing-addon3" />
-                                    <span style="pointer-events: none" class="input-group-addon input-sm" id="searchZona" data-toggle="modal" data-target="#modalZona">
+                                    <span style="cursor: pointer" class="input-group-addon input-sm" id="searchZona" data-toggle="modal" data-target="#modalZona">
                                         <i class="fa fa-search"></i>
                                     </span>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row container-fluid" style="display:none" id="divEmpresaTecnico">
-                        <div class="col-md-4 col-sm-12">
-                            <label for="txtEmpresaTecnico">Empresa: </label>
-                            <div class="form-group">
-                                <input placeholder="--Ingresar empresa--" type="text" class="form-control input-sm" id="txtEmpresaTecnico"/>
                             </div>
                         </div>
                     </div>

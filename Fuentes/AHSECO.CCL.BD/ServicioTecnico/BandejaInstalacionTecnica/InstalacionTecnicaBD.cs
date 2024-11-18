@@ -19,6 +19,9 @@ using static AHSECO.CCL.COMUN.ConstantesDTO.CotizacionVenta;
 using System.Web.UI.WebControls.Expressions;
 using static AHSECO.CCL.COMUN.ConstantesDTO;
 using System.Net;
+using System.Diagnostics.Eventing.Reader;
+using System.Security.Cryptography;
+using System.Xml.Linq;
 
 namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
 {
@@ -202,36 +205,53 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                     {
                         var detalleDTO = new InstalacionTecnicaDetalleDTO()
                         {
-                            Id = reader.IsDBNull(reader.GetOrdinal("ID")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID")),
+                            Id = reader.IsDBNull(reader.GetOrdinal("ID_DETALLECOTIZ")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_DETALLECOTIZ")),
                             NumReq = reader.IsDBNull(reader.GetOrdinal("NUMREQ")) ? 0 : reader.GetInt64(reader.GetOrdinal("NUMREQ")),
                             CodProducto = reader.IsDBNull(reader.GetOrdinal("CODIGOPRODUCTO")) ? "" : reader.GetString(reader.GetOrdinal("CODIGOPRODUCTO")),
                             DescProducto = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION")),
                             Cantidad = reader.IsDBNull(reader.GetOrdinal("CANTIDAD")) ? 0 : reader.GetInt32(reader.GetOrdinal("CANTIDAD")),
                             Marca = reader.IsDBNull(reader.GetOrdinal("MARCA")) ? "" : reader.GetString(reader.GetOrdinal("MARCA")),
-                            Modelo = reader.IsDBNull(reader.GetOrdinal("MODELO")) ? "" : reader.GetString(reader.GetOrdinal("MODELO")),
-                            Serie = reader.IsDBNull(reader.GetOrdinal("SERIE")) ? "" : reader.GetString(reader.GetOrdinal("SERIE")),
                             NumFianza = reader.IsDBNull(reader.GetOrdinal("NUMFIANZA")) ? "" : reader.GetString(reader.GetOrdinal("NUMFIANZA")),
+                            IndLLaveMano = reader.GetString(reader.GetOrdinal("INDLLAVEMANO")) == "S" ? true : false,
+                            Dimensiones = reader.IsDBNull(reader.GetOrdinal("DIMENSIONES")) ? "" : reader.GetString(reader.GetOrdinal("DIMENSIONES")),
+                            MontoPrestAcc = reader.IsDBNull(reader.GetOrdinal("MONTOPACCE")) ? 0 : reader.GetDecimal(reader.GetOrdinal("MONTOPACCE")),
+                            MontoPrestPrin = reader.IsDBNull(reader.GetOrdinal("MONTOPPRINC")) ? 0 : reader.GetDecimal(reader.GetOrdinal("MONTOPPRINC")),
+                            FecLimInsta = reader.GetDateTime(reader.GetOrdinal("FECLIMINSTA"))
+                        };
+                        result.Add(detalleDTO);
+                    };
+
+                    reader.NextResult();
+                    List<ElementosxProductoDTO> _elementos = new List<ElementosxProductoDTO>();
+                    while (reader.Read())
+                    {
+                        var elemento = new ElementosxProductoDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("ID")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID")),
+                            Id_Detalle = reader.IsDBNull(reader.GetOrdinal("ID_DETALLECOTIZ")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_DETALLECOTIZ")),
+                            Id_Despacho = reader.IsDBNull(reader.GetOrdinal("ID_DESPACHO_DIST")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_DESPACHO_DIST")),
+                            CodProduct = reader.IsDBNull(reader.GetOrdinal("CODIGOPRODUCTO")) ? "" : reader.GetString(reader.GetOrdinal("CODIGOPRODUCTO")),
+                            DescProduct = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION")),
+                            Marca = reader.IsDBNull(reader.GetOrdinal("MARCA")) ? "" : reader.GetString(reader.GetOrdinal("MARCA")),
+                            Serie = reader.IsDBNull(reader.GetOrdinal("SERIE")) ? "" : reader.GetString(reader.GetOrdinal("SERIE")),
                             CantPreventivo = reader.IsDBNull(reader.GetOrdinal("CANTIDADMP")) ? 0 : reader.GetInt32(reader.GetOrdinal("CANTIDADMP")),
                             CodCicloPreventivo = reader.IsDBNull(reader.GetOrdinal("PERIODICIDAD")) ? "" : reader.GetString(reader.GetOrdinal("PERIODICIDAD")),
-                            Garantia = reader.IsDBNull(reader.GetOrdinal("GARANTIA")) ? "" : reader.GetString(reader.GetOrdinal("GARANTIA")),
-                            GarantiaAdicional = reader.IsDBNull(reader.GetOrdinal("GARANTIAADIC")) ? "" : reader.GetString(reader.GetOrdinal("GARANTIAADIC")),
-                            IndLLaveMano = reader.GetString(reader.GetOrdinal("INDLLAVEMANO")) == "S" ? true : false,
                             CodUbigeoDestino = reader.IsDBNull(reader.GetOrdinal("CODUBIGEODEST")) ? "" : reader.GetString(reader.GetOrdinal("CODUBIGEODEST")),
                             DescUbigeoDestino = reader.IsDBNull(reader.GetOrdinal("DESCUBIGEODEST")) ? "" : reader.GetString(reader.GetOrdinal("DESCUBIGEODEST")),
                             Direccion = reader.IsDBNull(reader.GetOrdinal("DIRECCION")) ? "" : reader.GetString(reader.GetOrdinal("DIRECCION")),
                             NroPiso = reader.IsDBNull(reader.GetOrdinal("NROPISO")) ? 0 : reader.GetInt32(reader.GetOrdinal("NROPISO")),
-                            Dimensiones = reader.IsDBNull(reader.GetOrdinal("DIMENSIONES")) ? "" : reader.GetString(reader.GetOrdinal("DIMENSIONES")),
-                            IndCalibracion = reader.GetString(reader.GetOrdinal("INDCALIBRACION")) == "S" ? true : false,
-                            IndRequierePlaca = reader.GetString(reader.GetOrdinal("INDREQUIEREPLACA")) == "S" ? true : false,
-                            MontoPrestAcc = reader.IsDBNull(reader.GetOrdinal("MONTOPACCE")) ? 0 : reader.GetDecimal(reader.GetOrdinal("MONTOPACCE")),
-                            MontoPrestPrin = reader.IsDBNull(reader.GetOrdinal("MONTOPPRINC")) ? 0 : reader.GetDecimal(reader.GetOrdinal("MONTOPPRINC")),
-                            FecLimInsta = reader.GetDateTime(reader.GetOrdinal("FECLIMINSTA")),
+                            NombreCompletoTecnico = reader.IsDBNull(reader.GetOrdinal("NOMBRECOMPLETO")) ? "" : reader.GetString(reader.GetOrdinal("NOMBRECOMPLETO")),
+                            Empresa = reader.IsDBNull(reader.GetOrdinal("EMPRESA")) ? "" : reader.GetString(reader.GetOrdinal("EMPRESA")),
                             FechaProgramacion = reader.IsDBNull(reader.GetOrdinal("FECHAPROGRAMACION")) ? "" : reader.GetString(reader.GetOrdinal("FECHAPROGRAMACION")),
-                            FechaInstalacion = reader.IsDBNull(reader.GetOrdinal("FECHAINSTALACION")) ? "" : reader.GetString(reader.GetOrdinal("FECHAINSTALACION"))
+                            FechaInstalacion = reader.IsDBNull(reader.GetOrdinal("FECHAINSTALACION")) ? "" : reader.GetString(reader.GetOrdinal("FECHAINSTALACION")),
                         };
-                        detalleDTO.Tecnicos = ObtenerTecnico(detalleDTO.Id);
-                        result.Add(detalleDTO);
-                    }
+                        _elementos.Add(elemento);
+                    };
+                    foreach(var item in result)
+                    {
+                        var listElementos = _elementos.FindAll(elemento => elemento.Id_Detalle == item.Id);
+                        item.Elementos = listElementos;
+                    };
                 }
             }
             return result;
@@ -324,41 +344,40 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
 
         public RespuestaDTO MantInstalacionTecnicaDetalle(InstalacionTecnicaDetalleDTO detalle)
         {
+            var result = new RespuestaDTO();
             Log.TraceInfo(Utilidades.GetCaller());
             using (var connection = Factory.ConnectionFactory())
             {
                 connection.Open();
                 var parameters = new DynamicParameters();
-                parameters.Add("IsTipoProceso", detalle.TipoProceso);
-                parameters.Add("IsID", detalle.Id);
-                parameters.Add("IsNUMREQ", detalle.NumReq);
-                parameters.Add("IsCODIGOPRODUCTO", detalle.CodProducto);
-                parameters.Add("IsDESCRIPCION", detalle.DescProducto);
-                parameters.Add("IsCANTIDAD", detalle.Cantidad);
-                parameters.Add("IsMARCA", detalle.Marca);
-                parameters.Add("IsMODELO", detalle.Modelo);
-                parameters.Add("IsSERIE",detalle.Serie);
-                parameters.Add("IsNUMFIANZA", detalle.NumFianza);
-                parameters.Add("IsCANTIDADMP", detalle.CantPreventivo);
-                parameters.Add("IsPERIODICIDAD",detalle.CodCicloPreventivo);
-                parameters.Add("IsGARANTIA",detalle.Garantia);
-                parameters.Add("IsGARANTIAADIC", detalle.GarantiaAdicional);
-                parameters.Add("IsINDLLAVEMANO", detalle.IndLLaveMano == true ? "S" : "N");
-                parameters.Add("IsCODUBIGEODEST", detalle.CodUbigeoDestino);
-                parameters.Add("IsDIRECCION", detalle.Direccion);
-                parameters.Add("IsNROPISO", detalle.NroPiso);
-                parameters.Add("IsDIMENSIONES", detalle.Dimensiones);
-                parameters.Add("IsINDCALIBRACION", detalle.IndCalibracion == true ? "S" : "N");
-                parameters.Add("IsINDREQUIEREPLACA", detalle.IndRequierePlaca == true ? "S" : "N");
-                parameters.Add("IsFECLIMINSTA", detalle.FecLimInsta);
-                parameters.Add("IsINDFIANZA", detalle.IndFianza == true ? "S" : "N");
-                parameters.Add("IsMONTOPPRINC", detalle.MontoPrestPrin);
-                parameters.Add("IsMONTOPACCE", detalle.MontoPrestAcc);
-                parameters.Add("IsFECHAPROGRAMACION", detalle.FechaProgramacion);
-                parameters.Add("IsFECHAREAL", detalle.FechaInstalacion);
-                parameters.Add("UsrEjecuta", detalle.UsuarioRegistra);
 
-                    var result = connection.Query(
+                foreach( var elemento in detalle.Elementos)
+                {
+                    parameters.Add("IsTipoProceso", detalle.TipoProceso);
+                    parameters.Add("IsID_DETALLECOTIZ", detalle.Id);
+                    parameters.Add("IsNUMREQ", detalle.NumReq);
+                    parameters.Add("IsCODIGOPRODUCTO", detalle.CodProducto);
+                    parameters.Add("IsDESCRIPCION", detalle.DescProducto);
+                    parameters.Add("IsCANTIDAD", detalle.Cantidad);
+                    parameters.Add("IsMARCA", detalle.Marca);
+                    parameters.Add("IsNUMFIANZA", detalle.NumFianza);
+                    parameters.Add("IsINDLLAVEMANO", detalle.IndLLaveMano == true ? "S" : "N");
+                    parameters.Add("IsFECLIMINSTA", detalle.FecLimInsta);
+                    parameters.Add("IsINDFIANZA", detalle.IndFianza == true ? "S" : "N");
+                    parameters.Add("IsMONTOPPRINC", detalle.MontoPrestPrin);
+                    parameters.Add("IsMONTOPACCE", detalle.MontoPrestAcc);
+                    parameters.Add("UsrEjecuta", detalle.UsuarioRegistra);
+                    parameters.Add("IsDIMENSIONES", detalle.Dimensiones);
+                    parameters.Add("IsID", elemento.Id);
+                    parameters.Add("IsID_DESPACHO_DIST", elemento.Id_Despacho);
+                    parameters.Add("IsSERIE", elemento.Serie);
+                    parameters.Add("IsCANTIDADMP", elemento.CantPreventivo);
+                    parameters.Add("IsPERIODICIDAD", elemento.CodCicloPreventivo);
+                    parameters.Add("IsCODUBIGEODEST", elemento.CodUbigeoDestino);
+                    parameters.Add("IsDIRECCION", elemento.Direccion);
+                    parameters.Add("IsNROPISO", elemento.NroPiso);
+
+                    result = connection.Query(
                     sql: "USP_MANT_TBD_INSTALACION",
                     param: parameters,
                     commandType: CommandType.StoredProcedure)
@@ -369,7 +388,8 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                          Mensaje = i.Single(d => d.Key.Equals("MSG")).Value.Parse<string>()
                      }).FirstOrDefault();
 
-                connection.Close();
+                    connection.Close();
+                }
                 return result;
             };
         }
@@ -414,6 +434,73 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
             };
         }
         
+        public RespuestaDTO SetDatosElementos(ElementosxProductoDTO elemento)
+        {
+            using(var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+                var parameters = new DynamicParameters();
+                    parameters.Add("IsTipoProceso", elemento.TipoProceso);
+                    parameters.Add("IsID_DESPACHO", elemento.Id);
+                    parameters.Add("IsFECHAPROGRAMACION", elemento.FechaProgramacion);
+                    parameters.Add("IsFECHAINSTALACION", elemento.FechaInstalacion);
+                    parameters.Add("IsCODTECNICO", elemento.CodTecnico);
+                    parameters.Add("IsEMPRESA", elemento.Empresa);
+                    parameters.Add("IsUSR_MOD", elemento.UsuarioModifica);
+
+                    var result = connection.Query(
+                        sql: "USP_MANT_DATOS_INSTALL",
+                        param: parameters,
+                        commandType: CommandType.StoredProcedure)
+                        .Select(s => s as IDictionary<string, object>)
+                        .Select(i => new RespuestaDTO
+                        {
+                            Codigo = i.Single(d => d.Key.Equals("COD")).Value.Parse<int>(),
+                            Mensaje = i.Single(d => d.Key.Equals("MSG")).Value.Parse<string>()
+                        }).FirstOrDefault();
+                    return result;
+            }
+        }
+        //public RespuestaDTO AsignaTecnico(ElementosxProductoDTO elemento)
+        //{
+        //    using (var connection = Factory.ConnectionFactory())
+        //    {
+        //        connection.Open();
+        //        var result = new List<RespuestaDTO>();
+        //        var parameters = new DynamicParameters();
+        //        parameters.Add("IsTipoProceso", elemento.TipoProceso);
+        //        parameters.Add("IsID_DESPACHO", elemento.Id);
+        //        parameters.Add("IsFECHAPROGRAMACION", elemento.FechaProgramacion);
+        //        parameters.Add("IsFECHAINSTALACION", elemento.FechaInstalacion);
+        //        parameters.Add("IsCODTECNICO", elemento.CodTecnico);
+        //        parameters.Add("IsUSR_MOD", elemento.UsuarioModifica);
+
+
+        //        foreach (var i in elemento.Id_DespachoList)
+        //        {
+        //            parameters.Add("IsTipoProceso", elemento.TipoProceso);
+        //            parameters.Add("IsID_DESPACHO", i);
+        //            parameters.Add("IsFECHAPROGRAMACION", elemento.FechaProgramacion);
+        //            parameters.Add("IsFECHAINSTALACION", elemento.FechaInstalacion);
+        //            parameters.Add("IsCODTECNICO", elemento.CodTecnico);
+        //            parameters.Add("IsUSR_MOD", elemento.UsuarioModifica);
+
+        //            var rpta = connection.Query(
+        //            sql: "USP_MANT_DATOS_INSTALL",
+        //            param: parameters,
+        //            commandType: CommandType.StoredProcedure)
+        //            .Select(s => s as IDictionary<string, object>)
+        //            .Select(f => new RespuestaDTO
+        //            {
+        //                Codigo = f.Single(d => d.Key.Equals("COD")).Value.Parse<int>(),
+        //                Mensaje = f.Single(d => d.Key.Equals("MSG")).Value.Parse<string>()
+        //            }).FirstOrDefault();
+        //            result.Add(rpta);
+        //        };
+        //        return result.FirstOrDefault();
+        //    }
+        //}
+
         public IEnumerable<InstalacionTecnicaDetalleDTO> ObtenerElementosdeProducto(long IdProducto)
         {
             Log.TraceInfo(Utilidades.GetCaller());
@@ -558,24 +645,16 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                             CodItem = reader.IsDBNull(reader.GetOrdinal("CODIGOPRODUCTO")) ? "" : reader.GetString(reader.GetOrdinal("CODIGOPRODUCTO")),
                             Descripcion = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION")),
                             Marca = reader.IsDBNull(reader.GetOrdinal("DESMARCA")) ? "" : reader.GetString(reader.GetOrdinal("DESMARCA")),
-                            Serie = reader.IsDBNull(reader.GetOrdinal("LOTESERIE")) ? "" : reader.GetString(reader.GetOrdinal("LOTESERIE")),
-                            CotizacionDespacho = new CotDetDespachoDTO
-                            {
-                                IndFianza = reader.IsDBNull(reader.GetOrdinal("INDFIANZA")) ? true : reader.GetBoolean(reader.GetOrdinal("INDFIANZA")),
-                                NumFianza = reader.IsDBNull(reader.GetOrdinal("NUMFIANZA")) ? "" : reader.GetString(reader.GetOrdinal("NUMFIANZA")),
-                                //CantPreventivo = reader.IsDBNull(reader.GetOrdinal("CANTPREVENTIVO")) ? 0 : reader.GetInt32(reader.GetOrdinal("CANTPREVENTIVO")),
-                                //CodCicloPreventivo = reader.IsDBNull(reader.GetOrdinal("CODCICLOPREVENTIVO")) ? "" : reader.GetString(reader.GetOrdinal("CODCICLOPREVENTIVO")),
-                                IndGarantiaAdicional = reader.IsDBNull(reader.GetOrdinal("INDGARANADIC")) ? true : reader.GetBoolean(reader.GetOrdinal("INDGARANADIC")),
-                                IndLLaveMano = reader.IsDBNull(reader.GetOrdinal("INDLLAVEMANO")) ? true : reader.GetBoolean(reader.GetOrdinal("INDLLAVEMANO")),
-                                //CodUbigeoDestino = reader.IsDBNull(reader.GetOrdinal("INDLLAVEMANO")) ? "" : reader.GetString(reader.GetOrdinal("INDLLAVEMANO")),
-                                //DescUbigeoDestino = reader.IsDBNull(reader.GetOrdinal("CODUBIGEODEST")) ? "" : reader.GetString(reader.GetOrdinal("CODUBIGEODEST")),
-                                //Direccion = reader.IsDBNull(reader.GetOrdinal("DIRECCION")) ? "" : reader.GetString(reader.GetOrdinal("DIRECCION")),
-                                //NroPiso = reader.IsDBNull(reader.GetOrdinal("NROPISO")) ? 0 : reader.GetInt32(reader.GetOrdinal("NROPISO")),
-                                Dimensiones = reader.IsDBNull(reader.GetOrdinal("DIMENSIONES")) ? "" : reader.GetString(reader.GetOrdinal("DIMENSIONES")),
-                                MontoPrestAcc = reader.IsDBNull(reader.GetOrdinal("MONTOPACCE")) ? 0 : reader.GetDecimal(reader.GetOrdinal("MONTOPACCE")),
-                                MontoPrestPrin = reader.IsDBNull(reader.GetOrdinal("MONTOPPRINC")) ? 0 : reader.GetDecimal(reader.GetOrdinal("MONTOPPRINC")),
-                                FecLimInsta = reader.GetDateTime(reader.GetOrdinal("FECLIMINSTA"))
-                            }
+                            Cantidad = reader.IsDBNull(reader.GetOrdinal("CANTIDAD")) ? 0 : reader.GetInt32(reader.GetOrdinal("CANTIDAD")),
+                            IndFianza = reader.GetString(reader.GetOrdinal("INDFIANZA")) == "S" ? true : false,
+                            NumFianza = reader.IsDBNull(reader.GetOrdinal("NUMFIANZA")) ? "" : reader.GetString(reader.GetOrdinal("NUMFIANZA")),
+                            //GarantiaAdicional = reader.IsDBNull(reader.GetOrdinal("GARANTIAADIC")) ? "" : reader.GetString(reader.GetOrdinal("GARANTIAADIC")),
+                            IndLLaveMano = reader.GetString(reader.GetOrdinal("INDLLAVEMANO")) == "S" ? true : false,
+                            Dimensiones = reader.IsDBNull(reader.GetOrdinal("DIMENSIONES")) ? "" : reader.GetString(reader.GetOrdinal("DIMENSIONES")),
+                            //IndRequierePlaca = reader.GetString(reader.GetOrdinal("INDREQUIEREPLACA")) == "S" ? true : false,
+                            MontoPrestPrin = reader.IsDBNull(reader.GetOrdinal("MONTOPPRINC")) ? 0 : reader.GetDecimal(reader.GetOrdinal("MONTOPPRINC")),
+                            MontoPrestAcc = reader.IsDBNull(reader.GetOrdinal("MONTOPACCE")) ? 0 : reader.GetDecimal(reader.GetOrdinal("MONTOPACCE")),
+                            FecLimInsta = reader.GetDateTime(reader.GetOrdinal("FECLIMINSTA"))
                         };
                         _detalleCotizacion.Add(cotDetalle);
                     }
@@ -592,13 +671,13 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                             DescProduct = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION")),
                             Marca = reader.IsDBNull(reader.GetOrdinal("DESMARCA")) ? "" : reader.GetString(reader.GetOrdinal("DESMARCA")),
                             Serie = reader.IsDBNull(reader.GetOrdinal("NUMSERIE")) ? "" : reader.GetString(reader.GetOrdinal("NUMSERIE")),
-                            NumSec = reader.IsDBNull(reader.GetOrdinal("NUMSERIE")) ? 0 : reader.GetInt32(reader.GetOrdinal("NUMSERIE")),
+                            NumSec = reader.IsDBNull(reader.GetOrdinal("NUMSEC")) ? 0 : reader.GetInt32(reader.GetOrdinal("NUMSEC")),
                             CantPreventivo = reader.IsDBNull(reader.GetOrdinal("CANTPREVENTIVO")) ? 0 : reader.GetInt32(reader.GetOrdinal("CANTPREVENTIVO")),
                             CodCicloPreventivo = reader.IsDBNull(reader.GetOrdinal("CODCICLOPREVENT")) ? "" : reader.GetString(reader.GetOrdinal("CODCICLOPREVENT")),
-                            CodUbigeoDest = reader.IsDBNull(reader.GetOrdinal("CODUBIGEODEST")) ? "" : reader.GetString(reader.GetOrdinal("CODUBIGEODEST")),
-                            DescUbigeoDest = reader.IsDBNull(reader.GetOrdinal("DESCUBIGEODEST")) ? "" : reader.GetString(reader.GetOrdinal("DESCUBIGEODEST")),
+                            CodUbigeoDestino = reader.IsDBNull(reader.GetOrdinal("CODUBIGEODEST")) ? "" : reader.GetString(reader.GetOrdinal("CODUBIGEODEST")),
+                            DescUbigeoDestino = reader.IsDBNull(reader.GetOrdinal("DESCUBIGEODEST")) ? "" : reader.GetString(reader.GetOrdinal("DESCUBIGEODEST")),
                             Direccion = reader.IsDBNull(reader.GetOrdinal("DIRECCION")) ? "" : reader.GetString(reader.GetOrdinal("DIRECCION")),
-                            NroPiso = reader.IsDBNull(reader.GetOrdinal("NROPISO")) ? 0 : reader.GetInt32(reader.GetOrdinal("NROPISO")),
+                            NroPiso = reader.IsDBNull(reader.GetOrdinal("NROPISO")) ? 0: reader.GetInt32(reader.GetOrdinal("NROPISO")),
                         };
                         _elementos.Add(elemento);
                     }
@@ -653,40 +732,50 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                     {
                         var detalle = new InstalacionTecnicaDetalleDTO()
                         {
-                            Id = reader.IsDBNull(reader.GetOrdinal("ID")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID")),
+                            Id = reader.IsDBNull(reader.GetOrdinal("ID_DETALLECOTIZ")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_DETALLECOTIZ")),
                             NumReq = reader.IsDBNull(reader.GetOrdinal("NUMREQ")) ? 0 : reader.GetInt64(reader.GetOrdinal("NUMREQ")),
                             CodProducto = reader.IsDBNull(reader.GetOrdinal("CODIGOPRODUCTO")) ? "" : reader.GetString(reader.GetOrdinal("CODIGOPRODUCTO")),
                             DescProducto = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION")),
                             Cantidad = reader.IsDBNull(reader.GetOrdinal("CANTIDAD")) ? 0 : reader.GetInt32(reader.GetOrdinal("CANTIDAD")),
                             Marca = reader.IsDBNull(reader.GetOrdinal("MARCA")) ? "" : reader.GetString(reader.GetOrdinal("MARCA")),
-                            Modelo = reader.IsDBNull(reader.GetOrdinal("MODELO")) ? "" : reader.GetString(reader.GetOrdinal("MODELO")),
-                            Serie = reader.IsDBNull(reader.GetOrdinal("SERIE")) ? "" : reader.GetString(reader.GetOrdinal("SERIE")),
                             NumFianza = reader.IsDBNull(reader.GetOrdinal("NUMFIANZA")) ? "" : reader.GetString(reader.GetOrdinal("NUMFIANZA")),
+                            IndLLaveMano = reader.GetString(reader.GetOrdinal("INDLLAVEMANO")) == "S" ? true : false,
+                            Dimensiones = reader.IsDBNull(reader.GetOrdinal("DIMENSIONES")) ? "" : reader.GetString(reader.GetOrdinal("DIMENSIONES")),
+                            MontoPrestAcc = reader.IsDBNull(reader.GetOrdinal("MONTOPACCE")) ? 0 : reader.GetDecimal(reader.GetOrdinal("MONTOPACCE")),
+                            MontoPrestPrin = reader.IsDBNull(reader.GetOrdinal("MONTOPPRINC")) ? 0 : reader.GetDecimal(reader.GetOrdinal("MONTOPPRINC")),
+                            FecLimInsta = reader.GetDateTime(reader.GetOrdinal("FECLIMINSTA")),
+                        };
+                        _listDetalle.Add(detalle);
+                    }
+                    reader.NextResult();
+                    List<ElementosxProductoDTO> _elementos = new List<ElementosxProductoDTO>();
+                    while (reader.Read())
+                    {
+                        var elemento = new ElementosxProductoDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("ID")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID")),
+                            Id_Detalle = reader.IsDBNull(reader.GetOrdinal("ID_DETALLECOTIZ")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_DETALLECOTIZ")),
+                            Id_Despacho = reader.IsDBNull(reader.GetOrdinal("ID_DESPACHO_DIST")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_DESPACHO_DIST")),
+                            CodProduct = reader.IsDBNull(reader.GetOrdinal("CODIGOPRODUCTO")) ? "" : reader.GetString(reader.GetOrdinal("CODIGOPRODUCTO")),
+                            DescProduct = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION")),
+                            Marca = reader.IsDBNull(reader.GetOrdinal("MARCA")) ? "" : reader.GetString(reader.GetOrdinal("MARCA")),
+                            Serie = reader.IsDBNull(reader.GetOrdinal("SERIE")) ? "" : reader.GetString(reader.GetOrdinal("SERIE")),
                             CantPreventivo = reader.IsDBNull(reader.GetOrdinal("CANTIDADMP")) ? 0 : reader.GetInt32(reader.GetOrdinal("CANTIDADMP")),
                             CodCicloPreventivo = reader.IsDBNull(reader.GetOrdinal("PERIODICIDAD")) ? "" : reader.GetString(reader.GetOrdinal("PERIODICIDAD")),
-                            Garantia = reader.IsDBNull(reader.GetOrdinal("GARANTIA")) ? "" : reader.GetString(reader.GetOrdinal("GARANTIA")),
-                            GarantiaAdicional = reader.IsDBNull(reader.GetOrdinal("GARANTIAADIC")) ? "" : reader.GetString(reader.GetOrdinal("GARANTIAADIC")),
-                            IndLLaveMano = reader.GetString(reader.GetOrdinal("INDLLAVEMANO")) == "S" ? true : false,
                             CodUbigeoDestino = reader.IsDBNull(reader.GetOrdinal("CODUBIGEODEST")) ? "" : reader.GetString(reader.GetOrdinal("CODUBIGEODEST")),
                             DescUbigeoDestino = reader.IsDBNull(reader.GetOrdinal("DESCUBIGEODEST")) ? "" : reader.GetString(reader.GetOrdinal("DESCUBIGEODEST")),
                             Direccion = reader.IsDBNull(reader.GetOrdinal("DIRECCION")) ? "" : reader.GetString(reader.GetOrdinal("DIRECCION")),
                             NroPiso = reader.IsDBNull(reader.GetOrdinal("NROPISO")) ? 0 : reader.GetInt32(reader.GetOrdinal("NROPISO")),
-                            Dimensiones = reader.IsDBNull(reader.GetOrdinal("DIMENSIONES")) ? "" : reader.GetString(reader.GetOrdinal("DIMENSIONES")),
-                            IndCalibracion = reader.GetString(reader.GetOrdinal("INDCALIBRACION")) == "S" ? true : false,
-                            IndRequierePlaca = reader.GetString(reader.GetOrdinal("INDREQUIEREPLACA")) == "S" ? true : false,
-                            MontoPrestAcc = reader.IsDBNull(reader.GetOrdinal("MONTOPACCE")) ? 0 : reader.GetDecimal(reader.GetOrdinal("MONTOPACCE")),
-                            MontoPrestPrin = reader.IsDBNull(reader.GetOrdinal("MONTOPPRINC")) ? 0 : reader.GetDecimal(reader.GetOrdinal("MONTOPPRINC")),
-                            FecLimInsta = reader.GetDateTime(reader.GetOrdinal("FECLIMINSTA")),
+                            NombreCompletoTecnico = reader.IsDBNull(reader.GetOrdinal("NOMBRECOMPLETO")) ? "" : reader.GetString(reader.GetOrdinal("NOMBRECOMPLETO")),
+                            Empresa = reader.IsDBNull(reader.GetOrdinal("EMPRESA")) ? "" : reader.GetString(reader.GetOrdinal("EMPRESA")),
                             FechaProgramacion = reader.IsDBNull(reader.GetOrdinal("FECHAPROGRAMACION")) ? "" : reader.GetString(reader.GetOrdinal("FECHAPROGRAMACION")),
                             FechaInstalacion = reader.IsDBNull(reader.GetOrdinal("FECHAINSTALACION")) ? "" : reader.GetString(reader.GetOrdinal("FECHAINSTALACION"))
                         };
-                        detalle.Tecnicos = ObtenerTecnico(detalle.Id);
-                        _listDetalle.Add(detalle);
-                    }
+                        _elementos.Add(elemento);
+                    };
+
                     reader.NextResult();
-
                     List<DocumentoDTO> _listaAdjuntos = new List<DocumentoDTO>();
-
                     while (reader.Read())
                     {
                         var documento = new DocumentoDTO
@@ -727,6 +816,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
 
                     result.CabeceraInstalacion = instalacion;
                     result.DetalleInstalacion = _listDetalle;
+                    result.Elementos = _elementos;
                     result.Observaciones = _listaObservaciones;
                     result.Adjuntos = _listaAdjuntos;
                 }

@@ -552,7 +552,7 @@
                     if (row.CodEstado == "STREG") {
                         var accion = '<a id="btnEditar" class="btn btn-default btn-xs" title="Asignar Técnicos" href="javascript: bandejaInstalacionTecnica.editar(' + d + ')"><i class="fa fa-handshake-o" aria-hidden="true"></i></a>';
                     }
-                    else if (row.CodEstado == "STEPI") {
+                    else if (row.CodEstado == "STEPI" || row.CodEstado == "STEPP") {
                         var accion = '<a id="btnEditar" class="btn btn-primary btn-xs" title="Cerrar Requerimiento" href="javascript: bandejaInstalacionTecnica.editar(' + d + ')"><i class="fa fa-check" aria-hidden="true"></i></a>';
                     }
                     else if (row.CodEstado == "STINS") {

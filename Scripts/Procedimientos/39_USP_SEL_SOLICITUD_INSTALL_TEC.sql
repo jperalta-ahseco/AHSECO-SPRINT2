@@ -6,7 +6,7 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_SEL_SOLICITUD_INSTALL_TEC]
 /*=======================================================================================================
 	Nombre:				Fecha:			Descripcion:
 	Diego Bazalar		24.10.24		Realiza el select del detalle de la solicitud de venta y de la cotización para la bandeja de instalación técnica.
-	[USP_SEL_SOLICITUD_INSTALL_TEC] 13
+		[USP_SEL_SOLICITUD_INSTALL_TEC] 1
   =======================================================================================================*/
 	@isIdSolicitud BIGINT
 )
@@ -49,12 +49,11 @@ BEGIN
 		,DESCRIPCION
 		,RGA.DESMARCA
 		,CANTIDAD
+		,COTIZ.GARANTIA
 		,DESPACHO.INDFIANZA
 		,DESPACHO.NUMFIANZA
-		,DESPACHO.GARANTIAADIC
 		,DESPACHO.INDLLAVEMANO
 		,DESPACHO.DIMENSIONES
-		,DESPACHO.INDREQUIEREPLACA
 		,DESPACHO.MONTOPPRINC
 		,DESPACHO.MONTOPACCE
 		,DESPACHO.FECLIMINSTA
@@ -83,21 +82,20 @@ BEGIN
 			,COTDET.DESMARCA
 			,DESPACHO.NUMSERIE
 			,COTCOST.NUMSEC
+			,COTDET.GARANTIA
 			,CANTPREVENTIVO
 			,CODCICLOPREVENT
 			,CODUBIGEODEST
 			,CONCAT(UBI.NOMDEPARTAMENTO, ' / ', UBI.NOMPROVINCIA, ' / ', UBI.NOMDISTRITO) AS DESCUBIGEODEST
 			,DIRECCION
 			,NROPISO
-	INTO #tmpDespacho
-	FROM [dbo].[TBD_DESPACHO_DIST] AS DESPACHO
-	LEFT JOIN [dbo].[TBD_COTIZACIONCOSTOS] AS COTCOST WITH(NOLOCK) ON COTCOST.ID = DESPACHO.ID_COTCOSTOS
+	INTO #tmpDespacho 
+	FROM [dbo].#tmpDetalleCotiz AS COTDET
+	LEFT JOIN [dbo].[TBD_COTIZACIONCOSTOS] AS COTCOST WITH(NOLOCK) ON COTCOST.ID_COTDETALLE  = COTDET.ID
+	LEFT JOIN [TBD_DESPACHO_DIST] DESPACHO WITH(NOLOCK) ON COTCOST.ID =  DESPACHO.ID_COTCOSTOS
 	LEFT JOIN [dbo].[TBM_UBIGEO] AS UBI WITH(NOLOCK) ON UBI.CODUBIGEO = COTCOST.CODUBIGEODEST
-	LEFT JOIN #tmpDetalleCotiz COTDET WITH(NOLOCK) ON COTDET.ID = COTCOST.ID_COTDETALLE
 
 	SELECT * FROM #tmpSolicitudVenta --Detalle de Solicitud
 	SELECT * FROM #tmpDetalleCotiz	 --Detalle de Cotización
 	select * FROM #tmpDespacho--Detalle de Costos y despacho
 END
-
-

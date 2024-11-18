@@ -1,0 +1,69 @@
+USE [DB_AHSECO]
+GO
+
+CREATE OR ALTER PROCEDURE [dbo].[USP_MANT_DATOS_INSTALL] 
+/*=======================================================================================================
+	Nombre:				Fecha:			Descripcion:
+	Diego Bazalar		16.11.24		Actualiza los datos de [TBD_DESPACHO_DIST]
+  =======================================================================================================*/
+(
+	 @IsTipoProceso			CHAR(1)
+	,@IsID_DESPACHO			BIGINT
+	,@IsFECHAPROGRAMACION	VARCHAR(10)
+	,@IsFECHAINSTALACION	VARCHAR(10)
+	,@IsEMPRESA				VARCHAR(200)
+	,@IsUSR_MOD				VARCHAR(50)
+	,@IsCODTECNICO			BIGINT
+)
+AS
+BEGIN
+	DECLARE @CODASIG BIGINT, @MSG VARCHAR(100)
+	SET NOCOUNT ON;
+
+	IF (@IsTipoProceso = 'F')
+		BEGIN
+
+			UPDATE [dbo].[TBD_DESPACHO_DIST]
+			SET
+				[FECHAPROGRAMACION] = REPLACE(@IsFECHAPROGRAMACION,'-','')
+				,[FECHAINSTALACION] = REPLACE(@IsFECHAINSTALACION,'-','')
+				,USR_MOD = @IsUSR_MOD
+				,FEC_MOD = GETDATE()
+			WHERE ID = @IsID_DESPACHO
+
+			IF @@ROWCOUNT = 0
+			BEGIN
+				SET @CODASIG = 0;
+				SET @MSG = 'ERROR EN EL REGISTRO DE LA TABLA [TBD_DESPACHO_DIST]'
+			END
+			ELSE
+			BEGIN
+				SET @CODASIG = @@IDENTITY;
+				SET @MSG = 'REGISTRO REALIZADO CON EXITO'
+			END
+		END
+	ELSE
+		IF(@IsTipoProceso = 'T') 
+		BEGIN
+			UPDATE [dbo].[TBD_DESPACHO_DIST]
+			SET
+				[COD_TECNICO] = @IsCODTECNICO
+				,[EMPRESA] = @IsEMPRESA
+				,USR_MOD = @IsUSR_MOD
+				,FEC_MOD = GETDATE()
+			WHERE ID = @IsID_DESPACHO
+
+			IF @@ROWCOUNT = 0
+			BEGIN
+				SET @CODASIG = 0;
+				SET @MSG = 'ERROR EN LA ACTUALIZACIÓN DE LA TABLA [TBD_DESPACHO_DIST]'
+			END
+			ELSE
+			BEGIN
+				SET @CODASIG = @IsID_DESPACHO;
+				SET @MSG = 'REGISTRO ELIMINADO CON EXITO'
+			END
+		END
+	SELECT @CODASIG COD, @MSG MSG
+	SET NOCOUNT ON;
+END
