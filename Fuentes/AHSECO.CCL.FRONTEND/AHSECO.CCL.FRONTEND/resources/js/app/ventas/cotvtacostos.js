@@ -15,6 +15,17 @@
     var $HabilitarValorizacionCotDet = $("#HabilitarValorizacionCotDet");
     var $EsCotizacionValorizada = $("#EsCotizacionValorizada");
 
+    var $CI_CodCosto_LLaveMano = $("#CI_CodCosto_LLaveMano");
+    var $CI_CodCosto_InstCapa = $("#CI_CodCosto_InstCapa");
+    var $CI_CodCosto_Manuales = $("#CI_CodCosto_Manuales");
+    var $CI_CodCosto_Videos = $("#CI_CodCosto_Videos");
+    var $CI_CodCosto_MantPrevent = $("#CI_CodCosto_MantPrevent");
+    var $CI_CodCosto_GarantAdic = $("#CI_CodCosto_GarantAdic");
+    var $CI_CodCosto_Calibra = $("#CI_CodCosto_Calibra");
+    var $CI_CodCosto_Flete = $("#CI_CodCosto_Flete");
+
+    var $CI_hdnIdCotDetCosto = $("#CI_hdnIdCotDetCosto");
+    var $CI_hdnCodCosto = $("#CI_hdnCodCosto");
     var $CI_cmbCDItem = $("#CI_cmbCDItem");
     var $CI_hdnUbicacion = $("#CI_hdnUbicacion");
     var $CI_txtDireccion = $("#CI_txtDireccion");
@@ -26,6 +37,15 @@
     var $CI_btnGuardar = $("#CI_btnGuardar");
     var $CI_btnCerrar = $("#CI_btnCerrar");
 
+    var $tblDetCotCostos = $('#tblDetCotCostos');
+    var $tblInstaCostos = $("#tblInstaCostos");
+    var $tblMantPreventCostos = $("#tblMantPreventCostos");
+    var $tblLLaveManoCostos = $("#tblLLaveManoCostos");
+    var $tblManualesCostos = $("#tblManualesCostos");
+    var $tblVideosCostos = $("#tblVideosCostos");
+    var $tblCalibCostos = $("#tblCalibCostos");
+    var $tblFleteCostos = $("#tblFleteCostos");
+
     $(Initialize);
 
     function Initialize() {
@@ -33,13 +53,62 @@
         ubigeo.setTxtUbigeo_Id("CI_hdnUbicacion");
         ubigeo.setTxtUbigeo_Text("CI_txtUbicacion");
 
-        $CI_btnGuardar.click(guardarCostoItem);
         $CI_btnCerrar.click(cerrarModalCostosItem);
 
         if ($estadoSol.val() == "CVAL") {
             cargarComboCotDetItems();
         }
 
+        $CI_btnGuardar.click(guardarCostoItem);
+
+    }
+
+    function LimpiarModalCostos() {
+        $CI_hdnIdCotDetCosto.val("");
+        $CI_hdnCodCosto.val("");
+        $CI_cmbCDItem.val("");
+        $CI_hdnUbicacion.val("");
+        $CI_txtDireccion.val("");
+        $CI_txtAmbDestino.val("");
+        $CI_txtNroPiso.val("");
+        $CI_txtCantidad.val("");
+        $CI_txtCosto.val("");
+    }
+
+    function setTab_LLaveMano() {
+        $CI_hdnCodCosto.val($CI_CodCosto_LLaveMano.val());
+    }
+
+    function setTab_InstCapa() {
+        $CI_hdnCodCosto.val($CI_CodCosto_InstCapa.val());
+    }
+
+    function setTab_Manuales() {
+        $CI_hdnCodCosto.val($CI_CodCosto_Manuales.val());
+    }
+
+    function setTab_Videos() {
+        $CI_hdnCodCosto.val($CI_CodCosto_Videos.val());
+    }
+
+    function setTab_Videos() {
+        $CI_hdnCodCosto.val($CI_CodCosto_Videos.val());
+    }
+
+    function setTab_MantPrevent() {
+        $CI_hdnCodCosto.val($CI_CodCosto_MantPrevent.val());
+    }
+
+    function setTab_GarantAdic() {
+        $CI_hdnCodCosto.val($CI_CodCosto_GarantAdic.val());
+    }
+
+    function setTab_Calibra() {
+        $CI_hdnCodCosto.val($CI_CodCosto_Calibra.val());
+    }
+
+    function setTab_Flete() {
+        $CI_hdnCodCosto.val($CI_CodCosto_Flete.val());
     }
 
     function cargarComboCotDetItems() {
@@ -62,7 +131,7 @@
     }
 
     function guardarCostoItem() {
-
+        
         if ($CI_cmbCDItem.val() == "") {
             app.message.error("Validaci&oacute;n", "Se debe seleccionar un producto / servicio");
             return false;
@@ -115,7 +184,7 @@
         method = "POST";
         url = "BandejaSolicitudesVentas/GrabarDatosCostoItem";
         var objDatos = {
-            CodItemPadre: $DI_hdnCodigoPadre.val()
+            IdCotizacionDetalle: $CI_cmbCDItem.val()
         };
         var objParam = JSON.stringify(objDatos);
 
@@ -137,6 +206,14 @@
     return {
         cargarComboCotDetItems: cargarComboCotDetItems,
         guardarCostoItem: guardarCostoItem,
+        setTab_LLaveMano: setTab_LLaveMano,
+        setTab_InstCapa: setTab_InstCapa,
+        setTab_Manuales: setTab_Manuales,
+        setTab_Videos: setTab_Videos,
+        setTab_MantPrevent: setTab_MantPrevent,
+        setTab_GarantAdic: setTab_GarantAdic,
+        setTab_Calibra: setTab_Calibra,
+        setTab_Flete: setTab_Flete,
         cerrarModalCostosItem: cerrarModalCostosItem
     }
 })(window.jQuery, window, document);

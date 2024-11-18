@@ -156,6 +156,21 @@ namespace AHSECO.CCL.COMUN
             }
         }
 
+        public struct CotizacionDetalleCostos
+        {
+            public struct Costos
+            {
+                public static string LLaveMano { get { return "CXCD0001"; } }
+                public static string InstCapa { get { return "CXCD0002"; } }
+                public static string Manuales { get { return "CXCD0003"; } }
+                public static string Videos { get { return "CXCD0004"; } }
+                public static string MantPrevent { get { return "CXCD0005"; } }
+                public static string GarantAdic { get { return "CXCD0006"; } }
+                public static string Calibra { get { return "CXCD0007"; } }
+                public static string Flete { get { return "CXCD0008"; } }
+            }
+        }
+
         public struct EstadosProcesos
         {
             public struct ProcesoVenta

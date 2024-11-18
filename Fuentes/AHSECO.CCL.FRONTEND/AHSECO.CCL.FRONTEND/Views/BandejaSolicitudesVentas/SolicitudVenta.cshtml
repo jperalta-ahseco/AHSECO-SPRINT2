@@ -364,25 +364,28 @@
                                                                 <a href="#navCotDet" data-toggle="tab" style="font-weight:bold; color:black;" tabindex="20"><i class="fa fa-cubes" aria-hidden="true"></i> Detalle de Productos</a>
                                                             </li>
                                                             <li class="" id="tabInsta" style="@(ViewBag.PermitirTabInsta ? "" : "display:none")">
-                                                                <a href="#navInsta" data-toggle="tab" style="font-weight: bold; color: black; " tabindex="20"><i class="fa fa-gears" aria-hidden="true"></i> Instalaci&oacute;n</a>
+                                                                <a href="#navInsta" onclick="javascript:cotvtacostos.setTab_InstCapa()" data-toggle="tab" style="font-weight: bold; color: black; " tabindex="20"><i class="fa fa-gears" aria-hidden="true"></i> Instalaci&oacute;n</a>
                                                             </li>
                                                             <li class="" id="tabMantPrevent" style="@(ViewBag.PermitirTabMantPrevent ? "" : "display:none")">
-                                                                <a href="#navMantPrevent" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-male" aria-hidden="true"></i> Mantenimiento</a>
+                                                                <a href="#navMantPrevent" onclick="javascript:cotvtacostos.setTab_MantPrevent()" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-male" aria-hidden="true"></i> Mantenimiento</a>
                                                             </li>
                                                             <li class="" id="tabLLaveMano" style="@(ViewBag.PermitirTabLLaveMano ? "" : "display:none")">
-                                                                <a href="#navLLaveMano" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-wrench" aria-hidden="true"></i> LLave en mano</a>
+                                                                <a href="#navLLaveMano" onclick="javascript:cotvtacostos.setTab_LLaveMano()" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-wrench" aria-hidden="true"></i> LLave en mano</a>
                                                             </li>
-                                                            <li class="" id="tabManualVideos" style="@(ViewBag.PermitirTabManualVideos ? "" : "display:none")">
-                                                                <a href="#navManualVideos" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-wrench" aria-hidden="true"></i> Manuales y Videos</a>
+                                                            <li class="" id="tabManuales" style="@(ViewBag.PermitirTabManuales ? "" : "display:none")">
+                                                                <a href="#navManuales" onclick="javascript:cotvtacostos.setTab_Manuales()" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-wrench" aria-hidden="true"></i> Manuales</a>
+                                                            </li>
+                                                            <li class="" id="tabVideos" style="@(ViewBag.PermitirTabVideos ? "" : "display:none")">
+                                                                <a href="#navVideos" onclick="javascript:cotvtacostos.setTab_Videos()" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-wrench" aria-hidden="true"></i> Videos</a>
                                                             </li>
                                                             <li class="" id="tabGarantiaAdic" style="@(ViewBag.PermitirTabGarantiaAdic ? "" : "display:none")">
-                                                                <a href="#navGarantiaAdic" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-wrench" aria-hidden="true"></i> Garantía Adicional</a>
+                                                                <a href="#navGarantiaAdic" onclick="javascript:cotvtacostos.setTab_GarantAdic()" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-wrench" aria-hidden="true"></i> Garantía Adicional</a>
                                                             </li>
                                                             <li class="" id="tabCalib" style="@(ViewBag.PermitirTabCalib ? "" : "display:none")">
-                                                                <a href="#navCalib" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-wrench" aria-hidden="true"></i> Calibraci&oacute;n</a>
+                                                                <a href="#navCalib" onclick="javascript:cotvtacostos.setTab_Calibra()" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-wrench" aria-hidden="true"></i> Calibraci&oacute;n</a>
                                                             </li>
                                                             <li class="" id="tabFlete" style="@(ViewBag.PermitirTabFlete ? "" : "display:none")">
-                                                                <a href="#navFlete" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-truck" aria-hidden="true"></i>  Flete</a>
+                                                                <a href="#navFlete" onclick="javascript:cotvtacostos.setTab_Flete()" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-truck" aria-hidden="true"></i>  Flete</a>
                                                             </li>
                                                         </ul>
                                                         <div class="tab-content">
@@ -480,12 +483,31 @@
                                                                     </table>
                                                                 </div>
                                                             </div>
-                                                            <div id="navManualVideos" class="tab-pane fade">
+                                                            <div id="navManuales" class="tab-pane fade">
                                                                 <div class="text-right" style="padding-top: 10px; padding-bottom: 10px">
-                                                                    <button class="btn btn-default btn-sm" type="button" data-target="#modalCostoItem" data-toggle="modal" id="btnAC_ManualVideo" tabindex="14"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar Costo</button>
+                                                                    <button class="btn btn-default btn-sm" type="button" data-target="#modalCostoItem" data-toggle="modal" id="btnAC_Manual" tabindex="14"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar Costo</button>
                                                                 </div>
                                                                 <div class="table-responsive">
-                                                                    <table id="tblManualVideosCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                    <table id="tblManualesCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th style="text-align:center; width:5%">Producto</th>
+                                                                                <th style="text-align:center; width:5%">Unidad Medida</th>
+                                                                                <th style="text-align:center; width:5%">Cantidad</th>
+                                                                                <th style="text-align:center; width:5%">Costo</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                            <div id="navVideos" class="tab-pane fade">
+                                                                <div class="text-right" style="padding-top: 10px; padding-bottom: 10px">
+                                                                    <button class="btn btn-default btn-sm" type="button" data-target="#modalCostoItem" data-toggle="modal" id="btnAC_Video" tabindex="14"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar Costo</button>
+                                                                </div>
+                                                                <div class="table-responsive">
+                                                                    <table id="tblVideosCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                                                         <thead>
                                                                             <tr>
                                                                                 <th style="text-align:center; width:5%">Producto</th>

@@ -176,7 +176,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.PermitirTabInsta = false;
             ViewBag.PermitirTabMantPrevent = false;
             ViewBag.PermitirTabLLaveMano = false;
-            ViewBag.PermitirTabManualVideos = false;
+            ViewBag.PermitirTabManuales = false;
+            ViewBag.PermitirTabVideos = false;
             ViewBag.PermitirTabGarantiaAdic = false;
             ViewBag.PermitirTabCalib = false;
             ViewBag.PermitirTabFlete = false;
@@ -322,7 +323,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         ViewBag.PermitirTabInsta = true;
                         ViewBag.PermitirTabMantPrevent = true;
                         ViewBag.PermitirTabLLaveMano = true;
-                        ViewBag.PermitirTabManualVideos = true;
+                        ViewBag.PermitirTabManuales = true;
+                        ViewBag.PermitirTabVideos = true;
                         ViewBag.PermitirTabGarantiaAdic = true;
                     }
 
@@ -1904,7 +1906,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             {
                 lstItems.ForEach(x =>
                 {
-                    lst.Add(new ComboDTO() { Id = x.CodItem, Text = x.Descripcion });
+                    lst.Add(new ComboDTO() { Id = x.Id.ToString(), Text = x.Descripcion });
                 });
             }
             ResponseDTO<List<ComboDTO>> res = new ResponseDTO<List<ComboDTO>>(lst);
@@ -1912,7 +1914,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         }
 
         [HttpPost]
-        public JsonResult GrabarDatosCostoItem()
+        public JsonResult GrabarDatosCostoItem(CotDetCostoDTO cotdetCosto)
         {
             List<CotDetCostoDTO> lstItems = new List<CotDetCostoDTO>();
             if (VariableSesion.getObject(TAG_CDCI) != null) { lstItems = (List<CotDetCostoDTO>)VariableSesion.getObject(TAG_CDCI); }

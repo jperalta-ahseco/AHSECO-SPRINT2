@@ -73,17 +73,14 @@ var cotvtadet = (function ($, win, doc) {
     var $btnEnviarCotizacion = $("#btnEnviarCotizacion");
     var $btnRecotizacion = $("#btnRecotizacion");
     var $btnGuardarValorizacion = $("#btnGuardarValorizacion");
-
-    var $tabDetCot = $("#tabDetCot");
-    var $tabCalib = $("#tabCalib");
-    var $tabInsta = $("#tabInsta");
-    var $tabMantPrevent = $("#tabMantPrevent");
-    var $tabFlete = $("#tabFlete");
-
+    
     var $tblDetCotCostos = $('#tblDetCotCostos');
-    var $tblCalibCostos = $("#tblCalibCostos");
     var $tblInstaCostos = $("#tblInstaCostos");
     var $tblMantPreventCostos = $("#tblMantPreventCostos");
+    var $tblLLaveManoCostos = $("#tblLLaveManoCostos");
+    var $tblManualesCostos = $("#tblManualesCostos");
+    var $tblVideosCostos = $("#tblVideosCostos");
+    var $tblCalibCostos = $("#tblCalibCostos");
     var $tblFleteCostos = $("#tblFleteCostos");
 
     var mensajes = {

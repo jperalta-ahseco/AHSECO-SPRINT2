@@ -1,8 +1,20 @@
 ﻿@using AHSECO.CCL.FRONTEND.Core;
+@using AHSECO.CCL.COMUN;
 @{
     ViewBag.Title = "Costo de Item";
 }
-
+<div style="display:none">
+    <input type="hidden" id="CI_hdnIdCotDetCosto" value="" />
+    <input type="hidden" id="CI_hdnCodCosto" value="" />
+    <input type="hidden" id="CI_CodCosto_LLaveMano" value="@ConstantesDTO.CotizacionDetalleCostos.Costos.LLaveMano" />
+    <input type="hidden" id="CI_CodCosto_InstCapa" value="@ConstantesDTO.CotizacionDetalleCostos.Costos.InstCapa" />
+    <input type="hidden" id="CI_CodCosto_Manuales" value="@ConstantesDTO.CotizacionDetalleCostos.Costos.Manuales" />
+    <input type="hidden" id="CI_CodCosto_Videos" value="@ConstantesDTO.CotizacionDetalleCostos.Costos.Videos" />
+    <input type="hidden" id="CI_CodCosto_MantPrevent" value="@ConstantesDTO.CotizacionDetalleCostos.Costos.MantPrevent" />
+    <input type="hidden" id="CI_CodCosto_GarantAdic" value="@ConstantesDTO.CotizacionDetalleCostos.Costos.GarantAdic" />
+    <input type="hidden" id="CI_CodCosto_Calibra" value="@ConstantesDTO.CotizacionDetalleCostos.Costos.Calibra" />
+    <input type="hidden" id="CI_CodCosto_Flete" value="@ConstantesDTO.CotizacionDetalleCostos.Costos.Flete" />
+</div>
 <div style="width:50%" class="modal-dialog modal-lg container-fluid" role="document">
     <!-- Modal content -->
     <div class="modal-content">
