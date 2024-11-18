@@ -562,7 +562,14 @@ namespace AHSECO.CCL.BD.Ventas
                             ContadorConStock = reader.IsDBNull(reader.GetOrdinal("CONT_CS")) ? 0 : reader.GetInt32(reader.GetOrdinal("CONT_CS")),
                             ContadorSinStock = reader.IsDBNull(reader.GetOrdinal("CONT_SS")) ? 0 : reader.GetInt32(reader.GetOrdinal("CONT_SS")),
                             NumeroConStock = reader.IsDBNull(reader.GetOrdinal("NUM_CS")) ? 0 : reader.GetInt32(reader.GetOrdinal("NUM_CS")),
-                            NumeroSinStock = reader.IsDBNull(reader.GetOrdinal("NUM_SS")) ? 0 : reader.GetInt32(reader.GetOrdinal("NUM_SS"))
+                            NumeroSinStock = reader.IsDBNull(reader.GetOrdinal("NUM_SS")) ? 0 : reader.GetInt32(reader.GetOrdinal("NUM_SS")),
+                            EnvioGPConStock = reader.IsDBNull(reader.GetOrdinal("ENVIOGP_CS")) ? 0 : reader.GetInt32(reader.GetOrdinal("ENVIOGP_CS")),
+                            EnvioGPSinStock = reader.IsDBNull(reader.GetOrdinal("ENVIOGP_SS")) ? 0 : reader.GetInt32(reader.GetOrdinal("ENVIOGP_SS")),
+                            EnvioBOSinStock = reader.IsDBNull(reader.GetOrdinal("ENVIOBO_SS")) ? 0 : reader.GetInt32(reader.GetOrdinal("ENVIOBO_SS")),
+                            GestionLogConStock = reader.IsDBNull(reader.GetOrdinal("GESLOG_CS")) ? 0 : reader.GetInt32(reader.GetOrdinal("GESLOG_CS")),
+                            GestionLogSinStock = reader.IsDBNull(reader.GetOrdinal("GESLOG_SS")) ? 0 : reader.GetInt32(reader.GetOrdinal("GESLOG_SS")),
+                            ContadorSeriesConStock = reader.IsDBNull(reader.GetOrdinal("SERIE_CS")) ? 0 : reader.GetInt32(reader.GetOrdinal("SERIE_CS")),
+                            ContadorSeriesSinStock = reader.IsDBNull(reader.GetOrdinal("SERIE_SS")) ? 0 : reader.GetInt32(reader.GetOrdinal("SERIE_SS"))
                         };
                     }
 
@@ -1225,7 +1232,14 @@ namespace AHSECO.CCL.BD.Ventas
                         ContadorConStock = i.Single(d => d.Key.Equals("CONT_CS")).Value.Parse<int>(),
                         ContadorSinStock = i.Single(d => d.Key.Equals("CONT_SS")).Value.Parse<int>(),
                         NumeroConStock = i.Single(d => d.Key.Equals("NUM_CS")).Value.Parse<int>(),
-                        NumeroSinStock = i.Single(d => d.Key.Equals("NUM_SS")).Value.Parse<int>()
+                        NumeroSinStock = i.Single(d => d.Key.Equals("NUM_SS")).Value.Parse<int>(),
+                        EnvioGPConStock = i.Single(d => d.Key.Equals("ENVIOGP_CS")).Value.Parse<int>(),
+                        EnvioGPSinStock = i.Single(d => d.Key.Equals("ENVIOGP_SS")).Value.Parse<int>(),
+                        EnvioBOSinStock = i.Single(d => d.Key.Equals("ENVIOBO_SS")).Value.Parse<int>(),
+                        GestionLogConStock = i.Single(d => d.Key.Equals("GESLOG_CS")).Value.Parse<int>(),
+                        GestionLogSinStock = i.Single(d => d.Key.Equals("GESLOG_SS")).Value.Parse<int>(),
+                        ContadorSeriesConStock = i.Single(d => d.Key.Equals("SERIE_CS")).Value.Parse<int>(),
+                        ContadorSeriesSinStock = i.Single(d => d.Key.Equals("SERIE_SS")).Value.Parse<int>()
                     }).FirstOrDefault();
 
                 return result;
@@ -1283,6 +1297,70 @@ namespace AHSECO.CCL.BD.Ventas
                 var result = connection.Query
                 (
                     sql: "USP_ACTUALIZAR_SERIE",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure
+                )
+                 .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new RespuestaDTO
+                    {
+                        Codigo = i.Single(d => d.Key.Equals("COD")).Value.Parse<int>(),
+                        Mensaje = i.Single(d => d.Key.Equals("MSG")).Value.Parse<string>()
+                    }).FirstOrDefault();
+
+                return result;
+            }
+        }
+
+        public RespuestaDTO ActualizarEnvioDespacho(long CodigoSolicitud, string Stock, int EnvioGP, int EnvioBO, string Usuario)
+        {
+            var rpta = new RespuestaDTO();
+            Log.TraceInfo(Utilidades.GetCaller());
+
+
+            using (var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("isIdSolicitud", CodigoSolicitud);
+                parameters.Add("STOCK", Stock);
+                parameters.Add("ENVIOGP", EnvioGP);
+                parameters.Add("ENVIOBO", EnvioBO);
+                parameters.Add("USER", Usuario);
+                var result = connection.Query
+                (
+                    sql: "USP_UPD_ENVIODESPACHO",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure
+                )
+                 .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new RespuestaDTO
+                    {
+                        Codigo = i.Single(d => d.Key.Equals("COD")).Value.Parse<int>(),
+                        Mensaje = i.Single(d => d.Key.Equals("MSG")).Value.Parse<string>()
+                    }).FirstOrDefault();
+
+                return result;
+            }
+        }
+
+        public RespuestaDTO FinalizarVenta(DatosDespachoDTO datosDespachoDTO)
+        {
+            var rpta = new RespuestaDTO();
+            Log.TraceInfo(Utilidades.GetCaller());
+
+
+            using (var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("isIdSolicitud", datosDespachoDTO.CodigoSolicitud);
+                parameters.Add("NOMPERFIL", datosDespachoDTO.NombrePerfil);
+                parameters.Add("USRREG ", datosDespachoDTO.UsuarioRegistro);
+                var result = connection.Query
+                (
+                    sql: "USP_FINALIZAR_VENTA",
                     param: parameters,
                     commandType: CommandType.StoredProcedure
                 )

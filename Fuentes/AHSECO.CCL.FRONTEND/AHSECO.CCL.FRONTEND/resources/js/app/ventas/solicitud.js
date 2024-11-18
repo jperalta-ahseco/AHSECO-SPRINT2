@@ -116,17 +116,28 @@
     var $btnGuardarGestion = $("#btnGuardarGestion");
     var $NoRegSeries = $("#NoRegSeries");
     var $tblSeriesCS = $("#tblSeriesCS");
-
+    var $opendateEntregaPedidoCE = $("#opendateEntregaPedidoCE");
     var $modalSeries = $("#modalSeries");
     var $txtCodigoProductoSerie = $("#txtCodigoProductoSerie");
     var $txtMarcaSerie = $("#txtMarcaSerie");
     var $txtDescripcion = $("#txtDescripcion");
     var $txtSerie = $("#txtSerie");
     var $codDetalleDespacho = $("#codDetalleDespacho");
+    var $dateEntregaPedidoCE = $("#dateEntregaPedidoCE");
+    var $txtNumeroFacturaCE = $("#txtNumeroFacturaCE");
+    var $txtNumeroGuiaRemisionCE = $("#txtNumeroGuiaRemisionCE");
     var $btnRegistrarSerie = $("#btnRegistrarSerie");
     var $btnActualizarGestion = $("#btnActualizarGestion");
     var $btnEditarGestion = $("#btnEditarGestion");
     var $btnEnviarGuia = $("#btnEnviarGuia");
+    var $btnGuardarGestionLogistica = $("#btnGuardarGestionLogistica");
+    var $btnEnviarGestionDespacho = $("#btnEnviarGestionDespacho");
+    var $btnEditarGestionLogistica = $("#btnEditarGestionLogistica");
+    var $ContadorSeriesCS = $("#ContadorSeriesCS");
+    var $ContadorSeriesSS = $("#ContadorSeriesSS");
+    var $TotalSeriesCS = $("#TotalSeriesCS");
+    var $TotalSeriesSS = $("#TotalSeriesSS");
+    var $btnFinalizarVenta = $("#btnFinalizarVenta");
 
     var mensajes = {
         consultaContactos: "Consultando contactos, por favor espere....",
@@ -145,7 +156,10 @@
         GenerarBO: "Generando BO, por favor espere...",
         RegistrarGestionVenta: "Realizando registro de orden de compra, por favor espere...",
         consultaDetalleDespacho: "Consultando detalle de despacho, por favor espere...",
-        actualizarSerie: "Actualizando el número de serie, por favor espere..."
+        actualizarSerie: "Actualizando el número de serie, por favor espere...",
+        EnvioGuiaPedido: "Enviando Guia de Pedido, por favor espere...",
+        EnvioGestionLogistica: "Enviando la gestión, por favor espere...",
+        FinalizandoVenta: "Finalizando la venta, por favor espere..."
     };
 
     $(Initialize);
@@ -196,9 +210,17 @@
             startDate: hoy()
         });
 
+        $dateEntregaPedidoCE.datepicker({
+            viewMode: 0,
+            minViewMode: 0,
+            format: 'dd/mm/yyyy',
+            startDate: hoy()
+        });
+
         $dateSolicitud.val(hoy());
         $dateCotizacion.val(hoy());
         $dateOrdenCompra.val(hoy());
+        $dateEntregaPedidoCE.val(hoy());
         $cmbTipo.on("change", VerServicios);
         $fileCargaDocumentoSustento.on("change", $fileCargaDocumentoSustento_change);
         $btnEliminarSol.click(btnEliminarSolClick);
@@ -228,9 +250,138 @@
         $btnEditarGestion.click($btnEditarGestion_click);
         $btnActualizarGestion.click($btnActualizarGestion_click);
         $btnEnviarGuia.click($btnEnviarGuia_click);
+        $btnGuardarGestionLogistica.click($btnGuardarGestionLogistica_click);
+        $btnEnviarGestionDespacho.click($btnEnviarGestionDespacho_click);
+        $btnEditarGestionLogistica.click($btnEditarGestionLogistica_click);
+        $btnFinalizarVenta.click($btnFinalizarVenta_click);
         CalcularFechaEntregaMaxima();
     };
 
+    function $btnFinalizarVenta_click() {
+        var fnSi = function () {
+
+            var m = "POST";
+            var url = "BandejaSolicitudesVentas/FinalizarVenta";
+            var obj = {
+                CodigoSolicitud: $numeroSolicitud.val()
+            }
+            var objParam = JSON.stringify(obj);
+            var fnDoneCallback = function (data) {
+                var fnCallback = function () {
+
+
+                    location.reload();
+                };
+                if (data.Result.Codigo > 0) {
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+                else {
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", null);
+                }
+
+            };
+            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.FinalizandoVenta);
+        }
+        return app.message.confirm("Ventas", "¿Está seguro que desea finalizar la venta?", "Sí", "No", fnSi, null);
+
+    }
+
+    function $btnEnviarGestionDespacho_click() {
+        if ($dateEntregaPedidoCE.val() === "" || $dateEntregaPedidoCE.val() == null) {
+            app.message.error("Validación", "Debe seleccionar la fecha de entrega de pedido de los productos con stock");
+            return false;
+        }
+        if ($txtNumeroFacturaCE.val() === "" || $txtNumeroFacturaCE.val() == null) {
+            app.message.error("Validación", "Debe ingresar el N° de Factura de los productos con stock");
+            return false;
+        }
+        if ($txtNumeroGuiaRemisionCE.val() === "" || $txtNumeroGuiaRemisionCE.val() == null) {
+            app.message.error("Validación", "Debe ingresar el N° de Guia de Remision de los productos con stock");
+            return false;
+        }
+        if (parseInt($ContadorSeriesCS.val()) != parseInt($TotalSeriesCS.val())) {
+            app.message.error("Validación", "Debe ingresar todas las series de los productos con stock antes de enviar a gestión.");
+            return false;
+        }
+
+        var fnSi = function () {
+
+            var m = "POST";
+            var url = "BandejaSolicitudesVentas/EnviarGestionVentaConStock?codigoSolicitud=" + $numeroSolicitud.val() + "&codigoWorkFlow=" + $codigoWorkflow.val();
+            var objParam = '';
+            var fnDoneCallback = function (data) {
+                var fnCallback = function () {
+
+
+                    location.reload();
+                };
+                if (data.Result.Codigo > 0) {
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+                else {
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+
+            };
+            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.EnvioGestionLogistica);
+        }
+        return app.message.confirm("Ventas", "¿Está seguro que desea enviar a gestión?", "Sí", "No", fnSi, null);
+
+    }
+
+    function $btnEditarGestionLogistica_click() {
+        $dateEntregaPedidoCE.prop('disabled', false);
+        $opendateEntregaPedidoCE.prop('disabled', false);
+        $txtNumeroFacturaCE.prop('disabled', false);
+        $txtNumeroGuiaRemisionCE.prop('disabled', false);
+        $btnEditarGestionLogistica.hide();
+        $btnGuardarGestionLogistica.show();
+    }
+
+    function $btnGuardarGestionLogistica_click() {
+        if ($dateEntregaPedidoCE.val() === "" || $dateEntregaPedidoCE.val() == null) {
+            app.message.error("Validación", "Debe seleccionar la fecha de entrega de pedido de los productos con stock");
+            return false;
+        }
+        if ($txtNumeroFacturaCE.val() === "" || $txtNumeroFacturaCE.val() == null) {
+            app.message.error("Validación", "Debe ingresar el N° de Factura de los productos con stock");
+            return false;
+        }
+        if ($txtNumeroGuiaRemisionCE.val() === "" || $txtNumeroGuiaRemisionCE.val() == null) {
+            app.message.error("Validación", "Debe ingresar el N° de Guia de Remision de los productos con stock");
+            return false;
+        }
+
+        var fnSi = function () {
+
+            var m = "POST";
+            var url = "BandejaSolicitudesVentas/MantenimientoDespacho";
+            var obj = {
+                Tipo: "P",
+                CodigoSolicitud: $numeroSolicitud.val(),
+                Stock: "S",
+                NumeroGuiaRemision: $txtNumeroGuiaRemisionCE.val(),
+                NumeroFactura: $txtNumeroFacturaCE.val(),
+                FechaEntrega: $dateEntregaPedidoCE.val()
+            }
+            var objParam = JSON.stringify(obj);
+            var fnDoneCallback = function (data) {
+                var fnCallback = function () {
+                    location.reload();
+                };
+                if (data.Result.Codigo > 0) {
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+                else {
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+
+            };
+            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.RegistrarGestionVenta);
+        }
+        return app.message.confirm("Ventas", "¿Está seguro que desea actualizar los datos de despacho?", "Sí", "No", fnSi, null);
+
+    }
     function $btnEnviarGuia_click() {
         var documento_guiaPedido = 0;
         adjuntos.forEach(function (currentValue, index, arr) {
@@ -243,6 +394,27 @@
             app.message.error("Validación", "Debe adjuntar un documento de guía de pedido.");
             return false;
         }
+
+        var fnSi = function () {
+
+            var m = "POST";
+            var url = "BandejaSolicitudesVentas/EnviarGuiaPedidos?codigoSolicitud=" + $numeroSolicitud.val() + "&codigoWorkFlow=" + $codigoWorkflow.val();
+            var objParam = '';
+            var fnDoneCallback = function (data) {
+                var fnCallback = function () {
+                    location.reload();
+                };
+                if (data.Result.Codigo > 0) {
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+                else {
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+
+            };
+            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.EnvioGuiaPedido);
+        }
+        return app.message.confirm("Ventas", "¿Está seguro que desea enviar la Guia de Pedido?", "Sí", "No", fnSi, null);
     }
 
     function $btnEditarGestion_click() {
@@ -321,13 +493,32 @@
             var objParam = JSON.stringify(obj);
             var fnDoneCallback = function (data) {
                 var fnCallback = function () {
-                    location.reload();
+                    //location.reload();
+                    //Envio correo a servicio tecnico:
+                    if ($cmbTipo.val() == "TSOL05") {
+                        var m2 = "POST";
+                        var url2 = "BandejaSolicitudesVentas/EnviarGestionServicioTecnico?codigoSolicitud=" + $numeroSolicitud.val();
+                        var objParam2 = '';
+                        var fnDoneCallback2 = function (data2) {
+                            var fnCallback2 = function () {
+                                location.reload();
+                            }
+                            if (data2.Result.Codigo > 0) {
+                                app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback2);
+                            }
+                            else {
+                                app.message.error("Grabar", data.Result.Mensaje, "Aceptar", null);
+                            }
+                        };
+
+                        return app.llamarAjax(m2, url2, objParam2, fnDoneCallback2, null, null, mensajes.RegistrarGestionVenta);
+                    }
                 };
                 if (data.Result.Codigo > 0) {
                     app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
                 }
                 else {
-                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", null);
                 }
 
             };
@@ -1613,19 +1804,27 @@
                 $txtNroOrdenCompra.val(data.Result.ContadorCabecera.NumeroOrden);
                 $dateOrdenCompra.val(data.Result.ContadorCabecera.FechaOrden);
                 $txtFechaEntregaMax.val(data.Result.ContadorCabecera.FechaMaxima);
+
+
                 $txtNroOrdenCompra.prop('disabled', true);
                 $dateOrdenCompra.prop('disabled', true);
                 $openRegdateOrdenCompra.prop('disabled', true);
 
+                if ($estadoSol.val() == "SFIN" || $estadoSol.val() == "NOVT") {
+                    $btnCargarDocumento.hide();
+                    $btnAgregarObservacion.hide();
+                    $btnAgregarDocumento.hide();
+                }
 
                 if (data.Result.ContadorCabecera.NumeroConStock > 0) {
 
                     for (i = 0; i < data.Result.ContadorCabecera.NumeroConStock; i++) {
                         var html = '<div class="text-center">';
-                        //if (sessionStorage.getItem('tipoRegViatico') == "U" && data.Result.CabeceraViatico.CodigoEstado != "EAC") {
+                        if ($estadoSol.val() == "PRVT" && $idRolUsuario.val() == "SGI_VENTA_LOGISTICA") {
+
                         html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleConStock[i].Id +'" href="javascript:solicitud.editarSeries(' + data.Result.DespachoDetalleConStock[i].Id + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';
                         html += ' <a class="btn btn-default btn-xs" title="Guardar" id="Boton' + data.Result.DespachoDetalleConStock[i].Id +'" style="display:none"  href="javascript:solicitud.guardarSeries(' + data.Result.DespachoDetalleConStock[i].Id + ')"><i class="fa fa-save" aria-hidden="true"></i></a>&nbsp;';
-                        //}
+                        }
                         html += '</div>';
                         var nuevoTr = "<tr bgcolor='d0f2f7' id='fila" + data.Result.DespachoDetalleConStock[i].Id + "'>" +
                             "<th>" + data.Result.DespachoDetalleConStock[i].RowNumber + "</th>" +
@@ -1638,6 +1837,18 @@
 
                         $NoRegSeries.hide();
                         $tblSeriesCS.append(nuevoTr);
+                    }
+
+                    $dateEntregaPedidoCE.val(data.Result.DespachoCabeceraConStock.FechaEntrega);
+                    $txtNumeroFacturaCE.val(data.Result.DespachoCabeceraConStock.NumeroFactura);
+                    $txtNumeroGuiaRemisionCE.val(data.Result.DespachoCabeceraConStock.NumeroGuiaRemision);
+                   
+
+                    if (data.Result.ContadorCabecera.GestionLogConStock > 0) {
+                        $dateEntregaPedidoCE.prop('disabled', true);
+                        $txtNumeroFacturaCE.prop('disabled', true);
+                        $txtNumeroGuiaRemisionCE.prop('disabled', true);
+                        $opendateEntregaPedidoCE.prop('disabled', true);
                     }
                 }
 
@@ -1808,7 +2019,9 @@
                     $('#Serie' + codDetalleDespacho).css('background-color', 'transparent');
                     $('#Boton' + codDetalleDespacho).css('display', 'none');
                     $('#Edi' + codDetalleDespacho).css('display', 'inline-block');
-
+                    var contador = $ContadorSeriesCS.val();
+                    contador = parseInt(contador) + 1;
+                    $ContadorSeriesCS.val(contador);
                     //style='border: none;background-color: transparent; outline: none;'
                 };
                 if (data.Result.Codigo > 0) {

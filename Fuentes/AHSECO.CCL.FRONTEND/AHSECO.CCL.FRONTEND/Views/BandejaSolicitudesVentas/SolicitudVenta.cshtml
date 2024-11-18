@@ -25,7 +25,6 @@
     var idflujo = VariableSesion.getCadena("idFlujo");
     var idWorkFlow = VariableSesion.getCadena("idWorkFlow");
     var idCotizacion = ViewBag.IdCotizacion;
-
     ViewBag.disabled = false; //
     if (NombreRol != "SGI_VENTA_ASESOR" && NombreRol != "SGI_VENTA_COORDINASERV" && NombreRol != "SGI_VENTA_COORDINAATC") //habilitado solo cuando es nuevo y con  los perfiles de vendedores
     {
@@ -61,6 +60,10 @@
 <input type="hidden" id="RolVenta_Logistica" value="@RolVenta_Logistica" />
 <input type="hidden" id="HabilitarValorizacionCotDet" value="@ViewBag.HabilitarValorizacionCotDet" />
 <input type="hidden" id="EsCotizacionValorizada" value="@ViewBag.EsCotizacionValorizada" />
+<input type="hidden" id="ContadorSeriesCS" value="@ViewBag.ContadorSeriesConStock" />
+<input type="hidden" id="TotalSeriesCS" value="@ViewBag.TotalSeriesConStock" />
+<input type="hidden" id="ContadorSeriesSS" value="@ViewBag.ContadorSeriesSinStock" />
+<input type="hidden" id="TotalSeriesSS" value="@ViewBag.TotalSeriesSinStock" />
 
 <div class="container-fluid">
     <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
@@ -634,9 +637,10 @@
                                                         <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnAprobarGestion" tabindex="113" style="display:@ViewBag.Btn_Aprobar"><i class="fa fa-handshake-o" aria-hidden="true"></i>&nbsp;Aprobar</button>
                                                         <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnObservarGestion" tabindex="114" style="display:@ViewBag.Btn_Observar"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Observar</button>
                                                         <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnGuardarGestion" tabindex="115" style="display:@ViewBag.Btn_GuardarDespacho"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar</button>
-                                                        <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnEditarGestion" tabindex="116" style="display:@ViewBag.Btn_EditarDespacho"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Editar</button>
-                                                        <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnActualizarGestion" tabindex="117" style="display:none"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar</button>
-                                                        <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnFinalizarVenta" tabindex="118" style="display:@ViewBag.Btn_FinalizarVenta"><i class="fa fa-window-close" aria-hidden="true"></i>&nbsp;Finalizar Venta</button>
+
+                                                        <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnEditarGestion" tabindex="117" style="display:@ViewBag.Btn_EditarDespacho"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Editar</button>
+                                                        <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnActualizarGestion" tabindex="118" style="display:none"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar</button>
+                                                        <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnFinalizarVenta" tabindex="119" style="display:@ViewBag.Btn_FinalizarVenta"><i class="fa fa-window-close" aria-hidden="true"></i>&nbsp;Finalizar Venta</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -651,15 +655,15 @@
                                                 </ul>
                                                 <div class="tab-content">
                                                     <div id="navConStock" class="tab-pane fade in active" style="@(ViewBag.VerNavConStock ? "":"display:none");">
-
                                                         <div class="row container-fluid">
                                                             &nbsp;
                                                         </div>
+
                                                         <div class="row container-fluid">
                                                             <div class="col-md-4 col-sm-12">
                                                                 <label for="dateEntregaPedidoCE">Fecha de Entrega de Pedido: </label>
                                                                 <div class="input-group date">
-                                                                    <input type="text" class="form-control input-sm" id="dateEntregaPedidoCE" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10" @ViewBag.FechaEntregaPedidoCE>
+                                                                    <input type="text" class="form-control input-sm" id="dateEntregaPedidoCE" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" readonly maxlength="10" @ViewBag.FechaEntregaPedidoCE>
                                                                     <span class="input-group-addon input-sm" id="opendateEntregaPedidoCE" @ViewBag.FechaEntregaPedidoCE>
                                                                         <i class="fa fa-calendar"></i>
                                                                     </span>
@@ -676,6 +680,14 @@
                                                                 <div class="form-group">
                                                                     <input type="text" class="form-control input-sm" id="txtNumeroGuiaRemisionCE" placeholder="Ingresar N° Guia de Remisión" @ViewBag.TxtNumeroGuiaRemisionCE>
                                                                 </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row container-fluid">
+                                                            <div class="text-right">
+                                                                <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnEditarGestionLogistica" tabindex="120" style="display:@ViewBag.Btn_EditarGestionLogistica"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Editar&nbsp;</button>&nbsp;
+                                                                <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnGuardarGestionLogistica" tabindex="121" style="display:@ViewBag.Btn_GuardarGestionLogistica"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar&nbsp;</button>&nbsp;
+                                                                <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnEnviarGestionDespacho" tabindex="122" style="display:@ViewBag.Btn_EnviarGestionDespacho"><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;Enviar a Gesti&oacute;n&nbsp;</button>
                                                             </div>
                                                         </div>
                                                         <div class="row container-fluid">

@@ -38,5 +38,14 @@ namespace AHSECO.CCL.BE.Ventas
 
         public int NumeroConStock { get; set; }
         public int NumeroSinStock { get; set; }
+
+        public int EnvioGPConStock { get;set; }
+        public int EnvioGPSinStock { get; set; }
+        public int EnvioBOSinStock {  get; set; }
+
+        public int GestionLogConStock { get; set; }
+        public int GestionLogSinStock { get; set; }
+        public int ContadorSeriesConStock { get; set; }
+        public int ContadorSeriesSinStock { get; set; }
     }
 }
