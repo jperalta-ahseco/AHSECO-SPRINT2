@@ -73,6 +73,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.Btn_GuardarDespacho = "none";
             ViewBag.Btn_GuardarGestionLogistica ="none";
             ViewBag.Btn_EnviarGuia = "none";
+            ViewBag.Btn_EnviarGuiaBO = "none";
             ViewBag.Btn_GuiaPedido = "none";
             ViewBag.Btn_GuiaBO = "none";
             ViewBag.Btn_Aprobar = "none";
@@ -233,19 +234,21 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                     if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnProcVentas)
                     {
-                        ViewBag.Btn_EnviarGuia = "inline-block";
-                        ViewBag.Btn_GuiaPedido = "inline-block";
+                        
                         ViewBag.Btn_EditarDespacho = "inline-block";
 
                         if (validarDespacho.Result != null)
                         {
-                            if (validarDespacho.Result.ContadorSinStock > 0 && validarDespacho.Result.EnvioGPSinStock >0)
+                            if (validarDespacho.Result.ContadorSinStock > 0 )
                             {
+                                ViewBag.Btn_EnviarGuiaBO = "inline-block";
                                 ViewBag.Btn_GuiaBO = "inline-block";
                                 ViewBag.VerNavSinStock = true;
                             }
                             if (validarDespacho.Result.ContadorConStock > 0 && validarDespacho.Result.EnvioGPConStock >0)
                             {
+                                ViewBag.Btn_EnviarGuia = "inline-block";
+                                ViewBag.Btn_GuiaPedido = "inline-block";
                                 ViewBag.VerNavConStock = true;
                             }
                         }
@@ -2124,6 +2127,79 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 }
 
   
+            }
+            catch (Exception ex)
+            {
+                result.Codigo = 0;
+                result.Mensaje = ex.Message.ToString();
+            }
+            return Json(new ResponseDTO<RespuestaDTO>(result));
+        }
+
+
+        [HttpPost]
+        public JsonResult EnviarGuiaBO(long codigoSolicitud, long codigoWorkFlow)
+        {
+            var result = new RespuestaDTO();
+            var ventasBL = new VentasBL();
+            try
+            {
+                var plantillasBL = new PlantillasBL();
+                //Envio de correo:
+                var filtros = new FiltroPlantillaDTO();
+                filtros.CodigoProceso = 1;
+                filtros.CodigoPlantilla = "PLANGUIAPE";
+                filtros.Usuario = User.ObtenerUsuario();
+                filtros.Codigo = Convert.ToInt32(codigoSolicitud);
+
+                var datos_correo = plantillasBL.ConsultarPlantillaCorreo(filtros).Result;
+
+                //Se verifica los adjuntos:
+                var adjuntos = new List<string>();
+                var documentosBL = new DocumentosBL();
+                var documentos = documentosBL.ConsultaDocumentos(codigoWorkFlow);
+                var docs = documentos.Result.OrderByDescending(e => e.CodigoDocumento);
+                foreach (var doc in docs)
+                {
+                    if (doc.CodigoTipoDocumento == "DVT04" && doc.Eliminado == 0) //Solo documentos de tipo Guia de pedidos:
+                    {
+                        string pao_files = ConfigurationManager.AppSettings.Get("tempFiles");
+                        string ruta = pao_files + doc.RutaDocumento;
+                        adjuntos.Add(ruta);
+                        break;
+                    }
+                }
+
+                var respuesta = Utilidades.Send(datos_correo.To, datos_correo.CC, "", datos_correo.Subject, datos_correo.Body, adjuntos, "");
+                CCLog Log = new CCLog();
+                if (respuesta != "OK")
+                {
+                    Log.TraceInfo("Solicitud N° " + codigoSolicitud.ToString() + ":" + respuesta);
+
+                    result.Codigo = 0;
+                    result.Mensaje = "No se pudo enviar el correo de la solicitud N° " + codigoSolicitud.ToString();
+                }
+                else
+                {
+                    Log.TraceInfo("Envio exitoso de la guia de pedidos de la solicitud N° " + codigoSolicitud.ToString());
+
+                    var envio_log = ventasBL.ActualizarEnvioDespacho(codigoSolicitud, "", 1, 2, User.ObtenerUsuario());
+                    if (envio_log.Result.Codigo > 0)
+                    {
+                        result.Codigo = 1;
+                        result.Mensaje = "Se realizó el envio de guia de pedidos de la solicitud N° " + codigoSolicitud.ToString();
+                    }
+                    else
+                    {
+                        Log.TraceInfo("Solicitud N° " + codigoSolicitud.ToString() + ":" + envio_log.Result.Mensaje);
+                        result.Codigo = 0;
+                        result.Mensaje = "No se pudo enviar el correo de la solicitud N° " + codigoSolicitud.ToString();
+                    }
+
+
+                }
+
+
             }
             catch (Exception ex)
             {

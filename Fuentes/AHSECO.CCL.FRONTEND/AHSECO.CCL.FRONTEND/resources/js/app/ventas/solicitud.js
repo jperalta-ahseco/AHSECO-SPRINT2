@@ -138,6 +138,7 @@
     var $TotalSeriesCS = $("#TotalSeriesCS");
     var $TotalSeriesSS = $("#TotalSeriesSS");
     var $btnFinalizarVenta = $("#btnFinalizarVenta");
+    var $btnEnviarGuiaBO = $("#btnEnviarGuiaBO");
 
     var mensajes = {
         consultaContactos: "Consultando contactos, por favor espere....",
@@ -159,7 +160,8 @@
         actualizarSerie: "Actualizando el número de serie, por favor espere...",
         EnvioGuiaPedido: "Enviando Guia de Pedido, por favor espere...",
         EnvioGestionLogistica: "Enviando la gestión, por favor espere...",
-        FinalizandoVenta: "Finalizando la venta, por favor espere..."
+        FinalizandoVenta: "Finalizando la venta, por favor espere...",
+        EnvioGuiaPedidoBO: "Enviando Guia de BO, por favor espere..."
     };
 
     $(Initialize);
@@ -254,8 +256,45 @@
         $btnEnviarGestionDespacho.click($btnEnviarGestionDespacho_click);
         $btnEditarGestionLogistica.click($btnEditarGestionLogistica_click);
         $btnFinalizarVenta.click($btnFinalizarVenta_click);
+        $btnEnviarGuiaBO.click($btnEnviarGuiaBO_click);
         CalcularFechaEntregaMaxima();
     };
+
+    function $btnEnviarGuiaBO_click() {
+        var documento_guiaBO = 0;
+        adjuntos.forEach(function (currentValue, index, arr) {
+            if (adjuntos[index].CodigoTipoDocumento == "DVT03") { //Guia de BO
+                documento_guiaBO = 1;
+            }
+        });
+
+        if (documento_guiaBO === 0) {
+            app.message.error("Validación", "Debe adjuntar un documento de guía de BO.");
+            return false;
+        }
+
+        var fnSi = function () {
+
+            var m = "POST";
+            var url = "BandejaSolicitudesVentas/EnviarGuiaPedidos?codigoSolicitud=" + $numeroSolicitud.val() + "&codigoWorkFlow=" + $codigoWorkflow.val();
+            var objParam = '';
+            var fnDoneCallback = function (data) {
+                var fnCallback = function () {
+                    location.reload();
+                };
+                if (data.Result.Codigo > 0) {
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+                else {
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+
+            };
+            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.EnvioGuiaPedidoBO);
+        }
+        return app.message.confirm("Ventas", "¿Está seguro que desea enviar la Guia de BO?", "Sí", "No", fnSi, null);
+
+    }
 
     function $btnFinalizarVenta_click() {
         var fnSi = function () {
@@ -1800,15 +1839,18 @@
                     $btnHistorial.show();
                 }
 
-                //para despacho:
-                $txtNroOrdenCompra.val(data.Result.ContadorCabecera.NumeroOrden);
-                $dateOrdenCompra.val(data.Result.ContadorCabecera.FechaOrden);
-                $txtFechaEntregaMax.val(data.Result.ContadorCabecera.FechaMaxima);
+                
 
-
-                $txtNroOrdenCompra.prop('disabled', true);
-                $dateOrdenCompra.prop('disabled', true);
-                $openRegdateOrdenCompra.prop('disabled', true);
+                if ($estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG" || $estadoSol.val() == "SFIN" || $estadoSol.val() == "NOVT") {
+                    //para despacho:
+                    $txtNroOrdenCompra.val(data.Result.ContadorCabecera.NumeroOrden);
+                    $dateOrdenCompra.val(data.Result.ContadorCabecera.FechaOrden);
+                    $txtFechaEntregaMax.val(data.Result.ContadorCabecera.FechaMaxima);
+                    $txtNroOrdenCompra.prop('disabled', true);
+                    $dateOrdenCompra.prop('disabled', true);
+                    $openRegdateOrdenCompra.prop('disabled', true);
+                }
+                
 
                 if ($estadoSol.val() == "SFIN" || $estadoSol.val() == "NOVT") {
                     $btnCargarDocumento.hide();
