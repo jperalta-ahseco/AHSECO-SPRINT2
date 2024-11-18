@@ -193,6 +193,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.VerGestionLogistica = false;
             ViewBag.VerNavConStock = false;
             ViewBag.VerNavSinStock = false;
+            ViewBag.ContadorSeriesConStock = 0;
+            ViewBag.ContadorSeriesSinStock = 0;
+            ViewBag.TotalSeriesConStock = 0;
+            ViewBag.TotalSeriesSinStock = 0;
 
             if (numSol != null)
             {
@@ -203,7 +207,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                 //Para Gestion:
                 var validarDespacho = ventasBL.ValidarDespacho(int.Parse(numSol));
-                if(validarDespacho.Result != null)
+                if (validarDespacho.Result != null)
                 {
                     ViewBag.ContadorSeriesConStock = validarDespacho.Result.ContadorSeriesConStock;
                     ViewBag.ContadorSeriesSinStock = validarDespacho.Result.ContadorSeriesSinStock;
@@ -2011,7 +2015,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         public JsonResult GrabarDatosCostoItem(CotDetCostoDTO cotdetCosto)
         {
             List<CotDetCostoDTO> lstItems = new List<CotDetCostoDTO>();
-            if (VariableSesion.getObject("TAG_CDCI") != null) { lstItems = (List<CotDetCostoDTO>)VariableSesion.getObject("TAG_CDCI"); }
+            if (VariableSesion.getObject(TAG_CDI) != null) { lstItems = (List<CotDetCostoDTO>)VariableSesion.getObject("TAG_CDCI"); }
 
             //Solo cargar los productos en pantalla
             var response = new ResponseDTO<IEnumerable<CotDetCostoDTO>>(lstItems);
