@@ -47,6 +47,7 @@
     <Compile Include="Consultas\StockDTO.cs" />
     <Compile Include="DetalleServicioDTO.cs" />
     <Compile Include="ElementosxProductoDTO.cs" />
+    <Compile Include="FiltroGarantiasDTO.cs" />
     <Compile Include="FiltroGrupoEmpledosDTO.cs" />
     <Compile Include="FiltroInstalacionTecnica.cs" />
     <Compile Include="FiltroPlantillaDTO.cs" />
