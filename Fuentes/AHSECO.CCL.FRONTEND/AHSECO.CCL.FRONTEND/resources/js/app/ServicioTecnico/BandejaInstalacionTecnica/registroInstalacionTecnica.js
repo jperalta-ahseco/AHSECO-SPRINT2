@@ -158,6 +158,7 @@
     //var $divEmpresaTecnico = $('#divEmpresaTecnico');
     var $btnRegistrarTecnicoExterno = $('#btnRegistrarTecnicoExterno');
     var $btnAsignarTecnico = $('#btnAsignarTecnico');
+    var $tituloModalObservacion = $('#tituloModalObservacion');
 
 
     /*Modal Buscar Tecnicos*/
@@ -1531,6 +1532,8 @@
         }
     }
     function $modalObservacionClick() {
+        $tituloModalObservacion.html("Nueva observación");
+        $grpAuditoriaObservacion.hide();
         $modalObservacion.modal("show");
         $lblUsuarioCreacionObservacion.text($nombreusuario.val());
         $lblFechaCreacionObservacion.text(hoy());

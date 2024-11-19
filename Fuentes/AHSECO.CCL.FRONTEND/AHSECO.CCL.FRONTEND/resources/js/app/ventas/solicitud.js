@@ -18,6 +18,7 @@
     var $modalCargaDocumento = $('#modalCargaDocumento');
     var $modalRegistraProductos = $('#modalRegistraProductos');
     var $modalContactos = $('#modalContactos');
+    var $tituloModalObservacion = $('#tituloModalObservacion');
 
     /*variables de los modales*/
     var $NoExisteRegObs = $('#NoExisteRegObs');
@@ -47,6 +48,7 @@
     var $txtNroProceso = $("#txtNroProceso");
     var $txtTipoProceso = $("#txtTipoProceso");
     var $idRolUsuario = $("#idRolUsuario");
+    var $grpAuditoriaObservacion = $("#grpAuditoriaObservacion");
 
     /*Sección Solicitud*/
     var $btnEliminarSol = $('#btnEliminarSol');
@@ -297,7 +299,7 @@
         $btnGuardarImportacion.click($btnGuardarImportacion_click);
         $btnGuardarGestionLogisticaSE.click($btnGuardarGestionLogisticaSE_click);
         $btnEditarGestionLogisticaSE.click($btnEditarGestionLogisticaSE_click);
-        CalcularFechaEntregaMaxima();
+        
     };
 
     function $btnEditarGestionLogisticaSE_click() {
@@ -441,10 +443,14 @@
     }
 
     function $btnObservarGestion_click() {
-        $modalObservacion.modal("show");
+        $tituloModalObservacion.html("Nueva observación");
+        $grpAuditoriaObservacion.hide();
         $ValidaBtnObservacion.val("1");
+        $hdnObservacionId.val("");
         $lblUsuarioCreacionObservacion.text($nombreusuario.val());
         $lblFechaCreacionObservacion.text(hoy());
+        $modalObservacion.modal("show");
+        
     }
     function $btnEnviarGuiaBO_click() {
         var documento_guiaBO = 0;
@@ -1595,6 +1601,8 @@
     };
 
     function $modalObservacionClick() {
+        $tituloModalObservacion.html("Nueva observación"); 
+        $grpAuditoriaObservacion.hide();
         $modalObservacion.modal("show");
         $lblUsuarioCreacionObservacion.text($nombreusuario.val());
         $lblFechaCreacionObservacion.text(hoy());
@@ -2058,6 +2066,9 @@
                     $btnHistorial.show();
                 }
 
+                if ($estadoSol.val() == "PRVT" || $estadoSol.val() == "CAPR") {
+                    CalcularFechaEntregaMaxima();
+                }
                 
 
                 if ($estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG" || $estadoSol.val() == "SFIN" || $estadoSol.val() == "NOVT") {
