@@ -347,5 +347,20 @@ namespace AHSECO.CCL.BL.Ventas
             };
         }
 
+        public ResponseDTO<CabeceraDespachoDTO> ValidarAprobacionSinStock(long CodigoSolicitud)
+        {
+            try
+            {
+                var result = Repository.ValidarAprobacionSinStock(CodigoSolicitud);
+
+                return new ResponseDTO<CabeceraDespachoDTO>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + ":: " + ex.Message);
+                return new ResponseDTO<CabeceraDespachoDTO>(ex);
+            };
+        }
+
     }
 }

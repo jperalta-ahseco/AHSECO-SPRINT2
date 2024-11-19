@@ -108,6 +108,8 @@
     var $btnHistorial = $("#btnHistorial");
     var $btnBuscarHistorial = $("#btnBuscarHistorial");
 
+    var $ValidaBtnObservacion = $("#ValidaBtnObservacion");
+
     /** Seccion de Despacho*/
     var $dateOrdenCompra = $("#dateOrdenCompra");
     var $openRegdateOrdenCompra = $("#openRegdateOrdenCompra");
@@ -139,6 +141,21 @@
     var $TotalSeriesSS = $("#TotalSeriesSS");
     var $btnFinalizarVenta = $("#btnFinalizarVenta");
     var $btnEnviarGuiaBO = $("#btnEnviarGuiaBO");
+    var $btnObservarGestion = $("#btnObservarGestion");
+    var $btnAprobarGestion = $("#btnAprobarGestion");
+    var $dateIngresoAlmacenSE = $("#dateIngresoAlmacenSE");
+    var $btnGuardarImportacion = $("#btnGuardarImportacion");
+    var $txtCodigoPedidoSE = $("#txtCodigoPedidoSE");
+    var $opendateIngresoAlmacenSE = $("#opendateIngresoAlmacenSE");
+    var $CodStock = $("#CodStock");
+    var $btnGuardarGestionLogisticaSE = $("#btnGuardarGestionLogisticaSE");
+    var $dateEntregaPedidoSE = $("#dateEntregaPedidoSE");
+    var $opendateEntregaPedidoSE = $("#opendateEntregaPedidoSE");
+    var $txtNumeroFacturaSE = $("#txtNumeroFacturaSE");
+    var $txtNumeroGuiaRemisionSE = $("#txtNumeroGuiaRemisionSE");
+    var $btnEditarGestionLogisticaSE = $("#btnEditarGestionLogisticaSE");
+    var $tblSeriesSS = $("#tblSeriesSS");
+    var $NoRegSeriesSS = $("#NoRegSeriesSS");
 
     var mensajes = {
         consultaContactos: "Consultando contactos, por favor espere....",
@@ -161,7 +178,9 @@
         EnvioGuiaPedido: "Enviando Guia de Pedido, por favor espere...",
         EnvioGestionLogistica: "Enviando la gestión, por favor espere...",
         FinalizandoVenta: "Finalizando la venta, por favor espere...",
-        EnvioGuiaPedidoBO: "Enviando Guia de BO, por favor espere..."
+        EnvioGuiaPedidoBO: "Enviando Guia de BO, por favor espere...",
+        AprobarImportacion: "Aprobando Importación, por favor espere...",
+        ActualizarImportacion: "Actualizando Importación, por favor espere..."
     };
 
     $(Initialize);
@@ -219,10 +238,26 @@
             startDate: hoy()
         });
 
+        $dateIngresoAlmacenSE.datepicker({
+            viewMode: 0,
+            minViewMode: 0,
+            format: 'dd/mm/yyyy',
+            startDate: hoy()
+        });
+
+        $dateEntregaPedidoSE.datepicker({
+            viewMode: 0,
+            minViewMode: 0,
+            format: 'dd/mm/yyyy',
+            startDate: hoy()
+        });
+
         $dateSolicitud.val(hoy());
         $dateCotizacion.val(hoy());
         $dateOrdenCompra.val(hoy());
         $dateEntregaPedidoCE.val(hoy());
+        $dateIngresoAlmacenSE.val(hoy());
+        $dateEntregaPedidoSE.val(hoy());
         $cmbTipo.on("change", VerServicios);
         $fileCargaDocumentoSustento.on("change", $fileCargaDocumentoSustento_change);
         $btnEliminarSol.click(btnEliminarSolClick);
@@ -257,9 +292,160 @@
         $btnEditarGestionLogistica.click($btnEditarGestionLogistica_click);
         $btnFinalizarVenta.click($btnFinalizarVenta_click);
         $btnEnviarGuiaBO.click($btnEnviarGuiaBO_click);
+        $btnObservarGestion.click($btnObservarGestion_click);
+        $btnAprobarGestion.click($btnAprobarGestion_click);
+        $btnGuardarImportacion.click($btnGuardarImportacion_click);
+        $btnGuardarGestionLogisticaSE.click($btnGuardarGestionLogisticaSE_click);
+        $btnEditarGestionLogisticaSE.click($btnEditarGestionLogisticaSE_click);
         CalcularFechaEntregaMaxima();
     };
 
+    function $btnEditarGestionLogisticaSE_click() {
+        $dateEntregaPedidoSE.prop('disabled', false);
+        $opendateEntregaPedidoSE.prop('disabled', false);
+        $txtNumeroFacturaSE.prop('disabled', false);
+        $txtNumeroGuiaRemisionSE.prop('disabled', false);
+        $btnEditarGestionLogisticaSE.hide();
+        $btnGuardarGestionLogisticaSE.show();
+    }
+
+    function $btnGuardarGestionLogisticaSE_click() {
+        if ($dateEntregaPedidoSE.val() === "" || $dateEntregaPedidoSE.val() == null) {
+            app.message.error("Validación", "Debe seleccionar la fecha de entrega de pedido de los productos sin stock");
+            return false;
+        }
+        if ($txtNumeroFacturaSE.val() === "" || $txtNumeroFacturaSE.val() == null) {
+            app.message.error("Validación", "Debe ingresar el N° de Factura de los productos sin stock");
+            return false;
+        }
+        if ($txtNumeroGuiaRemisionSE.val() === "" || $txtNumeroGuiaRemisionSE.val() == null) {
+            app.message.error("Validación", "Debe ingresar el N° de Guia de Remision de los productos sin stock");
+            return false;
+        }
+
+        var fnSi = function () {
+
+            var m = "POST";
+            var url = "BandejaSolicitudesVentas/MantenimientoDespacho";
+            var obj = {
+                Tipo: "P",
+                CodigoSolicitud: $numeroSolicitud.val(),
+                Stock: "N",
+                NumeroGuiaRemision: $txtNumeroGuiaRemisionSE.val(),
+                NumeroFactura: $txtNumeroFacturaSE.val(),
+                FechaEntrega: $dateEntregaPedidoSE.val()
+            }
+            var objParam = JSON.stringify(obj);
+            var fnDoneCallback = function (data) {
+                var fnCallback = function () {
+                    location.reload();
+                };
+                if (data.Result.Codigo > 0) {
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+                else {
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+
+            };
+            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.RegistrarGestionVenta);
+        }
+        return app.message.confirm("Ventas", "¿Está seguro que desea actualizar los datos de despacho?", "Sí", "No", fnSi, null);
+
+    }
+
+    function $btnGuardarImportacion_click() {
+        if ($txtCodigoPedidoSE.val() === "" || $txtCodigoPedidoSE.val() == null) {
+            app.message.error("Validación", "Debe ingresar el código de pedido de los productos sin stock");
+            return false;
+        }
+        if ($dateIngresoAlmacenSE.val() === "" || $dateIngresoAlmacenSE.val() == null) {
+            app.message.error("Validación", "Debe seleccionar la fecha de ingreso de almacen de los productos sin stock");
+            return false;
+        }
+
+        var fnSi = function () {
+
+            var m = "POST";
+            var url = "BandejaSolicitudesVentas/MantenimientoDespacho";
+            var obj = {
+                Tipo: "Y",
+                CodigoSolicitud: $numeroSolicitud.val(),
+                NumeroPedido: $txtCodigoPedidoSE.val(),
+                FechaIngreso: $dateIngresoAlmacenSE.val()
+            }
+            var objParam = JSON.stringify(obj);
+            var fnDoneCallback = function (data) {
+                var fnCallback = function () {
+                    location.reload();
+                };
+                if (data.Result.Codigo > 0) {
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+                else {
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+
+            };
+            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.ActualizarImportacion);
+        }
+        return app.message.confirm("Ventas", "¿Está seguro que desea actualizar los datos de importación?", "Sí", "No", fnSi, null);
+
+    }
+
+    function $btnAprobarGestion_click() {
+
+        var fnSi = function () {
+
+            var m = "POST";
+            var url = "BandejaSolicitudesVentas/MantenimientoDespacho";
+            var obj = {
+                Tipo: "A",
+                CodigoSolicitud: $numeroSolicitud.val(),
+                CodigoWorkFlow: $codigoWorkflow.val()
+            }
+            var objParam = JSON.stringify(obj);
+            var fnDoneCallback = function (data) {
+                var fnCallback = function () {
+                    //location.reload();
+                    //Envio correo a servicio tecnico:
+                        var m2 = "POST";
+                        var url2 = "BandejaSolicitudesVentas/EnviarAprobacionImportacion?codigoSolicitud=" + $numeroSolicitud.val();
+                        var objParam2 = '';
+                        var fnDoneCallback2 = function (data2) {
+                            var fnCallback2 = function () {
+                                location.reload();
+                            }
+                            if (data2.Result.Codigo > 0) {
+                                app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback2);
+                            }
+                            else {
+                                app.message.error("Grabar", data.Result.Mensaje, "Aceptar", null);
+                            }
+                        };
+
+                    return app.llamarAjax(m2, url2, objParam2, fnDoneCallback2, null, null, mensajes.AprobarImportacion);
+                    
+                };
+                if (data.Result.Codigo > 0) {
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+                else {
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", null);
+                }
+
+            };
+            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.AprobarImportacion);
+        }
+        return app.message.confirm("Ventas", "¿Está seguro que desea aprobar la importación?", "Sí", "No", fnSi, null);
+    }
+
+    function $btnObservarGestion_click() {
+        $modalObservacion.modal("show");
+        $ValidaBtnObservacion.val("1");
+        $lblUsuarioCreacionObservacion.text($nombreusuario.val());
+        $lblFechaCreacionObservacion.text(hoy());
+    }
     function $btnEnviarGuiaBO_click() {
         var documento_guiaBO = 0;
         adjuntos.forEach(function (currentValue, index, arr) {
@@ -276,7 +462,7 @@
         var fnSi = function () {
 
             var m = "POST";
-            var url = "BandejaSolicitudesVentas/EnviarGuiaPedidos?codigoSolicitud=" + $numeroSolicitud.val() + "&codigoWorkFlow=" + $codigoWorkflow.val();
+            var url = "BandejaSolicitudesVentas/EnviarGuiaBO?codigoSolicitud=" + $numeroSolicitud.val() + "&codigoWorkFlow=" + $codigoWorkflow.val();
             var objParam = '';
             var fnDoneCallback = function (data) {
                 var fnCallback = function () {
@@ -437,7 +623,7 @@
         var fnSi = function () {
 
             var m = "POST";
-            var url = "BandejaSolicitudesVentas/EnviarGuiaPedidos?codigoSolicitud=" + $numeroSolicitud.val() + "&codigoWorkFlow=" + $codigoWorkflow.val();
+            var url = "BandejaSolicitudesVentas/EnviarGuiaPedidos?codigoSolicitud=" + $numeroSolicitud.val() + "&codigoWorkFlow=" + $codigoWorkflow.val() + "&stock=" + $CodStock.val();
             var objParam = '';
             var fnDoneCallback = function (data) {
                 var fnCallback = function () {
@@ -1117,40 +1303,99 @@
             return;
         }
 
-        if ($numeroSolicitud.val() != "") {
+        var valida_obs = parseInt($ValidaBtnObservacion.val());
+
+        if (valida_obs > 0) {
+
             var method = "POST";
-            var url = "BandejaSolicitudesVentas/GuardarObservacion"
-            var objObservacion ={
-                TipoProceso: "I",
+            var url = "BandejaSolicitudesVentas/MantenimientoDespacho";
+            var objObservacion = {
+                Tipo: "O",
+                CodigoSolicitud: $numeroSolicitud.val(),
                 Observacion: $txtObservacion.val(),
-                Id_WorkFlow: $codigoWorkflow.val(),
-                Nombre_Usuario: $nombreusuario.val(),
-                Estado_Instancia: $estadoSol.val()
-            };
+                CodigoWorkFlow: $codigoWorkflow.val()
+            }
 
             var objParamObs = JSON.stringify(objObservacion);
 
             var fnDoneCallBack = function () {
                 app.message.success("Ventas", "Se realizó el registro de la observación correctamente.");
+                location.reload();
+            };
 
+            var fnFailCallBack = function () {
+                app.message.error("Validación");
+                location.reload();
+            };
+            app.llamarAjax(method, url, objParamObs, fnDoneCallBack, fnFailCallBack, null, mensajes.guardandoObservacion);
+
+
+        }
+        else {
+            if ($numeroSolicitud.val() != "") {
+                var method = "POST";
+                var url = "BandejaSolicitudesVentas/GuardarObservacion"
+                var objObservacion = {
+                    TipoProceso: "I",
+                    Observacion: $txtObservacion.val(),
+                    Id_WorkFlow: $codigoWorkflow.val(),
+                    Nombre_Usuario: $nombreusuario.val(),
+                    Estado_Instancia: $estadoSol.val()
+                };
+
+                var objParamObs = JSON.stringify(objObservacion);
+
+                var fnDoneCallBack = function () {
+                    app.message.success("Ventas", "Se realizó el registro de la observación correctamente.");
+
+                    solicitud.contadorObservaciones += 1;
+
+                    solicitud.observaciones.push(
+                        {
+                            TipoProceso: "I",
+                            Observacion: $txtObservacion.val(),
+                            Nombre_Usuario: $nombreusuario.val(),
+                            Id_WorkFlow: $codigoWorkflow.val(),
+                            Estado_Instancia: $estadoSol.val
+                        }
+                    );
+                    var nuevoTr = "<tr id=row" + solicitud.contadorObservaciones + ">" +
+                        "<th style='text-align: center;'>" + $nombreusuario.val() + "</th>" +
+                        "<th style='text-align: center;'>" + $perfilnombre.val() + "</th>" +
+                        "<th style='text-align: center;'>" + hoy() + "</th>" +
+                        "<th style='text-align: center;'>" + objObservacion.Observacion + "</th>" +
+                        "<th style='text-align: center;'>" +
+                        "<a id='btnEliminarObs' class='btn btn-default btn-xs' title='Eliminar' href='javascript: solicitud.eliminarObsTmp(" + solicitud.contadorObservaciones + ")' > <i class='fa fa-trash' aria-hidden='true'></i></a>" +
+                        "</th> " +
+                        "</tr>";
+                    $tblObservaciones.append(nuevoTr);
+                    $NoExisteRegObs.hide();
+                    $modalObservacion.modal('toggle');
+                };
+
+                var fnFailCallBack = function () {
+                    app.message.error("Validación");
+                };
+                app.llamarAjax(method, url, objParamObs, fnDoneCallBack, fnFailCallBack, null, mensajes.guardandoObservacion);
+            }
+            else {
                 solicitud.contadorObservaciones += 1;
 
-                solicitud.observaciones.push(
-                    {
-                        TipoProceso: "I",
-                        Observacion: $txtObservacion.val(),
-                        Nombre_Usuario: $nombreusuario.val(),
-                        Id_WorkFlow: $codigoWorkflow.val(),
-                        Estado_Instancia: $estadoSol.val
-                    }
-                );
-                var nuevoTr = "<tr id=row" + solicitud.contadorObservaciones +">" +
+                solicitud.observaciones.push({
+                    //Id_WorkFlow: $codigoWorkflow.val(),
+                    TipoProceso: "I",
+                    Estado_Instancia: "REG",
+                    Observacion: $txtObservacion.val(),
+                    Nombre_Usuario: $nombreusuario.val(),
+                    Perfil_Usuario: $perfilnombre.val()
+                })
+                var nuevoTr = "<tr id=row" + solicitud.contadorObservaciones + ">" +
                     "<th style='text-align: center;'>" + $nombreusuario.val() + "</th>" +
                     "<th style='text-align: center;'>" + $perfilnombre.val() + "</th>" +
                     "<th style='text-align: center;'>" + hoy() + "</th>" +
-                    "<th style='text-align: center;'>" + objObservacion.Observacion + "</th>" +
+                    "<th style='text-align: center;'>" + $txtObservacion.val() + "</th>" +
                     "<th style='text-align: center;'>" +
-                        "<a id='btnEliminarObs' class='btn btn-default btn-xs' title='Eliminar' href='javascript: solicitud.eliminarObsTmp(" + solicitud.contadorObservaciones + ")' > <i class='fa fa-trash' aria-hidden='true'></i></a>" +
+                    "<a id='btnEliminarObs' class='btn btn-default btn-xs' title='Eliminar' href='javascript: solicitud.eliminarObsTmp(" + solicitud.contadorObservaciones + ")' ><i class='fa fa-trash' aria-hidden='true'></i></a>" +
                     "</th> " +
                     "</tr>";
                 $tblObservaciones.append(nuevoTr);
@@ -1158,35 +1403,9 @@
                 $modalObservacion.modal('toggle');
             };
 
-            var fnFailCallBack = function () {
-                app.message.error("Validación");
-            };
-            app.llamarAjax(method, url, objParamObs, fnDoneCallBack, fnFailCallBack, null, mensajes.guardandoObservacion);
         }
-        else {
-            solicitud.contadorObservaciones += 1;
 
-            solicitud.observaciones.push({
-                //Id_WorkFlow: $codigoWorkflow.val(),
-                TipoProceso: "I",
-                Estado_Instancia: "REG",
-                Observacion: $txtObservacion.val(),
-                Nombre_Usuario: $nombreusuario.val(),
-                Perfil_Usuario: $perfilnombre.val()
-            })
-            var nuevoTr = "<tr id=row" + solicitud.contadorObservaciones +">" +
-                "<th style='text-align: center;'>" + $nombreusuario.val() + "</th>" +
-                "<th style='text-align: center;'>" + $perfilnombre.val() + "</th>" +
-                "<th style='text-align: center;'>" + hoy() + "</th>" +
-                "<th style='text-align: center;'>" + $txtObservacion.val() + "</th>" +
-                "<th style='text-align: center;'>" +
-                    "<a id='btnEliminarObs' class='btn btn-default btn-xs' title='Eliminar' href='javascript: solicitud.eliminarObsTmp(" + solicitud.contadorObservaciones + ")' ><i class='fa fa-trash' aria-hidden='true'></i></a>" +
-                "</th> " +
-                "</tr>";
-            $tblObservaciones.append(nuevoTr);
-            $NoExisteRegObs.hide();
-            $modalObservacion.modal('toggle');
-        };
+
         $txtObservacion.val("");
     }
 
@@ -1858,14 +2077,66 @@
                     $btnAgregarDocumento.hide();
                 }
 
-                if (data.Result.ContadorCabecera.NumeroConStock > 0) {
+                if (data.Result.ContadorCabecera.ContadorSinStock > 0) {
+
+                  
+
+
+                    if ($estadoSol.val() == "PRVT" && data.Result.DespachoCabeceraSinStock.EstadoAprobacion == "APR") {
+                        $txtCodigoPedidoSE.val("");
+                    }
+                    else {
+                        $txtCodigoPedidoSE.val(data.Result.DespachoCabeceraSinStock.NumeroPedido);
+                        $dateIngresoAlmacenSE.val(data.Result.DespachoCabeceraSinStock.FechaIngreso);
+                        $txtCodigoPedidoSE.prop('disabled', true);
+                        $opendateIngresoAlmacenSE.prop('disabled', true);
+                        $dateIngresoAlmacenSE.prop('disabled', true);
+                    }
+
+
+                    for (i = 0; i < data.Result.ContadorCabecera.NumeroSinStock; i++) {
+                        var html = '<div class="text-center">';
+                        if ($estadoSol.val() == "PRVT" && $idRolUsuario.val() == "SGI_VENTA_LOGISTICA" && data.Result.DespachoCabeceraSinStock.EstadoAprobacion == "IMP") {
+
+                            html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleSinStock[i].Id + '" href="javascript:solicitud.editarSeries(' + data.Result.DespachoDetalleSinStock[i].Id + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';
+                            html += ' <a class="btn btn-default btn-xs" title="Guardar" id="Boton' + data.Result.DespachoDetalleSinStock[i].Id + '" style="display:none"  href="javascript:solicitud.guardarSeries(' + data.Result.DespachoDetalleSinStock[i].Id + ',N)"><i class="fa fa-save" aria-hidden="true"></i></a>&nbsp;';
+                        }
+                        html += '</div>';
+                        var nuevoTr = "<tr bgcolor='d0f2f7' id='fila" + data.Result.DespachoDetalleSinStock[i].Id + "'>" +
+                            "<th>" + data.Result.DespachoDetalleSinStock[i].RowNumber + "</th>" +
+                            "<th>" + data.Result.DespachoDetalleSinStock[i].CodigoEquipo + "</th>" +
+                            "<th>" + data.Result.DespachoDetalleSinStock[i].DescripcionEquipo + "</th>" +
+                            "<th>" + data.Result.DespachoDetalleSinStock[i].Marca + "</th>" +
+                            "<th><input type='text' style='border: none;background-color: transparent; outline: none;' readonly id='Serie" + data.Result.DespachoDetalleSinStock[i].Id + "' value='" + data.Result.DespachoDetalleSinStock[i].NumeroSerie + "'></th>" +
+                            "<th>" + html + "</th>" +
+                            "</tr>";
+
+                        $NoRegSeriesSS.hide();
+                        $tblSeriesSS.append(nuevoTr);
+                    }
+
+
+                    $dateEntregaPedidoSE.val(data.Result.DespachoCabeceraSinStock.FechaEntrega);
+                    $txtNumeroFacturaSE.val(data.Result.DespachoCabeceraSinStock.NumeroFactura);
+                    $txtNumeroGuiaRemisionSE.val(data.Result.DespachoCabeceraSinStock.NumeroGuiaRemision);
+
+                    if (data.Result.ContadorCabecera.GestionLogSinStock > 0) {
+                        $dateEntregaPedidoSE.prop('disabled', true);
+                        $txtNumeroFacturaSE.prop('disabled', true);
+                        $txtNumeroGuiaRemisionSE.prop('disabled', true);
+                        $opendateEntregaPedidoSE.prop('disabled', true);
+                    }
+
+                }
+
+                if (data.Result.ContadorCabecera.ContadorConStock > 0) {
 
                     for (i = 0; i < data.Result.ContadorCabecera.NumeroConStock; i++) {
                         var html = '<div class="text-center">';
                         if ($estadoSol.val() == "PRVT" && $idRolUsuario.val() == "SGI_VENTA_LOGISTICA") {
 
                         html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleConStock[i].Id +'" href="javascript:solicitud.editarSeries(' + data.Result.DespachoDetalleConStock[i].Id + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';
-                        html += ' <a class="btn btn-default btn-xs" title="Guardar" id="Boton' + data.Result.DespachoDetalleConStock[i].Id +'" style="display:none"  href="javascript:solicitud.guardarSeries(' + data.Result.DespachoDetalleConStock[i].Id + ')"><i class="fa fa-save" aria-hidden="true"></i></a>&nbsp;';
+                        html += ' <a class="btn btn-default btn-xs" title="Guardar" id="Boton' + data.Result.DespachoDetalleConStock[i].Id +'" style="display:none"  href="javascript:solicitud.guardarSeries(' + data.Result.DespachoDetalleConStock[i].Id + ',S)"><i class="fa fa-save" aria-hidden="true"></i></a>&nbsp;';
                         }
                         html += '</div>';
                         var nuevoTr = "<tr bgcolor='d0f2f7' id='fila" + data.Result.DespachoDetalleConStock[i].Id + "'>" +
@@ -2039,7 +2310,7 @@
 
     }
 
-    function guardarSeries(codDetalleDespacho) {
+    function guardarSeries(codDetalleDespacho,stock) {
         var serie = $('#Serie' + codDetalleDespacho).val();
         if (serie === "" || serie == null) {
             app.message.error("Validación", "Debe ingresar el número de serie.");
@@ -2061,9 +2332,17 @@
                     $('#Serie' + codDetalleDespacho).css('background-color', 'transparent');
                     $('#Boton' + codDetalleDespacho).css('display', 'none');
                     $('#Edi' + codDetalleDespacho).css('display', 'inline-block');
-                    var contador = $ContadorSeriesCS.val();
-                    contador = parseInt(contador) + 1;
-                    $ContadorSeriesCS.val(contador);
+
+                    if (stock == "S") {
+                        var contador = $ContadorSeriesCS.val();
+                        contador = parseInt(contador) + 1;
+                        $ContadorSeriesCS.val(contador);
+                    } else {
+                        var contador = $ContadorSeriesSS.val();
+                        contador = parseInt(contador) + 1;
+                        $ContadorSeriesSS.val(contador);
+                    }
+                  
                     //style='border: none;background-color: transparent; outline: none;'
                 };
                 if (data.Result.Codigo > 0) {

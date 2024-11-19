@@ -670,7 +670,8 @@ namespace AHSECO.CCL.BD.Ventas
                                 CodigoEquipo = reader.IsDBNull(reader.GetOrdinal("CODEQUIPO")) ? "" : reader.GetString(reader.GetOrdinal("CODEQUIPO")),
                                 DescripcionEquipo = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION")),
                                 Marca = reader.IsDBNull(reader.GetOrdinal("MARCA")) ? "" : reader.GetString(reader.GetOrdinal("MARCA")),
-                                NumeroSerie = reader.IsDBNull(reader.GetOrdinal("NUMSERIE")) ? "" : reader.GetString(reader.GetOrdinal("NUMSERIE"))
+                                NumeroSerie = reader.IsDBNull(reader.GetOrdinal("NUMSERIE")) ? "" : reader.GetString(reader.GetOrdinal("NUMSERIE")),
+                                Id = reader.IsDBNull(reader.GetOrdinal("ID")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID"))
                             };
                             _listaDetalleDespachosinStock.Add(detalleDespachoSinStock);
                         };
@@ -1369,6 +1370,39 @@ namespace AHSECO.CCL.BD.Ventas
                     {
                         Codigo = i.Single(d => d.Key.Equals("COD")).Value.Parse<int>(),
                         Mensaje = i.Single(d => d.Key.Equals("MSG")).Value.Parse<string>()
+                    }).FirstOrDefault();
+
+                return result;
+            }
+        }
+
+        public CabeceraDespachoDTO ValidarAprobacionSinStock(long CodigoSolicitud)
+        {
+            var rpta = new RespuestaDTO();
+            Log.TraceInfo(Utilidades.GetCaller());
+
+
+            using (var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("isIdSolicitud", CodigoSolicitud);
+
+                var result = connection.Query
+                (
+                    sql: "USP_VAL_APROBACION_SINSTOCK",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure
+                )
+                 .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new CabeceraDespachoDTO
+                    {
+                        EstadoAprobacion = i.Single(d => d.Key.Equals("ESTADO")).Value.Parse<string>(),
+                        FechaAprobacion = i.Single(d => d.Key.Equals("FECAPROB")).Value.Parse<string>(),
+                        Observacion = i.Single(d => d.Key.Equals("OBSERVACION")).Value.Parse<string>(),
+                        NumeroPedido = i.Single(d => d.Key.Equals("NUMPEDIDO")).Value.Parse<string>(),
+                        FechaIngreso = i.Single(d => d.Key.Equals("FECHAINGRESO")).Value.Parse<string>()
                     }).FirstOrDefault();
 
                 return result;

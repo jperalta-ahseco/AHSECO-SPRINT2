@@ -77,3 +77,10 @@ VALUES('PLANGUIABO',1,'Plantilla de Envio de Guia de BO','pminetti@ahsecoperu.pe
 <p>Se realiza el envio de la guía de BO de la solicitud N°{NRO_SOL} para el cliente {CLIENTE}.</p>
 <p>Para su revisión.</p>
 <p>Por favor ingrese al sistema para continuar con el flujo de venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
+
+INSERT INTO TBM_PLANTILLAS
+VALUES('PLANAPRIMP',1,'Plantilla de Envio de Aprobacion a Importar','importaciones@ahsecoperu.com','importaciones2@ahsecoperu.com','APROBACIÓN DE IMPORTACIÓN - N° SOLICITUD {NRO_SOL}',
+			   '<p>Estimada Área de Importación,</p>
+<p>Se realiza la aprobación de la importación de la solicitud N°{NRO_SOL} para el cliente {CLIENTE}.</p>
+<p>Su apoyo con la atención.</p>
+<p>Por favor ingrese al sistema para continuar con el flujo de venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
