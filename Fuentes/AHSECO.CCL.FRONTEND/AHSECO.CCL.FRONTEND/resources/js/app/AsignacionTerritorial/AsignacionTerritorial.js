@@ -24,6 +24,7 @@ var asignacionTerritorial = (function ($, win, doc){
     /*Modal*/
     var $modalBusquedaClientes = $('#modalBusquedaClientes');
     var $modalAsignacion = $('#modalAsignacion');
+    var $searchCliente = $("#searchCliente");
 
     var mensajes = {
         llenarEmpleados: "Buscando Empleados, por favor espere....",
@@ -45,13 +46,19 @@ var asignacionTerritorial = (function ($, win, doc){
         $btnBuscar.click(btnBuscarClick);
         $btnCerrar.click(btnCerrarClick);
         $btnBuscarClientes.click(btnBuscarClientesClick);
-
+        $searchCliente.click($searchCliente_click);
         asignacionTerritorial.asesorSelect = "";
         $cmbAsigAsesorVenta.on('change', function () {
             asignacionTerritorial.asesorSelect = $('select[id="cmbAsigAsesorVenta"] option:selected').text();
         });
 
         $btnEjecutarAsignacion.click(btnEjecutarAsignacionClick);
+    }
+
+    function $searchCliente_click() {
+        $txtNomEmpresa.val('');
+        $txtRuc.val('');
+        generarClientes();
     }
     function cargarAsesoresVenta() {
         var method = "POST";
@@ -168,6 +175,7 @@ var asignacionTerritorial = (function ($, win, doc){
                 $cmbAsigAsesorVenta.val("0").trigger("change.select2");
                 $checkSeleccionarTodos.prop("checked", false);
                 $modalAsignacion.modal('toggle');
+               
             };
             return app.message.confirm("Asignacion Manual", "Existe(n) cliente(s) que se encuentra(n) asignado(s),"+'\n'+ "Desea reasignarlo(s)?", "Si", "No", fnSi, null);
         }
@@ -178,6 +186,7 @@ var asignacionTerritorial = (function ($, win, doc){
             asignacionTerritorial.xasignar = [];
             $checkSeleccionarTodos.prop("checked", false);
             $modalAsignacion.modal('toggle');
+            btnBuscarClick();
         };
         return app.message.confirm("Asignacion Manual", "Esta seguro que desea asignar el(los) cliente(s) al asesor de ventas?", "Si", "No", fnSi, null);
     }
@@ -273,7 +282,8 @@ var asignacionTerritorial = (function ($, win, doc){
         }
         var objParams = JSON.stringify(objAsignacion);
         var fnDoneCallback = function () {
-            ObtenerListClientevsAsesor();
+            //ObtenerListClientevsAsesor();
+            btnBuscarClick();
         }
         var fnFailCallBack = function () {
             app.message.error("Asignacion Manual", "Se produjo un error en la asignación.");
@@ -287,6 +297,7 @@ var asignacionTerritorial = (function ($, win, doc){
         $txtCodCliente.val(id);
         $txtCliente.val(NomEmpresa);
         $modalBusquedaClientes.modal('toggle')
+
     }
     /*Fin Funciones Click*/
     function generarClientes() {

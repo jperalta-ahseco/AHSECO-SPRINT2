@@ -1420,24 +1420,27 @@
         var method = "POST";
         var url = "BandejaSolicitudesVentas/CancelarSolicitud"
         var objSolicitud = {
-            Id_Solicitud: $numeroSolicitud.val()
+            ID_Solicitud: $numeroSolicitud.val(),
+            codigoWorkFlow: $codigoWorkflow.val()
         };
         objParam = JSON.stringify(objSolicitud);
 
-        function redirect() {
-            app.redirectTo("BandejaSolicitudesVentas");
-        };
 
-        var fnDoneCallBack = function () {
-            app.message.success("Ventas", "Se canceló la solicitud correctamente.", "Aceptar", redirect);
-        };
 
-        var fnFailCallBack = function () {
-            app.message.error("Validación", "Error al cancelar la solicitud.");
-        };
+        var fnSi = function () {
+            function redirect() {
+                app.redirectTo("BandejaSolicitudesVentas");
+            };
+            var fnDoneCallback = function (data) {
+                app.message.success("Ventas", "Se canceló la solicitud correctamente.", "Aceptar", redirect);
+            };
+            var fnFailCallback = function () {
+                app.message.error("Validación", "Error al cancelar la solicitud.");
+            };
 
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
-
+            app.llamarAjax(method, url, objParam, fnDoneCallback, fnFailCallback, null, null);
+        }
+        return app.message.confirm("Confimación", "¿Está seguro de cancelar la solicitud?", "Si", "No", fnSi, null);
     };
     
     function registrarCotizacion() {

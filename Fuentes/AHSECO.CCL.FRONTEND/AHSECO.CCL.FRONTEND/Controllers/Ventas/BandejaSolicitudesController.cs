@@ -1363,17 +1363,27 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         }
 
         [HttpPost]
-        public JsonResult CancelarSolicitud(int ID_Solicitud)
+        public JsonResult CancelarSolicitud(int ID_Solicitud, long codigoWorkFlow)
         {
             try
             {
                 var ventasBL = new VentasBL();
+                var procesoBL = new ProcesosBL();
                 var solicitudDTO = new SolicitudDTO();
                 solicitudDTO.Id_Solicitud = ID_Solicitud;
                 solicitudDTO.UsuarioModifica = User.ObtenerUsuario();
                 solicitudDTO.IpMaquinaModifica = User.ObtenerIP();
                 solicitudDTO.Estado = ConstantesDTO.EstadosProcesos.ProcesoVenta.CotSinVenta;
                 var result = ventasBL.ActualizarSolicitudEstado(solicitudDTO);
+
+                //Se realiza el registro de seguimiento de workflow:
+                var log = new FiltroWorkflowLogDTO();
+                log.CodigoWorkflow = codigoWorkFlow;
+                log.Usuario = User.ObtenerUsuario();
+                log.CodigoEstado = ConstantesDTO.EstadosProcesos.ProcesoVenta.CotSinVenta;
+                log.UsuarioRegistro = User.ObtenerUsuario();
+                procesoBL.InsertarWorkflowLog(log);
+
                 return Json(result);
             }
             catch (Exception ex) { return Json(new { Status = 0, Mensaje = ex.Message }); }
