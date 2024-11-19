@@ -51,17 +51,17 @@ namespace AHSECO.CCL.BL
                 return new ResponseDTO<bool>(ex);
             }
         }
-        public ResponseDTO<bool> EmpleadosMant(EmpleadoDTO empleadoDTO)
+        public ResponseDTO<RespuestaDTO> EmpleadosMant(EmpleadoDTO empleadoDTO)
         {
             try
             {
                 var result = Repository.EmpleadosMant(empleadoDTO);
-                return new ResponseDTO<bool>(result);
+                return new ResponseDTO<RespuestaDTO>(result);
             }
             catch (Exception ex)
             {
                 Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
-                return new ResponseDTO<bool>(ex);
+                return new ResponseDTO<RespuestaDTO>(ex);
             }
         }
         public ResponseDTO<FiltroGrupoEmpledosDTO> GrupoEmpleadosFiltro()

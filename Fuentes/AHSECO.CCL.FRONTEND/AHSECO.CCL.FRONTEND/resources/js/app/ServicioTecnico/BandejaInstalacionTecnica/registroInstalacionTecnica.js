@@ -76,7 +76,7 @@
     var $modalSolicitud = $('#modalSolicitud');
     var $modalAsignacion = $('#modalAsignacion');
     var $modalBusquedaTecnico = $('#modalBusquedaTecnico');
-    var $modalZona = $('#modalZona');
+    //var $modalZona = $('#modalZona');
     var $modalDetalleInstalacion = $('#modalDetalleInstalacion');
     var $modalElementosDeProducto = $('#modalElementosDeProducto');
     var $modalUbigeo = $('#modalUbigeo');
@@ -142,6 +142,7 @@
     var $btnRegistrarTecnico = $('#btnRegistrarTecnico');
     var $btnEditarTecnico = $('#btnEditarTecnico');
     var $searchTecnico = $('#searchTecnico');
+    var $searchZona = $('#searchZona');
     var $txtNombreTecnico = $('#txtNombreTecnico');
     var $txtCodTecnico = $('#txtCodTecnico');
     var $txtNumDocumento = $('#txtNumDocumento');
@@ -192,7 +193,7 @@
         });
         $btnProcesoInst.click(cambiarEstadoProceso);
         $btnFinalizarReq.click(CerrarRequerimiento);
-        $btnGuardarUbigeo.click(seleccionar);
+        //$btnGuardarUbigeo.click(seleccionar);
         $btnEditarReq.click(EditarRequerimiento);
         //$btnRegistrarTecnico.click(AsignarTecnico_a_Producto);
         $btnAgregarObservacion.click($modalObservacionClick);
@@ -204,6 +205,7 @@
         $btnBuscarSolicitud.click(BuscarSolicitudes);
         $searchSolVenta.click(BuscarSolicitudes);
         $searchTecnico.click(abrirModalTecnicos);
+        //$searchZona.click(logicUbigeo);
         $agregarTecnico.click(AgregarTecnicoExterno);
         $btnBuscarTecnico.click(BuscarTecnicos);
         $btnRegistrarTecnicoExterno.click(CrearTecnico3ro_a_Producto);
@@ -211,7 +213,6 @@
         $dateSolicitud.val(hoy());
         $fileCargaDocumentoSustento.on("change", $fileCargaDocumentoSustento_change);
         CargarTipoDocumento(3); //Cambiar a tipo de proceso Instalación Técnica.
-        logicUbigeo();
         $cmbTipoCredencial.on('change', function (e) {
             if (e.target.value === "GETD0001") {
                 $txtNumDocumento.attr("maxlength", '8');
@@ -228,12 +229,14 @@
     };
 
 
+    /*Lógica Ubigeo
+
     function logicUbigeo() {
         $cmbProvincia.prop("disabled", true);
         $cmbDistrito.prop("disabled", true);
-        getDepartamento();
+        getDepartamentos();
     }
-    function getDepartamento() {
+    function getDepartamentos() {
         var method = "POST";
         var url = "Ubigeo/ObtenerUbigeo";
         var ubigeoObj = {}
@@ -350,11 +353,13 @@
             $txtCodUbicacion.val(codDistrito);
         });
 
+
         var filters = {};
         filters.placeholder = "-- Seleccione --";
         filters.allowClear = false;
         app.llenarCombo($cmbDistrito, distritos, $modalUbigeo, "", "<--Seleccione-->", filters)
-    };
+    }
+    
 
     function seleccionar() {
 
@@ -379,7 +384,7 @@
 
         $txtZona.val(nomDepartamento + ' / ' + nomProvincia + ' / ' + nomDistrito);
         $modalUbigeo.modal('hide');
-    }
+    }*/
     function btnCheck() {
         $(document).on('change', '#checkSeleccionar', function (e) {
             if (this.checked) {
@@ -441,7 +446,7 @@
             Id_DespachoList: productos,
             CodTecnico: $hdnIdTecnico.val(),
             TipoProceso: "T",
-            Empresa: $txtNomEmpresa.val(),
+            Empresa: $txtEmpresaTecnico.val(),
             Id: null,
             FechaProgramacion: null,
             FechaInstalacion: null
@@ -450,6 +455,8 @@
         var objParams = JSON.stringify(objAsignacion);
         var fnDoneCallback = function () {
             obtenerDetalleInstalacion();
+            $txtEmpresaTecnico.val("");
+            $txtEmpresaTecnico.prop('disabled', true);
             //ObtenerListClientevsAsesor();
         }
         var fnFailCallBack = function () {
@@ -593,14 +600,15 @@
         var objEmpleado = JSON.stringify(objParam);
 
         var fnDoneCallback = function (data) {
-            app.message.confirm("Éxito", "Se realizó la creación del técnico satisfactoriamente.");
-            $modalAsignacion.modal('toggle');
-            $hdnIdTecnico.val(data.Result.Codigo);
             $txtTecnico.val($txtNombreTecnico.val().trim() + ' ' + $txtApellidoPaternoTec.val().trim() + ' ' + $txtApellidoMaternoTec.val().trim());
-            $txtNomEmpresa.prop('disabled', false);
+            $txtEmpresaTecnico.val("");
+            $txtEmpresaTecnico.prop('disabled', false);
+            app.message.confirm("Éxito", "Se realizó la creación del técnico satisfactoriamente.");
+            $hdnIdTecnico.val(data.Codigo);
+            $modalAsignacion.modal('toggle');
         };
         var fnFailCallback = function () {
-            app.message.error("Error", "Error en la inserción del nuevo técnico externo.");
+            app.message.error("Error", "Error en la inserción o documento de identidad ya ha sido ingresado con anterioridad, por favor revisar.");
         };
 
         app.llamarAjax(method, url, objEmpleado, fnDoneCallback, fnFailCallback, null, null);
@@ -1987,51 +1995,12 @@
 
         app.llenarTabla($tblTecnicos, data, columns, columnDefs, "#tblTecnicos", null);
     }
-    function seleccionarTecnico(codigo, nombreTecnicom, nombreEmpresa) {
+    function seleccionarTecnico(codigo, nombreTecnico, nombreEmpresa) {
         $hdnIdTecnico.val(codigo);
         $txtTecnico.val(nombreTecnico);
-        $txtNomEmpresa.val(nombreEmpresa);
+        $txtEmpresaTecnico.val(nombreEmpresa);
         $modalBusquedaTecnico.modal('toggle');
     };
-    //function DesasignarTécnicoTmp(id) {
-    //
-    //    var id = id.toString();
-    //
-    //    var method = "POST";
-    //    var url = "BandejaInstalacionTecnica/MantTecnicoxDetalle";
-    //    var objTecnico = {
-    //        TipoProceso: "D"
-    //        , Id: id
-    //        , Id_Detalle: ""
-    //        , Cod_Tecnico: ""
-    //        , NombreTecnico: ""
-    //        , Documento: ""
-    //        , TipDocumento: ""
-    //        , Correo: ""
-    //        , Telefono: ""
-    //        , Zona: ""
-    //        , TipoTecnico: ""
-    //        , Estado: 0
-    //    }
-    //
-    //    var objParam = JSON.stringify(objTecnico);
-    //
-    //    var fnSi = function () {
-    //
-    //        var fnDoneCallBack = function (data) {
-    //            app.message.success("Éxito", "Se realizó la des-asignación con éxito.");
-    //            $hdnIdTecnico.val(data.Result.Codigo);
-    //            obtenerDetalleInstalacion();
-    //        };
-    //
-    //        var fnFailCallBack = function () {
-    //            app.message.error("Error", "Se produjo un error al realizar la des-asignación del técnico a la instalación, por favor revisar.");
-    //        };
-    //
-    //        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
-    //    };
-    //    return app.message.confirm("Instalación Técnica", "¿Está seguro(a) que desea des-asignar al técnico de la instalación de este producto?", "Si", "No", fnSi, null);
-    //}
     function $adjuntarDocumento_click() {
         //$fileCargaDocumentoSustento.click();
         $lblNombreArchivo.text("");

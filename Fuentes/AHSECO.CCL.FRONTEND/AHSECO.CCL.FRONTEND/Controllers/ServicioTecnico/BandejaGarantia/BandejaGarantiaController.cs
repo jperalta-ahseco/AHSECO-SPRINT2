@@ -14,6 +14,7 @@ using AHSECO.CCL.BE;
 using AHSECO.CCL.BL;
 using AHSECO.CCL.COMUN;
 using AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica;
+using AHSECO.CCL.BL.ServicioTecnico.BandejaGarantias;
 using AHSECO.CCL.BE.Mantenimiento;
 using AHSECO.CCL.BL.Mantenimientos;
 using NPOI.HSSF.UserModel;
@@ -25,6 +26,7 @@ using System.Configuration;
 using static AHSECO.CCL.COMUN.ConstantesDTO;
 using System.Web.Http.Results;
 using Microsoft.Ajax.Utilities;
+using AHSECO.CCL.BE.ServicioTecnico.BandejaGarantias;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
 {
@@ -34,107 +36,34 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
         [Permissions(Permissions = "BANDEJAGARANTIA")]
         public ActionResult Index()
         {
-            VariableSesion.setCadena("NumReq", "");
+            VariableSesion.setCadena("NumReclamo", "");
             VariableSesion.setCadena("CodEstado", "");
             VariableSesion.setCadena("IdWorkFlow", "");
             VariableSesion.setCadena("TipoProceso", "");
             return View();
         }
         
-        public JsonResult ObtenerFiltrosInstalacion()
+        public JsonResult ObtenerFiltrosGarantias()
         {
-            var instalacionTecnicaBL = new InstalacionTecnicaBL();
-            var result = instalacionTecnicaBL.ObtenerFiltrosInstalacion();
+            var garantiasBL = new GarantiasBL();
+            var result = garantiasBL.ObtenerFiltrosGarantias();
             return Json(result);
         }
-        public JsonResult ObtenerSolicitudes(SolicitudDTO solicitudDTO)
+        public JsonResult ObtenerReclamos(FiltroReclamosDTO filtros)
         {
-            var instalacionTecnicaBL = new InstalacionTecnicaBL();
-            var result = instalacionTecnicaBL.ObtenerSolicitudes(solicitudDTO);
+
+            var garantiasBL = new GarantiasBL();
+            var result = garantiasBL.ObtenerReclamos(filtros);
             return Json(result);
         }
-        public JsonResult ObtenerDetalleSolicitud(long id)
-        {
-            var instalacionTecnicaBL = new InstalacionTecnicaBL();
-            var result = instalacionTecnicaBL.ObtenerDetalleSolicitud(id);
-            return Json(result);
-        }
-        public JsonResult ObtenerInstalacionesTec(FiltroInstalacionTecDTO filtros)
-        {
-
-            var instalacionTecnicaBL = new InstalacionTecnicaBL();
-            var result = instalacionTecnicaBL.ObtenerInstalacionesTec(filtros);
-            return Json(result);
-        }
-        public JsonResult ObtenerMainInstalacion(long NumReq, long IdWorkFlow)
-        {
-            var instalacionTecnicaBL = new InstalacionTecnicaBL();
-            var result = instalacionTecnicaBL.ObtenerMainInstalacion(NumReq, IdWorkFlow);
-            return Json(result);
-        }
-        public JsonResult ObtenerDetalleInstalacion(InstalacionTecnicaDetalleDTO detalle)
-        {
-            var instalacionTecnicaBL = new InstalacionTecnicaBL();
-            var result = instalacionTecnicaBL.ObtenerDetalleInstalacion(detalle);
-            return Json(result);
-        }
-        public ActionResult RegistroGarantia()
-        {
-            string[] cabeceraProductos1 = //tener en consideración que después de la coma, se define el ancho de la columna en %, ejemplo : 5%
-            {
-                "Id,5",
-                "Descripcion,10",
-                "Marca,10",
-                "Modelo,10",
-                "Serie,10",
-                "Cantidad,10",
-                "Cantidad Prev.,12",
-                "Periodicidad,10",
-                "Garantia,10",
-                "Numero Fianza,10",
-            };
-
-            string[] cabeceraProductos2 = //tener en consideración que después de la coma, se define el ancho de la columna en %, ejemplo : 5%
-            {
-                "Id,5",
-                "Descripción,10",
-                "Marca,10",
-                "Modelo,10",
-                "Serie,10",
-                "Cantidad,5",
-                "Cantidad Prev,5",
-                "Periodicidad,5",
-                "Garantia,5",
-                "Numero Fianza,5",
-                "Fecha Programación,15",
-                "Fecha Instalacion,15"
-            };
-
-            var tipoProceso = VariableSesion.getCadena("TipoProceso");
-
-            if (tipoProceso == "U")
-            {
-                ViewBag.cabecera = cabeceraProductos2;
-            }
-            else if (tipoProceso =="V")
-            {
-                ViewBag.cabecera = cabeceraProductos2;
-            }
-            else{
-                ViewBag.cabecera = cabeceraProductos1;
-            }
-
-            return View();
-        }
-
-        public JsonResult SetVariablesGenerales(InstalacionTecnicaDTO instalacion)
+        public JsonResult SetVariablesGenerales(ReclamosDTO reclamo)
         {
             try
             {
-                VariableSesion.setCadena("NumReq", instalacion.NumReq.ToString());
-                VariableSesion.setCadena("CodEstado", instalacion.CodEstado);
-                VariableSesion.setCadena("IdWorkFlow", instalacion.Id_WorkFlow.ToString());
-                VariableSesion.setCadena("TipoProceso", instalacion.TipoProceso);
+                VariableSesion.setCadena("NumReclamo", reclamo.Id_Reclamo.ToString());
+                VariableSesion.setCadena("CodEstado", reclamo.CodEstado);
+                VariableSesion.setCadena("IdWorkFlow", reclamo.Id_Workflow.ToString());
+                VariableSesion.setCadena("TipoProceso", reclamo.TipoProceso);
                 return Json(new
                 {
                     Status = 1
@@ -149,7 +78,13 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
                 });
             }
         }
-        public JsonResult RegistroRequerimientoMain(GrupoInstalacionTecnicaDTO grupoInstalacionTecnicaDTO)
+
+        public ActionResult RegistroGarantia()
+        {
+            return View();
+        }
+
+        public JsonResult RegistroGarantiaMain(GrupoInstalacionTecnicaDTO grupoInstalacionTecnicaDTO)
         {
             try
             {
@@ -244,30 +179,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
                 });
             }
             //return Json(new ResponseDTO<RespuestaDTO>(result));
-        }
-
-        public JsonResult MantInstalacion(InstalacionTecnicaDTO instalacion)
-        {
-            var instalacionTecnicaBL = new InstalacionTecnicaBL();
-            instalacion.UsuarioRegistra = User.ObtenerUsuario();
-            var result = instalacionTecnicaBL.MantInstalacion(instalacion);
-            return Json(result);
-        }
-
-        public JsonResult MantInstalacionTecnicaDetalle(InstalacionTecnicaDetalleDTO detalle)
-        {
-            var instalacionTecnicaBL = new InstalacionTecnicaBL();
-            detalle.UsuarioRegistra = User.ObtenerUsuario();
-            var result = instalacionTecnicaBL.MantInstalacionTecnicaDetalle(detalle);
-            return Json(result);
-        }
-
-        public JsonResult MantTecnicoxDetalle(TecnicoInstalacionDTO tecnico)
-        {
-            var instalacionTecnicaBL = new InstalacionTecnicaBL();
-            tecnico.UsuarioRegistra = User.ObtenerUsuario();
-            var result = instalacionTecnicaBL.MantTecnicoxDetalle(tecnico);
-            return Json(result);
         }
                
         [HttpPost]
@@ -520,7 +431,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
         }
         public FileResult DescargarFile(string url, string nombreDoc)
         {
-            string pao_files = ConfigurationManager.AppSettings.Get("temppFiles");
+            string pao_files = ConfigurationManager.AppSettings.Get("tempFiles");
             string ruta = pao_files + url;
 
             var fileName = Path.GetFileName(url);
@@ -529,37 +440,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
             return File(ruta, contentType, nombreDoc);
         }
         
-        public JsonResult EnProcesoActualizacion(InstalacionTecnicaDTO instalacion)
-        {
-            var result = new RespuestaDTO();
-            try
-            {
-                var instalacionBL = new InstalacionTecnicaBL();
-                var procesosBL = new ProcesosBL();
-
-                var response = instalacionBL.MantInstalacion(instalacion);
-
-                //Se realiza el registro de seguimiento de workflow:
-                var log = new FiltroWorkflowLogDTO();
-                log.CodigoWorkflow = response.Result.Codigo;
-                log.Usuario = User.ObtenerUsuario();
-                log.CodigoEstado = "STEPI";
-                log.UsuarioRegistro = User.ObtenerUsuario();
-                procesosBL.InsertarWorkflowLog(log);
-
-                result.Codigo = 1;
-                result.Mensaje = "Se realizó el cambio de estado satisfactoriamente";
-                return Json(result);
-            }
-            catch(Exception ex)
-            {
-                result.Codigo = 0;
-                result.Mensaje = "Ocurrió un error al realizar el cambio de estado, por favor revisar.";
-                return Json(result);
-            }
-        }
-
-        public JsonResult CerrarInstalacion(InstalacionTecnicaDTO instalacion)
+        public JsonResult FinalizarGarantia(ReclamosDTO reclamo)
         {
             var result = new RespuestaDTO();
             var instalacionBL = new InstalacionTecnicaBL();
@@ -567,58 +448,18 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
 
             try
             {
-                var response = instalacionBL.MantInstalacion(instalacion);
-                //Se realiza el registro de seguimiento de workflow:
-                var log = new FiltroWorkflowLogDTO();
-                log.CodigoWorkflow = response.Result.Codigo;
-                log.Usuario = User.ObtenerUsuario();
-                log.CodigoEstado = "STINS";
-                log.UsuarioRegistro = User.ObtenerUsuario();
-                procesosBL.InsertarWorkflowLog(log);
-
-                var filtros = new FiltroPlantillaDTO();
-                filtros.CodigoProceso = 3;
-                filtros.CodigoPlantilla = "PLANINSTECVEN";
-                filtros.Usuario = User.ObtenerUsuario();
-                filtros.Codigo = Convert.ToInt32(instalacion.NumReq);
-
-                //Se verifica los adjuntos:
-                var adjuntos = new List<string>();
-                var documentosBL = new DocumentosBL();
-                var documentos = documentosBL.ConsultaDocumentos(response.Result.Codigo);
-                foreach (var doc in documentos.Result)
+                return Json(new
                 {
-                    if (doc.CodigoTipoDocumento == "DI01" && doc.Eliminado == 0) //Solo documentos de tipo Acta de Instalación:
-                    {
-                        string pao_files = ConfigurationManager.AppSettings.Get("tempFiles");
-                        string ruta = pao_files + doc.RutaDocumento;
-                        adjuntos.Add(ruta);
-                    }
-                }
-
-                //Envío de correo.
-                var plantillasBL = new PlantillasBL();
-                var datos_correo = plantillasBL.ConsultarPlantillaCorreo(filtros).Result;
-                var respuesta = Utilidades.Send(datos_correo.To, datos_correo.CC, "", datos_correo.Subject, datos_correo.Body, adjuntos, "");
-                CCLog Log = new CCLog();
-                if (respuesta != "OK")
-                {
-                    Log.TraceInfo("Requerimiento N° " + instalacion.NumReq + ":" + respuesta);
-                }
-                else
-                {
-                    Log.TraceInfo("Envio exitoso de correo para el requerimiento N° " + instalacion.NumReq);
-                }
-
-                result.Codigo = 1;
-                result.Mensaje = "Se realizó el envío de correo a las áreas implicadas.";
-                return Json(result);
+                    rpta = "Hola"
+                });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                result.Codigo = 0;
-                result.Mensaje = ex.Message;
-                return Json(result);
+
+                return Json(new
+                {
+                    rpta = "Hola"
+                });
             }
         }
 

@@ -136,7 +136,7 @@ namespace AHSECO.CCL.BD
             return true;
         }
 
-        public bool EmpleadosMant(EmpleadoDTO empleadoDTO)
+        public RespuestaDTO EmpleadosMant(EmpleadoDTO empleadoDTO)
         {
             using (var connection = Factory.ConnectionFactory())
             {
@@ -164,14 +164,18 @@ namespace AHSECO.CCL.BD
                 parameters.Add("isEstado", empleadoDTO.Estado);
                 parameters.Add("isUsrReg", empleadoDTO.UsuarioRegistra);
 
-                var result = connection.Execute(
+                var result = connection.Query(
                     sql: "USP_MANT_EMPLEADOS",
                     param: parameters,
-                    commandType: CommandType.StoredProcedure
-                    );
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new RespuestaDTO
+                    {
+                        Codigo = i.Single(d => d.Key.Equals("COD")).Value.Parse<int>(),
+                        Mensaje = i.Single(d => d.Key.Equals("MSG")).Value.Parse<string>()
+                    }).FirstOrDefault();
+                return result;
             }
-
-            return true;
         }
         public FiltroGrupoEmpledosDTO GrupoEmpleadosFiltro()
         {

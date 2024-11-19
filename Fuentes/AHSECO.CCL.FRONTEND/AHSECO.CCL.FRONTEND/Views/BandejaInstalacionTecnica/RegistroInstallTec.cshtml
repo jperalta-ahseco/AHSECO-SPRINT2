@@ -10,7 +10,7 @@
 
     var visualizar = false;
 
-    if(tipoProceso != "")
+    if (tipoProceso != "")
     {
         visualizar = true;
     };
@@ -20,7 +20,7 @@
 <input hidden id="numeroReq" value="@numReq" />
 <input hidden id="codigoWorkflow" value="@IdWorkFlow" />
 <input hidden id="estadoReq" value="@codEstado" />
-<input hidden id="tipoproceso" value="@tipoProceso"/>
+<input hidden id="tipoproceso" value="@tipoProceso" />
 
 <div class="container-fluid">
     <h4><i class="fa fa-wrench" aria-hidden="true"></i> @ViewBag.Title</h4>
@@ -141,11 +141,11 @@
                             </div>
                         </div>
                         <!--<div class="col-md-4 col-sm-12" id="colContrato" style="display:none">
-        <label for="txtContrato">N° Contrato:</label>
-        <div class="form-group">
-            <input disabled type="text" class="form-control input-sm" id="txtContrato" value="">
-        </div>
-    </div>-->
+                            <label for="txtContrato">N° Contrato:</label>
+                            <div class="form-group">
+                                <input disabled type="text" class="form-control input-sm" id="txtContrato" value="">
+                            </div>
+                        </div>-->
                         <div class="col-md-4 col-sm-12" id="colOrdenCompra" style="display:none">
                             <label for="txtOrdCompra">Orden de Compra:</label>
                             <div class="form-group">
@@ -162,9 +162,9 @@
                             }
                             else if (numReq != "")
                             {
-                                if(tipoProceso == "U")
-                                {               
-                                <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnEditarReq" tabindex="14"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;Editar Requerimiento</button>
+                                if (tipoProceso == "U")
+                                {
+                                    <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnEditarReq" tabindex="14"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;Editar Requerimiento</button>
                                 }
                             }
                             <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegresar" tabindex="14"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Regresar</button>
@@ -215,20 +215,20 @@
                                 </div>
                                 @if (numReq != "")
                                 {
-                                    if(tipoProceso != "V")
-                                    {                       
-                                    <div class="row container-fluid">
-                                        <div class="text-right">
-                                            @if (codEstado == "STREG")
-                                            {
-                                                <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnProcesoInst" tabindex="14"><i class="fa fa-cog" aria-hidden="true"></i>&nbsp;Cambiar a Estado</button>
-                                            }
-                                            @if (codEstado == "STEPI" || codEstado == "STEPP")
-                                            {
-                                                <button class="btn btn-default btn-sm" type="button" id="btnFinalizarReq"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Finalizar Requerimiento</button>
-                                            }
+                                    if (tipoProceso != "V")
+                                    {
+                                        <div class="row container-fluid">
+                                            <div class="text-right">
+                                                @if (codEstado == "STREG")
+                                                {
+                                                    <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnProcesoInst" tabindex="14"><i class="fa fa-cog" aria-hidden="true"></i>&nbsp;Cambiar a Estado</button>
+                                                }
+                                                @if (codEstado == "STEPI" || codEstado == "STEPP")
+                                                {
+                                                    <button class="btn btn-default btn-sm" type="button" id="btnFinalizarReq"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Finalizar Requerimiento</button>
+                                                }
+                                            </div>
                                         </div>
-                                    </div>
                                     }
                                 }
                             </div>
@@ -310,20 +310,21 @@
     }
 </div>
 
+<!--
 <div class="modal fade" id="modalZona" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-    @{ 
+    {
         Html.RenderPartial("_Ubigeo");
     }
-</div>
+</div>-->
 
 <div class="modal fade" id="modalDetalleInstalacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-    @{ 
+    @{
         Html.RenderPartial("_DetalleInstalacionTecnica");
     }
 </div>
 
-<div class="modal fade" id="modalElementosDeProducto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">>
-    @{ 
+<div class="modal fade" id="modalElementosDeProducto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    @{
         Html.RenderPartial("_ElementosDeProducto");
     }
 </div>

@@ -14,6 +14,7 @@ using NPOI.SS.UserModel;
 using System.IO;
 using AHSECO.CCL.COMUN;
 using AHSECO.CCL.FRONTEND.Security;
+using System.Resources;
 namespace AHSECO.CCL.FRONTEND.Controllers.Mantenimientos
 {
     public class BandejaEmpleadosController : Controller
@@ -50,7 +51,26 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Mantenimientos
             var empleadosBL = new EmpleadosBL();
             empleadoDTO.UsuarioRegistra = User.ObtenerUsuario();
             var response = empleadosBL.EmpleadosMant(empleadoDTO);
-            return Json(response);
+
+            if (response.Result.Codigo == 0)
+            {
+                return Json(new
+                {
+                    Status = 0,
+                    Codigo = response.Result.Codigo,
+                    Mensaje = "Error en la inserción o documento de identidad duplicado"
+                });
+            }
+            else
+            {
+                return Json(new
+                {
+                    Status = 1,
+                    Codigo = response.Result.Codigo,
+                    Mensaje = "Inserción completada"
+                });
+            }
+
         }
         public void ExportarEmpleados(FiltroEmpleadosDTO filtrpoEmpleadosDTO)
         {
