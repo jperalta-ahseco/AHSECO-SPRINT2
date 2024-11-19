@@ -94,8 +94,7 @@
     var $formDetalleInstall = $('#formDetalleInstall');
     var $txtCantPrev = $('#txtCantPrev');
     var $cmbPeriodos = $('#cmbPeriodos');
-    var $txtGarantia = $('#txtGarantia');
-    var $txtGarantiaAdicional = $('#txtGarantiaAdicional');
+    var $cmbGarantias = $('#cmbGarantias');
     var $txtUbigeDestinoc = $('#txtUbigeDestino');
     var $hdnCodUbigeoDestino = $('#hdnCodUbigeoDestino');
     var $txtDireccionInstall = $('#txtDireccionInstall');
@@ -838,22 +837,18 @@
         limpiarCabecera()
 
         if (requerimiento.NroProceso != "" && requerimiento.NroProceso != null) {
-            $rowDocsProc.css('display', 'block');
             $colProceso.css('display', 'block');
         };
 
         if (requerimiento.TipoProceso != "" && requerimiento.TipoProceso != null) {
-            $rowDocsProc.css('display', 'block');
             $coltipProceso.css('display', 'block');
         }
 
-        if (requerimiento.Contrato != "" && requerimiento.Contrato != null) {
-            $rowDocsProc.css('display', 'block');
-            $colContrato.css('display', 'block');
-        };
+        //if (requerimiento.Contrato != "" && requerimiento.Contrato != null) {
+        //    $colContrato.css('display', 'block');
+        //};
 
         if (requerimiento.OrdenCompra != "" && requerimiento.OrdenCompra != null) {
-            $rowDocsProc.css('display', 'block');
             $colOrdenCompra.css('display', 'block');
         };
 
@@ -866,6 +861,7 @@
             $txtCargoContacto.val(requerimiento.CargoContacto);
             $txtTelefContacto.val(requerimiento.TelefonoContacto);
             $txtEstablecimientoCont.val(requerimiento.Establecimiento);
+            $cmbGarantias.val(requerimiento.Garantia).trigger('change.select2');
             $cmbTipVenta.val(requerimiento.TipoVenta).trigger('change.select2');
         if ($tipoproceso.val() == "") {
             $txtRuc.val(requerimiento.RUC);
@@ -1321,6 +1317,7 @@
 
             app.llenarComboMultiResult($cmbPeriodos, data.Result.Periodos, null, 0, "--Seleccionar--", filters2);
 
+            app.llenarComboMultiResult($cmbGarantias, data.Result.Garantias, null, 0, "--Seleccionar--", filters2);
         };
 
         var fnFailCallBack = function () {

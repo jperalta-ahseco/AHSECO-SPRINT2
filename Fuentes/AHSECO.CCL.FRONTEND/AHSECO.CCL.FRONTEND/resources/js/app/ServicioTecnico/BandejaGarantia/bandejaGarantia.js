@@ -5,8 +5,8 @@
     var $cmbProvincia = $('#cmbProvincia');
     var $cmbDistrito = $('#cmbDistrito');
     var $cmbDepartamento = $('#cmbDepartamento');
-    var $dateFecIni = $('#dateFecIni');
-    var $dateFecFin = $('#dateFecFin');
+    var $dateFecIni = $('#dateFecRecIni');
+    var $dateFecFin = $('#dateFecRecFin');
     var $openRegFecIni = $("#openRegFecIni");
     var $openRegFecFin = $("#openRegFecFin");
     var $modalUbigeo = $('#modalUbigeo');
@@ -37,7 +37,7 @@
 
     function Initializer() {
         logicUbigeo();
-        ObtenerFiltrosInstalacion();
+        ObtenerFiltrosGarantias();
         cargarAsesoresVenta();
         $btnSeleccionar.click(seleccionar);
         $openRegFecIni.click($openRegFecIni_click);
@@ -107,7 +107,7 @@
 
     function BuscarClick() {
         var method = "POST";
-        var url = "BandejaInstalacionTecnica/ObtenerInstalacionesTec";
+        var url = "BandejaGarantia/ObtenerReclamos";
         var objBuscar = {
             FecIni: $dateFecIni.val(),
             FecFin: $dateFecFin.val(),
@@ -226,9 +226,9 @@
         $modalUbigeo.modal('hide');
     }
 
-    function ObtenerFiltrosInstalacion() {
+    function ObtenerFiltrosGarantias() {
         method = "POST";
-        url = "BandejaInstalacionTecnica/ObtenerFiltrosInstalacion"
+        url = "BandejaGarantia/ObtenerFiltrosGarantias"
 
         var fnDoneCallBack = function (data) {
             //Cargar combo de empresas:
@@ -247,7 +247,7 @@
         };
 
         app.llamarAjax(method, url, null, fnDoneCallBack, fnFailCallBack, null, null)
-    };
+    }; //OKA
     /**ModalUbigeo****/
     function logicUbigeo() {
         var codDepartamento = "00"
@@ -384,6 +384,18 @@
         app.llenarCombo($cmbDistrito, distritos, $modalUbigeo, "000000", "<--Todos-->", filters)
     }
     /**Fin ModalUbigeo****/
+
+    /**Funciones Click */
+
+
+
+
+
+
+
+
+
+    /*Funciones para Fecha*/
     function $openRegFecIni_click() {
         $dateFecIni.focus();
     }
@@ -420,10 +432,12 @@
         return `${primerDia}/${mes}/${year}`;
 
     }
+    /*Fin Funciones para Fecha*/
+
 
     function editar(numReq, codEstado, idWorkFlow) {
         var method = "POST";
-        var url = "BandejaInstalacionTecnica/SetVariablesGenerales";
+        var url = "BandejaGarantia/SetVariablesGenerales";
         var objEditar = {
             NumReq: numReq,
             CodEstado: codEstado,
