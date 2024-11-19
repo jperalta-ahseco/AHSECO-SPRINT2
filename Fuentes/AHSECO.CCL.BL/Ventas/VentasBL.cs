@@ -68,6 +68,20 @@ namespace AHSECO.CCL.BL.Ventas
             }
         }
 
+        public ResponseDTO<IEnumerable<CotDetCostoDTO>> ObtenerCotDetCostos(CotDetCostoDTO cotCostoDTO)
+        {
+            try
+            {
+                var result = Repository.ObtenerCotDetCostos(cotCostoDTO);
+                return new ResponseDTO<IEnumerable<CotDetCostoDTO>>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceInfo(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<IEnumerable<CotDetCostoDTO>>(ex);
+            }
+        }
+
         public ResponseDTO<RespuestaDTO> MantenimientoSolicitudes(SolicitudDTO solicitudDTO)
         {
 
@@ -111,11 +125,25 @@ namespace AHSECO.CCL.BL.Ventas
             }
         }
 
-        public ResponseDTO<RespuestaDTO> MantenimientoCotiDetDespacho(CotDetDespachoDTO detCotDespacho)
+        public ResponseDTO<RespuestaDTO> MantenimientoCotDetDespacho(CotDetDespachoDTO detCotDespacho)
         {
             try
             {
-                var result = Repository.MantenimientoCotiDetDespacho(detCotDespacho);
+                var result = Repository.MantenimientoCotDetDespacho(detCotDespacho);
+                return new ResponseDTO<RespuestaDTO>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceInfo(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<RespuestaDTO>(ex);
+            }
+        }
+
+        public ResponseDTO<RespuestaDTO> MantenimientoCotDetCosto(CotDetCostoDTO detCotCosto)
+        {
+            try
+            {
+                var result = Repository.MantenimientoCotDetCosto(detCotCosto);
                 return new ResponseDTO<RespuestaDTO>(result);
             }
             catch (Exception ex)

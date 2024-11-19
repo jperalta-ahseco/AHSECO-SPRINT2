@@ -187,6 +187,54 @@ namespace AHSECO.CCL.BD.Ventas
             };
         }
 
+        public IEnumerable<CotDetCostoDTO> ObtenerCotDetCostos(CotDetCostoDTO cotCostoDTO)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+
+            using (var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+                var parameters = new DynamicParameters();
+                parameters.Add("pId", cotCostoDTO.Id, DbType.Int32, ParameterDirection.Input);
+                if(cotCostoDTO.CotizacionDetalle != null)
+                {
+                    parameters.Add("pId_Cotizacion", cotCostoDTO.CotizacionDetalle.IdCotizacion, DbType.Int32, ParameterDirection.Input);
+                }
+                else
+                {
+                    parameters.Add("pId_Cotizacion", DBNull.Value, DbType.Int32, ParameterDirection.Input);
+                }
+                parameters.Add("pId_CotDetalle", cotCostoDTO.IdCotizacionDetalle, DbType.Int32, ParameterDirection.Input);
+                parameters.Add("pNumSec", cotCostoDTO.NumSecuencia, DbType.Int32, ParameterDirection.Input);
+                parameters.Add("pCodCosto", cotCostoDTO.CodCosto, DbType.String, ParameterDirection.Input);
+
+                var result = connection.Query(
+                    sql: "USP_SEL_TBD_COTIZACIONCOSTOS",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new CotDetCostoDTO
+                    {
+                        Id = i.Single(d => d.Key.Equals("ID")).Value.Parse<int>(),
+                        IdCotizacionDetalle = i.Single(d => d.Key.Equals("ID_COTDETALLE")).Value.Parse<int>(),
+                        NumSecuencia = i.Single(d => d.Key.Equals("NUMSEC")).Value.Parse<int>(),
+                        CodCosto = i.Single(d => d.Key.Equals("CODCOSTO")).Value.Parse<string>(),
+                        CantidadCosto = i.Single(d => d.Key.Equals("CANTCOSTO")).Value.Parse<int?>(),
+                        CantPreventivo = i.Single(d => d.Key.Equals("CANTPREVENTIVO")).Value.Parse<int?>(),
+                        CodCicloPreventivo = i.Single(d => d.Key.Equals("CODCICLOPREVENT")).Value.Parse<string>(),
+                        CodUbigeoDestino = i.Single(d => d.Key.Equals("CODUBIGEODEST")).Value.Parse<string>(),
+                        Direccion = i.Single(d => d.Key.Equals("DIRECCION")).Value.Parse<string>(),
+                        AmbienteDestino = i.Single(d => d.Key.Equals("AMBIENTEDEST")).Value.Parse<string>(),
+                        NroPiso = i.Single(d => d.Key.Equals("NROPISO")).Value.Parse<int?>(),
+                        MontoUnitarioCosto = i.Single(d => d.Key.Equals("MONTOUNICOSTO")).Value.Parse<decimal?>(),
+                        MontoTotalCosto = i.Single(d => d.Key.Equals("MONTOTOTCOSTO")).Value.Parse<decimal?>()
+                    });
+
+                connection.Close();
+                return result;
+            };
+        }
+
         public RespuestaDTO MantenimientoSolicitudes(SolicitudDTO solicitudDTO)
         {
             Log.TraceInfo(Utilidades.GetCaller());
@@ -324,7 +372,7 @@ namespace AHSECO.CCL.BD.Ventas
             }
         }
 
-        public RespuestaDTO MantenimientoCotiDetDespacho(CotDetDespachoDTO detCotDespacho)
+        public RespuestaDTO MantenimientoCotDetDespacho(CotDetDespachoDTO detCotDespacho)
         {
             Log.TraceInfo(Utilidades.GetCaller());
             using (var connection = Factory.ConnectionFactory())
@@ -394,6 +442,74 @@ namespace AHSECO.CCL.BD.Ventas
 
                 var result = connection.Query(
                     sql: "USP_MANT_TBM_COTDET_DESPACHO",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new RespuestaDTO
+                    {
+                        Codigo = i.Single(d => d.Key.Equals("COD")).Value.Parse<int>(),
+                        Mensaje = i.Single(d => d.Key.Equals("MSG")).Value.Parse<string>()
+                    }).FirstOrDefault();
+
+                connection.Close();
+                return result;
+            }
+        }
+
+        public RespuestaDTO MantenimientoCotDetCosto(CotDetCostoDTO detCotCosto)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using (var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+                var parameters = new DynamicParameters();
+
+                parameters.Add("pTipoProceso", detCotCosto.TipoProceso);
+                parameters.Add("pId", detCotCosto.Id);
+                parameters.Add("pId_CodDetalle", detCotCosto.IdCotizacionDetalle);
+                parameters.Add("pNumSec", detCotCosto.NumSecuencia);
+                parameters.Add("pCodCosto", detCotCosto.CodCosto);
+                if (detCotCosto.CantidadCosto.HasValue)
+                {
+                    parameters.Add("pCantCosto", detCotCosto.CantidadCosto.Value);
+                }
+                else
+                {
+                    parameters.Add("pCantCosto", DBNull.Value, DbType.Int32);
+                }
+                if (detCotCosto.CantPreventivo.HasValue)
+                {
+                    parameters.Add("pCantPreventivo", detCotCosto.CantPreventivo.Value);
+                }
+                else
+                {
+                    parameters.Add("pCantPreventivo", DBNull.Value, DbType.Int32);
+                }
+                parameters.Add("pCodCicloPrevent", detCotCosto.CodCicloPreventivo);
+                parameters.Add("pCodUbigeoDest", detCotCosto.CodUbigeoDestino);
+                parameters.Add("pDireccion", detCotCosto.Direccion);
+                parameters.Add("pAmbienteDest", detCotCosto.AmbienteDestino);
+                if (detCotCosto.NroPiso.HasValue)
+                {
+                    parameters.Add("pNroPiso", detCotCosto.NroPiso.Value);
+                }
+                else
+                {
+                    parameters.Add("pNroPiso", DBNull.Value, DbType.Int32);
+                }
+                if (detCotCosto.MontoUnitarioCosto.HasValue)
+                { parameters.Add("pMontoUniCosto", detCotCosto.MontoUnitarioCosto.Value, DbType.Decimal); }
+                else
+                { parameters.Add("pMontoUniCosto", DBNull.Value, DbType.Decimal); }
+
+                if (detCotCosto.MontoTotalCosto.HasValue)
+                { parameters.Add("pMontoTotCosto", detCotCosto.MontoTotalCosto.Value, DbType.Decimal); }
+                else
+                { parameters.Add("pMontoTotCosto", DBNull.Value, DbType.Decimal); }
+                parameters.Add("pUsuarioRegistro", detCotCosto.UsuarioRegistra);
+
+                var result = connection.Query(
+                    sql: "USP_MANT_TBD_COTIZACIONCOSTOS",
                     param: parameters,
                     commandType: CommandType.StoredProcedure)
                     .Select(s => s as IDictionary<string, object>)

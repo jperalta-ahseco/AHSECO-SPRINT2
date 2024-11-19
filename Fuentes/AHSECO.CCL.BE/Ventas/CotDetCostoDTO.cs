@@ -13,15 +13,16 @@ namespace AHSECO.CCL.BE.Ventas
         public long IdCotizacionDetalle { get; set; }
         public int NumSecuencia { get; set; }
         public string CodCosto { get; set; }
-        public int? CantidadDespacho { get; set; }
+        public int? CantidadCosto { get; set; }
         public int? CantPreventivo { get; set; }
         public string CodCicloPreventivo { get; set; }
         public string CodUbigeoDestino { get; set; }
         public string DescUbigeoDestino { get; set; }
         public string Direccion { get; set; }
-        public string AmbienteInsta { get; set; }
+        public string AmbienteDestino { get; set; }
         public int? NroPiso { get; set; }
         public decimal? MontoUnitarioCosto { get; set; }
         public decimal? MontoTotalCosto { get; set; }
+        public CotizacionDetalleDTO CotizacionDetalle { get; set; }
     }
 }

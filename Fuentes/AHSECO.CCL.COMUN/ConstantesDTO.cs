@@ -158,6 +158,12 @@ namespace AHSECO.CCL.COMUN
 
         public struct CotizacionDetalleCostos
         {
+            public struct TipoProceso
+            {
+                public static string Insertar { get { return "I"; } }
+                public static string Modificar { get { return "U"; } }
+                public static string Eliminar { get { return "D"; } }
+            }
             public struct Costos
             {
                 public static string LLaveMano { get { return "CXCD0001"; } }

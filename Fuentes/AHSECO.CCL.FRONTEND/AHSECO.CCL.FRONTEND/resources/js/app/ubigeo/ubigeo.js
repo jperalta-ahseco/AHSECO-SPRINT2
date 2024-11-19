@@ -143,22 +143,34 @@ var ubigeo = (function ($, win, doc) {
         var codDistrito = sessionStorage.getItem('codDistrito')
         if ($UbigeoId != null && $UbigeoId != undefined) {
             $UbigeoId.val("");
-            $UbigeoText.val("");
-            if (app.validaNumeroEntero(codDistrito)) {
-                if (parseInt(codDistrito) > 0) {
-                    $UbigeoId.val(codDistrito);
-                    if ($.trim(codDistrito).length == 2) {
-                        $UbigeoText.val($("#select2-cmbDepartamento-container").attr("title"));
-                    }
-                    else if ($.trim(codDistrito).length == 4) {
-                        $UbigeoText.val($("#select2-cmbDepartamento-container").attr("title") + ' / ' +
-                            $("#select2-cmbProvincia-container").attr("title"));
-                    }
-                    else {
-                        $UbigeoText.val($("#select2-cmbDepartamento-container").attr("title") + ' / ' +
-                            $("#select2-cmbProvincia-container").attr("title") + ' / ' + $("#select2-cmbDistrito-container").attr("title"));
-                    }
+            var vUbigeoText = "";
+
+            if (app.validaNumeroEntero($cmbDepartamento.val())) {
+                if (parseInt($cmbDepartamento.val()) > 0) {
+                    $UbigeoId.val($cmbDepartamento.val());
+                    vUbigeoText = $("#select2-cmbDepartamento-container").attr("title");
                 }
+            }
+
+            if (app.validaNumeroEntero($cmbProvincia.val())) {
+                if (parseInt($cmbProvincia.val()) > 0) {
+                    $UbigeoId.val($cmbProvincia.val());
+                    vUbigeoText = $("#select2-cmbDepartamento-container").attr("title") + ' / ' +
+                        $("#select2-cmbProvincia-container").attr("title");
+                }
+            }
+
+            if (app.validaNumeroEntero($cmbDistrito.val())) {
+                if (parseInt($cmbDistrito.val()) > 0) {
+                    $UbigeoId.val($cmbDistrito.val());
+                    vUbigeoText = $("#select2-cmbDepartamento-container").attr("title") + ' / ' +
+                        $("#select2-cmbProvincia-container").attr("title") + ' / ' + $("#select2-cmbDistrito-container").attr("title");
+                }
+            }
+            
+            if ($UbigeoText != null && $UbigeoText != undefined) {
+                $UbigeoText.val("");
+                if (vUbigeoText != "" && vUbigeoText != null) { $UbigeoText.val(vUbigeoText); }
             }
         }
         else {

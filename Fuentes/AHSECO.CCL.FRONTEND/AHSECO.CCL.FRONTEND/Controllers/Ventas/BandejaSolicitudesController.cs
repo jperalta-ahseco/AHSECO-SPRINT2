@@ -43,8 +43,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
     public class BandejaSolicitudesVentasController : Controller
     {
 
-        const string TAG_CDI = "CDItems";
         const string TAG_ConceptosVenta = "ConceptosVenta";
+        const string TAG_CDI = "CDItems";
+        const string TAG_CDCI = "CostoItems";
 
         // GET BandejaSolicitudesVentas
         [Permissions(Permissions = "BANDEJAVENTAS")]
@@ -514,28 +515,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         if (resCotDet.Result.Any())
                         {
 
-                            //var swCostoFOB = true;
-                            //var swVentaUnitaria = true;
-
-                            //if (resCotDet.Result.Any(x => !x.CostoFOB.HasValue))
-                            //{ swCostoFOB = false; }
-                            //else
-                            //{
-                            //    if (resCotDet.Result.Where(o => o.CostoFOB.HasValue).Any(x => x.CostoFOB.Value <= 0)) { swCostoFOB = false; }
-                            //}
-                            //if (resCotDet.Result.Any(x => !x.VentaUnitaria.HasValue))
-                            //{ swVentaUnitaria = false; }
-                            //else
-                            //{
-                            //    if (resCotDet.Result.Where(o => o.VentaUnitaria.HasValue).Any(x => x.VentaUnitaria.Value <= 0)) { swVentaUnitaria = false; }
-                            //}
-
                             //Solo se puede recotizar la venta si se ingresó los costos de venta de cada item seleccionado para la cotización
                             if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion)
                             {
-                                //if (swCostoFOB && swVentaUnitaria)
-                                //{ ViewBag.EsCotizacionValorizada = "S"; }
-
                                 if (oCotizacion.IndValorizado.HasValue)
                                 {
                                     if (oCotizacion.IndValorizado.Value) { ViewBag.EsCotizacionValorizada = "S"; }
@@ -1831,7 +1813,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             {
                                 var itemCDD = itemCD.CotizacionDespacho;
                                 itemCDD.TipoProceso = ConstantesDTO.CotizacionDetalleDespacho.TipoProceso.Eliminar;
-                                ventasBL.MantenimientoCotiDetDespacho(itemCDD);
+                                ventasBL.MantenimientoCotDetDespacho(itemCDD);
                             }
                             itemCD.TipoProceso = ConstantesDTO.CotizacionVentaDetalle.TipoProceso.Eliminar;
                             ventasBL.MantenimientoCotizacionDetalle(itemCD);
@@ -1854,7 +1836,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         itemCDD.IdCotizacionDetalle = resCD.Result.Codigo;
                         itemCDD.UsuarioRegistra = User.ObtenerUsuario();
                         itemCDD.FechaRegistro = DateTime.Now;
-                        ventasBL.MantenimientoCotiDetDespacho(itemCDD);
+                        ventasBL.MantenimientoCotDetDespacho(itemCDD);
                     }
                 }
 
@@ -1990,7 +1972,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         itemCDD.IdCotizacionDetalle = resCD.Result.Codigo;
                         itemCDD.UsuarioRegistra = User.ObtenerUsuario();
                         itemCDD.FechaRegistro = DateTime.Now;
-                        var resCDD = ventasBL.MantenimientoCotiDetDespacho(itemCDD);
+                        var resCDD = ventasBL.MantenimientoCotDetDespacho(itemCDD);
                     }
                 }
 
@@ -2025,13 +2007,103 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         }
 
         [HttpPost]
+        public JsonResult ListarCDCostosItems(CotDetCostoDTO cotdetCosto)
+        {
+            var lstItems = GetCDIList("2");
+
+            var ventasBL = new VentasBL();
+            List<CotDetCostoDTO> lstCostos = new List<CotDetCostoDTO>();
+
+            //Se carga todos los costos
+            var resCostos = ventasBL.ObtenerCotDetCostos(new CotDetCostoDTO() { CotizacionDetalle = cotdetCosto.CotizacionDetalle });
+            lstCostos = resCostos.Result.ToList();
+
+            //Se completa los datos de cotizacion detalle para costos
+            lstCostos.ForEach(x =>
+            {
+                var cditem = lstItems.FirstOrDefault(y => y.Id == x.IdCotizacionDetalle);
+                if (cditem != null)
+                {
+                    x.CotizacionDetalle = cditem;
+                }
+            });
+            VariableSesion.setObject(TAG_CDCI, lstCostos);
+
+            //Solo se devuelve los costos de la grilla respectiva
+            var response = new ResponseDTO<IEnumerable<CotDetCostoDTO>>(lstCostos.Where(x => x.CodCosto == cotdetCosto.CodCosto));
+
+            return Json(response);
+        }
+
+        [HttpPost]
         public JsonResult GrabarDatosCostoItem(CotDetCostoDTO cotdetCosto)
         {
-            List<CotDetCostoDTO> lstItems = new List<CotDetCostoDTO>();
-            if (VariableSesion.getObject(TAG_CDI) != null) { lstItems = (List<CotDetCostoDTO>)VariableSesion.getObject("TAG_CDCI"); }
+            try
+            {
+                List<CotDetCostoDTO> lstCostos = new List<CotDetCostoDTO>();
+                if (VariableSesion.getObject(TAG_CDCI) != null) { lstCostos = (List<CotDetCostoDTO>)VariableSesion.getObject(TAG_CDCI); }
 
-            //Solo cargar los productos en pantalla
-            var response = new ResponseDTO<IEnumerable<CotDetCostoDTO>>(lstItems);
+                var lstItems = GetCDIList("2");
+                var itemCD = lstItems.FirstOrDefault(x => x.Id == cotdetCosto.IdCotizacionDetalle);
+
+                if (cotdetCosto.Id <= 0)
+                {
+                    if (lstCostos.Where(o => o.CantidadCosto.HasValue).Select(x => x.CantidadCosto.Value).Sum() + cotdetCosto.CantidadCosto.Value > itemCD.Cantidad)
+                    {
+                        throw new Exception("La cantidad total que se está costeando no puede ser mayor a la cotizada");
+                    }
+                }
+                else
+                {
+                    if (lstCostos.Where(o => o.CantidadCosto.HasValue && o.Id != cotdetCosto.Id).Select(x => x.CantidadCosto.Value).Sum() + cotdetCosto.CantidadCosto.Value > itemCD.Cantidad)
+                    {
+                        throw new Exception("La cantidad total que se está costeando no puede ser mayor a la cotizada");
+                    }
+                }
+
+                var ventasBL = new VentasBL();
+                cotdetCosto.UsuarioRegistra = User.ObtenerUsuario();
+                if (cotdetCosto.Id > 0)
+                { cotdetCosto.TipoProceso = ConstantesDTO.CotizacionDetalleCostos.TipoProceso.Modificar; }
+                else
+                {
+                    cotdetCosto.NumSecuencia = lstCostos.Where(x => x.CodCosto == cotdetCosto.CodCosto).ToList().Count + 1;
+                    cotdetCosto.TipoProceso = ConstantesDTO.CotizacionDetalleCostos.TipoProceso.Insertar;
+                }
+                var resMant = ventasBL.MantenimientoCotDetCosto(cotdetCosto);
+                cotdetCosto.Id = resMant.Result.Codigo;
+
+                //Se carga todos los costos
+                var resCostos = ventasBL.ObtenerCotDetCostos(new CotDetCostoDTO() { CotizacionDetalle = cotdetCosto.CotizacionDetalle });
+                lstCostos = resCostos.Result.ToList();
+
+                //Se completa los datos de cotizacion detalle para costos
+                lstCostos.ForEach(x =>
+                {
+                    var cditem = lstItems.FirstOrDefault(y => y.Id == x.IdCotizacionDetalle);
+                    if (cditem != null)
+                    {
+                        x.CotizacionDetalle = cditem;
+                    }
+                });
+                VariableSesion.setObject(TAG_CDCI, lstCostos);
+
+                //Solo se devuelve los costos de la grilla respectiva
+                var response = new ResponseDTO<IEnumerable<CotDetCostoDTO>>(lstCostos.Where(x => x.CodCosto == cotdetCosto.CodCosto));
+
+                return Json(response);
+            }
+            catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
+        }
+
+        [HttpPost]
+        public JsonResult cargarDatosCostoItem(CotDetCostoDTO cotdetCosto)
+        {
+            List<CotDetCostoDTO> lstCostos = new List<CotDetCostoDTO>();
+            if (VariableSesion.getObject(TAG_CDCI) != null) { lstCostos = (List<CotDetCostoDTO>)VariableSesion.getObject(TAG_CDCI); }
+
+            var cdcItem = lstCostos.FirstOrDefault(x => x.Id == cotdetCosto.Id);
+            var response = new ResponseDTO<CotDetCostoDTO>(cdcItem);
 
             return Json(response);
         }

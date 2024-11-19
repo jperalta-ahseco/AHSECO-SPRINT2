@@ -63,14 +63,15 @@ BEGIN
 	IF (@pTipoProceso = 'U') BEGIN
 		
 		UPDATE [dbo].[TBM_COTDET_DESPACHO]
-		SET INDINFOVIDEO = @pIndInfoVideo, INDINFOMANUAL = @pIndInfoManual, INDINSTACAPA = @pIndInstaCapa, 
+		SET ID_COTDETALLE = @pId_CodDetalle,
+		INDINFOVIDEO = @pIndInfoVideo, INDINFOMANUAL = @pIndInfoManual, INDINSTACAPA = @pIndInstaCapa, 
 		INDGARANADIC = @pIndGarantiaAdic, INDLLAVEMANO = @pIndLLaveMano, DIMENSIONES = @pDimensiones, 
 		INDCOMPRALOCAL = @pIndCompraLocal, OBSCLIENTE = @pObsCliente, INDMANTPREVENT = @pIndMantPrevent,
 		INDREQPLACA = @pIndReqPlaca, OBSDESPACHO = @pObsDespacho, FECLIMINSTA = @pFecLimInsta, 
 		MTOTOTALCOSTO = @pMontoTotalCosto, INDFIANZA = @pIndFianza, NUMFIANZA = @pNumFianza, 
 		MONTOPPRINC = @pMontoPPrinc, MONTOPACCE = @pMontoPAcce,
 		USR_MOD = @pUsuarioRegistro, FEC_MOD = GETDATE()
-		WHERE ID_COTDETALLE = @pId_CodDetalle
+		WHERE ID = @pId
 		
 		SET @MSG ='Registro Modificado con éxito'
 		

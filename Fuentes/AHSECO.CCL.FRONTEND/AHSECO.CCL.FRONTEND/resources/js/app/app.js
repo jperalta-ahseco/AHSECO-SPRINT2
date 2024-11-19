@@ -810,14 +810,15 @@ var app = (function ($, win, doc) {
     }
 
     function validaNumeroDecimal(val) {
-        if (isNaN(val)) {
-            return false;
-        }
+        if (val == null) { return false; }
+        if (val == undefined) { return false; }
+        if (isNaN(val)) { return false; }
         return true;
     }
 
     function validaNumeroEntero(val) {
         if (val == null) { return false; }
+        if (val == undefined) { return false; }
         var valAux = val;
         var nIni = 1;
         var nFin = val.length;
