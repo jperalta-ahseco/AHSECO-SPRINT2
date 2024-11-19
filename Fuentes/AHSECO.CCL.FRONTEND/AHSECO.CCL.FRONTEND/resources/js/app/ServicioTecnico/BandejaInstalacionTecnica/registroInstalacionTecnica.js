@@ -756,7 +756,7 @@
             IdCliente: $cmbClienteSol.val() == "" || $cmbClienteSol.val() == 0 ? 0 : $cmbClienteSol.val(),
             Id_Solicitud: $txtSolicitud.val() == "" || $txtSolicitud.val() == 0 ? 0 : $txtSolicitud.val(),
             Estado: 'PRVT', //Cambiar estado según lo requieran
-            Tipo_Sol: "TSOL05"
+            Tipo_Sol: "TSOL5"
         };
 
         objParam = JSON.stringify(objBuscar);
