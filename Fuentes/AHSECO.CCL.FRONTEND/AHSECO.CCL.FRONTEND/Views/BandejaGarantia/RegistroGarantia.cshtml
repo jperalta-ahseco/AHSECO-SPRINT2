@@ -3,7 +3,7 @@
 @{
     ViewBag.Title = "Nuevo Reclamo:";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var numReq = VariableSesion.getCadena("NumReq");
+    var numReclamo = VariableSesion.getCadena("NumReclamo");
     var codEstado = VariableSesion.getCadena("CodEstado");
     var IdWorkFlow = VariableSesion.getCadena("IdWorkFlow");
     var tipoProceso = VariableSesion.getCadena("TipoProceso");
@@ -17,7 +17,7 @@
 
 }
 
-<input hidden id="numeroReq" value="@numReq" />
+<input hidden id="numReclamo" value="@numReclamo" />
 <input hidden id="codigoWorkflow" value="@IdWorkFlow" />
 <input hidden id="estadoReq" value="@codEstado" />
 <input hidden id="tipoproceso" value="@tipoProceso"/>
@@ -27,9 +27,9 @@
     <div class="box-inner">
         <div class="box-header well" data-original-title="">
             <div style="display: flex;justify-content: space-between;">
-                @if (numReq != "")
+                @if (numReclamo != "")
                 {
-                    var numReqFormateado = ("000000" + numReq);
+                    var numReqFormateado = ("000000" + numReclamo);
 
                     numReqFormateado = numReqFormateado.Substring((numReqFormateado.Length) - 6, numReqFormateado.Length - ((numReqFormateado.Length) - 6));
 
@@ -45,19 +45,19 @@
         </div>
         <div class="box-content">
             <div class="container-fluid" style="margin-right: 15px;">
-                <form id="formRequerimiento">
+                <form id="formReclamo">
                     <input type="hidden" id="contador" value="0" />
                     <input type="hidden" id="contadordoc" value="0" />
                     <div class="row container-fluid">
                         <div class="col-md-4 col-sm-12">
-                            <label for="txtSolVenta">Solicitud de Venta: </label>
+                            <label for="txtSolVenta">N° de Serie: </label>
                             <div class="form-group">
-                                <div @(visualizar ? "disabled" : "") class="input-group input-group-sm date">
-                                    <input type="text" class="form-control input-sm" id="txtSolVenta" value="" placeholder="---Seleccionar Solicitud---" aria-describedby="sizing-addon3" disabled="disabled" />
-                                    <span style="cursor:pointer" class="input-group-addon input-sm" id="searchSolVenta" title="Buscar Solicitud" data-toggle="modal" data-target="#modalSolicitud">
+                                <div class="input-group input-group-sm date">
+                                    <input type="text" class="form-control input-sm" id="txtSerieVenta" value="" placeholder="---Ingresar N° de Serie---" aria-describedby="sizing-addon3" />
+                                    <span style="cursor:pointer" class="input-group-addon input-sm" id="searchSolVenta" title="Buscar Datos">
                                         <i class="fa fa-search"></i>
                                     </span>
-                                    <input type="hidden" id="txtCodSolicitud" value="" />
+                                    <input type="hidden" id="txtCodSerie" value="" />
                                 </div>
                             </div>
                         </div>
@@ -65,7 +65,7 @@
                             <input hidden id="hdnCodEmpresa" value="" />
                             <label for="txtEmpresa">Empresa: </label>
                             <div class="form-group">
-                                <input disabled type="text" class="form-control input-sm" id="txtEmpresa" value="">
+                                <input placeholder="--Empresa--" disabled type="text" class="form-control input-sm" id="txtEmpresa" value="">
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12">
@@ -80,19 +80,19 @@
                         <div class="col-md-4 col-sm-12">
                             <label for="txtRuc">R.U.C:</label>
                             <div class="form-group">
-                                <input disabled type="text" class="form-control input-sm" id="txtRuc" value="">
+                                <input placeholder="--R.U.C--" disabled type="text" class="form-control input-sm" id="txtRuc" value="">
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12">
                             <label for="txtNomEmpresa">Razón Social(Cliente):</label>
                             <div class="form-group">
-                                <input disabled type="text" class="form-control input-sm" id="txtNomEmpresa" value="">
+                                <input placeholder="--Razón Social--" disabled type="text" class="form-control input-sm" id="txtNomEmpresa" value="">
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12">
                             <label for="txtUbigeo">Ubigeo: </label>
                             <div class="form-group">
-                                <input disabled type="text" class="form-control input-sm" id="txtUbigeo" value="">
+                                <input placeholder="--Ubigeo--" disabled type="text" class="form-control input-sm" id="txtUbigeo" value="">
                             </div>
                         </div>
                     </div>
@@ -100,7 +100,7 @@
                         <div class="col-md-4 col-sm-12">
                             <label for="txtAsesor">Representante de Ventas:</label>
                             <div class="form-group">
-                                <input disabled type="text" class="form-control input-sm" id="txtAsesor" value="">
+                                <input placeholder="--Representante de Ventas--" disabled type="text" class="form-control input-sm" id="txtAsesor" value="">
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12">
@@ -128,9 +128,9 @@
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12" id="coltipProceso">
-                            <label for="txtProceso">N° Proceso:</label>
+                            <label for="txtProceso">Tipo de Proceso:</label>
                             <div class="form-group">
-                                <input disabled type="text" class="form-control input-sm" id="txtTipProceso" value=""/>
+                                <input disabled type="text" class="form-control input-sm" id="txtTipProceso" value="" />
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12" id="colContrato" style="display:none">
@@ -147,21 +147,98 @@
                         </div>
                     </div>
                     <br />
-                    <div class="row container-fluid">
-                        <div class="text-right">
-                            @if (numReq == "")
-                            {
-                                <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnRegistrarReq" tabindex="14"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Registrar</button>
-                            }
-                            else if (numReq != "")
-                            {
-                                <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnEditarReq" tabindex="14"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;Editar Requerimiento</button>
-                            }
-                            <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegresar" tabindex="14"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Regresar</button>
+                </form>
+                <br />
+                <div class="box-inner">
+                    <div class="box-header well" data-original-title="" style="background-color: beige;">
+                        <div>
+                            <p id="titleNomProducto"><i class="fa fa-cube" aria-hidden="true" style="color:brown"></i> Equipo</p>
                         </div>
                     </div>
-                </form>
+                    <div class="box-content" style="background-color: #f5f5dc30;">
+                        <div class="container-fluid">
+                            <div class="row container-fluid">
+                                <div class="col-md-4 col-sm-12">
+                                    <label for="txtDescEquipo">Descripción Equipo:</label>
+                                    <div class="form-group">
+                                        <input placeholder="--Descripción Equipo--" disabled type="text" class="form-control input-sm" id="txtDescEquipo" value="">
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-12">
+                                    <label for="txtMatcaEquipo">Marca:</label>
+                                    <div class="form-group">
+                                        <input placeholder="--Marca--" disabled type="text" class="form-control input-sm" id="txtMatcaEquipo" value="">
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-12">
+                                    <label for="txtModeloEquipo">Modelo:</label>
+                                    <div class="form-group">
+                                        <input placeholder="--Modelo--" disabled type="text" class="form-control input-sm" id="txtModeloEquipo" value="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row container-fluid">
+                                <div class="col-md-4 col-sm-12">
+                                    <label for="txtMantPrevEquipo">N° Mantenimiento Preventivo:</label>
+                                    <div class="form-group">
+                                        <input placeholder="--Mant.Preventivo--" disabled type="text" class="form-control input-sm" id="txtMantPrevEquipo" value="">
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-12">
+                                    <label for="txtPrevRealiEquipo">Preventicos Realizados:</label>
+                                    <div class="form-group">
+                                        <input placeholder="--Preventido Realizados--" disabled type="text" class="form-control input-sm" id="txtPrevRealiEquipo" value="">
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-12">
+                                    <label for="txtPrevFaltEquipo">Preventicos Faltantes:</label>
+                                    <div class="form-group">
+                                        <input placeholder="--Preventivos Faltantes--" disabled type="text" class="form-control input-sm" id="txtPrevFaltEquipo" value="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row container-fluid">
+                                <div class="col-md-4 col-sm-12">
+                                    <label for="txtFechaInstall">Fecha Instalaci&oacute;n:</label>
+                                    <div class="form-group">
+                                        <input placeholder="--Fecha Instalación--" disabled type="text" class="form-control input-sm" id="txtFechaInstall" value="">
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-12">
+                                    <label for="txtFinGarantia">Fecha Final Garant&iacute;a:</label>
+                                    <div class="form-group">
+                                        <input placeholder="--Fecha Final Garantía--" disabled type="text" class="form-control input-sm" id="txtFinGarantia" value="">
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-12">
+                                    <label for="txtEstadoGarantia">Estado de Garantía:</label>
+                                    <div class="form-group">
+                                        <input placeholder="--Estado de Garantía--" disabled type="text" class="form-control input-sm" id="txtEstadoGarantia" value="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <br />
+                <div class="row container-fluid">
+                    <div class="text-right">
+                        @if (numReclamo != "")
+                        {
+                            <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnEditarRec" tabindex="14"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;Editar Requerimiento</button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnRegistrarRec" tabindex="14"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Registrar</button>
+                        }
+                        <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegresar" tabindex="14"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Regresar</button>
+                    </div>
+                </div>
                 <ul class="nav nav-tabs" style="padding-top: 5px;">
+                    <li class="" id="tabSeguimiento">
+                        <a href="#navSeguimiento" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-code-fork" aria-hidden="true"></i>  Seguimiento</a>
+                    </li>
                     <li class="" id="tabDetalleSolicitud">
                         <a href="#navDetalleSolicitud" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-info-circle" aria-hidden="true"></i> Detalle</a>
                     </li>
@@ -176,22 +253,14 @@
                     </li>
                 </ul>
                 <div class="tab-content" style="padding-top: 5px;">
-                    <div id="navDetalleSolicitud" class="tab-pane fade in active">
+                    <div id="navDetalleSolicitud" class="tab-pane fade">
                         <div class="panel-group" id="accordion7401210" role="tablist" aria-multiselectable="false">
                             <div class="box-content">
                                 <div class="table-responsive">
                                     <table id="tblMainProducts" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                         <thead>
                                             <tr>
-                                                @if (numReq != "")
-                                                {
-                                                    <th style="width:1%"><center><i class="fa fa-address-book-o" aria-hidden="true"></i></center></th>
-                                                }
-                                                @for (var i = 0; i < @ViewBag.cabecera.Length; i++)
-                                                {
-                                                    string[] cabecera = ViewBag.Cabecera[i].Split(',');
-                                                    <th style="text-align:center; width:@(cabecera[1]+"%")">@cabecera[0]</th>
-                                                }
+                                                <th style="width:1%"><center><i class="fa fa-address-book-o" aria-hidden="true"></i></center></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -201,23 +270,19 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                @if (numReq != "")
-                                {
-                                    <div class="row container-fluid">
-                                        <div class="text-right">
-                                            @if (codEstado == "STREG")
-                                            {
-                                                <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnProcesoInst" tabindex="14"><i class="fa fa-cog" aria-hidden="true"></i>&nbsp;Cambiar a Estado: En Proceso de Instalación</button>
-                                            }
-                                            @if (codEstado == "STEPI")
-                                            {
-                                                <button class="btn btn-default btn-sm" type="button" id="btnFinalizarReq"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Finalizar Requerimiento</button>
-                                            }
-                                        </div>
+                                <div class="row container-fluid">
+                                    <div class="text-right">
+                                        <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnProcesoInst" tabindex="14"><i class="fa fa-cog" aria-hidden="true"></i>&nbsp;Cambiar a Estado: En Proceso de Instalación</button>
+                                        <button class="btn btn-default btn-sm" type="button" id="btnFinalizarReq"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Finalizar Requerimiento</button>
                                     </div>
-                                }
+                                </div>
                             </div>
                         </div>
+                    </div>
+                    <div id="navSeguimiento" class="tab-pane fade in active">
+                        @{
+                            Html.RenderPartial("~/Views/Modelos/_Seguimiento.cshtml");
+                        }
                     </div>
                     <div id="navDocumentos" class="tab-pane fade">
                         @{

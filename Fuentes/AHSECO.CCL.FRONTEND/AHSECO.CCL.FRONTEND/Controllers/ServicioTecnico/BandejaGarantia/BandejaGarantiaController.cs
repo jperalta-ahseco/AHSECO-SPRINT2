@@ -84,6 +84,13 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
             return View();
         }
 
+        public JsonResult ObtenerDatosEquipo(string NumSerie)
+        {
+            var garantiasBL = new GarantiasBL();
+            var result = garantiasBL.ObtenerDatosEquipo(NumSerie);
+            return Json(result);
+        }
+
         public JsonResult RegistroGarantiaMain(GrupoInstalacionTecnicaDTO grupoInstalacionTecnicaDTO)
         {
             try
