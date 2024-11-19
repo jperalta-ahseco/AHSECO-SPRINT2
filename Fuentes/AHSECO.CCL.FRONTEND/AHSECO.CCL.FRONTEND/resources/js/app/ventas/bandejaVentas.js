@@ -44,6 +44,10 @@
             Id_Empleado: $cmbAsesor.val() == "0" || $cmbAsesor.val() == "" || $cmbAsesor.val() == null || $cmbAsesor.val() == undefined ? 0 : $cmbAsesor.val()
         };
 
+        if ($RolUsuario.val() === "SGI_VENTA_ASESOR") {
+            objBuscar.Id_Empleado = $CodEmpleado.val();
+        }
+
         objParam = JSON.stringify(objBuscar);
 
 
@@ -118,6 +122,10 @@
             Id_Empleado: $cmbAsesor.val() == "0" || $cmbAsesor.val() == "" || $cmbAsesor.val() == null || $cmbAsesor.val() == undefined ? 0 : $cmbAsesor.val()
         };
 
+
+        if ($RolUsuario.val() === "SGI_VENTA_ASESOR") {
+            objBuscar.Id_Empleado = $CodEmpleado.val();
+        }
     
        
         objParam = JSON.stringify(objBuscar);
