@@ -142,9 +142,24 @@ var ubigeo = (function ($, win, doc) {
     function seleccionar() {
         var codDistrito = sessionStorage.getItem('codDistrito')
         if ($UbigeoId != null && $UbigeoId != undefined) {
-            $UbigeoId.val(codDistrito);
-            $UbigeoText.val($("#select2-cmbDepartamento-container").attr("title") + ' / ' +
-                $("#select2-cmbProvincia-container").attr("title") + ' / ' + $("#select2-cmbDistrito-container").attr("title"));
+            $UbigeoId.val("");
+            $UbigeoText.val("");
+            if (app.validaNumeroEntero(codDistrito)) {
+                if (parseInt(codDistrito) > 0) {
+                    $UbigeoId.val(codDistrito);
+                    if ($.trim(codDistrito).length == 2) {
+                        $UbigeoText.val($("#select2-cmbDepartamento-container").attr("title"));
+                    }
+                    else if ($.trim(codDistrito).length == 4) {
+                        $UbigeoText.val($("#select2-cmbDepartamento-container").attr("title") + ' / ' +
+                            $("#select2-cmbProvincia-container").attr("title"));
+                    }
+                    else {
+                        $UbigeoText.val($("#select2-cmbDepartamento-container").attr("title") + ' / ' +
+                            $("#select2-cmbProvincia-container").attr("title") + ' / ' + $("#select2-cmbDistrito-container").attr("title"));
+                    }
+                }
+            }
         }
         else {
             $txtUbigeo.val(codDistrito);

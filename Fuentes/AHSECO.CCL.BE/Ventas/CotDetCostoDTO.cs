@@ -21,6 +21,7 @@ namespace AHSECO.CCL.BE.Ventas
         public string Direccion { get; set; }
         public string AmbienteInsta { get; set; }
         public int? NroPiso { get; set; }
-        public decimal? MontoCosto { get; set; }
+        public decimal? MontoUnitarioCosto { get; set; }
+        public decimal? MontoTotalCosto { get; set; }
     }
 }

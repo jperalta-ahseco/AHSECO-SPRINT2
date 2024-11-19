@@ -14,6 +14,9 @@
     <input type="hidden" id="CI_CodCosto_GarantAdic" value="@ConstantesDTO.CotizacionDetalleCostos.Costos.GarantAdic" />
     <input type="hidden" id="CI_CodCosto_Calibra" value="@ConstantesDTO.CotizacionDetalleCostos.Costos.Calibra" />
     <input type="hidden" id="CI_CodCosto_Flete" value="@ConstantesDTO.CotizacionDetalleCostos.Costos.Flete" />
+    <input type="hidden" id="CI_Editar_UbiDest" value="" />
+    <input type="hidden" id="CI_Editar_MtoUni" value="" />
+    <input type="hidden" id="CI_Editar_MtoTot" value="" />
 </div>
 <div style="width:50%" class="modal-dialog modal-lg container-fluid" role="document">
     <!-- Modal content -->
@@ -29,27 +32,43 @@
         <div class="modal-body d-flex justify-content-center" align-items-center>
             <form id="formItem" class="d-flex flex-row">
                 <div class="row d-flex justify-content-center">
-                    <div class="container-fluid">
-                        <fieldset>
+                    <div id="pnlInfoGeneral" class="container-fluid">
+                        <fieldset class="form-group">
                             <legend><b>Informaci&oacute;n General</b></legend>
-                            <div class="row container-fluid">
+                            <div class="row container-fluid form-group">
                                 <div class="col-md-12">
-                                    <div class="row container-fluid col-content-middleleft form-group">
-                                        <div class="col-md-3">
-                                            <label for="CI_cmbCDItem">Producto / Servicio: </label>
-                                        </div>
-                                        <div class="col-md-9">
-                                            <select class="form-control select2 input-sm" style="width:100%;" id="CI_cmbCDItem" data-selected="">
-                                            </select>
-                                        </div>
+                                    <div class="col-md-3">
+                                        <label for="CI_cmbCDItem">Producto / Servicio: </label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <select class="form-control select2 input-sm" style="width:100%;" id="CI_cmbCDItem" data-selected="">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row container-fluid">
+                                <div class="col-md-6 col-content-bottomleft">
+                                    <div class="col-md-6">
+                                        <label for="CI_txtCantCotDet">Cantidad Cotizada: </label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input disabled placeholder="Cantidad" type="text" maxlength="3" class="form-control input-sm" id="CI_txtCantCotDet" value="">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-content-bottomleft">
+                                    <div class="col-md-5">
+                                        <label for="CI_txtUnidadMedida">Unidad Medida: </label>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <input disabled placeholder="Unidad Medida" type="text" maxlength="3" class="form-control input-sm" id="CI_txtUnidadMedida" value="">
                                     </div>
                                 </div>
                             </div>
                         </fieldset>
                     </div>
-                    <div class="container-fluid">
+                    <div id="pnlInfoDestino" class="container-fluid">
                         <fieldset class="form-group">
-                            <legend><b>Información del Env&iacute;o</b></legend>
+                            <legend><b>Información del Destino</b></legend>
                             <div class="row container-fluid form-group col-content-middleleft">
                                 <div class="col-md-12 col-content-middleleft">
                                     <div class="col-md-3">
@@ -76,7 +95,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row container-fluid form-group col-content-middleleft">
+                            <div class="row container-fluid col-content-middleleft">
                                 <div class="col-md-9 col-content-middleleft">
                                     <div class="col-md-4">
                                         <label for="CI_txtAmbDestino">Local a envíar: </label>
@@ -97,24 +116,58 @@
                             </div>
                         </fieldset>
                     </div>
-                    <div class="container-fluid">
+                    <div id="pnlInfoCostos" class="container-fluid">
                         <fieldset class="form-group">
                             <legend><b>Informaci&oacute;n de Costos</b></legend>
-                            <div class="row container-fluid col-content-bottomleft">
+                            <div class="row container-fluid form-group col-content-bottomleft">
                                 <div class="col-md-6 col-content-middleleft">
                                     <div class="col-md-7">
-                                        <label for="CI_txtCantidad">Cantidad a Despachar: </label>
+                                        <label for="CI_txtCantCosteo">Cantidad a Costear: </label>
                                     </div>
                                     <div class="col-md-3">
-                                        <input placeholder="Cantidad" type="text" maxlength="3" class="form-control input-sm" id="CI_txtCantidad" value="">
+                                        <input placeholder="Cantidad" type="text" maxlength="3" class="form-control input-sm" id="CI_txtCantCosteo" value="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row container-fluid col-content-bottomleft">
+                                <div id="pnlInfoCostos_MtoUnitario" class="col-md-6 col-content-middleleft">
+                                    <div class="col-md-7">
+                                        <label for="CI_txtMtoUnitarioCosto">Monto Unitario de Costo: </label>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <input placeholder="Monto de Costo" type="text" maxlength="8" class="form-control input-sm" id="CI_txtMtoUnitarioCosto" value="">
+                                    </div>
+                                </div>
+                                <div id="pnlInfoCostos_MtoTotal" class="col-md-6 col-content-middleleft">
+                                    <div class="col-md-6">
+                                        <label for="CI_txtMtoTotalCosto">Monto Total de Costo: </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input readonly placeholder="Total de Costo" type="text" maxlength="8" class="form-control input-sm" id="CI_txtMtoTotalCosto" value="">
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div id="pnlInfoPreventivos" class="container-fluid">
+                        <fieldset class="form-group">
+                            <legend><b>Información de Preventivos</b></legend>
+                            <div class="row container-fluid">
+                                <div class="col-md-6 col-content-middleleft">
+                                    <div class="col-md-7">
+                                        <label for="CI_txtCantPrevent">Cantidad de Preventivo: </label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input placeholder="Cantidad" type="text" maxlength="3" class="form-control input-sm" id="CI_txtCantPrevent" value="">
                                     </div>
                                 </div>
                                 <div class="col-md-6 col-content-middleleft">
                                     <div class="col-md-6">
-                                        <label for="CI_txtCosto">Monto de Costo: </label>
+                                        <label for="CI_cmbCicloPreventivo">Ciclo de Preventivo: </label>
                                     </div>
                                     <div class="col-md-6">
-                                        <input placeholder="Costo" type="text" maxlength="8" class="form-control input-sm" id="CI_txtCosto" value="">
+                                        <select class="form-control select2 input-sm" style="width:100%;" id="CI_cmbCicloPreventivo" data-selected="">
+                                        </select>
                                     </div>
                                 </div>
                             </div>

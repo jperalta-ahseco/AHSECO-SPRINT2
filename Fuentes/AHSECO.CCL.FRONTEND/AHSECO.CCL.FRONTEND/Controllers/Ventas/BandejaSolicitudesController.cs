@@ -2012,6 +2012,15 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         }
 
         [HttpPost]
+        public JsonResult CargarCotDetSeleccionada(CotizacionDetalleDTO oCD)
+        {
+            var lstItems = GetCDIList("2");
+            var item = lstItems.FirstOrDefault(x => x.Id == oCD.Id);
+            ResponseDTO<CotizacionDetalleDTO> res = new ResponseDTO<CotizacionDetalleDTO>(item);
+            return Json(res);
+        }
+
+        [HttpPost]
         public JsonResult GrabarDatosCostoItem(CotDetCostoDTO cotdetCosto)
         {
             List<CotDetCostoDTO> lstItems = new List<CotDetCostoDTO>();
