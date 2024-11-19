@@ -307,11 +307,20 @@
             
 
             var fnDoneCallback = function (data) {
-                function redirectTo() {
-                    app.redirectTo("BandejaServicios");
+                function fnDoneCallBack2() {
+                    var fnSiComent = function () {
+                        location.reload();
+                    };
+                    var fnNo = function () {
+  
+                        app.redirectTo("BandejaServicios");   
+                    };
+
+                    app.message.confirm("Guardar", "¿Desea registrar otro nuevo servicio?", "Sí", "No", fnSiComent, fnNo);
+                    
                 };
 
-                app.message.success("Confirmación", "Se realizó el registro del servicio exitosamente", "Aceptar", redirectTo);
+                app.message.success("Confirmación", "Se realizó el registro del servicio exitosamente", "Aceptar", fnDoneCallBack2);
             };
             var fnFailCallback = function (data) {
                 app.message.error("Validación", data.Mensaje);
