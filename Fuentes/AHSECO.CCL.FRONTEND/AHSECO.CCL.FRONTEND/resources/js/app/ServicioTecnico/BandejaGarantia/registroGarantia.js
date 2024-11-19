@@ -6,12 +6,37 @@
     var $hdnDocumentoCargadoId = $('#hdnDocumentoCargadoId');
     var $contadordoc = $('#contadordoc');
     var $codigoWorkflow = $('#codigoWorkflow');
-
+    var $openRegdateSolicitud = $('#openRegdateSolicitud');
     //Btns
     var $searchSolVenta = $('#searchSolVenta');
+    var $btnRegresar = $('#btnRegresar');
+    var $btnAdjuntarDocumento = $('#btnAdjuntarDocumento');
+    var $btnRegistrarRec = $('#btnRegistrarRec');
+    var $btnEditarRec = $('#btnEditarRec');
     //TxT
     var $txtDescripcionDocumentoCarga = $('#txtDescripcionDocumentoCarga');
-
+    var $txtSerieVenta = $('#txtSerieVenta');
+    var $dateSolicitud = $('#dateSolicitud');
+    var $txtEmpresa = $('#txtEmpresa');
+    var $cmbTipVenta = $('#cmbTipVenta');
+    var $txtRuc = $('#txtRuc');
+    var $txtNomEmpresa = $('#txtNomEmpresa');
+    var $txtUbigeo = $('#txtUbigeo');
+    var $txtAsesor = $('#txtAsesor');
+    var $txtProceso = $('#txtProceso');
+    var $txtTipProceso = $('#txtTipProceso');
+    var $txtContrato = $('#txtContrato');
+    var $txtOrdCompra = $('#txtOrdCompra');
+    var $txtDescEquipo = $('#txtDescEquipo');
+    var $txtMatcaEquipo = $('#txtMatcaEquipo');
+    var $txtModeloEquipo = $('#txtModeloEquipo');
+    var $txtMantPrevEquipo = $('#txtMantPrevEquipo');
+    var $txtPrevRealiEquipo = $('#txtPrevRealiEquipo');
+    var $txtPrevFaltEquipo = $('#txtPrevFaltEquipo');
+    var $txtFechaInstall = $('#txtFechaInstall');
+    var $txtFinGarantia = $('#txtFinGarantia');
+    var $txtEstadoGarantia = $('#txtEstadoGarantia');
+    var $titleNomProducto = $('#titleNomProducto');
     //Labels
     var $lblNombreArchivo = $('#lblNombreArchivo');
 
@@ -30,16 +55,35 @@
     var $modalCargaDocumento = $('#modalCargaDocumento');
 
     /*Modales Observacion*/
-
+    var $NoExisteRegObs = $('#NoExisteRegObs');
+    var $btnAgregarObservacion = $('#btnAgregarObservacion');
+    var $tblObservaciones = $('#tblObservaciones');
 
     /*Modal Adjuntos*/
+    var $fileCargaDocumentoSustento = $('#fileCargaDocumentoSustento');
+    var $btnAgregarDocumento = $('#btnAgregarDocumento');
+    var $NoExisteRegDoc = $('#NoExisteRegDoc');
+    var $tbodyDocAdjuntos = $('#tbodyDocAdjuntos');
+    var $tblDocumentosCargados = $('#tblDocumentosCargados');
 
     /*Modal Solicitud*/
 
 
     /*Modal Tecnicos*/
 
+    /*Sección Contactos*/
+    var $txtNomContacto = $('#txtNomContacto');
+    var $txtTelefContacto = $('#txtTelefContacto');
+    var $txtEstablecimientoCont = $('#txtEstablecimientoCont');
+    var $txtCargoContacto = $('#txtCargoContacto');
+
     /*Modal Buscar Tecnicos*/
+
+    var mensajes = {
+        guardandoObservacion: "Guardando la observación, por favor espere....",
+        procesandoUbigeo: "Buscando ubigeo, por favor espere...."
+    }
+
 
     let productos = [];
     let destinos_select = [];
@@ -48,6 +92,7 @@
     function Initializer() {
         cargarTipoDoc();
         ObtenerDepartamentos();
+        ObtenerFiltrosGarantias();
         $searchSolVenta.click(BuscarDetalleSolicitud);
         $btnRegresar.click(btnRegresarClick);
         $openRegdateSolicitud.click($openRegdateSolicitud_click);
@@ -69,28 +114,68 @@
     function BuscarDetalleSolicitud() {
         var numSerie = $txtSerieVenta.val();
 
+        if (numSerie == "" || numSerie == null || numSerie.trim().length == 0) {
+            app.message.error("Validación", "El campo N° de Serie no puede estar vacío.");
+            return;
+        }
+
+
         var method = "POST";
-        var url = "";
+        var url = "BandejaGarantia/ObtenerDatosEquipo";
 
         var objReclamo = {
-
+            NumSerie: numSerie
         };
 
         var objParam = JSON.stringify(objReclamo);
 
         var fnDoneCallBack = function (data) {
-            cargarCabecera(data);
-            cargar
+            if (data.Result.CodRpta == 3) {
+                cargarCabecera(data.Result.CabeceraSolicitud);
+                cargarCuerpoEquipo(data.Result.Detalle);
+                cargarInfoContactos(data.Result.Contacto);
+            } else if (data.Result.CodRpta == 0) {
+                app.message.error("Validación", "El número de serie no ha sido registrado en el sistema, por favor revisar.");
+                return;
+            } else {
+                app.message.error("Error", "Se obtuvo información incompleta.");
+                return;
+            }
         };
 
         var fnFailCallBack = function () {
-            app.message.error("Validación", "El número de serie ingresado no ha sido registrado.");
+            app.message.error("Error", "Error al consultar el número de serie, por favor validar.");
             return;
         };
         app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
     }
 
+    function ObtenerFiltrosGarantias() {
+        method = "POST";
+        url = "BandejaGarantia/ObtenerFiltrosGarantias"
+
+        var fnDoneCallBack = function (data) {
+            //Cargar combo de empresas:
+            var filters = {};
+            filters.placeholder = "-- Seleccionar --";
+            filters.allowClear = false;
+
+            app.llenarComboMultiResult($cmbTipVenta, data.Result.TipVenta, null, 0, "--Seleccionar--", filters);
+        };
+
+        var fnFailCallBack = function () {
+            app.message.error("Validacion", "Ocurrió un problema al cargar los filtros de la bandeja. ")
+        };
+
+        app.llamarAjax(method, url, null, fnDoneCallBack, fnFailCallBack, null, null)
+    }; //OKA
     function cargarCabecera(requerimiento) {
+        $txtSerieVenta.prop('disabled', true);
+        $cmbDestino.prop('disabled', false);
+        $dateSolicitud.prop('disabled', false);
+
+        limpiarCabecera();
+
         if (requerimiento.NroProceso != "" && requerimiento.NroProceso != null) {
             $colProceso.css('display', 'block');
         };
@@ -106,11 +191,44 @@
         if (requerimiento.OrdenCompra != "" && requerimiento.OrdenCompra != null) {
             $colOrdenCompra.css('display', 'block');
         };
-
-        if ($tipoproceso.val() == "") { }
-            
+        $txtEmpresa.val(requerimiento.Nom_Empresa);
+        $cmbTipVenta.val(requerimiento.TipoVenta).trigger('change.select2');
+        $txtRuc.val(requerimiento.RUC);
+        $txtNomEmpresa.val(requerimiento.RazonSocial);
+        $txtUbigeo.val(requerimiento.Ubigeo);
+        $txtAsesor.val(requerimiento.AsesorVenta);
     };
 
+    function limpiarCabecera() {
+        $txtEmpresa.val("");
+        $cmbTipVenta.val("");
+        $txtRuc.val("");
+        $txtNomEmpresa.val("");
+        $txtUbigeo.val("");
+        $txtAsesor.val("");
+        $cmbDestino.val("");
+        $dateSolicitud.val("");
+    };
+
+    function cargarInfoContactos(contacto) {
+        $txtNomContacto.val(contacto.NomCont);
+        $txtTelefContacto.val(contacto.Telefono);
+        $txtEstablecimientoCont.val(contacto.Establecimiento);
+        $txtCargoContacto.val(contacto.Cargo);
+    }
+
+    function cargarCuerpoEquipo(detalle){
+        $txtDescEquipo.val(detalle.Descripcion);
+        $txtMatcaEquipo.val(detalle.Desmarca);
+        $txtModeloEquipo.val(detalle.Modelo);
+        $txtMantPrevEquipo.val(detalle.MantPreventivo);
+        $txtPrevRealiEquipo.val(detalle.preventReal);
+        $txtPrevFaltEquipo.val(detalle.PreventPendiente);
+        $txtFechaInstall.val(app.obtenerFecha(detalle.FechaInstalacion));
+        $txtFinGarantia.val(detalle.FechaVencimiento);
+        $txtEstadoGarantia.val(detalle.EstadoGarant);
+        $titleNomProducto.html('<p id="titleNomProducto"><i class="fa fa-cube" aria-hidden="true" style="color:brown"></i> Equipo: '+detalle.Descripcion+'</p>')  ;
+    }
     function ObtenerDepartamentos() {
         var method = "POST";
         var url = "Ubigeo/ObtenerUbigeo";
@@ -151,7 +269,7 @@
 
     function llenarComboMultiCheck(selector, data) {
         selector.select2({
-            placeholder: " Seleccionar Destinos",
+            placeholder: "--Seleccionar Destinos--",
             allowClear: true,
             data: $.map(data.Result, function (obj, i) {
                 if (obj.Id != null && obj.Text != null) {
@@ -332,7 +450,7 @@
                         }
 
                     };
-                    return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, mensajes.guardarNuevoViatico);
+                    return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, null);
 
                 }
                 else {
@@ -541,7 +659,7 @@
                     }
 
                 };
-                return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, mensajes.guardarNuevoViatico);
+                return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, null);
             };
             return app.message.confirm("Solicitud de Venta", "¿Está seguro(a) que desea eliminar el documento adjunto?", "Sí", "No", fnSi, null);
         };
@@ -605,20 +723,19 @@
 
     return {
         //visualizar: visualizar,
-        eliminarObsTmp: eliminarObsTmp,
-        eliminarDocTemp: eliminarDocTemp,
-        eliminarDocumento: eliminarDocumento,
-        download: download,
-        seleccionarSolicitud: seleccionarSolicitud,
-        seleccionarTecnico: seleccionarTecnico,
-        //asignarTecnico: asignarTecnico,
-        activarFechaProgramacion: activarFechaProgramacion,
-        desactivarFechaProgramacion: desactivarFechaProgramacion,
-        activarFechaInstalacion: activarFechaInstalacion,
-        desactivarFechaInstalacion: desactivarFechaInstalacion,
-        detalleHijo: detalleHijo,
-        añadirTecnico: añadirTecnico,
-        DesasignarTécnicoTmp: DesasignarTécnicoTmp
-
+        //eliminarObsTmp: eliminarObsTmp,
+        //eliminarDocTemp: eliminarDocTemp,
+        //eliminarDocumento: eliminarDocumento,
+        //download: download,
+        //seleccionarSolicitud: seleccionarSolicitud,
+        //seleccionarTecnico: seleccionarTecnico,
+        ////asignarTecnico: asignarTecnico,
+        //activarFechaProgramacion: activarFechaProgramacion,
+        //desactivarFechaProgramacion: desactivarFechaProgramacion,
+        //activarFechaInstalacion: activarFechaInstalacion,
+        //desactivarFechaInstalacion: desactivarFechaInstalacion,
+        //detalleHijo: detalleHijo,
+        //añadirTecnico: añadirTecnico,
+        //DesasignarTécnicoTmp: DesasignarTécnicoTmp
     }
 }) (window.jQuery, window, document);

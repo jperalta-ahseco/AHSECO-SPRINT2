@@ -224,7 +224,7 @@ var app = (function ($, win, doc) {
             $btnAccept.show().html(textButtonAccept || defaultsOptions.textButtonAccept);
             $btnCancel.show().html(textButtonCancel || defaultsOptions.textButtonCancel);
             defaultsOptions.fnAfterAcceptCallback = fnAceptarCallback;
-            defaultsOptions.FnAfterCancelCallback = fnCerrarCallback;
+            defaultsOptions.fnAfterCancelCallback = fnCerrarCallback;
             defaultsOptions.fnCallback = fnCerrarCallback;
             return $modal.modal({
                 keyboard: defaults.modalKeyboard,

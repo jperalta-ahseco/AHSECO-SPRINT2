@@ -505,7 +505,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
         }
         public FileResult DescargarFile(string url, string nombreDoc)
         {
-            string pao_files = ConfigurationManager.AppSettings.Get("temppFiles");
+            string pao_files = ConfigurationManager.AppSettings.Get("tempFiles");
             string ruta = pao_files + url;
 
             var fileName = Path.GetFileName(url);

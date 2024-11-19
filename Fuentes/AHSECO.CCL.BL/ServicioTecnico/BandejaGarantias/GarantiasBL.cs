@@ -65,5 +65,20 @@ namespace AHSECO.CCL.BL.ServicioTecnico.BandejaGarantias
                 return new ResponseDTO<IEnumerable<ReclamosDTO>>(ex);
             }
         }
+
+        public ResponseDTO<GrupoGarantiasDTO> ObtenerDatosEquipo(string NumSerie)
+        {
+            try
+            {
+                var result = Repository.ObtenerDatosEquipo(NumSerie);
+                return new ResponseDTO<GrupoGarantiasDTO>(result);
+            }
+            catch(Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<GrupoGarantiasDTO>(ex);
+            }
+        }
+
     }
 }

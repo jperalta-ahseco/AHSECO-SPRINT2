@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica;
 using AHSECO.CCL.BE.ServicioTecnico.BandejaGarantias;
 using System.Configuration;
+using AHSECO.CCL.BE.Mantenimiento;
 
 
 namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
@@ -205,5 +206,110 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
                 return result;
             };
         }
+
+        public GrupoGarantiasDTO ObtenerDatosEquipo(string NumSerie)
+        {
+            var result = new GrupoGarantiasDTO();
+            result.CodRpta = 0;
+            Log.TraceInfo(Utilidades.GetCaller());
+            using(var connection = Factory.ConnectionSingle())
+            {
+                SqlCommand cmd;
+                string query = "EXEC [USP_GAR_SEL_NUM_SERIE] @IsNumSerie='" + NumSerie+"'";
+                connection.Open();
+                cmd = new SqlCommand(query, connection);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        SolicitudDTO cabecera = new SolicitudDTO()
+                        {
+                            Id_Solicitud = reader.IsDBNull(reader.GetOrdinal("ID_SOLICITUD")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_SOLICITUD")),
+                            Id_WorkFlow = reader.IsDBNull(reader.GetOrdinal("ID_WORKFLOW")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_WORKFLOW")),
+                            Nom_Empresa = reader.IsDBNull(reader.GetOrdinal("EMPRESA")) ? "" : reader.GetString(reader.GetOrdinal("EMPRESA")),
+                            Cod_Empresa = reader.IsDBNull(reader.GetOrdinal("CODEMPRESA")) ? "" : reader.GetString(reader.GetOrdinal("CODEMPRESA")),
+                            IdCliente = reader.IsDBNull(reader.GetOrdinal("IDCLIENTE")) ? 0 : reader.GetInt32(reader.GetOrdinal("IDCLIENTE")),
+                            RUC = reader.IsDBNull(reader.GetOrdinal("RUC")) ? "" : reader.GetString(reader.GetOrdinal("RUC")),
+                            RazonSocial = reader.IsDBNull(reader.GetOrdinal("RAZONSOCIAL")) ? "" : reader.GetString(reader.GetOrdinal("RAZONSOCIAL")),
+                            Ubigeo = reader.IsDBNull(reader.GetOrdinal("UBIGEO")) ? "" : reader.GetString(reader.GetOrdinal("UBIGEO")),
+                            AsesorVenta = reader.IsDBNull(reader.GetOrdinal("ASESORVENTA")) ? "" : reader.GetString(reader.GetOrdinal("ASESORVENTA")),
+                            TipoVenta = reader.IsDBNull(reader.GetOrdinal("TIPOVENTA")) ? "" : reader.GetString(reader.GetOrdinal("TIPOVENTA")),
+                            NombreTipoVenta = reader.IsDBNull(reader.GetOrdinal("TIPO")) ? "" : reader.GetString(reader.GetOrdinal("TIPO")),
+                            Fecha_Sol = reader.IsDBNull(reader.GetOrdinal("FECHA_SOL")) ? "" : reader.GetString(reader.GetOrdinal("FECHA_SOL")),
+                            Estado = reader.IsDBNull(reader.GetOrdinal("ESTADO")) ? "" : reader.GetString(reader.GetOrdinal("ESTADO")),
+                            nomEstado = reader.IsDBNull(reader.GetOrdinal("NOM_ESTADO")) ? "" : reader.GetString(reader.GetOrdinal("NOM_ESTADO")),
+                            TipoProceso = reader.IsDBNull(reader.GetOrdinal("TIPOPROCESO")) ? "" : reader.GetString(reader.GetOrdinal("TIPOPROCESO")),
+                            NroProceso = reader.IsDBNull(reader.GetOrdinal("NROPROCESO")) ? "" : reader.GetString(reader.GetOrdinal("NROPROCESO"))
+                        };
+                        result.CabeceraSolicitud = cabecera;
+                        result.CodRpta += 1;
+
+                    }
+                    else
+                    {
+                        SolicitudDTO cabecera = new SolicitudDTO();
+                        result.CabeceraSolicitud = cabecera;
+                    }
+
+                    reader.NextResult();
+
+                    if (reader.Read())
+                    {
+                        ContactoDTO contacto = new ContactoDTO()
+                        {
+                            IdContacto = reader.IsDBNull(reader.GetOrdinal("IDCONTACTO")) ? 0 : reader.GetInt32(reader.GetOrdinal("IDCONTACTO")),
+                            NumDoc = reader.IsDBNull(reader.GetOrdinal("NUMDOCCONTACTO")) ? "" : reader.GetString(reader.GetOrdinal("NUMDOCCONTACTO")),
+                            NomCont = reader.IsDBNull(reader.GetOrdinal("NOMBRECONTACTO")) ? "" : reader.GetString(reader.GetOrdinal("NOMBRECONTACTO")),
+                            Telefono = reader.IsDBNull(reader.GetOrdinal("TELEFONOCONTACTO")) ? "" : reader.GetString(reader.GetOrdinal("TELEFONOCONTACTO")),
+                            Establecimiento = reader.IsDBNull(reader.GetOrdinal("ESTABLECIMIENTO")) ? "" : reader.GetString(reader.GetOrdinal("ESTABLECIMIENTO")),
+                            Cargo = reader.IsDBNull(reader.GetOrdinal("CARGOCONTACTO")) ? "" : reader.GetString(reader.GetOrdinal("CARGOCONTACTO"))
+                        };
+                        result.Contacto = contacto;
+                        result.CodRpta += 1;
+
+                    }
+                    else
+                    {
+                        ContactoDTO contacto = new ContactoDTO();
+                        result.Contacto = contacto;
+                    }
+
+
+                    reader.NextResult();
+
+                    if (reader.Read())
+                    {
+                        DetalleSolicitudGarantiaDTO solicitud = new DetalleSolicitudGarantiaDTO()
+                        {
+                            Id_Despacho_Dist = reader.IsDBNull(reader.GetOrdinal("ID_DESPACHO_DIST")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_DESPACHO_DIST")),
+                            NumSerie = reader.IsDBNull(reader.GetOrdinal("NUMSERIE")) ? "" : reader.GetString(reader.GetOrdinal("NUMSERIE")),
+                            Id_Cotizacion = reader.IsDBNull(reader.GetOrdinal("ID_COTIZACION")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_COTIZACION")),
+                            Descripcion = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION")),
+                            Desmarca = reader.IsDBNull(reader.GetOrdinal("DESCMARCA")) ? "" : reader.GetString(reader.GetOrdinal("DESCMARCA")),
+                            Modelo = reader.IsDBNull(reader.GetOrdinal("MODELO")) ? "" : reader.GetString(reader.GetOrdinal("MODELO")),
+                            CodigoProducto = reader.IsDBNull(reader.GetOrdinal("CODIGOPRODUCTO")) ? "" : reader.GetString(reader.GetOrdinal("CODIGOPRODUCTO")),
+                            MantPreventivo = reader.IsDBNull(reader.GetOrdinal("MANTPREVENTIVO")) ? 0 : reader.GetInt32(reader.GetOrdinal("MANTPREVENTIVO")),
+                            preventReal = reader.IsDBNull(reader.GetOrdinal("PREVREAL")) ? 0 : reader.GetInt32(reader.GetOrdinal("PREVREAL")),
+                            PreventPendiente = reader.IsDBNull(reader.GetOrdinal("PREVPEND")) ? 0 : reader.GetInt32(reader.GetOrdinal("PREVPEND")),
+                            FechaInstalacion = reader.GetDateTime(reader.GetOrdinal("FECHAINSTALL")),
+                            CodGarantia = reader.IsDBNull(reader.GetOrdinal("GARANTIA")) ? "" : reader.GetString(reader.GetOrdinal("GARANTIA")),
+                            ValorGarantia = reader.IsDBNull(reader.GetOrdinal("VALORGARANTIA")) ? "" : reader.GetString(reader.GetOrdinal("VALORGARANTIA")),
+                            FechaVencimiento = reader.IsDBNull(reader.GetOrdinal("FECHAVENCIMIENTO")) ? "" : reader.GetString(reader.GetOrdinal("FECHAVENCIMIENTO")),
+                            EstadoGarant = reader.IsDBNull(reader.GetOrdinal("ESTADOGARANT")) ? "" : reader.GetString(reader.GetOrdinal("ESTADOGARANT"))
+                        };
+                        result.Detalle = solicitud;
+                        result.CodRpta += 1;
+                    }
+                    else
+                    {
+                        DetalleSolicitudGarantiaDTO solicitud = new DetalleSolicitudGarantiaDTO();
+                        result.Detalle = solicitud;
+                    }
+                }
+            }
+            return result;
+        }
+
     }
 }

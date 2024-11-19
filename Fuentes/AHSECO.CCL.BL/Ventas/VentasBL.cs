@@ -1,6 +1,7 @@
 ﻿using AHSECO.CCL.BD;
 using AHSECO.CCL.BD.Ventas;
 using AHSECO.CCL.BE;
+using AHSECO.CCL.BE.Mantenimiento;
 using AHSECO.CCL.BE.Ventas;
 using AHSECO.CCL.COMUN;
 using System;
@@ -372,6 +373,36 @@ namespace AHSECO.CCL.BL.Ventas
             {
                 Log.TraceError(Utilidades.GetCaller() + ":: " + ex.Message);
                 return new ResponseDTO<RespuestaDTO>(ex);
+            };
+        }
+
+        public ResponseDTO<CabeceraDespachoDTO> ValidarAprobacionSinStock(long CodigoSolicitud)
+        {
+            try
+            {
+                var result = Repository.ValidarAprobacionSinStock(CodigoSolicitud);
+
+                return new ResponseDTO<CabeceraDespachoDTO>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + ":: " + ex.Message);
+                return new ResponseDTO<CabeceraDespachoDTO>(ex);
+            };
+        }
+
+        public ResponseDTO<IEnumerable<ClienteDTO>> ObtenerClientesVentas(ClienteDTO clienteDTO)
+        {
+            try
+            {
+                var result = Repository.ObtenerClientesVentas(clienteDTO);
+
+                return new ResponseDTO<IEnumerable<ClienteDTO>>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + ":: " + ex.Message);
+                return new ResponseDTO<IEnumerable<ClienteDTO>>(ex);
             };
         }
 

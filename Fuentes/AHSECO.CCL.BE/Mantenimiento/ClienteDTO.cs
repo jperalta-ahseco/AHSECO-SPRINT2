@@ -41,5 +41,6 @@ namespace AHSECO.CCL.BE.Mantenimiento
         public string Audit_Reg_Fec_Ant { get; set; }
         public string Usuario_Modifica_Audit { get; set; }
         public string Audit_Mod_Fec_Ant { get; set; }
+        public string Rol_Usuario { get; set;}
     }
 }

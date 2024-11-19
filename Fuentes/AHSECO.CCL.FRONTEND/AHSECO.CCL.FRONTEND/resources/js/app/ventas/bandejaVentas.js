@@ -30,27 +30,22 @@
     function refrescar() {
         var baseUrl = baseSiteUrl;
         method = "POST";
-        url = "BandejaCliente/ObtenerClientes"
+        url = "BandejaVentas/ObtenerClientesVentas"
+
+        if (isNaN($txtRuc.val())) {
+            app.message.error("Validación", "El número de RUC no puede contener letras")
+            return;
+        };
 
         objBuscar = {
+            Rol_Usuario: $RolUsuario.val(),
             RUC: $txtRuc.val() == "" || $txtRuc.val() == null || $txtRuc.val() == undefined ? "" : $txtRuc.val(),
             NomEmpresa: $txtNomEmpresa.val() == "" || $txtNomEmpresa.val() == null || $txtNomEmpresa.val() == undefined ? "" : $txtNomEmpresa.val(),
-            Id_Empleado: $CodEmpleado.val() == "0" || $CodEmpleado.val() == "" || $CodEmpleado.val() == null || $CodEmpleado.val() == undefined ? $cmbAsesor.val() : -1,
-            Estado: 1
+            Id_Empleado: $cmbAsesor.val() == "0" || $cmbAsesor.val() == "" || $cmbAsesor.val() == null || $cmbAsesor.val() == undefined ? 0 : $cmbAsesor.val()
         };
 
-        if (objBuscar.Id_Empleado == null) {
-            objBuscar.Id_Empleado = -1
-        };
-
-         if ($RolUsuario.val() == "SGI_VENTA_ASESOR") {
+        if ($RolUsuario.val() === "SGI_VENTA_ASESOR") {
             objBuscar.Id_Empleado = $CodEmpleado.val();
-        }
-        else if ($RolUsuario.val() == "SGI_VENTA_COORDINASERV" || $RolUsuario.val() == "SGI_VENTA_COORDINAATC") {
-            objBuscar.Id_Empleado = null;
-        }
-        else {
-            objBuscar.Id_Empleado = -2;
         }
 
         objParam = JSON.stringify(objBuscar);
@@ -106,14 +101,14 @@
             var filters = {};
             filters.placeholder = "-- Todos --";
             filters.allowClear = false;
-            app.llenarCombo($cmbAsesor, resultado, null, -1, "-- Todos --", filters);
+            app.llenarCombo($cmbAsesor, resultado, null, 0, "-- Todos --", filters);
         }
         app.llamarAjax(method, url, objParams, fnDoneCallback, null, null, mensajes.llenarEmpleados);
     };
     function Buscar() {
-        console.log("$cmbAsesor:" + $cmbAsesor.val());
+        
         method = "POST";
-        url = "BandejaCliente/ObtenerClientes"
+        url = "BandejaVentas/ObtenerClientesVentas"
 
         if (isNaN($txtRuc.val())) {
             app.message.error("Validación", "El número de RUC no puede contener letras")
@@ -121,31 +116,17 @@
         };
 
         objBuscar = {
+            Rol_Usuario: $RolUsuario.val() ,
             RUC: $txtRuc.val() == "" || $txtRuc.val() == null || $txtRuc.val() == undefined ? "" : $txtRuc.val(),
             NomEmpresa: $txtNomEmpresa.val() == "" || $txtNomEmpresa.val() == null || $txtNomEmpresa.val() == undefined ? "" : $txtNomEmpresa.val(),
-            Id_Empleado: $CodEmpleado.val() == "0" || $CodEmpleado.val() == "" || $CodEmpleado.val() == null || $CodEmpleado.val() == undefined ? $cmbAsesor.val() : -1,
-            Estado: 1
+            Id_Empleado: $cmbAsesor.val() == "0" || $cmbAsesor.val() == "" || $cmbAsesor.val() == null || $cmbAsesor.val() == undefined ? 0 : $cmbAsesor.val()
         };
 
-        if (objBuscar.Id_Empleado == null){
-            objBuscar.Id_Empleado = -1
-        };
 
-        if ($RolUsuario.val() == "SGI_VENTA_ASESOR") {
+        if ($RolUsuario.val() === "SGI_VENTA_ASESOR") {
             objBuscar.Id_Empleado = $CodEmpleado.val();
         }
-        else if ($RolUsuario.val() == "SGI_VENTA_COORDINASERV" || $RolUsuario.val() == "SGI_VENTA_COORDINAATC") {
-            objBuscar.Id_Empleado = null;
-        }
-        else {
-            if ($cmbAsesor.val() != null && $cmbAsesor.val() != "-1") {
-                objBuscar.Id_Empleado = $cmbAsesor.val();
-            }
-            else {
-                objBuscar.Id_Empleado = -2;
-            }
-            
-        }
+    
        
         objParam = JSON.stringify(objBuscar);
         var fnDoneCallBack = function (data) {
