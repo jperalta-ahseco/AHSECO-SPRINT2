@@ -1,4 +1,5 @@
 ﻿using AHSECO.CCL.BE;
+using AHSECO.CCL.BE.Mantenimiento;
 using AHSECO.CCL.BE.Ventas;
 using AHSECO.CCL.COMUN;
 using Dapper;
@@ -1404,6 +1405,63 @@ namespace AHSECO.CCL.BD.Ventas
                         NumeroPedido = i.Single(d => d.Key.Equals("NUMPEDIDO")).Value.Parse<string>(),
                         FechaIngreso = i.Single(d => d.Key.Equals("FECHAINGRESO")).Value.Parse<string>()
                     }).FirstOrDefault();
+
+                return result;
+            }
+        }
+
+        public IEnumerable<ClienteDTO> ObtenerClientesVentas(ClienteDTO clienteDTO)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using (var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+                var parameters = new DynamicParameters();
+
+                parameters.Add("ROL_NOMBRE", clienteDTO.Rol_Usuario);
+                parameters.Add("isRucEmpresa", string.IsNullOrEmpty(clienteDTO.RUC) ? "": clienteDTO.RUC);
+                parameters.Add("isNomEmpresa", string.IsNullOrEmpty(clienteDTO.NomEmpresa) ? "" : clienteDTO.NomEmpresa);
+                parameters.Add("isAsesor", string.IsNullOrEmpty(clienteDTO.Id_Empleado) ? null : clienteDTO.Id_Empleado);
+
+                var result = connection.Query(
+                    sql: "USP_CLIENTES_VENTAS",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new ClienteDTO
+                    {
+                        ID = i.Single(d => d.Key.Equals("ID")).Value.Parse<int>(),
+                        RUC = i.Single(d => d.Key.Equals("RUCEMPRESA")).Value.Parse<string>(),
+                        NomEmpresa = i.Single(d => d.Key.Equals("NOMEMPRESA")).Value.Parse<string>(),
+                        NumContacto = i.Single(d => d.Key.Equals("NUMCONTACTO")).Value.Parse<int>(),
+                        Telefono = i.Single(d => d.Key.Equals("TELEFONO")).Value.Parse<string>(),
+                        Correo = i.Single(d => d.Key.Equals("CORREO")).Value.Parse<string>(),
+                        UbigeoDepartamento = new UbigeoDTO
+                        {
+                            Descripcion = i.Single(d => d.Key.Equals("NOMDEPARTAMENTO")).Value.Parse<string>(),
+                        },
+                        UbigeoProvincia = new UbigeoDTO
+                        {
+                            Descripcion = i.Single(d => d.Key.Equals("NOMPROVINCIA")).Value.Parse<string>(),
+                        },
+                        UbigeoDistrito = new UbigeoDTO
+                        {
+                            Descripcion = i.Single(d => d.Key.Equals("NOMDISTRITO")).Value.Parse<string>(),
+                        },
+                        CodUbigeo = i.Single(d => d.Key.Equals("CODUBIGEO")).Value.Parse<string>(),
+                        Direccion = i.Single(d => d.Key.Equals("DIRECCION")).Value.Parse<string>(),
+                        Categoria = i.Single(d => d.Key.Equals("CATEGORIA")).Value.Parse<string>(),
+                        CodCategoria = i.Single(d => d.Key.Equals("CODCATEGORIA")).Value.Parse<string>(),
+                        Estado = i.Single(d => d.Key.Equals("ESTADO")).Value.Parse<bool>(),
+                        SectorCliente = i.Single(d => d.Key.Equals("SECTORCLIENTE")).Value.Parse<string>(),
+                        FechaRegistro = i.Single(d => d.Key.Equals("AUDIT_REG_FEC")).Value.Parse<DateTime>(),
+                        Empleado = new EmpleadoDTO
+                        {
+                            NombresCompletosEmpleado = i.Single(d => d.Key.Equals("ASESOR")).Value.Parse<string>()
+                        }
+                    });
+
+                connection.Close();
 
                 return result;
             }

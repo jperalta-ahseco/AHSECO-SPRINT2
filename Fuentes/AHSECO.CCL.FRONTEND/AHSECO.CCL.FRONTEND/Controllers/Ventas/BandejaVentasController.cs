@@ -12,6 +12,7 @@ using Microsoft.Ajax.Utilities;
 using AHSECO.CCL.BE.Mantenimiento;
 using AHSECO.CCL.FRONTEND.Core;
 using AHSECO.CCL.FRONTEND.Security;
+using AHSECO.CCL.BL.Ventas;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 {
@@ -102,6 +103,13 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             {
                 Status = 1
             });
-        } 
+        }
+
+        public JsonResult ObtenerClientesVentas(ClienteDTO clienteDTO)
+        {
+            var ventasBL = new VentasBL();
+            var result = ventasBL.ObtenerClientesVentas(clienteDTO);
+            return Json(result);
+        }
     }
 }
