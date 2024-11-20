@@ -78,7 +78,7 @@ var ubigeo = (function ($, win, doc) {
         return app.llamarAjax(method, url, objParam, fnDoneCallback, fnFailCallback, null, mensajes.procesandoUbigeo)
 
     }
-
+    
     function obtenerProvincia(codDepartamento, data) {
         var provincias = { Result: [] };
         for (let i = 0; i < data.Result.length; i++) {
@@ -107,8 +107,7 @@ var ubigeo = (function ($, win, doc) {
                 obtenerDistrito(codProvincia, data);
             }
         });
-
-
+        
         app.llenarCombo($cmbProvincia, provincias, $modalUbigeo, " ", "<--Todos-->", null)
     }
 
@@ -179,9 +178,35 @@ var ubigeo = (function ($, win, doc) {
         $modalUbigeo.modal('hide');
     }
 
+    function setUbigeoById(strId) {
+
+        if (strId != "") {
+
+            if (strId.length >= 2) {
+                sessionStorage.setItem('codDepartamento', strId.substr(0, 2));
+                $cmbDepartamento.val(strId.substr(0, 2)).trigger("change");
+            }
+
+            if (strId.length >= 4) {
+                sessionStorage.setItem('codProvincia', strId.substr(0, 4));
+                $cmbProvincia.val(strId.substr(0, 4)).trigger("change");
+            }
+
+            if (strId.length == 6) {
+                sessionStorage.setItem('codDistrito', strId.substr(0, 6));
+                $cmbDistrito.val(strId.substr(0, 6)).trigger("change");
+            }
+
+            seleccionar();
+
+        }
+
+    }
+
     return {
         setTxtUbigeo_Id: setTxtUbigeo_Id,
-        setTxtUbigeo_Text: setTxtUbigeo_Text
+        setTxtUbigeo_Text: setTxtUbigeo_Text,
+        setUbigeoById: setUbigeoById
     }
 
 })(window.jQuery, window, document);

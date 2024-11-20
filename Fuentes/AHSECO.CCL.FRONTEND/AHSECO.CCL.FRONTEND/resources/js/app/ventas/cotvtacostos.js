@@ -260,6 +260,33 @@
         return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, null);
     }
 
+    function loadGridbyCost(data, strCodCosto) {
+        if (strCodCosto == $CI_CodCosto_LLaveMano.val()) {
+            cargarGrillaCostos_Default(data, $tblLLaveManoCostos.attr("id"));
+        }
+        if (strCodCosto == $CI_CodCosto_InstCapa.val()) {
+            cargarGrillaCostos_Default(data, $tblInstaCostos.attr("id"));
+        }
+        if (strCodCosto == $CI_CodCosto_Manuales.val()) {
+            cargarGrillaCostos_Default(data, $tblManualesCostos.attr("id"));
+        }
+        if (strCodCosto == $CI_CodCosto_Videos.val()) {
+            cargarGrillaCostos_Default(data, $tblVideosCostos.attr("id"));
+        }
+        if (strCodCosto == $CI_CodCosto_MantPrevent.val()) {
+            cargarGrillaCostos_Default(data, $tblMantPreventCostos.attr("id"));
+        }
+        if (strCodCosto == $CI_CodCosto_GarantAdic.val()) {
+            cargarGrillaCostos_Default(data, $tblGarantAdicCostos.attr("id"));
+        }
+        if (strCodCosto == $CI_CodCosto_Calibra.val()) {
+            cargarGrillaCostos_Default(data, $tblCalibCostos.attr("id"));
+        }
+        if (strCodCosto == $CI_CodCosto_Flete.val()) {
+            cargarGrillaCostos_Default(data, $tblFleteCostos.attr("id"));
+        }
+    }
+
     function cargarCostosItemsxTab(strCodCosto) {
         method = "POST";
         url = "BandejaSolicitudesVentas/ListarCDCostosItems";
@@ -272,30 +299,7 @@
         var objParam = JSON.stringify(objDatos);
 
         var fnDoneCallBack = function (data) {
-            if (strCodCosto == $CI_CodCosto_LLaveMano.val()) {
-                cargarGrillaCostos_Default(data, $tblLLaveManoCostos.attr("id"));
-            }
-            if (strCodCosto == $CI_CodCosto_InstCapa.val()) {
-                cargarGrillaCostos_Default(data, $tblInstaCostos.attr("id"));
-            }
-            if (strCodCosto == $CI_CodCosto_Manuales.val()) {
-                cargarGrillaCostos_Default(data, $tblManualesCostos.attr("id"));
-            }
-            if (strCodCosto == $CI_CodCosto_Videos.val()) {
-                cargarGrillaCostos_Default(data, $tblVideosCostos.attr("id"));
-            }
-            if (strCodCosto == $CI_CodCosto_MantPrevent.val()) {
-                cargarGrillaCostos_Default(data, $tblMantPreventCostos.attr("id"));
-            }
-            if (strCodCosto == $CI_CodCosto_GarantAdic.val()) {
-                cargarGrillaCostos_Default(data, $tblGarantAdicCostos.attr("id"));
-            }
-            if (strCodCosto == $CI_CodCosto_Calibra.val()) {
-                cargarGrillaCostos_Default(data, $tblCalibCostos.attr("id"));
-            }
-            if (strCodCosto == $CI_CodCosto_Flete.val()) {
-                cargarGrillaCostos_Default(data, $tblFleteCostos.attr("id"));
-            }
+            loadGridbyCost(data, strCodCosto);
         };
 
         var fnFailCallback = function () {
@@ -354,8 +358,8 @@
                 data: "Id",
                 render: function (data) {
                     var hidden = '<input type="hidden" id="hdnCDCItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
-                    var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtacostos.editarCostoItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                    var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtacostos.quitarCostoItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ')"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                    var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtacostos.editarCostoItem(' + data + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                    var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtacostos.quitarCostoItem(' + data + ',' + String.fromCharCode(39) + $CI_hdnCodCosto.val() + String.fromCharCode(39) +')"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
                     return '<center>' + hidden + editar + ' ' + quitar + '</center>';
                 }
             }
@@ -503,31 +507,9 @@
         var objParam = JSON.stringify(objDatos);
 
         var fnDoneCallBack = function (data) {
-            if ($CI_hdnCodCosto.val() == $CI_CodCosto_LLaveMano.val()) {
-                cargarGrillaCostos_Default(data, $tblLLaveManoCostos.attr("id"));
-            }
-            if ($CI_hdnCodCosto.val() == $CI_CodCosto_InstCapa.val()) {
-                cargarGrillaCostos_Default(data, $tblInstaCostos.attr("id"));
-            }
-            if ($CI_hdnCodCosto.val() == $CI_CodCosto_Manuales.val()) {
-                cargarGrillaCostos_Default(data, $tblManualesCostos.attr("id"));
-            }
-            if ($CI_hdnCodCosto.val() == $CI_CodCosto_Videos.val()) {
-                cargarGrillaCostos_Default(data, $tblVideosCostos.attr("id"));
-            }
-            if ($CI_hdnCodCosto.val() == $CI_CodCosto_MantPrevent.val()) {
-                cargarGrillaCostos_Default(data, $tblMantPreventCostos.attr("id"));
-            }
-            if ($CI_hdnCodCosto.val() == $CI_CodCosto_GarantAdic.val()) {
-                cargarGrillaCostos_Default(data, $tblGarantAdicCostos.attr("id"));
-            }
-            if ($CI_hdnCodCosto.val() == $CI_CodCosto_Calibra.val()) {
-                cargarGrillaCostos_Default(data, $tblCalibCostos.attr("id"));
-            }
-            if ($CI_hdnCodCosto.val() == $CI_CodCosto_Flete.val()) {
-                cargarGrillaCostos_Default(data, $tblFleteCostos.attr("id"));
-            }
+            loadGridbyCost(data, $CI_hdnCodCosto.val());
             cerrarModalCostosItem();
+            app.message.success("Costos", "Se guard&oacute; el costos correctamente.", "Aceptar", redirect);
         };
 
         var fnFailCallback = function () {
@@ -540,7 +522,7 @@
     function editarCostoItem(strId) {
 
         method = "POST";
-        url = "BandejaSolicitudesVentas/cargarDatosCostoItem";
+        url = "BandejaSolicitudesVentas/CargarDatosCostoItem";
         var objDatos = {
             Id: strId
         };
@@ -553,7 +535,34 @@
             $CI_cmbCDItem.val(data.Result.IdCotizacionDetalle).trigger("change.select2");
             $CI_txtCantCotDet.val(data.Result.CotizacionDetalle.Cantidad);
             $CI_txtUnidadMedida.val(data.Result.CotizacionDetalle.DescUnidad);
+            //sessionStorage.setItem('codDistrito', data.Result.CodUbigeoDestino);
+            if (data.Result.CodUbigeoDestino != null) {
+                //sessionStorage.setItem('codDepartamento', data.Result.CodUbigeoDestino.substr(0, 2));
+                ubigeo.setUbigeoById(data.Result.CodUbigeoDestino);
+            }
+
             $('#modalCostoItem').modal('show');
+        };
+
+        var fnFailCallback = function () {
+            app.message.error("Validación", "Error al editar los costos");
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallback);
+    }
+
+    function quitarCostoItem(strId, strCodCosto) {
+
+        method = "POST";
+        url = "BandejaSolicitudesVentas/EliminarCostoItem";
+        var objDatos = {
+            Id: strId
+        };
+        var objParam = JSON.stringify(objDatos);
+
+        var fnDoneCallBack = function (data) {
+            loadGridbyCost(data, strCodCosto);
+            app.message.success("Costos", "Se guard&oacute; el costos correctamente.", "Aceptar", redirect);
         };
 
         var fnFailCallback = function () {
@@ -579,6 +588,7 @@
         LimpiarModalCostos: LimpiarModalCostos,
         agregarCostoItem: agregarCostoItem,
         editarCostoItem: editarCostoItem,
+        quitarCostoItem: quitarCostoItem,
         cargarComboCotDetItems: cargarComboCotDetItems,
         cargarCiclosPreventivos: cargarCiclosPreventivos,
         cargarCotDetSeleccionada: cargarCotDetSeleccionada,

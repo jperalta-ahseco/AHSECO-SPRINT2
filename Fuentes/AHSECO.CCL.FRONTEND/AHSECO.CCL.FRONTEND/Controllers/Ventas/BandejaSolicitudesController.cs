@@ -1580,7 +1580,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             try
             {
                 var ventaBL = new VentasBL();
-                var ubigeoBL = new UbigeoBL();
 
                 CotizacionDetalleDTO itemCotDet = findCotDetRecord(CodItem, opcGrillaItems);
 
@@ -1645,7 +1644,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             try
             {
                 var ventaBL = new VentasBL();
-                var ubigeoBL = new UbigeoBL();
 
                 CotizacionDetalleDTO itemCotDet = findSubCotDetRecord(CodItemPadre, CodItem);
 
@@ -2094,10 +2092,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         [HttpPost]
         public JsonResult ListarCDCostosItems(CotDetCostoDTO cotdetCosto)
         {
+            List<CotDetCostoDTO> lstCostos = new List<CotDetCostoDTO>();
+
             var lstItems = GetCDIList("2");
 
             var ventasBL = new VentasBL();
-            List<CotDetCostoDTO> lstCostos = new List<CotDetCostoDTO>();
 
             //Se carga todos los costos
             var resCostos = ventasBL.ObtenerCotDetCostos(new CotDetCostoDTO() { CotizacionDetalle = cotdetCosto.CotizacionDetalle });
@@ -2107,10 +2106,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             lstCostos.ForEach(x =>
             {
                 var cditem = lstItems.FirstOrDefault(y => y.Id == x.IdCotizacionDetalle);
-                if (cditem != null)
-                {
-                    x.CotizacionDetalle = cditem;
-                }
+                if (cditem != null) { x.CotizacionDetalle = cditem; }
             });
             VariableSesion.setObject(TAG_CDCI, lstCostos);
 
@@ -2126,7 +2122,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             try
             {
                 List<CotDetCostoDTO> lstCostos = new List<CotDetCostoDTO>();
-                if (VariableSesion.getObject(TAG_CDCI) != null) { lstCostos = (List<CotDetCostoDTO>)VariableSesion.getObject(TAG_CDCI); }
 
                 var lstItems = GetCDIList("2");
                 var itemCD = lstItems.FirstOrDefault(x => x.Id == cotdetCosto.IdCotizacionDetalle);
@@ -2166,10 +2161,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 lstCostos.ForEach(x =>
                 {
                     var cditem = lstItems.FirstOrDefault(y => y.Id == x.IdCotizacionDetalle);
-                    if (cditem != null)
-                    {
-                        x.CotizacionDetalle = cditem;
-                    }
+                    if (cditem != null) { x.CotizacionDetalle = cditem; }
                 });
                 VariableSesion.setObject(TAG_CDCI, lstCostos);
 
@@ -2182,12 +2174,56 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         }
 
         [HttpPost]
-        public JsonResult cargarDatosCostoItem(CotDetCostoDTO cotdetCosto)
+        public JsonResult EliminarCostoItem(CotDetCostoDTO cotdetCosto)
+        {
+            try
+            {
+                List<CotDetCostoDTO> lstCostos = new List<CotDetCostoDTO>();
+
+                var lstItems = GetCDIList("2");
+
+                var ventasBL = new VentasBL();
+                cotdetCosto.UsuarioRegistra = User.ObtenerUsuario();
+                cotdetCosto.TipoProceso = ConstantesDTO.CotizacionDetalleCostos.TipoProceso.Eliminar;
+                var resMant = ventasBL.MantenimientoCotDetCosto(cotdetCosto);
+                cotdetCosto.Id = resMant.Result.Codigo;
+
+                //Se carga todos los costos
+                var resCostos = ventasBL.ObtenerCotDetCostos(new CotDetCostoDTO() { CotizacionDetalle = cotdetCosto.CotizacionDetalle });
+                lstCostos = resCostos.Result.ToList();
+
+                //Se completa los datos de cotizacion detalle para costos
+                lstCostos.ForEach(x =>
+                {
+                    var cditem = lstItems.FirstOrDefault(y => y.Id == x.IdCotizacionDetalle);
+                    if (cditem != null) { x.CotizacionDetalle = cditem; }
+                });
+                VariableSesion.setObject(TAG_CDCI, lstCostos);
+
+                //Solo se devuelve los costos de la grilla respectiva
+                var response = new ResponseDTO<IEnumerable<CotDetCostoDTO>>(lstCostos.Where(x => x.CodCosto == cotdetCosto.CodCosto));
+
+                return Json(response);
+            }
+            catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
+        }
+
+        [HttpPost]
+        public JsonResult CargarDatosCostoItem(CotDetCostoDTO cotdetCosto)
         {
             List<CotDetCostoDTO> lstCostos = new List<CotDetCostoDTO>();
             if (VariableSesion.getObject(TAG_CDCI) != null) { lstCostos = (List<CotDetCostoDTO>)VariableSesion.getObject(TAG_CDCI); }
 
             var cdcItem = lstCostos.FirstOrDefault(x => x.Id == cotdetCosto.Id);
+
+            var ubigeoBL = new UbigeoBL();
+            if (cdcItem.CodUbigeoDestino != null)
+            {
+                var resUbigeo = ubigeoBL.Obtener(new UbigeoDTO() { UbigeoId = cdcItem.CodUbigeoDestino });
+                var oUbigeo = resUbigeo.Result.First();
+                cdcItem.DescUbigeoDestino = oUbigeo.NombreDepartamento + " / " + oUbigeo.NombreProvincia + " / " + oUbigeo.NombreDistrito;
+            }
+
             var response = new ResponseDTO<CotDetCostoDTO>(cdcItem);
 
             return Json(response);
