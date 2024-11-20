@@ -41,9 +41,6 @@ var cotvtadet = (function ($, win, doc) {
     var $DI_radLLaveEnMano_No = $("#DI_radLLaveEnMano_No");
     var $DI_radCompraLocal_Si = $("#DI_radCompraLocal_Si");
     var $DI_radCompraLocal_No = $("#DI_radCompraLocal_No");
-    //var $txtUbicacion = $("#txtUbicacion"); //Ubigeo
-    //var $DI_txtDireccion = $("#DI_txtDireccion");
-    //var $DI_txtNroPiso = $("#DI_txtNroPiso");
     var $DI_txtDimensiones = $("#DI_txtDimensiones");
     var $DI_radReqPlaca_Si = $("#DI_radReqPlaca_Si");
     var $DI_radReqPlaca_No = $("#DI_radReqPlaca_No");
@@ -52,15 +49,12 @@ var cotvtadet = (function ($, win, doc) {
     var $DI_txtFechaLimite = $("#DI_txtFechaLimite");
     var $DI_radGarantAdic_Si = $("#DI_radGarantAdic_Si");
     var $DI_radGarantAdic_No = $("#DI_radGarantAdic_No");
-    //var $DI_txtCantPreventivo = $("#DI_txtCantPreventivo");
-    //var $DI_cmbCicloPreventivo = $("#DI_cmbCicloPreventivo");
     var $DI_radManuales_Si = $("#DI_radManuales_Si");
     var $DI_radManuales_No = $("#DI_radManuales_No");
     var $DI_radVideos_Si = $("#DI_radVideos_Si");
     var $DI_radVideos_No = $("#DI_radVideos_No");
     var $DI_radInstaCapa_Si = $("#DI_radInstaCapa_Si");
     var $DI_radInstaCapa_No = $("#DI_radInstaCapa_No");
-    //var $DI_txtGarantiaAdic = $("#DI_txtGarantiaAdic");
     var $DI_txtReqCliente = $("#DI_txtReqCliente");
     var $DI_txtObsInsta = $("#DI_txtObsInsta");
     
@@ -110,7 +104,6 @@ var cotvtadet = (function ($, win, doc) {
         });
 
         listarCotDetItems();
-        //cargarCiclosPreventivos();
 
     }
 

@@ -1486,8 +1486,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     AddModifyCDI(select);
                 }
 
-                lstItems = CompletarInfoCotDet(lstItems);
                 lstItems = GetCDIList("1");
+                lstItems = CompletarInfoCotDet(lstItems);
 
                 //Solo cargar los productos en pantalla
                 var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems.Where(x => x.TipoItem != ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio));
@@ -1622,7 +1622,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 List<CotizacionDetalleDTO> lstItems = GetCDIList("1");
                 List<CotizacionDetalleDTO> lstItems_2 = GetCDIList("2");
 
-                var itemPadre = lstItems.FirstOrDefault(x => x.CodItem == CodItemPadre);
+                var itemPadre = lstItems.FirstOrDefault(x => x.CodItem.Trim() == CodItemPadre.Trim());
                 if (itemPadre != null)
                 {
                     lstItems = lstItems.Where(x => x.NroItem == itemPadre.NroItem && x.CodItem.Trim() != CodItem.Trim()).ToList();
@@ -1631,7 +1631,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     VariableSesion.setObject(TAG_CDI, lstItems);
                 }
                 lstItems = GetCDIList("1");
-                var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems);
+                var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems.Where(x =>
+                x.CodItem.Trim() != CodItemPadre.Trim() && x.NroItem == itemPadre.NroItem));
 
                 return Json(response);
             }
@@ -1737,6 +1738,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 {
                     if (item.EsItemPadre)
                     {
+                        item.CantSubItem = lstItems.Where(x => x.CodItem.Trim() != item.CodItem.Trim() && x.NroItem == item.NroItem).Count();
                         if (string.IsNullOrEmpty(item.DescUnidad))
                         {
                             var oArticulo = findSaleItemRecord(item.CodItem);
@@ -1760,7 +1762,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 {
                     if (item.EsItemPadre)
                     {
-                        item.CantSubItem = lstItems.Where(x => x.CodItem != item.CodItem && x.NroItem == item.NroItem).Count();
+                        item.CantSubItem = lstItems.Where(x => x.CodItem.Trim() != item.CodItem.Trim() && x.NroItem == item.NroItem).Count();
                         if (lstItems.Any(x => x.NroItem == item.NroItem && x.VentaUnitaria.HasValue))
                         {
                             item.VentaTotalSinIGV = lstItems.Where(x => x.NroItem == item.NroItem && x.VentaUnitaria.HasValue).Select(y => y.VentaUnitaria.Value * y.Cantidad).Sum();

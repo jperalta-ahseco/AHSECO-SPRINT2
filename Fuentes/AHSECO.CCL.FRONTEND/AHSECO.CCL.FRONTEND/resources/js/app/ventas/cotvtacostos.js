@@ -69,9 +69,21 @@
     var $tblCalibCostos = $("#tblCalibCostos");
     var $tblFleteCostos = $("#tblFleteCostos");
 
+    var $tabDetCot = $("#tabDetCot");
+    var $tabInsta = $("#tabInsta");
+    var $tabMantPrevent = $("#tabMantPrevent");
+    var $tabLLaveMano = $("#tabLLaveMano");
+    var $tabManuales = $("#tabManuales");
+    var $tabVideos = $("#tabVideos");
+    var $tabGarantiaAdic = $("#tabGarantiaAdic");
+    var $tabCalib = $("#tabCalib");
+    var $tabFlete = $("#tabFlete");
+
     $(Initialize);
 
     function Initialize() {
+
+        $tabDetCot.addClass("active");
 
         ubigeo.setTxtUbigeo_Id("CI_hdnUbicacion");
         ubigeo.setTxtUbigeo_Text("CI_txtUbicacion");
