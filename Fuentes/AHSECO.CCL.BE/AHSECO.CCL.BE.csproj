@@ -71,7 +71,9 @@
     <Compile Include="Reportes\UsuarioAuditoriaDTO.cs" />
     <Compile Include="ReportParamsDTO.cs" />
     <Compile Include="ServicioDTO.cs" />
+    <Compile Include="ServicioTecnico\BandejaGarantias\DetalleSolicitudGarantiaDTO.cs" />
     <Compile Include="ServicioTecnico\BandejaGarantias\FiltroReclamosDTO.cs" />
+    <Compile Include="ServicioTecnico\BandejaGarantias\GrupoGarantiasDTO.cs" />
     <Compile Include="ServicioTecnico\BandejaGarantias\ReclamosDTO.cs" />
     <Compile Include="ServicioTecnico\BandejaInstalacionTecnica\CotizacionDetalleTecDTO.cs" />
     <Compile Include="ServicioTecnico\BandejaInstalacionTecnica\FiltroInstalacionTecDTO.cs" />
