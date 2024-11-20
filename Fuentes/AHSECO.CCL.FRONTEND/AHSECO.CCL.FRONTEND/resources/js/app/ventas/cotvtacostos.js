@@ -105,6 +105,10 @@
             cargarCostosItemsxTab($CI_CodCosto_Calibra.val());
             cargarCostosItemsxTab($CI_CodCosto_Flete.val());
 
+            $CI_txtCantCosteo.on("keyup", totalizarCostItem);
+            $CI_txtMtoUnitarioCosto.on("keyup", totalizarCostItem);
+            $CI_txtMtoTotalCosto.on("keyup", totalizarCostItem);
+
         }
 
     }
@@ -114,8 +118,8 @@
         $pnlInfoDestino.css("display", "");
         $pnlInfoCostos_MtoUnitario.css("display", "");
         $pnlInfoCostos_MtoTotal.css("display", "");
-        $CI_txtMtoUnitarioCosto.removeAttr("readonly");
-        $CI_txtMtoTotalCosto.attr("readonly", "readonly");
+        $CI_txtMtoUnitarioCosto.removeAttr("disabled");
+        $CI_txtMtoTotalCosto.attr("disabled", "disabled");
         $pnlInfoPreventivos.css("display", "none");
     }
 
@@ -124,8 +128,8 @@
         $pnlInfoDestino.css("display", "");
         $pnlInfoCostos_MtoUnitario.css("display", "");
         $pnlInfoCostos_MtoTotal.css("display", "");
-        $CI_txtMtoUnitarioCosto.removeAttr("readonly");
-        $CI_txtMtoTotalCosto.attr("readonly","readonly");
+        $CI_txtMtoUnitarioCosto.removeAttr("disabled");
+        $CI_txtMtoTotalCosto.attr("disabled","disabled");
         $pnlInfoPreventivos.css("display", "none");
     }
 
@@ -134,8 +138,8 @@
         $pnlInfoDestino.css("display", "none");
         $pnlInfoCostos_MtoUnitario.css("display", "none");
         $pnlInfoCostos_MtoTotal.css("display", "");
-        $CI_txtMtoUnitarioCosto.attr("readonly", "readonly"); //No se utiliza costo unitario
-        $CI_txtMtoTotalCosto.removeAttr("readonly");
+        $CI_txtMtoUnitarioCosto.attr("disabled", "disabled"); //No se utiliza costo unitario
+        $CI_txtMtoTotalCosto.removeAttr("disabled");
         $pnlInfoPreventivos.css("display", "none");
     }
 
@@ -144,8 +148,8 @@
         $pnlInfoDestino.css("display", "none");
         $pnlInfoCostos_MtoUnitario.css("display", "none");
         $pnlInfoCostos_MtoTotal.css("display", "");
-        $CI_txtMtoUnitarioCosto.attr("readonly", "readonly"); //No se utiliza costo unitario
-        $CI_txtMtoTotalCosto.removeAttr("readonly");
+        $CI_txtMtoUnitarioCosto.attr("disabled", "disabled"); //No se utiliza costo unitario
+        $CI_txtMtoTotalCosto.removeAttr("disabled");
         $pnlInfoPreventivos.css("display", "none");
     }
     
@@ -154,8 +158,8 @@
         $pnlInfoDestino.css("display", "");
         $pnlInfoCostos_MtoUnitario.css("display", "");
         $pnlInfoCostos_MtoTotal.css("display", "");
-        $CI_txtMtoUnitarioCosto.removeAttr("readonly");
-        $CI_txtMtoTotalCosto.attr("readonly", "readonly");
+        $CI_txtMtoUnitarioCosto.removeAttr("disabled");
+        $CI_txtMtoTotalCosto.attr("disabled", "disabled");
         $pnlInfoPreventivos.css("display", "");
     }
 
@@ -164,8 +168,8 @@
         $pnlInfoDestino.css("display", "");
         $pnlInfoCostos_MtoUnitario.css("display", "");
         $pnlInfoCostos_MtoTotal.css("display", "");
-        $CI_txtMtoUnitarioCosto.removeAttr("readonly");
-        $CI_txtMtoTotalCosto.attr("readonly", "readonly");
+        $CI_txtMtoUnitarioCosto.removeAttr("disabled");
+        $CI_txtMtoTotalCosto.attr("disabled", "disabled");
         $pnlInfoPreventivos.css("display", "none");
     }
 
@@ -174,8 +178,8 @@
         $pnlInfoDestino.css("display", "");
         $pnlInfoCostos_MtoUnitario.css("display", "");
         $pnlInfoCostos_MtoTotal.css("display", "");
-        $CI_txtMtoUnitarioCosto.removeAttr("readonly");
-        $CI_txtMtoTotalCosto.attr("readonly", "readonly");
+        $CI_txtMtoUnitarioCosto.removeAttr("disabled");
+        $CI_txtMtoTotalCosto.attr("disabled", "disabled");
         $pnlInfoPreventivos.css("display", "none");
     }
 
@@ -184,16 +188,20 @@
         $pnlInfoDestino.css("display", "");
         $pnlInfoCostos_MtoUnitario.css("display", "");
         $pnlInfoCostos_MtoTotal.css("display", "");
-        $CI_txtMtoUnitarioCosto.removeAttr("readonly");
-        $CI_txtMtoTotalCosto.attr("readonly", "readonly");
+        $CI_txtMtoUnitarioCosto.removeAttr("disabled");
+        $CI_txtMtoTotalCosto.attr("disabled", "disabled");
         $pnlInfoPreventivos.css("display", "none");
     }
 
     function LimpiarModalCostos() {
         $CI_hdnIdCotDetCosto.val("");
+        $CI_cmbCDItem.removeAttr("disabled");
         $CI_cmbCDItem.val("").trigger("change.select2");
+        $CI_txtCantCotDet.val("");
+        $CI_txtUnidadMedida.val("");
         $CI_hdnUbicacion.val("");
         $CI_txtUbicacion.val("");
+        ubigeo.setUbigeoById("");
         $CI_txtDireccion.val("");
         $CI_txtAmbDestino.val("");
         $CI_txtNroPiso.val("");
@@ -428,7 +436,7 @@
             }
         }
 
-        if ($CI_txtMtoUnitarioCosto.attr("readonly") != "readonly") {
+        if ($CI_txtMtoUnitarioCosto.attr("readonly") != "readonly" || $CI_txtMtoUnitarioCosto.attr("disabled") != "disabled") {
             if ($CI_txtMtoUnitarioCosto.val() == "") {
                 app.message.error("Validación", "Se debe ingresar el monto unitario");
                 return false;
@@ -447,7 +455,7 @@
             }
         }
         
-        if ($CI_txtMtoTotalCosto.attr("readonly") != "readonly") {
+        if ($CI_txtMtoTotalCosto.attr("readonly") != "readonly" || $CI_txtMtoTotalCosto.attr("disabled") != "disabled") {
             if ($CI_txtMtoTotalCosto.val() == "") {
                 app.message.error("Validación", "Se debe ingresar el monto unitario");
                 return false;
@@ -509,14 +517,10 @@
         var fnDoneCallBack = function (data) {
             loadGridbyCost(data, $CI_hdnCodCosto.val());
             cerrarModalCostosItem();
-            app.message.success("Costos", "Se guard&oacute; el costos correctamente.", "Aceptar", redirect);
+            app.message.success("Costos", "Se guard&oacute; el costos correctamente.", "Aceptar", null);
         };
-
-        var fnFailCallback = function () {
-            app.message.error("Validación", "Error al grabar los costos");
-        };
-
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallback);
+        
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
     }
 
     function editarCostoItem(strId) {
@@ -535,20 +539,54 @@
             $CI_cmbCDItem.val(data.Result.IdCotizacionDetalle).trigger("change.select2");
             $CI_txtCantCotDet.val(data.Result.CotizacionDetalle.Cantidad);
             $CI_txtUnidadMedida.val(data.Result.CotizacionDetalle.DescUnidad);
-            //sessionStorage.setItem('codDistrito', data.Result.CodUbigeoDestino);
             if (data.Result.CodUbigeoDestino != null) {
-                //sessionStorage.setItem('codDepartamento', data.Result.CodUbigeoDestino.substr(0, 2));
                 ubigeo.setUbigeoById(data.Result.CodUbigeoDestino);
             }
+            $CI_txtDireccion.val(data.Result.Direccion);
+            $CI_txtAmbDestino.val(data.Result.AmbienteDestino);
+            $CI_txtNroPiso.val(data.Result.NroPiso);
+            $CI_txtCantCosteo.val(data.Result.CantidadCosto);
+            $CI_txtMtoUnitarioCosto.val(data.Result.MontoUnitarioCosto);
+            $CI_txtMtoTotalCosto.val(data.Result.MontoTotalCosto);
+            $CI_txtCantPrevent.val(data.Result.CantPreventivo);
+            $CI_cmbCicloPreventivo.val(data.Result.CodCicloPreventivo).trigger("change.select2");
 
             $('#modalCostoItem').modal('show');
         };
+        
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+    }
 
-        var fnFailCallback = function () {
-            app.message.error("Validación", "Error al editar los costos");
-        };
-
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallback);
+    function totalizarCostItem() {
+        var vMtoUnit = null;
+        if ($CI_txtMtoTotalCosto.attr("readonly") == "readonly" || $CI_txtMtoTotalCosto.attr("disabled") == "disabled") {
+            if ($CI_txtCantCosteo.val() != "" && $CI_txtMtoUnitarioCosto.val() != "") {
+                if (app.validaNumeroEntero($CI_txtCantCosteo.val()) && app.validaNumeroDecimal($CI_txtMtoUnitarioCosto.val())) {
+                    var strMonto = $CI_txtMtoUnitarioCosto.val();
+                    var position = strMonto.indexOf(".");
+                    var redondeo = 0;
+                    if (position > 0) {
+                        var dec = (strMonto.length - position) - 1;
+                        if (dec > 0) { redondeo = dec; }
+                    }
+                    $CI_txtMtoTotalCosto.val((parseFloat($CI_txtMtoUnitarioCosto.val()) * parseInt($CI_txtCantCosteo.val())).toFixed(redondeo));
+                }
+            }
+        }
+        if ($CI_txtMtoUnitarioCosto.attr("readonly") == "readonly" || $CI_txtMtoUnitarioCosto.attr("disabled") == "disabled") {
+            if ($CI_txtCantCosteo.val() != "" && $CI_txtMtoTotalCosto.val() != "") {
+                if (app.validaNumeroEntero($CI_txtCantCosteo.val()) && app.validaNumeroDecimal($CI_txtMtoTotalCosto.val())) {
+                    var strMonto = $CI_txtMtoTotalCosto.val();
+                    var position = strMonto.indexOf(".");
+                    var redondeo = 0;
+                    if (position > 0) {
+                        var dec = (strMonto.length - position) - 1;
+                        if (dec > 0) { redondeo = dec; }
+                    }
+                    $CI_txtMtoUnitarioCosto.val((parseFloat($CI_txtMtoTotalCosto.val()) / parseInt($CI_txtCantCosteo.val())).toFixed(redondeo));
+                }
+            }
+        }
     }
 
     function quitarCostoItem(strId, strCodCosto) {
@@ -562,14 +600,10 @@
 
         var fnDoneCallBack = function (data) {
             loadGridbyCost(data, strCodCosto);
-            app.message.success("Costos", "Se guard&oacute; el costos correctamente.", "Aceptar", redirect);
+            app.message.success("Costos", "Se elimin&oacute; el costo correctamente.", "Aceptar", null);
         };
-
-        var fnFailCallback = function () {
-            app.message.error("Validación", "Error al editar los costos");
-        };
-
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallback);
+        
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
     }
 
     function cerrarModalCostosItem() {

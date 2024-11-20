@@ -179,28 +179,31 @@ var ubigeo = (function ($, win, doc) {
     }
 
     function setUbigeoById(strId) {
-
         if (strId != "") {
-
             if (strId.length >= 2) {
                 sessionStorage.setItem('codDepartamento', strId.substr(0, 2));
                 $cmbDepartamento.val(strId.substr(0, 2)).trigger("change");
             }
-
             if (strId.length >= 4) {
                 sessionStorage.setItem('codProvincia', strId.substr(0, 4));
                 $cmbProvincia.val(strId.substr(0, 4)).trigger("change");
             }
-
             if (strId.length == 6) {
                 sessionStorage.setItem('codDistrito', strId.substr(0, 6));
                 $cmbDistrito.val(strId.substr(0, 6)).trigger("change");
             }
-
-            seleccionar();
-
         }
-
+        else {
+            $cmbDistrito.val(" ").trigger("change");
+            sessionStorage.setItem('codDistrito', "");
+            $cmbDistrito.prop('disabled', true);
+            $cmbProvincia.val(" ").trigger("change");
+            sessionStorage.setItem('codProvincia', "");
+            $cmbProvincia.prop('disabled', true);
+            $cmbDepartamento.val(" ").trigger("change");
+            sessionStorage.setItem('codDepartamento', "");
+        }
+        seleccionar();
     }
 
     return {
