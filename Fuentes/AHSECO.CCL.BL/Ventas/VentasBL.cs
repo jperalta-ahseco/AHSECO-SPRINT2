@@ -183,11 +183,11 @@ namespace AHSECO.CCL.BL.Ventas
             };
         }
 
-        public ResponseDTO<FiltroGrupoSolicitudVentaDTO> GrupoSolicitudVentaFiltro(int codFlujo)
+        public ResponseDTO<FiltroGrupoSolicitudVentaDTO> GrupoSolicitudVentaFiltro(int codFlujo, long codSolicitud)
         {
             try
             {
-                var result = Repository.GrupoSolicitudVentaFiltro(codFlujo);
+                var result = Repository.GrupoSolicitudVentaFiltro(codFlujo, codSolicitud);
                 return new ResponseDTO<FiltroGrupoSolicitudVentaDTO>(result);
             }
             catch (Exception ex)

@@ -204,14 +204,6 @@
         solicitud.itemMant = [];
         solicitud.itemTransporte = [];
         solicitud.nuevoContacto = false;
-        cargaCombos();
-        cotvtadet.ObtenerFiltrosPrecios();
-        CargarTipoDocumento(1); //Tipo de Proceso "Ventas"
-        
-
-        setTimeout(function () {
-            cargarDatosSolicitud();
-        }, 2000);
 
 
         $dateSolicitud.datepicker({
@@ -299,6 +291,13 @@
         $btnGuardarImportacion.click($btnGuardarImportacion_click);
         $btnGuardarGestionLogisticaSE.click($btnGuardarGestionLogisticaSE_click);
         $btnEditarGestionLogisticaSE.click($btnEditarGestionLogisticaSE_click);
+
+        cargaCombos();
+
+
+      
+
+
         
     };
 
@@ -950,8 +949,14 @@
                 codFlujo = "2";
             }
         }
+
+        var numsol = $numeroSolicitud.val();
+        if (numsol == "") {
+            numsol = 0;
+        }
+
         method = "POST";
-        url = "BandejaSolicitudesVentas/GrupoSolicitudVentaFiltro?codFlujo=" + codFlujo;
+        url = "BandejaSolicitudesVentas/GrupoSolicitudVentaFiltro?codFlujo=" + codFlujo + "&codSolicitud=" + numsol;
         var objComb = "";
         objComb = JSON.stringify(objComb);
 
@@ -969,6 +974,220 @@
             app.llenarComboMultiResult($cmbTipoPago, data.Result.FormPago, null, "", "", filters);
             app.llenarComboMultiResult($cmbempresa, data.Result.Empresas, null, "", "", filters);
             app.llenarComboMultiResult($cmbTipoVenta, data.Result.TipoVenta, null, "", "", filters);
+            app.llenarComboMultiResult($cmbTipoDocumentoCarga, data.Result.TipoDocumento, null, 0, "--Seleccione--", filters);
+
+            //  app.llenarCombo($cmbTipoDocumentoCarga, data, null, 0, "--Seleccione--", filters);
+
+            if ($numeroSolicitud.val() != "") {
+
+                cotvtadet.ObtenerFiltrosPrecios();
+
+                //Carga de datos de la solicitud:
+                $txtRuc.val(data.Result.Solicitud.RUC);
+                $txtNomEmpresa.val(data.Result.Solicitud.RazonSocial);
+                $txtAsesor.val(data.Result.Solicitud.AsesorVenta);
+                $cmbFlujo.val(data.Result.Solicitud.Id_Flujo).trigger("change.select2");
+                $cmbTipo.val(data.Result.Solicitud.Tipo_Sol).trigger("change.select2");
+                $cmbMedioContacto.val(data.Result.Solicitud.Cod_MedioCont).trigger("change.select2");
+                $cmbempresa.val(data.Result.Solicitud.Cod_Empresa).trigger("change.select2");
+                $dateSolicitud.val(data.Result.Solicitud.Fecha_Sol);
+                $cmbTipoVenta.val(data.Result.Solicitud.TipoVenta).trigger("change.select2");
+                if (data.Result.Solicitud.TipoVenta === "TVEN02") //Si es licitacion:
+                {
+                    $divDatosLicitacion.show();
+                }
+
+                $txtNroProceso.val(data.Result.Solicitud.NroProceso);
+                $txtTipoProceso.val(data.Result.Solicitud.TipoProceso);
+                //para habilitar el boton de historial de cotizaciones:
+                if (data.Result.Solicitud.NroCotizacionEliminado > 0) {
+                    $btnHistorial.show();
+                }
+
+
+                if ($estadoSol.val() == "PRVT" || $estadoSol.val() == "CAPR") {
+                    CalcularFechaEntregaMaxima();
+                }
+
+
+                if ($estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG" || $estadoSol.val() == "SFIN" || $estadoSol.val() == "NOVT") {
+                    //para despacho:
+                    $txtNroOrdenCompra.val(data.Result.ContadorCabecera.NumeroOrden);
+                    $dateOrdenCompra.val(data.Result.ContadorCabecera.FechaOrden);
+                    $txtFechaEntregaMax.val(data.Result.ContadorCabecera.FechaMaxima);
+                    $txtNroOrdenCompra.prop('disabled', true);
+                    $dateOrdenCompra.prop('disabled', true);
+                    $openRegdateOrdenCompra.prop('disabled', true);
+                }
+
+
+                if ($estadoSol.val() == "SFIN" || $estadoSol.val() == "NOVT") {
+                    $btnCargarDocumento.hide();
+                    $btnAgregarObservacion.hide();
+                    $btnAgregarDocumento.hide();
+                }
+
+                if (data.Result.ContadorCabecera.ContadorSinStock > 0) {
+
+
+
+
+                    if ($estadoSol.val() == "PRVT" && data.Result.DespachoCabeceraSinStock.EstadoAprobacion == "APR") {
+                        $txtCodigoPedidoSE.val("");
+                    }
+                    else {
+                        $txtCodigoPedidoSE.val(data.Result.DespachoCabeceraSinStock.NumeroPedido);
+                        $dateIngresoAlmacenSE.val(data.Result.DespachoCabeceraSinStock.FechaIngreso);
+                        $txtCodigoPedidoSE.prop('disabled', true);
+                        $opendateIngresoAlmacenSE.prop('disabled', true);
+                        $dateIngresoAlmacenSE.prop('disabled', true);
+                    }
+
+
+                    for (i = 0; i < data.Result.ContadorCabecera.NumeroSinStock; i++) {
+                        var html = '<div class="text-center">';
+                        if ($estadoSol.val() == "PRVT" && $idRolUsuario.val() == "SGI_VENTA_LOGISTICA" && data.Result.DespachoCabeceraSinStock.EstadoAprobacion == "IMP") {
+
+                            html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleSinStock[i].Id + '" href="javascript:solicitud.editarSeries(' + data.Result.DespachoDetalleSinStock[i].Id + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';
+                            html += ' <a class="btn btn-default btn-xs" title="Guardar" id="Boton' + data.Result.DespachoDetalleSinStock[i].Id + '" style="display:none"  href="javascript:solicitud.guardarSeries(' + data.Result.DespachoDetalleSinStock[i].Id + ',N)"><i class="fa fa-save" aria-hidden="true"></i></a>&nbsp;';
+                        }
+                        html += '</div>';
+                        var nuevoTr = "<tr bgcolor='d0f2f7' id='fila" + data.Result.DespachoDetalleSinStock[i].Id + "'>" +
+                            "<th>" + data.Result.DespachoDetalleSinStock[i].RowNumber + "</th>" +
+                            "<th>" + data.Result.DespachoDetalleSinStock[i].CodigoEquipo + "</th>" +
+                            "<th>" + data.Result.DespachoDetalleSinStock[i].DescripcionEquipo + "</th>" +
+                            "<th>" + data.Result.DespachoDetalleSinStock[i].Marca + "</th>" +
+                            "<th><input type='text' style='border: none;background-color: transparent; outline: none;' readonly id='Serie" + data.Result.DespachoDetalleSinStock[i].Id + "' value='" + data.Result.DespachoDetalleSinStock[i].NumeroSerie + "'></th>" +
+                            "<th>" + html + "</th>" +
+                            "</tr>";
+
+                        $NoRegSeriesSS.hide();
+                        $tblSeriesSS.append(nuevoTr);
+                    }
+
+
+                    $dateEntregaPedidoSE.val(data.Result.DespachoCabeceraSinStock.FechaEntrega);
+                    $txtNumeroFacturaSE.val(data.Result.DespachoCabeceraSinStock.NumeroFactura);
+                    $txtNumeroGuiaRemisionSE.val(data.Result.DespachoCabeceraSinStock.NumeroGuiaRemision);
+
+                    if (data.Result.ContadorCabecera.GestionLogSinStock > 0) {
+                        $dateEntregaPedidoSE.prop('disabled', true);
+                        $txtNumeroFacturaSE.prop('disabled', true);
+                        $txtNumeroGuiaRemisionSE.prop('disabled', true);
+                        $opendateEntregaPedidoSE.prop('disabled', true);
+                    }
+
+                }
+
+                if (data.Result.ContadorCabecera.ContadorConStock > 0) {
+
+                    for (i = 0; i < data.Result.ContadorCabecera.NumeroConStock; i++) {
+                        var html = '<div class="text-center">';
+                        if ($estadoSol.val() == "PRVT" && $idRolUsuario.val() == "SGI_VENTA_LOGISTICA") {
+
+                            html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleConStock[i].Id + '" href="javascript:solicitud.editarSeries(' + data.Result.DespachoDetalleConStock[i].Id + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';
+                            html += ' <a class="btn btn-default btn-xs" title="Guardar" id="Boton' + data.Result.DespachoDetalleConStock[i].Id + '" style="display:none"  href="javascript:solicitud.guardarSeries(' + data.Result.DespachoDetalleConStock[i].Id + ',S)"><i class="fa fa-save" aria-hidden="true"></i></a>&nbsp;';
+                        }
+                        html += '</div>';
+                        var nuevoTr = "<tr bgcolor='d0f2f7' id='fila" + data.Result.DespachoDetalleConStock[i].Id + "'>" +
+                            "<th>" + data.Result.DespachoDetalleConStock[i].RowNumber + "</th>" +
+                            "<th>" + data.Result.DespachoDetalleConStock[i].CodigoEquipo + "</th>" +
+                            "<th>" + data.Result.DespachoDetalleConStock[i].DescripcionEquipo + "</th>" +
+                            "<th>" + data.Result.DespachoDetalleConStock[i].Marca + "</th>" +
+                            "<th><input type='text' style='border: none;background-color: transparent; outline: none;' readonly id='Serie" + data.Result.DespachoDetalleConStock[i].Id + "' value='" + data.Result.DespachoDetalleConStock[i].NumeroSerie + "'></th>" +
+                            "<th>" + html + "</th>" +
+                            "</tr>";
+
+                        $NoRegSeries.hide();
+                        $tblSeriesCS.append(nuevoTr);
+                    }
+
+                    $dateEntregaPedidoCE.val(data.Result.DespachoCabeceraConStock.FechaEntrega);
+                    $txtNumeroFacturaCE.val(data.Result.DespachoCabeceraConStock.NumeroFactura);
+                    $txtNumeroGuiaRemisionCE.val(data.Result.DespachoCabeceraConStock.NumeroGuiaRemision);
+
+
+                    if (data.Result.ContadorCabecera.GestionLogConStock > 0) {
+                        $dateEntregaPedidoCE.prop('disabled', true);
+                        $txtNumeroFacturaCE.prop('disabled', true);
+                        $txtNumeroGuiaRemisionCE.prop('disabled', true);
+                        $opendateEntregaPedidoCE.prop('disabled', true);
+                    }
+                }
+
+
+
+                cotvtadet.RecargarFiltroFamilia();
+
+                solicitud.detalleSolicitud.push({
+                    flujo: data.Result.Solicitud.Id_Flujo,
+                    TipoSol: data.Result.Solicitud.Tipo_Sol,
+                    MedioContacto: data.Result.Solicitud.Cod_MedioCont,
+                    codProd: data.Result.Solicitud.CodProducto,
+                    nomProd: data.Result.Solicitud.NomProducto,
+                    Marca: data.Result.Solicitud.Marca,
+                    fecSolicitud: data.Result.Solicitud.Fecha_Sol
+                });
+
+                solicitud.contadorObservaciones = data.Result.Observaciones.length;
+                solicitud.observaciones = data.Result.Observaciones;
+                if (solicitud.contadorObservaciones > 0) {
+                    for (var i = 0; i < data.Result.Observaciones.length; i++) {
+                        var nuevoTr = "<tr id='row" + data.Result.Observaciones[i].Id + "'>" +
+                            "<th style='text-align: center;'>" + data.Result.Observaciones[i].Nombre_Usuario + "</th>" +
+                            "<th style='text-align: center;'>" + data.Result.Observaciones[i].Perfil_Usuario + "</th>" +
+                            "<th style='text-align: center;'>" + data.Result.Observaciones[i].Fecha_Registro + "</th>" +
+                            "<th style='text-align: center;'>" + data.Result.Observaciones[i].Observacion + "</th>" +
+                            "<th style='text-align: center;'>" + " " + "</th>" + //Controlar la modificación de observaciones por el usuario que haya registrado dicha solicitud. 
+                            "</tr>";
+                        $tblObservaciones.append(nuevoTr);
+                    }
+                    $NoExisteRegObs.hide();
+                }
+
+                var seguimiento = data.Result.Seguimiento.length;
+                if (seguimiento > 0) {
+                    for (i = 0; i < data.Result.Seguimiento.length; i++) {
+
+                        var nuevoTr = "<tr>" +
+                            "<th style='text-align: center;'>" + data.Result.Seguimiento[i].DescripcionEstado + "</th>" +
+                            "<th style='text-align: center;'>" + data.Result.Seguimiento[i].Cargo + "</th>" +
+                            "<th style='text-align: center;'>" + data.Result.Seguimiento[i].NombreUsuarioRegistro + "</th>" +
+                            "<th style='text-align: center;'>" + data.Result.Seguimiento[i].FechaRegistro + "</th>" +
+                            "<th style='text-align: center;'>" + data.Result.Seguimiento[i].HoraRegistro + "</th>" +
+                            "</tr>";
+                        $tblSeguimiento.append(nuevoTr);
+                    }
+                    $NoExisteRegSeg.hide();
+                }
+
+                var docs = data.Result.Adjuntos.length;
+                adjuntos = data.Result.Adjuntos;
+
+                $contadordoc.val(docs);
+                if (docs > 0) {
+                    for (i = 0; i < data.Result.Adjuntos.length; i++) {
+                        var html = '<div class="text-center">';
+                        //var d = "'" + data.Result.Adjuntos[i].CodigoDocumento + "','" + data.Result.Adjuntos[i].RutaDocumento + "'";
+                        html += ' <a class="btn btn-default btn-xs" title="Descargar"  href="javascript:solicitud.download(' + data.Result.Adjuntos[i].CodigoDocumento + ')"><i class="fa fa-download" aria-hidden="true"></i></a>&nbsp;';
+                        html += ' <a class="btn btn-default btn-xs" title="Eliminar"  href="javascript:solicitud.eliminarDocumento(' + data.Result.Adjuntos[i].CodigoDocumento + ')"><i class="fa fa-ban" aria-hidden="true"></i></a>&nbsp;';
+
+                        html += '</div>';
+
+                        var nuevoTr = "<tr id='row" + data.Result.Adjuntos[i].CodigoDocumento + "'>" +
+                            "<th>" + data.Result.Adjuntos[i].NombreTipoDocumento + "</th>" +
+                            "<th>" + data.Result.Adjuntos[i].NombreDocumento + "</th>" +
+                            "<th>" + data.Result.Adjuntos[i].NombreUsuario + "</th>" +
+                            "<th>" + data.Result.Adjuntos[i].NombrePerfil + "</th>" +
+                            "<th>" + data.Result.Adjuntos[i].FechaRegistroFormat + "</th>" +
+                            "<th>" + html + "</th>" +
+                            "</tr>";
+                        $tblDocumentosCargados.append(nuevoTr);
+                    }
+                    $NoExisteRegDoc.hide();
+                }
+            }
+            
         };
 
         var fnFailCallback = function () {
@@ -978,20 +1197,6 @@
         app.llamarAjax(method, url, objComb, fnDoneCallback, fnFailCallback, null, null);
     };
 
-    function CargarTipoDocumento(codFlujo) {
-        var method = "POST";
-        var url = "Utiles/ListarTipoDocumentos?codFlujo=" + codFlujo;
-        var objParam = '';
-        var fnDoneCallback = function (data) {
-
-            var filters = {};
-            filters.placeholder = "-- Seleccione --";
-            filters.allowClear = false;
-            app.llenarCombo($cmbTipoDocumentoCarga, data, null, 0, "--Seleccione--", filters);
-
-        };
-        return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, mensajes.obteniendoTipoDocumento);
-    }
 
     function cargarTablaContactos(contactos) {
         var data = Result = [];
@@ -2035,239 +2240,6 @@
         };
     };
 
-    function cargarDatosSolicitud() {//Para todos excepto Registro de Solicitud. 
-        if ($numeroSolicitud.val() != "") {
-            method = "POST";
-            url = "BandejaSolicitudesVentas/VerDetalleSolicitud"
-            objBuscar = {
-                IdCliente: $idCliente.val(),
-                Id_Solicitud: $numeroSolicitud.val(),
-                Id_WorkFlow: $codigoWorkflow.val()
-            };
-
-            objParam = JSON.stringify(objBuscar);
-
-            var fnDoneCallBack = function (data) {
-                $txtRuc.val(data.Result.Solicitud.RUC);
-                $txtNomEmpresa.val(data.Result.Solicitud.RazonSocial);
-                $txtAsesor.val(data.Result.Solicitud.AsesorVenta);
-                $cmbFlujo.val(data.Result.Solicitud.Id_Flujo).trigger("change.select2");
-                $cmbTipo.val(data.Result.Solicitud.Tipo_Sol).trigger("change.select2");
-                $cmbMedioContacto.val(data.Result.Solicitud.Cod_MedioCont).trigger("change.select2");
-                $cmbempresa.val(data.Result.Solicitud.Cod_Empresa).trigger("change.select2");
-                $dateSolicitud.val(data.Result.Solicitud.Fecha_Sol);
-                $cmbTipoVenta.val(data.Result.Solicitud.TipoVenta).trigger("change.select2");
-                if (data.Result.Solicitud.TipoVenta === "TVEN02") //Si es licitacion:
-                {
-                    $divDatosLicitacion.show();
-                }
-
-                $txtNroProceso.val(data.Result.Solicitud.NroProceso);
-                $txtTipoProceso.val(data.Result.Solicitud.TipoProceso);
-                //para habilitar el boton de historial de cotizaciones:
-                if (data.Result.Solicitud.NroCotizacionEliminado > 0) {
-                    $btnHistorial.show();
-                }
-
-                if ($estadoSol.val() == "PRVT" || $estadoSol.val() == "CAPR") {
-                    CalcularFechaEntregaMaxima();
-                }
-                
-
-                if ($estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG" || $estadoSol.val() == "SFIN" || $estadoSol.val() == "NOVT") {
-                    //para despacho:
-                    $txtNroOrdenCompra.val(data.Result.ContadorCabecera.NumeroOrden);
-                    $dateOrdenCompra.val(data.Result.ContadorCabecera.FechaOrden);
-                    $txtFechaEntregaMax.val(data.Result.ContadorCabecera.FechaMaxima);
-                    $txtNroOrdenCompra.prop('disabled', true);
-                    $dateOrdenCompra.prop('disabled', true);
-                    $openRegdateOrdenCompra.prop('disabled', true);
-                }
-                
-
-                if ($estadoSol.val() == "SFIN" || $estadoSol.val() == "NOVT") {
-                    $btnCargarDocumento.hide();
-                    $btnAgregarObservacion.hide();
-                    $btnAgregarDocumento.hide();
-                }
-
-                if (data.Result.ContadorCabecera.ContadorSinStock > 0) {
-
-                  
-
-
-                    if ($estadoSol.val() == "PRVT" && data.Result.DespachoCabeceraSinStock.EstadoAprobacion == "APR") {
-                        $txtCodigoPedidoSE.val("");
-                    }
-                    else {
-                        $txtCodigoPedidoSE.val(data.Result.DespachoCabeceraSinStock.NumeroPedido);
-                        $dateIngresoAlmacenSE.val(data.Result.DespachoCabeceraSinStock.FechaIngreso);
-                        $txtCodigoPedidoSE.prop('disabled', true);
-                        $opendateIngresoAlmacenSE.prop('disabled', true);
-                        $dateIngresoAlmacenSE.prop('disabled', true);
-                    }
-
-
-                    for (i = 0; i < data.Result.ContadorCabecera.NumeroSinStock; i++) {
-                        var html = '<div class="text-center">';
-                        if ($estadoSol.val() == "PRVT" && $idRolUsuario.val() == "SGI_VENTA_LOGISTICA" && data.Result.DespachoCabeceraSinStock.EstadoAprobacion == "IMP") {
-
-                            html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleSinStock[i].Id + '" href="javascript:solicitud.editarSeries(' + data.Result.DespachoDetalleSinStock[i].Id + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';
-                            html += ' <a class="btn btn-default btn-xs" title="Guardar" id="Boton' + data.Result.DespachoDetalleSinStock[i].Id + '" style="display:none"  href="javascript:solicitud.guardarSeries(' + data.Result.DespachoDetalleSinStock[i].Id + ',N)"><i class="fa fa-save" aria-hidden="true"></i></a>&nbsp;';
-                        }
-                        html += '</div>';
-                        var nuevoTr = "<tr bgcolor='d0f2f7' id='fila" + data.Result.DespachoDetalleSinStock[i].Id + "'>" +
-                            "<th>" + data.Result.DespachoDetalleSinStock[i].RowNumber + "</th>" +
-                            "<th>" + data.Result.DespachoDetalleSinStock[i].CodigoEquipo + "</th>" +
-                            "<th>" + data.Result.DespachoDetalleSinStock[i].DescripcionEquipo + "</th>" +
-                            "<th>" + data.Result.DespachoDetalleSinStock[i].Marca + "</th>" +
-                            "<th><input type='text' style='border: none;background-color: transparent; outline: none;' readonly id='Serie" + data.Result.DespachoDetalleSinStock[i].Id + "' value='" + data.Result.DespachoDetalleSinStock[i].NumeroSerie + "'></th>" +
-                            "<th>" + html + "</th>" +
-                            "</tr>";
-
-                        $NoRegSeriesSS.hide();
-                        $tblSeriesSS.append(nuevoTr);
-                    }
-
-
-                    $dateEntregaPedidoSE.val(data.Result.DespachoCabeceraSinStock.FechaEntrega);
-                    $txtNumeroFacturaSE.val(data.Result.DespachoCabeceraSinStock.NumeroFactura);
-                    $txtNumeroGuiaRemisionSE.val(data.Result.DespachoCabeceraSinStock.NumeroGuiaRemision);
-
-                    if (data.Result.ContadorCabecera.GestionLogSinStock > 0) {
-                        $dateEntregaPedidoSE.prop('disabled', true);
-                        $txtNumeroFacturaSE.prop('disabled', true);
-                        $txtNumeroGuiaRemisionSE.prop('disabled', true);
-                        $opendateEntregaPedidoSE.prop('disabled', true);
-                    }
-
-                }
-
-                if (data.Result.ContadorCabecera.ContadorConStock > 0) {
-
-                    for (i = 0; i < data.Result.ContadorCabecera.NumeroConStock; i++) {
-                        var html = '<div class="text-center">';
-                        if ($estadoSol.val() == "PRVT" && $idRolUsuario.val() == "SGI_VENTA_LOGISTICA") {
-
-                        html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleConStock[i].Id +'" href="javascript:solicitud.editarSeries(' + data.Result.DespachoDetalleConStock[i].Id + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';
-                        html += ' <a class="btn btn-default btn-xs" title="Guardar" id="Boton' + data.Result.DespachoDetalleConStock[i].Id +'" style="display:none"  href="javascript:solicitud.guardarSeries(' + data.Result.DespachoDetalleConStock[i].Id + ',S)"><i class="fa fa-save" aria-hidden="true"></i></a>&nbsp;';
-                        }
-                        html += '</div>';
-                        var nuevoTr = "<tr bgcolor='d0f2f7' id='fila" + data.Result.DespachoDetalleConStock[i].Id + "'>" +
-                            "<th>" + data.Result.DespachoDetalleConStock[i].RowNumber + "</th>" +
-                            "<th>" + data.Result.DespachoDetalleConStock[i].CodigoEquipo + "</th>" +
-                            "<th>" + data.Result.DespachoDetalleConStock[i].DescripcionEquipo + "</th>" +
-                            "<th>" + data.Result.DespachoDetalleConStock[i].Marca + "</th>" +
-                            "<th><input type='text' style='border: none;background-color: transparent; outline: none;' readonly id='Serie" + data.Result.DespachoDetalleConStock[i].Id+"' value='" + data.Result.DespachoDetalleConStock[i].NumeroSerie + "'></th>" +
-                            "<th>" + html + "</th>" +
-                            "</tr>";
-
-                        $NoRegSeries.hide();
-                        $tblSeriesCS.append(nuevoTr);
-                    }
-
-                    $dateEntregaPedidoCE.val(data.Result.DespachoCabeceraConStock.FechaEntrega);
-                    $txtNumeroFacturaCE.val(data.Result.DespachoCabeceraConStock.NumeroFactura);
-                    $txtNumeroGuiaRemisionCE.val(data.Result.DespachoCabeceraConStock.NumeroGuiaRemision);
-                   
-
-                    if (data.Result.ContadorCabecera.GestionLogConStock > 0) {
-                        $dateEntregaPedidoCE.prop('disabled', true);
-                        $txtNumeroFacturaCE.prop('disabled', true);
-                        $txtNumeroGuiaRemisionCE.prop('disabled', true);
-                        $opendateEntregaPedidoCE.prop('disabled', true);
-                    }
-                }
-
-
-
-                cotvtadet.RecargarFiltroFamilia();
-
-                solicitud.detalleSolicitud.push({
-                    flujo: data.Result.Solicitud.Id_Flujo,
-                    TipoSol: data.Result.Solicitud.Tipo_Sol,
-                    MedioContacto: data.Result.Solicitud.Cod_MedioCont,
-                    codProd: data.Result.Solicitud.CodProducto,
-                    nomProd: data.Result.Solicitud.NomProducto,
-                    Marca: data.Result.Solicitud.Marca,
-                    fecSolicitud: data.Result.Solicitud.Fecha_Sol
-                });
-
-                solicitud.contadorObservaciones = data.Result.Observaciones.length;
-                solicitud.observaciones = data.Result.Observaciones;
-                if (solicitud.contadorObservaciones > 0) {
-                    for (var i = 0; i < data.Result.Observaciones.length; i++) {
-                        var nuevoTr = "<tr id='row" + data.Result.Observaciones[i].Id + "'>" +
-                            "<th style='text-align: center;'>" + data.Result.Observaciones[i].Nombre_Usuario + "</th>" +
-                            "<th style='text-align: center;'>" + data.Result.Observaciones[i].Perfil_Usuario + "</th>" +
-                            "<th style='text-align: center;'>" + data.Result.Observaciones[i].Fecha_Registro + "</th>" +
-                            "<th style='text-align: center;'>" + data.Result.Observaciones[i].Observacion + "</th>" +
-                            "<th style='text-align: center;'>" + " " + "</th>" + //Controlar la modificación de observaciones por el usuario que haya registrado dicha solicitud. 
-                            "</tr>";
-                        $tblObservaciones.append(nuevoTr);
-                    }
-                    $NoExisteRegObs.hide();
-                }
-
-                var seguimiento = data.Result.Seguimiento.length;
-                if (seguimiento > 0) {
-                    for (i = 0; i < data.Result.Seguimiento.length; i++) {
-
-                        var nuevoTr = "<tr>" +
-                            "<th style='text-align: center;'>" + data.Result.Seguimiento[i].DescripcionEstado + "</th>" +
-                            "<th style='text-align: center;'>" + data.Result.Seguimiento[i].Cargo + "</th>" +
-                            "<th style='text-align: center;'>" + data.Result.Seguimiento[i].NombreUsuarioRegistro + "</th>" +
-                            "<th style='text-align: center;'>" + data.Result.Seguimiento[i].FechaRegistro + "</th>" +
-                            "<th style='text-align: center;'>" + data.Result.Seguimiento[i].HoraRegistro + "</th>" +
-                            "</tr>";
-                        $tblSeguimiento.append(nuevoTr);
-                    }
-                    $NoExisteRegSeg.hide();
-                }
-
-                var docs = data.Result.Adjuntos.length;
-                adjuntos = data.Result.Adjuntos;
-
-                $contadordoc.val(docs);
-                if (docs > 0) {
-                    for (i = 0; i < data.Result.Adjuntos.length; i++) {
-                        var html = '<div class="text-center">';
-                        //var d = "'" + data.Result.Adjuntos[i].CodigoDocumento + "','" + data.Result.Adjuntos[i].RutaDocumento + "'";
-                        html += ' <a class="btn btn-default btn-xs" title="Descargar"  href="javascript:solicitud.download(' + data.Result.Adjuntos[i].CodigoDocumento + ')"><i class="fa fa-download" aria-hidden="true"></i></a>&nbsp;';
-                        html += ' <a class="btn btn-default btn-xs" title="Eliminar"  href="javascript:solicitud.eliminarDocumento(' + data.Result.Adjuntos[i].CodigoDocumento + ')"><i class="fa fa-ban" aria-hidden="true"></i></a>&nbsp;';
-
-                        html += '</div>';
-
-                        var nuevoTr = "<tr id='row" + data.Result.Adjuntos[i].CodigoDocumento + "'>" +
-                            "<th>" + data.Result.Adjuntos[i].NombreTipoDocumento + "</th>" +
-                            "<th>" + data.Result.Adjuntos[i].NombreDocumento + "</th>" +
-                            "<th>" + data.Result.Adjuntos[i].NombreUsuario + "</th>" +
-                            "<th>" + data.Result.Adjuntos[i].NombrePerfil + "</th>" +
-                            "<th>" + data.Result.Adjuntos[i].FechaRegistroFormat + "</th>" +
-                            "<th>" + html + "</th>" +
-                            "</tr>";
-                        $tblDocumentosCargados.append(nuevoTr);
-                    }
-                    $NoExisteRegDoc.hide();
-                }
-            };
-            var fnFailCallBack = function () {
-                app.message.error("Validación", "Hubo un error en obtener el detalle de la solicitud.")
-            };
-
-            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, mensajes.consultandoDetalleSolicitud)
-        }
-        else {
-            $cmbFlujo.prop("disabled", true);
-            var rol = $idRolUsuario.val();
-            if (rol == "SGI_VENTA_ASESOR" || rol == "SGI_VENTA_COORDINAVENTA") {
-                $cmbFlujo.val("1").trigger("change.select2");
-            }
-            else if (rol == "SGI_VENTA_COORDINASERV" || rol == "SGI_VENTA_COORDINAATC") {
-                $cmbFlujo.val("2").trigger("change.select2");
-            }
-        };
-    };
 
     function editarSeries(codDetalleDespacho) {
 

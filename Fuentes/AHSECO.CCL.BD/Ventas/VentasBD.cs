@@ -810,14 +810,14 @@ namespace AHSECO.CCL.BD.Ventas
             };
         }
 
-        public FiltroGrupoSolicitudVentaDTO GrupoSolicitudVentaFiltro(int codFlujo)
+        public FiltroGrupoSolicitudVentaDTO GrupoSolicitudVentaFiltro(int codFlujo, long codSolicitud)
         {
             Log.TraceInfo(Utilidades.GetCaller());
             using (var connection = Factory.ConnectionSingle())
             {
                 SqlCommand sqlcommand;
                 var result = new FiltroGrupoSolicitudVentaDTO();
-                string query = "exec USP_FILTROS_SOLICITUD_VENTAS @CodFlujo="+codFlujo.ToString();
+                string query = "exec USP_FILTROS_SOLICITUD_VENTAS @CodFlujo="+codFlujo.ToString()+ ", @CodSolicitud="+codSolicitud.ToString();
                 connection.Open();
                 sqlcommand = new SqlCommand(query, connection);
                 using (var reader = sqlcommand.ExecuteReader())
@@ -918,6 +918,238 @@ namespace AHSECO.CCL.BD.Ventas
                         _tipoVenta.Add(tventa);
                     };
 
+                    reader.NextResult();
+                    List<ComboDTO> _tipoDocumento = new List<ComboDTO>();
+                    while (reader.Read())
+                    {
+                        var doc = new ComboDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("CODIGO")) ? "" : reader.GetString(reader.GetOrdinal("CODIGO")),
+                            Text = reader.IsDBNull(reader.GetOrdinal("VALOR")) ? "" : reader.GetString(reader.GetOrdinal("VALOR"))
+                        };
+                        _tipoDocumento.Add(doc);
+                    };
+
+                    reader.NextResult();
+                    reader.Read();
+                    SolicitudDTO solicitud = new SolicitudDTO
+                    {
+                        Id_Solicitud = reader.IsDBNull(reader.GetOrdinal("ID_SOLICITUD")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_SOLICITUD")),
+                        Id_WorkFlow = reader.IsDBNull(reader.GetOrdinal("ID_WORKFLOW")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_WORKFLOW")),
+                        nomFlujo = reader.IsDBNull(reader.GetOrdinal("FLUJO")) ? "" : reader.GetString(reader.GetOrdinal("FLUJO")),
+                        Id_Flujo = reader.IsDBNull(reader.GetOrdinal("CODFLUJO")) ? 0 : reader.GetInt32(reader.GetOrdinal("CODFLUJO")),
+                        NomTipoSol = reader.IsDBNull(reader.GetOrdinal("TIPO")) ? "" : reader.GetString(reader.GetOrdinal("TIPO")),
+                        Tipo_Sol = reader.IsDBNull(reader.GetOrdinal("CODTIPOSOL")) ? "" : reader.GetString(reader.GetOrdinal("CODTIPOSOL")),
+                        Fecha_Sol = reader.IsDBNull(reader.GetOrdinal("FECHA_SOL")) ? "" : reader.GetString(reader.GetOrdinal("FECHA_SOL")),
+                        nomEstado = reader.IsDBNull(reader.GetOrdinal("ESTADO")) ? "" : reader.GetString(reader.GetOrdinal("ESTADO")),
+                        Cod_MedioCont = reader.IsDBNull(reader.GetOrdinal("COD_MEDIOCONT")) ? "" : reader.GetString(reader.GetOrdinal("COD_MEDIOCONT")),
+                        IdCliente = reader.IsDBNull(reader.GetOrdinal("IDCLIENTE")) ? 0 : reader.GetInt32(reader.GetOrdinal("IDCLIENTE")),
+                        RUC = reader.IsDBNull(reader.GetOrdinal("RUC")) ? "" : reader.GetString(reader.GetOrdinal("RUC")),
+                        RazonSocial = reader.IsDBNull(reader.GetOrdinal("RAZONSOCIAL")) ? "" : reader.GetString(reader.GetOrdinal("RAZONSOCIAL")),
+                        AsesorVenta = reader.IsDBNull(reader.GetOrdinal("ASESORVENTA")) ? "" : reader.GetString(reader.GetOrdinal("ASESORVENTA")),
+                        Cod_Empresa = reader.IsDBNull(reader.GetOrdinal("COD_EMPRESA")) ? "" : reader.GetString(reader.GetOrdinal("COD_EMPRESA")),
+                        TipoProceso = reader.IsDBNull(reader.GetOrdinal("TIPOPROCESO")) ? "" : reader.GetString(reader.GetOrdinal("TIPOPROCESO")),
+                        NroProceso = reader.IsDBNull(reader.GetOrdinal("NROPROCESO")) ? "" : reader.GetString(reader.GetOrdinal("NROPROCESO")),
+                        TipoVenta = reader.IsDBNull(reader.GetOrdinal("TIPOVENTA")) ? "" : reader.GetString(reader.GetOrdinal("TIPOVENTA")),
+                        NombreTipoVenta = reader.IsDBNull(reader.GetOrdinal("NOMTIPOVENTA")) ? "" : reader.GetString(reader.GetOrdinal("NOMTIPOVENTA")),
+                        NroCotizacionEliminado = reader.IsDBNull(reader.GetOrdinal("COTELIM")) ? 0 : reader.GetInt32(reader.GetOrdinal("COTELIM"))
+                    };
+
+                    reader.NextResult();
+
+                    List<DocumentoDTO> _listaAdjuntos = new List<DocumentoDTO>();
+
+                    while (reader.Read())
+                    {
+                        var documento = new DocumentoDTO
+                        {
+                            CodigoDocumento = reader.IsDBNull(reader.GetOrdinal("COD_DOCUMENTO")) ? 0 : reader.GetInt64(reader.GetOrdinal("COD_DOCUMENTO")),
+                            CodigoWorkFlow = reader.IsDBNull(reader.GetOrdinal("ID_WORKFLOW")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_WORKFLOW")),
+                            CodigoTipoDocumento = reader.IsDBNull(reader.GetOrdinal("COD_TIPODOC")) ? "" : reader.GetString(reader.GetOrdinal("COD_TIPODOC")),
+                            NombreTipoDocumento = reader.IsDBNull(reader.GetOrdinal("NOMTIPODOC")) ? "" : reader.GetString(reader.GetOrdinal("NOMTIPODOC")),
+                            NombreDocumento = reader.IsDBNull(reader.GetOrdinal("NOM_DOCUMENTO")) ? "" : reader.GetString(reader.GetOrdinal("NOM_DOCUMENTO")),
+                            VerDocumento = reader.IsDBNull(reader.GetOrdinal("VER_DOCUMENTO")) ? false : reader.GetBoolean(reader.GetOrdinal("VER_DOCUMENTO")),
+                            RutaDocumento = reader.IsDBNull(reader.GetOrdinal("RUTA_DOCUMENTO")) ? "" : reader.GetString(reader.GetOrdinal("RUTA_DOCUMENTO")),
+                            NombreUsuario = reader.IsDBNull(reader.GetOrdinal("NOMBRE_USUARIO")) ? "" : reader.GetString(reader.GetOrdinal("NOMBRE_USUARIO")),
+                            NombrePerfil = reader.IsDBNull(reader.GetOrdinal("PERFIL")) ? "" : reader.GetString(reader.GetOrdinal("PERFIL")),
+                            Eliminado = reader.IsDBNull(reader.GetOrdinal("ELIMINADO")) ? 0 : reader.GetInt32(reader.GetOrdinal("ELIMINADO")),
+                            UsuarioRegistra = reader.IsDBNull(reader.GetOrdinal("USR_REG")) ? "" : reader.GetString(reader.GetOrdinal("USR_REG")),
+                            FechaRegistroFormat = reader.IsDBNull(reader.GetOrdinal("FEC_REG")) ? "" : reader.GetString(reader.GetOrdinal("FEC_REG")),
+                        };
+                        _listaAdjuntos.Add(documento);
+                    };
+
+                    reader.NextResult();
+
+                    List<ObservacionDTO> _listaObservaciones = new List<ObservacionDTO>();
+
+                    while (reader.Read())
+                    {
+                        var observacion = new ObservacionDTO
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("ID_OBSERVACION")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_OBSERVACION")),
+                            Id_WorkFlow = reader.IsDBNull(reader.GetOrdinal("ID_WORKFLOW")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_WORKFLOW")),
+                            Estado_Instancia = reader.IsDBNull(reader.GetOrdinal("ESTADO_INSTANCIA")) ? "" : reader.GetString(reader.GetOrdinal("ESTADO_INSTANCIA")),
+                            Observacion = reader.IsDBNull(reader.GetOrdinal("OBSERVACION")) ? "" : reader.GetString(reader.GetOrdinal("OBSERVACION")),
+                            Nombre_Usuario = reader.IsDBNull(reader.GetOrdinal("NOMBRE_USUARIO")) ? "" : reader.GetString(reader.GetOrdinal("NOMBRE_USUARIO")),
+                            Perfil_Usuario = reader.IsDBNull(reader.GetOrdinal("PERFIL_USUARIO")) ? "" : reader.GetString(reader.GetOrdinal("PERFIL_USUARIO")),
+                            UsuarioRegistra = reader.IsDBNull(reader.GetOrdinal("USR_REG")) ? "" : reader.GetString(reader.GetOrdinal("USR_REG")),
+                            Fecha_Registro = reader.IsDBNull(reader.GetOrdinal("FEC_REG")) ? "" : reader.GetString(reader.GetOrdinal("FEC_REG"))
+                        };
+                        _listaObservaciones.Add(observacion);
+                    };
+
+                    reader.NextResult();
+
+                    List<WorkflowLogDTO> _listaSeguimiento = new List<WorkflowLogDTO>();
+
+                    while (reader.Read())
+                    {
+                        var seguimiento = new WorkflowLogDTO()
+                        {
+                            CodigoWorkflowLog = reader.IsDBNull(reader.GetOrdinal("ID")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID")),
+                            CodigoWorkflow = reader.IsDBNull(reader.GetOrdinal("ID_WORKFLOW")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_WORKFLOW")),
+                            CodigoEstado = reader.IsDBNull(reader.GetOrdinal("COD_ESTADO")) ? "" : reader.GetString(reader.GetOrdinal("COD_ESTADO")),
+                            DescripcionEstado = reader.IsDBNull(reader.GetOrdinal("DES_ESTADO")) ? "" : reader.GetString(reader.GetOrdinal("DES_ESTADO")),
+                            Cargo = reader.IsDBNull(reader.GetOrdinal("CARGO")) ? "" : reader.GetString(reader.GetOrdinal("CARGO")),
+                            Area = reader.IsDBNull(reader.GetOrdinal("AREA")) ? "" : reader.GetString(reader.GetOrdinal("AREA")),
+                            UsuarioRegistro = reader.IsDBNull(reader.GetOrdinal("USR_REG")) ? "" : reader.GetString(reader.GetOrdinal("USR_REG")),
+                            NombreUsuarioRegistro = reader.IsDBNull(reader.GetOrdinal("NOMBREUSRREGISTRO")) ? "" : reader.GetString(reader.GetOrdinal("NOMBREUSRREGISTRO")),
+                            FechaRegistro = reader.IsDBNull(reader.GetOrdinal("FECREG")) ? "" : reader.GetString(reader.GetOrdinal("FECREG")),
+                            HoraRegistro = reader.IsDBNull(reader.GetOrdinal("HORAREG")) ? "" : reader.GetString(reader.GetOrdinal("HORAREG")),
+                        };
+                        _listaSeguimiento.Add(seguimiento);
+                    };
+
+                    reader.NextResult();
+                    ContadorCabeceraDespacho contadorCabecera = new ContadorCabeceraDespacho();
+                    if (reader.HasRows)
+                    {
+                        reader.Read();
+                        contadorCabecera = new ContadorCabeceraDespacho()
+                        {
+                            CodigoSolicitud = reader.IsDBNull(reader.GetOrdinal("ID_SOLICITUD")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_SOLICITUD")),
+                            NumeroOrden = reader.IsDBNull(reader.GetOrdinal("NUMORDEN")) ? "" : reader.GetString(reader.GetOrdinal("NUMORDEN")),
+                            FechaOrden = reader.IsDBNull(reader.GetOrdinal("FECHAORDEN")) ? "" : reader.GetString(reader.GetOrdinal("FECHAORDEN")),
+                            FechaMaxima = reader.IsDBNull(reader.GetOrdinal("FECHAMAX")) ? "" : reader.GetString(reader.GetOrdinal("FECHAMAX")),
+                            ContadorConStock = reader.IsDBNull(reader.GetOrdinal("CONT_CS")) ? 0 : reader.GetInt32(reader.GetOrdinal("CONT_CS")),
+                            ContadorSinStock = reader.IsDBNull(reader.GetOrdinal("CONT_SS")) ? 0 : reader.GetInt32(reader.GetOrdinal("CONT_SS")),
+                            NumeroConStock = reader.IsDBNull(reader.GetOrdinal("NUM_CS")) ? 0 : reader.GetInt32(reader.GetOrdinal("NUM_CS")),
+                            NumeroSinStock = reader.IsDBNull(reader.GetOrdinal("NUM_SS")) ? 0 : reader.GetInt32(reader.GetOrdinal("NUM_SS")),
+                            EnvioGPConStock = reader.IsDBNull(reader.GetOrdinal("ENVIOGP_CS")) ? 0 : reader.GetInt32(reader.GetOrdinal("ENVIOGP_CS")),
+                            EnvioGPSinStock = reader.IsDBNull(reader.GetOrdinal("ENVIOGP_SS")) ? 0 : reader.GetInt32(reader.GetOrdinal("ENVIOGP_SS")),
+                            EnvioBOSinStock = reader.IsDBNull(reader.GetOrdinal("ENVIOBO_SS")) ? 0 : reader.GetInt32(reader.GetOrdinal("ENVIOBO_SS")),
+                            GestionLogConStock = reader.IsDBNull(reader.GetOrdinal("GESLOG_CS")) ? 0 : reader.GetInt32(reader.GetOrdinal("GESLOG_CS")),
+                            GestionLogSinStock = reader.IsDBNull(reader.GetOrdinal("GESLOG_SS")) ? 0 : reader.GetInt32(reader.GetOrdinal("GESLOG_SS")),
+                            ContadorSeriesConStock = reader.IsDBNull(reader.GetOrdinal("SERIE_CS")) ? 0 : reader.GetInt32(reader.GetOrdinal("SERIE_CS")),
+                            ContadorSeriesSinStock = reader.IsDBNull(reader.GetOrdinal("SERIE_SS")) ? 0 : reader.GetInt32(reader.GetOrdinal("SERIE_SS"))
+                        };
+                    }
+
+
+                    reader.NextResult();
+                    CabeceraDespachoDTO cabeceraDespachoconStock = new CabeceraDespachoDTO();
+                    if (reader.HasRows)
+                    {
+                        reader.Read();
+                        CabeceraDespachoDTO cabeceraDesconStock = new CabeceraDespachoDTO
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("ID")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID")),
+                            CodigoSolicitud = reader.IsDBNull(reader.GetOrdinal("ID_SOLICITUD")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_SOLICITUD")),
+                            Stock = reader.IsDBNull(reader.GetOrdinal("STOCK")) ? "" : reader.GetString(reader.GetOrdinal("STOCK")),
+                            NumeroOrden = reader.IsDBNull(reader.GetOrdinal("NUMORDEN")) ? "" : reader.GetString(reader.GetOrdinal("NUMORDEN")),
+                            FechaOrden = reader.IsDBNull(reader.GetOrdinal("FECHAORDEN")) ? "" : reader.GetString(reader.GetOrdinal("FECHAORDEN")),
+                            FechaMaxima = reader.IsDBNull(reader.GetOrdinal("FECHAMAX")) ? "" : reader.GetString(reader.GetOrdinal("FECHAMAX")),
+                            FechaEntrega = reader.IsDBNull(reader.GetOrdinal("FECHAENTREGA")) ? "" : reader.GetString(reader.GetOrdinal("FECHAENTREGA")),
+                            NumeroFactura = reader.IsDBNull(reader.GetOrdinal("NUMFACTURA")) ? "" : reader.GetString(reader.GetOrdinal("NUMFACTURA")),
+                            NumeroGuiaRemision = reader.IsDBNull(reader.GetOrdinal("NUMGUIAREM")) ? "" : reader.GetString(reader.GetOrdinal("NUMGUIAREM")),
+                            NumeroPedido = reader.IsDBNull(reader.GetOrdinal("NUMPEDIDO")) ? "" : reader.GetString(reader.GetOrdinal("NUMPEDIDO")),
+                            FechaIngreso = reader.IsDBNull(reader.GetOrdinal("FECHAINGRESO")) ? "" : reader.GetString(reader.GetOrdinal("FECHAINGRESO")),
+                            EstadoAprobacion = reader.IsDBNull(reader.GetOrdinal("ESTAPROB")) ? "" : reader.GetString(reader.GetOrdinal("ESTAPROB")),
+                            FechaAprobacion = reader.IsDBNull(reader.GetOrdinal("FECAPROB")) ? "" : reader.GetString(reader.GetOrdinal("FECAPROB")),
+                            Observacion = reader.IsDBNull(reader.GetOrdinal("OBSERVACION")) ? "" : reader.GetString(reader.GetOrdinal("OBSERVACION")),
+                            UsuarioRegistra = reader.IsDBNull(reader.GetOrdinal("USR_REG")) ? "" : reader.GetString(reader.GetOrdinal("USR_REG")),
+                            FechaRegistro = reader.IsDBNull(reader.GetOrdinal("FEC_REG")) ? DateTime.Now : reader.GetDateTime(reader.GetOrdinal("FEC_REG")),
+                            UsuarioModifica = reader.IsDBNull(reader.GetOrdinal("USR_MOD")) ? "" : reader.GetString(reader.GetOrdinal("USR_MOD")),
+                            FechaModifica = reader.IsDBNull(reader.GetOrdinal("FEC_MOD")) ? DateTime.Now : reader.GetDateTime(reader.GetOrdinal("FEC_MOD"))
+                        };
+
+                        cabeceraDespachoconStock = cabeceraDesconStock;
+                    }
+
+
+                    reader.NextResult();
+
+                    List<DetalleDespachoDTO> _listaDetalleDespachoconStock = new List<DetalleDespachoDTO>();
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            var detalleDespachoConStock = new DetalleDespachoDTO()
+                            {
+                                RowNumber = reader.IsDBNull(reader.GetOrdinal("ROWNUM")) ? 0 : reader.GetInt64(reader.GetOrdinal("ROWNUM")),
+                                CodigoEquipo = reader.IsDBNull(reader.GetOrdinal("CODEQUIPO")) ? "" : reader.GetString(reader.GetOrdinal("CODEQUIPO")),
+                                DescripcionEquipo = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION")),
+                                Marca = reader.IsDBNull(reader.GetOrdinal("MARCA")) ? "" : reader.GetString(reader.GetOrdinal("MARCA")),
+                                NumeroSerie = reader.IsDBNull(reader.GetOrdinal("NUMSERIE")) ? "" : reader.GetString(reader.GetOrdinal("NUMSERIE")),
+                                Id = reader.IsDBNull(reader.GetOrdinal("ID")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID"))
+                            };
+                            _listaDetalleDespachoconStock.Add(detalleDespachoConStock);
+                        };
+                    }
+
+
+                    reader.NextResult();
+                    CabeceraDespachoDTO cabeceraDespachosinStock = new CabeceraDespachoDTO();
+                    if (reader.HasRows)
+                    {
+                        reader.Read();
+                        CabeceraDespachoDTO cabeceraDessinStock = new CabeceraDespachoDTO
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("ID")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID")),
+                            CodigoSolicitud = reader.IsDBNull(reader.GetOrdinal("ID_SOLICITUD")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_SOLICITUD")),
+                            Stock = reader.IsDBNull(reader.GetOrdinal("STOCK")) ? "" : reader.GetString(reader.GetOrdinal("STOCK")),
+                            NumeroOrden = reader.IsDBNull(reader.GetOrdinal("NUMORDEN")) ? "" : reader.GetString(reader.GetOrdinal("NUMORDEN")),
+                            FechaOrden = reader.IsDBNull(reader.GetOrdinal("FECHAORDEN")) ? "" : reader.GetString(reader.GetOrdinal("FECHAORDEN")),
+                            FechaMaxima = reader.IsDBNull(reader.GetOrdinal("FECHAMAX")) ? "" : reader.GetString(reader.GetOrdinal("FECHAMAX")),
+                            FechaEntrega = reader.IsDBNull(reader.GetOrdinal("FECHAENTREGA")) ? "" : reader.GetString(reader.GetOrdinal("FECHAENTREGA")),
+                            NumeroFactura = reader.IsDBNull(reader.GetOrdinal("NUMFACTURA")) ? "" : reader.GetString(reader.GetOrdinal("NUMFACTURA")),
+                            NumeroGuiaRemision = reader.IsDBNull(reader.GetOrdinal("NUMGUIAREM")) ? "" : reader.GetString(reader.GetOrdinal("NUMGUIAREM")),
+                            NumeroPedido = reader.IsDBNull(reader.GetOrdinal("NUMPEDIDO")) ? "" : reader.GetString(reader.GetOrdinal("NUMPEDIDO")),
+                            FechaIngreso = reader.IsDBNull(reader.GetOrdinal("FECHAINGRESO")) ? "" : reader.GetString(reader.GetOrdinal("FECHAINGRESO")),
+                            EstadoAprobacion = reader.IsDBNull(reader.GetOrdinal("ESTAPROB")) ? "" : reader.GetString(reader.GetOrdinal("ESTAPROB")),
+                            FechaAprobacion = reader.IsDBNull(reader.GetOrdinal("FECAPROB")) ? "" : reader.GetString(reader.GetOrdinal("FECAPROB")),
+                            Observacion = reader.IsDBNull(reader.GetOrdinal("OBSERVACION")) ? "" : reader.GetString(reader.GetOrdinal("OBSERVACION")),
+                            UsuarioRegistra = reader.IsDBNull(reader.GetOrdinal("USR_REG")) ? "" : reader.GetString(reader.GetOrdinal("USR_REG")),
+                            FechaRegistro = reader.IsDBNull(reader.GetOrdinal("FEC_REG")) ? DateTime.Now : reader.GetDateTime(reader.GetOrdinal("FEC_REG")),
+                            UsuarioModifica = reader.IsDBNull(reader.GetOrdinal("USR_MOD")) ? "" : reader.GetString(reader.GetOrdinal("USR_MOD")),
+                            FechaModifica = reader.IsDBNull(reader.GetOrdinal("FEC_MOD")) ? DateTime.Now : reader.GetDateTime(reader.GetOrdinal("FEC_MOD"))
+                        };
+                        cabeceraDespachosinStock = cabeceraDessinStock;
+                    }
+
+
+                    reader.NextResult();
+
+                    List<DetalleDespachoDTO> _listaDetalleDespachosinStock = new List<DetalleDespachoDTO>();
+
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            var detalleDespachoSinStock = new DetalleDespachoDTO()
+                            {
+                                RowNumber = reader.IsDBNull(reader.GetOrdinal("ROWNUM")) ? 0 : reader.GetInt64(reader.GetOrdinal("ROWNUM")),
+                                CodigoEquipo = reader.IsDBNull(reader.GetOrdinal("CODEQUIPO")) ? "" : reader.GetString(reader.GetOrdinal("CODEQUIPO")),
+                                DescripcionEquipo = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION")),
+                                Marca = reader.IsDBNull(reader.GetOrdinal("MARCA")) ? "" : reader.GetString(reader.GetOrdinal("MARCA")),
+                                NumeroSerie = reader.IsDBNull(reader.GetOrdinal("NUMSERIE")) ? "" : reader.GetString(reader.GetOrdinal("NUMSERIE")),
+                                Id = reader.IsDBNull(reader.GetOrdinal("ID")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID"))
+                            };
+                            _listaDetalleDespachosinStock.Add(detalleDespachoSinStock);
+                        };
+                    }
+
                     result.Flujos = _flujos;
                     result.TipoSol = _tipoSol;
                     result.MedioContacto = _medioContacto;
@@ -926,6 +1158,16 @@ namespace AHSECO.CCL.BD.Ventas
                     result.FormPago = _formPago;
                     result.Empresas = _empresas;
                     result.TipoVenta = _tipoVenta;
+                    result.TipoDocumento = _tipoDocumento;
+                    result.Solicitud = solicitud;
+                    result.Adjuntos = _listaAdjuntos;
+                    result.Observaciones = _listaObservaciones;
+                    result.Seguimiento = _listaSeguimiento;
+                    result.ContadorCabecera = contadorCabecera;
+                    result.DespachoCabeceraConStock = cabeceraDespachoconStock;
+                    result.DespachoDetalleConStock = _listaDetalleDespachoconStock;
+                    result.DespachoCabeceraSinStock = cabeceraDespachosinStock;
+                    result.DespachoDetalleSinStock = _listaDetalleDespachosinStock;
                 };
                 return result;
             };
