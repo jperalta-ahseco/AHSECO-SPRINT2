@@ -291,14 +291,7 @@
         $btnGuardarImportacion.click($btnGuardarImportacion_click);
         $btnGuardarGestionLogisticaSE.click($btnGuardarGestionLogisticaSE_click);
         $btnEditarGestionLogisticaSE.click($btnEditarGestionLogisticaSE_click);
-
-        cargaCombos();
-
-
-      
-
-
-        
+        cargaCombos();      
     };
 
     function $btnEditarGestionLogisticaSE_click() {
