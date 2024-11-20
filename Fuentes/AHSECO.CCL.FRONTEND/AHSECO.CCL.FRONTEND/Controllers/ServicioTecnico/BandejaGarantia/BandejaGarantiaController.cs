@@ -91,12 +91,12 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
             return Json(result);
         }
 
-        public JsonResult RegistroGarantiaMain(GrupoInstalacionTecnicaDTO grupoInstalacionTecnicaDTO)
+        public JsonResult RegistroGarantiaMain(GrupoReclamoDTO grupoReclamoDTO)
         {
             try
             {
                 var procesoBL = new ProcesosBL();
-                var instalacionTecnicaBL = new InstalacionTecnicaBL();
+                var garantiasBL = new GarantiasBL();
                 var documentosBL = new DocumentosBL();
 
                 var workflow = new FiltroWorkflowDTO();
@@ -105,32 +105,32 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
                 workflow.SubTipo = "";
 
                 var rpta = procesoBL.InsertarWorkflow(workflow);
-                grupoInstalacionTecnicaDTO.CabeceraInstalacion.Id_WorkFlow = rpta.Result;
-                grupoInstalacionTecnicaDTO.CabeceraInstalacion.UsuarioRegistra = User.ObtenerUsuario();
+                grupoReclamoDTO.Reclamo.Id_Workflow = rpta.Result;
+                grupoReclamoDTO.Reclamo.UsuarioRegistra = User.ObtenerUsuario();
 
                 //Registra Main Solicitudes
-                var mainRequerimiento = instalacionTecnicaBL.MantInstalacion(grupoInstalacionTecnicaDTO.CabeceraInstalacion);
+                var mainReclamo = garantiasBL.MantReclamo(grupoReclamoDTO.Reclamo);
 
-                foreach (var detalle in grupoInstalacionTecnicaDTO.DetalleInstalacion)
+                foreach (var tecnico in grupoReclamoDTO.Tecnicos)
                 {
-                    detalle.TipoProceso = "I";
-                    detalle.NumReq = mainRequerimiento.Result.Codigo;
-                    detalle.UsuarioRegistra = User.ObtenerUsuario();
-                    var rptaDetalle = instalacionTecnicaBL.MantInstalacionTecnicaDetalle(detalle);
-                    if (rptaDetalle.Result.Codigo == 0)
+                    tecnico.TipoProceso = "I";
+                    tecnico.Id_Reclamo = mainReclamo.Result.Codigo;
+                    tecnico.UsuarioRegistra = User.ObtenerUsuario();
+                    var rptaTecnico = garantiasBL.MantTecnicosReclamo(tecnico);
+                    if (rptaTecnico.Result.Codigo == 0)
                     {
                         return Json(new
                         {
                             Status = 0,
-                            Mensaje = rptaDetalle.Result.Mensaje
+                            Mensaje = rptaTecnico.Result.Mensaje
                         });
                     };
                 }
 
                 //Registra documentos
-                if (grupoInstalacionTecnicaDTO.Adjuntos != null)
+                if (grupoReclamoDTO.Adjuntos != null)
                 {
-                    foreach (var documento in grupoInstalacionTecnicaDTO.Adjuntos)
+                    foreach (var documento in grupoReclamoDTO.Adjuntos)
                     {
                         documento.Accion = "I";
                         documento.CodigoWorkFlow = rpta.Result;
@@ -141,16 +141,16 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
                     };
                 };
 
-                if (grupoInstalacionTecnicaDTO.Observaciones != null)
+                if (grupoReclamoDTO.Observaciones != null)
                 {
-                    foreach (var observacion in grupoInstalacionTecnicaDTO.Observaciones)
+                    foreach (var observacion in grupoReclamoDTO.Observaciones)
                     {
                         observacion.Id_WorkFlow = rpta.Result;
                         observacion.Nombre_Usuario = User.ObtenerUsuario();
                         observacion.UsuarioRegistra = User.ObtenerUsuario();
                         observacion.Perfil_Usuario = User.ObtenerPerfil();
 
-                        var resultObservacion = instalacionTecnicaBL.MantenimientoObservaciones(observacion);
+                        var resultObservacion = garantiasBL.MantenimientoObservaciones(observacion);
                     };
                 };
 
@@ -169,8 +169,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
                     Status = 1,
                     Requerimiento = new InstalacionTecnicaDTO()
                     {
-                        NumReq = mainRequerimiento.Result.Codigo,
-                        Estado = grupoInstalacionTecnicaDTO.CabeceraInstalacion.Estado,
+                        NumReq = mainReclamo.Result.Codigo,
+                        Estado = grupoReclamoDTO.Reclamo.Estado,
                         Id_WorkFlow = rpta.Result
                     }
                 });
@@ -187,7 +187,22 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
             }
             //return Json(new ResponseDTO<RespuestaDTO>(result));
         }
-               
+
+        public JsonResult MantReclamo(ReclamosDTO reclamo)
+        {
+            var garantiaBL = new GarantiasBL();
+            var result = garantiaBL.MantReclamo(reclamo);
+            return Json(result);
+        }
+
+        public JsonResult MantTecnicosReclamo(TecnicoGarantiaDTO tecnico)
+        {
+            var garantiaBL = new GarantiasBL();
+            var result = garantiaBL.MantTecnicosReclamo(tecnico);
+            return Json(result);
+        }
+
+
         [HttpPost]
         public JsonResult GuardarAdjunto(DocumentoDTO documentoDTO)
         {

@@ -37,6 +37,34 @@ namespace AHSECO.CCL.BL.ServicioTecnico.BandejaGarantias
                 return new ResponseDTO<FiltroGarantiasDTO>(ex);
             };
         }
+        
+        public ResponseDTO<RespuestaDTO> MantReclamo(ReclamosDTO reclamo)
+        {
+            try
+            {
+                var result = Repository.MantReclamo(reclamo);
+                return new ResponseDTO<RespuestaDTO>(result);
+            }
+            catch (Exception ex) 
+            {
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<RespuestaDTO>(ex);
+            }
+        }
+
+        public ResponseDTO<RespuestaDTO> MantTecnicosReclamo(TecnicoGarantiaDTO tecnico)
+        {
+            try
+            {
+                var result = Repository.MantTecnicosReclamo(tecnico);
+                return new ResponseDTO<RespuestaDTO>(result);
+            }
+            catch(Exception ex)
+            {
+                Log.TraceError (Utilidades.GetCaller()+ "::"+ ex.Message);
+                return new ResponseDTO<RespuestaDTO>(ex);
+            }
+        }
 
         public ResponseDTO<RespuestaDTO> MantenimientoObservaciones(ObservacionDTO observacion)
         {
