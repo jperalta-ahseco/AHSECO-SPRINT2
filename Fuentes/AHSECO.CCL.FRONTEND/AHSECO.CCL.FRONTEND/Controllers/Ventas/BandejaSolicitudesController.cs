@@ -164,7 +164,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.EstadoSolicitud = "";
             ViewBag.IdCotizacion = 0;
             ViewBag.IdContacto = 0;
-            ViewBag.Observacion = ConstantesDTO.CotizacionVenta.Observaciones.Msj01;
+            ViewBag.Observacion = "";
 
             VariableSesion.setObject(TAG_CDI, new List<CotizacionDetalleDTO>());
             ViewBag.MostrarCotizacionDetalle = false;
