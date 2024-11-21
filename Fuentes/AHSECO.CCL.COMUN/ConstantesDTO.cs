@@ -216,5 +216,31 @@ namespace AHSECO.CCL.COMUN
             }
         }
 
+        public struct Plantillas
+        {
+            public struct Ventas
+            {
+                public static string EnvioAprobImportar { get { return "PLANAPRIMP"; } }
+                public static string AteLogisticaConStock { get { return "PLANATLOCS"; } }
+                public static string AteLogisticaSinStock { get { return "PLANATLOSS"; } }
+                public static string CotCostos { get { return "PLANCOTCOS"; } }
+                public static string CotGerencia { get { return "PLANCOTGER"; } }
+                public static string CotLogistica { get { return "PLANCOTLOG"; } }
+                public static string CotServTecnio { get { return "PLANCOTSTC"; } }
+                public static string CotVendedor { get { return "PLANCOTVEN"; } }
+                public static string EnvioGuiaBO { get { return "PLANGUIABO"; } }
+                public static string EnvioGuiaPedidos { get { return "PLANGUIAPE"; } }
+                public static string EnvioServTecnico { get { return "PLANSTECV"; } }
+            }
+            public struct Viaticos
+            {
+                public static string Abono { get { return "PLANVIAABO"; } }
+                public static string Anulacion { get { return "PLANVIAANU"; } }
+                public static string Administracion { get { return "PLANVIAAPR"; } }
+                public static string Contabilidad { get { return "PLANVIACON"; } }
+                public static string Aprobar { get { return "PLANVIAPAP"; } }
+            }
+        }
+
     }
 }

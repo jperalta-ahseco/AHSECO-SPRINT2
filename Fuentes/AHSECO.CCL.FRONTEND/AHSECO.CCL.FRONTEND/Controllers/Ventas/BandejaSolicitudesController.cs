@@ -1925,6 +1925,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     }
                 }
 
+                NotificarValorizacion(cotizacionDTO.IdSolicitud);
+
                 return Json(new { Status = 1, Mensaje = "Cotización Enviada correctamente" });
             }
             catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
@@ -2585,5 +2587,40 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             }
             return Json(new ResponseDTO<RespuestaDTO>(result));
         }
+
+        public JsonResult NotificarValorizacion(long codigoSolicitud)
+        {
+            var result = new RespuestaDTO();
+            var ventasBL = new VentasBL();
+            try
+            {
+                var plantillasBL = new PlantillasBL();
+                //Envio de correo:
+                var filtros = new FiltroPlantillaDTO();
+                filtros.CodigoProceso = ConstantesDTO.Procesos.Ventas.ID;
+                filtros.CodigoPlantilla = ConstantesDTO.Plantillas.Ventas.CotGerencia;
+                filtros.Usuario = User.ObtenerUsuario();
+                filtros.Codigo = Convert.ToInt32(codigoSolicitud);
+
+                var datos_correo = plantillasBL.ConsultarPlantillaCorreo(filtros).Result;
+
+                var respuesta = Utilidades.Send(datos_correo.To, datos_correo.CC, "", datos_correo.Subject, datos_correo.Body, null, "");
+                CCLog Log = new CCLog();
+                if (respuesta != "OK")
+                {
+                    Log.TraceInfo("Solicitud N° " + codigoSolicitud.ToString() + ":" + respuesta);
+
+                    result.Codigo = 0;
+                    result.Mensaje = "No se pudo enviar el correo de la solicitud N° " + codigoSolicitud.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Codigo = 0;
+                result.Mensaje = ex.Message.ToString();
+            }
+            return Json(new ResponseDTO<RespuestaDTO>(result));
+        }
+
     }
 }
