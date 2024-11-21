@@ -1,7 +1,7 @@
 USE [DB_AHSECO]
 GO
 
-CREATE PROCEDURE [dbo].[USP_SEL_OBSERVACIONES] 
+CREATE OR ALTER PROCEDURE [dbo].[USP_SEL_OBSERVACIONES] 
 (
 /*=======================================================================================================
 	Nombre:				Fecha:			Descripcion:
@@ -23,7 +23,7 @@ BEGIN
 					,NOMBRE_USUARIO
 					,PERFIL_USUARIO
 					,USR_REG
-					,CONVERT(VARCHAR(10),FEC_REG,103) AS FEC_REG
+					,ISNULL(CONVERT(VARCHAR(10),FEC_REG,103) +'' ''+ CONVERT(VARCHAR,FEC_REG,8),'''') AS FEC_REG
 				FROM [dbo].[TBM_OBSERVACIONES] AS OBS WITH(NOLOCK) 
 				WHERE ID_WORKFLOW = '+CAST(@isIdWorkFlow AS VARCHAR(20))+'
 				'

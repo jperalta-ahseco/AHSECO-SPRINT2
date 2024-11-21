@@ -369,19 +369,39 @@ var cotvtadet = (function ($, win, doc) {
     }
     
     function quitarItem(CodigoItem, opc) {
-        method = "POST";
-        url = "BandejaSolicitudesVentas/QuitarItemCotDet";
-        var objFiltros = {
-            CodItem: CodigoItem,
-            opcGrillaItems: opc
-        };
-        var objParam = JSON.stringify(objFiltros);
+        //method = "POST";
+        //url = "BandejaSolicitudesVentas/QuitarItemCotDet";
+        //var objFiltros = {
+        //    CodItem: CodigoItem,
+        //    opcGrillaItems: opc
+        //};
+        //var objParam = JSON.stringify(objFiltros);
 
-        var fnDoneCallBack = function (data) {
-            cargarTablaCotDet(data);
-        };
+        //var fnDoneCallBack = function (data) {
+        //    cargarTablaCotDet(data);
+        //};
 
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+        //app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+
+
+        var fnSi = function () {
+
+            var method = "POST";
+            var url = "BandejaSolicitudesVentas/QuitarItemCotDet";
+            var objFiltros = {
+                CodItem: CodigoItem,
+                opcGrillaItems: opc
+            };
+            var objParam = JSON.stringify(objFiltros);
+            var fnDoneCallBack = function (data) {
+                var fnCallback = function () {
+                    cargarTablaCotDet(data);
+                };
+                app.message.success("Grabar", "Registro eliminado con &eacute;xito.", "Aceptar", fnCallback);
+            };
+            return app.llamarAjax(method, url, objParam, fnDoneCallBack, null);;
+        }
+        return app.message.confirm("Ventas", "&iquest;Esta seguro de quitar un producto de la cotizaci&oacute;n?", "S&iacute;", "No", fnSi, null);
     }
 
     /*
@@ -952,7 +972,7 @@ var cotvtadet = (function ($, win, doc) {
         var objParam = JSON.stringify(objDatos);
 
         var fnDoneCallBack = function (data) {
-            cerrarModalDetCot();
+            $('#modalDetalleCotizacion').modal('hide');
             cargarTablaDetCotCostos(data);
             $btnEnviarCotizacion.css("display", "");
         };
@@ -1163,7 +1183,11 @@ var cotvtadet = (function ($, win, doc) {
     }
     
     function cerrarModalDetCot() {
-        $('#modalDetalleCotizacion').modal('hide');
+        
+        var fnSi = function () {
+            $('#modalDetalleCotizacion').modal('hide');
+        }
+        return app.message.confirm("Ventas", " Al salir perder&aacute; todos los datos registrados. &iquest;Desea Salir?", "S&iacute;", "No", fnSi, null);
     }
 
     function enviarCotizacion() {
