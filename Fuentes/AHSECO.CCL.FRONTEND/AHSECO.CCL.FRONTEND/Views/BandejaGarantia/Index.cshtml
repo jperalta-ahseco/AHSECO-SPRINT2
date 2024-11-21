@@ -11,7 +11,7 @@
             <h2><i class="glyphicon glyphicon-list"></i> Bandeja de Garant&iacute;as</h2>
         </div>
         <div class="box-content">
-            <form id="formInstallTec">
+            <form id="formReclamos">
                 <div class="row container-fluid">
                     <div class="col-md-4 col-sm-12">
                         <label for="txtFecRecIni">Fecha Reclamo Inicio:</label>
@@ -38,6 +38,7 @@
                         </div>
                     </div>
                 </div>
+                <br />
                 <div class="row container-fluid">
                     <div class="col-md-4 col-sm-12">
                         <label for="cmbCliente">Cliente:</label>
@@ -47,10 +48,10 @@
                         </div>
                     </div>
                     <div class="col-md-4 col-sm-12">
-                        <label for="txtUbicacion">Destino:</label>
+                        <label for="txtUbicacion">Ubicación Destino:</label>
                         <div class="form-group">
                             <div class="input-group input-group-sm date">
-                                <input disabled maxlength="6" type="text" class="form-control input-sm" id="txtUbicacion" value="" aria-describedby="sizing-addon3" />
+                                <input disabled maxlength="6" placeholder="Ingresar Ubicación" type="text" class="form-control input-sm" id="txtUbicacion" value="" aria-describedby="sizing-addon3" />
                                 <span style="cursor:pointer" class="input-group-addon input-sm" id="searchUbigeo" data-toggle="modal" data-target="#modalUbigeo">
                                     <i class="fa fa-search"></i>
                                 </span>
@@ -58,13 +59,13 @@
                         </div>
                     </div>
                     <div class="col-md-4 col-sm-12">
-                        <label for="cmbVendedor">Vendedor:</label>
+                        <label for="txtVendedor">Vendedor:</label>
                         <div class="input-group col-sm-12 col-md-12 col-lg-12">
-                            <select aria-hide="false" id="cmbVendedor" type="text" class="input form-control input-sm">
-                            </select>
+                            <input class="form-control input-sm" type="text" id="txtVendedor" placeholder="Ingresar el nombre del vendedor" />
                         </div>
                     </div>
                 </div>
+                <br />
                 <div class="row container-fluid">
                     <div class="col-md-4 col-sm-12">
                         <label for="txtTipDoc">Estado:</label>
@@ -128,19 +129,20 @@
 
             <br />
             <div class="table-responsive">
-                <table id="tblInstallTec" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                <table id="tblReclamos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                     <thead>
                         <tr>
                             <th style="text-align: center; width:5%;">N° Reclamo</th>
-                            <th style="text-align: center; width:15%;">Fecha Reclamo</th>
+                            <th style="text-align: center; width:15%;">N° de Solicitud</th>
                             <th style="text-align: center; width:7%;">R.U.C</th>
                             <th style="text-align: center; width:10%;">Nombre Empresa</th>
                             <th style="text-align: center; width:50%;">Ubicación de Empresa</th>
                             <th style="text-align: center; width:20%;">Tipo de Venta</th>
                             <th style="text-align: center; width: 50%;">Vendedor</th>
                             <th style="text-align: center; width: 35%;">Empresa</th>
-                            <th style="text-align: center; width: 20%;">Fecha M&aacute;xima</th>
-                            <th style="text-align: center; width: 70%;">Destino</th>
+                            <th style="text-align: center; width: 20%;">Fecha Reclamo</th>
+                            <th style="text-align: center; width: 20%;">Fecha Programacion</th>
+                            <th style="text-align: center; width: 70%;">Ubicación Destino</th>
                             <th style="text-align: center; width: 20%;">Estado</th>
                             <th style="text-align: center; width: 20%;">Acciones</th>
                         </tr>

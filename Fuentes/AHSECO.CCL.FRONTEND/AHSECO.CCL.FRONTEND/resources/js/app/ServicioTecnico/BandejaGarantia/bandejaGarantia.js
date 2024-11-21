@@ -1,30 +1,31 @@
-﻿var bandejaInstalacionTecnica = (function ($, win, doc) {
+﻿var bandejaGarantia = (function ($, win, doc) {
 
     var $cmbempresa = $('#cmbempresa');
     var $cmbEstado = $('#cmbEstado');
     var $cmbProvincia = $('#cmbProvincia');
     var $cmbDistrito = $('#cmbDistrito');
     var $cmbDepartamento = $('#cmbDepartamento');
-    var $dateFecIni = $('#dateFecRecIni');
-    var $dateFecFin = $('#dateFecRecFin');
+    var $dateFecRecIni = $('#dateFecRecIni');
+    var $dateFecRecFin = $('#dateFecRecFin');
     var $openRegFecIni = $("#openRegFecIni");
     var $openRegFecFin = $("#openRegFecFin");
     var $modalUbigeo = $('#modalUbigeo');
     var $btnNuevo = $('#btnNuevo');
     var $btnExportar = $('#btnExportar');
-    var formInstallTec = $('#formInstallTec');
-    var $tblInstallTec = $('#tblInstallTec');
+    var $formReclamos = $('#formReclamos');
+    var $tblReclamos = $('#tblReclamos');
     var $cmbVendedor = $('#cmbVendedor');
     var $cmbCliente = $('#cmbCliente');
     var $cmbTipVenta = $('#cmbTipVenta');
     var $btnSeleccionar = $('#btnGuardarUbigeo');
-    var $txtNumReq = $('#txtNumReq');
+    var $txtNumRec = $('#txtNumRec');
     var $txtNumProc = $('#txtNumProc');
     var $txtNumContrato = $('#txtNumContrato');
     var $txtNumOrdCompra = $('#txtNumOrdCompra');
     var $txtNumFianza = $('#txtNumFianza');
-    var $formInstallTec = $('#formInstallTec');
-    
+    var $txtVendedor = $('#txtVendedor');
+
+
     var $btnGuardarUbigeo = $('#btnGuardarUbigeo');
     var $txtUbicacion = $('#txtUbicacion');
     var $btnBuscar = $('#btnBuscar');
@@ -46,24 +47,24 @@
         $btnNuevo.click(NuevoReclamo);
         $btnBuscar.click(BuscarClick);
         $btnExportar.click(btnExportarClick);
-        $dateFecIni.val(firstDayMonth());
+        $dateFecRecIni.val(firstDayMonth());
 
-        $dateFecIni.datepicker({
+        $dateFecRecIni.datepicker({
             viewMode: 0,
             minViewMode: 0,
             format: 'dd/mm/yyyy'
         });
 
-        $dateFecFin.datepicker({
+        $dateFecRecFin.datepicker({
             viewMode: 0,
             minViewMode: 0,
             format: 'dd/mm/yyyy',
-            startDate: $dateFecIni.val()
+            startDate: $dateFecRecIni.val()
         });
 
-        $dateFecIni.datepicker().on("changeDate", changeDateFechaInicialRegFecIni);
+        $dateFecRecIni.datepicker().on("changeDate", changeDateFechaInicialRegFecIni);
 
-        $dateFecFin.val(hoy());
+        $dateFecRecFin.val(hoy());
         BuscarClick();
     };
 
@@ -106,19 +107,25 @@
     }
 
     function BuscarClick() {
+
+
+        var codDepartamento = sessionStorage.getItem('codDepartamento');
+        var codProvincia = sessionStorage.getItem('codProvincia');
+        var codDistrito = sessionStorage.getItem('codDistrito');
+
         var method = "POST";
         var url = "BandejaGarantia/ObtenerReclamos";
         var objBuscar = {
-            FecIni: $dateFecIni.val(),
-            FecFin: $dateFecFin.val(),
-            NumReq: $txtNumReq.val() == "" ? "0" : $txtNumReq.val(),
+            FecIni: $dateFecRecIni.val(),
+            FecFin: $dateFecRecFin.val(),
+            NumReclamo: $txtNumRec.val() == "" ? "0" : $txtNumRec.val(),
             Estado: $cmbEstado.val() == 0 ? "" : $cmbEstado.val(),
-            Destino: $txtUbicacion.val(),
-            Vendedor: $cmbVendedor.val() == 0 ? "" : $cmbVendedor.val(),
+            CodUbigeoDest: codDepartamento + codProvincia.slice(2, 4) + codDistrito.slice(4, 6),
+            Vendedor: $txtVendedor.val() == null ? "" : $txtVendedor.val(),
             RucEmpresa: $cmbCliente.val() == 0 ? "" : $cmbCliente.val(),
             CodEmpresa: $cmbempresa.val() == 0 ? "" : $cmbempresa.val(),
-            Id_Flujo: $cmbTipVenta.val() == 0 ? "0" : $cmbTipVenta.val(),
-            NumProceso: $txtNumProc.val(),
+            TipoVenta: $cmbTipVenta.val() == 0 ? "0" : $cmbTipVenta.val(),
+            NroProceso: $txtNumProc.val(),
             Contrato: $txtNumContrato.val(),
             OrdenCompra: $txtNumOrdCompra.val(),
             NumFianza: $txtNumFianza.val(),
@@ -127,15 +134,15 @@
         var objParam = JSON.stringify(objBuscar);
 
         var fnDoneCallBack = function (data) {
-            cargarTablaInstalacion(data);
+            cargarTablaReclamos(data);
         };
 
         var fnFailCallBack = function (data) {
             app.message.error("Validación", "No se encontraron resultados, por favor revisar.");
-            cargarTablaInstalacion();
+            cargarTablaReclamos();
         };
 
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, mensajes.buscandoRequerimientos);
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
     };
 
     function NuevoReclamo() {
@@ -145,28 +152,28 @@
         var self = jQuery(this);
         var href = self.attr('href');
         e.preventDefault();
-        var cant = $tblInstallTec.DataTable().rows().data().length;
+        var cant = $tblReclamos.DataTable().rows().data().length;
 
         if (cant === 0) {
             app.message.error("Reporte de Clientes", "La búsqueda no produjo resultados", "Aceptar");
             return false;
         }
         $("#hidden_fields").empty();
-        $("<input>", { type: "hidden", name: "FecIni", value: $dateFecIni.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "FecFin", value: $dateFecFin.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "NumReq", value: $txtNumReq.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "Estado", value: $cmbEstado.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "Destino", value: $txtUbicacion.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "Vendedor", value: $cmbVendedor.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "FecIni", value: $dateFecRecIni.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "FecFin", value: $dateFecRecFin.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "NumReclamo", value: $txtNumRec.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "RucEmpresa", value: $cmbCliente.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "CodUbigeoDest", value: $txtUbicacion.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "Vendedor", value: $cmbVendedor.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "Estado", value: $cmbEstado.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "CodEmpresa", value: $cmbempresa.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "Id_Flujo", value: $cmbTipVenta.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "NumProceso", value: $txtNumProc.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "TipoVenta", value: $cmbTipVenta.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "NroProceso", value: $txtNumProc.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "Contrato", value: $txtNumContrato.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "OrdenCompra", value: $txtNumOrdCompra.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "NumFianza", value: $txtNumFianza.val() }).appendTo("#hidden_fields");
-        $formInstallTec.attr('action', href);
-        $formInstallTec.submit();
+        $formReclamos.attr('action', href);
+        $formReclamos.submit();
     }
     function seleccionar() {
 
@@ -397,21 +404,21 @@
 
     /*Funciones para Fecha*/
     function $openRegFecIni_click() {
-        $dateFecIni.focus();
+        $dateFecRecIni.focus();
     }
 
     function $openRegFecFin_click() {
-        $dateFecFin.focus();
+        $dateFecRecFin.focus();
     }
 
     function changeDateFechaInicialRegFecIni() {
-        $dateFecFin.val('');
-        $dateFecFin.datepicker('destroy');
-        $dateFecFin.datepicker({
+        $dateFecRecFin.val('');
+        $dateFecRecFin.datepicker('destroy');
+        $dateFecRecFin.datepicker({
             viewMode: 0,
             minViewMode: 0,
             format: 'dd/mm/yyyy',
-            startDate: $dateFecIni.datepicker('getDate')
+            startDate: $dateFecRecIni.datepicker('getDate')
         });
     }
     function hoy() {
@@ -435,20 +442,20 @@
     /*Fin Funciones para Fecha*/
 
 
-    function editar(numReq, codEstado, idWorkFlow) {
+    function editar(numRec, codEstado, idWorkFlow) {
         var method = "POST";
         var url = "BandejaGarantia/SetVariablesGenerales";
         var objEditar = {
-            NumReq: numReq,
+            Id_Reclamo: numRec,
             CodEstado: codEstado,
             TipoProceso: "U",
-            Id_WorkFlow: idWorkFlow
+            Id_Workflow: idWorkFlow
         };
 
         var objParam = JSON.stringify(objEditar);
 
         var fnDoneCallBack = function () {
-            app.redirectTo("BandejaInstalacionTecnica/RegistroInstallTec");
+            app.redirectTo("BandejaGarantia/RegistroGarantia");
         };
 
         var fnFailCallBack = function (Message) {
@@ -458,19 +465,19 @@
         app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
     };
 
-    function ver(numReq, codEstado, idWorkFlow) {
+    function ver(numRec, codEstado, idWorkFlow) {
         var method = "POST";
-        var url = "BandejaInstalacionTecnica/SetVariablesGenerales";
+        var url = "BandejaGarantia/SetVariablesGenerales";
         var objVer = {
-            NumReq: numReq,
+            Id_Reclamo: numRec,
             CodEstado: codEstado,
-            Id_WorkFlow: idWorkFlow,
+            Id_Workflow: idWorkFlow,
             TipoProceso: "V"
         };
 
         var objParam = JSON.stringify(objVer);
         var fnDoneCallBack = function () {
-            app.redirectTo("BandejaInstalacionTecnica/RegistroInstallTec");
+            app.redirectTo("BandejaGarantia/RegistroGarantia");
         };
 
         var fnFailCallBack = function (Message) {
@@ -480,10 +487,10 @@
         app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
     };
 
-    function cargarTablaInstalacion(data) {
+    function cargarTablaReclamos(data) {
         var columns = [
             {
-                data: "NumReq",
+                data: "Id_Reclamo",
                 render: function (data, type, row) {
                     var numReqFormateado = ("000000" + data.toString());
                     numReqFormateado = numReqFormateado.substring((numReqFormateado.length) - 6, numReqFormateado.length);
@@ -496,6 +503,7 @@
                 render: function (data, type, row) {
                     var numSolFormateado = ("000000" + data.toString());
                     numSolFormateado = numSolFormateado.substring((numSolFormateado.length) - 6, numSolFormateado.length);
+
                     return '<center>' + numSolFormateado + '</center>'
                 }
             },
@@ -506,7 +514,7 @@
                 }
             },
             {
-                data: "NomEmpresa",
+                data: "RazonSocial",
                 render : function (data, type, row) {
                     return '<center>' + data + '</center>'
                 }
@@ -530,20 +538,26 @@
                 }
             },
             {
-                data: "CodEmpresa",
-                render : function (data, type, row) {
+                data: "NomEmpresa",
+                render: function (data, type, row) {
                     return '<center>' + data + '</center>'
                 }
             },
             {
-                data: "FechaMax",
+                data: "FechaReclamo",
                 render : function (data, type, row) {
-                    return '<center>' + data + '</center>'
+                    return '<center>' + app.obtenerFecha(data) + '</center>'
                 }
             },
             {
-                data: "Destino",
+                data: "FechaProgramacion",
                 render : function (data, type, row) {
+                    return '<center>' + app.obtenerFecha(data) + '</center>'
+                }
+            },
+            {
+                data: "Ubigeo",
+                render: function (data, type, row) {
                     return '<center>' + data + '</center>'
                 }
             },
@@ -554,19 +568,11 @@
                 }
             },
             {
-                data: "NumReq",
+                data: "Id_Reclamo",
                 render : function (data, type, row) {
-                    var d = "'" + row.NumReq + "','" + row.CodEstado + "','" + row.Id_WorkFlow +"'"; 
-                    var ver = '<a id="btnVer" class="btn btn-info btn-xs" title="Ver" href="javascript: bandejaInstalacionTecnica.ver(' + d + ')"><i class="fa fa-eye" aria-hidden="true"></i></a>';
-                    if (row.CodEstado == "STREG") {
-                        var accion = '<a id="btnEditar" class="btn btn-default btn-xs" title="Asignar Técnicos" href="javascript: bandejaInstalacionTecnica.editar(' + d + ')"><i class="fa fa-handshake-o" aria-hidden="true"></i></a>';
-                    }
-                    else if (row.CodEstado == "STEPI") {
-                        var accion = '<a id="btnEditar" class="btn btn-primary btn-xs" title="Cerrar Requerimiento" href="javascript: bandejaInstalacionTecnica.editar(' + d + ')"><i class="fa fa-check" aria-hidden="true"></i></a>';
-                    }
-                    else if (row.CodEstado == "STINS") {
-                        var accion = '';
-                    };
+                    var d = "'" + row.Id_Reclamo + "','" + row.CodEstado + "','" + row.Id_Workflow +"'"; 
+                    var ver = '<a id="btnVer" class="btn btn-info btn-xs" title="Ver" href="javascript: garantias.ver(' + d + ')"><i class="fa fa-eye" aria-hidden="true"></i></a>';
+                    var accion = '<a id="btnEditar" class="btn btn-default btn-xs" title="Asignar Técnicos" href="javascript: garantias.editar(' + d + ')"><i class="fa fa-pencil" aria-hidden="true"></i></a>';
                     return '<center>' + accion + ' ' + ver +'</center>'
                 }
             }
@@ -584,7 +590,7 @@
             $(row).attr('id', 'row' + index);
         };
 
-        app.llenarTabla($tblInstallTec, data, columns, columnDefs, "#tblInstallTec", rowCallback);
+        app.llenarTabla($tblReclamos, data, columns, columnDefs, "#tblReclamos", rowCallback);
     };
 
     return {

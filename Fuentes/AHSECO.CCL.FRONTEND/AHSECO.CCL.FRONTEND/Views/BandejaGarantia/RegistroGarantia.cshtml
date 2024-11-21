@@ -64,6 +64,12 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtSolicitud">Solicitud:</label>
+                            <div class="form-group">
+                                <input placeholder="--Solicitud de Venta--" disabled type="text" class="form-control input-sm" id="txtSolicitud" value="">
+                            </div>
+                        </div>
                     </div>
                     <div class="row container-fluid" style="background-color: #00aeef0f; border-radius: 10px;">
                         <div class="col-md-4 col-sm-12">
@@ -79,7 +85,7 @@
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12">
-                            <label for="txtUbigeo">Ubigeo: </label>
+                            <label for="txtUbigeo">Ubicación: </label>
                             <div class="form-group">
                                 <input placeholder="--Ubigeo--" disabled type="text" class="form-control input-sm" id="txtUbigeo" value="">
                             </div>
@@ -145,19 +151,25 @@
                     <div class="box-content" style="background-color: #f5f5dc30;">
                         <div class="container-fluid">
                             <div class="row container-fluid">
-                                <div class="col-md-4 col-sm-12">
+                                <div class="col-md-3 col-sm-12">
+                                    <label for="txtCodEquipo">Código Equipo:</label>
+                                    <div class="form-group">
+                                        <input placeholder="--Código Equipo--" disabled type="text" class="form-control input-sm" id="txtCodEquipo" value="">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-12">
                                     <label for="txtDescEquipo">Descripción Equipo:</label>
                                     <div class="form-group">
                                         <input placeholder="--Descripción Equipo--" disabled type="text" class="form-control input-sm" id="txtDescEquipo" value="">
                                     </div>
                                 </div>
-                                <div class="col-md-4 col-sm-12">
+                                <div class="col-md-3 col-sm-12">
                                     <label for="txtMatcaEquipo">Marca:</label>
                                     <div class="form-group">
                                         <input placeholder="--Marca--" disabled type="text" class="form-control input-sm" id="txtMatcaEquipo" value="">
                                     </div>
                                 </div>
-                                <div class="col-md-4 col-sm-12">
+                                <div class="col-md-3 col-sm-12">
                                     <label for="txtModeloEquipo">Modelo:</label>
                                     <div class="form-group">
                                         <input placeholder="--Modelo--" disabled type="text" class="form-control input-sm" id="txtModeloEquipo" value="">
@@ -206,16 +218,25 @@
                             </div>
                             <div class="row container-fluid">
                                 <div class="col-md-4 col-sm-12">
-                                    <label for="txtEstadoGarantia">Dirección de Instalación:</label>
+                                    <label for="txtDirecInstall">Dirección de Instalación:</label>
                                     <div class="form-group">
-                                        <input placeholder="--Estado de Garantía--" disabled type="text" class="form-control input-sm" id="txtEstadoGarantia" value="">
+                                        <input placeholder="--Dirección de Instalación--" disabled type="text" class="form-control input-sm" id="txtDirecInstall" value="">
                                     </div>
                                 </div>
                                 <div class="col-md-4 col-sm-12">
+                                    <input hidden id="hdnCodUbigeo" value="" />
                                     <label for="txtUbiDestino">Ubicación Destino:</label>
                                     <div class="form-group">
                                         <div class="form-group">
-                                            <input placeholder="--Ubicación de Destino--" disabled type="text" class="form-control input-sm" id="txtUbiDestino" value="">
+                                            <input placeholder="--Ubicación de Instalación--" disabled type="text" class="form-control input-sm" id="txtUbiDestino" value="">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-12">
+                                    <label for="txtNumFianza">N° de Fianza:</label>
+                                    <div class="form-group">
+                                        <div class="form-group">
+                                            <input placeholder="--N° de Fianza--" disabled type="text" class="form-control input-sm" id="txtNumFianza" value="">
                                         </div>
                                     </div>
                                 </div>

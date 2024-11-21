@@ -16,6 +16,7 @@ namespace AHSECO.CCL.BE.Ventas
         public string Cod_MedioCont { get; set; }
         public int IdCliente { get; set; }
         public string Ubigeo { get; set; }
+        public string Cod_Ubigeo{ get; set; }
         public string RUC { get; set; }
         public string RazonSocial { get; set; }
         public string AsesorVenta { get; set; }

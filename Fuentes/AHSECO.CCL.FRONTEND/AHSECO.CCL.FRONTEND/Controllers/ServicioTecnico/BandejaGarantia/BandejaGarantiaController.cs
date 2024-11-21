@@ -27,6 +27,7 @@ using static AHSECO.CCL.COMUN.ConstantesDTO;
 using System.Web.Http.Results;
 using Microsoft.Ajax.Utilities;
 using AHSECO.CCL.BE.ServicioTecnico.BandejaGarantias;
+using Microsoft.Identity.Client;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
 {
@@ -79,6 +80,12 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
             }
         }
 
+        public JsonResult ObtenerMainReclamo(long NumReclamo, long IdWorkFlow)
+        {
+            var garantiasBL = new GarantiasBL();
+            var result = garantiasBL.ObtenerMainReclamo(NumReclamo, IdWorkFlow);
+            return Json(result);
+        }
         public ActionResult RegistroGarantia()
         {
             return View();
@@ -100,7 +107,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
                 var documentosBL = new DocumentosBL();
 
                 var workflow = new FiltroWorkflowDTO();
-                workflow.CodigoProceso = 3; //Código de proceso de SERVICIO TÉCNICO
+                workflow.CodigoProceso = 7; //Código de proceso de GARANTIAS
                 workflow.UsuarioRegistro = User.ObtenerUsuario();
                 workflow.SubTipo = "";
 
@@ -162,8 +169,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
                 log.UsuarioRegistro = User.ObtenerUsuario();
                 var result2 = procesoBL.InsertarWorkflowLog(log);
 
-                //result.CodigoSolicitud = "1";
-                //result.Mensaje = "Se realizo el registro con exito";
                 return Json(new
                 {
                     Status = 1,
@@ -201,6 +206,14 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
             var result = garantiaBL.MantTecnicosReclamo(tecnico);
             return Json(result);
         }
+
+        public JsonResult ObtenerTecnicosReclamo(long numReclamo)
+        {
+            var garantiasBL = new GarantiasBL();
+            var result = garantiasBL.ObtenerTecnicosReclamo(numReclamo);
+            return Json(result);
+        }
+
 
 
         [HttpPost]

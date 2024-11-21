@@ -6,6 +6,7 @@ using AHSECO.CCL.BE.Ventas;
 using AHSECO.CCL.COMUN;
 using System.Collections.Generic;
 using AHSECO.CCL.BE.ServicioTecnico.BandejaGarantias;
+using System.DirectoryServices;
 
 namespace AHSECO.CCL.BL.ServicioTecnico.BandejaGarantias
 {
@@ -94,6 +95,20 @@ namespace AHSECO.CCL.BL.ServicioTecnico.BandejaGarantias
             }
         }
 
+        public ResponseDTO<GrupoReclamoDTO> ObtenerMainReclamo(long NumReclamo, long IdWorkFlow)
+        {
+            try
+            {
+                var result = Repository.ObtenerMainReclamo(NumReclamo, IdWorkFlow);
+                return new ResponseDTO<GrupoReclamoDTO>(result);
+            }
+            catch(Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<GrupoReclamoDTO>(ex);
+            }
+        }
+
         public ResponseDTO<GrupoGarantiasDTO> ObtenerDatosEquipo(string NumSerie)
         {
             try
@@ -105,6 +120,20 @@ namespace AHSECO.CCL.BL.ServicioTecnico.BandejaGarantias
             {
                 Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
                 return new ResponseDTO<GrupoGarantiasDTO>(ex);
+            }
+        }
+
+        public ResponseDTO<IEnumerable<TecnicoGarantiaDTO>> ObtenerTecnicosReclamo(long numReclamo)
+        {
+            try
+            {
+                var result = Repository.ObtenerTecnicosReclamo(numReclamo);
+                return new ResponseDTO<IEnumerable<TecnicoGarantiaDTO>>(result);
+            }
+            catch(Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<IEnumerable<TecnicoGarantiaDTO>>(ex);
             }
         }
 
