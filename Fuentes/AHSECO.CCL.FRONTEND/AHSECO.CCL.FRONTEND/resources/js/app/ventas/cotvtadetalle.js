@@ -369,20 +369,6 @@ var cotvtadet = (function ($, win, doc) {
     }
     
     function quitarItem(CodigoItem, opc) {
-        //method = "POST";
-        //url = "BandejaSolicitudesVentas/QuitarItemCotDet";
-        //var objFiltros = {
-        //    CodItem: CodigoItem,
-        //    opcGrillaItems: opc
-        //};
-        //var objParam = JSON.stringify(objFiltros);
-
-        //var fnDoneCallBack = function (data) {
-        //    cargarTablaCotDet(data);
-        //};
-
-        //app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
-
 
         var fnSi = function () {
 
