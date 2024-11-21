@@ -74,7 +74,9 @@
     <Compile Include="ServicioTecnico\BandejaGarantias\DetalleSolicitudGarantiaDTO.cs" />
     <Compile Include="ServicioTecnico\BandejaGarantias\FiltroReclamosDTO.cs" />
     <Compile Include="ServicioTecnico\BandejaGarantias\GrupoGarantiasDTO.cs" />
+    <Compile Include="ServicioTecnico\BandejaGarantias\GrupoReclamoDTO.cs" />
     <Compile Include="ServicioTecnico\BandejaGarantias\ReclamosDTO.cs" />
+    <Compile Include="ServicioTecnico\BandejaGarantias\TecnicoGarantiaDTO.cs" />
     <Compile Include="ServicioTecnico\BandejaInstalacionTecnica\CotizacionDetalleTecDTO.cs" />
     <Compile Include="ServicioTecnico\BandejaInstalacionTecnica\FiltroInstalacionTecDTO.cs" />
     <Compile Include="ServicioTecnico\BandejaInstalacionTecnica\GrupoInstalacionTecnicaDTO.cs" />

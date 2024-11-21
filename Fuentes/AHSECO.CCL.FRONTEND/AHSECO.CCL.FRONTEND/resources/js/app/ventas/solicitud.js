@@ -79,6 +79,7 @@
     var $NoRegMainProd = $('#NoRegMainProd');
     var $openRegdateCotizacion = $('#openRegdateCotizacion');
     var $btnRegistrarCotizacion = $('#btnRegistrarCotizacion');
+    var $btnAgregarDetalle = $('#btnAgregarDetalle');
 
     /*Seccion Contacto*/
     var $btnAñadir = $('#btnAñadir');
@@ -272,6 +273,7 @@
         $btnHistorial.click($btnHistorial_click);
         $btnBuscarHistorial.click($btnHistorial_click);
         $btnImprimirCotizacion.click($btnImprimirCotizacion_click);
+        $btnAgregarDetalle.click($btnAgregarDetalle_click);
         $btnGuiaBO.click($btnGuiaBO_click);
         $btnGuiaPedido.click($btnGuiaPedido_click);
         $btnGuardarGestion.click($btnGuardarGestion_click);
@@ -293,6 +295,125 @@
         $btnEditarGestionLogisticaSE.click($btnEditarGestionLogisticaSE_click);
         cargaCombos();      
     };
+
+    function $btnAgregarDetalle_click() {
+        $('#BI_cmbFamilia').val('').trigger("change.select2");
+        $('#BI_txtCodProducto').val('').trigger("change.select2");
+        $('#BI_txtNomProducto').val('').trigger("change.select2");
+        $('#BI_cmbTipoMedida').val('').trigger("change.select2");
+        $('#BI_cmbMarca').val('').trigger("change.select2");
+        buscarItems_Solicitud();
+    }
+
+    function buscarItems_Solicitud() {
+        method = "POST";
+        url = "BandejaSolicitudesVentas/ObtenerArticulos";
+        var objFiltros = {
+            CodsArticulo: $('#BI_txtCodProducto').val(),
+            DescArticulo: $('#BI_txtNomProducto').val(),
+            CodsUnidad: $('#BI_cmbTipoMedida').val(),
+            CodsFamilia: $('#BI_cmbFamilia').val(),
+            CodsMarca: $('#BI_cmbMarca').val(),
+            AddDescriptionAsNewRecord: true,
+            CantidadRegistros: 20
+        };
+        var objParam = JSON.stringify(objFiltros);
+
+        var fnDoneCallBack = function (data) {
+            cargarTablaItems2(data);
+        };
+
+        var fnFailCallback = function () {
+            app.message.error("Validaci&oacute;n", "No hay productos.");
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallback);
+    }
+
+    function cargarTablaItems2(data) {
+
+        var columns = [
+            {
+                data: "CodArticuloTemp",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "DescFamilia",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "DescRealArticulo",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "StockDisponible",
+                render: function (data) {
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "PrecioRef",
+                render: function (data) {
+                    var precio = data.toFixed(2)
+                    return '<center>' + precio + '</center>';
+                }
+            },
+            {
+                data: "DescUnidad",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "DescMarca",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "DescRealModelo",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "CodArticulo",
+                render: function (data) {
+                    var seleccionar = '<a class="btn btn-default btn-xs" title="Agregar" href="javascript: cotvtadet.agregarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ')"><i class="fa fa-level-down" aria-hidden="true"></i> Agregar</a>';
+                    return '<center>' + seleccionar + '</center>';
+                }
+            }
+        ];
+
+        var columnDefs =
+        {
+            targets: [0],
+            visible: false
+        }
+
+        var rowCallback = function (row, data, index) {
+            // Asignar un ID único basado en el índice de datos o algún identificador único
+            $(row).attr('id', 'row' + index);
+        };
+
+        var filters = {}
+        filters.dataTableInfo = true;
+        filters.dataTablePageLength = 3;
+
+        app.llenarTabla($('#tblItems'), data, columns, columnDefs, "#tblItems", rowCallback, null, filters);
+    }
 
     function $btnEditarGestionLogisticaSE_click() {
         $dateEntregaPedidoSE.prop('disabled', false);
@@ -943,6 +1064,7 @@
             }
         }
 
+
         var numsol = $numeroSolicitud.val();
         if (numsol == "") {
             numsol = 0;
@@ -969,7 +1091,10 @@
             app.llenarComboMultiResult($cmbTipoVenta, data.Result.TipoVenta, null, "", "", filters);
             app.llenarComboMultiResult($cmbTipoDocumentoCarga, data.Result.TipoDocumento, null, 0, "--Seleccione--", filters);
 
-            //  app.llenarCombo($cmbTipoDocumentoCarga, data, null, 0, "--Seleccione--", filters);
+            if (rol == "SGI_VENTA_COORDINASERV" || rol == "SGI_VENTA_COORDINAATC" || rol == "SGI_VENTA_ASESOR") {
+                $cmbFlujo.val(codFlujo).trigger("change.select2");
+            }
+
 
             if ($numeroSolicitud.val() != "") {
 
@@ -1693,6 +1818,11 @@
             return;
         };
 
+        if ($txtVigencia.val().trim() === "" || $txtVigencia.val().trim().length <= 0 || $txtVigencia.val().trim() == null) {
+            app.message.error("Validación", "Debe de ingresar el plazo de vigencia de la cotización.");
+            return;
+        };
+
         if ($.trim($txtPlazoEntrega.val()) == "") {
             app.message.error("Validación", "Debe de ingresar el plazo de entrega de la cotización.");
             return;
@@ -1704,23 +1834,19 @@
             }
         };
 
+        if ($cmbGarantia.val() === "" || $cmbGarantia.val() == undefined || $cmbGarantia.val() == null) {
+            app.message.error("Validación", "Debe de ingresar el periodo de garantía.");
+            return;
+        };
+
         if ($cmbTipoPago.val() === "" || $cmbTipoPago.val() == undefined || $cmbTipoPago.val() == null) {
             app.message.error("Validación", "Debe de seleccionar la forma de pago.");
             return;
         };
 
+
         if ($cmbTipMoneda.val() === "" || $cmbTipMoneda.val() == undefined || $cmbTipMoneda.val() == null) {
             app.message.error("Validación", "Debe de seleccionar el tipo de moneda.");
-            return;
-        };
-
-        if ($txtVigencia.val().trim() === "" || $txtVigencia.val().trim().length <= 0 || $txtVigencia.val().trim() == null) {
-            app.message.error("Validación", "Debe de ingresar el plazo de vigencia de la cotización.");
-            return;
-        };
-
-        if ($cmbGarantia.val() === "" || $cmbGarantia.val() == undefined || $cmbGarantia.val() == null) {
-            app.message.error("Validación", "Debe de ingresar el periodo de garantía.");
             return;
         };
 
@@ -1927,6 +2053,7 @@
     function $agregarContactoClick() {
 
         $nombreContacto.prop('disabled', false);
+        $nombreContacto.removeAttr('readonly');
         $txtAreaContacto.prop('disabled', false);
         $txtTelefono.prop('disabled', false);
         $txtCorreo.prop('disabled', false);

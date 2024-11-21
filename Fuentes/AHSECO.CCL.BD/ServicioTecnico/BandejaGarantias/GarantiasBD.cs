@@ -13,6 +13,7 @@ using AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica;
 using AHSECO.CCL.BE.ServicioTecnico.BandejaGarantias;
 using System.Configuration;
 using AHSECO.CCL.BE.Mantenimiento;
+using System.Globalization;
 
 
 namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
@@ -130,6 +131,29 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
                         _garantias.Add(garantia);
                     }
 
+                    reader.NextResult();
+                    List<ComboDTO> _urgencias = new List<ComboDTO>();
+                    while (reader.Read())
+                    {
+                        var urgencia = new ComboDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("CODURGENCIA")) ? "" : reader.GetString(reader.GetOrdinal("CODURGENCIA")),
+                            Text = reader.IsDBNull(reader.GetOrdinal("DESCURGENCIA")) ? "" : reader.GetString(reader.GetOrdinal("DESCURGENCIA"))
+                        };
+                        _urgencias.Add(urgencia);
+                    }
+
+                    reader.NextResult();
+                    List<ComboDTO> _motivos = new List<ComboDTO>();
+                    while (reader.Read())
+                    {
+                        var motivo = new ComboDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("CODMOTIVO")) ? "" : reader.GetString(reader.GetOrdinal("CODMOTIVO")),
+                            Text = reader.IsDBNull(reader.GetOrdinal("DESCMOTIVO")) ? "" : reader.GetString(reader.GetOrdinal("DESCMOTIVO"))
+                        };
+                        _motivos.Add(motivo);
+                    };
 
                     result.Periodos = _periodos;
                     result.Empresas = _listEmpresa;
@@ -138,7 +162,10 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
                     result.TipVenta = _tiposVenta;
                     result.TipoEmpleado = _tipoEmpleado;
                     result.Garantias = _garantias;
+                    result.Motivos = _motivos;
+                    result.Urgencia = _urgencias;
 
+                    connection.Close();
                     return result;
                 };
             };
@@ -172,6 +199,57 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
                     {
 
                     });
+                connection.Close();
+                return result;
+            }
+        }
+
+        public RespuestaDTO MantReclamo(ReclamosDTO reclamo)
+        {
+            using(var connection = Factory.ConnectionFactory())
+            {
+                var parameters = new DynamicParameters();
+                connection.Open();
+
+                parameters.Add("", reclamo.CargoContacto);
+
+                var result = connection.Query(
+                    sql: "SMTH",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new RespuestaDTO
+                    {
+
+                    }).FirstOrDefault();
+
+                connection.Close();
+
+                return result;
+            }
+        }
+
+        public RespuestaDTO MantTecnicosReclamo(TecnicoGarantiaDTO tecnico)
+        {
+            using (var connection = Factory.ConnectionFactory())
+            {
+                var parameters = new DynamicParameters();
+                connection.Open();
+
+                parameters.Add("", tecnico.Cod_Tecnico);
+
+                var result = connection.Query(
+                    sql: "SMTH",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new RespuestaDTO
+                    {
+
+                    }).FirstOrDefault();
+
+                connection.Close();
+
                 return result;
             }
         }
@@ -307,6 +385,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
                         result.Detalle = solicitud;
                     }
                 }
+                connection.Close();
             }
             return result;
         }

@@ -101,7 +101,7 @@
                         <div class="col-md-4 col-sm-7 col-xs-12">
                             <label for="cmbFlujo">&Aacute;rea: </label>
                             <div class="form-group">
-                                <select @(ViewBag.disabled ? "disabled" : "") class="form-control select2 input-sm" style="width:100%;" id="cmbFlujo" data-selected="">
+                                <select disabled class="form-control select2 input-sm" style="width:100%;" id="cmbFlujo" data-selected="">
                                 </select>
                             </div>
                         </div>
@@ -209,21 +209,19 @@
                 <ul class="nav nav-tabs" style="padding-top: 5px;">
                     @if (numSol != null)
                     {
-                        <li class="" id="tabDetalleSolicitud">
-                            <a href="#navDetalleSolicitud" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-info-circle" aria-hidden="true"></i> Detalle</a>
-                        </li>
-                    }
+                    <li class="" id="tabDetalleSolicitud">
+                        <a href="#navDetalleSolicitud" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-info-circle" aria-hidden="true"></i> Detalle</a>
+                    </li>
+
                     <li class="" id="tabAdjuntos">
                         <a href="#navDocumentos" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-file-text" aria-hidden="true"></i> Adjunto de Documentos</a>
                     </li>
                     <li class="" id="tabObservaciones">
                         <a href="#navObservaciones" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-exclamation" aria-hidden="true"></i> Observaciones</a>
                     </li>
-                    @if (numSol != null)
-                    {
-                        <li class="" id="tabSeguimiento">
-                            <a href="#navSeguimiento" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-code-fork" aria-hidden="true"></i>  Seguimiento</a>
-                        </li>
+                    <li class="" id="tabSeguimiento">
+                        <a href="#navSeguimiento" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-code-fork" aria-hidden="true"></i>  Seguimiento</a>
+                    </li>
                     }
                 </ul>
                 <div class="tab-content" style="padding-top: 5px;">
@@ -294,7 +292,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-6 col-sm-7 col-xs-12">
-                                                                <label for="txtVigencia">Vigencia Cotizaci&oacute;n: </label>
+                                                                <label for="txtVigencia">Vigencia Cotizaci&oacute;n (d&iacute;as): </label>
                                                                 <div class="form-group">
                                                                     <input @(ViewBag.PermitirEditarCotizacion ? "" : "disabled") placeholder="Ingresar número de días" type="text" class="form-control input-sm" id="txtVigencia" value="@ViewBag.Vigencia">
                                                                 </div>
@@ -817,22 +815,23 @@
                                 </div>
                             </div>
                         </div>
-                    }
-                    <div id="navDocumentos" class="tab-pane fade">
-                        @{
-                            Html.RenderPartial("~/Views/Modelos/_Documentos.cshtml");
-                        }
-                    </div>
-                    <div id="navObservaciones" class="tab-pane fade">
-                        @{
-                            Html.RenderPartial("~/Views/Modelos/_Observaciones.cshtml");
-                        }
-                    </div>
-                    <div id="navSeguimiento" class="tab-pane fade">
-                        @{
-                            Html.RenderPartial("~/Views/Modelos/_Seguimiento.cshtml");
-                        }
-                    </div>
+                    
+                        <div id="navDocumentos" class="tab-pane fade">
+                            @{
+                                Html.RenderPartial("~/Views/Modelos/_Documentos.cshtml");
+                            }
+                        </div>
+                        <div id="navObservaciones" class="tab-pane fade">
+                            @{
+                                Html.RenderPartial("~/Views/Modelos/_Observaciones.cshtml");
+                            }
+                        </div>
+                        <div id="navSeguimiento" class="tab-pane fade">
+                            @{
+                                Html.RenderPartial("~/Views/Modelos/_Seguimiento.cshtml");
+                            }
+                        </div>
+                     }
                 </div>
             </div>
         </div>
@@ -916,6 +915,23 @@
             }
         });
     });
+
+    $('#txtVigencia').keypress(function (event) {
+        // Permitir solo teclas numéricas y algunas teclas especiales como Backspace, Tab, etc.
+        var charCode = event.which ? event.which : event.keyCode;
+        if (charCode < 48 || charCode > 57) {
+            event.preventDefault(); // Evitar la entrada de caracteres no numéricos
+        }
+    });
+
+    $('#txtPlazoEntrega').keypress(function (event) {
+        // Permitir solo teclas numéricas y algunas teclas especiales como Backspace, Tab, etc.
+        var charCode = event.which ? event.which : event.keyCode;
+        if (charCode < 48 || charCode > 57) {
+            event.preventDefault(); // Evitar la entrada de caracteres no numéricos
+        }
+    });
+
 </script>
 <!--Modal-->
 <!--No se debe poner un MODAL dentro de otro MODAL-->
