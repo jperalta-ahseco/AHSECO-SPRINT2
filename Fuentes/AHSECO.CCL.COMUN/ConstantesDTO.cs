@@ -92,6 +92,23 @@ namespace AHSECO.CCL.COMUN
             }
         }
 
+        public struct SolicitudVenta
+        {
+            public struct TipoProceso
+            {
+                public static string Insertar { get { return "I"; } }
+                public static string Modificar { get { return "U"; } }
+            }
+            public struct TipoSolicitud
+            {
+                public static string Servicio { get { return "TSOL01"; } }
+                public static string RespuestosoConsumibles { get { return "TSOL02"; } }
+                public static string ServiciosyRepuestos { get { return "TSOL03"; } }
+                public static string VentaMateriales { get { return "TSOL04"; } }
+                public static string VentaEquipos { get { return "TSOL05"; } }
+            }
+        }
+
         public struct CotizacionVenta
         {
             public struct TipoProceso

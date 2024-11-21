@@ -20,27 +20,18 @@
                     <div class="container-fluid">
                         <fieldset>
                             <legend><b>Informaci&oacute;n General</b></legend>
-                            <div class="row container-fluid">
-                                <div class="col-md-6">
-                                    <div class="row container-fluid col-content-middleleft form-group">
-                                        <div class="col-md-3">
-                                            <label for="DI_txtCodigo">C&oacute;digo: </label>
-                                        </div>
+                            <div class="col-md-5">
+                                <div class="row container-fluid col-content-middleleft form-group">
+                                    <div class="col-md-3">
+                                        <label for="DI_txtCodigo">C&oacute;digo: </label>
+                                    </div>
+                                    <div class="col-md-9 col-content-middleleft">
                                         <div class="col-md-6">
                                             <input disabled placeholder="Ingresar código de producto" type="text" class="form-control input-sm" id="DI_txtCodigo" value="">
                                             <input type="hidden" id="DI_hdnCodigo" value="" />
                                             <input type="hidden" id="DI_hdnCodigoPadre" value="" />
                                         </div>
-                                    </div>
-                                    <div class="row container-fluid col-content-middleleft form-group">
-                                        <div class="col-md-3">
-                                            <label for="DI_txtDescripcion">Descripci&oacute;n: </label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <input disabled placeholder="Ingresar nombre de producto" type="text" class="form-control input-sm" id="DI_txtDescripcion" value="">
-                                        </div>
-                                    </div>
-                                    <div class="row container-fluid col-content-middleleft form-group">
+                                        <div class="col-md-1"></div>
                                         <div class="col-md-3">
                                             <label for="DI_txtCantidad">Cantidad: </label>
                                         </div>
@@ -49,12 +40,22 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="col-md-1"></div>
-                                    <div class="col-md-11">
+                                <div class="row container-fluid col-content-middleleft form-group">
+                                    <div class="col-md-3">
+                                        <label for="DI_txtDescripcion">Descripci&oacute;n: </label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <textarea disabled placeholder="Ingresar nombre de producto" type="text" rows="2" class="form-control input-sm" id="DI_txtDescripcion" value=""></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-1"></div>
+                            <div class="col-md-6">
+                                <div class="row container-fluid col-content-middleleft form-group">
+                                    <div class="col-md-12">
                                         <div class="row container-fluid">
                                             <label for="DI_txtDescripcionAdic">Especificaciones / Caracteristicas: </label>
-                                            <textarea @(ViewBag.PermitirModificarEspCarac ? "" : "disabled") placeholder="Ingresar Especificaciones <Opcional>" rows="5" class="form-control input-sm" id="DI_txtDescripcionAdic" value=""></textarea>
+                                            <textarea @(ViewBag.PermitirModificarEspCarac ? "" : "disabled") placeholder="Ingresar Especificaciones <Opcional>" rows="3" class="form-control input-sm" id="DI_txtDescripcionAdic" value=""></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -91,8 +92,10 @@
                                         <input placeholder="Ingrese Ganancia (%)" type="text" maxlength="15" class="form-control input-sm" id="DI_txtGanancia" value="">
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-content-middleleft">
-                                    <div class="col-md-3">
+                            </div>
+                            <div class="row container-fluid col-content-middleleft">
+                                <div class="col-md-4 col-content-middleleft">
+                                    <div class="col-md-5">
                                         <label for="DI_radCompraLocal">Compra Local: </label>
                                     </div>
                                     <div class="col-md-2">
@@ -112,39 +115,11 @@
                                         </table>
                                     </div>
                                 </div>
-                            </div>
-                        </fieldset>
-                    </div>
-                    <div class="container-fluid" style="@(ViewBag.MostrarCDI_InfoEnvio ? "" : "display:none")">
-                        <fieldset class="form-group">
-                            <legend><b>Información del Env&iacute;o</b></legend>
-                            <div class="row container-fluid col-content-middleleft">
                                 <div class="col-md-4 col-content-middleleft">
-                                    <div class="col-md-7">
-                                        <label for="DI_radLLaveEnMano">LLave en mano: </label>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <table style="width:100%">
-                                            <tr>
-                                                <td><input type="radio" name="DI_radLLaveEnMano" class="input-sm" id="DI_radLLaveEnMano_Si"></td>
-                                                <td style="padding-top:5px"><label>SI</label></td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <table style="width:100%">
-                                            <tr>
-                                                <td><input type="radio" name="DI_radLLaveEnMano" class="input-sm" id="DI_radLLaveEnMano_No"></td>
-                                                <td style="padding-top:5px"><label>NO</label></td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-content-middleleft">
-                                    <div class="col-md-6">
+                                    <div class="col-md-5">
                                         <label for="DI_txtDimensiones">Dimensiones: </label>
                                     </div>
-                                    <div class="col-md-7">
+                                    <div class="col-md-6">
                                         <input placeholder="Ingresar Dimensiones" type="text" maxlength="50" class="form-control input-sm" id="DI_txtDimensiones" value="">
                                     </div>
                                 </div>
@@ -170,14 +145,9 @@
                                     </div>
                                 </div>
                             </div>
-                        </fieldset>
-                    </div>
-                    <div class="container-fluid" style="@(ViewBag.MostrarCDI_InfoAdic ? "" : "display:none")">
-                        <fieldset class="form-group">
-                            <legend><b>Información Adicional</b></legend>
                             <div class="row container-fluid col-content-middleleft">
                                 <div class="col-md-4 col-content-middleleft">
-                                    <div class="col-md-7">
+                                    <div class="col-md-5">
                                         <label for="DI_radManuales" style="flex: 0 0 120px">Manuales: </label>
                                     </div>
                                     <div class="col-md-2">
@@ -198,7 +168,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-4 col-content-middleleft">
-                                    <div class="col-md-7">
+                                    <div class="col-md-5">
                                         <label for="DI_radMantPrevent" style="flex: 0 0 120px">Mantenimiento Preventivo: </label>
                                     </div>
                                     <div class="col-md-2">
@@ -213,63 +183,6 @@
                                         <table style="width:100%">
                                             <tr>
                                                 <td><input type="radio" name="DI_radMantPrevent" class="input-sm inp" id="DI_radMantPrevent_No"></td>
-                                                <td style="padding-top:5px"><label>NO</label></td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-content-middleleft">
-                                    <div class="col-md-7">
-                                        <label for="DI_txtFechaLimite">Fecha L&iacute;mite Instalaci&oacute;n: </label>
-                                    </div>
-                                    <div class="col-md-5">
-                                        <div class="input-group date">
-                                            <input aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" type="text" maxlength="10" class="form-control input-sm" id="DI_txtFechaLimite">
-                                            <span class="input-group-addon input-sm" id="openRegDI_txtFechaLimite">
-                                                <i class="fa fa-calendar"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row container-fluid col-content-middleleft">
-                                <div class="col-md-4 col-content-middleleft">
-                                    <div class="col-md-7">
-                                        <label for="DI_radVideos">Videos: </label>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <table style="width:100%">
-                                            <tr>
-                                                <td><input type="radio" name="DI_radVideos" class="input-sm" id="DI_radVideos_Si"></td>
-                                                <td style="padding-top:5px"><label>SI</label></td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <table style="width:100%">
-                                            <tr>
-                                                <td><input type="radio" name="DI_radVideos" class="input-sm" id="DI_radVideos_No"></td>
-                                                <td style="padding-top:5px"><label>NO</label></td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-content-middleleft">
-                                    <div class="col-md-7">
-                                        <label for="DI_radGarantAdic" style="flex: 0 0 120px">Garantía Adicional: </label>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <table style="width:100%">
-                                            <tr>
-                                                <td><input type="radio" name="DI_radGarantAdic" class="input-sm" id="DI_radGarantAdic_Si"></td>
-                                                <td style="padding-top:5px"><label>SI</label></td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <table style="width:100%">
-                                            <tr>
-                                                <td><input type="radio" name="DI_radGarantAdic" class="input-sm inp" id="DI_radGarantAdic_No"></td>
                                                 <td style="padding-top:5px"><label>NO</label></td>
                                             </tr>
                                         </table>
@@ -298,11 +211,55 @@
                                 </div>
                             </div>
                             <div class="row container-fluid col-content-middleleft">
+                                <div class="col-md-4 col-content-middleleft">
+                                    <div class="col-md-5">
+                                        <label for="DI_radVideos">Videos: </label>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <table style="width:100%">
+                                            <tr>
+                                                <td><input type="radio" name="DI_radVideos" class="input-sm" id="DI_radVideos_Si"></td>
+                                                <td style="padding-top:5px"><label>SI</label></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <table style="width:100%">
+                                            <tr>
+                                                <td><input type="radio" name="DI_radVideos" class="input-sm" id="DI_radVideos_No"></td>
+                                                <td style="padding-top:5px"><label>NO</label></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-content-middleleft">
+                                    <div class="col-md-5">
+                                        <label for="DI_radGarantAdic" style="flex: 0 0 120px">Garantía Adicional: </label>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <table style="width:100%">
+                                            <tr>
+                                                <td><input type="radio" name="DI_radGarantAdic" class="input-sm" id="DI_radGarantAdic_Si"></td>
+                                                <td style="padding-top:5px"><label>SI</label></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <table style="width:100%">
+                                            <tr>
+                                                <td><input type="radio" name="DI_radGarantAdic" class="input-sm inp" id="DI_radGarantAdic_No"></td>
+                                                <td style="padding-top:5px"><label>NO</label></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row container-fluid col-content-middleleft">
                                 <div class="col-md-6">
                                     <div class="col-md-11">
                                         <div class="row container-fluid">
                                             <label for="DI_txtReqCliente">Requisitos del Cliente: </label>
-                                            <textarea placeholder="Ingresar Requisitos <Opcional>" rows="4" maxlength="2000" class="form-control input-sm" id="DI_txtReqCliente" value=""></textarea>
+                                            <textarea placeholder="Ingresar Requisitos <Opcional>" rows="3" maxlength="2000" class="form-control input-sm" id="DI_txtReqCliente" value=""></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -310,12 +267,34 @@
                                     <div class="col-md-11">
                                         <div class="row container-fluid">
                                             <label for="DI_txtObsInsta">Observaciones de la Instalación: </label>
-                                            <textarea placeholder="Ingresar Observaciones <Opcional>" rows="4" maxlength="2000" class="form-control input-sm" id="DI_txtObsInsta" value=""></textarea>
+                                            <textarea placeholder="Ingresar Observaciones <Opcional>" rows="3" maxlength="2000" class="form-control input-sm" id="DI_txtObsInsta" value=""></textarea>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </fieldset>
+                    </div>
+                    <div class="container-fluid">
+                        <div class="col-md-12">
+                            <fieldset>
+                                <legend><b>Detalle de Costos</b></legend>
+                                <div class="row container-fluid col-content-middleleft form-group">
+                                    <table id="tblCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align:center; width:5%">Costo</th>
+                                                <th style="text-align:center; width:5%">Cantidad</th>
+                                                <th style="text-align:center; width:5%">Costo Unitario</th>
+                                                <th style="text-align:center; width:5%">Costo Total</th>
+                                                <th style="text-align:center; width:5%">Acción</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </fieldset>
+                        </div>
                     </div>
                     <div class="text-center">
                         <button class="btn btn-default btn-sm" type="button" id="DI_btnGuardar"><i class="fa fa-save" aria-hidden="true"></i> Guardar</button>

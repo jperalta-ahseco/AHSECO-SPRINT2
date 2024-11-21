@@ -37,8 +37,8 @@ var cotvtadet = (function ($, win, doc) {
     var $DI_txtCostoFOB = $("#DI_txtCostoFOB");
     var $DI_txtValorUnitario = $("#DI_txtValorUnitario");
     var $DI_txtGanancia = $("#DI_txtGanancia");
-    var $DI_radLLaveEnMano_Si = $("#DI_radLLaveEnMano_Si");
-    var $DI_radLLaveEnMano_No = $("#DI_radLLaveEnMano_No");
+    //var $DI_radLLaveEnMano_Si = $("#DI_radLLaveEnMano_Si");
+    //var $DI_radLLaveEnMano_No = $("#DI_radLLaveEnMano_No");
     var $DI_radCompraLocal_Si = $("#DI_radCompraLocal_Si");
     var $DI_radCompraLocal_No = $("#DI_radCompraLocal_No");
     var $DI_txtDimensiones = $("#DI_txtDimensiones");
@@ -46,7 +46,7 @@ var cotvtadet = (function ($, win, doc) {
     var $DI_radReqPlaca_No = $("#DI_radReqPlaca_No");
     var $DI_radMantPrevent_Si = $("#DI_radMantPrevent_Si");
     var $DI_radMantPrevent_No = $("#DI_radMantPrevent_No");
-    var $DI_txtFechaLimite = $("#DI_txtFechaLimite");
+    //var $DI_txtFechaLimite = $("#DI_txtFechaLimite");
     var $DI_radGarantAdic_Si = $("#DI_radGarantAdic_Si");
     var $DI_radGarantAdic_No = $("#DI_radGarantAdic_No");
     var $DI_radManuales_Si = $("#DI_radManuales_Si");
@@ -97,11 +97,11 @@ var cotvtadet = (function ($, win, doc) {
         $btnRecotizacion.click(recotizarSolicitud);
         $btnGuardarValorizacion.click(guardarValorizacion);
 
-        $DI_txtFechaLimite.datepicker({
-            viewMode: 0,
-            minViewMode: 0,
-            format: 'dd/mm/yyyy'
-        });
+        //$DI_txtFechaLimite.datepicker({
+        //    viewMode: 0,
+        //    minViewMode: 0,
+        //    format: 'dd/mm/yyyy'
+        //});
 
         listarCotDetItems();
 
@@ -408,8 +408,8 @@ var cotvtadet = (function ($, win, doc) {
         $DI_txtGanancia.val("");
         $DI_radCompraLocal_Si.removeAttr("checked");
         $DI_radCompraLocal_No.removeAttr("checked");
-        $DI_radLLaveEnMano_Si.removeAttr("checked");
-        $DI_radLLaveEnMano_No.removeAttr("checked");
+        //$DI_radLLaveEnMano_Si.removeAttr("checked");
+        //$DI_radLLaveEnMano_No.removeAttr("checked");
         $DI_radReqPlaca_Si.removeAttr("checked");
         $DI_radReqPlaca_No.removeAttr("checked");
         //sessionStorage.setItem('codDistrito', "");
@@ -429,7 +429,7 @@ var cotvtadet = (function ($, win, doc) {
         $DI_radGarantAdic_No.removeAttr("checked");
         $DI_radInstaCapa_Si.removeAttr("checked");
         $DI_radInstaCapa_No.removeAttr("checked");
-        $DI_txtFechaLimite.val("");
+        //$DI_txtFechaLimite.val("");
         $DI_txtReqCliente.val("");
         $DI_txtObsInsta.val("");
     }
@@ -454,10 +454,10 @@ var cotvtadet = (function ($, win, doc) {
             $DI_txtGanancia.val(data.Result.PorcentajeGanancia);
             
             if (data.Result.CotizacionDespacho != null) {
-                if (data.Result.CotizacionDespacho.IndLLaveMano != null) {
-                    if (data.Result.CotizacionDespacho.IndLLaveMano == true) { $DI_radLLaveEnMano_Si.prop("checked", true); }
-                    else { $DI_radLLaveEnMano_No.prop("checked", true); }
-                }
+                //if (data.Result.CotizacionDespacho.IndLLaveMano != null) {
+                //    if (data.Result.CotizacionDespacho.IndLLaveMano == true) { $DI_radLLaveEnMano_Si.prop("checked", true); }
+                //    else { $DI_radLLaveEnMano_No.prop("checked", true); }
+                //}
                 //sessionStorage.setItem('codDistrito', data.Result.CotizacionDespacho.CodUbigeoDestino);
                 //if (data.Result.CotizacionDespacho.DescUbigeoDestino != null) { $txtUbicacion.val(data.Result.CotizacionDespacho.DescUbigeoDestino); }
                 //$DI_txtDireccion.val(data.Result.CotizacionDespacho.Direccion);
@@ -493,9 +493,9 @@ var cotvtadet = (function ($, win, doc) {
                     if (data.Result.CotizacionDespacho.IndCompraLocal == true) { $DI_radCompraLocal_Si.prop("checked", true); }
                     else { $DI_radCompraLocal_No.prop("checked", true); }
                 }
-                if (data.Result.CotizacionDespacho.FecLimInsta != null) {
-                    $DI_txtFechaLimite.val(app.obtenerFecha(data.Result.CotizacionDespacho.FecLimInsta));
-                }
+                //if (data.Result.CotizacionDespacho.FecLimInsta != null) {
+                //    $DI_txtFechaLimite.val(app.obtenerFecha(data.Result.CotizacionDespacho.FecLimInsta));
+                //}
                 $DI_txtReqCliente.val(data.Result.CotizacionDespacho.ObsCliente);
                 $DI_txtObsInsta.val(data.Result.CotizacionDespacho.ObsDespacho);
             }
@@ -775,22 +775,22 @@ var cotvtadet = (function ($, win, doc) {
                 }
             }
 
-            if (!$DI_radLLaveEnMano_Si.is(':checked') && !$DI_radLLaveEnMano_No.is(':checked')) {
-                app.message.error("Validaci&oacute;n", "Elija Si o No en campo LLave en Mano");
-                return false;
-            }
+            //if (!$DI_radLLaveEnMano_Si.is(':checked') && !$DI_radLLaveEnMano_No.is(':checked')) {
+            //    app.message.error("Validaci&oacute;n", "Elija Si o No en campo LLave en Mano");
+            //    return false;
+            //}
 
             if (!$DI_radReqPlaca_Si.is(':checked') && !$DI_radReqPlaca_No.is(':checked')) {
                 app.message.error("Validaci&oacute;n", "Elija Si o No en campo de Requiere placa");
                 return false;
             }
 
-            if ($DI_txtFechaLimite.val() != "") {
-                if ($DI_txtFechaLimite.val().trim().length <= 0 || $DI_txtFechaLimite.val().trim() == null) {
-                    app.message.error("Validación", "Fecha l&iacute;mite de instalaci&oacute;n inv&aacute;lida.");
-                    return;
-                };
-            }
+            //if ($DI_txtFechaLimite.val() != "") {
+            //    if ($DI_txtFechaLimite.val().trim().length <= 0 || $DI_txtFechaLimite.val().trim() == null) {
+            //        app.message.error("Validación", "Fecha l&iacute;mite de instalaci&oacute;n inv&aacute;lida.");
+            //        return;
+            //    };
+            //}
 
             if (!$DI_radManuales_Si.is(':checked') && !$DI_radManuales_No.is(':checked')) {
                 app.message.error("Validaci&oacute;n", "Elija Si o No en campo Manuales");
@@ -817,8 +817,8 @@ var cotvtadet = (function ($, win, doc) {
                 return false;
             }
 
-            if ($DI_radLLaveEnMano_Si.is(':checked')) { bLLaveMano = true; }
-            if ($DI_radLLaveEnMano_No.is(':checked')) { bLLaveMano = false; }
+            //if ($DI_radLLaveEnMano_Si.is(':checked')) { bLLaveMano = true; }
+            //if ($DI_radLLaveEnMano_No.is(':checked')) { bLLaveMano = false; }
 
             if ($DI_radReqPlaca_Si.is(':checked')) { bReqPlaca = true; }
             if ($DI_radReqPlaca_No.is(':checked')) { bReqPlaca = false; }
@@ -901,7 +901,7 @@ var cotvtadet = (function ($, win, doc) {
                 //GarantiaAdic: $DI_txtGarantiaAdic.val(),
                 CotizacionDespacho: {
                     IndCompraLocal: bCompraLocal,
-                    IndLLaveMano: bLLaveMano,
+                    //IndLLaveMano: bLLaveMano,
                     IndRequierePlaca: bReqPlaca,
                     //CodUbigeoDestino: sessionStorage.getItem('codDistrito'),
                     //DescUbigeoDestino: $txtUbicacion.val(),
@@ -915,7 +915,7 @@ var cotvtadet = (function ($, win, doc) {
                     IndInfoVideo: bVideos,
                     IndMantPreventivo: bMantPrevent,
                     IndGarantiaAdicional: bGarantiaAdic,
-                    FecLimInsta: $DI_txtFechaLimite.val(),
+                    //FecLimInsta: $DI_txtFechaLimite.val(),
                     IndInstaCapa: bInstaCapa,
                     //GarantiaAdicional: $DI_txtGarantiaAdic.val(),
                     ObsCliente: $DI_txtReqCliente.val(),

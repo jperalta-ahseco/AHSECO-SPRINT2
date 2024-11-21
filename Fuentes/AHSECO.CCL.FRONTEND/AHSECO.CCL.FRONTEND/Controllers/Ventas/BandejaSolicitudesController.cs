@@ -161,6 +161,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.Cabecera = dtHeadProducto;
 
             ViewBag.NombreRol = NombreRol;
+            ViewBag.TipoSolicitud = "";
             ViewBag.EstadoSolicitud = "";
             ViewBag.IdCotizacion = 0;
             ViewBag.IdContacto = 0;
@@ -180,8 +181,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.MostrarCDI_Costos_R1 = true;
             ViewBag.MostrarCDI_Costos_R2 = true;
             ViewBag.MostrarCDI_Ganancia = true;
-            ViewBag.MostrarCDI_InfoEnvio = true;
-            ViewBag.MostrarCDI_InfoAdic = true;
+            //ViewBag.MostrarCDI_InfoEnvio = true;
+            //ViewBag.MostrarCDI_InfoAdic = true;
 
             ViewBag.PermitirTabDetCot = true;
             ViewBag.PermitirTabInsta = false;
@@ -212,6 +213,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             {
                 var rptaSoli = ventasBL.ObtenerSolicitudes(new SolicitudDTO() { Id_Solicitud = int.Parse(numSol) });
                 var soli = rptaSoli.Result.First();
+                ViewBag.TipoSolicitud = soli.Tipo_Sol;
                 ViewBag.EstadoSolicitud = soli.Estado;
                 VariableSesion.setCadena("estadoSol", soli.Estado);
 
@@ -488,8 +490,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         ViewBag.PermitirModificarEspCarac = false;
                         ViewBag.PermitirModificarCantidad = false;
                         ViewBag.MostrarCDI_Costos_R2 = false;
-                        ViewBag.MostrarCDI_InfoEnvio = false;
-                        ViewBag.MostrarCDI_InfoAdic = false;
+                        //ViewBag.MostrarCDI_InfoEnvio = false;
+                        //ViewBag.MostrarCDI_InfoAdic = false;
                     }
                     else
                     {
@@ -694,16 +696,29 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         if (CotDet.CotizacionDespacho != null)
                         {
                             if (x.CotizacionDespacho == null) { x.CotizacionDespacho = new CotDetDespachoDTO(); }
-                            x.CotizacionDespacho.IndInfoVideo = CotDet.CotizacionDespacho.IndInfoVideo;
-                            x.CotizacionDespacho.IndInfoManual = CotDet.CotizacionDespacho.IndInfoManual;
-                            x.CotizacionDespacho.IndInstaCapa = CotDet.CotizacionDespacho.IndInstaCapa;
-                            x.CotizacionDespacho.IndGarantiaAdicional = CotDet.CotizacionDespacho.IndGarantiaAdicional;
-                            x.CotizacionDespacho.IndLLaveMano = CotDet.CotizacionDespacho.IndLLaveMano;
-                            x.CotizacionDespacho.Dimensiones = CotDet.CotizacionDespacho.Dimensiones;
-                            x.CotizacionDespacho.IndCompraLocal = CotDet.CotizacionDespacho.IndCompraLocal;
-                            x.CotizacionDespacho.IndFianza = CotDet.CotizacionDespacho.IndFianza;
-                            x.CotizacionDespacho.MontoPrestPrin = CotDet.CotizacionDespacho.MontoPrestPrin;
-                            x.CotizacionDespacho.MontoPrestAcc = CotDet.CotizacionDespacho.MontoPrestAcc;
+                            var oCotDetDespAux = x.CotizacionDespacho;
+                            CotDet.CotizacionDespacho.CopyProperties(ref oCotDetDespAux);
+                            x.CotizacionDespacho = oCotDetDespAux;
+                            //x.CotizacionDespacho.Id = CotDet.CotizacionDespacho.Id;
+                            //x.CotizacionDespacho.IdCotizacionDetalle = CotDet.CotizacionDespacho.IdCotizacionDetalle;
+                            //x.CotizacionDespacho.IndInfoVideo = CotDet.CotizacionDespacho.IndInfoVideo;
+                            //x.CotizacionDespacho.IndInfoManual = CotDet.CotizacionDespacho.IndInfoManual;
+                            //x.CotizacionDespacho.IndInstaCapa = CotDet.CotizacionDespacho.IndInstaCapa;
+                            //x.CotizacionDespacho.IndGarantiaAdicional = CotDet.CotizacionDespacho.IndGarantiaAdicional;
+                            //x.CotizacionDespacho.CantGarantiaAdicional = CotDet.CotizacionDespacho.CantGarantiaAdicional;
+                            //x.CotizacionDespacho.IndMantPreventivo = CotDet.CotizacionDespacho.IndMantPreventivo;
+                            ////x.CotizacionDespacho.IndLLaveMano = CotDet.CotizacionDespacho.IndLLaveMano;
+                            //x.CotizacionDespacho.Dimensiones = CotDet.CotizacionDespacho.Dimensiones;
+                            //x.CotizacionDespacho.IndCompraLocal = CotDet.CotizacionDespacho.IndCompraLocal;
+                            //x.CotizacionDespacho.ObsCliente = CotDet.CotizacionDespacho.ObsCliente;
+                            //x.CotizacionDespacho.IndRequierePlaca = CotDet.CotizacionDespacho.IndRequierePlaca;
+                            //x.CotizacionDespacho.ObsDespacho = CotDet.CotizacionDespacho.ObsDespacho;
+                            ////x.CotizacionDespacho.FecLimInsta = CotDet.CotizacionDespacho.FecLimInsta;
+                            //x.CotizacionDespacho.MontoTotalCosto = CotDet.CotizacionDespacho.MontoTotalCosto;
+                            //x.CotizacionDespacho.IndFianza = CotDet.CotizacionDespacho.IndFianza;
+                            //x.CotizacionDespacho.NumFianza = CotDet.CotizacionDespacho.NumFianza;
+                            //x.CotizacionDespacho.MontoPrestPrin = CotDet.CotizacionDespacho.MontoPrestPrin;
+                            //x.CotizacionDespacho.MontoPrestAcc = CotDet.CotizacionDespacho.MontoPrestAcc;
                         }
                     }
                 }
@@ -1693,23 +1708,29 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         if (CotDet.CotizacionDespacho != null)
                         {
                             if (x.CotizacionDespacho == null) { x.CotizacionDespacho = new CotDetDespachoDTO(); }
-                            x.CotizacionDespacho.IndCompraLocal = CotDet.CotizacionDespacho.IndCompraLocal;
-                            x.CotizacionDespacho.IndLLaveMano = CotDet.CotizacionDespacho.IndLLaveMano;
-                            x.CotizacionDespacho.Dimensiones = CotDet.CotizacionDespacho.Dimensiones;
-                            x.CotizacionDespacho.IndRequierePlaca = CotDet.CotizacionDespacho.IndRequierePlaca;
-                            x.CotizacionDespacho.IndInfoManual = CotDet.CotizacionDespacho.IndInfoManual;
-                            x.CotizacionDespacho.IndInfoVideo = CotDet.CotizacionDespacho.IndInfoVideo;
-                            x.CotizacionDespacho.IndMantPreventivo = CotDet.CotizacionDespacho.IndMantPreventivo;
-                            x.CotizacionDespacho.IndGarantiaAdicional = CotDet.CotizacionDespacho.IndGarantiaAdicional;
-                            x.CotizacionDespacho.IndInstaCapa = CotDet.CotizacionDespacho.IndInstaCapa;
-                            x.CotizacionDespacho.FecLimInsta = CotDet.CotizacionDespacho.FecLimInsta;
-                            x.CotizacionDespacho.ObsCliente = CotDet.CotizacionDespacho.ObsCliente;
-                            x.CotizacionDespacho.ObsDespacho = CotDet.CotizacionDespacho.ObsDespacho;
-                            x.CotizacionDespacho.MontoTotalCosto = CotDet.CotizacionDespacho.MontoTotalCosto;
-                            x.CotizacionDespacho.IndFianza = CotDet.CotizacionDespacho.IndFianza;
-                            x.CotizacionDespacho.NumFianza = CotDet.CotizacionDespacho.NumFianza;
-                            x.CotizacionDespacho.MontoPrestPrin = CotDet.CotizacionDespacho.MontoPrestPrin;
-                            x.CotizacionDespacho.MontoPrestAcc = CotDet.CotizacionDespacho.MontoPrestAcc;
+                            var oCotDetDespAux = x.CotizacionDespacho;
+                            CotDet.CotizacionDespacho.CopyProperties(ref oCotDetDespAux);
+                            x.CotizacionDespacho = oCotDetDespAux;
+                            //x.CotizacionDespacho.Id = CotDet.CotizacionDespacho.Id;
+                            //x.CotizacionDespacho.IdCotizacionDetalle = CotDet.CotizacionDespacho.IdCotizacionDetalle;
+                            //x.CotizacionDespacho.IndInfoVideo = CotDet.CotizacionDespacho.IndInfoVideo;
+                            //x.CotizacionDespacho.IndInfoManual = CotDet.CotizacionDespacho.IndInfoManual;
+                            //x.CotizacionDespacho.IndInstaCapa = CotDet.CotizacionDespacho.IndInstaCapa;
+                            //x.CotizacionDespacho.IndGarantiaAdicional = CotDet.CotizacionDespacho.IndGarantiaAdicional;
+                            //x.CotizacionDespacho.CantGarantiaAdicional = CotDet.CotizacionDespacho.CantGarantiaAdicional;
+                            //x.CotizacionDespacho.IndMantPreventivo = CotDet.CotizacionDespacho.IndMantPreventivo;
+                            ////x.CotizacionDespacho.IndLLaveMano = CotDet.CotizacionDespacho.IndLLaveMano;
+                            //x.CotizacionDespacho.Dimensiones = CotDet.CotizacionDespacho.Dimensiones;
+                            //x.CotizacionDespacho.IndCompraLocal = CotDet.CotizacionDespacho.IndCompraLocal;
+                            //x.CotizacionDespacho.ObsCliente = CotDet.CotizacionDespacho.ObsCliente;
+                            //x.CotizacionDespacho.IndRequierePlaca = CotDet.CotizacionDespacho.IndRequierePlaca;
+                            //x.CotizacionDespacho.ObsDespacho = CotDet.CotizacionDespacho.ObsDespacho;
+                            ////x.CotizacionDespacho.FecLimInsta = CotDet.CotizacionDespacho.FecLimInsta;
+                            //x.CotizacionDespacho.MontoTotalCosto = CotDet.CotizacionDespacho.MontoTotalCosto;
+                            //x.CotizacionDespacho.IndFianza = CotDet.CotizacionDespacho.IndFianza;
+                            //x.CotizacionDespacho.NumFianza = CotDet.CotizacionDespacho.NumFianza;
+                            //x.CotizacionDespacho.MontoPrestPrin = CotDet.CotizacionDespacho.MontoPrestPrin;
+                            //x.CotizacionDespacho.MontoPrestAcc = CotDet.CotizacionDespacho.MontoPrestAcc;
                         }
                     }
                 }
@@ -1851,11 +1872,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 var ventasBL = new VentasBL();
                 var procesoBL = new ProcesosBL();
 
-                CotizacionDTO cotizacionDTO = new CotizacionDTO();
-                CotizacionDTO cotdetDTO = new CotizacionDTO();
-
                 var resCotizacion = ventasBL.ObtenerCotizacionVenta(new CotizacionDTO() { IdCotizacion = IdCotizacion });
-                cotizacionDTO = resCotizacion.Result.ToList().First();
+                CotizacionDTO cotizacionDTO = resCotizacion.Result.ToList().First();
 
                 var log = new FiltroWorkflowLogDTO();
 
@@ -1925,7 +1943,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     }
                 }
 
-                NotificarValorizacion(cotizacionDTO.IdSolicitud);
+                NotificarValorizacionPendiente(cotizacionDTO.IdSolicitud);
 
                 return Json(new { Status = 1, Mensaje = "Cotización Enviada correctamente" });
             }
@@ -1968,6 +1986,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     itemCD.FechaRegistro = DateTime.Now;
                     var resCD = ventasBL.MantenimientoCotizacionDetalle(itemCD);
                 }
+
+                var resCotizacion = ventasBL.ObtenerCotizacionVenta(new CotizacionDTO() { IdCotizacion = IdCotizacion });
+                CotizacionDTO cotizacionDTO = resCotizacion.Result.ToList().First();
+
+                NotificarCotizacionValorizada(cotizacionDTO.IdSolicitud);
 
                 return Json(new { Status = 1, Mensaje = "Cotización guardada correctamente" });
             }
@@ -2333,10 +2356,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         result.Mensaje = "No se pudo enviar el correo de la solicitud N° " + codigoSolicitud.ToString();
                     }
 
-                    
                 }
 
-  
             }
             catch (Exception ex)
             {
@@ -2345,7 +2366,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             }
             return Json(new ResponseDTO<RespuestaDTO>(result));
         }
-
 
         [HttpPost]
         public JsonResult EnviarGuiaBO(long codigoSolicitud, long codigoWorkFlow)
@@ -2578,7 +2598,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                 }
 
-
             }
             catch (Exception ex)
             {
@@ -2588,38 +2607,104 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             return Json(new ResponseDTO<RespuestaDTO>(result));
         }
 
-        public JsonResult NotificarValorizacion(long codigoSolicitud)
+        private void NotificarValorizacionPendiente(long codigoSolicitud)
         {
             var result = new RespuestaDTO();
             var ventasBL = new VentasBL();
-            try
+
+            var plantillasBL = new PlantillasBL();
+            //Envio de correo:
+            var filtros = new FiltroPlantillaDTO();
+            filtros.CodigoProceso = ConstantesDTO.Procesos.Ventas.ID;
+            filtros.CodigoPlantilla = ConstantesDTO.Plantillas.Ventas.CotGerencia;
+            filtros.Usuario = User.ObtenerUsuario();
+            filtros.Codigo = Convert.ToInt32(codigoSolicitud);
+
+            var datos_correo = plantillasBL.ConsultarPlantillaCorreo(filtros).Result;
+
+            var respuesta = Utilidades.Send(datos_correo.To, datos_correo.CC, "", datos_correo.Subject, datos_correo.Body, null, "");
+            if (respuesta != "OK")
             {
-                var plantillasBL = new PlantillasBL();
-                //Envio de correo:
-                var filtros = new FiltroPlantillaDTO();
-                filtros.CodigoProceso = ConstantesDTO.Procesos.Ventas.ID;
-                filtros.CodigoPlantilla = ConstantesDTO.Plantillas.Ventas.CotGerencia;
-                filtros.Usuario = User.ObtenerUsuario();
-                filtros.Codigo = Convert.ToInt32(codigoSolicitud);
-
-                var datos_correo = plantillasBL.ConsultarPlantillaCorreo(filtros).Result;
-
-                var respuesta = Utilidades.Send(datos_correo.To, datos_correo.CC, "", datos_correo.Subject, datos_correo.Body, null, "");
                 CCLog Log = new CCLog();
-                if (respuesta != "OK")
-                {
-                    Log.TraceInfo("Solicitud N° " + codigoSolicitud.ToString() + ":" + respuesta);
-
-                    result.Codigo = 0;
-                    result.Mensaje = "No se pudo enviar el correo de la solicitud N° " + codigoSolicitud.ToString();
-                }
-            }
-            catch (Exception ex)
-            {
+                Log.TraceInfo("Solicitud N° " + codigoSolicitud.ToString() + ":" + respuesta);
                 result.Codigo = 0;
-                result.Mensaje = ex.Message.ToString();
+                result.Mensaje = "No se pudo enviar el correo de la solicitud N° " + codigoSolicitud.ToString();
+                throw new Exception(respuesta);
             }
-            return Json(new ResponseDTO<RespuestaDTO>(result));
+        }
+
+        private void NotificarCotizacionValorizada(long codigoSolicitud)
+        {
+            var result = new RespuestaDTO();
+            var ventasBL = new VentasBL();
+
+            var plantillasBL = new PlantillasBL();
+            //Envio de correo:
+            var filtros = new FiltroPlantillaDTO();
+            filtros.CodigoProceso = ConstantesDTO.Procesos.Ventas.ID;
+            filtros.CodigoPlantilla = ConstantesDTO.Plantillas.Ventas.CotVendedor;
+            filtros.Usuario = User.ObtenerUsuario();
+            filtros.Codigo = Convert.ToInt32(codigoSolicitud);
+
+            var datos_correo = plantillasBL.ConsultarPlantillaCorreo(filtros).Result;
+
+            var respuesta = Utilidades.Send(datos_correo.To, datos_correo.CC, "", datos_correo.Subject, datos_correo.Body, null, "");
+            if (respuesta != "OK")
+            {
+                CCLog Log = new CCLog();
+                Log.TraceInfo("Solicitud N° " + codigoSolicitud.ToString() + ":" + respuesta);
+                result.Codigo = 0;
+                result.Mensaje = "No se pudo enviar el correo de la solicitud N° " + codigoSolicitud.ToString();
+                throw new Exception(respuesta);
+            }
+        }
+
+        private void NotificarCosteoPendiente(long codigoSolicitud)
+        {
+            var result = new RespuestaDTO();
+            var ventasBL = new VentasBL();
+
+            var plantillasBL = new PlantillasBL();
+            var filtros = new FiltroPlantillaDTO();
+            PlantillaCorreoDTO datos_correo = null;
+            string respuesta = null;
+
+            //Envio de correo de costos
+            filtros.CodigoProceso = ConstantesDTO.Procesos.Ventas.ID;
+            filtros.CodigoPlantilla = ConstantesDTO.Plantillas.Ventas.CotCostos;
+            filtros.Usuario = User.ObtenerUsuario();
+            filtros.Codigo = Convert.ToInt32(codigoSolicitud);
+            datos_correo = plantillasBL.ConsultarPlantillaCorreo(filtros).Result;
+
+            respuesta = Utilidades.Send(datos_correo.To, datos_correo.CC, "", datos_correo.Subject, datos_correo.Body, null, "");
+            if (respuesta != "OK")
+            {
+                CCLog Log = new CCLog();
+                Log.TraceInfo("Solicitud N° " + codigoSolicitud.ToString() + ":" + respuesta);
+                result.Codigo = 0;
+                result.Mensaje = "No se pudo enviar el correo de costos de la solicitud N° " + codigoSolicitud.ToString();
+                throw new Exception(respuesta);
+            }
+
+            //Envio de correo a logistica
+            filtros.CodigoProceso = ConstantesDTO.Procesos.Ventas.ID;
+            filtros.CodigoPlantilla = ConstantesDTO.Plantillas.Ventas.CotLogistica;
+            filtros.Usuario = User.ObtenerUsuario();
+            filtros.Codigo = Convert.ToInt32(codigoSolicitud);
+            datos_correo = plantillasBL.ConsultarPlantillaCorreo(filtros).Result;
+
+            respuesta = Utilidades.Send(datos_correo.To, datos_correo.CC, "", datos_correo.Subject, datos_correo.Body, null, "");
+            if (respuesta != "OK")
+            {
+                CCLog Log = new CCLog();
+                Log.TraceInfo("Solicitud N° " + codigoSolicitud.ToString() + ":" + respuesta);
+                result.Codigo = 0;
+                result.Mensaje = "No se pudo enviar el correo para logistica de la solicitud N° " + codigoSolicitud.ToString();
+                throw new Exception(respuesta);
+            }
+
+            //if(ViewBag.TipoSolicitud==ConstantesDTO.)
+
         }
 
     }

@@ -168,13 +168,13 @@ namespace AHSECO.CCL.BD.Ventas
                             IndInstaCapa = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDINSTACAPA")).Value.Parse<string>()),
                             IndGarantiaAdicional = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDGARANADIC")).Value.Parse<string>()),
                             IndMantPreventivo = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDMANTPREVENT")).Value.Parse<string>()),
-                            IndLLaveMano = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDLLAVEMANO")).Value.Parse<string>()),
+                            //IndLLaveMano = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDLLAVEMANO")).Value.Parse<string>()),
                             Dimensiones = i.Single(d => d.Key.Equals("DIMENSIONES")).Value.Parse<string>(),
                             IndCompraLocal = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDCOMPRALOCAL")).Value.Parse<string>()),
                             ObsCliente = i.Single(d => d.Key.Equals("OBSCLIENTE")).Value.Parse<string>(),
                             IndRequierePlaca = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDREQPLACA")).Value.Parse<string>()),
                             ObsDespacho = i.Single(d => d.Key.Equals("OBSDESPACHO")).Value.Parse<string>(),
-                            FecLimInsta = i.Single(d => d.Key.Equals("FECLIMINSTA")).Value.Parse<DateTime?>(),
+                            //FecLimInsta = i.Single(d => d.Key.Equals("FECLIMINSTA")).Value.Parse<DateTime?>(),
                             MontoTotalCosto = i.Single(d => d.Key.Equals("MTOTOTALCOSTO")).Value.Parse<decimal?>(),
                             IndFianza = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDFIANZA")).Value.Parse<string>()),
                             NumFianza = i.Single(d => d.Key.Equals("NUMFIANZA")).Value.Parse<string>(),
@@ -405,10 +405,10 @@ namespace AHSECO.CCL.BD.Ventas
                 { parameters.Add("pIndMantPrevent", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndMantPreventivo), DbType.String); }
                 else
                 { parameters.Add("pIndMantPrevent", DBNull.Value, DbType.String); }
-                if (detCotDespacho.IndLLaveMano.HasValue)
-                { parameters.Add("pIndLLaveMano", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndLLaveMano), DbType.String); }
-                else
-                { parameters.Add("pIndLLaveMano", DBNull.Value, DbType.String); }
+                //if (detCotDespacho.IndLLaveMano.HasValue)
+                //{ parameters.Add("pIndLLaveMano", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndLLaveMano), DbType.String); }
+                //else
+                //{ parameters.Add("pIndLLaveMano", DBNull.Value, DbType.String); }
                 parameters.Add("pDimensiones", detCotDespacho.Dimensiones);
                 if (detCotDespacho.IndCompraLocal.HasValue)
                 { parameters.Add("pIndCompraLocal", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndCompraLocal), DbType.String); }
@@ -418,10 +418,10 @@ namespace AHSECO.CCL.BD.Ventas
                 if (detCotDespacho.IndRequierePlaca.HasValue)
                 { parameters.Add("pIndReqPlaca", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndRequierePlaca), DbType.String); }
                 parameters.Add("pObsDespacho", detCotDespacho.ObsDespacho);
-                if (detCotDespacho.FecLimInsta.HasValue)
-                { parameters.Add("pFecLimInsta", detCotDespacho.FecLimInsta.Value, DbType.DateTime); }
-                else
-                { parameters.Add("pFecLimInsta", DBNull.Value, DbType.DateTime); }
+                //if (detCotDespacho.FecLimInsta.HasValue)
+                //{ parameters.Add("pFecLimInsta", detCotDespacho.FecLimInsta.Value, DbType.DateTime); }
+                //else
+                //{ parameters.Add("pFecLimInsta", DBNull.Value, DbType.DateTime); }
                 if (detCotDespacho.MontoTotalCosto.HasValue)
                 { parameters.Add("pMontoTotalCosto", detCotDespacho.MontoTotalCosto.Value,DbType.Decimal); }
                 else
@@ -931,29 +931,33 @@ namespace AHSECO.CCL.BD.Ventas
                     };
 
                     reader.NextResult();
-                    reader.Read();
-                    SolicitudDTO solicitud = new SolicitudDTO
+                    SolicitudDTO solicitud = null;
+                    if (reader.HasRows)
                     {
-                        Id_Solicitud = reader.IsDBNull(reader.GetOrdinal("ID_SOLICITUD")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_SOLICITUD")),
-                        Id_WorkFlow = reader.IsDBNull(reader.GetOrdinal("ID_WORKFLOW")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_WORKFLOW")),
-                        nomFlujo = reader.IsDBNull(reader.GetOrdinal("FLUJO")) ? "" : reader.GetString(reader.GetOrdinal("FLUJO")),
-                        Id_Flujo = reader.IsDBNull(reader.GetOrdinal("CODFLUJO")) ? 0 : reader.GetInt32(reader.GetOrdinal("CODFLUJO")),
-                        NomTipoSol = reader.IsDBNull(reader.GetOrdinal("TIPO")) ? "" : reader.GetString(reader.GetOrdinal("TIPO")),
-                        Tipo_Sol = reader.IsDBNull(reader.GetOrdinal("CODTIPOSOL")) ? "" : reader.GetString(reader.GetOrdinal("CODTIPOSOL")),
-                        Fecha_Sol = reader.IsDBNull(reader.GetOrdinal("FECHA_SOL")) ? "" : reader.GetString(reader.GetOrdinal("FECHA_SOL")),
-                        nomEstado = reader.IsDBNull(reader.GetOrdinal("ESTADO")) ? "" : reader.GetString(reader.GetOrdinal("ESTADO")),
-                        Cod_MedioCont = reader.IsDBNull(reader.GetOrdinal("COD_MEDIOCONT")) ? "" : reader.GetString(reader.GetOrdinal("COD_MEDIOCONT")),
-                        IdCliente = reader.IsDBNull(reader.GetOrdinal("IDCLIENTE")) ? 0 : reader.GetInt32(reader.GetOrdinal("IDCLIENTE")),
-                        RUC = reader.IsDBNull(reader.GetOrdinal("RUC")) ? "" : reader.GetString(reader.GetOrdinal("RUC")),
-                        RazonSocial = reader.IsDBNull(reader.GetOrdinal("RAZONSOCIAL")) ? "" : reader.GetString(reader.GetOrdinal("RAZONSOCIAL")),
-                        AsesorVenta = reader.IsDBNull(reader.GetOrdinal("ASESORVENTA")) ? "" : reader.GetString(reader.GetOrdinal("ASESORVENTA")),
-                        Cod_Empresa = reader.IsDBNull(reader.GetOrdinal("COD_EMPRESA")) ? "" : reader.GetString(reader.GetOrdinal("COD_EMPRESA")),
-                        TipoProceso = reader.IsDBNull(reader.GetOrdinal("TIPOPROCESO")) ? "" : reader.GetString(reader.GetOrdinal("TIPOPROCESO")),
-                        NroProceso = reader.IsDBNull(reader.GetOrdinal("NROPROCESO")) ? "" : reader.GetString(reader.GetOrdinal("NROPROCESO")),
-                        TipoVenta = reader.IsDBNull(reader.GetOrdinal("TIPOVENTA")) ? "" : reader.GetString(reader.GetOrdinal("TIPOVENTA")),
-                        NombreTipoVenta = reader.IsDBNull(reader.GetOrdinal("NOMTIPOVENTA")) ? "" : reader.GetString(reader.GetOrdinal("NOMTIPOVENTA")),
-                        NroCotizacionEliminado = reader.IsDBNull(reader.GetOrdinal("COTELIM")) ? 0 : reader.GetInt32(reader.GetOrdinal("COTELIM"))
-                    };
+                        reader.Read();
+                        solicitud = new SolicitudDTO
+                        {
+                            Id_Solicitud = reader.IsDBNull(reader.GetOrdinal("ID_SOLICITUD")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_SOLICITUD")),
+                            Id_WorkFlow = reader.IsDBNull(reader.GetOrdinal("ID_WORKFLOW")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_WORKFLOW")),
+                            nomFlujo = reader.IsDBNull(reader.GetOrdinal("FLUJO")) ? "" : reader.GetString(reader.GetOrdinal("FLUJO")),
+                            Id_Flujo = reader.IsDBNull(reader.GetOrdinal("CODFLUJO")) ? 0 : reader.GetInt32(reader.GetOrdinal("CODFLUJO")),
+                            NomTipoSol = reader.IsDBNull(reader.GetOrdinal("TIPO")) ? "" : reader.GetString(reader.GetOrdinal("TIPO")),
+                            Tipo_Sol = reader.IsDBNull(reader.GetOrdinal("CODTIPOSOL")) ? "" : reader.GetString(reader.GetOrdinal("CODTIPOSOL")),
+                            Fecha_Sol = reader.IsDBNull(reader.GetOrdinal("FECHA_SOL")) ? "" : reader.GetString(reader.GetOrdinal("FECHA_SOL")),
+                            nomEstado = reader.IsDBNull(reader.GetOrdinal("ESTADO")) ? "" : reader.GetString(reader.GetOrdinal("ESTADO")),
+                            Cod_MedioCont = reader.IsDBNull(reader.GetOrdinal("COD_MEDIOCONT")) ? "" : reader.GetString(reader.GetOrdinal("COD_MEDIOCONT")),
+                            IdCliente = reader.IsDBNull(reader.GetOrdinal("IDCLIENTE")) ? 0 : reader.GetInt32(reader.GetOrdinal("IDCLIENTE")),
+                            RUC = reader.IsDBNull(reader.GetOrdinal("RUC")) ? "" : reader.GetString(reader.GetOrdinal("RUC")),
+                            RazonSocial = reader.IsDBNull(reader.GetOrdinal("RAZONSOCIAL")) ? "" : reader.GetString(reader.GetOrdinal("RAZONSOCIAL")),
+                            AsesorVenta = reader.IsDBNull(reader.GetOrdinal("ASESORVENTA")) ? "" : reader.GetString(reader.GetOrdinal("ASESORVENTA")),
+                            Cod_Empresa = reader.IsDBNull(reader.GetOrdinal("COD_EMPRESA")) ? "" : reader.GetString(reader.GetOrdinal("COD_EMPRESA")),
+                            TipoProceso = reader.IsDBNull(reader.GetOrdinal("TIPOPROCESO")) ? "" : reader.GetString(reader.GetOrdinal("TIPOPROCESO")),
+                            NroProceso = reader.IsDBNull(reader.GetOrdinal("NROPROCESO")) ? "" : reader.GetString(reader.GetOrdinal("NROPROCESO")),
+                            TipoVenta = reader.IsDBNull(reader.GetOrdinal("TIPOVENTA")) ? "" : reader.GetString(reader.GetOrdinal("TIPOVENTA")),
+                            NombreTipoVenta = reader.IsDBNull(reader.GetOrdinal("NOMTIPOVENTA")) ? "" : reader.GetString(reader.GetOrdinal("NOMTIPOVENTA")),
+                            NroCotizacionEliminado = reader.IsDBNull(reader.GetOrdinal("COTELIM")) ? 0 : reader.GetInt32(reader.GetOrdinal("COTELIM"))
+                        };
+                    }
 
                     reader.NextResult();
 
