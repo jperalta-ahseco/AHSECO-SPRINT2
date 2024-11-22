@@ -125,7 +125,7 @@
                 }
             },
             {
-                data: "Id_Solicitud",
+                data: "NumeroSolicitudFormat",
                 render: function (data, type, row) {
                     return '<center>' + data + '</center>';
                 }

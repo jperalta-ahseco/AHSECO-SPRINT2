@@ -37,6 +37,8 @@ namespace AHSECO.CCL.BD.Ventas
                 else { parameters.Add("isEstado", DBNull.Value, DbType.String, ParameterDirection.Input); }
                 if (solicitudDTO.Tipo_Sol != null) { parameters.Add("isTipoSol", solicitudDTO.Tipo_Sol); }
                 else { parameters.Add("isTipoSol", DBNull.Value, DbType.String, ParameterDirection.Input); }
+                if (solicitudDTO.CodigoPerfil != null) { parameters.Add("IsPerfil", solicitudDTO.CodigoPerfil); }
+                else { parameters.Add("IsPerfil", DBNull.Value, DbType.String, ParameterDirection.Input); }
 
                 var result = connection.Query(
                     sql: "USP_SEL_SOLICITUDES",
@@ -59,7 +61,8 @@ namespace AHSECO.CCL.BD.Ventas
                         IdCliente = i.Single(d => d.Key.Equals("IDCLIENTE")).Value.Parse<int>(),
                         RUC = i.Single(d => d.Key.Equals("RUC")).Value.Parse<string>(),
                         RazonSocial = i.Single(d => d.Key.Equals("RAZONSOCIAL")).Value.Parse<string>(),
-                        AsesorVenta = i.Single(d => d.Key.Equals("ASESORVENTA")).Value.Parse<string>()
+                        AsesorVenta = i.Single(d => d.Key.Equals("ASESORVENTA")).Value.Parse<string>(),
+                        NumeroSolicitudFormat = i.Single(d => d.Key.Equals("SOL_FORMAT")).Value.Parse<string>()
                     });
 
                 connection.Close();

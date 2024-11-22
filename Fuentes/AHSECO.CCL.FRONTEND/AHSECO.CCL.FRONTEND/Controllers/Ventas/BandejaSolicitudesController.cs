@@ -871,6 +871,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         public JsonResult ObtenerSolicitudes(SolicitudDTO solicitudDTO)
         {
             var ventasBL = new VentasBL();
+            solicitudDTO.CodigoPerfil = User.ObtenerIdPerfil();
             var result = ventasBL.ObtenerSolicitudes(solicitudDTO);
             return Json(result);
         }
