@@ -52,6 +52,7 @@ namespace AHSECO.CCL.COMUN
             public struct Dominios
             {
                 public static string CicloPreventivo = "CICLOPREV";
+                public static string CostoEnvio = "COSTOXCD";
             }
             public struct CicloPreventivo
             {

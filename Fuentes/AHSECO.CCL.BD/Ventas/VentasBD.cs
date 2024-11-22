@@ -151,6 +151,7 @@ namespace AHSECO.CCL.BD.Ventas
                         Descripcion = i.Single(d => d.Key.Equals("DESCRIPCION")).Value.Parse<string>(),
                         DescripcionAdicional = i.Single(d => d.Key.Equals("DESCRIPADIC")).Value.Parse<string>(),
                         Stock = i.Single(d => d.Key.Equals("STOCK")).Value.Parse<int>(),
+                        IndStock = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDSTOCK")).Value.Parse<string>()),
                         CodUnidad = i.Single(d => d.Key.Equals("UNDMED")).Value.Parse<string>(),
                         Cantidad = i.Single(d => d.Key.Equals("CANTIDAD")).Value.Parse<int>(),
                         CostoFOB = i.Single(d => d.Key.Equals("COSTOFOB")).Value.Parse<decimal?>(),
@@ -340,6 +341,10 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("isDESCRIPCION", detalleCotizacion.Descripcion);
                 parameters.Add("isDESCRIPADIC", detalleCotizacion.DescripcionAdicional);
                 parameters.Add("isSTOCK", detalleCotizacion.Stock);
+                if (detalleCotizacion.IndStock.HasValue)
+                { parameters.Add("isINDSTOCK", detalleCotizacion.IndStock.Value); }
+                else
+                { parameters.Add("isINDSTOCK", DBNull.Value, DbType.String); }
                 parameters.Add("isUNDMED", detalleCotizacion.CodUnidad);
                 parameters.Add("isCANTIDAD", detalleCotizacion.Cantidad);
                 if (detalleCotizacion.CostoFOB.HasValue)

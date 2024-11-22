@@ -121,6 +121,7 @@ CREATE TABLE [dbo].[TBD_COTIZACIONVENTA](
 	[DESCRIPCION] [varchar](100) NOT NULL,
 	[DESCRIPADIC] [varchar](1000) NULL,
 	[STOCK] [int] NOT NULL,
+	[INDSTOCK] [char](1) NULL,
 	[UNDMED] [varchar](3) NOT NULL,
 	[CANTIDAD] [int] NOT NULL,
 	[COSTOFOB] [decimal](18, 9) NULL,

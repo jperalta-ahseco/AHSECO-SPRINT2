@@ -14,6 +14,7 @@
     <input type="hidden" id="CI_CodCosto_GarantAdic" value="@ConstantesDTO.CotizacionDetalleCostos.Costos.GarantAdic" />
     <input type="hidden" id="CI_CodCosto_Calibra" value="@ConstantesDTO.CotizacionDetalleCostos.Costos.Calibra" />
     <input type="hidden" id="CI_CodCosto_Flete" value="@ConstantesDTO.CotizacionDetalleCostos.Costos.Flete" />
+    <input type="hidden" id="CI_opcGrilla" value="" />
 </div>
 <div style="width:50%" class="modal-dialog modal-lg container-fluid" role="document">
     <!-- Modal content -->
@@ -66,6 +67,17 @@
                     <div id="pnlInfoDestino" class="container-fluid">
                         <fieldset class="form-group">
                             <legend><b>Información del Destino</b></legend>
+                            <div class="row container-fluid form-group col-content-middleleft">
+                                <div class="col-md-12 col-content-middleleft">
+                                    <div class="col-md-3">
+                                        <label for="CI_cmbCicloPreventivo">Tipo de Costo: </label>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <select class="form-control select2 input-sm" style="width:100%;" id="CI_cmbTipoCosto" data-selected="">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row container-fluid form-group col-content-middleleft">
                                 <div class="col-md-12 col-content-middleleft">
                                     <div class="col-md-3">

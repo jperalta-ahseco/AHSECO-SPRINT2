@@ -15,6 +15,13 @@
     var $HabilitarValorizacionCotDet = $("#HabilitarValorizacionCotDet");
     var $EsCotizacionValorizada = $("#EsCotizacionValorizada");
 
+    var $DI_hdnCodigo = $("#DI_hdnCodigo");
+    var $DI_txtCodigo = $("#DI_txtCodigo");
+    var $DI_txtDescripcion = $("#DI_txtDescripcion");
+    var $DI_txtCantidad = $("#DI_txtCantidad");
+
+    var $DI_tblCostos = $("#DI_tblCostos");
+
     var $CI_CodCosto_LLaveMano = $("#CI_CodCosto_LLaveMano");
     var $CI_CodCosto_InstCapa = $("#CI_CodCosto_InstCapa");
     var $CI_CodCosto_Manuales = $("#CI_CodCosto_Manuales");
@@ -24,14 +31,16 @@
     var $CI_CodCosto_Calibra = $("#CI_CodCosto_Calibra");
     var $CI_CodCosto_Flete = $("#CI_CodCosto_Flete");
 
-    var $btnAC_Insta = $("#btnAC_Insta");
-    var $btnAC_MantPrevent = $("#btnAC_MantPrevent");
-    var $btnAC_LLaveMano = $("#btnAC_LLaveMano");
-    var $btnAC_Manual = $("#btnAC_Manual");
-    var $btnAC_Video = $("#btnAC_Video");
-    var $btnAC_GarantAdic = $("#btnAC_GarantAdic");
-    var $btnAC_Calib = $("#btnAC_Calib");
-    var $btnAC_Flete = $("#btnAC_Flete");
+    var $CI_opcGrilla = $("#CI_opcGrilla");
+
+    //var $btnAC_Insta = $("#btnAC_Insta");
+    //var $btnAC_MantPrevent = $("#btnAC_MantPrevent");
+    //var $btnAC_LLaveMano = $("#btnAC_LLaveMano");
+    //var $btnAC_Manual = $("#btnAC_Manual");
+    //var $btnAC_Video = $("#btnAC_Video");
+    //var $btnAC_GarantAdic = $("#btnAC_GarantAdic");
+    //var $btnAC_Calib = $("#btnAC_Calib");
+    //var $btnAC_Flete = $("#btnAC_Flete");
 
     var $pnlInfoGeneral = $("#pnlInfoGeneral");
     var $pnlInfoDestino = $("#pnlInfoDestino");
@@ -42,6 +51,7 @@
 
     var $CI_hdnIdCotDetCosto = $("#CI_hdnIdCotDetCosto");
     var $CI_hdnCodCosto = $("#CI_hdnCodCosto");
+    var $CI_cmbTipoCosto = $("#CI_cmbTipoCosto");
     var $CI_cmbCDItem = $("#CI_cmbCDItem");
     var $CI_txtCantCotDet = $("#CI_txtCantCotDet");
     var $CI_txtUnidadMedida = $("#CI_txtUnidadMedida");
@@ -89,126 +99,157 @@
         ubigeo.setTxtUbigeo_Text("CI_txtUbicacion");
 
         $CI_btnCerrar.click(cerrarModalCostosItem);
+        
+        cargarCiclosPreventivos();
+        cargarTipoCostos();
+
+        $CI_cmbCDItem.on("change", cargarCotDetSeleccionada);
+
+        //$btnAC_Insta.click(agregarCostoItem);
+        //$btnAC_MantPrevent.click(agregarCostoItem);
+        //$btnAC_LLaveMano.click(agregarCostoItem);
+        //$btnAC_Manual.click(agregarCostoItem);
+        //$btnAC_Video.click(agregarCostoItem);
+        //$btnAC_GarantAdic.click(agregarCostoItem);
+        //$btnAC_Calib.click(agregarCostoItem);
+        //$btnAC_Flete.click(agregarCostoItem);
+
+        $CI_btnGuardar.click(guardarCostoItem);
+
+        cargarCostosItemsxTab($CI_CodCosto_LLaveMano.val());
+        cargarCostosItemsxTab($CI_CodCosto_InstCapa.val());
+        cargarCostosItemsxTab($CI_CodCosto_Manuales.val());
+        cargarCostosItemsxTab($CI_CodCosto_Videos.val());
+        cargarCostosItemsxTab($CI_CodCosto_MantPrevent.val());
+        cargarCostosItemsxTab($CI_CodCosto_GarantAdic.val());
+        cargarCostosItemsxTab($CI_CodCosto_Calibra.val());
+        cargarCostosItemsxTab($CI_CodCosto_Flete.val());
+
+        $CI_txtCantCosteo.on("keyup", totalizarCostItem);
+        $CI_txtMtoUnitarioCosto.on("keyup", totalizarCostItem);
+        $CI_txtMtoTotalCosto.on("keyup", totalizarCostItem);
 
         if ($estadoSol.val() == "CVAL") {
-
             cargarComboCotDetItems();
-            cargarCiclosPreventivos();
-
-            $CI_cmbCDItem.on("change", cargarCotDetSeleccionada);
-
-            $btnAC_Insta.click(agregarCostoItem);
-            $btnAC_MantPrevent.click(agregarCostoItem);
-            $btnAC_LLaveMano.click(agregarCostoItem);
-            $btnAC_Manual.click(agregarCostoItem);
-            $btnAC_Video.click(agregarCostoItem);
-            $btnAC_GarantAdic.click(agregarCostoItem);
-            $btnAC_Calib.click(agregarCostoItem);
-            $btnAC_Flete.click(agregarCostoItem);
-
-            $CI_btnGuardar.click(guardarCostoItem);
-
-            cargarCostosItemsxTab($CI_CodCosto_LLaveMano.val());
-            cargarCostosItemsxTab($CI_CodCosto_InstCapa.val());
-            cargarCostosItemsxTab($CI_CodCosto_Manuales.val());
-            cargarCostosItemsxTab($CI_CodCosto_Videos.val());
-            cargarCostosItemsxTab($CI_CodCosto_MantPrevent.val());
-            cargarCostosItemsxTab($CI_CodCosto_GarantAdic.val());
-            cargarCostosItemsxTab($CI_CodCosto_Calibra.val());
-            cargarCostosItemsxTab($CI_CodCosto_Flete.val());
-
-            $CI_txtCantCosteo.on("keyup", totalizarCostItem);
-            $CI_txtMtoUnitarioCosto.on("keyup", totalizarCostItem);
-            $CI_txtMtoTotalCosto.on("keyup", totalizarCostItem);
-
         }
 
     }
 
+    function setTab() {
+        $CI_cmbTipoCosto.attr("disabled", "disabled");
+        $CI_cmbTipoCosto.val($CI_hdnCodCosto.val()).trigger("change.select2");
+        if ($CI_hdnCodCosto.val() == $CI_CodCosto_LLaveMano.val()) {
+            $pnlInfoDestino.css("display", "");
+            $pnlInfoCostos_MtoUnitario.css("display", "");
+            $pnlInfoCostos_MtoTotal.css("display", "");
+            $CI_txtMtoUnitarioCosto.removeAttr("disabled");
+            $CI_txtMtoTotalCosto.attr("disabled", "disabled");
+            $pnlInfoPreventivos.css("display", "none");
+        }
+        if ($CI_hdnCodCosto.val() == $CI_CodCosto_InstCapa.val()) {
+            $pnlInfoDestino.css("display", "");
+            $pnlInfoCostos_MtoUnitario.css("display", "");
+            $pnlInfoCostos_MtoTotal.css("display", "");
+            $CI_txtMtoUnitarioCosto.removeAttr("disabled");
+            $CI_txtMtoTotalCosto.attr("disabled", "disabled");
+            $pnlInfoPreventivos.css("display", "none");
+        }
+        if ($CI_hdnCodCosto.val() == $CI_CodCosto_Manuales.val()) {
+            $pnlInfoDestino.css("display", "none");
+            $pnlInfoCostos_MtoUnitario.css("display", "none");
+            $pnlInfoCostos_MtoTotal.css("display", "");
+            $CI_txtMtoUnitarioCosto.attr("disabled", "disabled"); //No se utiliza costo unitario
+            $CI_txtMtoTotalCosto.removeAttr("disabled");
+            $pnlInfoPreventivos.css("display", "none");
+        }
+        if ($CI_hdnCodCosto.val() == $CI_CodCosto_Videos.val()) {
+            $pnlInfoDestino.css("display", "none");
+            $pnlInfoCostos_MtoUnitario.css("display", "none");
+            $pnlInfoCostos_MtoTotal.css("display", "");
+            $CI_txtMtoUnitarioCosto.attr("disabled", "disabled"); //No se utiliza costo unitario
+            $CI_txtMtoTotalCosto.removeAttr("disabled");
+            $pnlInfoPreventivos.css("display", "none");
+        }
+        if ($CI_hdnCodCosto.val() == $CI_CodCosto_MantPrevent.val()) {
+            $pnlInfoDestino.css("display", "");
+            $pnlInfoCostos_MtoUnitario.css("display", "");
+            $pnlInfoCostos_MtoTotal.css("display", "");
+            $CI_txtMtoUnitarioCosto.removeAttr("disabled");
+            $CI_txtMtoTotalCosto.attr("disabled", "disabled");
+            $pnlInfoPreventivos.css("display", "");
+        }
+        if ($CI_hdnCodCosto.val() == $CI_CodCosto_GarantAdic.val()) {
+            $pnlInfoDestino.css("display", "");
+            $pnlInfoCostos_MtoUnitario.css("display", "");
+            $pnlInfoCostos_MtoTotal.css("display", "");
+            $CI_txtMtoUnitarioCosto.removeAttr("disabled");
+            $CI_txtMtoTotalCosto.attr("disabled", "disabled");
+            $pnlInfoPreventivos.css("display", "none");
+        }
+        if ($CI_hdnCodCosto.val() == $CI_CodCosto_Calibra.val()) {
+            $pnlInfoDestino.css("display", "");
+            $pnlInfoCostos_MtoUnitario.css("display", "");
+            $pnlInfoCostos_MtoTotal.css("display", "");
+            $CI_txtMtoUnitarioCosto.removeAttr("disabled");
+            $CI_txtMtoTotalCosto.attr("disabled", "disabled");
+            $pnlInfoPreventivos.css("display", "none");
+        }
+        if ($CI_hdnCodCosto.val() == $CI_CodCosto_Flete.val()) {
+            $pnlInfoDestino.css("display", "");
+            $pnlInfoCostos_MtoUnitario.css("display", "");
+            $pnlInfoCostos_MtoTotal.css("display", "");
+            $CI_txtMtoUnitarioCosto.removeAttr("disabled");
+            $CI_txtMtoTotalCosto.attr("disabled", "disabled");
+            $pnlInfoPreventivos.css("display", "none");
+        }
+    }
+
     function setTab_LLaveMano() {
         $CI_hdnCodCosto.val($CI_CodCosto_LLaveMano.val());
-        $pnlInfoDestino.css("display", "");
-        $pnlInfoCostos_MtoUnitario.css("display", "");
-        $pnlInfoCostos_MtoTotal.css("display", "");
-        $CI_txtMtoUnitarioCosto.removeAttr("disabled");
-        $CI_txtMtoTotalCosto.attr("disabled", "disabled");
-        $pnlInfoPreventivos.css("display", "none");
+        setTab();
     }
 
     function setTab_InstCapa() {
         $CI_hdnCodCosto.val($CI_CodCosto_InstCapa.val());
-        $pnlInfoDestino.css("display", "");
-        $pnlInfoCostos_MtoUnitario.css("display", "");
-        $pnlInfoCostos_MtoTotal.css("display", "");
-        $CI_txtMtoUnitarioCosto.removeAttr("disabled");
-        $CI_txtMtoTotalCosto.attr("disabled","disabled");
-        $pnlInfoPreventivos.css("display", "none");
+        setTab();
     }
 
     function setTab_Manuales() {
         $CI_hdnCodCosto.val($CI_CodCosto_Manuales.val());
-        $pnlInfoDestino.css("display", "none");
-        $pnlInfoCostos_MtoUnitario.css("display", "none");
-        $pnlInfoCostos_MtoTotal.css("display", "");
-        $CI_txtMtoUnitarioCosto.attr("disabled", "disabled"); //No se utiliza costo unitario
-        $CI_txtMtoTotalCosto.removeAttr("disabled");
-        $pnlInfoPreventivos.css("display", "none");
+        setTab();
     }
 
     function setTab_Videos() {
         $CI_hdnCodCosto.val($CI_CodCosto_Videos.val());
-        $pnlInfoDestino.css("display", "none");
-        $pnlInfoCostos_MtoUnitario.css("display", "none");
-        $pnlInfoCostos_MtoTotal.css("display", "");
-        $CI_txtMtoUnitarioCosto.attr("disabled", "disabled"); //No se utiliza costo unitario
-        $CI_txtMtoTotalCosto.removeAttr("disabled");
-        $pnlInfoPreventivos.css("display", "none");
+        setTab();
     }
     
     function setTab_MantPrevent() {
         $CI_hdnCodCosto.val($CI_CodCosto_MantPrevent.val());
-        $pnlInfoDestino.css("display", "");
-        $pnlInfoCostos_MtoUnitario.css("display", "");
-        $pnlInfoCostos_MtoTotal.css("display", "");
-        $CI_txtMtoUnitarioCosto.removeAttr("disabled");
-        $CI_txtMtoTotalCosto.attr("disabled", "disabled");
-        $pnlInfoPreventivos.css("display", "");
+        setTab();
     }
 
     function setTab_GarantAdic() {
         $CI_hdnCodCosto.val($CI_CodCosto_GarantAdic.val());
-        $pnlInfoDestino.css("display", "");
-        $pnlInfoCostos_MtoUnitario.css("display", "");
-        $pnlInfoCostos_MtoTotal.css("display", "");
-        $CI_txtMtoUnitarioCosto.removeAttr("disabled");
-        $CI_txtMtoTotalCosto.attr("disabled", "disabled");
-        $pnlInfoPreventivos.css("display", "none");
+        setTab();
     }
 
     function setTab_Calibra() {
         $CI_hdnCodCosto.val($CI_CodCosto_Calibra.val());
-        $pnlInfoDestino.css("display", "");
-        $pnlInfoCostos_MtoUnitario.css("display", "");
-        $pnlInfoCostos_MtoTotal.css("display", "");
-        $CI_txtMtoUnitarioCosto.removeAttr("disabled");
-        $CI_txtMtoTotalCosto.attr("disabled", "disabled");
-        $pnlInfoPreventivos.css("display", "none");
+        setTab();
     }
 
     function setTab_Flete() {
         $CI_hdnCodCosto.val($CI_CodCosto_Flete.val());
-        $pnlInfoDestino.css("display", "");
-        $pnlInfoCostos_MtoUnitario.css("display", "");
-        $pnlInfoCostos_MtoTotal.css("display", "");
-        $CI_txtMtoUnitarioCosto.removeAttr("disabled");
-        $CI_txtMtoTotalCosto.attr("disabled", "disabled");
-        $pnlInfoPreventivos.css("display", "none");
+        setTab();
     }
 
     function LimpiarModalCostos() {
         $CI_hdnIdCotDetCosto.val("");
         $CI_cmbCDItem.removeAttr("disabled");
         $CI_cmbCDItem.val("").trigger("change.select2");
+        $CI_cmbTipoCosto.removeAttr("disabled");
+        $CI_cmbTipoCosto.val("").trigger("change.select2");
         $CI_txtCantCotDet.val("");
         $CI_txtUnidadMedida.val("");
         $CI_hdnUbicacion.val("");
@@ -223,7 +264,16 @@
         $CI_cmbCicloPreventivo.val("").trigger("change.select2");
     }
 
-    function agregarCostoItem() {
+    function agregarCostoItem(opcGrilla) {
+        $CI_opcGrilla.val(opcGrilla);
+        if (opcGrilla == "1") {
+            $pnlInfoGeneral.css("display", "none");
+            $CI_cmbTipoCosto.removeAttr("disabled");
+        }
+        else {
+            $pnlInfoGeneral.css("display", "");
+            $CI_cmbTipoCosto.attr("disabled", "disabled");
+        }
         LimpiarModalCostos();
     }
 
@@ -256,6 +306,20 @@
             filters.placeholder = "-- Ninguno --";
             filters.allowClear = false;
             app.llenarComboMultiResult($CI_cmbCicloPreventivo, data.Result, null, " ", "-- Ninguno --", filters);
+        }
+        return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, null);
+    }
+
+    function cargarTipoCostos() {
+        var method = "POST";
+        var url = "BandejaSolicitudesVentas/ObtenerTipoCostos";
+        var oValores = {};
+        var objParam = JSON.stringify(oValores);
+        var fnDoneCallback = function (data) {
+            var filters = {};
+            filters.placeholder = "-- Seleccione --";
+            filters.allowClear = false;
+            app.llenarComboMultiResult($CI_cmbTipoCosto, data.Result, null, " ", "-- Seleccione --", filters);
         }
         return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, null);
     }
@@ -378,8 +442,8 @@
                 data: "Id",
                 render: function (data) {
                     var hidden = '<input type="hidden" id="hdnCDCItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
-                    var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtacostos.editarCostoItem(' + data + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                    var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtacostos.quitarCostoItem(' + data + ',' + String.fromCharCode(39) + $CI_hdnCodCosto.val() + String.fromCharCode(39) +')"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                    var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtacostos.editarCostoItem(' + data + ',"2")"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                    var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtacostos.quitarCostoItem(' + data + ',' + String.fromCharCode(39) + $CI_hdnCodCosto.val() + String.fromCharCode(39) +',"2")"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
                     return '<center>' + hidden + editar + ' ' + quitar + '</center>';
                 }
             }
@@ -401,6 +465,81 @@
         filters.dataTablePageLength = 10;
 
         app.llenarTabla($("#" + idDatatable), data, columns, columnDefs, "#" + idDatatable, rowCallback, null, filters);
+
+    }
+
+    function cargarGrillaCostosCotDet(data) {
+
+        var columns = [
+            {
+                data: "CotizacionDetalle.CodItem",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "CotizacionDetalle.Descripcion",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "CotizacionDetalle.DescUnidad",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "CantidadCosto",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "MontoUnitarioCosto",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "MontoTotalCosto",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "Id",
+                render: function (data) {
+                    var hidden = '<input type="hidden" id="hdnCDCItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
+                    var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtacostos.editarCostoItem(' + data + ',"1")"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                    var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtacostos.quitarCostoItem(' + data + ',' + String.fromCharCode(39) + $CI_hdnCodCosto.val() + String.fromCharCode(39) + ',"1")"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                    return '<center>' + hidden + editar + ' ' + quitar + '</center>';
+                }
+            }
+        ];
+
+        var columnDefs =
+        {
+            targets: [0],
+            visible: false
+        }
+
+        var rowCallback = function (row, data, index) {
+            // Asignar un ID único basado en el índice de datos o algún identificador único
+            $(row).attr('id', 'row' + index);
+        };
+
+        var filters = {}
+        filters.dataTableInfo = true;
+        filters.dataTablePageLength = 10;
+
+        app.llenarTabla($DI_tblCostos, data, columns, columnDefs, "#DI_tblCostos", rowCallback, null, filters);
 
     }
 
@@ -503,15 +642,18 @@
         if ($CI_txtNroPiso.val() != "") { vNroPiso = $CI_txtNroPiso.val(); }
         if ($CI_txtMtoUnitarioCosto.val() != "") { vMontoUnitarioCosto = parseFloat($CI_txtMtoUnitarioCosto.val()); }
         if ($CI_txtMtoTotalCosto.val() != "") { vMontoTotalCosto = parseFloat($CI_txtMtoTotalCosto.val()); }
-
+        
         method = "POST";
         url = "BandejaSolicitudesVentas/GrabarDatosCostoItem";
         var objDatos = {
+            cotdetCosto: {
             Id: vId,
             IdCotizacionDetalle: $CI_cmbCDItem.val(),
             CotizacionDetalle: {
                 IdCotizacion: $idCotizacion.val(),
-                IdCotizacionDetalle: $CI_cmbCDItem.val()
+                IdCotizacionDetalle: $CI_cmbCDItem.val(),
+                Descripcion: $DI_txtDescripcion.val(),
+                Cantidad: $DI_txtCantidad.val()
             },
             CodCosto: $CI_hdnCodCosto.val(),
             CantidadCosto: $CI_txtCantCosteo.val(),
@@ -523,11 +665,18 @@
             NroPiso: vNroPiso,
             MontoUnitarioCosto: vMontoUnitarioCosto,
             MontoTotalCosto: vMontoTotalCosto
+            },
+            opcGrilla: $CI_opcGrilla.val()
         };
         var objParam = JSON.stringify(objDatos);
 
         var fnDoneCallBack = function (data) {
-            loadGridbyCost(data, $CI_hdnCodCosto.val());
+            if ($CI_opcGrilla.val() == "1") {
+                cargarGrillaCostosCotDet();
+            }
+            else {
+                loadGridbyCost(data, $CI_hdnCodCosto.val());
+            }
             cerrarModalCostosItem();
             app.message.success("Costos", "Se guard&oacute; el costos correctamente.", "Aceptar", null);
         };
@@ -535,7 +684,10 @@
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
     }
 
-    function editarCostoItem(strId) {
+    function editarCostoItem(strId, opcGrilla) {
+
+        //Se define la opcion de grilla para saber que tipo de datos se guardan
+        $CI_opcGrilla.val(opcGrilla);
 
         method = "POST";
         url = "BandejaSolicitudesVentas/CargarDatosCostoItem";
@@ -546,9 +698,12 @@
 
         var fnDoneCallBack = function (data) {
             LimpiarModalCostos();
+            $pnlInfoGeneral.css("display", "");
             $CI_hdnIdCotDetCosto.val(data.Result.Id);
             $CI_cmbCDItem.attr("disabled", "disabled");
             $CI_cmbCDItem.val(data.Result.IdCotizacionDetalle).trigger("change.select2");
+            $CI_cmbTipoCosto.attr("disabled", "disabled");
+            $CI_cmbTipoCosto.val($CI_hdnCodCosto.val()).trigger("change.select2");
             $CI_txtCantCotDet.val(data.Result.CotizacionDetalle.Cantidad);
             $CI_txtUnidadMedida.val(data.Result.CotizacionDetalle.DescUnidad);
             if (data.Result.CodUbigeoDestino != null) {
@@ -562,10 +717,9 @@
             $CI_txtMtoTotalCosto.val(data.Result.MontoTotalCosto);
             $CI_txtCantPrevent.val(data.Result.CantPreventivo);
             $CI_cmbCicloPreventivo.val(data.Result.CodCicloPreventivo).trigger("change.select2");
-
             $('#modalCostoItem').modal('show');
         };
-        
+
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
     }
 
@@ -601,12 +755,16 @@
         }
     }
 
-    function quitarCostoItem(strId, strCodCosto) {
+    function quitarCostoItem(strId, strCodCosto, opcGrilla) {
+
+        var bEsTemp = false;
+        if (opcGrilla == "1") { bEsTemp = true; }
 
         method = "POST";
         url = "BandejaSolicitudesVentas/EliminarCostoItem";
         var objDatos = {
-            Id: strId
+            Id: strId,
+            IsTempRecord: bEsTemp
         };
         var objParam = JSON.stringify(objDatos);
 
@@ -637,6 +795,7 @@
         quitarCostoItem: quitarCostoItem,
         cargarComboCotDetItems: cargarComboCotDetItems,
         cargarCiclosPreventivos: cargarCiclosPreventivos,
+        cargarTipoCostos: cargarTipoCostos,
         cargarCotDetSeleccionada: cargarCotDetSeleccionada,
         cargarCostosItemsxTab: cargarCostosItemsxTab,
         cargarGrillaCostos_Default: cargarGrillaCostos_Default,

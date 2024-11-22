@@ -18,6 +18,7 @@ namespace AHSECO.CCL.BE.Ventas
         public string Descripcion { get; set; }
         public string DescripcionAdicional { get; set; }
         public int Stock { get; set; }
+        public bool? IndStock { get; set; }
         public string CodUnidad { get; set; }
         public string DescUnidad { get; set; }
         public int Cantidad { get; set; }
