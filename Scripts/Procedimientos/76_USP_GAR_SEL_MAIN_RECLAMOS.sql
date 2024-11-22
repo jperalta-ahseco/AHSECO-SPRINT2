@@ -7,16 +7,14 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_GAR_SEL_MAIN_RECLAMOS]
 	Nombre:				Fecha:			Descripcion:
 	Diego Bazalar		21.11.24		Realiza el select MAIN para la bandeja de garantías. 
 	EXEC USP_GAR_SEL_MAIN_RECLAMOS	123,1
-	EXEC USP_GAR_SEL_MAIN_RECLAMOS @IsIdWorkFlow=123, @IsNumReclamo=1
   =======================================================================================================*/
   @IsIdWorkFlow BIGINT 
   ,@IsNumReclamo BIGINT
 )
 AS
 BEGIN
-SET NOCOUNT ON 
 	--Cabecera de Reclamos
-	EXEC [dbo].[USP_GAR_SEL_DETALLE_RECLAMO] @IsReclamo = @IsNumReclamo
+	EXEC [dbo].[USP_GAR_SEL_RECLAMOS] @isFecIni = '',@isFecFin = '',@IsReclamo = @IsNumReclamo,@IsRuc = '',@IsCodUbigeoDest = '',@IsVendedor = '',@IsEstado = '', @IsCodEmpresa ='',@IsTipVenta = '0', @IsNumProceso='', @IsNumContrato = '', @IsNumOrdenCompra = '', @IsNumFianza = ''
 	--Tecnicos
 	EXEC [dbo].[USP_GAR_SEL_TECNICOS] @IsNumReclamo = @IsNumReclamo 
 	--Documentos adjuntos:
@@ -34,6 +32,4 @@ SET NOCOUNT ON
 		LEFT JOIN TBM_PROCESOESTADOS  B WITH(NOLOCK)  ON A.COD_ESTADO=B.COD_ESTADO AND ID_PROCESO = 7
 		LEFT JOIN TBM_SEGURIDAD_USUARIO C WITH(NOLOCK) ON A.AUDIT_REG_USR=C.USUARIO
 		WHERE A.ID_WORKFLOW =@IsIdWorkFlow
-
-SET NOCOUNT OFF 
 END

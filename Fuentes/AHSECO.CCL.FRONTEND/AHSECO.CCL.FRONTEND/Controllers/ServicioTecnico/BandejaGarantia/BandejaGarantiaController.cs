@@ -171,13 +171,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
 
                 return Json(new
                 {
-                    Status = 1,
-                    Requerimiento = new InstalacionTecnicaDTO()
-                    {
-                        NumReq = mainReclamo.Result.Codigo,
-                        Estado = grupoReclamoDTO.Reclamo.Estado,
-                        Id_WorkFlow = rpta.Result
-                    }
+                    Status = 1
                 });
             }
             catch (Exception ex)
@@ -196,6 +190,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
         public JsonResult MantReclamo(ReclamosDTO reclamo)
         {
             var garantiaBL = new GarantiasBL();
+            reclamo.UsuarioRegistra = User.ObtenerUsuario();
             var result = garantiaBL.MantReclamo(reclamo);
             return Json(result);
         }
@@ -203,6 +198,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
         public JsonResult MantTecnicosReclamo(TecnicoGarantiaDTO tecnico)
         {
             var garantiaBL = new GarantiasBL();
+            tecnico.UsuarioRegistra = User.ObtenerUsuario();
             var result = garantiaBL.MantTecnicosReclamo(tecnico);
             return Json(result);
         }
@@ -213,8 +209,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
             var result = garantiasBL.ObtenerTecnicosReclamo(numReclamo);
             return Json(result);
         }
-
-
 
         [HttpPost]
         public JsonResult GuardarAdjunto(DocumentoDTO documentoDTO)
@@ -478,22 +472,46 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
         public JsonResult FinalizarGarantia(ReclamosDTO reclamo)
         {
             var result = new RespuestaDTO();
-            var instalacionBL = new InstalacionTecnicaBL();
+            var garantiaBL = new GarantiasBL();
             var procesosBL = new ProcesosBL();
 
             try
             {
-                return Json(new
+                var respuesta = garantiaBL.MantReclamo(reclamo);
+
+                //Se realiza el registro de seguimiento de workflow:
+                var log = new FiltroWorkflowLogDTO();
+                log.CodigoWorkflow = reclamo.Id_Workflow;
+                log.Usuario = User.ObtenerUsuario();
+                log.CodigoEstado = "FIN";
+                log.UsuarioRegistro = User.ObtenerUsuario();
+                var result2 = procesosBL.InsertarWorkflowLog(log);
+
+
+                if (respuesta.Result.Codigo == 0)
                 {
-                    rpta = "Hola"
-                });
+                    return Json(new
+                    {
+                        Status = 0,
+                        Mensaje = respuesta.Result.Mensaje
+                    });
+                }
+                else
+                {
+                    return Json(new
+                    {
+                        Status = 1,
+                        Mensaje = respuesta.Result.Mensaje
+                    });
+                }
+
             }
             catch (Exception ex)
             {
-
                 return Json(new
                 {
-                    rpta = "Hola"
+                    Status = 0,
+                    Mensaje = ex.Message
                 });
             }
         }

@@ -212,7 +212,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
                         CargoContacto = i.Single(d => d.Key.Equals("CARGOCONTACTO")).Value.Parse<string>(),
                         Establecimiento = i.Single(d => d.Key.Equals("ESTABLECIMIENTO")).Value.Parse<string>(),
                         OrdenCompra = i.Single(d => d.Key.Equals("ORDENCOMPRA")).Value.Parse<string>(),
-                        NumProceso = i.Single(d => d.Key.Equals("NUMPROCESO")).Value.Parse<int>(),
+                        NumProceso = i.Single(d => d.Key.Equals("NUMPROCESO")).Value.Parse<string>(),
                         TipoProceso = i.Single(d => d.Key.Equals("TIPOPROCESO")).Value.Parse<string>(),
                         Contrato = i.Single(d => d.Key.Equals("CONTRATO")).Value.Parse<string>(),
                         CodEmpresa = i.Single(d => d.Key.Equals("CODEMPRESA")).Value.Parse<string>(),
@@ -253,7 +253,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
             {
                 SqlCommand cmd;
                 connection.Open();
-                string query = "EXEC USP_GAR_SEL_MAIN_RECLAMOS @IsIdWorkFlow="+IdWorkFlow+"@IsNumReclamo="+NumReclamo;
+                string query = "EXEC USP_GAR_SEL_MAIN_RECLAMOS @IsIdWorkFlow="+IdWorkFlow+", @IsNumReclamo="+NumReclamo;
                 cmd = new SqlCommand(query, connection);
 
                 using (var reader = cmd.ExecuteReader())
@@ -272,7 +272,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
                         CargoContacto = reader.IsDBNull(reader.GetOrdinal("CARGOCONTACTO")) ? "" : reader.GetString(reader.GetOrdinal("CARGOCONTACTO")),
                         Establecimiento = reader.IsDBNull(reader.GetOrdinal("ESTABLECIMIENTO")) ? "" : reader.GetString(reader.GetOrdinal("ESTABLECIMIENTO")),
                         OrdenCompra = reader.IsDBNull(reader.GetOrdinal("ORDENCOMPRA")) ? "" : reader.GetString(reader.GetOrdinal("ORDENCOMPRA")),
-                        NumProceso = reader.IsDBNull(reader.GetOrdinal("NUMPROCESO")) ? 0 : reader.GetInt32(reader.GetOrdinal("NUMPROCESO")),
+                        NumProceso = reader.IsDBNull(reader.GetOrdinal("NUMPROCESO")) ? "" : reader.GetString(reader.GetOrdinal("NUMPROCESO")),
                         TipoProceso = reader.IsDBNull(reader.GetOrdinal("TIPOPROCESO")) ? "" : reader.GetString(reader.GetOrdinal("TIPOPROCESO")),
                         Contrato = reader.IsDBNull(reader.GetOrdinal("CONTRATO")) ? "" : reader.GetString(reader.GetOrdinal("CONTRATO")),
                         CodEmpresa = reader.IsDBNull(reader.GetOrdinal("CODEMPRESA")) ? "" : reader.GetString(reader.GetOrdinal("CODEMPRESA")),
@@ -296,7 +296,12 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
                         TipoMotivo = reader.IsDBNull(reader.GetOrdinal("TIPOMOTIVO")) ? "" : reader.GetString(reader.GetOrdinal("TIPOMOTIVO")),
                         Motivo = reader.IsDBNull(reader.GetOrdinal("MOTIVO")) ? "" : reader.GetString(reader.GetOrdinal("MOTIVO")),
                         Estado = reader.IsDBNull(reader.GetOrdinal("ESTADO")) ? "" : reader.GetString(reader.GetOrdinal("ESTADO")),
-                        CodEstado = reader.IsDBNull(reader.GetOrdinal("CODESTADO")) ? "" : reader.GetString(reader.GetOrdinal("CODESTADO"))
+                        CodEstado = reader.IsDBNull(reader.GetOrdinal("CODESTADO")) ? "" : reader.GetString(reader.GetOrdinal("CODESTADO")),
+                        CantPreventivo = reader.IsDBNull(reader.GetOrdinal("MANTPREVENTIVO")) ? 0 : reader.GetInt32(reader.GetOrdinal("MANTPREVENTIVO")),
+                        PreventRealizados = reader.IsDBNull(reader.GetOrdinal("PREVREAL")) ? 0: reader.GetInt32(reader.GetOrdinal("PREVREAL")),
+                        PreventPendientes = reader.IsDBNull(reader.GetOrdinal("PREVPEND")) ? 0 : reader.GetInt32(reader.GetOrdinal("PREVPEND")),
+                        FechaVencimiento = reader.IsDBNull(reader.GetOrdinal("FECHAVENCIMIENTO")) ? "" : reader.GetString(reader.GetOrdinal("FECHAVENCIMIENTO")),
+                        EstadoGarantia = reader.IsDBNull(reader.GetOrdinal("ESTADOGARANT")) ? "" : reader.GetString(reader.GetOrdinal("ESTADOGARANT"))
                     };
 
                     reader.NextResult();
@@ -414,23 +419,23 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
                     .Select(s => s as IDictionary<string, object>)
                     .Select(i => new TecnicoGarantiaDTO()
                     {
-                        Id_Asig = i.Single( d => d.Value.Equals("ID")).Parse<long>(),
-                        Id_Reclamo = i.Single(d => d.Value.Equals("ID_RECLAMO")).Parse<long>(),
-                        Cod_Tecnico = i.Single(d => d.Value.Equals("COD_TECNICO")).Parse<int>(),
-                        Nombres = i.Single(d => d.Value.Equals("NOMBRES")).Parse<string>(),
-                        ApePaterno = i.Single(d => d.Value.Equals("APELLIDOPATERNO")).Parse<string>(),
-                        ApeMaterno = i.Single(d => d.Value.Equals("APELLIDOMATERNO")).Parse<string>(),
-                        Documento = i.Single(d => d.Value.Equals("DOCUMENTO")).Parse<string>(),
-                        Tipo_Documento = i.Single(d => d.Value.Equals("TIPO_DOCUMENTO")).Parse<string>(),
-                        Correo = i.Single(d => d.Value.Equals("CORREO")).Parse<string>(),
-                        Telefono = i.Single(d => d.Value.Equals("TELEFONO")).Parse<string>(),
-                        Zona = i.Single(d => d.Value.Equals("ZONA")).Parse<string>(),
-                        DescZona = i.Single(d => d.Value.Equals("UBIGEO")).Parse<string>(),
-                        Empresa = i.Single(d => d.Value.Equals("EMPRESA")).Parse<string>(),
-                        NomTipoTecnico = i.Single(d => d.Value.Equals("NOMTIPOTECNICO")).Parse<string>(),
-                        NomTipoDoc = i.Single(d => d.Value.Equals("NOM_TIPO_DOCUMENTO")).Parse<string>(),
-                        TipoTecnico = i.Single(d => d.Value.Equals("TIPOTECNICO")).Parse<string>(),
-                        Estado = i.Single(d => d.Value.Equals("ESTADO")).Parse<bool>()
+                        Id_Asig = i.Single( d => d.Key.Equals("ID")).Value.Parse<long>(),
+                        Id_Reclamo = i.Single(d => d.Key.Equals("ID_RECLAMO")).Value.Parse<long>(),
+                        Cod_Tecnico = i.Single(d => d.Key.Equals("COD_TECNICO")).Value.Parse<int>(),
+                        Nombres = i.Single(d => d.Key.Equals("NOMBRES")).Value.Parse<string>(),
+                        ApePaterno = i.Single(d => d.Key.Equals("APELLIDOPATERNO")).Value.Parse<string>(),
+                        ApeMaterno = i.Single(d => d.Key.Equals("APELLIDOMATERNO")).Value.Parse<string>(),
+                        Documento = i.Single(d => d.Key.Equals("DOCUMENTO")).Value.Parse<string>(),
+                        Tipo_Documento = i.Single(d => d.Key.Equals("TIPO_DOCUMENTO")).Value.Parse<string>(),
+                        Correo = i.Single(d => d.Key.Equals("CORREO")).Value.Parse<string>(),
+                        Telefono = i.Single(d => d.Key.Equals("TELEFONO")).Value.Parse<string>(),
+                        Zona = i.Single(d => d.Key.Equals("ZONA")).Value.Parse<string>(),
+                        DescZona = i.Single(d => d.Key.Equals("UBIGEO")).Value.Parse<string>(),
+                        Empresa = i.Single(d => d.Key.Equals("EMPRESA")).Value.Parse<string>(),
+                        NomTipoTecnico = i.Single(d => d.Key.Equals("NOMTIPOTECNICO")).Value.Parse<string>(),
+                        NomTipoDoc = i.Single(d => d.Key.Equals("NOM_TIPO_DOCUMENTO")).Value.Parse<string>(),
+                        TipoTecnico = i.Single(d => d.Key.Equals("TIPOTECNICO")).Value.Parse<string>(),
+                        Estado = i.Single(d => d.Key.Equals("ESTADO")).Value.Parse<bool>()
                     });
                 connection.Close();
                 return result;

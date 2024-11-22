@@ -570,10 +570,16 @@
             {
                 data: "Id_Reclamo",
                 render : function (data, type, row) {
-                    var d = "'" + row.Id_Reclamo + "','" + row.CodEstado + "','" + row.Id_Workflow +"'"; 
-                    var ver = '<a id="btnVer" class="btn btn-info btn-xs" title="Ver" href="javascript: garantias.ver(' + d + ')"><i class="fa fa-eye" aria-hidden="true"></i></a>';
-                    var accion = '<a id="btnEditar" class="btn btn-default btn-xs" title="Asignar Técnicos" href="javascript: garantias.editar(' + d + ')"><i class="fa fa-pencil" aria-hidden="true"></i></a>';
-                    return '<center>' + accion + ' ' + ver +'</center>'
+                    var d = "'" + row.Id_Reclamo + "','" + row.CodEstado + "','" + row.Id_Workflow + "'"; 
+                    if (row.CodEstado == "REG") {
+                        var ver = '<a id="btnVer" class="btn btn-info btn-xs" title="Ver" href="javascript: bandejaGarantia.ver(' + d + ')"><i class="fa fa-eye" aria-hidden="true"></i></a>';
+                        var accion = '<a id="btnEditar" class="btn btn-default btn-xs" title="Editar" href="javascript: bandejaGarantia.editar(' + d + ')"><i class="fa fa-pencil" aria-hidden="true"></i></a>';
+                        return '<center>' + accion + ' ' + ver +'</center>'
+                    }
+                    else if (row.CodEstado == "FIN") {
+                        var ver = '<a id="btnVer" class="btn btn-info btn-xs" title="Ver" href="javascript: bandejaGarantia.ver(' + d + ')"><i class="fa fa-eye" aria-hidden="true"></i></a>';
+                        return '<center>' + ver + '</center>'
+                    };
                 }
             }
         ];

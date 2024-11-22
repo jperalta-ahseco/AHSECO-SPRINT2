@@ -52,16 +52,24 @@
                         <div class="col-md-4 col-sm-12">
                             <label for="txtSolVenta">N° de Serie: </label>
                             <div class="form-group">
-                                <div class="input-group input-group-sm date">
+                                @if (numReclamo == "")
+                                {
+                                    <div class="input-group input-group-sm date">
+                                        <input type="text" class="form-control input-sm" id="txtSerieVenta" value="" placeholder="---Ingresar N° de Serie---" aria-describedby="sizing-addon3" />
+
+                                        <span style="cursor:pointer" class="input-group-addon input-sm" id="searchSolVenta" title="Buscar Datos">
+                                            <i class="fa fa-search"></i>
+                                        </span>
+                                        <span style="cursor:pointer" class="input-group-addon input-sm" id="limpiarReclamo" title="limpiar todo">
+                                            <i class="fa fa-trash" style="color:red"></i>
+                                        </span>
+                                        <input type="hidden" id="txtCodSerie" value="" />
+                                    </div>
+                                }
+                                else
+                                {
                                     <input type="text" class="form-control input-sm" id="txtSerieVenta" value="" placeholder="---Ingresar N° de Serie---" aria-describedby="sizing-addon3" />
-                                    <span style="cursor:pointer" class="input-group-addon input-sm" id="searchSolVenta" title="Buscar Datos">
-                                        <i class="fa fa-search"></i>
-                                    </span>
-                                    <span style="cursor:pointer" class="input-group-addon input-sm" id="limpiarReclamo" title="limpiar todo">
-                                        <i class="fa fa-trash" style="color:red"></i>
-                                    </span>
-                                    <input type="hidden" id="txtCodSerie" value="" />
-                                </div>
+                                }
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12">
@@ -248,19 +256,20 @@
                 <br />
                 <div class="row container-fluid">
                     <div class="text-right">
-                        @if (numReclamo != "")
+                        @if (tipoProceso != "V")
                         {
-
-
-                            <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnEditarRec" tabindex="14"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;Editar Reclamo</button>
-                            if (codEstado == "REG")
+                            if (numReclamo != "")
                             {
-                                <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnFinalizarRec" tabindex="14"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;Finalizar Reclamo</button>
+                                <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnEditarRec" tabindex="14"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;Editar Reclamo</button>
+                                if (codEstado == "REG")
+                                {
+                                    <button class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnFinalizarRec" tabindex="14"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;Finalizar Reclamo</button>
+                                }
                             }
-                        }
-                        else
-                        {
-                            <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnRegistrarRec" tabindex="14"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Registrar</button>
+                            else
+                            {
+                                <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnRegistrarRec" tabindex="14"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Registrar</button>
+                            }
                         }
                         <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegresar" tabindex="14"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Regresar</button>
                     </div>
@@ -302,7 +311,9 @@
                         <div id="navReclamo" class="tab-pane fade">
                             @{
                                 Html.RenderPartial("~/Views/Modelos/_Reclamo.cshtml");
-                            }
+
+
+}
                         </div>
                         <div id="navTecnicos" class="tab-pane fade">
                             <br />
@@ -320,9 +331,13 @@
                                         </div>
                                     </div>
                                     <div class="text-right">
-                                        <button disabled class="btn btn-default btn-sm" type="button" id="btnBuscarTecnicos" data-target="#modalBusquedaTecnico" data-toggle="modal"><i class="fa fa-search"></i> Buscar Técnicos</button>
-                                        <span id="hidden_fields"></span>
-                                        <button disabled class="btn btn-primary btn-sm" type="button" id="btnAñadirTecnico" data-toggle="modal" data-target="#añadirTecnico"><i class="fa fa-plus"></i> Crear Técnico Externo</button>
+                                        @if (tipoProceso != "V")
+                                        {
+                                            <button disabled class="btn btn-default btn-sm" type="button" id="btnBuscarTecnicos" data-target="#modalBusquedaTecnico" data-toggle="modal"><i class="fa fa-search"></i> Buscar Técnicos</button>
+                                            <span id="hidden_fields"></span>
+                                            <button disabled class="btn btn-primary btn-sm" type="button" id="btnAñadirTecnico" data-toggle="modal" data-target="#añadirTecnico"><i class="fa fa-plus"></i> Crear Técnico Externo</button>
+                                        }
+
                                     </div>
                                     <br />
                                     <div class="table-responsive">
