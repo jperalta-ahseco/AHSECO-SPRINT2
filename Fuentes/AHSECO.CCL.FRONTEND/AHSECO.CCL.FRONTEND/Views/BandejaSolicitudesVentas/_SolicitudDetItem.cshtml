@@ -2,7 +2,9 @@
 @{
     ViewBag.Title = "Detalle de Item";
 }
-
+<div style="display:none">
+    <input type="hidden" id="DI_hdnIdCotDet" value="" />
+</div>
 <div style="width:80%" class="modal-dialog modal-lg container-fluid" role="document">
     <!-- Modal content -->
     <div class="modal-content">
@@ -300,16 +302,17 @@
                             <fieldset>
                                 <legend><b>Detalle de Destinos</b></legend>
                                 <div class="text-right" style="padding-top: 2px; padding-bottom: 2px">
-                                    <button class="btn btn-default btn-sm" type="button" data-target="#modalCostoItem" data-toggle="modal" id="btnAC_Flete" tabindex="14" onclick="javascript:cotvtacostos.agregarCostoItem('1')"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar Costo</button>
+                                    <button class="btn btn-default btn-sm" type="button" data-toggle="modal"  tabindex="14" onclick="javascript:cotvtacostos.agregarCostoItem('1')"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar Costo</button>
                                 </div>
-                                <div class="row container-fluid col-content-middleleft form-group">
-                                    <table id="DI_tblCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                <div class="row container-fluid">
+                                    <table id="DI_tblCostos" class="table table-hover table-condensed table-striped table-bordered" style="width:100%">
                                         <thead>
                                             <tr>
-                                                <th style="text-align:center; width:20%">Destino</th>
-                                                <th style="text-align:center; width:20%">Direccion</th>
-                                                <th style="text-align:center; width:5%">Cantidad</th>
-                                                <th style="text-align:center; width:5%">Acción</th>
+                                                <th style="text-align:center; width:20%">Tipo de Costo</th>
+                                                <th style="text-align:center; width:20%">Cantidad</th>
+                                                <th style="text-align:center; width:20%">Monto Unitario</th>
+                                                <th style="text-align:center; width:20%">Monto Total de Costeo</th>
+                                                <th style="text-align:center; width:20%">Acción</th>
                                             </tr>
                                         </thead>
                                         <tbody>

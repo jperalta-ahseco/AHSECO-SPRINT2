@@ -66,7 +66,9 @@ BEGIN
 
 	IF (@pTipoProceso = 'D') BEGIN
 		
-		DELETE FROM [dbo].[TBD_COTIZACIONCOSTOS] WHERE ID = @pId
+		DELETE FROM [dbo].[TBD_COTIZACIONCOSTOS] WHERE 
+		(ISNULL(@pId,0) = 0 OR ID = @pId)
+		AND (ISNULL(@pId_CodDetalle,0) = 0 OR ID_COTDETALLE = @pId_CodDetalle)
 
 	END
 	

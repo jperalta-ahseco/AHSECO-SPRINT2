@@ -297,9 +297,10 @@
     };
 
     function $btnAgregarDetalle_click() {
-        $('#BI_cmbFamilia').val('').trigger("change.select2");
-        $('#BI_txtCodProducto').val('').trigger("change.select2");
-        $('#BI_txtNomProducto').val('').trigger("change.select2");
+        $('#BI_cmbFamilia').get(0).selectedIndex = 0;
+        $('#BI_cmbFamilia').trigger("change.select2");
+        //$('#BI_txtCodProducto').val('').trigger("change.select2");
+        //$('#BI_txtNomProducto').val('').trigger("change.select2");
         $('#BI_cmbTipoMedida').val('').trigger("change.select2");
         $('#BI_cmbMarca').val('').trigger("change.select2");
         buscarItems_Solicitud();

@@ -22,6 +22,7 @@ var cotvtadet = (function ($, win, doc) {
     var $tblItems = $('#tblItems');
     var $tblCotDet = $('#tblCotDet');
 
+    var $DI_hdnIdCotDet = $("#DI_hdnIdCotDet");
     var $DI_hdnCodigoPadre = $("#DI_hdnCodigoPadre");
     var $DI_hdnCodigo = $("#DI_hdnCodigo");
     var $DI_txtCodigo = $("#DI_txtCodigo");
@@ -430,6 +431,7 @@ var cotvtadet = (function ($, win, doc) {
     }
 
     function MostrarDatosItem(data) {
+        $DI_hdnIdCotDet.val("");
         $DI_hdnCodigo.val(data.Result.CodItem);
         if (data.Result.CodItem_IsUpdatable == true) {
             $DI_txtCodigo.removeAttr("disabled");
@@ -442,6 +444,7 @@ var cotvtadet = (function ($, win, doc) {
         $DI_txtDescripcion.val(data.Result.Descripcion);
         //Cargando Datos
         if (data.Result.Id != 0) {
+            $DI_hdnIdCotDet.val(data.Result.Id);
             $DI_txtDescripcionAdic.val(data.Result.DescripcionAdicional);
             $DI_txtCantidad.val(data.Result.Cantidad);
             $DI_txtCostoFOB.val(data.Result.CostoFOB);

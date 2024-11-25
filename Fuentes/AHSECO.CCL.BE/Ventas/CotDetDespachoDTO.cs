@@ -15,7 +15,7 @@ namespace AHSECO.CCL.BE.Ventas
         public bool? IndInfoManual { get; set; }
         public bool? IndInstaCapa { get; set; }
         public bool? IndGarantiaAdicional { get; set; }
-        public int? CantGarantiaAdicional { get; set; }
+        public int? NumMesesGarantiaAdicional { get; set; }
         public bool? IndMantPreventivo { get; set; }
         //public bool? IndLLaveMano { get; set; }
         public string Dimensiones { get; set; }
