@@ -51,6 +51,7 @@
     <Compile Include="Mantenimiento\ZonasBL.cs" />
     <Compile Include="EmpleadosBL.cs" />
     <Compile Include="DocumentosBL.cs" />
+    <Compile Include="AlertasBL.cs" />
     <Compile Include="PlantillasBL.cs" />
     <Compile Include="ProcesosBL.cs" />
     <Compile Include="ServiciosBL.cs" />

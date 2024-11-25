@@ -320,6 +320,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\Alertas\AlertasController.cs" />
     <Compile Include="Controllers\AsignacionManual\AsignacionManualController.cs" />
     <Compile Include="Controllers\Consultas\CatalogoPreciosController.cs" />
     <Compile Include="Controllers\Consultas\CatalogoStocksController.cs" />
@@ -953,6 +954,8 @@
     <Content Include="Views\Shared\_ElementosDeProducto.cshtml" />
     <Content Include="Views\Shared\_DetalleInstalacionTecnica.cshtml" />
     <Content Include="Views\Shared\_BuscarTecnico.cshtml" />
+    <Content Include="Views\BandejaSolicitudesVentas\_SolicitudDetServicio.cshtml" />
+    <Content Include="Views\Shared\_VerHistorialCotizacion.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\css\font\" />

@@ -14,8 +14,10 @@ using AHSECO.CCL.FRONTEND.Core;
 using System.Web;
 using System.Configuration;
 using AHSECO.CCL.FRONTEND.Security;
+using Newtonsoft.Json;
 using System.IO;
 using AHSECO.CCL.BL.Mantenimientos;
+using NPOI.OpenXmlFormats.Spreadsheet;
 using System.Web.UI.WebControls;
 using AHSECO.CCL.BL.Util;
 using Microsoft.IdentityModel.Tokens;
@@ -121,6 +123,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.PermitirEnvioCotizacion = false;
             ViewBag.PermitirReCotizacion = false;
             ViewBag.PermitirGuardarValorizacion = false;
+            ViewBag.PermitirAgregarServicios = false;
+            ViewBag.PermitirImprimirCotizacion = false;
             //ViewBag.PermitirModificarEspCarac = true;
             //ViewBag.PermitirModificarCantidad = true;
             ViewBag.MostrarCDI_Ganancia = false;
@@ -242,6 +246,12 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ
                     || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc)
                 {
+
+                    if(soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion)
+                    {
+                        ViewBag.PermitirImprimirCotizacion = true;
+                    }
+
                     if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.CotAprob)
                     {
                         ViewBag.Btn_GuardarDespacho = "inline-block";
@@ -290,6 +300,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 ViewBag.ObservacionGerencia = validarSinStock.Result.Observacion;
                             }
                         }
+
 
                     }
 
@@ -368,6 +379,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnProcVentas)
                     {
 
+
                         if (validarDespacho.Result != null)
                         {
                             if (validarDespacho.Result.ContadorSinStock > 0 && validarDespacho.Result.EnvioGPSinStock > 0)
@@ -375,6 +387,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                                 ViewBag.VerNavSinStock = true;
                                 ViewBag.InActiveSinStock = "in active";
+
 
                                 if (validarDespacho.Result.GestionLogSinStock > 0)
                                 {
@@ -453,7 +466,17 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 {
                     if (ViewBag.MostrarCDI_Valorizacion == false)
                     {
-                        ViewBag.PermitirAgregarCotDet = true;
+                        if(soli.Tipo_Sol == "TSOL01" || soli.Tipo_Sol == "TSOL03")
+                        {
+                            ViewBag.PermitirAgregarServicios = true;
+                        }
+
+                        if(soli.Tipo_Sol == "TSOL02" || soli.Tipo_Sol == "TSOL03" || soli.Tipo_Sol == "TSOL04" || soli.Tipo_Sol == "TSOL05")
+                        {
+                            ViewBag.PermitirAgregarCotDet = true;
+                        }
+
+                        
                         ViewBag.PermitirEnvioCotizacion = true;
                     }
                 }
@@ -583,6 +606,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         {
                             if (oCotizacion.IndValorizado.Value) { ViewBag.EsCotizacionValorizada = true; }
                         }
+
                     }
 
                     if (ViewBag.EsCotizacionValorizada == true)
@@ -1443,6 +1467,51 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                 //Solo cargar los productos en pantalla
                 var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems.Where(x => x.TipoItem != ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio));
+
+                return Json(response);
+            }
+            catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
+        }
+
+        [HttpPost]
+        public JsonResult AgregarItemCotDetServ(string CodItem)
+        {
+            try
+            {
+                var ventaBL = new VentasBL();
+                var servicioBL = new ServiciosBL();
+                List<CotizacionDetalleDTO> lstItems = GetCDIList(opcTablaTemporal);
+
+                var servicioDto = new ServicioDTO();
+                servicioDto.CodigoServicio = Convert.ToInt32(CodItem);
+
+                var servicio = servicioBL.ObtenerServicios(servicioDto).Result.First();
+
+                //Registro Detalle
+                var select = new CotizacionDetalleDTO();
+                select.CodItem = CodItem;
+                select.CodItemTemp = "";
+                select.Descripcion = "Servicio:"+servicio.TipoServicio.Trim()+", Equipo: "+servicio.Equipo.Trim()+", Modelo:  "+servicio.Modelo.Trim();
+                select.Stock = 0;
+                select.TipoItem = ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto;
+                select.EsItemPadre = true;
+                select.IsTempRecord = true;
+                select.CodItem_IsUpdatable = true;
+                select.Cantidad = 0;
+                select.VentaUnitaria = servicio.Precio;
+                select.VentaTotalSinIGV = 0;
+
+                if (lstItems.Any()) { select.NroItem = lstItems.Max(x => x.NroItem) + 1; }
+                else { select.NroItem = 1; }
+
+                if (lstItems.Any(x => x.CodItem.TrimEnd() == CodItem.TrimEnd()))
+                { throw new Exception("Producto y/o Servicio ya fue selecionado"); }
+                if (select.Id <= 0) { select.Id = select.NroItem * -1; }
+
+                lstItems.Add(select);
+                VariableSesion.setObject(TAG_CDI, lstItems);
+
+                var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems);
 
                 return Json(response);
             }
@@ -2390,6 +2459,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             var response = ventasBL.ActualizarNumeroSerie(datos);
             return Json(response);
         }
+
 
         [HttpPost]
         public JsonResult FinalizarVenta(DatosDespachoDTO datosDespachoDTO)

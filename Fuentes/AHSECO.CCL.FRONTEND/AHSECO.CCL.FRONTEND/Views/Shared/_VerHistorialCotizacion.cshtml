@@ -1,0 +1,186 @@
+﻿@{
+    ViewBag.Title = "Ver Historial de Cotización";
+}
+
+<div class="modal-dialog modal-lg container-fluid" role="document">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <!-- Modal content header -->
+        <div class="modal-header box-header well well-sm" style="padding-bottom: 30px;">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="tituloModalHistorial"><i class="fa fa-table"></i> @ViewBag.Title</h4>
+        </div>
+        <!-- Modal content body -->
+        <div class="modal-body d-flex justify-content-center" align-items-center>
+            <form id="formRegistro" class="d-flex flex-row">
+                <div class="row container-fluid d-flex justify-content-center">
+                    <div class="row container-fluid">
+                        <div class="col-md-6 col-sm-12">
+                            <label for="txtHistRUC">RUC: </label>
+                            <div class="form-group">
+                                <input type="text" class="form-control input-sm" id="txtHistRUC" value="" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <label for="txtHistRazonSocial">Raz&oacute;n Social: </label>
+                            <div class="form-group">
+                                <input type="text" class="form-control input-sm" id="txtHistRazonSocial" value="" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtHistNomContacto">Contacto: </label>
+                            <div class="form-group">
+                                <input type="text" class="form-control input-sm" id="txtHistNomContacto" value="" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtHistFechaCot">Fecha Cotizaci&oacute;n: </label>
+                            <div class="form-group">
+                                <input type="text" class="form-control input-sm" id="txtHistFechaCot" value="" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtHistVigenciaCot">Vigencia Cotizaci&oacute;n: </label>
+                            <div class="form-group">
+                                <input type="text" class="form-control input-sm" id="txtHistVigenciaCot" value="" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtHistAreaContacto">&Aacute;rea: </label>
+                            <div class="form-group">
+                                <input type="text" class="form-control input-sm" id="txtHistAreaContacto" value="" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtHistPlazoEntrega">Plazo Entrega: </label>
+                            <div class="form-group">
+                                <input type="text" class="form-control input-sm" id="txtHistPlazoEntrega" value="" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtHistGarantia">Garant&iacute;a: </label>
+                            <div class="form-group">
+                                <input type="text" class="form-control input-sm" id="txtHistGarantia" value="" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtHistTelContacto">Tel&eacute;fono: </label>
+                            <div class="form-group">
+                                <input type="text" class="form-control input-sm" id="txtHistTelContacto" value="" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtHistFormaPago">Forma de Pago: </label>
+                            <div class="form-group">
+                                <input type="text" class="form-control input-sm" id="txtHistFormaPago" value="" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtHistObservacion">Observaci&oacute;n: </label>
+                            <div class="form-group">
+                                <input type="text" class="form-control input-sm" id="txtHistObservacion" value="" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtHistCorreoContacto">Correo: </label>
+                            <div class="form-group">
+                                <input type="text" class="form-control input-sm" id="txtHistCorreoContacto" value="" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtHistMoneda">Moneda: </label>
+                            <div class="form-group">
+                                <input type="text" class="form-control input-sm" id="txtHistMoneda" value="" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtHistVendedor">Vendedor: </label>
+                            <div class="form-group">
+                                <input type="text" class="form-control input-sm" id="txtHistVendedor" value="" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="table-responsive">
+                        <table id="tablaHistorialDetalle" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center; width:5%">N° Item</th>
+                                    <th style="text-align:center; width:15%">Catalogo</th>
+                                    <th style="text-align:center; width:40%">Descripci&oacute;n</th>
+                                    <th style="text-align:center; width:10%">Unidad</th>
+                                    <th style="text-align:center; width:8%">Cantidad</th>
+                                    <th style="text-align:center; width:10%">Precio Unitario</th>
+                                    <th style="text-align:center; width:10%">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr id="NoRegHistDetalle">
+                                    <td colspan="7" style="text-align:center">No existen registros</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="col-md-4 col-sm-12">
+                            &nbsp;
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            &nbsp;
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtHistSubtotal">Subtotal: </label>
+                            <div class="form-group">
+                                <input type="text" class="form-control input-sm" id="txtHistSubtotal" value="" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="col-md-4 col-sm-12">
+                            &nbsp;
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            &nbsp;
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtHistIGV">IGV (18%): </label>
+                            <div class="form-group">
+                                <input type="text" class="form-control input-sm" id="txtHistIGV" value="" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="col-md-4 col-sm-12">
+                            &nbsp;
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            &nbsp;
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtHistTotal">Total: </label>
+                            <div class="form-group">
+                                <input type="text" class="form-control input-sm" id="txtHistTotal" value="" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <button class="btn btn-primary btn-sm" type="button" id="btnCerrarHistorial"><i class="fa fa-close" aria-hidden="true"></i>  Cerrar</button>
+                        @*<button class="btn btn-default btn-sm" type="button" data-target="#modalRegistraProductos" data-toggle="modal" id="btnAñadirProductos"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Añadir Producto</button>*@
+                        <span id="hidden_fields"></span>
+                    </div>
+                </div>
+                    <br />
+</form>
+        </div>
+    </div>
+</div>
