@@ -17,7 +17,7 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaGarantias
         public string TipoVenta        {get;set;}
         public string CodTipoVenta     { get; set; }
         public string OrdenCompra      {get;set;}
-        public int    NumProceso       {get;set;}
+        public string    NumProceso       {get;set;}
         public string TipoProcesoSol    {get;set;}
         public string Contrato         {get;set;}
         public string RazonSocial      { get; set; }
@@ -41,5 +41,11 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaGarantias
         public string Motivo           {get;set;}
         public string Estado           {get;set;}
         public string CodEstado           {get;set;}
+
+        public int CantPreventivo { get; set; }
+        public int PreventRealizados { get; set; }
+        public int PreventPendientes { get; set; }
+        public string FechaVencimiento { get; set; }
+        public string EstadoGarantia { get; set; }
     }
 }

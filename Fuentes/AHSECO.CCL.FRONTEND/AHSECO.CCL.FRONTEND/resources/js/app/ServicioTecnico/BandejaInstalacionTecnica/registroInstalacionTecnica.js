@@ -1567,7 +1567,7 @@
             var objParamObs = JSON.stringify(objObservacion);
 
             var fnDoneCallBack = function () {
-                app.message.success("Ventas", "Se realizó el registro de la observación correctamente.");
+                app.message.success("Éxito", "Se realizó el registro de la observación correctamente.");
 
                 registroInstalacionTec.contadorObservaciones += 1;
 

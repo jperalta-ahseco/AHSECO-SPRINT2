@@ -14,10 +14,8 @@ AS
 BEGIN
 SET NOCOUNT ON
 	DECLARE @sql NVARCHAR(MAX),
-	@ID_SOLICITUD BIGINT,
+	@ID_SOLICITUD BIGINT
 	--@IsNumSerie VARCHAR(100) = 'xc123' ,
-	@rpta CHAR(1)
-
 
 	IF OBJECT_ID('tempdb..#tmpSolicitudVenta') IS NOT NULL DROP TABLE #tmpSolicitudVenta
 	IF OBJECT_ID('tempdb..#tmpInfoContacto') IS NOT NULL DROP TABLE #tmpInfoContacto
