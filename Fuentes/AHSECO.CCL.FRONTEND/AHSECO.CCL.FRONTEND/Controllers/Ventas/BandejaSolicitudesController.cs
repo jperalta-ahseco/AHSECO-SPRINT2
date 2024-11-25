@@ -124,6 +124,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.PermitirReCotizacion = false;
             ViewBag.PermitirGuardarValorizacion = false;
             ViewBag.PermitirAgregarServicios = false;
+            ViewBag.PermitirImprimirCotizacion = false;
             //ViewBag.PermitirModificarEspCarac = true;
             //ViewBag.PermitirModificarCantidad = true;
             ViewBag.MostrarCDI_Ganancia = false;
@@ -245,6 +246,12 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ
                     || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc)
                 {
+
+                    if(soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion)
+                    {
+                        ViewBag.PermitirImprimirCotizacion = true;
+                    }
+
                     if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.CotAprob)
                     {
                         ViewBag.Btn_GuardarDespacho = "inline-block";

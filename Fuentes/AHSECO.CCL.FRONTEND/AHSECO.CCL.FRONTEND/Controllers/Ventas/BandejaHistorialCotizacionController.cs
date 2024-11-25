@@ -41,6 +41,14 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             return Json(result);
         }
 
+        public JsonResult ConsultaCotizacionCliente(int codCotizacion)
+        {
+            var ventasBL = new VentasBL();
+            var result = ventasBL.ConsultaCotizacionCliente(codCotizacion);
+            return Json(result);
+        }
+
+
         public JsonResult GenerarCotizacion(int codCotizacion)
         {
 

@@ -341,7 +341,7 @@
                                                         <button class="btn btn-danger btn-sm" type="button" data-target="#modalBandejaHistorialCotizacion" data-toggle="modal" id="btnHistorial" style="display:none;" tabindex="14"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Historial</button>
                                                         @if (ViewBag.IdCotizacion != 0)
                                                         {
-                                                            <button class="btn btn-primary btn-sm" type="button" id="btnImprimirCotizacion"><i class="fa fa-print" aria-hidden="true"></i>&nbsp;Imprimir Cotizaci&oacute;n</button>
+                                                            <button style="@(ViewBag.PermitirImprimirCotizacion ? "" : "display:none")" class="btn btn-primary btn-sm" type="button" id="btnImprimirCotizacion"><i class="fa fa-print" aria-hidden="true"></i>&nbsp;Imprimir Cotizaci&oacute;n</button>
                                                         }
                                                         else
                                                         {
@@ -933,6 +933,12 @@
 <div class="modal fade" id="modalBandejaHistorialCotizacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false">
     @{
         Html.RenderPartial("_BandejaHistorialCotizacion");
+    }
+</div>
+
+<div class="modal fade" id="modalVerHistorialCotizacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_VerHistorialCotizacion");
     }
 </div>
 

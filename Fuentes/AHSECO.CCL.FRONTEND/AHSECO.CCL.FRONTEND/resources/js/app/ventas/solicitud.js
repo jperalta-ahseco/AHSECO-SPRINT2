@@ -81,6 +81,30 @@
     var $btnRegistrarCotizacion = $('#btnRegistrarCotizacion');
     var $btnAgregarDetalle = $('#btnAgregarDetalle');
 
+    /*Ver Historial de Cotizacion */
+    var $modalVerHistorialCotizacion = $("#modalVerHistorialCotizacion");
+    var $txtHistNomContacto = $("#txtHistNomContacto");
+    var $txtHistFechaCot = $("#txtHistFechaCot");
+    var $txtHistVigenciaCot = $("#txtHistVigenciaCot");
+    var $txtHistAreaContacto = $("#txtHistAreaContacto");
+    var $txtHistPlazoEntrega = $("#txtHistPlazoEntrega");
+    var $txtHistGarantia = $("#txtHistGarantia");
+    var $txtHistTelContacto = $("#txtHistTelContacto");
+    var $txtHistFormaPago = $("#txtHistFormaPago");
+    var $txtHistObservacion = $("#txtHistObservacion");
+    var $txtHistCorreoContacto = $("#txtHistCorreoContacto");
+    var $txtHistMoneda = $("#txtHistMoneda");
+    var $tablaHistorialDetalle = $("#tablaHistorialDetalle");
+    var $NoRegHistDetalle = $("#NoRegHistDetalle");
+    var $txtHistTotal = $("#txtHistTotal");
+    var $txtHistIGV = $("#txtHistIGV");
+    var $txtHistSubtotal = $("#txtHistSubtotal");
+    var $txtHistVendedor = $("#txtHistVendedor");
+    var $txtHistRUC = $("#txtHistRUC");
+    var $txtHistRazonSocial = $("#txtHistRazonSocial");
+    var $tituloModalHistorial = $("#tituloModalHistorial");
+    var $btnCerrarHistorial = $("#btnCerrarHistorial");
+
     /*Servicios*/
     var $cmbTipoServicio = $("#cmbTipoServicio");
     var $txtBusqEquipo = $("#txtBusqEquipo");
@@ -309,8 +333,68 @@
         $btnBuscarItemsServicio.click($btnBuscarItemsServicio_click);
         $DC_btnCerrarServ.click(cerrarModalDetCotServ);
         $DC_btnGuardarServ.click(grabarDatosCotDetServ);
+        $btnCerrarHistorial.click($btnCerrarHistorial_click);
         cargaCombos();      
     };
+
+    function $btnCerrarHistorial_click() {
+        $modalVerHistorialCotizacion.modal("hide");
+    }
+    function verHistorial(codCotizacion) {
+
+        method = 'POST';
+        url = 'BandejaHistorialCotizacion/ConsultaCotizacionCliente?codCotizacion=' + codCotizacion;
+        objParam = '';
+        var fnDoneCallBack = function (data) {
+            $modalVerHistorialCotizacion.modal("show");
+
+
+            //Se pinta el detalle del historial:
+            $tituloModalHistorial.html("N° Cotización: " + data.Result.DocumentoCabecera.NumeroCotizacion);
+            $txtHistNomContacto.val(data.Result.DocumentoCabecera.NombreContacto);
+            $txtHistFechaCot.val(data.Result.DocumentoCabecera.Fecha);
+            $txtHistVigenciaCot.val(data.Result.DocumentoCabecera.Vigencia);
+            $txtHistAreaContacto.val(data.Result.DocumentoCabecera.AreaContacto);
+            $txtHistPlazoEntrega.val(data.Result.DocumentoCabecera.PlazoEntrega + " días");
+            $txtHistGarantia.val(data.Result.DocumentoCabecera.Garantia);
+            $txtHistTelContacto.val(data.Result.DocumentoCabecera.TelefonoContacto);
+            $txtHistFormaPago.val(data.Result.DocumentoCabecera.FormaPago);
+            $txtHistObservacion.val(data.Result.DocumentoCabecera.Observacion);
+            $txtHistCorreoContacto.val(data.Result.DocumentoCabecera.EmailContacto);
+            $txtHistMoneda.val(data.Result.DocumentoCabecera.Moneda);
+            $txtHistVendedor.val(data.Result.DocumentoCabecera.NombreVendedor);
+            $txtHistRUC.val(data.Result.DocumentoCabecera.Ruc);
+            $txtHistRazonSocial.val(data.Result.DocumentoCabecera.RazonSocial);
+
+            for (i = 0; i < data.Result.DocumentoCabecera.NumeroItems; i++) {
+                var nuevoTr = "<tr bgcolor='d0f2f7'>" +
+                    "<th>" + data.Result.DocumentoDetalle[i].NumeroItem + "</th>" +
+                    "<th>" + data.Result.DocumentoDetalle[i].Catalogo + "</th>" +
+                    "<th>" + data.Result.DocumentoDetalle[i].Descripcion + "</th>" +
+                    "<th>" + data.Result.DocumentoDetalle[i].Unidad + "</th>" +
+                    "<th>" + data.Result.DocumentoDetalle[i].Cantidad + "</th>" +
+                    "<th>" + data.Result.DocumentoDetalle[i].PrecioUnitario + "</th>" +
+                    "<th>" + data.Result.DocumentoDetalle[i].Total + "</th>" +
+                    "</tr>";
+
+                $NoRegHistDetalle.hide();
+                $tablaHistorialDetalle.append(nuevoTr);
+            }
+
+            $txtHistTotal.val(data.Result.DocumentoCabecera.Total);
+            $txtHistIGV.val(data.Result.DocumentoCabecera.Igv);
+            $txtHistSubtotal.val(data.Result.DocumentoCabecera.Subtotal);
+
+
+
+        }
+        var fnFailCallBack = function () {
+
+        }
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, mensajes.GenerarCotizacion);
+    }
+
 
     function grabarDatosCotDetServ() {
         method = "POST";
@@ -1283,10 +1367,9 @@
         app.llenarTabla($tblHistorial, data, columns, columnDefs, "#tablaHistorial", null, null, filters);
     }
 
-    function verHistorial(codCotizacion) {
-        console.log(codCotizacion);
-    }
-    
+
+
+
     
     function cargaCombos() {
 
