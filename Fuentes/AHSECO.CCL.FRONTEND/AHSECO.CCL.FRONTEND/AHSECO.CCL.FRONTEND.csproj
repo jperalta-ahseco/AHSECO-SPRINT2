@@ -320,6 +320,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\Alertas\AlertasController.cs" />
     <Compile Include="Controllers\AsignacionManual\AsignacionManualController.cs" />
     <Compile Include="Controllers\Consultas\CatalogoPreciosController.cs" />
     <Compile Include="Controllers\Consultas\CatalogoStocksController.cs" />

@@ -107,6 +107,7 @@
     <Compile Include="Mantenimiento\ZonasBD.cs" />
     <Compile Include="EmpleadosBD.cs" />
     <Compile Include="DocumentosBD.cs" />
+    <Compile Include="AlertasBD.cs" />
     <Compile Include="ProcesosBD.cs" />
     <Compile Include="ServicioBD.cs" />
     <Compile Include="ServicioTecnico\BandejaGarantias\GarantiasBD.cs" />
