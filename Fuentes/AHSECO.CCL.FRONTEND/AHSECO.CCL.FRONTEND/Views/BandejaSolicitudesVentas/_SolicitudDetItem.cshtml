@@ -33,12 +33,11 @@
                                             <input type="hidden" id="DI_hdnCodigo" value="" />
                                             <input type="hidden" id="DI_hdnCodigoPadre" value="" />
                                         </div>
-                                        <div class="col-md-1"></div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-3 col-content-middleright">
                                             <label for="DI_txtCantidad">Cantidad: </label>
                                         </div>
-                                        <div class="col-md-2">
-                                            <input @(ViewBag.PermitirEditarInfoVenta ? "" : "disabled") placeholder="Cantidad" type="text" maxlength="8" class="form-control input-sm" id="DI_txtCantidad" value="">
+                                        <div class="col-md-3">
+                                            <input @(ViewBag.PermitirEditarInfoVenta ? "" : "disabled") placeholder="Cantidad" type="number" maxlength="8" style="text-align:center" class="form-control input-sm" id="DI_txtCantidad" value="">
                                         </div>
                                     </div>
                                 </div>
@@ -302,7 +301,7 @@
                             <fieldset>
                                 <legend><b>Detalle de Destinos</b></legend>
                                 <div class="text-right" style="padding-top: 2px; padding-bottom: 2px">
-                                    <button class="btn btn-default btn-sm" type="button" data-toggle="modal"  tabindex="14" onclick="javascript:cotvtacostos.agregarCostoItem('1')"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar Costo</button>
+                                    <button style="@(ViewBag.MostrarCDI_Valorizacion ? "display:none" : "")" class="btn btn-default btn-sm" type="button" data-toggle="modal"  tabindex="14" onclick="javascript:cotvtacostos.agregarCostoItem('1')"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar Costo</button>
                                 </div>
                                 <div class="row container-fluid">
                                     <table id="DI_tblCostos" class="table table-hover table-condensed table-striped table-bordered" style="width:100%">

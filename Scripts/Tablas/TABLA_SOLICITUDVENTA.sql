@@ -84,6 +84,8 @@ CREATE TABLE [dbo].[TBM_COTIZACIONVENTA](
 	[GARANTIA] [varchar](10) NULL,
 	[OBSERVACION] [varchar](200) NULL,
 	[PORCDSCTO] [decimal](9, 9) NULL,
+	[INDDSCTOREQAPROB] [char](1) NULL,
+	[INDDSCTOAPROB] [char](1) NULL,
 	[SUBTOTALVENTA] [decimal](18, 9) NULL,
 	[MONTOIGV] [decimal](18, 9) NULL,
 	[TOTALVENTA] [decimal](18, 9) NULL,

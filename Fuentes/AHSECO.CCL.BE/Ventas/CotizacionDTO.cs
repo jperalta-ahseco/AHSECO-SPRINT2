@@ -26,6 +26,8 @@ namespace AHSECO.CCL.BE.Ventas
         public string Garantia { get; set; }
         public string Observacion { get; set; }
         public decimal? PorcentajeDescuento { get; set; }
+        public bool? IndDsctoRequiereAprob { get; set; }
+        public bool? IndDsctoAprob { get; set; }
         public decimal? SubtotalVenta { get; set; }
         public decimal? MontoIGV { get; set; }
         public decimal? TotalVenta { get; set; }

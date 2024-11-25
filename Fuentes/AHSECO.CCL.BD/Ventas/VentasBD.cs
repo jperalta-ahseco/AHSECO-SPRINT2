@@ -112,6 +112,8 @@ namespace AHSECO.CCL.BD.Ventas
                         Garantia = i.Single(d => d.Key.Equals("GARANTIA")).Value.Parse<string>(),
                         Observacion = Utilidades.Parse<string>(i.Single(d => d.Key.Equals("OBSERVACION")).Value),
                         PorcentajeDescuento = Utilidades.Parse<decimal?>(i.Single(d => d.Key.Equals("PORCDSCTO")).Value),
+                        IndDsctoRequiereAprob = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDDSCTOREQAPROB")).Value.Parse<string>()),
+                        IndDsctoAprob = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDDSCTOAPROB")).Value.Parse<string>()),
                         SubtotalVenta = Utilidades.Parse<decimal?>(i.Single(d => d.Key.Equals("SUBTOTALVENTA")).Value),
                         MontoIGV = Utilidades.Parse<decimal?>(i.Single(d => d.Key.Equals("MONTOIGV")).Value),
                         TotalVenta = Utilidades.Parse<decimal?>(i.Single(d => d.Key.Equals("TOTALVENTA")).Value),
@@ -171,14 +173,13 @@ namespace AHSECO.CCL.BD.Ventas
                             IndInfoManual = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDINFOMANUAL")).Value.Parse<string>()),
                             IndInstaCapa = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDINSTACAPA")).Value.Parse<string>()),
                             IndGarantiaAdicional = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDGARANADIC")).Value.Parse<string>()),
+                            NumMesesGarantiaAdicional = i.Single(d => d.Key.Equals("NMESGARANADIC")).Value.Parse<int?>(),
                             IndMantPreventivo = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDMANTPREVENT")).Value.Parse<string>()),
-                            //IndLLaveMano = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDLLAVEMANO")).Value.Parse<string>()),
                             Dimensiones = i.Single(d => d.Key.Equals("DIMENSIONES")).Value.Parse<string>(),
                             IndCompraLocal = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDCOMPRALOCAL")).Value.Parse<string>()),
                             ObsCliente = i.Single(d => d.Key.Equals("OBSCLIENTE")).Value.Parse<string>(),
                             IndRequierePlaca = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDREQPLACA")).Value.Parse<string>()),
                             ObsDespacho = i.Single(d => d.Key.Equals("OBSDESPACHO")).Value.Parse<string>(),
-                            //FecLimInsta = i.Single(d => d.Key.Equals("FECLIMINSTA")).Value.Parse<DateTime?>(),
                             MontoTotalCosto = i.Single(d => d.Key.Equals("MTOTOTALCOSTO")).Value.Parse<decimal?>(),
                             IndFianza = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDFIANZA")).Value.Parse<string>()),
                             NumFianza = i.Single(d => d.Key.Equals("NUMFIANZA")).Value.Parse<string>(),
@@ -224,6 +225,7 @@ namespace AHSECO.CCL.BD.Ventas
                         IdCotizacionDetalle = i.Single(d => d.Key.Equals("ID_COTDETALLE")).Value.Parse<int>(),
                         NumSecuencia = i.Single(d => d.Key.Equals("NUMSEC")).Value.Parse<int>(),
                         CodCosto = i.Single(d => d.Key.Equals("CODCOSTO")).Value.Parse<string>(),
+                        DescCosto = i.Single(d => d.Key.Equals("DESCCOSTO")).Value.Parse<string>(),
                         CantidadCosto = i.Single(d => d.Key.Equals("CANTCOSTO")).Value.Parse<int?>(),
                         CantPreventivo = i.Single(d => d.Key.Equals("CANTPREVENTIVO")).Value.Parse<int?>(),
                         CodCicloPreventivo = i.Single(d => d.Key.Equals("CODCICLOPREVENT")).Value.Parse<string>(),
@@ -409,14 +411,14 @@ namespace AHSECO.CCL.BD.Ventas
                 { parameters.Add("pIndGarantiaAdic", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndGarantiaAdicional), DbType.String); }
                 else
                 { parameters.Add("pIndGarantiaAdic", DBNull.Value, DbType.String); }
+                if (detCotDespacho.NumMesesGarantiaAdicional.HasValue)
+                { parameters.Add("pNMesGaranAdic", detCotDespacho.NumMesesGarantiaAdicional.Value, DbType.Int32); }
+                else
+                { parameters.Add("pNMesGaranAdic", DBNull.Value, DbType.Int32); }
                 if (detCotDespacho.IndMantPreventivo.HasValue)
                 { parameters.Add("pIndMantPrevent", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndMantPreventivo), DbType.String); }
                 else
                 { parameters.Add("pIndMantPrevent", DBNull.Value, DbType.String); }
-                //if (detCotDespacho.IndLLaveMano.HasValue)
-                //{ parameters.Add("pIndLLaveMano", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndLLaveMano), DbType.String); }
-                //else
-                //{ parameters.Add("pIndLLaveMano", DBNull.Value, DbType.String); }
                 parameters.Add("pDimensiones", detCotDespacho.Dimensiones);
                 if (detCotDespacho.IndCompraLocal.HasValue)
                 { parameters.Add("pIndCompraLocal", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndCompraLocal), DbType.String); }
@@ -426,10 +428,6 @@ namespace AHSECO.CCL.BD.Ventas
                 if (detCotDespacho.IndRequierePlaca.HasValue)
                 { parameters.Add("pIndReqPlaca", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndRequierePlaca), DbType.String); }
                 parameters.Add("pObsDespacho", detCotDespacho.ObsDespacho);
-                //if (detCotDespacho.FecLimInsta.HasValue)
-                //{ parameters.Add("pFecLimInsta", detCotDespacho.FecLimInsta.Value, DbType.DateTime); }
-                //else
-                //{ parameters.Add("pFecLimInsta", DBNull.Value, DbType.DateTime); }
                 if (detCotDespacho.MontoTotalCosto.HasValue)
                 { parameters.Add("pMontoTotalCosto", detCotDespacho.MontoTotalCosto.Value,DbType.Decimal); }
                 else

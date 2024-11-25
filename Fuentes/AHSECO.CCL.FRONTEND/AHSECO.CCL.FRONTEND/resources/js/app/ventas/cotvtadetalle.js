@@ -535,6 +535,11 @@ var cotvtadet = (function ($, win, doc) {
             LimpiarModalDetItem();
             MostrarDatosItem(data);
 
+            if (data.Result != null) {
+                var resCostos = { Status: 1, Result: data.Result.CotizacionCostos };
+                cotvtacostos.cargarGrillaCostosCotDet(resCostos);
+            }
+
             $DI_txtCostoFOB.attr("disabled", "disabled");
             $DI_txtValorUnitario.attr("disabled", "disabled");
 
@@ -1170,9 +1175,18 @@ var cotvtadet = (function ($, win, doc) {
 
         }
 
-        //Se quita los campos para edición de registros
-        if ($EsCotizacionValorizada.val() == "S") {
-            columns.pop();
+        //Se quita los botones de acción para los Jefes y Gerentes que ya valorizaron
+        if ($HabilitarValorizacionCotDet.val() == "S") {
+            if ($EsCotizacionValorizada.val() == "S") {
+                columns.pop();
+            }
+        }
+
+        //Se quita los botones de acción para el asesor que ya registro los detalles pero sin valorizacion
+        if ($HabilitarValorizacionCotDet.val() == "N") {
+            if ($EsCotizacionValorizada.val() == "N") {
+                columns.pop();
+            }
         }
 
         var columnDefs =

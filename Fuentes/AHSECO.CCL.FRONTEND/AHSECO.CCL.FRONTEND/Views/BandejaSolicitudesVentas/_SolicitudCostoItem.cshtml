@@ -30,7 +30,7 @@
         <div class="modal-body d-flex justify-content-center" align-items-center>
             <form id="formItem" class="d-flex flex-row">
                 <div class="row d-flex justify-content-center">
-                    <div id="pnlInfoGeneral" class="container-fluid">
+                    <div id="CI_pnlInfoGeneral" class="container-fluid">
                         <fieldset class="form-group">
                             <legend><b>Informaci&oacute;n General</b></legend>
                             <div class="row container-fluid form-group">
@@ -44,13 +44,13 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row container-fluid">
+                            <div class="row container-fluid form-group">
                                 <div class="col-md-6 col-content-bottomleft">
                                     <div class="col-md-6">
                                         <label for="CI_txtCantCotDet">Cantidad Cotizada: </label>
                                     </div>
                                     <div class="col-md-3">
-                                        <input disabled placeholder="Cantidad" type="text" maxlength="3" class="form-control input-sm" id="CI_txtCantCotDet" value="">
+                                        <input disabled placeholder="Cantidad" type="number" maxlength="3" style="text-align:center" class="form-control input-sm" id="CI_txtCantCotDet" value="">
                                     </div>
                                 </div>
                                 <div class="col-md-6 col-content-bottomleft">
@@ -62,15 +62,10 @@
                                     </div>
                                 </div>
                             </div>
-                        </fieldset>
-                    </div>
-                    <div id="pnlInfoDestino" class="container-fluid">
-                        <fieldset class="form-group">
-                            <legend><b>Información del Destino</b></legend>
-                            <div class="row container-fluid form-group col-content-middleleft">
+                            <div class="row container-fluid col-content-middleleft">
                                 <div class="col-md-12 col-content-middleleft">
                                     <div class="col-md-3">
-                                        <label for="CI_cmbCicloPreventivo">Tipo de Costo: </label>
+                                        <label for="CI_cmbTipoCosto">Tipo de Costo: </label>
                                     </div>
                                     <div class="col-md-5">
                                         <select class="form-control select2 input-sm" style="width:100%;" id="CI_cmbTipoCosto" data-selected="">
@@ -78,6 +73,11 @@
                                     </div>
                                 </div>
                             </div>
+                        </fieldset>
+                    </div>
+                    <div id="CI_pnlInfoDestino" class="container-fluid">
+                        <fieldset class="form-group">
+                            <legend><b>Información del Destino</b></legend>
                             <div class="row container-fluid form-group col-content-middleleft">
                                 <div class="col-md-12 col-content-middleleft">
                                     <div class="col-md-3">
@@ -113,52 +113,18 @@
                                         <input placeholder="Ingresar Ambiente Destino" type="text" maxlength="200" class="form-control input-sm" id="CI_txtAmbDestino" value="">
                                     </div>
                                 </div>
-                                <div class="col-md-1 col-content-middleleft">&nbsp;</div>
-                                <div class="col-md-2 col-content-middleleft">
-                                    <div class="col-md-6">
+                                <div class="col-md-3 col-content-bottomcenter">
+                                    <div class="col-md-6 col-content-bottomcenter">
                                         <label for="CI_txtNroPiso">Piso: </label>
                                     </div>
                                     <div class="col-md-6">
-                                        <input placeholder="Nro." type="text" maxlength="2" class="form-control input-sm" id="CI_txtNroPiso" value="">
+                                        <input placeholder="Nro." type="number" maxlength="2" class="form-control input-sm" id="CI_txtNroPiso" value="">
                                     </div>
                                 </div>
                             </div>
                         </fieldset>
                     </div>
-                    <div id="pnlInfoCostos" class="container-fluid">
-                        <fieldset class="form-group">
-                            <legend><b>Informaci&oacute;n de Costos</b></legend>
-                            <div class="row container-fluid form-group col-content-bottomleft">
-                                <div class="col-md-6 col-content-middleleft">
-                                    <div class="col-md-7">
-                                        <label for="CI_txtCantCosteo">Cantidad a Costear: </label>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <input placeholder="Cantidad" type="text" maxlength="3" class="form-control input-sm" id="CI_txtCantCosteo" value="">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row container-fluid col-content-bottomleft">
-                                <div id="pnlInfoCostos_MtoUnitario" class="col-md-6 col-content-middleleft">
-                                    <div class="col-md-7">
-                                        <label for="CI_txtMtoUnitarioCosto">Monto Unitario de Costo: </label>
-                                    </div>
-                                    <div class="col-md-5">
-                                        <input placeholder="Monto de Costo" type="text" maxlength="8" class="form-control input-sm" id="CI_txtMtoUnitarioCosto" value="">
-                                    </div>
-                                </div>
-                                <div id="pnlInfoCostos_MtoTotal" class="col-md-6 col-content-middleleft">
-                                    <div class="col-md-6">
-                                        <label for="CI_txtMtoTotalCosto">Monto Total de Costo: </label>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <input disabled placeholder="Total de Costo" type="text" maxlength="8" class="form-control input-sm" id="CI_txtMtoTotalCosto" value="">
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
-                    </div>
-                    <div id="pnlInfoPreventivos" class="container-fluid">
+                    <div id="CI_pnlInfoPreventivos" class="container-fluid">
                         <fieldset class="form-group">
                             <legend><b>Información de Preventivos</b></legend>
                             <div class="row container-fluid">
@@ -167,7 +133,7 @@
                                         <label for="CI_txtCantPrevent">Cantidad de Preventivo: </label>
                                     </div>
                                     <div class="col-md-3">
-                                        <input placeholder="Cantidad" type="text" maxlength="3" class="form-control input-sm" id="CI_txtCantPrevent" value="">
+                                        <input placeholder="Cant." type="number" maxlength="3" class="form-control input-sm" style="text-align:center" id="CI_txtCantPrevent" value="">
                                     </div>
                                 </div>
                                 <div class="col-md-6 col-content-middleleft">
@@ -177,6 +143,39 @@
                                     <div class="col-md-6">
                                         <select class="form-control select2 input-sm" style="width:100%;" id="CI_cmbCicloPreventivo" data-selected="">
                                         </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div id="CI_pnlInfoCostos" class="container-fluid">
+                        <fieldset class="form-group">
+                            <legend><b>Informaci&oacute;n de Costos</b></legend>
+                            <div class="row container-fluid form-group col-content-bottomleft">
+                                <div class="col-md-6 col-content-middleleft">
+                                    <div class="col-md-7">
+                                        <label for="CI_txtCantCosteo">Cantidad a Costear: </label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input placeholder="Cant." type="number" maxlength="3" class="form-control input-sm" style="text-align:center" id="CI_txtCantCosteo" value="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row container-fluid col-content-bottomleft">
+                                <div id="CI_pnlInfoCostos_MtoUnitario" class="col-md-6 col-content-middleleft">
+                                    <div class="col-md-7">
+                                        <label for="CI_txtMtoUnitarioCosto">Monto Unitario de Costo: </label>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <input placeholder="Monto de Costo" type="text" maxlength="8" class="form-control input-sm" id="CI_txtMtoUnitarioCosto" value="">
+                                    </div>
+                                </div>
+                                <div id="CI_pnlInfoCostos_MtoTotal" class="col-md-6 col-content-middleleft">
+                                    <div class="col-md-7">
+                                        <label for="CI_txtMtoTotalCosto">Monto Total de Costo: </label>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <input placeholder="Total de Costo" type="text" maxlength="8" class="form-control input-sm" id="CI_txtMtoTotalCosto" value="">
                                     </div>
                                 </div>
                             </div>

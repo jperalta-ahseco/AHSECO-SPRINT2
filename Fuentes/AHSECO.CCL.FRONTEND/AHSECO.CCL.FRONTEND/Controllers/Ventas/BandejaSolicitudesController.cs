@@ -1600,9 +1600,27 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         {
             try
             {
-                var ventaBL = new VentasBL();
+                var ventasBL = new VentasBL();
 
                 CotizacionDetalleDTO itemCotDet = findCotDetRecord(CodItem, opcGrillaItems);
+                
+                List<CotDetCostoDTO> lstCostos = new List<CotDetCostoDTO>();
+
+                //Se carga todos los costos
+                var resCostos = ventasBL.ObtenerCotDetCostos(new CotDetCostoDTO() { CotizacionDetalle = new CotizacionDetalleDTO() { Id = itemCotDet.Id } });
+                lstCostos = resCostos.Result.ToList();
+
+                //Se completa los datos de cotizacion detalle para costos
+                lstCostos.ForEach(x =>
+                {
+                    var cditemAux = new CotizacionDetalleDTO();
+                    itemCotDet.CopyProperties(ref cditemAux);
+                    if (cditemAux != null) { x.CotizacionDetalle = cditemAux; }
+                });
+                VariableSesion.setObject(TAG_CDCI, lstCostos);
+
+                //Se agregan los costos de la cotizacion detalle
+                itemCotDet.CotizacionCostos = lstCostos.ToArray();
 
                 return Json(new ResponseDTO<CotizacionDetalleDTO>(itemCotDet));
             }
@@ -2177,11 +2195,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         [HttpPost]
         public JsonResult ListarCDCostosItems(CotDetCostoDTO cotdetCosto)
         {
-            List<CotDetCostoDTO> lstCostos = new List<CotDetCostoDTO>();
+            var ventasBL = new VentasBL();
 
             var lstItems = GetCDIList(opcTablaFinal);
 
-            var ventasBL = new VentasBL();
+            List<CotDetCostoDTO> lstCostos = new List<CotDetCostoDTO>();
 
             //Se carga todos los costos
             var resCostos = ventasBL.ObtenerCotDetCostos(new CotDetCostoDTO() { CotizacionDetalle = cotdetCosto.CotizacionDetalle });
@@ -2196,7 +2214,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             VariableSesion.setObject(TAG_CDCI, lstCostos);
 
             //Solo se devuelve los costos de la grilla respectiva
-            var response = new ResponseDTO<IEnumerable<CotDetCostoDTO>>(lstCostos.Where(x => x.CodCosto == cotdetCosto.CodCosto));
+            var response = new ResponseDTO<IEnumerable<CotDetCostoDTO>>(lstCostos.Where(x => string.IsNullOrEmpty(cotdetCosto.CodCosto) || x.CodCosto == cotdetCosto.CodCosto));
 
             return Json(response);
         }
