@@ -953,6 +953,7 @@
     <Content Include="Views\Shared\_ElementosDeProducto.cshtml" />
     <Content Include="Views\Shared\_DetalleInstalacionTecnica.cshtml" />
     <Content Include="Views\Shared\_BuscarTecnico.cshtml" />
+    <Content Include="Views\BandejaSolicitudesVentas\_SolicitudDetServicio.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\css\font\" />

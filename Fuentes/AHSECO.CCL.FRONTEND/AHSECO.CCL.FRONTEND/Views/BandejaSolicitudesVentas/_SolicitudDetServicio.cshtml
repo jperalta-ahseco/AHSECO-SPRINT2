@@ -1,0 +1,94 @@
+﻿@{
+    ViewBag.Title = "Detalle de Cotización de Servicios";
+}
+
+<div style="width:100%" class="modal-dialog modal-lg container-fluid" role="document">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <!-- Modal content header -->
+        <div class="modal-header box-header well well-sm" style="padding-bottom: 30px;">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="tituloModal"><i class="fa fa-cubes"></i> @ViewBag.Title</h4>
+        </div>
+        <!-- Modal content body -->
+        <div class="modal-body d-flex justify-content-center" align-items-center>
+            <form id="formRegistro" class="d-flex flex-row">
+                <div class="row container-fluid d-flex justify-content-center">
+                    <div class="row container-fluid">
+                        <div class="col-md-3 col-sm-12">
+                            <label for="cmbTipoServicio">Tipo Servicio: </label>
+                            <div class="form-group">
+                                <select class="form-control select2 input-sm" style="width:100%;" id="cmbTipoServicio" data-selected="">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-12">
+                            <label for="txtBusqEquipo">Equipo: </label>
+                            <div class="form-group">
+                                <input placeholder="Ingresar nombre de equipo" type="text" maxlength="100" class="form-control input-sm" id="txtBusqEquipo" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-12">
+                            <label for="txtBusqModelo">Modelo: </label>
+                            <div class="form-group">
+                                <input placeholder="Ingresar código de modelo" type="text" class="form-control input-sm" id="txtBusqModelo" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-12">
+                            <label for="txtBusqMarca">Marca: </label>
+                            <div class="form-group">
+                                <input placeholder="Ingresar marca del producto" type="text" class="form-control input-sm" id="txtBusqMarca" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <button class="btn btn-primary btn-sm" type="button" id="btnBuscarItemsServicio"><i class="fa fa-search" aria-hidden="true"></i>  Buscar</button>
+                        <span id="hidden_fields"></span>
+                    </div>
+                    <label>Servicios de Productos: </label>
+                    <div class="table-responsive">
+                        <table id="tblItemsServicios" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center; width:20%">Tipo Servicio</th>
+                                    <th style="text-align:center; width:15%">Equipo</th>
+                                    <th style="text-align:center; width:15%">Modelo</th>
+                                    <th style="text-align:center; width:15%">Marca</th>
+                                    <th style="text-align:center; width:15%">Precio Ref.</th>
+                                    <th style="text-align:center; width:20%">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <label>Productos Agregados: </label>
+                    <div class="table-responsive" style="white-space: nowrap">
+                        <table id="tblCotDetServ" class="table table-hover table-condensed table-striped table-bordered" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center; width:5%">Sel.</th>
+
+                                    <th style="text-align:center; width:10%">Cod. Servicio</th>
+                                    <th style="text-align:center; width:20%">Descripción</th>
+                                    <th style="text-align:center; width:5%">Cant.</th>
+                                    <th style="text-align:center; width:5%">Precio</th>
+
+                                    <th style="text-align:center; width:15%">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-right">
+                        <button class="btn btn-default btn-sm" type="button" id="DC_btnGuardarServ"><i class="fa fa-save" aria-hidden="true"></i> Guardar</button>
+                        <button class="btn btn-danger btn-sm" type="button" id="DC_btnCerrarServ"><i class="fa fa-plus" aria-hidden="true"></i> Salir</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

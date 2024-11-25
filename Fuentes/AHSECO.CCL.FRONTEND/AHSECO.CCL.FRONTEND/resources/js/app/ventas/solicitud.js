@@ -49,6 +49,7 @@
     var $txtTipoProceso = $("#txtTipoProceso");
     var $idRolUsuario = $("#idRolUsuario");
     var $grpAuditoriaObservacion = $("#grpAuditoriaObservacion");
+    var $btnAgregarServicios = $("#btnAgregarServicios");
 
     /*Sección Solicitud*/
     var $btnEliminarSol = $('#btnEliminarSol');
@@ -65,7 +66,6 @@
     var $cmbFlujo = $('#cmbFlujo');
     var $cmbTipoVenta = $('#cmbTipoVenta');
     var $btnRegresar = $("#btnRegresar");
-    var $servicios = $('#servicios');
     var $cmbempresa = $("#cmbempresa");
 
     /*Sección Cotización*/
@@ -80,6 +80,16 @@
     var $openRegdateCotizacion = $('#openRegdateCotizacion');
     var $btnRegistrarCotizacion = $('#btnRegistrarCotizacion');
     var $btnAgregarDetalle = $('#btnAgregarDetalle');
+
+    /*Servicios*/
+    var $cmbTipoServicio = $("#cmbTipoServicio");
+    var $txtBusqEquipo = $("#txtBusqEquipo");
+    var $txtBusqModelo = $("#txtBusqModelo");
+    var $txtBusqMarca = $("#txtBusqMarca");
+    var $tblItemsServicios = $("#tblItemsServicios");
+    var $tblCotDetServ = $("#tblCotDetServ");
+    var $DC_btnCerrarServ = $("#DC_btnCerrarServ");
+    var $DC_btnGuardarServ = $("#DC_btnGuardarServ");
 
     /*Seccion Contacto*/
     var $btnAñadir = $('#btnAñadir');
@@ -97,6 +107,7 @@
     var $btnBuscarContactos = $('#btnBuscarContactos');
     var $txtContacto = $('#txtContacto');
     var $txtConsultaEstablecimiento = $('#txtConsultaEstablecimiento');
+    var $btnBuscarItemsServicio = $("#btnBuscarItemsServicio");
 
     /**Modal de Productos*/
     var $NoRegSelectProduct = $('#NoRegSelectProduct');
@@ -183,7 +194,9 @@
         FinalizandoVenta: "Finalizando la venta, por favor espere...",
         EnvioGuiaPedidoBO: "Enviando Guia de BO, por favor espere...",
         AprobarImportacion: "Aprobando Importación, por favor espere...",
-        ActualizarImportacion: "Actualizando Importación, por favor espere..."
+        ActualizarImportacion: "Actualizando Importación, por favor espere...",
+        ObteniendoTipoServicio: "Obteniendo tipo de servicios, por favor espere...",
+        obteniendoServicio: "Obteniendo resultados de la busqueda, por favor espere..."
     };
 
     $(Initialize);
@@ -253,7 +266,6 @@
         $dateEntregaPedidoCE.val(hoy());
         $dateIngresoAlmacenSE.val(hoy());
         $dateEntregaPedidoSE.val(hoy());
-        $cmbTipo.on("change", VerServicios);
         $fileCargaDocumentoSustento.on("change", $fileCargaDocumentoSustento_change);
         $btnEliminarSol.click(btnEliminarSolClick);
         $btnGuardarObservacionReq.click(GuardarObservacionReqClick);
@@ -293,8 +305,220 @@
         $btnGuardarImportacion.click($btnGuardarImportacion_click);
         $btnGuardarGestionLogisticaSE.click($btnGuardarGestionLogisticaSE_click);
         $btnEditarGestionLogisticaSE.click($btnEditarGestionLogisticaSE_click);
+        $btnAgregarServicios.click($btnAgregarServicios_click);
+        $btnBuscarItemsServicio.click($btnBuscarItemsServicio_click);
+        $DC_btnCerrarServ.click(cerrarModalDetCotServ);
+        $DC_btnGuardarServ.click(grabarDatosCotDetServ);
         cargaCombos();      
     };
+
+    function grabarDatosCotDetServ() {
+        method = "POST";
+        url = "BandejaSolicitudesVentas/GrabarDatosCotDet";
+        var objDatos = {};
+        var objParam = JSON.stringify(objDatos);
+
+        var fnDoneCallBack = function (data) {
+            $('#modalDetalleCotizacionServicio').modal('hide');
+            cargarTablaDetCotCostosServ(data);
+            $("#btnEnviarCotizacion").css("display", "");
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+    }
+
+    function cargarTablaDetCotCostosServ(data) {
+
+        var columns = [];
+
+        columns = [
+                {
+                    data: "NroItem",
+                    render: function (data) {
+                        if (data == null) { data = ""; }
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "CodItem",
+                    render: function (data) {
+                        if (data == null) { data = ""; }
+
+                        return ("000000" + data).substring(("000000" + data).length - 6, ("000000" + data).length);
+                    }
+                },
+                {
+                    data: "Descripcion",
+                    render: function (data) {
+                        if (data == null) { data = ""; }
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "Stock",
+                    render: function (data) {
+                        if (data == null) { data = ""; }
+                        else {
+                            if (data == 0) {
+                                data = "";
+                            }
+                        }
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "DescUnidad",
+                    render: function (data) {
+                        if (data == null) { data = ""; }
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "Cantidad",
+                    render: function (data) {
+                        if (data == null) { data = ""; }
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "VentaTotalSinIGV",
+                    render: function (data) {
+                        if (data == null) { data = ""; }
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "PorcentajeGanancia",
+                    render: function (data) {
+                        if (data == null) { data = ""; }
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "VentaTotalSinIGVConGanacia",
+                    render: function (data) {
+                        if (data == null) { data = ""; }
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "CodItem",
+                    render: function (data) {
+                        var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
+                        var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                        var quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                        return '<center>' + hidden + editar + ' ' + quitar + '</center>';
+                    }
+                }
+            ];
+
+        
+
+
+        var columnDefs =
+        {
+            targets: [0],
+            visible: false
+        }
+
+        var rowCallback = function (row, data, index) {
+            // Asignar un ID único basado en el índice de datos o algún identificador único
+            $(row).attr('id', 'row' + index);
+        };
+
+        var filters = {}
+        filters.dataTableInfo = false;
+        filters.dataTablePaging = true;
+
+        app.llenarTabla($('#tblDetCotCostos'), data, columns, columnDefs, "#tblDetCotCostos", rowCallback, null, filters);
+    }
+
+
+    function $btnBuscarItemsServicio_click() {
+        var method = "POST";
+        var url = "BandejaServicios/ObtenerServicios";
+        var objServicio = {
+            CodigoServicio: 0,
+            Equipo: $txtBusqEquipo.val(),
+            Marca: $txtBusqMarca.val(),
+            Modelo: $txtBusqModelo.val(),
+            Estado: "",
+            TipoServicio: $cmbTipoServicio.val() == "0" ? '' : $cmbTipoServicio.val()
+        }
+        var data = JSON.stringify(objServicio);
+        var fnDoneCallback = function (data) {
+            cargarTablaItemsServicios(data);
+        };
+        var fnFailCallback = function () {
+            app.message.error("Búsqueda", "La búsqueda no encontró resultados.")
+        };
+        return app.llamarAjax(method, url, data, fnDoneCallback, fnFailCallback, null, mensajes.obteniendoServicio);
+    }
+
+
+    function cargarTablaItemsServicios(data) {
+
+        var columns = [
+            {
+                data: "TipoServicio",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "Equipo",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "Modelo",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "Marca",
+                render: function (data) {
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "Precio",
+                render: function (data) {
+                    var precio = data.toFixed(2)
+                    return '<center>' + precio + '</center>';
+                }
+            },
+            {
+                data: "CodigoServicio",
+                render: function (data) {
+                    var seleccionar = '<a class="btn btn-default btn-xs" title="Agregar" href="javascript: solicitud.agregarItemServicio(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ')"><i class="fa fa-level-down" aria-hidden="true"></i> Agregar</a>';
+                    return '<center>' + seleccionar + '</center>';
+                }
+            }
+        ];
+
+        var columnDefs =
+        {
+            targets: [0],
+            visible: false
+        }
+
+        var rowCallback = function (row, data, index) {
+            // Asignar un ID único basado en el índice de datos o algún identificador único
+            $(row).attr('id', 'row' + index);
+        };
+
+        var filters = {}
+        filters.dataTableInfo = true;
+        filters.dataTablePageLength = 3;
+
+        app.llenarTabla($tblItemsServicios, data, columns, columnDefs, "#tblItemsServicios", rowCallback, null, filters);
+    }
 
     function $btnAgregarDetalle_click() {
         $('#BI_cmbFamilia').get(0).selectedIndex = 0;
@@ -305,6 +529,29 @@
         $('#BI_cmbMarca').val('').trigger("change.select2");
         buscarItems_Solicitud();
     }
+
+    function $btnAgregarServicios_click() {
+        CargarTipoServicio();
+    }
+
+    function CargarTipoServicio() {
+        method = "POST";
+        url = "BandejaServicios/FiltroServicios"
+        obj = []
+        opjParam = JSON.stringify(obj);
+
+        var fnDoneCallBack = function (data) {
+            var filters = {};
+            filters.placeholder = "--Seleccionar--";
+            filters.allowClear = false;
+            app.llenarComboMultiResult($cmbTipoServicio, data.Result.TipServicio, null, 0, "--Seleccionar--", filters);
+        };
+        var fnFailCallBack = function () {
+            app.message.error("Sistema", "Ocurrió un error al realizar la carga de los filtros");
+        };
+
+        app.llamarAjax(method, url, opjParam, fnDoneCallBack, fnFailCallBack, null, mensajes.ObteniendoTipoServicio);
+    };
 
     function buscarItems_Solicitud() {
         method = "POST";
@@ -1040,16 +1287,6 @@
         console.log(codCotizacion);
     }
     
-    function VerServicios() {
-        var tipo = $('select[id="cmbTipo"] option:selected').text()
-       // por el momento utilizaremos el nombre, cuando se cambie, utilizaremos el ID.......
-        if (tipo == "Servicio") {
-            $servicios.show();
-        }
-        else {
-            $servicios.hide ();
-        }
-    };
     
     function cargaCombos() {
 
@@ -2466,6 +2703,128 @@
 
     }
 
+    function agregarItemServicio(CodigoItem) {
+        method = "POST";
+        url = "BandejaSolicitudesVentas/AgregarItemCotDetServ";
+        var objFiltros = {
+            CodItem: CodigoItem
+        };
+        var objParam = JSON.stringify(objFiltros);
+
+        var fnDoneCallBack = function (data) {
+            cargarTablaCotDetServ(data);
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+    }
+
+    function cargarTablaCotDetServ(data) {
+
+        var columns = [
+            {
+                data: "Select",
+                render: function (data) {
+                    var select = "";
+                    if (data == true) { select = "checked='checked'"; }
+                    var input = "<input type='checkbox' id='chkCotDet' " + select + " onclick=''>";
+                    return '<center>' + input + '</center>';
+                }
+            },
+            {
+                data: "CodItem",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    else {
+                        var codigo = "000000" + data;
+                        data = codigo.substr(codigo.length - 6, 6);
+                    }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "Descripcion",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "Cantidad",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "VentaUnitaria",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    else {
+                        data = data.toFixed(2);
+                    }
+                    return '<center>' + data + '</center>';
+                }
+            },
+        
+            {
+                data: "CodItem",
+                render: function (data) {
+                    var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
+                    var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" ><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                    var quitar = '<a id="btnQuitarItemServ" class="btn btn-danger btn-xs" title="Quitar" href="javascript: solicitud.quitarItemServ(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',1)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                    return '<center>' + hidden + editar + ' ' + quitar + '</center>';
+                }
+            }
+        ];
+
+        var columnDefs =
+        {
+            targets: [0],
+            visible: false
+        }
+
+        var rowCallback = function (row, data, index) {
+            // Asignar un ID único basado en el índice de datos o algún identificador único
+            $(row).attr('id', 'row' + index);
+        };
+
+        var filters = {}
+        filters.dataTableInfo = true;
+        filters.dataTablePageLength = 3;
+
+        app.llenarTabla($tblCotDetServ, data, columns, columnDefs, "#tblCotDetServ", rowCallback, null, filters);
+    }
+
+    function quitarItemServ(CodigoItem, opc) {
+
+        var fnSi = function () {
+
+            var method = "POST";
+            var url = "BandejaSolicitudesVentas/QuitarItemCotDet";
+            var objFiltros = {
+                CodItem: CodigoItem,
+                opcGrillaItems: opc
+            };
+            var objParam = JSON.stringify(objFiltros);
+            var fnDoneCallBack = function (data) {
+                var fnCallback = function () {
+                    cargarTablaCotDetServ(data);
+                };
+                app.message.success("Grabar", "Registro eliminado con &eacute;xito.", "Aceptar", fnCallback);
+            };
+            return app.llamarAjax(method, url, objParam, fnDoneCallBack, null);;
+        }
+        return app.message.confirm("Ventas", "&iquest;Esta seguro de quitar un producto de la cotizaci&oacute;n?", "S&iacute;", "No", fnSi, null);
+    }
+
+    function cerrarModalDetCotServ() {
+
+        var fnSi = function () {
+            $('#modalDetalleCotizacionServicio').modal('hide');
+        }
+        return app.message.confirm("Ventas", " Al salir perder&aacute; todos los datos registrados. &iquest;Desea Salir?", "S&iacute;", "No", fnSi, null);
+    }
+
     return {
         seleccionar: seleccionar,
         eliminarObsTmp: eliminarObsTmp,
@@ -2476,6 +2835,8 @@
         reducirCantidad: reducirCantidad,
         verHistorial: verHistorial,
         editarSeries: editarSeries,
-        guardarSeries: guardarSeries
+        guardarSeries: guardarSeries,
+        agregarItemServicio: agregarItemServicio,
+        quitarItemServ: quitarItemServ
     }
 })(window.jQuery, window, document);

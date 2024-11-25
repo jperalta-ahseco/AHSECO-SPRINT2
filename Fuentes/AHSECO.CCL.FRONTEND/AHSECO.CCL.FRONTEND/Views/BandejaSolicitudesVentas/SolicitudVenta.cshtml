@@ -154,14 +154,6 @@
                                 </span>
                             </div>
                         </div>
-                        <div hidden class="col-md-4 col-sm-7 col-xs-12" id="servicios">
-                            <label for="cmbServicios">Servicios Disponibles: </label>
-                            <div class="form-group">
-                                <select class="form-control select2 input-sm" style="width:100%;" id="cmbServicios" data-selected="">
-                                    <option>PENDIENTE</option>
-                                </select>
-                            </div>
-                        </div>
                         <div class="col-md-4 col-sm-12">
                             <div class="form-group">
                                 <label for="cmbempresa">Empresa Emisora:</label>
@@ -398,6 +390,7 @@
                                                         <div class="tab-content">
                                                             <div id="navCotDet" class="tab-pane fade in active">
                                                                 <div class="text-right" style="padding-top: 10px; padding-bottom: 10px">
+                                                                    <button style="@(ViewBag.PermitirAgregarServicios ? "" : "display:none")" class="btn btn-default btn-sm" type="button" data-target="#modalDetalleCotizacionServicio" data-toggle="modal" id="btnAgregarServicios" tabindex="14"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar / Modificar Servicios</button>
                                                                     <button style="@(ViewBag.PermitirAgregarCotDet ? "" : "display:none")" class="btn btn-default btn-sm" type="button" data-target="#modalDetalleCotizacion" data-toggle="modal" id="btnAgregarDetalle" tabindex="14"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar / Modificar Detalle</button>
                                                                 </div>
                                                                 <div class="table-responsive">
@@ -922,6 +915,12 @@
 <div class="modal fade" id="modalDetalleCotizacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false">
     @{
         Html.RenderPartial("_SolicitudDetCot");
+    }
+</div>
+
+<div class="modal fade" id="modalDetalleCotizacionServicio" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_SolicitudDetServicio");
     }
 </div>
 
