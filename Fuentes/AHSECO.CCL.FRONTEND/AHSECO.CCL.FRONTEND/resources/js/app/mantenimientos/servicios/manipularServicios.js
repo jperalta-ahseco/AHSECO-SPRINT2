@@ -524,6 +524,13 @@
 
                 $txtPrecio.val(formatoMiles(data.Result.CabeceraServicio.Precio.toFixed(2)));
 
+
+                if ($txttiposervicio.val() == "SERV06" || $txttiposervicio.val() == "SERV07") {
+                    $navDetalle.show();
+                    $tabsDetalle.show();
+                }
+
+
                 $txtInstrumentos.val(data.Result.CabeceraServicio.Instrumentos).trigger("change.select2");
                 $txtHerramientas.val(data.Result.CabeceraServicio.Herramientas).trigger("change.select2");
                 $txtHerramientasEspeciales.val(data.Result.CabeceraServicio.HerramientasEspeciales).trigger("change.select2");
