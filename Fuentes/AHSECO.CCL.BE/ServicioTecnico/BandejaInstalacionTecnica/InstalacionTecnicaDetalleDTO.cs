@@ -14,9 +14,9 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica
         public int Cantidad { get; set; }
         public string Marca { get; set; }
         public string NumFianza { get; set; }
-        public bool IndLLaveMano { get; set; }
+        //public bool IndLLaveMano { get; set; }
         public string Dimensiones { get; set; }
-        public DateTime? FecLimInsta { get; set; }
+        //public DateTime? FecLimInsta { get; set; }
         public bool IndFianza { get; set; }
         public decimal? MontoPrestPrin { get; set; }
         public decimal? MontoPrestAcc { get; set; }

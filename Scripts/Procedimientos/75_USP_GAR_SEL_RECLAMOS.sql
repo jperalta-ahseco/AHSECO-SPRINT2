@@ -77,7 +77,7 @@ BEGIN
 					WHERE 1 = 1'
 	IF (@isFecIni != '' AND @isFecFin != '')
 	BEGIN
-		SET @sql = @sql +' AND CONVERT(VARCHAR(10),[RECLAMO].[FECHARECLAMO],103) BETWEEN '''+@isFecIni+''' AND '''+@isFecFin+''' '
+		SET @sql = @sql +' AND CONVERT(VARCHAR(10),[RECLAMO].[FEC_REG],103) BETWEEN '''+@isFecIni+''' AND '''+@isFecFin+''' '
 	END
 	IF (@IsReclamo != 0) 
 	BEGIN

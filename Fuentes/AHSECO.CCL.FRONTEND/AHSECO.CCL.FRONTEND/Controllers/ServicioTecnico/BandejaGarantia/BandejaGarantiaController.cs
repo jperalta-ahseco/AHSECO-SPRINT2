@@ -98,6 +98,84 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
             return Json(result);
         }
 
+        [HttpPost]
+        public virtual JsonResult UploadFiles(string extension)
+        {
+            CCLog log = new CCLog();
+            try
+            {
+                log.TraceInfo(Utilidades.GetCaller());
+
+                var correlativo = DateTime.Now.ToString("yyyyMMddHHmmss");
+                string nombre = "REC" + correlativo;
+                string rutaArchivo = "";
+                string fileName = "";
+
+                string ruta_temporal = Utilidades.ObtenerValorConfig("tempFilesReclamo");
+                string UploadSize = Utilidades.ObtenerValorConfig("UploadSize");
+
+                log.TraceError("ruta_temporal::" + ruta_temporal);
+                log.TraceError("UploadSize::" + UploadSize);
+
+                string folder = DateTime.Now.ToString("yyyyMM");
+                string rutafinal = ruta_temporal + folder;
+
+                log.TraceError("rutafinal::" + rutafinal);
+
+                bool exists = System.IO.Directory.Exists(rutafinal);
+
+                if (!exists)
+                    System.IO.Directory.CreateDirectory(rutafinal);
+
+
+                if (System.IO.Directory.Exists(rutafinal))
+                {
+                    for (int i = 0; i < Request.Files.Count; i++)
+                    {
+
+                        rutaArchivo = rutafinal + "\\" + nombre;
+
+                        HttpPostedFileBase file = Request.Files[i]; //Uploaded file
+
+                        long fileSize = file.ContentLength;
+                        var sizereal = (fileSize / 1024L);
+
+                        if (sizereal > Convert.ToInt32(UploadSize))
+                        {
+                            return Json("false");
+                        }
+
+                        fileName = nombre;
+                        string mimeType = file.ContentType;
+                        System.IO.Stream fileContent = file.InputStream;
+
+
+                        string rutaFin = rutaArchivo + "." + extension;
+
+                        log.TraceError("rutaFin::" + rutaFin);
+
+                        file.SaveAs(rutaFin); //File will be saved in application root
+
+
+
+                    }
+                    log.TraceError("Llego imprimir::" + folder + fileName);
+                    return Json(folder + "\\" + nombre + "." + extension);
+                }
+                else
+                {
+                    log.TraceError("Ruta no existe::" + rutafinal);
+                    return Json("false");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                log.TraceError(Utilidades.GetCaller() + "::Error::" + ex.Message.ToString());
+                return Json("error");
+            }
+        }
+
         public JsonResult RegistroGarantiaMain(GrupoReclamoDTO grupoReclamoDTO)
         {
             try
@@ -262,12 +340,12 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
             try
             {
                 observacionDTO.UsuarioRegistra = User.ObtenerUsuario();
-                var instalacionTecnicaBL = new InstalacionTecnicaBL();
+                var garantiasBL = new GarantiasBL();
                 observacionDTO.Nombre_Usuario = User.ObtenerNombresCompletos();
                 observacionDTO.Perfil_Usuario = User.ObtenerPerfil();
                 observacionDTO.UsuarioRegistra = User.ObtenerUsuario();
 
-                var resultObservacion = instalacionTecnicaBL.MantenimientoObservaciones(observacionDTO);
+                var resultObservacion = garantiasBL.MantenimientoObservaciones(observacionDTO);
 
                 return Json(new
                 {
@@ -460,7 +538,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
         }
         public FileResult DescargarFile(string url, string nombreDoc)
         {
-            string pao_files = ConfigurationManager.AppSettings.Get("tempFiles");
+            string pao_files = ConfigurationManager.AppSettings.Get("tempFilesReclamo");
             string ruta = pao_files + url;
 
             var fileName = Path.GetFileName(url);

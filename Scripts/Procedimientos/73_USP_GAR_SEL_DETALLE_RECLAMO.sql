@@ -6,7 +6,7 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_GAR_SEL_DETALLE_RECLAMO]
 /*=======================================================================================================
 	Nombre:				Fecha:			Descripcion:
 	Diego Bazalar		18.11.24		Realiza la búsqueda del detalle de reclamo.
-	EXEC [USP_GAR_SEL_DETALLE_RECLAMO] 1
+	EXEC [USP_GAR_SEL_DETALLE_RECLAMO] 3 
   =======================================================================================================*/
   @IsReclamo			BIGINT
 )
@@ -30,7 +30,7 @@ SET NOCOUNT ON
 	LEFT JOIN [dbo].[TBM_COTDET_DESPACHO] AS COTDETDES WITH(NOLOCK) ON COTDET.ID = COTDETDES.ID_COTDETALLE
 	LEFT JOIN [dbo].[TBM_COTIZACIONVENTA] AS COTIZ WITH(NOLOCK) ON COTDET.ID_COTIZACION = COTIZ.ID_COTIZACION
 	LEFT JOIN [dbo].[TBD_DATOS_GENERALES] AS DATOS WITH(NOLOCK) ON DATOS.DOMINIO = 'GARANTIAS' AND DATOS.COD_VALOR1 = COTIZ.GARANTIA
-	WHERE ID_RECLAMO = 1
+	WHERE ID_RECLAMO = @IsReclamo
 
 
 	SELECT
@@ -85,6 +85,7 @@ SET NOCOUNT ON
 		LEFT JOIN [dbo].[TBM_PROCESOESTADOS] estado WITH(NOLOCK) ON estado.COD_ESTADO = RECLAMO.ESTADO AND ID_PROCESO = 7
 		LEFT JOIN [dbo].[TBD_DATOS_GENERALES] urgencia WITH(NOLOCK) ON urgencia.COD_VALOR1 = RECLAMO.URGENCIA
 		LEFT JOIN [dbo].[TBM_UBIGEO] ubi WITH(NOLOCK) ON ubi.CODUBIGEO = RECLAMO.UBIGEO
+		WHERE ID_RECLAMO = @IsReclamo
 
 SET NOCOUNT OFF
 END

@@ -22,8 +22,6 @@ SET NOCOUNT ON
 	IF OBJECT_ID('tempdb..#tmpDetalleParcial') IS NOT NULL DROP TABLE #tmpDetalleParcial
 
 
-
-
 	/*Hallar número de solicitud*/
 	SELECT
 		TOP 1 @ID_SOLICITUD = COTIZ.ID_SOLICITUD
@@ -120,8 +118,16 @@ SET NOCOUNT ON
 
 
 	/*determina la fecha final de garantía*/
-	select * from #tmpSolicitudVenta --Cabecera
-	select * from #tmpInfoContacto --InfoContacto
+	SELECT 
+		VENTA.*
+		,ORDEN.NUMORDEN AS ORDENCOMPRA
+	FROM #tmpSolicitudVenta AS VENTA --Cabecera
+	LEFT JOIN (select TOP 1 ID_SOLICITUD, NUMORDEN FROM [TBM_DESPACHO] GROUP BY ID_SOLICITUD, NUMORDEN) AS ORDEN ON VENTA.ID_SOLICITUD = ORDEN.ID_SOLICITUD
+
+	SELECT 
+		* 
+	FROM #tmpInfoContacto --InfoContacto
+
 	SELECT
 		ID_DESPACHO_DIST
 		,NUMSERIE

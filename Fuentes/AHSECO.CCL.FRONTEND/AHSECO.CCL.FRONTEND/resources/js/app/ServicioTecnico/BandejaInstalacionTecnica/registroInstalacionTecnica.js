@@ -490,7 +490,7 @@
                     Marca: data.Result[i].Marca,
                     IndFianza: data.Result[i].IndFianza,
                     NumFianza: data.Result[i].NumFianza,
-                    IndLLaveMano: data.Result[i].IndLLaveMano,
+                    //IndLLaveMano: data.Result[i].IndLLaveMano,
                     Dimensiones: data.Result[i].Dimensiones,
                     MontoPrestAcc: data.Result[i].MontoPrestAcc,
                     MontoPrestPrin: data.Result[i].MontoPrestPrin,
@@ -803,11 +803,11 @@
                         Cantidad: data.Result.DetalleCotizacion[i].Cantidad,
                         IndFianza: data.Result.DetalleCotizacion[i].IndFianza,
                         NumFianza: data.Result.DetalleCotizacion[i].NumFianza,
-                        IndLLaveMano: data.Result.DetalleCotizacion[i].IndLLaveMano,
+                        //IndLLaveMano: data.Result.DetalleCotizacion[i].IndLLaveMano,
                         Dimensiones: data.Result.DetalleCotizacion[i].Dimensiones,
                         MontoPrestAcc: data.Result.DetalleCotizacion[i].MontoPrestAcc,
                         MontoPrestPrin: data.Result.DetalleCotizacion[i].MontoPrestPrin,
-                        FecLimInsta: app.obtenerFecha(data.Result.DetalleCotizacion[i].FecLimInsta),
+                        //FecLimInsta: app.obtenerFecha(data.Result.DetalleCotizacion[i].FecLimInsta),
                         Elementos : elementos
                 })
             };
@@ -985,19 +985,6 @@
                 }
             },
             {
-                data: "IndLLaveMano",
-                render: function (data, type, row) {
-                    var rpta = ""
-                    if (data == true) {
-                        rpta = "Sí";
-                    }
-                    else if (rpta == false) {
-                        rpta = "No";
-                    }
-                    return '<center>' + rpta + '</center>'
-                }
-            },
-            {
                 data: "Dimensiones",
                 render: function (data, type, row) {
                     return '<center>' + data + '</center>'
@@ -1019,12 +1006,6 @@
                 data: "MontoPrestPrin",
                 render: function (data, type, row) {
                     return '<center>' +'S/'+data + '</center>'
-                }
-            },
-            {
-                data: "FecLimInsta",
-                render: function (data, type, row) {
-                    return '<center>' + data + '</center>'
                 }
             },
             {
@@ -1811,11 +1792,11 @@
                         Cantidad: data.Result.DetalleInstalacion[i].Cantidad,
                         IndFianza: data.Result.DetalleInstalacion[i].IndFianza,
                         NumFianza: data.Result.DetalleInstalacion[i].NumFianza,
-                        IndLLaveMano: data.Result.DetalleInstalacion[i].IndLLaveMano,
+                        //IndLLaveMano: data.Result.DetalleInstalacion[i].IndLLaveMano,
                         Dimensiones: data.Result.DetalleInstalacion[i].Dimensiones,
                         MontoPrestAcc: data.Result.DetalleInstalacion[i].MontoPrestAcc,
                         MontoPrestPrin: data.Result.DetalleInstalacion[i].MontoPrestPrin,
-                        FecLimInsta: app.obtenerFecha(data.Result.DetalleInstalacion[i].FecLimInsta),
+                        //FecLimInsta: app.obtenerFecha(data.Result.DetalleInstalacion[i].FecLimInsta),
                         Elementos: elementos
                     });
                 };

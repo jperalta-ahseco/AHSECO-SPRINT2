@@ -11,7 +11,7 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaGarantias
     public class GrupoGarantiasDTO
     {
         public ContactoDTO Contacto { get; set; }
-        public SolicitudDTO CabeceraSolicitud { get; set; }
+        public SolicitudVentaGarantiaDTO CabeceraSolicitud { get; set; }
         public DetalleSolicitudGarantiaDTO Detalle {  get; set; }
         public int CodRpta { get; set; }
     }

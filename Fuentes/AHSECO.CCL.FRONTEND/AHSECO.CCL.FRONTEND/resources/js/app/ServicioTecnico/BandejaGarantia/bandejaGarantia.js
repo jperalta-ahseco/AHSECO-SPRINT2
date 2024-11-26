@@ -107,8 +107,6 @@
     }
 
     function BuscarClick() {
-
-
         var codDepartamento = sessionStorage.getItem('codDepartamento');
         var codProvincia = sessionStorage.getItem('codProvincia');
         var codDistrito = sessionStorage.getItem('codDistrito');
@@ -499,28 +497,7 @@
                 }
             },
             {
-                data: "Id_Solicitud",
-                render: function (data, type, row) {
-                    var numSolFormateado = ("000000" + data.toString());
-                    numSolFormateado = numSolFormateado.substring((numSolFormateado.length) - 6, numSolFormateado.length);
-
-                    return '<center>' + numSolFormateado + '</center>'
-                }
-            },
-            {
-                data: "RucEmpresa",
-                render : function (data, type, row) {
-                    return '<center>' + data + '</center>'
-                }
-            },
-            {
                 data: "RazonSocial",
-                render : function (data, type, row) {
-                    return '<center>' + data + '</center>'
-                }
-            },
-            {
-                data: "Ubicacion",
                 render : function (data, type, row) {
                     return '<center>' + data + '</center>'
                 }
@@ -544,21 +521,9 @@
                 }
             },
             {
-                data: "FechaReclamo",
-                render : function (data, type, row) {
-                    return '<center>' + app.obtenerFecha(data) + '</center>'
-                }
-            },
-            {
                 data: "FechaProgramacion",
                 render : function (data, type, row) {
                     return '<center>' + app.obtenerFecha(data) + '</center>'
-                }
-            },
-            {
-                data: "Ubigeo",
-                render: function (data, type, row) {
-                    return '<center>' + data + '</center>'
                 }
             },
             {

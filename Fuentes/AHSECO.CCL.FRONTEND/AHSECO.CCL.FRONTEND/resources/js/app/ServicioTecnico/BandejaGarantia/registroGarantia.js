@@ -61,6 +61,7 @@
     var $coltipProceso = $('#coltipProceso');
     var $colContrato = $('#colContrato');
     var $colOrdenCompra = $('#colOrdenCompra');
+    var $rowDocsProc = $('#rowDocsProc');
     //Labels
     var $lblNombreArchivo = $('#lblNombreArchivo');
 
@@ -88,6 +89,10 @@
     var $txtObservacion = $('#txtObservacion');
     var $btnGuardarObservacionReq = $('#btnGuardarObservacionReq');
     var $tbodyObservaciones = $('#tbodyObservaciones');
+    var $tabObservaciones = $('#tabObservaciones');
+    var $navObservaciones = $('#navObservaciones');
+
+
     /*Modal Adjuntos*/
     var $fileCargaDocumentoSustento = $('#fileCargaDocumentoSustento');
     var $btnAgregarDocumento = $('#btnAgregarDocumento');
@@ -155,7 +160,7 @@
     let destinos_select = [];
     let observaciones = [];
     let adjuntos = [];
-
+    let rptaFinal = 0;
     function Initializer() {
         cargarTipoDoc();
         ObtenerFiltrosGarantias();
@@ -602,6 +607,7 @@
     function LimpiarTodo() {
         var fnSi = function () {
             garantias.tecnicosAsig = [];
+            observaciones = [];
             $txtSerieVenta.val("");
             $txtSerieVenta.prop('disabled', false);
             limpiarCabecera();
@@ -612,6 +618,7 @@
             $btnBuscarTecnicos.prop('disabled', true);
             $btnAñadirTecnico.prop('disabled', true);
             $dateProgramacion.prop('disabled', true);
+            $tbodyObservaciones.empty();
             $tbodyTecnicos.empty();
             $NoExisteTec.show();
         }
@@ -662,19 +669,27 @@
         limpiarCabecera();
 
         if (requerimiento.NroProceso != "" && requerimiento.NroProceso != null) {
+            $rowDocsProc.css('display', 'block');
             $colProceso.css('display', 'block');
+            $txtProceso.val(requerimiento.NroProceso);
         };
 
         if (requerimiento.TipoProceso != "" && requerimiento.TipoProceso != null) {
+            $rowDocsProc.css('display', 'block');
             $coltipProceso.css('display', 'block');
+            $txtTipProceso.val(requerimiento.TipoProceso);
         }
 
         if (requerimiento.Contrato != "" && requerimiento.Contrato != null) {
+            $rowDocsProc.css('display', 'block');
             $colContrato.css('display', 'block');
+            $txtContrato.val(requerimiento.Contrato);
         };
 
         if (requerimiento.OrdenCompra != "" && requerimiento.OrdenCompra != null) {
+            $rowDocsProc.css('display', 'block');
             $colOrdenCompra.css('display', 'block');
+            $txtOrdCompra.val(requerimiento.OrdenCompra);
         };
 
         $txtEmpresa.val(requerimiento.Nom_Empresa);
@@ -945,8 +960,8 @@
                                 }
                             );
                             var html = '<div class="text-center">';
-                            html += ' <a class="btn btn-default btn-xs" title="Eliminar"  href="javascript:garantias.eliminarDocumento(' + data.Result.Codigo + ')"><i class="fa fa-ban" aria-hidden="true"></i></a>';
                             html += ' <a class="btn btn-default btn-xs" title="Descargar"  href="javascript:garantias.download(' + data.Result.Codigo + ')"><i class="fa fa-download" aria-hidden="true"></i></a>&nbsp;';
+                            html += ' <a class="btn btn-default btn-xs" title="Eliminar"  href="javascript:garantias.eliminarDocumento(' + data.Result.Codigo + ')"><i class="fa fa-ban" aria-hidden="true"></i></a>';
                             html += '</div>';
 
 
@@ -1045,7 +1060,7 @@
 
         if ($numReclamo.val() != "") {
             var method = "POST";
-            var url = "BandejaInstalacionTecnica/GuardarObservacion"
+            var url = "BandejaGarantia/GuardarObservacion"
             var objObservacion = {
                 TipoProceso: "I",
                 Observacion: $txtObservacion.val(),
@@ -1056,38 +1071,47 @@
 
             var objParamObs = JSON.stringify(objObservacion);
 
-            var fnDoneCallBack = function () {
-                app.message.success("Garantías", "Se realizó el registro de la observación correctamente.");
+            var fnSi = function () {
+                var fnDoneCallBack = function (data) {
+                    app.message.success("Garantías", "Se realizó el registro de la observación correctamente.");
 
-                garantias.contadorObservaciones += 1;
+                    garantias.contadorObservaciones += 1;
 
-                observaciones.push(
-                    {
-                        TipoProceso: "I",
-                        Observacion: $txtObservacion.val(),
-                        Nombre_Usuario: $nombreusuario.val(),
-                        Id_WorkFlow: $codigoWorkflow.val(),
-                        Estado_Instancia: $estadoReq.val
-                    }
-                );
-                var nuevoTr = "<tr id=row" + garantias.contadorObservaciones + ">" +
-                    "<th style='text-align: center;'>" + $nombreusuario.val() + "</th>" +
-                    "<th style='text-align: center;'>" + $perfilnombre.val() + "</th>" +
-                    "<th style='text-align: center;'>" + hoy() + "</th>" +
-                    "<th style='text-align: center;'>" + objObservacion.Observacion + "</th>" +
-                    "<th style='text-align: center;'>" +
-                    "<a id='btnEliminarObs' class='btn btn-default btn-xs' title='Eliminar' href='javascript: garantias.eliminarObsTmp(" + garantias.contadorObservaciones + ")' > <i class='fa fa-trash' aria-hidden='true'></i></a>" +
-                    "</th> " +
-                    "</tr>";
-                $tblObservaciones.append(nuevoTr);
-                $NoExisteRegObs.hide();
-                $modalObservacion.modal('toggle');
+                    observaciones.push(
+                        {
+                            TipoProceso: "I",
+                            Observacion: $txtObservacion.val(),
+                            Nombre_Usuario: $nombreusuario.val(),
+                            Id_WorkFlow: $codigoWorkflow.val(),
+                            Estado_Instancia: $estadoReq.val
+                        }
+                    );
+                    var nuevoTr = "<tr id=row" + garantias.contadorObservaciones + ">" +
+                        "<th style='text-align: center;'>" + $nombreusuario.val() + "</th>" +
+                        "<th style='text-align: center;'>" + $perfilnombre.val() + "</th>" +
+                        "<th style='text-align: center;'>" + hoy() + "</th>" +
+                        "<th style='text-align: center;'>" + objObservacion.Observacion + "</th>" +
+                        "<th style='text-align: center;'>" +
+                        //                    "<a id='btnEliminarObs' class='btn btn-default btn-xs' title='Eliminar' href='javascript: garantias.eliminarObsTmp(" + garantias.contadorObservaciones + ")' > <i class='fa fa-trash' aria-hidden='true'></i></a>" +
+                        "</th> " +
+                        "</tr>";
+                    $tblObservaciones.append(nuevoTr);
+                    $NoExisteRegObs.hide();
+                    $modalObservacion.modal('toggle');
+
+                    var redirect = function () {
+                        app.redirectTo('BandejaGarantia');
+                    };
+
+                    return app.message.success("Éxito", "Se registró la observación satisfactoriamente", "Aceptar", redirect);
+                };
+
+                var fnFailCallBack = function () {
+                    app.message.error("Validación", "Ocurrió un error al registrar la observación.");
+                };
+                app.llamarAjax(method, url, objParamObs, fnDoneCallBack, fnFailCallBack, null, mensajes.guardandoObservacion);
             };
-
-            var fnFailCallBack = function () {
-                app.message.error("Validación","Ocurrió un error al registrar la observación.");
-            };
-            app.llamarAjax(method, url, objParamObs, fnDoneCallBack, fnFailCallBack, null, mensajes.guardandoObservacion);
+            return app.message.confirm("Confirmación", "¿Desea registrar la observación?", "Sí", "No", fnSi, null);
         }
         else {
             garantias.contadorObservaciones += 1;
@@ -1205,11 +1229,11 @@
                 data: "Cod_Tecnico",
                 render: function (data, type, row) {
                     if ($tipoproceso.val() == "") {
-                        var retirar = '<a id="btnDesasignarTecnicoTmp" class="btn btn-danger btn-xs" tittle="Desasignar Tecnico" href="javascript:garantias.DesasignarTecnicoTmp(' + data + ')"><i class="fa fa-minus-square-o" aria-hidden="true"></i></a>'
+                        var retirar = '<a id="btnDesasignarTecnicoTmp" class="btn btn-danger btn-xs" title="Desasignar Tecnico" href="javascript:garantias.DesasignarTecnicoTmp(' + data + ')"><i class="fa fa-minus-square-o" aria-hidden="true"></i></a>'
                         return '<center>' + retirar + '</center>';
                     }
                     else if ($tipoproceso.val() == "U") {
-                        var retirar = '<a id="btnDesasignarTecnico" class="btn btn-danger btn-xs" tittle="Desasignar Tecnico" href="javascript:garantias.DesasignarTecnico(' + data + ')"><i class="fa fa-minus-square-o" aria-hidden="true"></i></a>'
+                        var retirar = '<a id="btnDesasignarTecnico" class="btn btn-danger btn-xs" title="Desasignar Tecnico" href="javascript:garantias.DesasignarTecnico(' + data + ')"><i class="fa fa-minus-square-o" aria-hidden="true"></i></a>'
                         return '<center>' + retirar + '</center>';
                     }
                     else if ($tipoproceso.val() == "V") {
@@ -1290,7 +1314,7 @@
 
         var nombre = documento.NombreDocumento;
 
-        app.abrirVentana("BandejaInstalacionTecnica/DescargarFile?url=" + ruta + "&nombreDoc=" + nombre);
+        app.abrirVentana("BandejaGarantia/DescargarFile?url=" + ruta + "&nombreDoc=" + nombre);
     }
     function $adjuntarDocumento_click() {
         //$fileCargaDocumentoSustento.click();
@@ -1431,7 +1455,7 @@
                 ,CodEstado: "REG"
             },
             Tecnicos : garantias.tecnicosAsig,
-            Observaciones : garantias.Observaciones,
+            Observaciones: observaciones,
             Adjuntos :  adjuntos
         };
 
@@ -1441,7 +1465,7 @@
             var fnDoneCallBack = function (data) {
 
                 function redirect() {
-                    app.redirectTo("BandejaGarantía");
+                    app.redirectTo('BandejaGarantia');
                 };
 
                 app.message.success("Registro Reaizado", "Se realizó el registro correctamente.", "Aceptar", redirect);
@@ -1765,8 +1789,10 @@
                     for (i = 0; i < data.Result.Adjuntos.length; i++) {
                         var html = '<div class="text-center">';
                         //var d = "'" + data.Result.Adjuntos[i].CodigoDocumento + "','" + data.Result.Adjuntos[i].RutaDocumento + "'";
-                        html += ' <a class="btn btn-default btn-xs" title="Descargar"  href="javascript:registroInstalacionTec.download(' + data.Result.Adjuntos[i].CodigoDocumento + ')"><i class="fa fa-download" aria-hidden="true"></i></a>&nbsp;';
-                        html += ' <a class="btn btn-default btn-xs" title="Eliminar"  href="javascript:registroInstalacionTec.eliminarDocumento(' + data.Result.Adjuntos[i].CodigoDocumento + ')"><i class="fa fa-ban" aria-hidden="true"></i></a>&nbsp;';
+                        html += ' <a class="btn btn-default btn-xs" title="Descargar"  href="javascript:garantias.download(' + data.Result.Adjuntos[i].CodigoDocumento + ')"><i class="fa fa-download" aria-hidden="true"></i></a>&nbsp;';
+                        if ($tipoproceso.val() == "U") {
+                            html += ' <a class="btn btn-default btn-xs" title="Eliminar"  href="javascript:garantias.eliminarDocumento(' + data.Result.Adjuntos[i].CodigoDocumento + ')"><i class="fa fa-ban" aria-hidden="true"></i></a>&nbsp;';
+                        };
 
                         html += '</div>';
 
@@ -1807,6 +1833,7 @@
 
             if ($tipoproceso.val() == "V") {
                 $btnAgregarDocumento.css('display', 'none');
+                $btnAgregarObservacion.css('display', 'none');
             }
         }
 
@@ -1891,11 +1918,23 @@
         var fnSi = function () {
             var fnDoneCallBack = function () {
 
-                var redirect = function () {
-                    app.redirectTo('BandejaGarantia');
+                
+                var fnSi = function () {
+
+                    $tituloModalObservacion.html("Finalizar Reclamo.");
+                    $grpAuditoriaObservacion.hide();
+                    $modalObservacion.modal("show");
+                    $lblUsuarioCreacionObservacion.text($nombreusuario.val());
+                    $lblFechaCreacionObservacion.text(hoy());
+                    rptaFinal = 1;
                 };
 
-                app.message.success("Éxito", "Se finalizó el requerimiento satisfactoriamente", "Aceptar", redirect);
+                var fnNo = function () {
+                    var redirect = function () {
+                        app.redirectTo('BandejaGarantia');
+                    };
+                };
+                return app.message.confirm("Éxito", "Se finalizó el requerimiento satisfactoriamente \n ¿Desea agregar un comentario adicional?", "Sí","No",fnSi,fnNo);
 
             };
 
@@ -1912,6 +1951,10 @@
 
     return {
         DesasignarTecnicoTmp: DesasignarTecnicoTmp,
-        DesasignarTecnico: DesasignarTecnico
+        DesasignarTecnico: DesasignarTecnico,
+        download: download,
+        eliminarDocumento: eliminarDocumento,
+        eliminarDocTemp: eliminarDocTemp,
+        eliminarObsTmp: eliminarObsTmp
     }
 })(window.jQuery, window, document);

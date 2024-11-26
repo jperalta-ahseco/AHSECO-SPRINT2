@@ -226,11 +226,11 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                             Cantidad = reader.IsDBNull(reader.GetOrdinal("CANTIDAD")) ? 0 : reader.GetInt32(reader.GetOrdinal("CANTIDAD")),
                             Marca = reader.IsDBNull(reader.GetOrdinal("MARCA")) ? "" : reader.GetString(reader.GetOrdinal("MARCA")),
                             NumFianza = reader.IsDBNull(reader.GetOrdinal("NUMFIANZA")) ? "" : reader.GetString(reader.GetOrdinal("NUMFIANZA")),
-                            IndLLaveMano = reader.GetString(reader.GetOrdinal("INDLLAVEMANO")) == "S" ? true : false,
+                            //IndLLaveMano = reader.GetString(reader.GetOrdinal("INDLLAVEMANO")) == "S" ? true : false,
                             Dimensiones = reader.IsDBNull(reader.GetOrdinal("DIMENSIONES")) ? "" : reader.GetString(reader.GetOrdinal("DIMENSIONES")),
                             MontoPrestAcc = reader.IsDBNull(reader.GetOrdinal("MONTOPACCE")) ? 0 : reader.GetDecimal(reader.GetOrdinal("MONTOPACCE")),
                             MontoPrestPrin = reader.IsDBNull(reader.GetOrdinal("MONTOPPRINC")) ? 0 : reader.GetDecimal(reader.GetOrdinal("MONTOPPRINC")),
-                            FecLimInsta = reader.GetDateTime(reader.GetOrdinal("FECLIMINSTA"))
+                            //FecLimInsta = reader.GetDateTime(reader.GetOrdinal("FECLIMINSTA"))
                         };
                         result.Add(detalleDTO);
                     };
@@ -375,8 +375,8 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                     parameters.Add("IsCANTIDAD", detalle.Cantidad);
                     parameters.Add("IsMARCA", detalle.Marca);
                     parameters.Add("IsNUMFIANZA", detalle.NumFianza);
-                    parameters.Add("IsINDLLAVEMANO", detalle.IndLLaveMano == true ? "S" : "N");
-                    parameters.Add("IsFECLIMINSTA", detalle.FecLimInsta);
+                    //parameters.Add("IsINDLLAVEMANO", detalle.IndLLaveMano == true ? "S" : "N");
+                    //parameters.Add("IsFECLIMINSTA", detalle.FecLimInsta);
                     parameters.Add("IsINDFIANZA", detalle.IndFianza == true ? "S" : "N");
                     parameters.Add("IsMONTOPPRINC", detalle.MontoPrestPrin);
                     parameters.Add("IsMONTOPACCE", detalle.MontoPrestAcc);
@@ -665,12 +665,12 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                             IndFianza = reader.GetString(reader.GetOrdinal("INDFIANZA")) == "S" ? true : false,
                             NumFianza = reader.IsDBNull(reader.GetOrdinal("NUMFIANZA")) ? "" : reader.GetString(reader.GetOrdinal("NUMFIANZA")),
                             //GarantiaAdicional = reader.IsDBNull(reader.GetOrdinal("GARANTIAADIC")) ? "" : reader.GetString(reader.GetOrdinal("GARANTIAADIC")),
-                            IndLLaveMano = reader.GetString(reader.GetOrdinal("INDLLAVEMANO")) == "S" ? true : false,
+                            //IndLLaveMano = reader.GetString(reader.GetOrdinal("INDLLAVEMANO")) == "S" ? true : false,
                             Dimensiones = reader.IsDBNull(reader.GetOrdinal("DIMENSIONES")) ? "" : reader.GetString(reader.GetOrdinal("DIMENSIONES")),
                             //IndRequierePlaca = reader.GetString(reader.GetOrdinal("INDREQUIEREPLACA")) == "S" ? true : false,
                             MontoPrestPrin = reader.IsDBNull(reader.GetOrdinal("MONTOPPRINC")) ? 0 : reader.GetDecimal(reader.GetOrdinal("MONTOPPRINC")),
                             MontoPrestAcc = reader.IsDBNull(reader.GetOrdinal("MONTOPACCE")) ? 0 : reader.GetDecimal(reader.GetOrdinal("MONTOPACCE")),
-                            FecLimInsta = reader.GetDateTime(reader.GetOrdinal("FECLIMINSTA"))
+                            //FecLimInsta = reader.GetDateTime(reader.GetOrdinal("FECLIMINSTA"))
                         };
                         _detalleCotizacion.Add(cotDetalle);
                     }
@@ -755,11 +755,11 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                             Cantidad = reader.IsDBNull(reader.GetOrdinal("CANTIDAD")) ? 0 : reader.GetInt32(reader.GetOrdinal("CANTIDAD")),
                             Marca = reader.IsDBNull(reader.GetOrdinal("MARCA")) ? "" : reader.GetString(reader.GetOrdinal("MARCA")),
                             NumFianza = reader.IsDBNull(reader.GetOrdinal("NUMFIANZA")) ? "" : reader.GetString(reader.GetOrdinal("NUMFIANZA")),
-                            IndLLaveMano = reader.GetString(reader.GetOrdinal("INDLLAVEMANO")) == "S" ? true : false,
+                            //IndLLaveMano = reader.GetString(reader.GetOrdinal("INDLLAVEMANO")) == "S" ? true : false,
                             Dimensiones = reader.IsDBNull(reader.GetOrdinal("DIMENSIONES")) ? "" : reader.GetString(reader.GetOrdinal("DIMENSIONES")),
                             MontoPrestAcc = reader.IsDBNull(reader.GetOrdinal("MONTOPACCE")) ? 0 : reader.GetDecimal(reader.GetOrdinal("MONTOPACCE")),
                             MontoPrestPrin = reader.IsDBNull(reader.GetOrdinal("MONTOPPRINC")) ? 0 : reader.GetDecimal(reader.GetOrdinal("MONTOPPRINC")),
-                            FecLimInsta = reader.GetDateTime(reader.GetOrdinal("FECLIMINSTA")),
+                            //FecLimInsta = reader.GetDateTime(reader.GetOrdinal("FECLIMINSTA")),
                         };
                         _listDetalle.Add(detalle);
                     }
