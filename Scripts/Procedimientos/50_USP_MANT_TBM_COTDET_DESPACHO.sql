@@ -10,8 +10,9 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_MANT_TBM_COTDET_DESPACHO]
 @pIndInfoManual CHAR(1),
 @pIndInstaCapa CHAR(1),
 @pIndGarantiaAdic CHAR(1),
-@pNMesGaranAdic INT,
+@pCodGarantiaAdic NVARCHAR(10),
 @pIndMantPrevent CHAR(1),
+@pIndCalib CHAR(1),
 @pDimensiones VARCHAR(50),
 @pIndCompraLocal CHAR(1),
 @pObsCliente VARCHAR(2000),
@@ -39,17 +40,17 @@ BEGIN
 		INSERT INTO [dbo].[TBM_COTDET_DESPACHO]
 		([ID_COTDETALLE],
 		[INDINFOVIDEO],[INDINFOMANUAL],[INDINSTACAPA],
-		[INDGARANADIC],[NMESGARANADIC],[DIMENSIONES],
+		[INDGARANADIC],[CODGARANADIC],[DIMENSIONES],
 		[INDCOMPRALOCAL],[OBSCLIENTE],[INDMANTPREVENT],
-		[INDREQPLACA],[OBSDESPACHO],
+		[INDCALIB],[INDREQPLACA],[OBSDESPACHO],
 		[MTOTOTALCOSTO],[INDFIANZA],[NUMFIANZA],
 		[MONTOPPRINC],[MONTOPACCE],[USR_REG],[FEC_REG])
 		VALUES
 		(@pId_CodDetalle,
 		@pIndInfoVideo,@pIndInfoManual,@pIndInstaCapa,
-		@pIndGarantiaAdic,@pNMesGaranAdic,@pDimensiones,
+		@pIndGarantiaAdic,@pCodGarantiaAdic,@pDimensiones,
 		@pIndCompraLocal,@pObsCliente,@pIndMantPrevent,
-		@pIndReqPlaca,@pObsDespacho,
+		@pIndCalib,@pIndReqPlaca,@pObsDespacho,
 		@pMontoTotalCosto,@pIndFianza,@pNumFianza,
 		@pMontoPPrinc,@pMontoPAcce,
 		@pUsuarioRegistro,GETDATE())
@@ -64,9 +65,9 @@ BEGIN
 		UPDATE [dbo].[TBM_COTDET_DESPACHO]
 		SET ID_COTDETALLE = @pId_CodDetalle,
 		INDINFOVIDEO = @pIndInfoVideo, INDINFOMANUAL = @pIndInfoManual, INDINSTACAPA = @pIndInstaCapa, 
-		INDGARANADIC = @pIndGarantiaAdic, NMESGARANADIC = @pNMesGaranAdic, DIMENSIONES = @pDimensiones, 
+		INDGARANADIC = @pIndGarantiaAdic, CODGARANADIC = @pCodGarantiaAdic, DIMENSIONES = @pDimensiones, 
 		INDCOMPRALOCAL = @pIndCompraLocal, OBSCLIENTE = @pObsCliente, INDMANTPREVENT = @pIndMantPrevent,
-		INDREQPLACA = @pIndReqPlaca, OBSDESPACHO = @pObsDespacho, 
+		INDCALIB = @pIndCalib, INDREQPLACA = @pIndReqPlaca, OBSDESPACHO = @pObsDespacho, 
 		MTOTOTALCOSTO = @pMontoTotalCosto, INDFIANZA = @pIndFianza, NUMFIANZA = @pNumFianza, 
 		MONTOPPRINC = @pMontoPPrinc, MONTOPACCE = @pMontoPAcce,
 		USR_MOD = @pUsuarioRegistro, FEC_MOD = GETDATE()

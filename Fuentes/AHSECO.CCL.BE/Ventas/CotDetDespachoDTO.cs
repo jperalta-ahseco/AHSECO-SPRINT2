@@ -15,15 +15,14 @@ namespace AHSECO.CCL.BE.Ventas
         public bool? IndInfoManual { get; set; }
         public bool? IndInstaCapa { get; set; }
         public bool? IndGarantiaAdicional { get; set; }
-        public int? NumMesesGarantiaAdicional { get; set; }
+        public string CodGarantiaAdicional { get; set; }
         public bool? IndMantPreventivo { get; set; }
-        //public bool? IndLLaveMano { get; set; }
+        public bool? IndCalibracion { get; set; }
         public string Dimensiones { get; set; }
         public bool? IndCompraLocal { get; set; }
         public string ObsCliente { get; set; }
         public bool? IndRequierePlaca { get; set; }
         public string ObsDespacho { get; set; }
-        //public DateTime? FecLimInsta { get; set; }
         public decimal? MontoTotalCosto { get; set; }
         public bool? IndFianza { get; set; }
         public string NumFianza { get; set; }

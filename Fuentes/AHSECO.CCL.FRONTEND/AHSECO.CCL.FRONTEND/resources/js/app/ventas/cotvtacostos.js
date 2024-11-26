@@ -113,78 +113,78 @@
         $CI_txtMtoUnitarioCosto.on("keyup", totalizarCostItem);
         $CI_txtMtoTotalCosto.on("keyup", totalizarCostItem);
 
-        //if ($estadoSol.val() == "CVAL") {
-        //    cargarComboCotDetItems();
-        //}
+        if ($estadoSol.val() == "CVAL") {
+            cargarComboCotDetItems();
+        }
 
     }
 
     function setTab(strCodCosto) {
         $CI_hdnCodCosto.val(strCodCosto);
-        if (strCodCosto == $CI_CodCosto_LLaveMano.val()) {
-            $CI_pnlInfoDestino.css("display", "");
-            $CI_pnlInfoCostos_MtoUnitario.css("display", "");
-            $CI_pnlInfoCostos_MtoTotal.css("display", "");
-            $CI_txtMtoUnitarioCosto.removeAttr("disabled");
-            $CI_txtMtoTotalCosto.attr("disabled", "disabled");
-            $CI_pnlInfoPreventivos.css("display", "none");
-        }
-        if (strCodCosto == $CI_CodCosto_InstCapa.val()) {
-            $CI_pnlInfoDestino.css("display", "");
-            $CI_pnlInfoCostos_MtoUnitario.css("display", "");
-            $CI_pnlInfoCostos_MtoTotal.css("display", "");
-            $CI_txtMtoUnitarioCosto.removeAttr("disabled");
-            $CI_txtMtoTotalCosto.attr("disabled", "disabled");
-            $CI_pnlInfoPreventivos.css("display", "none");
-        }
-        if (strCodCosto == $CI_CodCosto_Manuales.val()) {
-            $CI_pnlInfoDestino.css("display", "none");
-            $CI_pnlInfoCostos_MtoUnitario.css("display", "none");
-            $CI_pnlInfoCostos_MtoTotal.css("display", "");
-            $CI_txtMtoUnitarioCosto.attr("disabled", "disabled"); //No se utiliza costo unitario
-            $CI_txtMtoTotalCosto.removeAttr("disabled");
-            $CI_pnlInfoPreventivos.css("display", "none");
-        }
-        if (strCodCosto == $CI_CodCosto_Videos.val()) {
-            $CI_pnlInfoDestino.css("display", "none");
-            $CI_pnlInfoCostos_MtoUnitario.css("display", "none");
-            $CI_pnlInfoCostos_MtoTotal.css("display", "");
-            $CI_txtMtoUnitarioCosto.attr("disabled", "disabled"); //No se utiliza costo unitario
-            $CI_txtMtoTotalCosto.removeAttr("disabled");
-            $CI_pnlInfoPreventivos.css("display", "none");
-        }
-        if (strCodCosto == $CI_CodCosto_MantPrevent.val()) {
-            $CI_pnlInfoDestino.css("display", "");
-            $CI_pnlInfoCostos_MtoUnitario.css("display", "");
-            $CI_pnlInfoCostos_MtoTotal.css("display", "");
-            $CI_txtMtoUnitarioCosto.removeAttr("disabled");
-            $CI_txtMtoTotalCosto.attr("disabled", "disabled");
-            $CI_pnlInfoPreventivos.css("display", "");
-        }
-        if (strCodCosto == $CI_CodCosto_GarantAdic.val()) {
-            $CI_pnlInfoDestino.css("display", "");
-            $CI_pnlInfoCostos_MtoUnitario.css("display", "");
-            $CI_pnlInfoCostos_MtoTotal.css("display", "");
-            $CI_txtMtoUnitarioCosto.removeAttr("disabled");
-            $CI_txtMtoTotalCosto.attr("disabled", "disabled");
-            $CI_pnlInfoPreventivos.css("display", "none");
-        }
-        if (strCodCosto == $CI_CodCosto_Calibra.val()) {
-            $CI_pnlInfoDestino.css("display", "");
-            $CI_pnlInfoCostos_MtoUnitario.css("display", "");
-            $CI_pnlInfoCostos_MtoTotal.css("display", "");
-            $CI_txtMtoUnitarioCosto.removeAttr("disabled");
-            $CI_txtMtoTotalCosto.attr("disabled", "disabled");
-            $CI_pnlInfoPreventivos.css("display", "none");
-        }
-        if (strCodCosto == $CI_CodCosto_Flete.val()) {
-            $CI_pnlInfoDestino.css("display", "");
-            $CI_pnlInfoCostos_MtoUnitario.css("display", "");
-            $CI_pnlInfoCostos_MtoTotal.css("display", "");
-            $CI_txtMtoUnitarioCosto.removeAttr("disabled");
-            $CI_txtMtoTotalCosto.attr("disabled", "disabled");
-            $CI_pnlInfoPreventivos.css("display", "none");
-        }
+        //if (strCodCosto == $CI_CodCosto_LLaveMano.val()) {
+        //    $CI_pnlInfoDestino.css("display", "");
+        //    $CI_pnlInfoCostos_MtoUnitario.css("display", "");
+        //    $CI_pnlInfoCostos_MtoTotal.css("display", "");
+        //    $CI_txtMtoUnitarioCosto.removeAttr("disabled");
+        //    $CI_txtMtoTotalCosto.attr("disabled", "disabled");
+        //    $CI_pnlInfoPreventivos.css("display", "none");
+        //}
+        //if (strCodCosto == $CI_CodCosto_InstCapa.val()) {
+        //    $CI_pnlInfoDestino.css("display", "");
+        //    $CI_pnlInfoCostos_MtoUnitario.css("display", "");
+        //    $CI_pnlInfoCostos_MtoTotal.css("display", "");
+        //    $CI_txtMtoUnitarioCosto.removeAttr("disabled");
+        //    $CI_txtMtoTotalCosto.attr("disabled", "disabled");
+        //    $CI_pnlInfoPreventivos.css("display", "none");
+        //}
+        //if (strCodCosto == $CI_CodCosto_Manuales.val()) {
+        //    $CI_pnlInfoDestino.css("display", "none");
+        //    $CI_pnlInfoCostos_MtoUnitario.css("display", "none");
+        //    $CI_pnlInfoCostos_MtoTotal.css("display", "");
+        //    $CI_txtMtoUnitarioCosto.attr("disabled", "disabled"); //No se utiliza costo unitario
+        //    $CI_txtMtoTotalCosto.removeAttr("disabled");
+        //    $CI_pnlInfoPreventivos.css("display", "none");
+        //}
+        //if (strCodCosto == $CI_CodCosto_Videos.val()) {
+        //    $CI_pnlInfoDestino.css("display", "none");
+        //    $CI_pnlInfoCostos_MtoUnitario.css("display", "none");
+        //    $CI_pnlInfoCostos_MtoTotal.css("display", "");
+        //    $CI_txtMtoUnitarioCosto.attr("disabled", "disabled"); //No se utiliza costo unitario
+        //    $CI_txtMtoTotalCosto.removeAttr("disabled");
+        //    $CI_pnlInfoPreventivos.css("display", "none");
+        //}
+        //if (strCodCosto == $CI_CodCosto_MantPrevent.val()) {
+        //    $CI_pnlInfoDestino.css("display", "");
+        //    $CI_pnlInfoCostos_MtoUnitario.css("display", "");
+        //    $CI_pnlInfoCostos_MtoTotal.css("display", "");
+        //    $CI_txtMtoUnitarioCosto.removeAttr("disabled");
+        //    $CI_txtMtoTotalCosto.attr("disabled", "disabled");
+        //    $CI_pnlInfoPreventivos.css("display", "");
+        //}
+        //if (strCodCosto == $CI_CodCosto_GarantAdic.val()) {
+        //    $CI_pnlInfoDestino.css("display", "");
+        //    $CI_pnlInfoCostos_MtoUnitario.css("display", "");
+        //    $CI_pnlInfoCostos_MtoTotal.css("display", "");
+        //    $CI_txtMtoUnitarioCosto.removeAttr("disabled");
+        //    $CI_txtMtoTotalCosto.attr("disabled", "disabled");
+        //    $CI_pnlInfoPreventivos.css("display", "none");
+        //}
+        //if (strCodCosto == $CI_CodCosto_Calibra.val()) {
+        //    $CI_pnlInfoDestino.css("display", "");
+        //    $CI_pnlInfoCostos_MtoUnitario.css("display", "");
+        //    $CI_pnlInfoCostos_MtoTotal.css("display", "");
+        //    $CI_txtMtoUnitarioCosto.removeAttr("disabled");
+        //    $CI_txtMtoTotalCosto.attr("disabled", "disabled");
+        //    $CI_pnlInfoPreventivos.css("display", "none");
+        //}
+        //if (strCodCosto == $CI_CodCosto_Flete.val()) {
+        //    $CI_pnlInfoDestino.css("display", "");
+        //    $CI_pnlInfoCostos_MtoUnitario.css("display", "");
+        //    $CI_pnlInfoCostos_MtoTotal.css("display", "");
+        //    $CI_txtMtoUnitarioCosto.removeAttr("disabled");
+        //    $CI_txtMtoTotalCosto.attr("disabled", "disabled");
+        //    $CI_pnlInfoPreventivos.css("display", "none");
+        //}
     }
 
     function setTab_LLaveMano() {
@@ -287,21 +287,21 @@
 
         //Se configura la pantalla por ROL
 
-        if ($idRolUsuario.val() == $RolVenta_Asesor) {
+        if ($idRolUsuario.val() == $RolVenta_Asesor.val()) {
             $CI_txtCantCosteo.removeAttr("disabled");
-            if ($CI_pnlInfoCostos_MtoUnitario.css("display") == "") {
+            if ($CI_pnlInfoCostos_MtoUnitario.css("display") != "none") {
                 $CI_txtMtoUnitarioCosto.attr("disabled", "disabled");
             }
-            if ($CI_pnlInfoCostos_MtoTotal.css("display") == "") {
+            if ($CI_pnlInfoCostos_MtoTotal.css("display") != "none") {
                 $CI_txtMtoTotalCosto.attr("disabled", "disabled");
             }
         }
         else {
-            $CI_txtCantCosteo.attr("disabled");
-            if ($CI_pnlInfoCostos_MtoUnitario.css("display") == "") {
+            $CI_txtCantCosteo.attr("disabled", "disabled");
+            if ($CI_pnlInfoCostos_MtoUnitario.css("display") != "none") {
                 $CI_txtMtoUnitarioCosto.removeAttr("disabled");
             }
-            if ($CI_pnlInfoCostos_MtoTotal.css("display") == "") {
+            if ($CI_pnlInfoCostos_MtoTotal.css("display") != "none") {
                 $CI_txtMtoTotalCosto.removeAttr("disabled");
             }
         }
@@ -329,7 +329,6 @@
 
         cargarComboCotDetItems();
         LimpiarModalCostos();
-        configurarModalCosto();
 
         //Para el buscador se selecciona por defecto la cotizacion detalle en pantalla
         if (opcGrilla == "1") {
@@ -344,6 +343,8 @@
             $CI_cmbCDItem.val("").trigger("change.select2");
             $CI_cmbTipoCosto.attr("disabled", "disabled");
         }
+
+        configurarModalCosto();
 
         $("#modalCostoItem").modal('show');
     }
@@ -515,8 +516,9 @@
                 render: function (data) {
                     var hidden = '<input type="hidden" id="hdnCDCItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
                     var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtacostos.editarCostoItem(' + data + ',' + String.fromCharCode(39) + '2' + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                    var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtacostos.quitarCostoItem(' + data + ',' + String.fromCharCode(39) + $CI_hdnCodCosto.val() + String.fromCharCode(39) + ',' + String.fromCharCode(39) + '2' + String.fromCharCode(39) + ')"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
-                    return '<center>' + hidden + editar + ' ' + quitar + '</center>';
+                    //var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtacostos.quitarCostoItem(' + data + ',' + String.fromCharCode(39) + $CI_hdnCodCosto.val() + String.fromCharCode(39) + ',' + String.fromCharCode(39) + '2' + String.fromCharCode(39) + ')"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                    //return '<center>' + hidden + editar + ' ' + quitar + '</center>';
+                    return '<center>' + hidden + editar + '</center>';
                 }
             }
         ];
@@ -581,6 +583,11 @@
                 }
             }
         ];
+
+        //Se quita los botones de acción para el asesor que ya registro los detalles pero sin valorizacion
+        if ($HabilitarValorizacionCotDet.val() == "S") {
+            columns.pop();
+        }
 
         var columnDefs =
         {
@@ -655,24 +662,26 @@
 
         }
 
-        if ($CI_txtCantCosteo.val() == "") {
-            app.message.error("Validación", "Se debe ingresar la cantidad a costear");
-            return false;
-        }
-        else {
-            if (!app.validaNumeroEntero($CI_txtCantCosteo.val())) {
-                app.message.error("Validación", "N&uacute;mero inv&aacute;lido en campo Cantidad");
+        if ($CI_txtCantCosteo.attr("readonly") != "readonly" || $CI_txtCantCosteo.attr("disabled") != "disabled") {
+            if ($CI_txtCantCosteo.val() == "") {
+                app.message.error("Validación", "Se debe ingresar la cantidad a costear");
                 return false;
             }
             else {
-                if (parseInt($CI_txtCantCosteo.val()) <= 0) {
-                    app.message.error("Validación", "Se debe ingresar cantidades mayor a 0");
+                if (!app.validaNumeroEntero($CI_txtCantCosteo.val())) {
+                    app.message.error("Validación", "N&uacute;mero inv&aacute;lido en campo Cantidad");
                     return false;
+                }
+                else {
+                    if (parseInt($CI_txtCantCosteo.val()) <= 0) {
+                        app.message.error("Validación", "Se debe ingresar cantidades mayor a 0");
+                        return false;
+                    }
                 }
             }
         }
 
-        if ($CI_txtMtoUnitarioCosto.attr("readonly") != "readonly" || $CI_txtMtoUnitarioCosto.attr("disabled") != "disabled") {
+        if ($CI_txtMtoUnitarioCosto.attr("readonly") != "readonly" && $CI_txtMtoUnitarioCosto.attr("disabled") != "disabled") {
             if ($CI_txtMtoUnitarioCosto.val() == "") {
                 app.message.error("Validación", "Se debe ingresar el monto unitario");
                 return false;
@@ -694,7 +703,7 @@
             }
         }
         
-        if ($CI_txtMtoTotalCosto.attr("readonly") != "readonly" || $CI_txtMtoTotalCosto.attr("disabled") != "disabled") {
+        if ($CI_txtMtoTotalCosto.attr("readonly") != "readonly" && $CI_txtMtoTotalCosto.attr("disabled") != "disabled") {
             if ($CI_txtMtoTotalCosto.val() == "") {
                 app.message.error("Validación", "Se debe ingresar el monto unitario");
                 return false;
@@ -716,7 +725,7 @@
             }
         }
 
-        if ($CI_txtCantPrevent.attr("readonly") != "readonly" || $CI_txtCantPrevent.attr("disabled") != "disabled") {
+        if ($CI_txtCantPrevent.attr("readonly") != "readonly" && $CI_txtCantPrevent.attr("disabled") != "disabled") {
 
             if (!app.validaNumeroEntero($CI_txtCantPrevent.val())) {
                 app.message.error("Validación", "N&uacute;mero inv&aacute;lido en cantidad de Mantenimientos Preventivos")
@@ -791,19 +800,19 @@
         var objParam = JSON.stringify(objDatos);
 
         var fnDoneCallBack = function (data) {
+
             LimpiarModalCostos();
-            configurarModalCosto();
 
             $CI_pnlInfoGeneral.css("display", "");
             $CI_hdnIdCotDetCosto.val(data.Result.Id);
             $CI_cmbCDItem.val(data.Result.IdCotizacionDetalle).trigger("change.select2");
             if ($CI_opcGrilla.val() == "1") {
-                $CI_cmbTipoCosto.removeAttr("disabled");
                 $CI_cmbTipoCosto.val(data.Result.CodCosto).trigger("change.select2");
             }
             if ($CI_opcGrilla.val() == "2") {
                 $CI_cmbTipoCosto.val($CI_hdnCodCosto.val()).trigger("change.select2");
             }
+            $CI_cmbTipoCosto.attr("disabled", "disabled");
             $CI_txtCantCotDet.val(data.Result.CotizacionDetalle.Cantidad);
             $CI_txtUnidadMedida.val(data.Result.CotizacionDetalle.DescUnidad);
             if (data.Result.CodUbigeoDestino != null) {
@@ -817,6 +826,8 @@
             $CI_txtMtoTotalCosto.val(data.Result.MontoTotalCosto);
             $CI_txtCantPrevent.val(data.Result.CantPreventivo);
             $CI_cmbCicloPreventivo.val(data.Result.CodCicloPreventivo).trigger("change.select2");
+
+            configurarModalCosto();
 
             $('#modalCostoItem').modal('show');
         };

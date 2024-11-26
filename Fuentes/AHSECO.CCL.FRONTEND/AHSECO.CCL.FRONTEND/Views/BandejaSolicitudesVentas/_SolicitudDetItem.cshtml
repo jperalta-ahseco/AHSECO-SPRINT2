@@ -49,14 +49,22 @@
                                         <textarea disabled placeholder="Ingresar nombre de producto" type="text" rows="2" class="form-control input-sm" id="DI_txtDescripcion" value=""></textarea>
                                     </div>
                                 </div>
+                                <div class="row container-fluid col-content-middleleft form-group">
+                                    <div class="col-md-3">
+                                        <label for="DI_txtDimensiones">Dimensiones: </label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <input @(ViewBag.PermitirEditarInfoVenta ? "" : "disabled") placeholder="Ingresar Dimensiones" type="text" maxlength="50" class="form-control input-sm" id="DI_txtDimensiones" value="">
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-md-1"></div>
                             <div class="col-md-6">
-                                <div class="row container-fluid col-content-middleleft form-group">
+                                <div class="row container-fluid col-content-middleleft">
                                     <div class="col-md-12">
                                         <div class="row container-fluid">
                                             <label for="DI_txtDescripcionAdic">Especificaciones / Caracteristicas: </label>
-                                            <textarea @(ViewBag.PermitirEditarInfoVenta ? "" : "disabled") placeholder="Ingresar Especificaciones <Opcional>" rows="3" class="form-control input-sm" id="DI_txtDescripcionAdic" value=""></textarea>
+                                            <textarea @(ViewBag.PermitirEditarInfoVenta ? "" : "disabled") placeholder="Ingresar Especificaciones <Opcional>" rows="6" class="form-control input-sm" id="DI_txtDescripcionAdic" value=""></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -85,14 +93,6 @@
                                 </div>
                             </div>
                             <div class="row container-fluid col-content-middleleft">
-                                <div class="col-md-6 col-content-middleleft" style="@(ViewBag.MostrarCDI_Ganancia ? "" : "display:none")">
-                                    <div class="col-md-3">
-                                        <label for="DI_txtGanancia">Ganancia (%): </label>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <input placeholder="Ingrese Ganancia (%)" type="text" maxlength="15" class="form-control input-sm" id="DI_txtGanancia" value="">
-                                    </div>
-                                </div>
                                 <div class="col-md-4 col-content-middleleft">
                                     <div class="col-md-5">
                                         <label for="DI_radTieneStock">TIENE STOCK: </label>
@@ -112,6 +112,35 @@
                                                 <td style="padding-top:5px"><label>NO</label></td>
                                             </tr>
                                         </table>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-content-middleleft">
+                                    <div class="col-md-5">
+                                        <label for="DI_radCalibracion" style="flex: 0 0 120px">Calibraci&oacute;n: </label>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <table style="width:100%">
+                                            <tr>
+                                                <td><input @(ViewBag.PermitirEditarInfoVenta ? "" : "disabled") type="radio" name="DI_radCalibracion" class="input-sm" id="DI_radCalibracion_Si"></td>
+                                                <td style="padding-top:5px"><label>SI</label></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <table style="width:100%">
+                                            <tr>
+                                                <td><input @(ViewBag.PermitirEditarInfoVenta ? "" : "disabled") type="radio" name="DI_radCalibracion" class="input-sm inp" id="DI_radCalibracion_No"></td>
+                                                <td style="padding-top:5px"><label>NO</label></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-content-middleleft">
+                                    <div class="col-md-7">
+                                        <label for="DI_txtGanancia">Ganancia (%): </label>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <input @(ViewBag.MostrarCDI_Ganancia ? "" : "disabled") placeholder="Ingrese Ganancia" type="text" maxlength="15" class="form-control input-sm" id="DI_txtGanancia" value="">
                                     </div>
                                 </div>
                             </div>
@@ -139,14 +168,6 @@
                                 </div>
                                 <div class="col-md-4 col-content-middleleft">
                                     <div class="col-md-5">
-                                        <label for="DI_txtDimensiones">Dimensiones: </label>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <input @(ViewBag.PermitirEditarInfoVenta ? "" : "disabled") placeholder="Ingresar Dimensiones" type="text" maxlength="50" class="form-control input-sm" id="DI_txtDimensiones" value="">
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-content-middleleft">
-                                    <div class="col-md-7">
                                         <label for="DI_radReqPlaca" style="flex: 0 0 120px">Requiere Placa: </label>
                                     </div>
                                     <div class="col-md-2">
@@ -161,6 +182,27 @@
                                         <table style="width:100%">
                                             <tr>
                                                 <td><input @(ViewBag.PermitirEditarInfoVenta ? "" : "disabled") type="radio" name="DI_radReqPlaca" class="input-sm inp" id="DI_radReqPlaca_No"></td>
+                                                <td style="padding-top:5px"><label>NO</label></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-content-middleleft">
+                                    <div class="col-md-7">
+                                        <label for="DI_radMantPrevent" style="flex: 0 0 120px">Mantenimiento Preventivo: </label>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <table style="width:100%">
+                                            <tr>
+                                                <td><input @(ViewBag.PermitirEditarInfoVenta ? "" : "disabled") type="radio" name="DI_radMantPrevent" class="input-sm" id="DI_radMantPrevent_Si"></td>
+                                                <td style="padding-top:5px"><label>SI</label></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <table style="width:100%">
+                                            <tr>
+                                                <td><input @(ViewBag.PermitirEditarInfoVenta ? "" : "disabled") type="radio" name="DI_radMantPrevent" class="input-sm inp" id="DI_radMantPrevent_No"></td>
                                                 <td style="padding-top:5px"><label>NO</label></td>
                                             </tr>
                                         </table>
@@ -191,12 +233,12 @@
                                 </div>
                                 <div class="col-md-4 col-content-middleleft">
                                     <div class="col-md-5">
-                                        <label for="DI_radMantPrevent" style="flex: 0 0 120px">Mantenimiento Preventivo: </label>
+                                        <label for="DI_radVideos">Videos: </label>
                                     </div>
                                     <div class="col-md-2">
                                         <table style="width:100%">
                                             <tr>
-                                                <td><input @(ViewBag.PermitirEditarInfoVenta ? "" : "disabled") type="radio" name="DI_radMantPrevent" class="input-sm" id="DI_radMantPrevent_Si"></td>
+                                                <td><input @(ViewBag.PermitirEditarInfoVenta ? "" : "disabled") type="radio" name="DI_radVideos" class="input-sm" id="DI_radVideos_Si"></td>
                                                 <td style="padding-top:5px"><label>SI</label></td>
                                             </tr>
                                         </table>
@@ -204,7 +246,7 @@
                                     <div class="col-md-2">
                                         <table style="width:100%">
                                             <tr>
-                                                <td><input @(ViewBag.PermitirEditarInfoVenta ? "" : "disabled") type="radio" name="DI_radMantPrevent" class="input-sm inp" id="DI_radMantPrevent_No"></td>
+                                                <td><input @(ViewBag.PermitirEditarInfoVenta ? "" : "disabled") type="radio" name="DI_radVideos" class="input-sm" id="DI_radVideos_No"></td>
                                                 <td style="padding-top:5px"><label>NO</label></td>
                                             </tr>
                                         </table>
@@ -233,27 +275,6 @@
                                 </div>
                             </div>
                             <div class="row container-fluid col-content-middleleft">
-                                <div class="col-md-4 col-content-middleleft">
-                                    <div class="col-md-5">
-                                        <label for="DI_radVideos">Videos: </label>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <table style="width:100%">
-                                            <tr>
-                                                <td><input @(ViewBag.PermitirEditarInfoVenta ? "" : "disabled") type="radio" name="DI_radVideos" class="input-sm" id="DI_radVideos_Si"></td>
-                                                <td style="padding-top:5px"><label>SI</label></td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <table style="width:100%">
-                                            <tr>
-                                                <td><input @(ViewBag.PermitirEditarInfoVenta ? "" : "disabled") type="radio" name="DI_radVideos" class="input-sm" id="DI_radVideos_No"></td>
-                                                <td style="padding-top:5px"><label>NO</label></td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
                                 <div class="col-md-4 col-content-middleleft">
                                     <div class="col-md-5">
                                         <label for="DI_radGarantAdic" style="flex: 0 0 120px">Garantía Adicional: </label>
