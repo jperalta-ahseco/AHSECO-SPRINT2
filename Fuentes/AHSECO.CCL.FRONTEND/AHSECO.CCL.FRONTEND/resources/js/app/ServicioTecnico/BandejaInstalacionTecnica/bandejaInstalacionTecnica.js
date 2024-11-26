@@ -118,7 +118,8 @@
             FecFin: $dateFecFin.val(),
             NumReq: $txtNumReq.val() == "" ? "0" : $txtNumReq.val(),
             Estado: $cmbEstado.val() == 0 ? "" : $cmbEstado.val(),
-            Destino: codDepartamento,
+            //Destino: codDepartamento,
+            Destino: $cmbDepartamento.val(),
             Vendedor: $cmbVendedor.val() == 0 ? "" : $cmbVendedor.val(),
             RucEmpresa: $cmbCliente.val() == 0 ? "" : $cmbCliente.val(),
             CodEmpresa: $cmbempresa.val() == 0 ? "" : $cmbempresa.val(),
@@ -291,26 +292,26 @@
                 }
                 return acumulador;
             }, []);
-            $cmbDepartamento.on('change', function () {
-                const codDepartamento = $(this).val();
-                const nomDepartamento = $('select[id="cmbDepartamento"] option:selected').text();
-                sessionStorage.setItem('codDepartamento', `${codDepartamento}`);
-                sessionStorage.setItem('nomDepartamento', `${nomDepartamento}`);
+            //$cmbDepartamento.on('change', function () {
+            //    const codDepartamento = $(this).val();
+            //    const nomDepartamento = $('select[id="cmbDepartamento"] option:selected').text();
+            //    sessionStorage.setItem('codDepartamento', `${codDepartamento}`);
+            //    sessionStorage.setItem('nomDepartamento', `${nomDepartamento}`);
 
-                if (!codDepartamento === null || !codDepartamento === '') {
-                    $(this).prop('disabled', false);
+            //    if (!codDepartamento === null || !codDepartamento === '') {
+            //        $(this).prop('disabled', false);
 
-                } else {
-                    $cmbProvincia.prop('disabled', false);
-                    obtenerProvincia(codDepartamento, data);
-                    $cmbDistrito.prop("disabled", true);
-                }
-                $cmbDistrito.val("").trigger("change");
-            });
+            //    } else {
+            //        $cmbProvincia.prop('disabled', false);
+            //        obtenerProvincia(codDepartamento, data);
+            //        $cmbDistrito.prop("disabled", true);
+            //    }
+            //    $cmbDistrito.val("").trigger("change");
+            //});
             var filters = {};
             filters.placeholder = "-- Seleccione --";
             filters.allowClear = true;
-            app.llenarCombo($cmbDepartamento, resultado, $modalUbigeo, "00", "<--Todos-->", filters);
+            app.llenarCombo($cmbDepartamento, resultado, null, "00", "<--Todos-->", filters);
         }
         var fnFailCallback = function () {
             app.mensajes.error("Error", "No se ejecutó correctamente la carga de departamentos")
@@ -318,76 +319,76 @@
         return app.llamarAjax(method, url, objParam, fnDoneCallback, fnFailCallback, null, mensajes.procesandoUbigeo)
 
     }
-    function obtenerProvincia(codDepartamento, data) {
-        var provincias = { Result: [] };
-        for (let i = 0; i < data.Result.length; i++) {
-            var provincia = {
-                Id: data.Result[i].CodProvincia,
-                Text: data.Result[i].NombreProvincia,
-            }
-            provincias.Result.push(provincia);
+    //function obtenerProvincia(codDepartamento, data) {
+    //    var provincias = { Result: [] };
+    //    for (let i = 0; i < data.Result.length; i++) {
+    //        var provincia = {
+    //            Id: data.Result[i].CodProvincia,
+    //            Text: data.Result[i].NombreProvincia,
+    //        }
+    //        provincias.Result.push(provincia);
 
-        }
-        provincias.Result = provincias.Result.reduce((acumulador, itemActual) => {
-            const isDuplicate = acumulador.some(item => item.Id === itemActual.Id);
-            const startsWithCodDepartamento = itemActual.Id.startsWith(codDepartamento);
-            if (!isDuplicate && startsWithCodDepartamento) {
-                acumulador.push(itemActual);
-            }
-            return acumulador;
-        }, []);
-        $cmbProvincia.on('change', function () {
-            const codProvincia = $(this).val();
-            const nombreProvincia = $('select[id="cmbProvincia"] option:selected').text();
-            sessionStorage.setItem('codProvincia', `${codProvincia}`);
-            sessionStorage.setItem('nombreProvincia', `${nombreProvincia}`);
+    //    }
+    //    provincias.Result = provincias.Result.reduce((acumulador, itemActual) => {
+    //        const isDuplicate = acumulador.some(item => item.Id === itemActual.Id);
+    //        const startsWithCodDepartamento = itemActual.Id.startsWith(codDepartamento);
+    //        if (!isDuplicate && startsWithCodDepartamento) {
+    //            acumulador.push(itemActual);
+    //        }
+    //        return acumulador;
+    //    }, []);
+    //    $cmbProvincia.on('change', function () {
+    //        const codProvincia = $(this).val();
+    //        const nombreProvincia = $('select[id="cmbProvincia"] option:selected').text();
+    //        sessionStorage.setItem('codProvincia', `${codProvincia}`);
+    //        sessionStorage.setItem('nombreProvincia', `${nombreProvincia}`);
 
-            if (!codProvincia === null || !codProvincia === '') {
-                $(this).prop('disabled', false);
+    //        if (!codProvincia === null || !codProvincia === '') {
+    //            $(this).prop('disabled', false);
 
-            } else {
-                $cmbProvincia.prop('disabled', false);
-                $cmbDistrito.prop('disabled', false)
-                obtenerDistrito(codProvincia, data);
-            }
-        });
+    //        } else {
+    //            $cmbProvincia.prop('disabled', false);
+    //            $cmbDistrito.prop('disabled', false)
+    //            obtenerDistrito(codProvincia, data);
+    //        }
+    //    });
 
-        var filters = {};
-        filters.placeholder = "-- Seleccione --";
-        filters.allowClear = true;
-        app.llenarCombo($cmbProvincia, provincias, $modalUbigeo, "0000", "<--Todos-->", filters)
-    }
-    function obtenerDistrito(codProvincia, data) {
-        var distritos = { Result: [] };
-        for (let i = 0; i < data.Result.length; i++) {
-            var distrito = {
-                Id: data.Result[i].UbigeoId,
-                Text: data.Result[i].NombreDistrito,
-            }
-            distritos.Result.push(distrito);
+    //    var filters = {};
+    //    filters.placeholder = "-- Seleccione --";
+    //    filters.allowClear = true;
+    //    app.llenarCombo($cmbProvincia, provincias, $modalUbigeo, "0000", "<--Todos-->", filters)
+    //}
+    //function obtenerDistrito(codProvincia, data) {
+    //    var distritos = { Result: [] };
+    //    for (let i = 0; i < data.Result.length; i++) {
+    //        var distrito = {
+    //            Id: data.Result[i].UbigeoId,
+    //            Text: data.Result[i].NombreDistrito,
+    //        }
+    //        distritos.Result.push(distrito);
 
-        }
-        distritos.Result = distritos.Result.reduce((acumulador, itemActual) => {
-            const isDuplicate = acumulador.some(item => item.Id === itemActual.Id);
-            const startsWithCodProvincia = itemActual.Id.startsWith(codProvincia);
-            if (!isDuplicate && startsWithCodProvincia) {
-                acumulador.push(itemActual);
-            }
-            return acumulador;
-        }, []);
+    //    }
+    //    distritos.Result = distritos.Result.reduce((acumulador, itemActual) => {
+    //        const isDuplicate = acumulador.some(item => item.Id === itemActual.Id);
+    //        const startsWithCodProvincia = itemActual.Id.startsWith(codProvincia);
+    //        if (!isDuplicate && startsWithCodProvincia) {
+    //            acumulador.push(itemActual);
+    //        }
+    //        return acumulador;
+    //    }, []);
 
-        $cmbDistrito.on('change', function () {
-            const codDistrito = $(this).val();
-            const nombreDistrito = $('select[id="cmbDistrito"] option:selected').text();
-            sessionStorage.setItem('codDistrito', `${codDistrito}`);
-            sessionStorage.setItem('nombreDistrito', `${nombreDistrito}`);
-        });
+    //    $cmbDistrito.on('change', function () {
+    //        const codDistrito = $(this).val();
+    //        const nombreDistrito = $('select[id="cmbDistrito"] option:selected').text();
+    //        sessionStorage.setItem('codDistrito', `${codDistrito}`);
+    //        sessionStorage.setItem('nombreDistrito', `${nombreDistrito}`);
+    //    });
 
-        var filters = {};
-        filters.placeholder = "-- Seleccione --";
-        filters.allowClear = true;
-        app.llenarCombo($cmbDistrito, distritos, $modalUbigeo, "000000", "<--Todos-->", filters)
-    }
+    //    var filters = {};
+    //    filters.placeholder = "-- Seleccione --";
+    //    filters.allowClear = true;
+    //    app.llenarCombo($cmbDistrito, distritos, $modalUbigeo, "000000", "<--Todos-->", filters)
+    //}
     /**Fin ModalUbigeo****/
     function $openRegFecIni_click() {
         $dateFecIni.focus();
@@ -483,14 +484,6 @@
                 }
             },
             {
-                data: "Id_Solicitud",
-                render: function (data, type, row) {
-                    var numSolFormateado = ("000000" + data.toString());
-                    numSolFormateado = numSolFormateado.substring((numSolFormateado.length) - 6, numSolFormateado.length);
-                    return '<center>' + numSolFormateado + '</center>'
-                }
-            },
-            {
                 data: "RucEmpresa",
                 render : function (data, type, row) {
                     return '<center>' + data + '</center>'
@@ -498,12 +491,6 @@
             },
             {
                 data: "NomEmpresa",
-                render : function (data, type, row) {
-                    return '<center>' + data + '</center>'
-                }
-            },
-            {
-                data: "Ubicacion",
                 render : function (data, type, row) {
                     return '<center>' + data + '</center>'
                 }

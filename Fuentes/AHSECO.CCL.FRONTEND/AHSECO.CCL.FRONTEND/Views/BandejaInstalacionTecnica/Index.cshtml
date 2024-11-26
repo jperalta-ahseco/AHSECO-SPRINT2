@@ -12,7 +12,7 @@
         </div>
         <div class="box-content">
             <form id="formInstallTec">
-                <div class="row container-fluid">
+                <div class="row container-fluid" style="margin-bottom: 10px;">
                     <div class="col-md-4 col-sm-12">
                         <label for="txtFecIni">Fecha Inicio:</label>
                         <div class="input-group date">
@@ -38,7 +38,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row container-fluid">
+                <div class="row container-fluid" style="margin-bottom: 10px;">
                     <div class="col-md-4 col-sm-12">
                         <label for="cmbCliente">Cliente:</label>
                         <div class="input-group col-sm-12 col-md-12 col-lg-12">
@@ -47,14 +47,9 @@
                         </div>
                     </div>
                     <div class="col-md-4 col-sm-12">
-                        <label for="txtUbicacion">Destino:</label>
-                        <div class="form-group">
-                            <div class="input-group input-group-sm date">
-                                <input disabled maxlength="6" type="text" class="form-control input-sm" id="txtUbicacion" value="" aria-describedby="sizing-addon3" />
-                                <span style="cursor:pointer" class="input-group-addon input-sm" id="searchUbigeo" data-toggle="modal" data-target="#modalUbigeo">
-                                    <i class="fa fa-search"></i>
-                                </span>
-                            </div>
+                        <label for="cmbDepartamento">Departamento:</label>
+                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                            <select class="form-control select2 input-sm " style="width:100%;" id="cmbDepartamento" data-selected="" tabindex="-1" aria-hidden="true"></select>
                         </div>
                     </div>
                     <div class="col-md-4 col-sm-12">
@@ -87,8 +82,7 @@
                         </div>
                     </div>
                 </div>
-                <br />
-                <div class="row container-fluid">
+                <div class="row container-fluid" style="margin-bottom: 10px;">
                     <div class="col-md-4 col-sm-12">
                         <label for="txtNumProc">N° Proceso:</label>
                         <div class="input-group col-sm-12 col-md-12 col-lg-12">
@@ -108,8 +102,7 @@
                         </div>
                     </div>
                 </div>
-                <br />
-                <div class="row container-fluid">
+                <div class="row container-fluid" style="margin-bottom: 10px;">
                     <div class="col-md-4 col-sm-12">
                         <label for="txtNumFianza">N° Fianza:</label>
                         <div class="input-group col-sm-12 col-md-12 col-lg-12">
@@ -132,15 +125,13 @@
                     <thead>
                         <tr>
                             <th style="text-align: center; width:300px;">N° Requerimiento</th>
-                            <th style="text-align: center; width:300px;">Num. Solicitud</th>
                             <th style="text-align: center; width:300px;">R.U.C</th>
                             <th style="text-align: center; width:300px;">Nombre Empresa</th>
-                            <th style="text-align: center; width:300px;">Ubicación de Empresa</th>
                             <th style="text-align: center; width:300px;">Tipo de Venta</th>
                             <th style="text-align: center; width:300px;">Vendedor</th>
                             <th style="text-align: center; width:300px;">Empresa</th>
                             <th style="text-align: center; width:300px;">Fecha M&aacute;xima</th>
-                            <th style="text-align: center; width:300px;">Destino</th>
+                            <th style="text-align: center; width:300px;">Destinos (Depart.)</th>
                             <th style="text-align: center; width:300px;">Estado</th>
                             <th style="text-align: center; width:300px;">Acciones</th>
                         </tr>
@@ -152,12 +143,12 @@
     </div>
 </div>
 
-<!-- Modal -->
+<!-- Modal
 <div class="modal fade" id="modalUbigeo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-    @{
+    {
         Html.RenderPartial("_Ubigeo");
     }
-</div>
+</div>-->
 @section scripts{
     <script type="text/javascript" src="~/resources/js/app/ServicioTecnico/BandejaInstalacionTecnica/bandejaInstalacionTecnica.js"></script>
 } 

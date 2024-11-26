@@ -101,7 +101,6 @@
             //app.llenarCombo($cmbVendedor, resultado, null, 0, "-- Todos --", filters);
             //app.llenarComboMultiResult($cmbVendedor, resultado)
             app.llenarCombo($cmbVendedor, resultado, null, 0, "-- Todos --", filters);
-
         }
         app.llamarAjax(method, url, objParams, fnDoneCallback, null, null, null);
     }

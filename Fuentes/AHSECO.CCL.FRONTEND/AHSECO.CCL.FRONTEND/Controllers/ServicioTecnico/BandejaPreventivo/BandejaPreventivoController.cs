@@ -25,6 +25,7 @@ using System.Configuration;
 using static AHSECO.CCL.COMUN.ConstantesDTO;
 using System.Web.Http.Results;
 using Microsoft.Ajax.Utilities;
+using AHSECO.CCL.BL.ServicioTecnico.BandejaPreventivos;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
 {
@@ -34,17 +35,13 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
         [Permissions(Permissions = "BANDEJAPREVENTIVO")]
         public ActionResult Index()
         {
-            VariableSesion.setCadena("NumReq", "");
-            VariableSesion.setCadena("CodEstado", "");
-            VariableSesion.setCadena("IdWorkFlow", "");
-            VariableSesion.setCadena("TipoProceso", "");
             return View();
         }
         
-        public JsonResult ObtenerFiltrosInstalacion()
+        public JsonResult ObtenerFiltrosPreventivos()
         {
-            var instalacionTecnicaBL = new InstalacionTecnicaBL();
-            var result = instalacionTecnicaBL.ObtenerFiltrosInstalacion();
+            var preventivosBL = new PreventivosBL();
+            var result = preventivosBL.ObtenerFiltrosPreventivos();
             return Json(result);
         }
         public JsonResult ObtenerSolicitudes(SolicitudDTO solicitudDTO)
