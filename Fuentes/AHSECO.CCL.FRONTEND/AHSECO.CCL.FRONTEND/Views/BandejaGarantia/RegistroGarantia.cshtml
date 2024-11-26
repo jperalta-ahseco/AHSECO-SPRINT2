@@ -1,7 +1,7 @@
 ﻿@using AHSECO.CCL.FRONTEND.Core;
 
 @{
-    ViewBag.Title = "Nuevo Reclamo:";
+    ViewBag.Title = "Nuevo Reclamo";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var numReclamo = VariableSesion.getCadena("NumReclamo");
     var codEstado = VariableSesion.getCadena("CodEstado");
@@ -23,7 +23,15 @@
 <input hidden id="tipoproceso" value="@tipoProceso"/>
 
 <div class="container-fluid">
-    <h4><i class="fa fa-comment" aria-hidden="true"></i> @ViewBag.Title</h4>
+    @if (numReclamo == "")
+    {
+        <h4><i class="fa fa-comment" aria-hidden="true"></i> @ViewBag.Title</h4>
+    }
+    else
+    {
+        <h4><i class="fa fa-comment" aria-hidden="true"></i> Reclamo</h4>
+    }
+
     <div class="box-inner">
         <div class="box-header well" data-original-title="">
             <div style="display: flex;justify-content: space-between;">
@@ -37,7 +45,7 @@
 
                     <div class="text-right">
                         <!--- Aquí tendremos que controlar-->
-                        <label>ESTADO: <span id="spanEstadoSol"></span></label>
+                        <label>ESTADO: <span style="color:red" id="spanEstadoSol"></span></label>
                     </div>
                 }
 
@@ -282,10 +290,13 @@
                         </li>
                     }
                     <li class="" id="tabReclamo">
-                        <a href="#navReclamo" data-toggle="tab" style="font-weight: bold; color: red;" tabindex="21"><i class="fa fa-exclamation" aria-hidden="true"></i> Reclamo</a>
+                        <a href="#navReclamo" data-toggle="tab" style="font-weight: bold; color: red;" tabindex="21"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> Reclamo</a>
                     </li>
                     <li class="" id="tabTecnicos">
                         <a href="#navTecnicos" data-toggle="tab" style="font-weight: bold; color: #158304;" tabindex="21"><i class="fa fa-users" aria-hidden="true"></i><i class="fa fa-wrench" aria-hidden="true"></i> Tecnicos</a>
+                    </li>
+                    <li class="" id="tabObservaciones">
+                        <a href="#navObservaciones" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-exclamation" aria-hidden="true"></i> Observaciones</a>
                     </li>
                     <li class="" id="tabAdjuntos">
                         <a href="#navDocumentos" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-file-text" aria-hidden="true"></i> Adjunto de Documentos</a>
@@ -303,101 +314,106 @@
                             }
                         </div>
                     }
-                        <div id="navDocumentos" class="tab-pane fade">
-                            @{
-                                Html.RenderPartial("~/Views/Modelos/_Documentos.cshtml");
-                            }
-                        </div>
-                        <div id="navReclamo" class="tab-pane fade">
-                            @{
-                                Html.RenderPartial("~/Views/Modelos/_Reclamo.cshtml");
+                    <div id="navDocumentos" class="tab-pane fade">
+                        @{
+                            Html.RenderPartial("~/Views/Modelos/_Documentos.cshtml");
+                        }
+                    </div>
+                    <div id="navReclamo" class="tab-pane fade">
+                        @{
+                            Html.RenderPartial("~/Views/Modelos/_Reclamo.cshtml");
 
 
-}
-                        </div>
-                        <div id="navTecnicos" class="tab-pane fade">
-                            <br />
-                            <form id="formRegistro" class="d-flex flex-row">
-                                <div class="row container-fluid d-flex justify-content-center">
-                                    <div class="row container-fluid">
-                                        <div class="col-md-4 col-sm-12">
-                                            <label for="dateProgramacion">Fecha de Programación: </label>
-                                            <div class="input-group date">
-                                                <input disabled type="text" class="form-control input-sm" id="dateProgramacion" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
-                                                <span class="input-group-addon input-sm" id="openRegdateProgramacion">
-                                                    <i class="fa fa-calendar"></i>
-                                                </span>
-                                            </div>
+                        }
+                    </div>
+                    <div id="navTecnicos" class="tab-pane fade">
+                        <br />
+                        <form id="formRegistro" class="d-flex flex-row">
+                            <div class="row container-fluid d-flex justify-content-center">
+                                <div class="row container-fluid">
+                                    <div class="col-md-4 col-sm-12">
+                                        <label for="dateProgramacion">Fecha de Programación: </label>
+                                        <div class="input-group date">
+                                            <input disabled type="text" class="form-control input-sm" id="dateProgramacion" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
+                                            <span class="input-group-addon input-sm" id="openRegdateProgramacion">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
                                         </div>
-                                    </div>
-                                    <div class="text-right">
-                                        @if (tipoProceso != "V")
-                                        {
-                                            <button disabled class="btn btn-default btn-sm" type="button" id="btnBuscarTecnicos" data-target="#modalBusquedaTecnico" data-toggle="modal"><i class="fa fa-search"></i> Buscar Técnicos</button>
-                                            <span id="hidden_fields"></span>
-                                            <button disabled class="btn btn-primary btn-sm" type="button" id="btnAñadirTecnico" data-toggle="modal" data-target="#añadirTecnico"><i class="fa fa-plus"></i> Crear Técnico Externo</button>
-                                        }
-
-                                    </div>
-                                    <br />
-                                    <div class="table-responsive">
-                                        <table id="tblMainTecnicos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
-                                            <thead>
-                                                <tr>
-                                                    <th>Id</th>
-                                                    <th style="text-align: center; width:10%">Tip. de Doc.</th>
-                                                    <th style="text-align: center; width:10%">N&uacute;m. de Doc.</th>
-                                                    <th style="text-align: center; width:20%">Nombres y Apellidos</th>
-                                                    <th style="text-align: center; width:15%">Tel&eacute;fono</th>
-                                                    <th style="text-align: center; width:15%;">Correo</th>
-                                                    <th style="text-align: center; width:15%;">Empresa</th>
-                                                    <th style="text-align: center; width:50%;"><center>Acciones</center></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="tbodyTecnicos">
-                                            </tbody>
-                                            <tr id="NoExisteTec"><td colspan="11" style="text-align:center"> No se han añadido técnicos</td></tr>
-                                        </table>
                                     </div>
                                 </div>
+                                <div class="text-right">
+                                    @if (tipoProceso != "V")
+                                    {
+                                        <button disabled class="btn btn-default btn-sm" type="button" id="btnBuscarTecnicos" data-target="#modalBusquedaTecnico" data-toggle="modal"><i class="fa fa-search"></i> Buscar Técnicos</button>
+                                        <span id="hidden_fields"></span>
+                                        <button disabled class="btn btn-primary btn-sm" type="button" id="btnAñadirTecnico" data-toggle="modal" data-target="#añadirTecnico"><i class="fa fa-plus"></i> Crear Técnico Externo</button>
+                                    }
+
+                                </div>
                                 <br />
-                            </form>
-                        </div>
-                        <div id="navContactoDetalle" class="tab-pane fade">
-                            <div class="panel-group" id="accordion7401210" role="tablist" aria-multiselectable="false">
-                                <div class="box-content">
-                                    <div class="row container-fluid">
-                                        <div class="col-md-6 col-sm-12">
-                                            <label for="txtNomContacto">Nombre de Contacto:</label>
-                                            <div class="form-group">
-                                                <input placeholder="Nombre de Contacto" disabled type="text" class="form-control input-sm" id="txtNomContacto">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 col-sm-12">
-                                            <label for="txtTelefContacto">Tel&eacute;fono de Contacto:</label>
-                                            <div class="form-group">
-                                                <input placeholder="Teléfono de Contacto" disabled type="text" class="form-control input-sm" id="txtTelefContacto">
-                                            </div>
+                                <div class="table-responsive">
+                                    <table id="tblMainTecnicos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Id</th>
+                                                <th style="text-align: center; width:10%">Tip. de Doc.</th>
+                                                <th style="text-align: center; width:10%">N&uacute;m. de Doc.</th>
+                                                <th style="text-align: center; width:20%">Nombres y Apellidos</th>
+                                                <th style="text-align: center; width:15%">Tel&eacute;fono</th>
+                                                <th style="text-align: center; width:15%;">Correo</th>
+                                                <th style="text-align: center; width:15%;">Empresa</th>
+                                                <th style="text-align: center; width:50%;"><center>Acciones</center></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbodyTecnicos">
+                                        </tbody>
+                                        <tr id="NoExisteTec"><td colspan="11" style="text-align:center"> No se han añadido técnicos</td></tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <br />
+                        </form>
+                    </div>
+                    <div id="navObservaciones" class="tab-pane fade">
+                        @{
+                            Html.RenderPartial("~/Views/Modelos/_Observaciones.cshtml");
+                        }
+                    </div>
+                    <div id="navContactoDetalle" class="tab-pane fade">
+                        <div class="panel-group" id="accordion7401210" role="tablist" aria-multiselectable="false">
+                            <div class="box-content">
+                                <div class="row container-fluid">
+                                    <div class="col-md-6 col-sm-12">
+                                        <label for="txtNomContacto">Nombre de Contacto:</label>
+                                        <div class="form-group">
+                                            <input placeholder="Nombre de Contacto" disabled type="text" class="form-control input-sm" id="txtNomContacto">
                                         </div>
                                     </div>
-                                    <div class="row container-fluid">
-                                        <div class="col-md-6 col-sm-12">
-                                            <label for="txtEstablecimientoCont">Establecimiento:</label>
-                                            <div class="form-group">
-                                                <input placeholder="Establecimiento" disabled type="text" class="form-control input-sm" id="txtEstablecimientoCont">
-                                            </div>
+                                    <div class="col-md-6 col-sm-12">
+                                        <label for="txtTelefContacto">Tel&eacute;fono de Contacto:</label>
+                                        <div class="form-group">
+                                            <input placeholder="Teléfono de Contacto" disabled type="text" class="form-control input-sm" id="txtTelefContacto">
                                         </div>
-                                        <div class="col-md-6 col-sm-12">
-                                            <label for="txtCargoContacto">Cargo de Contacto:</label>
-                                            <div class="form-group">
-                                                <input placeholder="Cargo de Contacto" disabled type="text" class="form-control input-sm" id="txtCargoContacto">
-                                            </div>
+                                    </div>
+                                </div>
+                                <div class="row container-fluid">
+                                    <div class="col-md-6 col-sm-12">
+                                        <label for="txtEstablecimientoCont">Establecimiento:</label>
+                                        <div class="form-group">
+                                            <input placeholder="Establecimiento" disabled type="text" class="form-control input-sm" id="txtEstablecimientoCont">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12">
+                                        <label for="txtCargoContacto">Cargo de Contacto:</label>
+                                        <div class="form-group">
+                                            <input placeholder="Cargo de Contacto" disabled type="text" class="form-control input-sm" id="txtCargoContacto">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
             </div>
         </div>
     </div>

@@ -7,7 +7,7 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_GAR_SEL_MAIN_RECLAMOS]
 	Nombre:				Fecha:			Descripcion:
 	Diego Bazalar		21.11.24		Realiza el select MAIN para la bandeja de garantías. 
 	EXEC USP_GAR_SEL_MAIN_RECLAMOS	123,1
-	EXEC USP_GAR_SEL_MAIN_RECLAMOS @IsIdWorkFlow=123, @IsNumReclamo=1
+	EXEC USP_GAR_SEL_MAIN_RECLAMOS @IsIdWorkFlow=128, @IsNumReclamo=4
   =======================================================================================================*/
   @IsIdWorkFlow BIGINT 
   ,@IsNumReclamo BIGINT
@@ -20,10 +20,26 @@ SET NOCOUNT ON
 	--Tecnicos
 	EXEC [dbo].[USP_GAR_SEL_TECNICOS] @IsNumReclamo = @IsNumReclamo 
 	--Documentos adjuntos:
-	EXEC [USP_CONSULTA_DOCUMENTOS] @isIdWorkFlow
-	--Detalle de Observaciones :
+	SELECT A.COD_DOCUMENTO,
+			A.ID_WORKFLOW,
+			A.COD_TIPODOC,
+			ISNULL(B.VALOR2,'') NOMTIPODOC,
+			A.NOM_DOCUMENTO,
+			A.VER_DOCUMENTO,
+			A.RUTA_DOCUMENTO,
+			A.NOMBRE_USUARIO,
+			A.PERFIL,
+			A.ELIMINADO,
+			ISNULL(A.USR_REG,'') USR_REG,
+			ISNULL(CONVERT(varchar,A.FEC_REG,103) +' '+CONVERT(varchar,A.FEC_REG,8),'')  AS FEC_REG
+	FROM TBM_DOCUMENTO A
+	INNER JOIN TBD_DATOS_GENERALES B ON A.COD_TIPODOC=B.COD_VALOR2 AND B.DOMINIO='TIPODOC'
+	WHERE ID_WORKFLOW=@isIdWorkFlow AND ELIMINADO = 0
+
+	--Detalle de Observaciones : 
 	EXEC [USP_SEL_OBSERVACIONES] @isIdWorkFlow
 
+	--Detalle de Sewugi
 	SELECT B.ABREV_ESTADO NOMESTADO, 
 					A.CARGO,
 					A.AREA,

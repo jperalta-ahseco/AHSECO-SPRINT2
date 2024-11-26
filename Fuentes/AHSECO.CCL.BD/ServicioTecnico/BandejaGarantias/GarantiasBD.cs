@@ -110,30 +110,6 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
                     }
 
                     reader.NextResult();
-                    List<ComboDTO> _periodos = new List<ComboDTO>();
-                    while (reader.Read())
-                    {
-                        var periodo = new ComboDTO()
-                        {
-                            Id = reader.IsDBNull(reader.GetOrdinal("COD")) ? "" : reader.GetString(reader.GetOrdinal("COD")),
-                            Text = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION"))
-                        };
-                        _periodos.Add(periodo);
-                    }
-
-                    reader.NextResult();
-                    List<ComboDTO> _garantias = new List<ComboDTO>();
-                    while (reader.Read())
-                    {
-                        var garantia = new ComboDTO()
-                        {
-                            Id = reader.IsDBNull(reader.GetOrdinal("CODGARANTIA")) ? "" : reader.GetString(reader.GetOrdinal("CODGARANTIA")),
-                            Text = reader.IsDBNull(reader.GetOrdinal("DESCGARANTIA")) ? "" : reader.GetString(reader.GetOrdinal("DESCGARANTIA"))
-                        };
-                        _garantias.Add(garantia);
-                    }
-
-                    reader.NextResult();
                     List<ComboDTO> _urgencias = new List<ComboDTO>();
                     while (reader.Read())
                     {
@@ -157,13 +133,11 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
                         _motivos.Add(motivo);
                     };
 
-                    result.Periodos = _periodos;
                     result.Empresas = _listEmpresa;
                     result.Estados = _Estados;
                     result.Clientes = _Clientes;
                     result.TipVenta = _tiposVenta;
                     result.TipoEmpleado = _tipoEmpleado;
-                    result.Garantias = _garantias;
                     result.Motivos = _motivos;
                     result.Urgencia = _urgencias;
 
@@ -590,7 +564,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
                 {
                     if (reader.Read())
                     {
-                        SolicitudDTO cabecera = new SolicitudDTO()
+                        SolicitudVentaGarantiaDTO cabecera = new SolicitudVentaGarantiaDTO()
                         {
                             Id_Solicitud = reader.IsDBNull(reader.GetOrdinal("ID_SOLICITUD")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_SOLICITUD")),
                             Id_WorkFlow = reader.IsDBNull(reader.GetOrdinal("ID_WORKFLOW")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_WORKFLOW")),
@@ -608,7 +582,8 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
                             Estado = reader.IsDBNull(reader.GetOrdinal("ESTADO")) ? "" : reader.GetString(reader.GetOrdinal("ESTADO")),
                             nomEstado = reader.IsDBNull(reader.GetOrdinal("NOM_ESTADO")) ? "" : reader.GetString(reader.GetOrdinal("NOM_ESTADO")),
                             TipoProceso = reader.IsDBNull(reader.GetOrdinal("TIPOPROCESO")) ? "" : reader.GetString(reader.GetOrdinal("TIPOPROCESO")),
-                            NroProceso = reader.IsDBNull(reader.GetOrdinal("NROPROCESO")) ? "" : reader.GetString(reader.GetOrdinal("NROPROCESO"))
+                            NroProceso = reader.IsDBNull(reader.GetOrdinal("NROPROCESO")) ? "" : reader.GetString(reader.GetOrdinal("NROPROCESO")),
+                            OrdenCompra = reader.IsDBNull(reader.GetOrdinal("ORDENCOMPRA")) ? "" : reader.GetString(reader.GetOrdinal("ORDENCOMPRA"))
                         };
                         result.CabeceraSolicitud = cabecera;
                         result.CodRpta += 1;
@@ -616,7 +591,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
                     }
                     else
                     {
-                        SolicitudDTO cabecera = new SolicitudDTO();
+                        SolicitudVentaGarantiaDTO cabecera = new SolicitudVentaGarantiaDTO();
                         result.CabeceraSolicitud = cabecera;
                     }
 

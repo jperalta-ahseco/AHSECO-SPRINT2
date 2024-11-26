@@ -19,11 +19,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Alertas
     public class AlertasController : Controller
     {
         //GET Alertas
-        //public JsonResult ObtenerGarantiasProximasVencer()
-        //{
-        //    var alertasBL = new AlertasBL();
-        //    //var result = alertasBL.ObtenerClientesVentas(clienteDTO);
-        //    return Json(result);
-        //}
+        public JsonResult ObtenerGarantiasProximasVencer()
+        {
+            var alertasBL = new AlertasBL();
+            var result = alertasBL.ObtenerGarantiasProximasVencer();
+            return Json(result);
+        }
     }
 }

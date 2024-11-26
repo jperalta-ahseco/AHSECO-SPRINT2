@@ -7,6 +7,7 @@
     var $codigoWorkflow = $('#codigoWorkflow');
     var $estadoReq = $('#estadoReq');
     var $tipoproceso = $('#tipoproceso');
+    var $hdnIdZona = $('#hdnIdZona');
     //Btns
     var $btnAgregarObservacion = $('#btnAgregarObservacion');
     var $btnRegresar = $('#btnRegresar');
@@ -76,17 +77,17 @@
     var $modalSolicitud = $('#modalSolicitud');
     var $modalAsignacion = $('#modalAsignacion');
     var $modalBusquedaTecnico = $('#modalBusquedaTecnico');
-    //var $modalZona = $('#modalZona');
+    var $modalZona = $('#modalZona');
     var $modalDetalleInstalacion = $('#modalDetalleInstalacion');
     var $modalElementosDeProducto = $('#modalElementosDeProducto');
-    var $modalUbigeo = $('#modalUbigeo');
+    //var $modalUbigeo = $('#modalZona');
 
     /*ModalElementos de Producto */
     var $tblElementosDeProducto = $('#tblElementosDeProducto');
     var $txtTecnico = $('#txtTecnico');
     var $checkSeleccionar = $('#checkSeleccionar');
     var $checkSeleccionarTodos = $('#checkSeleccionarTodos');
-
+    var $NoExisteElementos = $('#NoExisteElementos');
 
     /**Modal Detalle Adicional de Instalación*/
     var $tituloModal = $('#tituloModal');
@@ -194,7 +195,7 @@
         });
         $btnProcesoInst.click(cambiarEstadoProceso);
         $btnFinalizarReq.click(CerrarRequerimiento);
-        //$btnGuardarUbigeo.click(seleccionar);
+        $btnGuardarUbigeo.click(seleccionar);
         $btnEditarReq.click(EditarRequerimiento);
         //$btnRegistrarTecnico.click(AsignarTecnico_a_Producto);
         $btnAgregarObservacion.click($modalObservacionClick);
@@ -206,7 +207,7 @@
         $btnBuscarSolicitud.click(BuscarSolicitudes);
         $searchSolVenta.click(BuscarSolicitudes);
         $searchTecnico.click(abrirModalTecnicos);
-        //$searchZona.click(logicUbigeo);
+        $searchZona.click(logicUbigeo);
         $agregarTecnico.click(AgregarTecnicoExterno);
         $btnBuscarTecnico.click(BuscarTecnicos);
         $btnRegistrarTecnicoExterno.click(CrearTecnico3ro_a_Producto);
@@ -227,11 +228,11 @@
         })
         cargarDatos();
         btnCheck();
+        cargarBtnInfoAdicional();
     };
 
 
-    /*Lógica Ubigeo
-
+    /*Lógica Ubigeo*/
     function logicUbigeo() {
         $cmbProvincia.prop("disabled", true);
         $cmbDistrito.prop("disabled", true);
@@ -280,7 +281,7 @@
             var filters = {};
             filters.placeholder = "-- Seleccione --";
             filters.allowClear = false;
-            app.llenarCombo($cmbDepartamento, resultado, $modalUbigeo, "", "<--Seleccione-->", filters);
+            app.llenarCombo($cmbDepartamento, resultado, null, "", "<--Seleccione-->", filters);
         }
         var fnFailCallback = function () {
             app.mensajes.error("Error", "No se ejecutó correctamente la carga de departamentos")
@@ -324,7 +325,7 @@
         var filters = {};
         filters.placeholder = "-- Seleccione --";
         filters.allowClear = false;
-        app.llenarCombo($cmbProvincia, provincias, $modalUbigeo, "", "<--Seleccione-->", filters)
+        app.llenarCombo($cmbProvincia, provincias, null, "", "<--Seleccione-->", filters)
     }
 
     function obtenerDistrito(codProvincia, data) {
@@ -358,11 +359,13 @@
         var filters = {};
         filters.placeholder = "-- Seleccione --";
         filters.allowClear = false;
-        app.llenarCombo($cmbDistrito, distritos, $modalUbigeo, "", "<--Seleccione-->", filters)
+        app.llenarCombo($cmbDistrito, distritos, null, "", "<--Seleccione-->", filters)
     }
     
 
     function seleccionar() {
+
+        var codDistrito = sessionStorage.getItem('codDistrito');
 
         var nomDepartamento = sessionStorage.getItem('nomDepartamento')
         var nomProvincia = sessionStorage.getItem('nomProvincia');
@@ -384,8 +387,9 @@
         }
 
         $txtZona.val(nomDepartamento + ' / ' + nomProvincia + ' / ' + nomDistrito);
-        $modalUbigeo.modal('hide');
-    }*/
+        $modalZona.modal('toggle');
+    };
+
     function btnCheck() {
         $(document).on('change', '#checkSeleccionar', function (e) {
             if (this.checked) {
@@ -490,7 +494,7 @@
                     Marca: data.Result[i].Marca,
                     IndFianza: data.Result[i].IndFianza,
                     NumFianza: data.Result[i].NumFianza,
-                    IndLLaveMano: data.Result[i].IndLLaveMano,
+                    //IndLLaveMano: data.Result[i].IndLLaveMano,
                     Dimensiones: data.Result[i].Dimensiones,
                     MontoPrestAcc: data.Result[i].MontoPrestAcc,
                     MontoPrestPrin: data.Result[i].MontoPrestPrin,
@@ -803,11 +807,11 @@
                         Cantidad: data.Result.DetalleCotizacion[i].Cantidad,
                         IndFianza: data.Result.DetalleCotizacion[i].IndFianza,
                         NumFianza: data.Result.DetalleCotizacion[i].NumFianza,
-                        IndLLaveMano: data.Result.DetalleCotizacion[i].IndLLaveMano,
+                        //IndLLaveMano: data.Result.DetalleCotizacion[i].IndLLaveMano,
                         Dimensiones: data.Result.DetalleCotizacion[i].Dimensiones,
                         MontoPrestAcc: data.Result.DetalleCotizacion[i].MontoPrestAcc,
                         MontoPrestPrin: data.Result.DetalleCotizacion[i].MontoPrestPrin,
-                        FecLimInsta: app.obtenerFecha(data.Result.DetalleCotizacion[i].FecLimInsta),
+                        //FecLimInsta: app.obtenerFecha(data.Result.DetalleCotizacion[i].FecLimInsta),
                         Elementos : elementos
                 })
             };
@@ -815,7 +819,6 @@
             $modalSolicitud.modal('toggle');
             $cmbDestino.prop('disabled', false);
             $dateSolicitud.prop('disabled', false);
-            cargarBtnInfoAdicional();
         };
 
         var fnFailCallBack = function () {
@@ -985,19 +988,6 @@
                 }
             },
             {
-                data: "IndLLaveMano",
-                render: function (data, type, row) {
-                    var rpta = ""
-                    if (data == true) {
-                        rpta = "Sí";
-                    }
-                    else if (rpta == false) {
-                        rpta = "No";
-                    }
-                    return '<center>' + rpta + '</center>'
-                }
-            },
-            {
                 data: "Dimensiones",
                 render: function (data, type, row) {
                     return '<center>' + data + '</center>'
@@ -1019,12 +1009,6 @@
                 data: "MontoPrestPrin",
                 render: function (data, type, row) {
                     return '<center>' +'S/'+data + '</center>'
-                }
-            },
-            {
-                data: "FecLimInsta",
-                render: function (data, type, row) {
-                    return '<center>' + data + '</center>'
                 }
             },
             {
@@ -1281,8 +1265,8 @@
     };
 
     function abrirModalTecnicos() {
-        
-    }
+        BuscarTecnicos();
+    };
     function cargarTipoDoc() {
         var method = "POST";
         var url = "Utiles/ListarDocumentos";
@@ -1811,11 +1795,11 @@
                         Cantidad: data.Result.DetalleInstalacion[i].Cantidad,
                         IndFianza: data.Result.DetalleInstalacion[i].IndFianza,
                         NumFianza: data.Result.DetalleInstalacion[i].NumFianza,
-                        IndLLaveMano: data.Result.DetalleInstalacion[i].IndLLaveMano,
+                        //IndLLaveMano: data.Result.DetalleInstalacion[i].IndLLaveMano,
                         Dimensiones: data.Result.DetalleInstalacion[i].Dimensiones,
                         MontoPrestAcc: data.Result.DetalleInstalacion[i].MontoPrestAcc,
                         MontoPrestPrin: data.Result.DetalleInstalacion[i].MontoPrestPrin,
-                        FecLimInsta: app.obtenerFecha(data.Result.DetalleInstalacion[i].FecLimInsta),
+                        //FecLimInsta: app.obtenerFecha(data.Result.DetalleInstalacion[i].FecLimInsta),
                         Elementos: elementos
                     });
                 };
@@ -2283,6 +2267,8 @@
         data.Result = [];
         data.Result = listProductos;
 
+        $NoExisteElementos.remove();
+
         if ($tipoproceso.val() == "") {
             var columns = [
                 {
@@ -2326,7 +2312,6 @@
         }
        
         else if ($tipoproceso.val() == "U") {
-            BuscarTecnicos();
             var columns = [
                 {
                     data: "Id",
@@ -2464,7 +2449,31 @@
                 visible: false
             }
         ];
-        app.llenarTabla($tblElementosDeProducto, data, columns, columnsDefs, "#tblElementosDeProducto",null)
+        app.llenarTabla($tblElementosDeProducto, data, columns, columnsDefs, "#tblElementosDeProducto", null);
+
+        
+
+    };
+
+    function crearMantPrevent() {
+        var method = "POST";
+        var url = "BandejaInstalacionTecnica/CrearMantPrevent";
+
+        var obj = {
+            NumReq: $numeroReq.val()
+        };
+
+        var objParam = JSON.stringify(obj);
+
+        var fnDoneCallBack = function () {
+
+        };
+
+        var fnFailCallBack = function () {
+
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
     };
     function CerrarRequerimiento() {
 
@@ -2539,6 +2548,7 @@
             var fnSi = function () {
                 var fnDoneCallBack = function () {
                     function redirect() {
+                        crearMantPrevent();
                         app.redirectTo("BandejaInstalacionTecnica");
                     }
                     app.message.success("Éxito", "Se realizó el cambio de estado a: 'Instalado'", "Aceptar", redirect);

@@ -54,6 +54,7 @@
     <Compile Include="FiltroGrupoSolicitudVentaDTO.cs" />
     <Compile Include="FiltrosServiciosDTO.cs" />
     <Compile Include="Filtros\FiltroGrupoViaticosDTO.cs" />
+    <Compile Include="GarantiaResultDTO.cs" />
     <Compile Include="GrupoServicioDTO.cs" />
     <Compile Include="PlantillaCorreoDTO.cs" />
     <Compile Include="ComboDTO.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="ServicioTecnico\BandejaGarantias\GrupoGarantiasDTO.cs" />
     <Compile Include="ServicioTecnico\BandejaGarantias\GrupoReclamoDTO.cs" />
     <Compile Include="ServicioTecnico\BandejaGarantias\ReclamosDTO.cs" />
+    <Compile Include="ServicioTecnico\BandejaGarantias\SolicitudVentaGarantiaDTO.cs" />
     <Compile Include="ServicioTecnico\BandejaGarantias\TecnicoGarantiaDTO.cs" />
     <Compile Include="ServicioTecnico\BandejaInstalacionTecnica\CotizacionDetalleTecDTO.cs" />
     <Compile Include="ServicioTecnico\BandejaInstalacionTecnica\FiltroInstalacionTecDTO.cs" />

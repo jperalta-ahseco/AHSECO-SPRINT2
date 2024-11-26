@@ -5,6 +5,7 @@ using AHSECO.CCL.BE;
 using System.DirectoryServices;
 using static System.Net.Mime.MediaTypeNames;
 using System.Collections.Generic;
+using AHSECO.CCL.BE.ServicioTecnico.BandejaGarantias;
 
 namespace AHSECO.CCL.BL
 {
@@ -23,7 +24,19 @@ namespace AHSECO.CCL.BL
             Log = log;
         }
 
-
+        public ResponseDTO<IEnumerable<GarantiaResultDTO>> ObtenerGarantiasProximasVencer()
+        {
+            try
+            {
+                var result = Repository.ObtenerGarantiasProximasVencer();
+                return new ResponseDTO<IEnumerable<GarantiaResultDTO>>(result);
+            }
+            catch (Exception ex) 
+            {
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<IEnumerable<GarantiaResultDTO>>(ex);
+            }  
+        }
 
     }
 }

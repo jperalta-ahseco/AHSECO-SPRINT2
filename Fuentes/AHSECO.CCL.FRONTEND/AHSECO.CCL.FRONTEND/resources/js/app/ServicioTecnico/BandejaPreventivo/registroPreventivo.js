@@ -1,4 +1,4 @@
-﻿var registroInstalacionTec = (function ($, win, doc) {
+﻿var registroPreventivos = (function ($, win, doc) {
     $(Initializer);
     //Ids Hidden - Importante
     var $nombreusuario = $('#nombreusuario');
