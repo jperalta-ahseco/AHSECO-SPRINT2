@@ -22,6 +22,11 @@ using System.Web.UI.WebControls;
 using AHSECO.CCL.BL.Util;
 using Microsoft.IdentityModel.Tokens;
 using static AHSECO.CCL.COMUN.ConstantesDTO;
+using NPOI.HSSF.UserModel;
+using NPOI.HSSF.Util;
+using NPOI.SS.UserModel;
+using NPOI.Util;
+using System.IdentityModel.Claims;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 {
@@ -2884,6 +2889,429 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             //if(ViewBag.TipoSolicitud==ConstantesDTO.)
 
         }
+
+
+        [HttpPost]
+        public JsonResult GenerarHojaLiquidacion(CotizacionDTO cotizacionDTO)
+        {
+            var ventasBL = new VentasBL();
+            var datosCabeceraCotizacion = ventasBL.ObtenerCotizacionVenta(cotizacionDTO).Result.First();
+
+            var detalle_datos = new CotizacionDetalleDTO();
+            detalle_datos.IdCotizacion = cotizacionDTO.IdCotizacion;
+            var datosDetalleCotizacion = ventasBL.ObtenerCotizacionVentaDetalle(detalle_datos).Result;
+
+            var hssfworkbook = new HSSFWorkbook();
+            ISheet sh = hssfworkbook.CreateSheet("Hoja_Liquidacion");
+
+            //Se define ancho de columnas:
+            sh.SetColumnWidth(0, 15 * 256);
+            sh.SetColumnWidth(1, 12 * 256);
+            sh.SetColumnWidth(2, 72 * 256);
+            sh.SetColumnWidth(3, 30 * 256);
+            sh.SetColumnWidth(4, 30 * 256);
+            sh.SetColumnWidth(5, 9 * 256);
+            sh.SetColumnWidth(6, 20 * 256);
+            sh.SetColumnWidth(7, 12 * 256);
+            sh.SetColumnWidth(8, 12 * 256);
+
+            // Creacion del estilo
+            var fontbold = hssfworkbook.CreateFont();
+            fontbold.Boldweight = (short)FontBoldWeight.Bold;
+            fontbold.Color = HSSFColor.White.Index;
+            fontbold.FontHeightInPoints = 8;
+            fontbold.FontName = "Arial";
+
+            var style = hssfworkbook.CreateCellStyle();
+            style.SetFont(fontbold);
+            style.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+            style.BorderTop = NPOI.SS.UserModel.BorderStyle.None;
+            style.BorderRight = NPOI.SS.UserModel.BorderStyle.None;
+            style.BorderLeft = NPOI.SS.UserModel.BorderStyle.None;
+            style.FillForegroundColor = HSSFColor.Red.Index;
+            style.FillPattern = FillPattern.SolidForeground;
+
+            var fontBoldII = hssfworkbook.CreateFont();
+            fontBoldII.Boldweight = (short)FontBoldWeight.Bold;
+            fontBoldII.Color = HSSFColor.DarkBlue.Index;
+            fontBoldII.FontHeightInPoints = 8;
+            fontBoldII.FontName = "Arial";
+
+            var styleII = hssfworkbook.CreateCellStyle();
+            styleII.SetFont(fontBoldII);
+            styleII.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+            styleII.BorderTop = NPOI.SS.UserModel.BorderStyle.None;
+            styleII.BorderRight = NPOI.SS.UserModel.BorderStyle.None;
+            styleII.BorderLeft = NPOI.SS.UserModel.BorderStyle.None;
+            styleII.FillForegroundColor = HSSFColor.Yellow.Index;
+            styleII.FillPattern = FillPattern.SolidForeground;
+
+            IDataFormat dataFormatCustom = hssfworkbook.CreateDataFormat();
+            var styleDate = hssfworkbook.CreateCellStyle();
+            styleDate.DataFormat = dataFormatCustom.GetFormat("dd/MM/yyyy");
+
+            var styleIII = hssfworkbook.CreateCellStyle();
+            styleIII.SetFont(fontbold);
+            styleIII.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+            styleIII.BorderTop = NPOI.SS.UserModel.BorderStyle.None;
+            styleIII.BorderRight = NPOI.SS.UserModel.BorderStyle.None;
+            styleIII.BorderLeft = NPOI.SS.UserModel.BorderStyle.None;
+            styleIII.FillForegroundColor = HSSFColor.Red.Index;
+            styleIII.FillPattern = FillPattern.SolidForeground;
+            styleIII.DataFormat = dataFormatCustom.GetFormat("dd/MM/yyyy");
+
+            //Impresion de cabecera:
+
+            int rownum1 = 0;
+            int cellnum1 = 0;
+            IRow row1 = sh.CreateRow(rownum1++);
+            NPOI.SS.UserModel.ICell cell1;
+
+            cell1 = row1.CreateCell(cellnum1++);
+            //cell.CellStyle = style;
+            cell1.SetCellValue("N° Cotización:");
+
+            cell1 = row1.CreateCell(cellnum1++);
+            var num_cotizacion = "000000" + datosCabeceraCotizacion.IdCotizacion.ToString();
+            var num = num_cotizacion.Substring(num_cotizacion.Length - 6);
+            cell1.SetCellValue("PC-"+num);
+
+            cell1 = row1.CreateCell(3);
+            cell1.SetCellValue("Nombre Contacto:");
+
+            cell1 = row1.CreateCell(4);
+            cell1.SetCellValue(datosCabeceraCotizacion.NombreContacto);
+
+            cell1 = row1.CreateCell(6);
+            cell1.SetCellValue("Área:");
+
+            cell1 = row1.CreateCell(7);
+            cell1.SetCellValue(datosCabeceraCotizacion.AreaContacto);
+
+
+
+            int rownum2 = 1;
+            int cellnum2 = 0;
+            IRow row2 = sh.CreateRow(rownum2++);
+            NPOI.SS.UserModel.ICell cell2;
+
+            cell2 = row2.CreateCell(cellnum2++);
+            //cell.CellStyle = style;
+            cell2.SetCellValue("Teléfono:");
+
+            cell2 = row2.CreateCell(cellnum2++);
+            cell2.SetCellValue(datosCabeceraCotizacion.TelefonoContacto);
+
+            cell2 = row2.CreateCell(3);
+            cell2.SetCellValue("Correo:");
+
+            cell2 = row2.CreateCell(4);
+            cell2.SetCellValue(datosCabeceraCotizacion.EmailContacto);
+
+            cell2 = row2.CreateCell(6);
+            cell2.SetCellValue("Observación:");
+
+            cell2 = row2.CreateCell(7);
+            cell2.SetCellValue(datosCabeceraCotizacion.Observacion);
+
+            int rownum3 = 2;
+            int cellnum3 = 0;
+            IRow row3 = sh.CreateRow(rownum3++);
+            NPOI.SS.UserModel.ICell cell3;
+
+
+            cell3 = row3.CreateCell(cellnum3++);
+            //cell.CellStyle = style;
+            cell3.SetCellValue("Fecha Cotización:");
+
+            cell3 = row3.CreateCell(cellnum3++);
+
+            var fecha_cot = "";
+            if (datosCabeceraCotizacion.FecCotizacion.HasValue)
+            {
+                fecha_cot = datosCabeceraCotizacion.FecCotizacion.Value.ToString("dd/MM/yyyy");
+            }
+            cell3.SetCellValue(fecha_cot);
+
+            cell3 = row3.CreateCell(3);
+            cell3.SetCellValue("Vigencia Cotización (días):");
+
+            cell3 = row3.CreateCell(4);
+            cell3.SetCellValue(datosCabeceraCotizacion.Vigencia);
+
+            cell3 = row3.CreateCell(6);
+            cell3.SetCellValue("Plazo Entrega (días):");
+
+            cell3 = row3.CreateCell(7);
+            cell3.SetCellValue(datosCabeceraCotizacion.PlazoEntrega);
+
+            int rownum4 = 3;
+            int cellnum4 = 0;
+            IRow row4 = sh.CreateRow(rownum4++);
+            NPOI.SS.UserModel.ICell cell4;
+
+            cell4 = row4.CreateCell(cellnum4++);
+            //cell.CellStyle = style;
+            cell4.SetCellValue("Garantía:");
+
+            cell4 = row4.CreateCell(cellnum4++);
+            cell4.SetCellValue(datosCabeceraCotizacion.Garantia);
+
+            cell4 = row4.CreateCell(3);
+            cell4.SetCellValue("Forma de Pago:");
+
+            cell4 = row4.CreateCell(4);
+            cell4.SetCellValue(datosCabeceraCotizacion.FormaPago);
+
+            cell4 = row4.CreateCell(6);
+            cell4.SetCellValue("Moneda:");
+
+            cell4 = row4.CreateCell(7);
+            cell4.SetCellValue(datosCabeceraCotizacion.Moneda);
+
+
+            // Impresion de cabeceras de detalle:
+            int rownum = 5;
+            int cellnum = 0;
+            IRow row = sh.CreateRow(rownum++);
+            NPOI.SS.UserModel.ICell cell;
+
+
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
+            cell.SetCellValue("N° Item");
+
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
+            cell.SetCellValue("Código Producto");
+
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
+            cell.SetCellValue("Descripción");
+
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
+            cell.SetCellValue("Stock Disponible");
+
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
+            cell.SetCellValue("Unidad de Medida");
+
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
+            cell.SetCellValue("Cantidad");
+
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
+            cell.SetCellValue("Valor Venta Total Sin IGV");
+
+
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
+            cell.SetCellValue("Ganancia(%)");
+
+
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
+            cell.SetCellValue("Valor Venta Total Sin IGV (Con Ganancia)");
+
+          
+
+            //// Impresión de la data
+
+            foreach (var item in datosDetalleCotizacion)
+            {
+                cellnum = 0;
+                row = sh.CreateRow(rownum++);
+
+                cell = row.CreateCell(cellnum++);
+                cell.SetCellValue(item.NroItem.ToString());
+
+
+                cell = row.CreateCell(cellnum++);
+                cell.SetCellValue(item.CodItem.ToString());
+
+                cell = row.CreateCell(cellnum++);
+                cell.SetCellValue(item.Descripcion);
+
+                cell = row.CreateCell(cellnum++);
+                cell.SetCellValue(item.Stock.ToString());
+
+                cell = row.CreateCell(cellnum++);
+                cell.SetCellValue(item.CodUnidad.ToString());
+
+                cell = row.CreateCell(cellnum++);
+                cell.SetCellValue(item.Cantidad.ToString());
+
+                var ventaTotalSinIgv = "";
+                if (item.VentaTotalSinIGV.HasValue)
+                {
+                    ventaTotalSinIgv = item.VentaTotalSinIGV.Value.ToString("0.00");
+                }
+
+                cell = row.CreateCell(cellnum++);
+                cell.SetCellValue(ventaTotalSinIgv);
+
+                var porcentajeGanancia = "";
+                if (item.PorcentajeGanancia.HasValue)
+                {
+                    porcentajeGanancia = item.PorcentajeGanancia.Value.ToString("0.00");
+                }
+
+                cell = row.CreateCell(cellnum++);
+                cell.SetCellValue(porcentajeGanancia);
+
+                var ventaTotalSinIgvConGanancia = "";
+                if (item.VentaTotalSinIGVConGanacia.HasValue)
+                {
+                    ventaTotalSinIgvConGanancia = item.VentaTotalSinIGVConGanacia.Value.ToString("0.00");
+                }
+                cell = row.CreateCell(cellnum++);
+                cell.SetCellValue(ventaTotalSinIgvConGanancia);
+
+
+            }
+
+            int rownum5 = 6 + datosDetalleCotizacion.Count();
+            int cellnum5 = 0;
+            IRow row5 = sh.CreateRow(rownum5++);
+            NPOI.SS.UserModel.ICell cell5;
+
+
+            cell5 = row5.CreateCell(cellnum5++);
+            cell5.SetCellValue("");
+
+            cell5 = row5.CreateCell(cellnum5++);
+            cell5.SetCellValue("");
+
+            cell5 = row5.CreateCell(cellnum5++);
+            cell5.SetCellValue("");
+
+            cell5 = row5.CreateCell(cellnum5++);
+            cell5.SetCellValue("");
+
+            cell5 = row5.CreateCell(cellnum5++);
+            cell5.SetCellValue("");
+
+            cell5 = row5.CreateCell(cellnum5++);
+            cell5.SetCellValue("");
+
+            cell5 = row5.CreateCell(cellnum5++);
+            cell5.SetCellValue("");
+
+            cell5 = row5.CreateCell(cellnum5++);
+            cell5.CellStyle = style;
+            cell5.SetCellValue("Sub Total");
+
+            var subTotal = "";
+            if (datosCabeceraCotizacion.SubtotalVenta.HasValue)
+            {
+                subTotal = datosCabeceraCotizacion.SubtotalVenta.Value.ToString("0.00");
+            }
+            cell5 = row5.CreateCell(cellnum5++);
+            cell5.SetCellValue(subTotal);
+
+
+            int rownum6 = 7 + datosDetalleCotizacion.Count();
+            int cellnum6 = 0;
+            IRow row6 = sh.CreateRow(rownum6++);
+            NPOI.SS.UserModel.ICell cell6;
+
+
+            cell6 = row6.CreateCell(cellnum6++);
+            cell6.SetCellValue("");
+
+            cell6 = row6.CreateCell(cellnum6++);
+            cell6.SetCellValue("");
+
+            cell6 = row6.CreateCell(cellnum6++);
+            cell6.SetCellValue("");
+
+            cell6 = row6.CreateCell(cellnum6++);
+            cell6.SetCellValue("");
+
+            cell6 = row6.CreateCell(cellnum6++);
+            cell6.SetCellValue("");
+
+            cell6 = row6.CreateCell(cellnum6++);
+            cell6.SetCellValue("");
+
+            cell6 = row6.CreateCell(cellnum6++);
+            cell6.SetCellValue("");
+
+            cell6 = row6.CreateCell(cellnum6++);
+            cell6.CellStyle = style;
+            cell6.SetCellValue("IGV (18%):");
+
+            var IGV = "";
+            if (datosCabeceraCotizacion.MontoIGV.HasValue)
+            {
+                IGV = datosCabeceraCotizacion.MontoIGV.Value.ToString("0.00");
+            }
+            cell6 = row6.CreateCell(cellnum6++);
+            cell6.SetCellValue(IGV);
+
+            int rownum7 = 8 + datosDetalleCotizacion.Count();
+            int cellnum7 = 0;
+            IRow row7 = sh.CreateRow(rownum7++);
+            NPOI.SS.UserModel.ICell cell7;
+
+
+            cell7 = row7.CreateCell(cellnum7++);
+            cell7.SetCellValue("");
+
+            cell7 = row7.CreateCell(cellnum7++);
+            cell7.SetCellValue("");
+
+            cell7 = row7.CreateCell(cellnum7++);
+            cell7.SetCellValue("");
+
+            cell7 = row7.CreateCell(cellnum7++);
+            cell7.SetCellValue("");
+
+            cell7 = row7.CreateCell(cellnum7++);
+            cell7.SetCellValue("");
+
+            cell7 = row7.CreateCell(cellnum7++);
+            cell7.SetCellValue("");
+
+            cell7 = row7.CreateCell(cellnum7++);
+            cell7.SetCellValue("");
+
+            cell7 = row7.CreateCell(cellnum7++);
+            cell7.CellStyle = style;
+            cell7.SetCellValue("Total Venta:");
+
+            var TotalVenta = "";
+            if (datosCabeceraCotizacion.TotalVenta.HasValue)
+            {
+                TotalVenta = datosCabeceraCotizacion.TotalVenta.Value.ToString("0.00");
+            }
+            cell7 = row7.CreateCell(cellnum7++);
+            cell7.SetCellValue(TotalVenta);
+
+
+
+            string rutaInicial = ConfigurationManager.AppSettings.Get("RutaCotizacionVenta");
+            string nombre = "LIQUIDACION_COSTOS_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + ".xls";
+            var ruta_file = rutaInicial + nombre;
+
+            // Guardar el archivo en una ubicación específica
+            using (FileStream fs = new FileStream(ruta_file, FileMode.Create, FileAccess.Write))
+            {
+                hssfworkbook.Write(fs); // Escribir el libro en el archivo
+            }
+
+            return Json(new
+            {
+                Status = 1,
+                Archivo = nombre
+            });
+
+         
+        }
+
+
 
     }
 }

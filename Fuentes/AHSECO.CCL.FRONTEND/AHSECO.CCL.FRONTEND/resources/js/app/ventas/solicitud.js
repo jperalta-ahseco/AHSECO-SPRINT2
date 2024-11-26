@@ -19,6 +19,7 @@
     var $modalRegistraProductos = $('#modalRegistraProductos');
     var $modalContactos = $('#modalContactos');
     var $tituloModalObservacion = $('#tituloModalObservacion');
+    var $btnExportarLiquidacion = $("#btnExportarLiquidacion");
 
     /*variables de los modales*/
     var $NoExisteRegObs = $('#NoExisteRegObs');
@@ -334,8 +335,29 @@
         $DC_btnCerrarServ.click(cerrarModalDetCotServ);
         $DC_btnGuardarServ.click(grabarDatosCotDetServ);
         $btnCerrarHistorial.click($btnCerrarHistorial_click);
+        $btnExportarLiquidacion.click($btnExportarLiquidacion_click);
         cargaCombos();      
     };
+
+    function $btnExportarLiquidacion_click(e) {
+
+        method = 'POST';
+        url = 'BandejaSolicitudesVentas/GenerarHojaLiquidacion';
+        var objDatos = {
+            IdCotizacion: $idCotizacion.val(),
+            IdSolicitud: $numeroSolicitud.val()
+        };
+        var objParam = JSON.stringify(objDatos);
+
+        var fnDoneCallBack = function (data) {
+            app.abrirVentana("BandejaHistorialCotizacion/ExportarFile?nombreDoc=" + data.Archivo);            
+        }
+        var fnFailCallBack = function () {
+
+        }
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, mensajes.GenerarCotizacion);
+    }
 
     function $btnCerrarHistorial_click() {
         $modalVerHistorialCotizacion.modal("hide");
