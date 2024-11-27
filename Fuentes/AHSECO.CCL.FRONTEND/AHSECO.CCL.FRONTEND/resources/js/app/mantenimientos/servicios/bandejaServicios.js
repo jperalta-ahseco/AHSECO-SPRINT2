@@ -21,11 +21,12 @@
     }
     $(Initializer)
     function Initializer() {
-        CargarCombos();
-        btnBuscarClick();
         $btnBuscar.click(btnBuscarClick);
         $btnExportar.click(btnExportarClick);
         $btnNuevo.click(btnNuevoClick);
+        CargarCombos();
+        btnBuscarClick();
+
     }
     function CargarCombos() {
         method = "POST";
@@ -35,11 +36,13 @@
 
         var fnDoneCallBack = function (data) {
             var filters = {};
-            filters.placeholder = "--Seleccionar--";
+            filters.placeholder = "-- Todos --";
             filters.allowClear = false;
             //app.llenarComboMultiResult($cmbEquipo, data.Result.Equipos, null, 0, "--Seleccionar--", filters);
-            app.llenarComboMultiResult($cmbTipoServicio, data.Result.TipServicio, null, 0, "--Seleccionar--", filters);
-            app.llenarComboMultiResult($cmbEstado, data.Result.Estados, null, "", "--Seleccionar--", filters);
+            app.llenarComboMultiResult($cmbTipoServicio, data.Result.TipServicio, null, 0, "-- Todos --", filters);
+            app.llenarComboMultiResult($cmbEstado, data.Result.Estados, null, -1, "-- Todos --", filters);
+          
+          
         };
         var fnFailCallBack = function () {
             app.message.error("Sistema", "Ocurrió un error al realizar la carga de los filtros");
@@ -56,8 +59,9 @@
             Equipo: $txtEquipo.val(),
             Marca: $txtMarca.val(),
             Modelo: $txtModelo.val(),
-            Estado: $cmbEstado.val() == ' ' ? ' ' : $cmbEstado.val(),
-            TipoServicio: $cmbTipoServicio.val() == "0" ? '' : $cmbTipoServicio.val()
+            Estado: $cmbEstado.val() == "-1" ? '' : $cmbEstado.val(),
+            TipoServicio: $cmbTipoServicio.val() == "0" ? '' : $cmbTipoServicio.val(),
+            TipoConsulta: "C"
         }
         var data = JSON.stringify(objServicio);
         var fnDoneCallback = function (data) {
@@ -111,7 +115,7 @@
         var filters =
         {
             dataTableSearching: false,
-            dataTablePageLength: 10
+            dataTablePageLength: 15
         }
         app.llenarTabla($tblServicio, data, columns, columnDefs, "#tblServicio", null, null, filters);
     }
@@ -172,8 +176,9 @@
         $("<input>", { type: "hidden", name: "CodEquipo", value: $txtEquipo.val() == '' ? '' : $txtEquipo.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "Marca", value: $txtMarca.val() == '' ? '' : $txtMarca.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "Modelo", value: $txtModelo.val().trim() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "Estado", value: $cmbEstado.val() == '' ? '' : $cmbEstado.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "Estado", value: $cmbEstado.val() == '-1' ? '' : $cmbEstado.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "TipoServicio", value: $cmbTipoServicio.val() == '0' ? '' : $cmbTipoServicio.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "TipoConsulta:", value: '' }).appendTo("#hidden_fields");
         $formServicio.attr('action', href);
         $formServicio.submit();
     }

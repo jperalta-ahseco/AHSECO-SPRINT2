@@ -16,8 +16,9 @@ namespace AHSECO.CCL.BE
         public string Herramientas { get; set; }
         public string HerramientasEspeciales { get; set; }
         public string Instrumentos { get; set; }
-        public string MantenimientoPreventivo {get; set;}
-        public string DescripcionPreventivo {get; set;}
+        public string MantenimientoPreventivo { get; set;}
+        public string DescripcionPreventivo { get; set;}
+        public string TipoConsulta { get; set; }
         
     }
 }

@@ -548,8 +548,9 @@
             Equipo: $txtBusqEquipo.val(),
             Marca: $txtBusqMarca.val(),
             Modelo: $txtBusqModelo.val(),
-            Estado: "",
-            TipoServicio: $cmbTipoServicio.val() == "0" ? '' : $cmbTipoServicio.val()
+            Estado: "1",
+            TipoServicio: $cmbTipoServicio.val() == "0" ? '' : $cmbTipoServicio.val(),
+            TipoConsulta: "C"
         }
         var data = JSON.stringify(objServicio);
         var fnDoneCallback = function (data) {
@@ -651,6 +652,7 @@
             filters.placeholder = "--Seleccionar--";
             filters.allowClear = false;
             app.llenarComboMultiResult($cmbTipoServicio, data.Result.TipServicio, null, 0, "--Seleccionar--", filters);
+            $btnBuscarItemsServicio_click();
         };
         var fnFailCallBack = function () {
             app.message.error("Sistema", "Ocurrió un error al realizar la carga de los filtros");
