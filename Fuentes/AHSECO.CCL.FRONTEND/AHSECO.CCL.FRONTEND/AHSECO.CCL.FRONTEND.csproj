@@ -956,6 +956,7 @@
     <Content Include="Views\Shared\_BuscarTecnico.cshtml" />
     <Content Include="Views\BandejaSolicitudesVentas\_SolicitudDetServicio.cshtml" />
     <Content Include="Views\Shared\_VerHistorialCotizacion.cshtml" />
+    <Content Include="Views\Modelos\_Reclamo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\css\font\" />
