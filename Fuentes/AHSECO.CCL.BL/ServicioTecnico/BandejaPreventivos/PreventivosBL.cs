@@ -1,5 +1,6 @@
 ﻿using AHSECO.CCL.BD.ServicioTecnico.BandejaPreventivos;
 using AHSECO.CCL.BE;
+using AHSECO.CCL.BE.ServicioTecnico.BandejaPreventivos;
 using AHSECO.CCL.COMUN;
 using System;
 using System.Collections.Generic;
@@ -40,6 +41,21 @@ namespace AHSECO.CCL.BL.ServicioTecnico.BandejaPreventivos
                 return new ResponseDTO<FiltrosPreventivosDTO>(ex);
             }
         }
+
+        public ResponseDTO<IEnumerable<ResultPreventivoDTO>> ObtenerPreventivos(ReqPreventivoDTO req)
+        {
+            try
+            {
+                var result = Repository.ObtenerPreventivos(req);
+                return new ResponseDTO<IEnumerable<ResultPreventivoDTO>>(result);
+            }
+            catch(Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<IEnumerable<ResultPreventivoDTO>>(ex);
+            }
+        }
+
 
     }
 }

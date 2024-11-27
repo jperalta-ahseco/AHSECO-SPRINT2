@@ -1,7 +1,10 @@
 ﻿using AHSECO.CCL.BE;
+using AHSECO.CCL.BE.ServicioTecnico.BandejaPreventivos;
 using AHSECO.CCL.COMUN;
+using Dapper;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
@@ -67,6 +70,37 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaPreventivos
                 }
             }
             return result;
+        }
+
+        public IEnumerable<ResultPreventivoDTO> ObtenerPreventivos(ReqPreventivoDTO req)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using(var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+                var parameters = new DynamicParameters();
+
+                parameters.Add("IsNumSerie", req.NumSerie);
+                parameters.Add("IsNumProc", req.NumProc);
+                parameters.Add("IsNumOrdCompra", req.NumOrdCompra);
+                parameters.Add("IsNumFianza", req.NumFianza);
+                parameters.Add("IsEmpresa", req.Empresa);
+                parameters.Add("IsPeriodoInicio", req.PeriodoInicio);
+                parameters.Add("IsPeriodoFinal", req.PeriodoFinal);
+                parameters.Add("IsEstado", req.Estado);
+
+                var result = connection.Query(
+                    sql: "USP_PREV_SEL_PREVENTIVOS",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new ResultPreventivoDTO()
+                    {
+
+                    });
+                connection.Close();
+                return result;
+            }
         }
 
     }

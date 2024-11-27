@@ -58,18 +58,60 @@
                         </div>
                     </div>
                     <div class="col-md-4 col-sm-12">
+                        <label for="txtVendedor">Vendedor:</label>
+                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                            <input class="form-control input-sm" type="text" id="txtVendedor" placeholder="Ingresar el nombre del vendedor" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
                         <label for="txtTipDoc">Estado:</label>
                         <div class="input-group col-sm-12 col-md-12 col-lg-12">
                             <select aria-hide="false" id="cmbEstado" type="text" class="input form-control input-sm">
                             </select>
                         </div>
                     </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="cmbempresa">Empresa:</label>
+                        <div class="form-group" id="empresaEdit">
+                            <select class="form-control select2 input-sm" style="width:100%;" id="cmbempresa" tabindex="3"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="cmbTipVenta">Tip. Venta:</label>
+                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                            <select aria-hide="false" id="cmbTipVenta" type="text" class="input form-control input-sm">
+                            </select>
+                        </div>
+                    </div>
                 </div>
+                <div class="row container-fluid" style="margin-bottom: 10px;">
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtNumProc">N° Proceso:</label>
+                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                            <input class="form-control input-sm" type="text" id="txtNumProc" placeholder="Ingresar el número de Proceso" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtNumContrato">N° Contrato:</label>
+                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                            <input class="form-control input-sm" type="text" id="txtNumContrato" placeholder="Ingresar el número de Contrato" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtNumOrdCompra">N° Orden de Compra:</label>
+                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                            <input class="form-control input-sm" type="text" id="txtNumOrdCompra" placeholder="Ingresar el número de orden de compra" />
+                        </div>
+                    </div>
+                </div>
+                <br />
                 <div class="row container-fluid">
                     <div class="col-md-4 col-sm-12">
-                        <label for="txtNumFianza">N° Serie:</label>
+                        <label for="txtNumFianza">N° Fianza:</label>
                         <div class="input-group col-sm-12 col-md-12 col-lg-12">
-                            <input class="form-control input-sm" type="text" id="txtNumSerie" placeholder="Ingresar el número de serie" />
+                            <input class="form-control input-sm" type="text" id="txtNumFianza" placeholder="Ingresar el número de fianza" />
                         </div>
                     </div>
                 </div>
@@ -88,12 +130,13 @@
                     <thead>
                         <tr>
                             <th style="text-align: center; width:10%;">N° Reclamo</th>
-                            <th style="text-align: center; width:25%;">Nombre Cliente</th>
-                            <th style="text-align: center; width:15%;">Fecha Reclamo</th>
-                            <th style="text-align: center; width:10%;">Urgencia</th>
-                            <th style="text-align: center; width:15%;">Fecha Programación</th>
-                            <th style="text-align: center; width:15%;">Estado</th>
-                            <th style="text-align: center; width:20%;">Acciones</th>
+                            <th style="text-align: center; width:25%;">Nombre Empresa</th>
+                            <th style="text-align: center; width:15%;">Tipo de Venta</th>
+                            <th style="text-align: center; width: 15%;">Vendedor</th>
+                            <th style="text-align: center; width: 15%;">Empresa</th>
+                            <th style="text-align: center; width: 35%;">Fecha Programación</th>
+                            <th style="text-align: center; width: 20%;">Estado</th>
+                            <th style="text-align: center; width: 20%;">Acciones</th>
                         </tr>
                     </thead>
                     <tbody></tbody>

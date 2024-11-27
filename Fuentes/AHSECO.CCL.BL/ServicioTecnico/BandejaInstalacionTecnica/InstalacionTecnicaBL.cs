@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -107,8 +108,8 @@ namespace AHSECO.CCL.BL.ServicioTecnico.BandejaInstalacionTecnica
             }
             catch (Exception ex)
             {
-                Log.TraceError(Utilidades.GetCaller()   + "::" + ex.Message);
-                return new ResponseDTO<RespuestaDTO> (ex);
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<RespuestaDTO>(ex);
             }
         }
 
@@ -133,9 +134,9 @@ namespace AHSECO.CCL.BL.ServicioTecnico.BandejaInstalacionTecnica
                 var result = Repository.MantTecnicoxDetalle(tecnico);
                 return new ResponseDTO<RespuestaDTO>(result);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                Log.TraceError(Utilidades.GetCaller()+"::" + ex.Message);
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
                 return new ResponseDTO<RespuestaDTO>(ex);
             }
         }
@@ -146,9 +147,9 @@ namespace AHSECO.CCL.BL.ServicioTecnico.BandejaInstalacionTecnica
                 var result = Repository.SetDatosElementos(elemento);
                 return new ResponseDTO<RespuestaDTO>(result);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                Log.TraceError(Utilidades.GetCaller() + "::<"+ ex.Message);
+                Log.TraceError(Utilidades.GetCaller() + "::<" + ex.Message);
                 return new ResponseDTO<RespuestaDTO>(ex);
             }
         }
@@ -157,11 +158,11 @@ namespace AHSECO.CCL.BL.ServicioTecnico.BandejaInstalacionTecnica
             try
             {
                 var result = Repository.ObtenerInstalacionesTec(filtros);
-                return new ResponseDTO<IEnumerable<InstalacionTecnicaDTO>> (result);
+                return new ResponseDTO<IEnumerable<InstalacionTecnicaDTO>>(result);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                Log.TraceError(Utilidades.GetCaller() +"::" + ex.Message);
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
                 return new ResponseDTO<IEnumerable<InstalacionTecnicaDTO>>(ex);
             }
         }
@@ -173,10 +174,10 @@ namespace AHSECO.CCL.BL.ServicioTecnico.BandejaInstalacionTecnica
                 var result = Repository.ObtenerMainInstalacion(NumReq, IdWorkFlow);
                 return new ResponseDTO<GrupoInstalacionTecnicaDTO>(result);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                Log.TraceError (Utilidades.GetCaller()+"::" + ex.Message);
-                return new ResponseDTO<GrupoInstalacionTecnicaDTO> (ex);
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<GrupoInstalacionTecnicaDTO>(ex);
             }
         }
 
@@ -187,10 +188,24 @@ namespace AHSECO.CCL.BL.ServicioTecnico.BandejaInstalacionTecnica
                 var result = Repository.ObtenerElementosdeProducto(IdProducto);
                 return new ResponseDTO<IEnumerable<InstalacionTecnicaDetalleDTO>>(result);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.TraceError(Utilidades.GetCaller() + " :: " + ex.Message);
                 return new ResponseDTO<IEnumerable<InstalacionTecnicaDetalleDTO>>(ex);
+            }
+        }
+
+        public ResponseDTO<RespuestaDTO> CrearMantPrevent(long solicitud, string usuario)
+        {
+            try
+            {
+                var result = Repository.CrearMantPrevent(solicitud, usuario);
+                return new ResponseDTO<RespuestaDTO>(result);
+            }
+            catch(Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + "::"+ ex.Message);
+                return new ResponseDTO<RespuestaDTO>(ex);
             }
         }
 

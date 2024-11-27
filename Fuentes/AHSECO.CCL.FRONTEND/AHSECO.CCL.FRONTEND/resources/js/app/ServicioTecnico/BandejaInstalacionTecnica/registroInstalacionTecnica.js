@@ -228,7 +228,6 @@
         })
         cargarDatos();
         btnCheck();
-        cargarBtnInfoAdicional();
     };
 
 
@@ -459,9 +458,20 @@
 
         var objParams = JSON.stringify(objAsignacion);
         var fnDoneCallback = function () {
-            obtenerDetalleInstalacion();
             $txtEmpresaTecnico.val("");
             $txtEmpresaTecnico.prop('disabled', true);
+            $txtTecnico.val("");
+
+            var fnSi = function () {
+                $modalObservacionClick();
+                obtenerDetalleInstalacion();
+            };
+
+            var fnNo = function () {
+                obtenerDetalleInstalacion();
+            };
+
+            app.message.confirm("Éxito", "Asígnación completada, ¿Desea agregar un comentario adicional?","Sí","No",fnSi,fnNo);
             //ObtenerListClientevsAsesor();
         }
         var fnFailCallBack = function () {
@@ -760,7 +770,7 @@
             IdCliente: $cmbClienteSol.val() == "" || $cmbClienteSol.val() == 0 ? 0 : $cmbClienteSol.val(),
             Id_Solicitud: $txtSolicitud.val() == "" || $txtSolicitud.val() == 0 ? 0 : $txtSolicitud.val(),
             Estado: 'PRVT', //Cambiar estado según lo requieran
-            Tipo_Sol: "TSOL5"
+            Tipo_Sol: "TSOL05"
         };
 
         objParam = JSON.stringify(objBuscar);
@@ -825,7 +835,9 @@
             app.message.error("Validación", "Error al obtener el detalle de la solicitud");
         };
 
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null)
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+
+        cargarBtnInfoAdicional();
     };
 
     function limpiarCabecera() {
@@ -1182,8 +1194,18 @@
 
         var fnSi = function () {
             var fnDoneCallBack = function (data) {
-                app.message.success("Éxito", "Se estableció la fecha de programación.");
-                obtenerDetalleInstalacion();
+
+                var fnSi = function () {
+                    $modalObservacionClick();
+                    obtenerDetalleInstalacion();
+                };
+
+                var fnNo = function () {
+                    obtenerDetalleInstalacion();
+                };
+                
+                app.message.confirm("Éxito", "Se estableció la fecha de programación. ¿Desea agregar algún comentario adicional?","Sí","No",fnSi,fnNo);
+                
             };
 
             var fnFailCallBack = function () {
@@ -1201,7 +1223,11 @@
         var fechaInstalacion = $('#dateFechaInstalacion' + id).val();
 
         for (var i = 0; i < productos.length; i++) {
-            $('#dateFechaProgramacion' + productos[i].Id).val(productos[i].FechaProgramacion);
+            for (var j = 0; j < productos[i].Elementos.length; j++) {
+                if (productos[i].Elementos[j].Id == id) {
+                    $('#dateFechaProgramacion' + productos[i].Elementos[j].Id).val(productos[i].Elementos[j].FechaProgramacion);
+                };
+            };
         };
 
         var fecha = $('#dateFechaInstalacion' + id).val();
@@ -1435,8 +1461,8 @@
                                 }
                             );
                             var html = '<div class="text-center">';
-                            html += ' <a class="btn btn-default btn-xs" title="Eliminar"  href="javascript:registroInstalacionTec.eliminarDocumento(' + data.Result.Codigo + ')"><i class="fa fa-ban" aria-hidden="true"></i></a>';
                             html += ' <a class="btn btn-default btn-xs" title="Descargar"  href="javascript:registroInstalacionTec.download(' + data.Result.Codigo + ')"><i class="fa fa-download" aria-hidden="true"></i></a>&nbsp;';
+                            html += ' <a class="btn btn-default btn-xs" title="Eliminar"  href="javascript:registroInstalacionTec.eliminarDocumento(' + data.Result.Codigo + ')"><i class="fa fa-ban" aria-hidden="true"></i></a>';
                             html += '</div>';
 
 
@@ -2311,7 +2337,8 @@
             ];
         }
        
-        else if ($tipoproceso.val() == "U") {
+        //else if($tipoproceso.val() == "U") {
+        else {
             var columns = [
                 {
                     data: "Id",
@@ -2459,21 +2486,26 @@
         var method = "POST";
         var url = "BandejaInstalacionTecnica/CrearMantPrevent";
 
-        var obj = {
-            NumReq: $numeroReq.val()
+        var objSol = {
+            solicitud: $txtSolVenta.val()
         };
 
-        var objParam = JSON.stringify(obj);
+        var objParam = JSON.stringify(objSol);
 
-        var fnDoneCallBack = function () {
+        var fnDoneCallBack = function (data) {
+            var redirect = function () {
+                app.redirectTo("BandejaInstalacionTecnica");
+            }
+            app.message.success("Éxito", "Se realizó el cambio de estado a: 'Instalado'", "Aceptar", redirect);
 
         };
 
-        var fnFailCallBack = function () {
-
+        var fnFailCallBack = function (data) {
+            app.message.error("Error", "Se presentó un error al realizar la creación de mantenimientos preventivos, por favor revisar.");
         };
 
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+        return app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+
     };
     function CerrarRequerimiento() {
 
@@ -2547,11 +2579,7 @@
 
             var fnSi = function () {
                 var fnDoneCallBack = function () {
-                    function redirect() {
-                        crearMantPrevent();
-                        app.redirectTo("BandejaInstalacionTecnica");
-                    }
-                    app.message.success("Éxito", "Se realizó el cambio de estado a: 'Instalado'", "Aceptar", redirect);
+                    crearMantPrevent();
                 };
                 var fnFailCallBack = function () {
                     app.message.error("Validación", "Se presentó un problema al realizar el cambio de estado, por favor revisar.");

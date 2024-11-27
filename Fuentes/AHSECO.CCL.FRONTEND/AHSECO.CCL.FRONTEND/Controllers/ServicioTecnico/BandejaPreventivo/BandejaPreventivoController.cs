@@ -26,6 +26,7 @@ using static AHSECO.CCL.COMUN.ConstantesDTO;
 using System.Web.Http.Results;
 using Microsoft.Ajax.Utilities;
 using AHSECO.CCL.BL.ServicioTecnico.BandejaPreventivos;
+using AHSECO.CCL.BE.ServicioTecnico.BandejaPreventivos;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
 {
@@ -44,6 +45,15 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
             var result = preventivosBL.ObtenerFiltrosPreventivos();
             return Json(result);
         }
+
+        public JsonResult ObtenerPreventivos(ReqPreventivoDTO req)
+        {
+            var preventivosBL = new PreventivosBL();
+            var result = preventivosBL.ObtenerPreventivos(req);
+            return Json(result);
+        }
+
+
         public JsonResult ObtenerSolicitudes(SolicitudDTO solicitudDTO)
         {
             var instalacionTecnicaBL = new InstalacionTecnicaBL();
