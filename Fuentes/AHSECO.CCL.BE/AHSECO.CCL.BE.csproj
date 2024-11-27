@@ -52,6 +52,7 @@
     <Compile Include="FiltroInstalacionTecnica.cs" />
     <Compile Include="FiltroPlantillaDTO.cs" />
     <Compile Include="FiltroGrupoSolicitudVentaDTO.cs" />
+    <Compile Include="FiltrosPreventivosDTO.cs" />
     <Compile Include="FiltrosServiciosDTO.cs" />
     <Compile Include="Filtros\FiltroGrupoViaticosDTO.cs" />
     <Compile Include="GarantiaResultDTO.cs" />
