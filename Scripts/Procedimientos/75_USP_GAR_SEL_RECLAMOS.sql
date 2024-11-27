@@ -21,6 +21,7 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_GAR_SEL_RECLAMOS]
   ,@IsNumContrato		VARCHAR(25)
   ,@IsNumOrdenCompra	VARCHAR(35)
   ,@IsNumFianza			VARCHAR(15)
+  ,@IsNumSerie			VARCHAR(200)
 )
 AS
 BEGIN
@@ -129,6 +130,10 @@ BEGIN
 	IF (@IsNumFianza != '') 
 	BEGIN
 			SET @sql = @sql +' AND RECLAMO.NUMFIANZA = ''' + CAST(@IsNumFianza AS VARCHAR) + ''' '
+	END
+	IF(@IsNumSerie != '')
+	BEGIN
+			SET @sql = @sql +' AND RECLAMO.SERIE = ''' + CAST(@IsNumSerie AS VARCHAR) + ''' '
 	END
 
 	--print @sql

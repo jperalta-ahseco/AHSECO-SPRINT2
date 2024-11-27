@@ -1,6 +1,5 @@
 ﻿var bandejaGarantia = (function ($, win, doc) {
 
-    var $cmbempresa = $('#cmbempresa');
     var $cmbEstado = $('#cmbEstado');
     var $cmbProvincia = $('#cmbProvincia');
     var $cmbDistrito = $('#cmbDistrito');
@@ -16,14 +15,9 @@
     var $tblReclamos = $('#tblReclamos');
     var $cmbVendedor = $('#cmbVendedor');
     var $cmbCliente = $('#cmbCliente');
-    var $cmbTipVenta = $('#cmbTipVenta');
     var $btnSeleccionar = $('#btnGuardarUbigeo');
     var $txtNumRec = $('#txtNumRec');
-    var $txtNumProc = $('#txtNumProc');
-    var $txtNumContrato = $('#txtNumContrato');
-    var $txtNumOrdCompra = $('#txtNumOrdCompra');
-    var $txtNumFianza = $('#txtNumFianza');
-    var $txtVendedor = $('#txtVendedor');
+    var $txtNumSerie = $('#txtNumSerie');
 
 
     var $btnGuardarUbigeo = $('#btnGuardarUbigeo');
@@ -118,14 +112,15 @@
             NumReclamo: $txtNumRec.val() == "" ? "0" : $txtNumRec.val(),
             Estado: $cmbEstado.val() == 0 ? "" : $cmbEstado.val(),
             CodUbigeoDest: codDepartamento + codProvincia.slice(2, 4) + codDistrito.slice(4, 6),
-            Vendedor: $txtVendedor.val() == null ? "" : $txtVendedor.val(),
+            Vendedor: "",
             RucEmpresa: $cmbCliente.val() == 0 ? "" : $cmbCliente.val(),
-            CodEmpresa: $cmbempresa.val() == 0 ? "" : $cmbempresa.val(),
-            TipoVenta: $cmbTipVenta.val() == 0 ? "0" : $cmbTipVenta.val(),
-            NroProceso: $txtNumProc.val(),
-            Contrato: $txtNumContrato.val(),
-            OrdenCompra: $txtNumOrdCompra.val(),
-            NumFianza: $txtNumFianza.val(),
+            CodEmpresa:  "",
+            TipoVenta:  "0",
+            NroProceso: "",
+            Contrato: "",
+            OrdenCompra: "",
+            NumFianza: "",
+            NumeroSerie: $txtNumSerie.val() == null ? "" : $txtNumSerie.val()
         };
 
         var objParam = JSON.stringify(objBuscar);
@@ -161,14 +156,14 @@
         $("<input>", { type: "hidden", name: "NumReclamo", value: $txtNumRec.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "RucEmpresa", value: $cmbCliente.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "CodUbigeoDest", value: $txtUbicacion.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "Vendedor", value: $cmbVendedor.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "Vendedor", value: "" }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "Estado", value: $cmbEstado.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "CodEmpresa", value: $cmbempresa.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "TipoVenta", value: $cmbTipVenta.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "NroProceso", value: $txtNumProc.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "Contrato", value: $txtNumContrato.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "OrdenCompra", value: $txtNumOrdCompra.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "NumFianza", value: $txtNumFianza.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "CodEmpresa", value: "" }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "TipoVenta", value: "0" }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "NroProceso", value: "" }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "Contrato", value: "" }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "OrdenCompra", value: "" }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "NumFianza", value: "" }).appendTo("#hidden_fields");
         $formReclamos.attr('action', href);
         $formReclamos.submit();
     }
@@ -240,10 +235,8 @@
             filters.placeholder = "-- Todos --";
             filters.allowClear = false;
 
-            app.llenarComboMultiResult($cmbempresa, data.Result.Empresas, null, 0, "--Todos--", filters);
             app.llenarComboMultiResult($cmbEstado, data.Result.Estados, null, 0, "--Todos--", filters);
             app.llenarComboMultiResult($cmbCliente, data.Result.Clientes, null, 0, "--Todos--", filters);
-            app.llenarComboMultiResult($cmbTipVenta, data.Result.TipVenta, null, 0, "--Todos--", filters);
         };
 
         var fnFailCallBack = function () {
@@ -502,20 +495,14 @@
                 }
             },
             {
-                data: "TipoVenta",
-                render : function (data, type, row) {
-                    return '<center>' + data + '</center>'
-                }
-            },
-            {
-                data: "Vendedor",
-                render : function (data, type, row) {
-                    return '<center>' + data + '</center>'
-                }
-            },
-            {
-                data: "NomEmpresa",
+                data: "FechaReclamo",
                 render: function (data, type, row) {
+                    return '<center>' + app.obtenerFecha(data) + '</center>'
+                }
+            },
+            {
+                data: "Urgencia",
+                render : function (data, type, row) {
                     return '<center>' + data + '</center>'
                 }
             },

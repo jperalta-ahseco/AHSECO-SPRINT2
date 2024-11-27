@@ -21,5 +21,6 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaGarantias
         public string NumFianza { get; set; }
         public string CodUbigeoDest { get; set; }
         public string Estado { get; set; }
+        public string NumeroSerie { get; set; }
     }
 }

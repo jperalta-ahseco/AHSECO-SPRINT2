@@ -154,19 +154,20 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
                 connection.Open();
                 var parameters = new DynamicParameters();
 
-                parameters.Add("isFecIni", filtros.FecIni);
-                parameters.Add("isFecFin", filtros.FecFin);
+                parameters.Add("isFecIni", filtros.FecIni == null ? "": filtros.FecIni);
+                parameters.Add("isFecFin", filtros.FecFin == null ? "": filtros.FecFin);
                 parameters.Add("IsReclamo", filtros.NumReclamo);
-                parameters.Add("IsRuc", filtros.RucEmpresa);
-                parameters.Add("IsCodUbigeoDest", filtros.CodUbigeoDest);
-                parameters.Add("IsVendedor", filtros.Vendedor);
-                parameters.Add("IsEstado", filtros.Estado);
-                parameters.Add("IsCodEmpresa", filtros.CodEmpresa);
-                parameters.Add("IsTipVenta", filtros.TipoVenta);
-                parameters.Add("IsNumProceso", filtros.NroProceso);
-                parameters.Add("IsNumContrato", filtros.Contrato);
-                parameters.Add("IsNumOrdenCompra", filtros.OrdenCompra);
-                parameters.Add("IsNumFianza", filtros.NumFianza);
+                parameters.Add("IsRuc", filtros.RucEmpresa == null ? "" : filtros.RucEmpresa);
+                parameters.Add("IsCodUbigeoDest", filtros.CodUbigeoDest == null ? "" : filtros.CodUbigeoDest);
+                parameters.Add("IsVendedor", filtros.Vendedor == null ? "" : filtros.Vendedor);
+                parameters.Add("IsEstado", filtros.Estado == null ? "" : filtros.Estado);
+                parameters.Add("IsCodEmpresa", filtros.CodEmpresa == null ? "" : filtros.CodEmpresa);
+                parameters.Add("IsTipVenta", filtros.TipoVenta == null ? "" : filtros.TipoVenta);
+                parameters.Add("IsNumProceso", filtros.NroProceso == null ? "" : filtros.NroProceso);
+                parameters.Add("IsNumContrato", filtros.Contrato == null ? "" : filtros.Contrato);  
+                parameters.Add("IsNumOrdenCompra", filtros.OrdenCompra == null ? "" : filtros.OrdenCompra);
+                parameters.Add("IsNumFianza", filtros.NumFianza == null ? "" : filtros.NumFianza);
+                parameters.Add("@IsNumSerie", filtros.NumeroSerie == null ? "" : filtros.NumeroSerie);
 
                 var result = connection.Query(
                     sql: "USP_GAR_SEL_RECLAMOS",
