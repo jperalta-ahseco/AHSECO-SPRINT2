@@ -112,6 +112,7 @@
     <Compile Include="ServicioBD.cs" />
     <Compile Include="ServicioTecnico\BandejaGarantias\GarantiasBD.cs" />
     <Compile Include="ServicioTecnico\BandejaInstalacionTecnica\InstalacionTecnicaBD.cs" />
+    <Compile Include="ServicioTecnico\BandejaPreventivos\PreventivosBD.cs" />
     <Compile Include="Util\UtilesBD.cs" />
     <Compile Include="Util\UbigeoBD.cs" />
     <Compile Include="PlantillasBD.cs" />
