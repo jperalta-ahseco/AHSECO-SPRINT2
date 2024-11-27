@@ -3313,6 +3313,16 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         }
 
 
+        public JsonResult EditarItemCotDetServicio(string CodItem, string opcGrillaItems)
+        {
+            try
+            {
+                CotizacionDetalleDTO itemCotDet = findCotDetRecord(CodItem, opcGrillaItems);
+                return Json(new ResponseDTO<CotizacionDetalleDTO>(itemCotDet));
+            }
+            catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
+        }
+
 
     }
 }

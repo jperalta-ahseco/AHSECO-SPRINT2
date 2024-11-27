@@ -115,6 +115,10 @@
     var $tblCotDetServ = $("#tblCotDetServ");
     var $DC_btnCerrarServ = $("#DC_btnCerrarServ");
     var $DC_btnGuardarServ = $("#DC_btnGuardarServ");
+    var $DS_txtCodigo = $("#DS_txtCodigo");
+    var $DS_txtDescripcion = $("#DS_txtDescripcion");
+    var $DS_txtCantidad = $("#DS_txtCantidad");
+    var $DS_btnCerrar = $("#DS_btnCerrar");
 
     /*Seccion Contacto*/
     var $btnAñadir = $('#btnAñadir');
@@ -336,8 +340,13 @@
         $DC_btnGuardarServ.click(grabarDatosCotDetServ);
         $btnCerrarHistorial.click($btnCerrarHistorial_click);
         $btnExportarLiquidacion.click($btnExportarLiquidacion_click);
+        $DS_btnCerrar.click($DS_btnCerrar_click);
         cargaCombos();      
     };
+
+    function $DS_btnCerrar_click() {
+        $('#modalDetalleItemServicio').modal('hide');
+    }
 
     function $btnExportarLiquidacion_click(e) {
 
@@ -2877,7 +2886,7 @@
                 data: "CodItem",
                 render: function (data) {
                     var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
-                    var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" ><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                    var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: solicitud.editarItemServ(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',1)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
                     var quitar = '<a id="btnQuitarItemServ" class="btn btn-danger btn-xs" title="Quitar" href="javascript: solicitud.quitarItemServ(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',1)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
                     return '<center>' + hidden + editar + ' ' + quitar + '</center>';
                 }
@@ -2902,6 +2911,27 @@
         app.llenarTabla($tblCotDetServ, data, columns, columnDefs, "#tblCotDetServ", rowCallback, null, filters);
     }
 
+    function editarItemServ(CodigoItem, opc) {
+        method = "POST";
+        url = "BandejaSolicitudesVentas/EditarItemCotDetServicio";
+        var objFiltros = {
+            CodItem: CodigoItem,
+            opcGrillaItems: opc
+        };
+        var objParam = JSON.stringify(objFiltros);
+        var fnDoneCallBack = function (data) {
+            opcGrillaItems = opc;
+            $('#modalDetalleItemServicio').modal('show');
+            var codigo = "000000"+data.Result.CodItem
+            $DS_txtCodigo.val(codigo.substring(codigo.length - 6));
+            $DS_txtDescripcion.val(data.Result.Descripcion);
+            
+            $DS_txtCantidad.val(data.Result.Cantidad);
+        }
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+
+        
+    }
     function quitarItemServ(CodigoItem, opc) {
 
         var fnSi = function () {
@@ -2944,6 +2974,7 @@
         editarSeries: editarSeries,
         guardarSeries: guardarSeries,
         agregarItemServicio: agregarItemServicio,
-        quitarItemServ: quitarItemServ
+        quitarItemServ: quitarItemServ,
+        editarItemServ: editarItemServ
     }
 })(window.jQuery, window, document);
