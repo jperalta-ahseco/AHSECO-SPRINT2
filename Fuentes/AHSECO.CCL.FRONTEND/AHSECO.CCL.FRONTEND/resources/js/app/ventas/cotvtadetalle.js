@@ -45,6 +45,7 @@ var cotvtadet = (function ($, win, doc) {
     var $DI_radCalibracion_No = $("#DI_radCalibracion_No");
     var $DI_radGarantAdic_Si = $("#DI_radGarantAdic_Si");
     var $DI_radGarantAdic_No = $("#DI_radGarantAdic_No");
+    var $DI_cmbGarantias = $("#DI_cmbGarantias");
     var $DI_radManuales_Si = $("#DI_radManuales_Si");
     var $DI_radManuales_No = $("#DI_radManuales_No");
     var $DI_radVideos_Si = $("#DI_radVideos_Si");
@@ -85,6 +86,8 @@ var cotvtadet = (function ($, win, doc) {
         $btnEnviarCotizacion.click(enviarCotizacion);
         $btnRecotizacion.click(recotizarSolicitud);
         $btnGuardarValorizacion.click(guardarValorizacion);
+        $DI_radGarantAdic_Si.click(configurarGarantias);
+        $DI_radGarantAdic_No.click(configurarGarantias);
 
         //$DI_txtFechaLimite.datepicker({
         //    viewMode: 0,
@@ -93,6 +96,7 @@ var cotvtadet = (function ($, win, doc) {
         //});
 
         listarCotDetItems();
+        cargarGarantias();
 
     }
 
@@ -378,7 +382,32 @@ var cotvtadet = (function ($, win, doc) {
         }
         return app.message.confirm("Ventas", "&iquest;Esta seguro de quitar un producto de la cotizaci&oacute;n?", "S&iacute;", "No", fnSi, null);
     }
-    
+
+    function cargarGarantias() {
+        var method = "POST";
+        var url = "BandejaSolicitudesVentas/ObtenerGarantias";
+        var oValores = {};
+        var objParam = JSON.stringify(oValores);
+        var fnDoneCallback = function (data) {
+            var filters = {};
+            filters.placeholder = "-- Seleccione --";
+            filters.allowClear = false;
+            app.llenarComboMultiResult($DI_cmbGarantias, data.Result, null, " ", "-- Seleccione --", filters);
+        }
+        return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, null);
+    }
+
+    function configurarGarantias() {
+
+        $DI_cmbGarantias.val("").trigger("change.select2");
+        $DI_cmbGarantias.attr("disabled", "disabled");
+
+        if ($DI_radGarantAdic_Si.is(':checked')) {
+            $DI_cmbGarantias.removeAttr("disabled");
+        }
+
+    }
+
     function LimpiarModalDetItem() {
         $DI_txtDescripcionAdic.val("");
         $DI_txtCantidad.val("");
@@ -400,6 +429,7 @@ var cotvtadet = (function ($, win, doc) {
         $DI_radMantPrevent_No.removeAttr("checked");
         $DI_radGarantAdic_Si.removeAttr("checked");
         $DI_radGarantAdic_No.removeAttr("checked");
+        configurarGarantias();
         $DI_radInstaCapa_Si.removeAttr("checked");
         $DI_radInstaCapa_No.removeAttr("checked");
         $DI_radCalibracion_Si.removeAttr("checked");
@@ -478,6 +508,7 @@ var cotvtadet = (function ($, win, doc) {
                     if (data.Result.CotizacionDespacho.IndGarantiaAdicional == true) { $DI_radGarantAdic_Si.prop("checked", true); }
                     else { $DI_radGarantAdic_No.prop("checked", true); }
                 }
+                configurarGarantias();
                 if (data.Result.CotizacionDespacho.IndCompraLocal != null) {
                     if (data.Result.CotizacionDespacho.IndCompraLocal == true) { $DI_radCompraLocal_Si.prop("checked", true); }
                     else { $DI_radCompraLocal_No.prop("checked", true); }
@@ -774,6 +805,13 @@ var cotvtadet = (function ($, win, doc) {
                 }
             }
 
+            if ($DI_cmbGarantias.attr("readonly") != "readonly" && $DI_cmbGarantias.attr("disabled") != "disabled") {
+                if ($DI_cmbGarantias.val() == "") {
+                    app.message.error("Validaci&oacute;n", "Se debe elegir el tipo de garant&iacute;a.");
+                    return false;
+                }
+            }
+
             if (!$DI_radTieneStock_Si.is(':checked') && !$DI_radTieneStock_No.is(':checked')) {
                 app.message.error("Validaci&oacute;n", "Elija Si o No si el producto tiene STOCK");
                 return false;
@@ -866,6 +904,7 @@ var cotvtadet = (function ($, win, doc) {
                     IndMantPreventivo: bMantPrevent,
                     IndCalibracion: bCalib,
                     IndGarantiaAdicional: bGarantiaAdic,
+                    CodGarantiaAdicional: $DI_cmbGarantias.val(),
                     IndInstaCapa: bInstaCapa,
                     ObsCliente: $DI_txtReqCliente.val(),
                     ObsDespacho: $DI_txtObsInsta.val()

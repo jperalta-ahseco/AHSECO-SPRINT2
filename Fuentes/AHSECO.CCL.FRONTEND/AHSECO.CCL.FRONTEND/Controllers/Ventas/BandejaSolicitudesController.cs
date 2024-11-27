@@ -507,12 +507,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         ViewBag.PermitirTabGarantiaAdic = true;
                     }
 
-                    //if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
-                    //{
-                    //    ViewBag.PermitirTabCalib = true;
-                    //    ViewBag.PermitirTabFlete = true;
-                    //}
-
                     if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Logistica)
                     {
                         ViewBag.PermitirTabFlete = true;
@@ -1437,6 +1431,23 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         }
 
         [HttpPost]
+        public JsonResult ObtenerGarantias()
+        {
+            var dgBL = new DatosGeneralesBL();
+            var lstDG = dgBL.Obtener(new DatosGeneralesDetalleDTO() { DatosGenerales = new DatosGeneralesDTO { Dominio = ConstantesDTO.DatosGenerales.Dominios.Garantias } });
+            var lst = new List<ComboDTO>();
+            foreach (DatosGeneralesDetalleDTO item in lstDG.Result)
+            {
+                var param = new ComboDTO();
+                param.Id = item.Parametro;
+                param.Text = item.Descripcion;
+                lst.Add(param);
+            }
+            var ojson = Json(new ResponseDTO<IEnumerable<ComboDTO>>(lst));
+            return ojson;
+        }
+
+        [HttpPost]
         public JsonResult ListarCotDetItems(string opcGrillaItems)
         {
             try
@@ -1680,10 +1691,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 var ventasBL = new VentasBL();
 
                 CotizacionDetalleDTO itemCotDet = findCotDetRecord(CodItem, opcGrillaItems);
-                
+
                 List<CotDetCostoDTO> lstCostos = new List<CotDetCostoDTO>();
 
-                if(opcGrillaItems == opcTablaFinal)
+                if (opcGrillaItems == opcTablaFinal)
                 {
                     //Se carga todos los costos
                     var resCostos = ventasBL.ObtenerCotDetCostos(new CotDetCostoDTO() { CotizacionDetalle = new CotizacionDetalleDTO() { Id = itemCotDet.Id } });
@@ -1694,18 +1705,12 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     if (VariableSesion.getObject(TAG_CDCI) != null) { lstCostos = (List<CotDetCostoDTO>)VariableSesion.getObject(TAG_CDCI); }
                 }
 
-                //Se completa los datos de cotizacion detalle para costos
-                lstCostos.ForEach(x =>
-                {
-                    var cditemAux = new CotizacionDetalleDTO();
-                    itemCotDet.CopyProperties(ref cditemAux);
-                    if (cditemAux != null) { x.CotizacionDetalle = cditemAux; }
-                });
+                var swTieneCostos = false;
+                if (lstCostos != null)
+                { if (lstCostos.Any()) { swTieneCostos = true; } }
+                if (!swTieneCostos) { if (itemCotDet.CotizacionCostos != null) { lstCostos = itemCotDet.CotizacionCostos.ToList(); } }
 
                 VariableSesion.setObject(TAG_CDCI, lstCostos);
-
-                //Se agregan los costos de la cotizacion detalle
-                itemCotDet.CotizacionCostos = lstCostos.ToArray();
 
                 return Json(new ResponseDTO<CotizacionDetalleDTO>(itemCotDet));
             }
@@ -2326,7 +2331,20 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 }
                 else
                 {
-                    lstCostos.Add(cotdetCosto);
+                    if(lstCostos.Any(x=>x.Id == cotdetCosto.Id))
+                    {
+                        lstCostos.ForEach(x =>
+                        {
+                            if(x.Id == cotdetCosto.Id)
+                            {
+                                cotdetCosto.CopyProperties(ref x);
+                            }
+                        });
+                    }
+                    else
+                    {
+                        lstCostos.Add(cotdetCosto);
+                    }
                 }
 
                 //Se completa los datos de cotizacion detalle para costos
@@ -2355,7 +2373,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             {
                 List<CotDetCostoDTO> lstCostos = new List<CotDetCostoDTO>();
 
-                var lstItems = GetCDIList(opcTablaFinal);
+                var lstItems = GetCDIList(opcTablaTemporal);
 
                 if (!cotdetCosto.IsTempRecord)
                 {
@@ -2371,7 +2389,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 }
                 else
                 {
-
+                    if (VariableSesion.getObject(TAG_CDCI) != null) { lstCostos = (List<CotDetCostoDTO>)VariableSesion.getObject(TAG_CDCI); }
+                    lstCostos = lstCostos.Where(x => x.Id != cotdetCosto.Id).ToList();
                 }
 
                 //Se completa los datos de cotizacion detalle para costos
@@ -2380,6 +2399,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     var cditem = lstItems.FirstOrDefault(y => y.Id == x.IdCotizacionDetalle);
                     if (cditem != null) { x.CotizacionDetalle = cditem; }
                 });
+
                 VariableSesion.setObject(TAG_CDCI, lstCostos);
 
                 //Solo se devuelve los costos de la grilla respectiva
