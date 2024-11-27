@@ -7,7 +7,7 @@ var cotvtadet = (function ($, win, doc) {
     var $RolVenta_Gerente = $("#RolVenta_Gerente");
     var $RolVenta_Costos = $("#RolVenta_Costos");
     var $HabilitarValorizacionCotDet = $("#HabilitarValorizacionCotDet");
-    var $EsCotizacionValorizada = $("#EsCotizacionValorizada");
+    var $PermitirEditarGanancia = $("#PermitirEditarGanancia");
 
     var $cmbTipo = $('#cmbTipo');
 
@@ -88,13 +88,9 @@ var cotvtadet = (function ($, win, doc) {
         $btnGuardarValorizacion.click(guardarValorizacion);
         $DI_radGarantAdic_Si.click(configurarGarantias);
         $DI_radGarantAdic_No.click(configurarGarantias);
-
-        //$DI_txtFechaLimite.datepicker({
-        //    viewMode: 0,
-        //    minViewMode: 0,
-        //    format: 'dd/mm/yyyy'
-        //});
-
+        $DI_radTieneStock_Si.click(configurarTieneStock);
+        $DI_radTieneStock_No.click(configurarTieneStock);
+        
         listarCotDetItems();
         cargarGarantias();
 
@@ -311,27 +307,6 @@ var cotvtadet = (function ($, win, doc) {
                     return '<center>' + data + '</center>';
                 }
             },
-            //{
-            //    data: "CotizacionDespacho.DescUbigeoDestino",
-            //    render: function (data) {
-            //        if (data == null) { data = ""; }
-            //        return '<center>' + data + '</center>';
-            //    }
-            //},
-            //{
-            //    data: "CotizacionDespacho.Direccion",
-            //    render: function (data) {
-            //        if (data == null) { data = ""; }
-            //        return '<center>' + data + '</center>';
-            //    }
-            //},
-            //{
-            //    data: "CotizacionDespacho.NroPiso",
-            //    render: function (data) {
-            //        if (data == null) { data = ""; }
-            //        return '<center>' + data + '</center>';
-            //    }
-            //},
             {
                 data: "CodItem",
                 render: function (data) {
@@ -399,11 +374,34 @@ var cotvtadet = (function ($, win, doc) {
 
     function configurarGarantias() {
 
-        $DI_cmbGarantias.val("").trigger("change.select2");
-        $DI_cmbGarantias.attr("disabled", "disabled");
-
         if ($DI_radGarantAdic_Si.is(':checked')) {
             $DI_cmbGarantias.removeAttr("disabled");
+        }
+
+        if ($DI_radGarantAdic_No.is(':checked')) {
+            $DI_cmbGarantias.val("").trigger("change.select2");
+            $DI_cmbGarantias.attr("disabled", "disabled");
+        }
+
+        if ($DI_radGarantAdic_No.attr("disabled") == "disabled" || $DI_radGarantAdic_Si.attr("disabled") == "disabled"){
+            $DI_cmbGarantias.attr("disabled", "disabled");
+        }
+
+    }
+
+    function configurarTieneStock() {
+
+        if ($DI_radTieneStock_Si.is(':checked')) {
+            $DI_txtCostoFOB.attr("disabled", "disabled");
+        }
+
+        if ($DI_radTieneStock_No.is(':checked')) {
+            $DI_txtCostoFOB.val("");
+            $DI_txtCostoFOB.removeAttr("disabled");
+        }
+
+        if ($DI_radTieneStock_No.attr("disabled") == "disabled" || $DI_radTieneStock_Si.attr("disabled") == "disabled") {
+            $DI_txtCostoFOB.attr("disabled", "disabled");
         }
 
     }
@@ -509,6 +507,7 @@ var cotvtadet = (function ($, win, doc) {
                     else { $DI_radGarantAdic_No.prop("checked", true); }
                 }
                 configurarGarantias();
+                $DI_cmbGarantias.val(data.Result.CotizacionDespacho.CodGarantiaAdicional).trigger("change.select2");
                 if (data.Result.CotizacionDespacho.IndCompraLocal != null) {
                     if (data.Result.CotizacionDespacho.IndCompraLocal == true) { $DI_radCompraLocal_Si.prop("checked", true); }
                     else { $DI_radCompraLocal_No.prop("checked", true); }
@@ -536,19 +535,34 @@ var cotvtadet = (function ($, win, doc) {
             MostrarDatosItem(data);
 
             if (data.Result != null) {
-                var resCostos = { Status: 1, Result: data.Result.CotizacionCostos };
-                cotvtacostos.cargarGrillaCostosCotDet(resCostos);
+                if (data.Result.CotizacionCostos != null) {
+                    var resCostos = { Status: 1, Result: data.Result.CotizacionCostos };
+                    cotvtacostos.cargarGrillaCostosCotDet(resCostos);
+                }
             }
 
             $DI_txtCostoFOB.attr("disabled", "disabled");
             $DI_txtValorUnitario.attr("disabled", "disabled");
 
             if ($idRolUsuario.val() == $RolVenta_Gerente.val()) {
-                $DI_txtCostoFOB.removeAttr("disabled");
+                $DI_radTieneStock_Si.removeAttr("disabled");
+                $DI_radTieneStock_No.removeAttr("disabled");
+                configurarTieneStock();
             }
 
             if ($idRolUsuario.val() == $RolVenta_Costos.val()) {
-                $DI_txtValorUnitario.removeAttr("disabled");
+                if ($DI_radTieneStock_Si.is(':checked')) {
+                    $DI_txtValorUnitario.removeAttr("disabled");
+                }
+                if ($DI_radTieneStock_No.is(':checked')) {
+                    if ($DI_txtCostoFOB.val() != "") {
+                        $DI_txtValorUnitario.removeAttr("disabled");
+                    }
+                }
+            }
+
+            if ($PermitirEditarGanancia.val() == "S") {
+
             }
 
             $('#modalDetalleItem').modal('show');
@@ -792,7 +806,7 @@ var cotvtadet = (function ($, win, doc) {
                 }
             }
 
-            if ($DI_txtGanancia.val() != "") {
+            if ($DI_txtGanancia.attr("readonly") != "readonly" && $DI_txtGanancia.attr("disabled") != "disabled") {
                 if (!app.validaNumeroDecimal($DI_txtGanancia.val())) {
                     app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Ganancia");
                     return false;
@@ -806,7 +820,7 @@ var cotvtadet = (function ($, win, doc) {
             }
 
             if ($DI_cmbGarantias.attr("readonly") != "readonly" && $DI_cmbGarantias.attr("disabled") != "disabled") {
-                if ($DI_cmbGarantias.val() == "") {
+                if ($.trim($DI_cmbGarantias.val()) == "") {
                     app.message.error("Validaci&oacute;n", "Se debe elegir el tipo de garant&iacute;a.");
                     return false;
                 }

@@ -13,7 +13,6 @@
     var $RolVenta_Costos = $("#RolVenta_Costos");
     var $RolVenta_Logistica = $("#RolVenta_Logistica");
     var $HabilitarValorizacionCotDet = $("#HabilitarValorizacionCotDet");
-    var $EsCotizacionValorizada = $("#EsCotizacionValorizada");
 
     var $DI_hdnIdCotDet = $("#DI_hdnIdCotDet");
     var $DI_hdnCodigo = $("#DI_hdnCodigo");
@@ -121,70 +120,6 @@
 
     function setTab(strCodCosto) {
         $CI_hdnCodCosto.val(strCodCosto);
-        //if (strCodCosto == $CI_CodCosto_LLaveMano.val()) {
-        //    $CI_pnlInfoDestino.css("display", "");
-        //    $CI_pnlInfoCostos_MtoUnitario.css("display", "");
-        //    $CI_pnlInfoCostos_MtoTotal.css("display", "");
-        //    $CI_txtMtoUnitarioCosto.removeAttr("disabled");
-        //    $CI_txtMtoTotalCosto.attr("disabled", "disabled");
-        //    $CI_pnlInfoPreventivos.css("display", "none");
-        //}
-        //if (strCodCosto == $CI_CodCosto_InstCapa.val()) {
-        //    $CI_pnlInfoDestino.css("display", "");
-        //    $CI_pnlInfoCostos_MtoUnitario.css("display", "");
-        //    $CI_pnlInfoCostos_MtoTotal.css("display", "");
-        //    $CI_txtMtoUnitarioCosto.removeAttr("disabled");
-        //    $CI_txtMtoTotalCosto.attr("disabled", "disabled");
-        //    $CI_pnlInfoPreventivos.css("display", "none");
-        //}
-        //if (strCodCosto == $CI_CodCosto_Manuales.val()) {
-        //    $CI_pnlInfoDestino.css("display", "none");
-        //    $CI_pnlInfoCostos_MtoUnitario.css("display", "none");
-        //    $CI_pnlInfoCostos_MtoTotal.css("display", "");
-        //    $CI_txtMtoUnitarioCosto.attr("disabled", "disabled"); //No se utiliza costo unitario
-        //    $CI_txtMtoTotalCosto.removeAttr("disabled");
-        //    $CI_pnlInfoPreventivos.css("display", "none");
-        //}
-        //if (strCodCosto == $CI_CodCosto_Videos.val()) {
-        //    $CI_pnlInfoDestino.css("display", "none");
-        //    $CI_pnlInfoCostos_MtoUnitario.css("display", "none");
-        //    $CI_pnlInfoCostos_MtoTotal.css("display", "");
-        //    $CI_txtMtoUnitarioCosto.attr("disabled", "disabled"); //No se utiliza costo unitario
-        //    $CI_txtMtoTotalCosto.removeAttr("disabled");
-        //    $CI_pnlInfoPreventivos.css("display", "none");
-        //}
-        //if (strCodCosto == $CI_CodCosto_MantPrevent.val()) {
-        //    $CI_pnlInfoDestino.css("display", "");
-        //    $CI_pnlInfoCostos_MtoUnitario.css("display", "");
-        //    $CI_pnlInfoCostos_MtoTotal.css("display", "");
-        //    $CI_txtMtoUnitarioCosto.removeAttr("disabled");
-        //    $CI_txtMtoTotalCosto.attr("disabled", "disabled");
-        //    $CI_pnlInfoPreventivos.css("display", "");
-        //}
-        //if (strCodCosto == $CI_CodCosto_GarantAdic.val()) {
-        //    $CI_pnlInfoDestino.css("display", "");
-        //    $CI_pnlInfoCostos_MtoUnitario.css("display", "");
-        //    $CI_pnlInfoCostos_MtoTotal.css("display", "");
-        //    $CI_txtMtoUnitarioCosto.removeAttr("disabled");
-        //    $CI_txtMtoTotalCosto.attr("disabled", "disabled");
-        //    $CI_pnlInfoPreventivos.css("display", "none");
-        //}
-        //if (strCodCosto == $CI_CodCosto_Calibra.val()) {
-        //    $CI_pnlInfoDestino.css("display", "");
-        //    $CI_pnlInfoCostos_MtoUnitario.css("display", "");
-        //    $CI_pnlInfoCostos_MtoTotal.css("display", "");
-        //    $CI_txtMtoUnitarioCosto.removeAttr("disabled");
-        //    $CI_txtMtoTotalCosto.attr("disabled", "disabled");
-        //    $CI_pnlInfoPreventivos.css("display", "none");
-        //}
-        //if (strCodCosto == $CI_CodCosto_Flete.val()) {
-        //    $CI_pnlInfoDestino.css("display", "");
-        //    $CI_pnlInfoCostos_MtoUnitario.css("display", "");
-        //    $CI_pnlInfoCostos_MtoTotal.css("display", "");
-        //    $CI_txtMtoUnitarioCosto.removeAttr("disabled");
-        //    $CI_txtMtoTotalCosto.attr("disabled", "disabled");
-        //    $CI_pnlInfoPreventivos.css("display", "none");
-        //}
     }
 
     function setTab_LLaveMano() {

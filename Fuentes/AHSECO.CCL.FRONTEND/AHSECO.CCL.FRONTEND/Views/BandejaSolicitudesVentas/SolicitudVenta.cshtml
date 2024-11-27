@@ -39,8 +39,9 @@
     }
     var strHabilitarValorizacion = "N";
     if (ViewBag.MostrarCDI_Valorizacion == true) { strHabilitarValorizacion = "S"; }
-    var strEsCotizacionValorizada = "N";
-    if (ViewBag.EsCotizacionValorizada == true) { strEsCotizacionValorizada = "S"; }
+    var strPermitirEditarGanancia = "N";
+    if (ViewBag.PermitirEditarGanancia == true) { strPermitirEditarGanancia = "S"; }
+
 }
 
 <input type="hidden" id="nomEmpresa" value="@cliente.NomEmpresa" />
@@ -63,13 +64,13 @@
 <input type="hidden" id="RolVenta_Costos" value="@RolVenta_Costos" />
 <input type="hidden" id="RolVenta_Logistica" value="@RolVenta_Logistica" />
 <input type="hidden" id="HabilitarValorizacionCotDet" value="@strHabilitarValorizacion" />
-<input type="hidden" id="EsCotizacionValorizada" value="@strEsCotizacionValorizada" />
 <input type="hidden" id="ContadorSeriesCS" value="@ViewBag.ContadorSeriesConStock" />
 <input type="hidden" id="TotalSeriesCS" value="@ViewBag.TotalSeriesConStock" />
 <input type="hidden" id="ContadorSeriesSS" value="@ViewBag.ContadorSeriesSinStock" />
 <input type="hidden" id="TotalSeriesSS" value="@ViewBag.TotalSeriesSinStock" />
 <input type="hidden" id="ValidaBtnObservacion" value="0" />
 <input type="hidden" id="CodStock" value="@ViewBag.CodStock" />
+<input type="hidden" id="PermitirEditarGanancia" value="@strPermitirEditarGanancia" />
 
 <div class="container-fluid">
     <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
@@ -205,19 +206,19 @@
                 <ul class="nav nav-tabs" style="padding-top: 5px;">
                     @if (numSol != null)
                     {
-                    <li class="" id="tabDetalleSolicitud">
-                        <a href="#navDetalleSolicitud" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-info-circle" aria-hidden="true"></i> Detalle</a>
-                    </li>
+                        <li class="" id="tabDetalleSolicitud">
+                            <a href="#navDetalleSolicitud" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-info-circle" aria-hidden="true"></i> Detalle</a>
+                        </li>
 
-                    <li class="" id="tabAdjuntos">
-                        <a href="#navDocumentos" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-file-text" aria-hidden="true"></i> Adjunto de Documentos</a>
-                    </li>
-                    <li class="" id="tabObservaciones">
-                        <a href="#navObservaciones" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-exclamation" aria-hidden="true"></i> Observaciones</a>
-                    </li>
-                    <li class="" id="tabSeguimiento">
-                        <a href="#navSeguimiento" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-code-fork" aria-hidden="true"></i>  Seguimiento</a>
-                    </li>
+                        <li class="" id="tabAdjuntos">
+                            <a href="#navDocumentos" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-file-text" aria-hidden="true"></i> Adjunto de Documentos</a>
+                        </li>
+                        <li class="" id="tabObservaciones">
+                            <a href="#navObservaciones" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-exclamation" aria-hidden="true"></i> Observaciones</a>
+                        </li>
+                        <li class="" id="tabSeguimiento">
+                            <a href="#navSeguimiento" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-code-fork" aria-hidden="true"></i>  Seguimiento</a>
+                        </li>
                     }
                 </ul>
                 <div class="tab-content" style="padding-top: 5px;">
@@ -624,7 +625,7 @@
                                                         <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnAprobarGestion" tabindex="114" style="display:@ViewBag.Btn_Aprobar"><i class="fa fa-handshake-o" aria-hidden="true"></i>&nbsp;Aprobar</button>
                                                         <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnObservarGestion" tabindex="115" style="display:@ViewBag.Btn_Observar"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Observar</button>
                                                         <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnGuardarGestion" tabindex="116" style="display:@ViewBag.Btn_GuardarDespacho"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar</button>
-                                                       
+
                                                         <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnEditarGestion" tabindex="118" style="display:@ViewBag.Btn_EditarDespacho"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Editar</button>
                                                         <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnActualizarGestion" tabindex="119" style="display:none"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar</button>
                                                         <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnFinalizarVenta" tabindex="120" style="display:@ViewBag.Btn_FinalizarVenta"><i class="fa fa-window-close" aria-hidden="true"></i>&nbsp;Finalizar Venta</button>
@@ -789,7 +790,7 @@
                                 </div>
                             </div>
                         </div>
-                    
+
                         <div id="navDocumentos" class="tab-pane fade">
                             @{
                                 Html.RenderPartial("~/Views/Modelos/_Documentos.cshtml");
@@ -805,7 +806,7 @@
                                 Html.RenderPartial("~/Views/Modelos/_Seguimiento.cshtml");
                             }
                         </div>
-                     }
+                    }
                 </div>
             </div>
         </div>

@@ -392,7 +392,7 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("isDESCRIPADIC", detalleCotizacion.DescripcionAdicional);
                 parameters.Add("isSTOCK", detalleCotizacion.Stock);
                 if (detalleCotizacion.IndStock.HasValue)
-                { parameters.Add("isINDSTOCK", detalleCotizacion.IndStock.Value); }
+                { parameters.Add("isINDSTOCK", Utilidades.ParseStringSN<bool?>(detalleCotizacion.IndStock)); }
                 else
                 { parameters.Add("isINDSTOCK", DBNull.Value, DbType.String); }
                 parameters.Add("isUNDMED", detalleCotizacion.CodUnidad);

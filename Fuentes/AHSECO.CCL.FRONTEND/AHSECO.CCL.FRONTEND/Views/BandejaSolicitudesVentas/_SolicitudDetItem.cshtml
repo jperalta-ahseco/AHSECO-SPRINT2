@@ -80,7 +80,7 @@
                                         <label for="DI_txtCostoFOB">Costo FOB: </label>
                                     </div>
                                     <div class="col-md-4">
-                                        <input placeholder="Ingresar Costo" type="text" maxlength="20" class="form-control input-sm" id="DI_txtCostoFOB" value="">
+                                        <input @(ViewBag.PermitirEditarInfoVenta ? "" : "disabled") placeholder="Ingresar Costo" type="text" maxlength="20" class="form-control input-sm" id="DI_txtCostoFOB" value="">
                                     </div>
                                 </div>
                                 <div class="col-md-6 col-content-middleleft">
@@ -88,7 +88,7 @@
                                         <label for="DI_txtValorUnitario">Val. Unitario: </label>
                                     </div>
                                     <div class="col-md-4">
-                                        <input placeholder="Ingresar Val. Unt." type="text" maxlength="20" class="form-control input-sm" id="DI_txtValorUnitario" value="">
+                                        <input @(ViewBag.PermitirEditarInfoVenta ? "" : "disabled") placeholder="Ingresar Val. Unt." type="text" maxlength="20" class="form-control input-sm" id="DI_txtValorUnitario" value="">
                                     </div>
                                 </div>
                             </div>
@@ -100,7 +100,7 @@
                                     <div class="col-md-2">
                                         <table style="width:100%">
                                             <tr>
-                                                <td><input type="radio" name="DI_radTieneStock" class="input-sm" id="DI_radTieneStock_Si"></td>
+                                                <td><input @(ViewBag.PermitirEditarInfoVenta ? "" : "disabled") type="radio" name="DI_radTieneStock" class="input-sm" id="DI_radTieneStock_Si"></td>
                                                 <td style="padding-top:5px"><label>SI</label></td>
                                             </tr>
                                         </table>
@@ -108,7 +108,7 @@
                                     <div class="col-md-2">
                                         <table style="width:100%">
                                             <tr>
-                                                <td><input type="radio" name="DI_radTieneStock" class="input-sm" id="DI_radTieneStock_No"></td>
+                                                <td><input @(ViewBag.PermitirEditarInfoVenta ? "" : "disabled") type="radio" name="DI_radTieneStock" class="input-sm" id="DI_radTieneStock_No"></td>
                                                 <td style="padding-top:5px"><label>NO</label></td>
                                             </tr>
                                         </table>
@@ -135,12 +135,12 @@
                                         </table>
                                     </div>
                                 </div>
-                                <div class="col-md-4 col-content-middleleft">
+                                <div class="col-md-4 col-content-middleleft" style="@(ViewBag.MostrarCDI_Ganancia ? "" : "display:none")">
                                     <div class="col-md-7">
                                         <label for="DI_txtGanancia">Ganancia (%): </label>
                                     </div>
                                     <div class="col-md-5">
-                                        <input @(ViewBag.MostrarCDI_Ganancia ? "" : "disabled") placeholder="Ingrese Ganancia" type="text" maxlength="15" class="form-control input-sm" id="DI_txtGanancia" value="">
+                                        <input placeholder="Ingrese Ganancia" type="text" maxlength="15" class="form-control input-sm" id="DI_txtGanancia" value="">
                                     </div>
                                 </div>
                             </div>
