@@ -79,11 +79,12 @@ namespace AHSECO.CCL.BD
                 connection.Open();
                 var parameters = new DynamicParameters();
                 parameters.Add("isIdServicio", servicioDTO.CodigoServicio);
-                parameters.Add("isEquipo", servicioDTO.Equipo);
-                parameters.Add("isMarca", servicioDTO.Marca);
-                parameters.Add("isModelo",servicioDTO.Modelo);
-                parameters.Add("isTipoServicio", servicioDTO.TipoServicio);
-                parameters.Add("isEstado", servicioDTO.Estado);
+                parameters.Add("isEquipo", servicioDTO.Equipo == null ? "" : servicioDTO.Equipo);
+                parameters.Add("isMarca", servicioDTO.Marca == null ? "" : servicioDTO.Marca);
+                parameters.Add("isModelo",servicioDTO.Modelo == null ? "" : servicioDTO.Modelo);
+                parameters.Add("isTipoServicio", servicioDTO.TipoServicio == null ? "" : servicioDTO.TipoServicio);
+                parameters.Add("isEstado", servicioDTO.Estado == null ? "" : servicioDTO.Estado);
+                parameters.Add("exportar", servicioDTO.TipoConsulta == null ? "" : servicioDTO.TipoConsulta);
 
                 var result = connection.Query(
                     sql: "USP_SEL_SERVICIO",

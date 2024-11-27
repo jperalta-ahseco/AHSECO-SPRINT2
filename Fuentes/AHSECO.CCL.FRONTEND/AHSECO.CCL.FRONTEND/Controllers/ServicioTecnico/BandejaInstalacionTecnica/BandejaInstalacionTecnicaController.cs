@@ -26,6 +26,7 @@ using static AHSECO.CCL.COMUN.ConstantesDTO;
 using System.Web.Http.Results;
 using Microsoft.Ajax.Utilities;
 using System.Data.SqlTypes;
+using System.Xml.XPath;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecnica
 {
@@ -205,6 +206,82 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
             //return Json(new ResponseDTO<RespuestaDTO>(result));
         }
 
+        public virtual JsonResult UploadFiles(string extension)
+        {
+            CCLog log = new CCLog();
+            try
+            {
+                log.TraceInfo(Utilidades.GetCaller());
+
+                var correlativo = DateTime.Now.ToString("yyyyMMddHHmmss");
+                string nombre = "INSTAL_TEC" + correlativo;
+                string rutaArchivo = "";
+                string fileName = "";
+
+                string ruta_temporal = Utilidades.ObtenerValorConfig("tempFilesInsTec");
+                string UploadSize = Utilidades.ObtenerValorConfig("UploadSize");
+
+                log.TraceError("ruta_temporal::" + ruta_temporal);
+                log.TraceError("UploadSize::" + UploadSize);
+
+                string folder = DateTime.Now.ToString("yyyyMM");
+                string rutafinal = ruta_temporal + folder;
+
+                log.TraceError("rutafinal::" + rutafinal);
+
+                bool exists = System.IO.Directory.Exists(rutafinal);
+
+                if (!exists)
+                    System.IO.Directory.CreateDirectory(rutafinal);
+
+
+                if (System.IO.Directory.Exists(rutafinal))
+                {
+                    for (int i = 0; i < Request.Files.Count; i++)
+                    {
+
+                        rutaArchivo = rutafinal + "\\" + nombre;
+
+                        HttpPostedFileBase file = Request.Files[i]; //Uploaded file
+
+                        long fileSize = file.ContentLength;
+                        var sizereal = (fileSize / 1024L);
+
+                        if (sizereal > Convert.ToInt32(UploadSize))
+                        {
+                            return Json("false");
+                        }
+
+                        fileName = nombre;
+                        string mimeType = file.ContentType;
+                        System.IO.Stream fileContent = file.InputStream;
+
+
+                        string rutaFin = rutaArchivo + "." + extension;
+
+                        log.TraceError("rutaFin::" + rutaFin);
+
+                        file.SaveAs(rutaFin); //File will be saved in application root
+
+
+
+                    }
+                    log.TraceError("Llego imprimir::" + folder + fileName);
+                    return Json(folder + "\\" + nombre + "." + extension);
+                }
+                else
+                {
+                    log.TraceError("Ruta no existe::" + rutafinal);
+                    return Json("false");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                log.TraceError(Utilidades.GetCaller() + "::Error::" + ex.Message.ToString());
+                return Json("error");
+            }
+        }
         public JsonResult MantInstalacion(InstalacionTecnicaDTO instalacion)
         {
             var instalacionTecnicaBL = new InstalacionTecnicaBL();
@@ -505,7 +582,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
         }
         public FileResult DescargarFile(string url, string nombreDoc)
         {
-            string pao_files = ConfigurationManager.AppSettings.Get("tempFiles");
+            string pao_files = ConfigurationManager.AppSettings.Get("tempFilesInsTec");
             string ruta = pao_files + url;
 
             var fileName = Path.GetFileName(url);
@@ -604,13 +681,23 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
 
                 result.Codigo = 1;
                 result.Mensaje = "Se realizó el envío de correo a las áreas implicadas.";
-                return Json(result);
+                return Json(
+                    new
+                    {
+                        Status= result.Codigo
+                        ,Mensaje= result.Mensaje
+                    });
             }
             catch(Exception ex)
             {
                 result.Codigo = 0;
                 result.Mensaje = ex.Message;
-                return Json(result);
+                return Json(new
+                {
+
+                    Status = result.Codigo,
+                    Mensaje = result.Mensaje
+                });
             }
         }
 
@@ -618,6 +705,15 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
         {
             var instalacionTecnicaBL = new InstalacionTecnicaBL();
             var result = instalacionTecnicaBL.ObtenerElementosdeProducto(IdProducto);
+            return Json(result);
+        }
+
+
+        public JsonResult CrearMantPrevent(long solicitud)
+        {
+            var instalacionBL = new InstalacionTecnicaBL();
+            var usuario = User.ObtenerUsuario();
+            var result = instalacionBL.CrearMantPrevent(solicitud, usuario);
             return Json(result);
         }
 

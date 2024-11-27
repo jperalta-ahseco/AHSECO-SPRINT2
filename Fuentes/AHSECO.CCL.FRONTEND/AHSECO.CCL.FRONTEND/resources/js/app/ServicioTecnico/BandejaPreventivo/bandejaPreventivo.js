@@ -4,16 +4,12 @@
     /*Text*/
     var $txtSerie = $('#txtSerie');
     var $txtNumProc = $('#txtNumProc');
-    var $txtNumContrato = $('#txtNumContrato');
     var $txtNumOrdCompra = $('#txtNumOrdCompra');
     var $txtNumFianza = $('#txtNumFianza');
     var $periodoIni = $('#periodoIni');
     var $periodoFin = $('#periodoFin');
     var $openPeriodoIni = $('#openPeriodoIni');
     var $openPeriodoFin = $('#openPeriodoFin');
-
-    var $firstDate = $('#firstDate');
-    var $lastDate = $('#lastDate');
 
     /*Combos*/
     var $cmbempresa = $('#cmbempresa');
@@ -27,6 +23,7 @@
 
     function Initializer(){
         ObtenerFiltrosPreventivos();
+        $btnBuscar.click(BuscarPreventivos);
         $openPeriodoIni.click($openRegFecIni_click);
         $openPeriodoFin.click($openRegFecFin_click);
         $periodoIni.datepicker({
@@ -34,19 +31,6 @@
             minViewMode: "months",
             format: 'MM/yyyy'
         });
-
-        $firstDate.datepicker({
-            viewMode: "months",
-            minViewMode: "months",
-            format: 'MM/yyyy'
-        });
-
-        $lastDate.datepicker({
-            viewMode: "months",
-            minViewMode: "months",
-            format: 'MM/yyyy'
-        });
-
         $periodoFin.datepicker({
             viewMode: "months",
             minViewMode: "months",
@@ -93,6 +77,44 @@
             //startDate: $openPeriodoFin.datepicker('getDate')
         });
     }
+
+    function BuscarPreventivos() {
+        var method = "POST";
+        var url = "BandejaPreventivo/ObtenerPreventivos";
+
+        var objConsulta = {
+            NumSerie: $txtSerie.val(),
+            NumProc: $txtNumProc.val(),
+            NumOrdCompra: $txtNumOrdCompra.val(),
+            NumFianza: $txtNumFianza.val(),
+            Empresa: $cmbempresa.val(),
+            PeriodoInicio: $periodoIni.val(),
+            PeriodoFinal: $periodoFin.val(),
+            Estado: $cmbEstado.val(),
+        };
+
+        var objParam = JSON.stringify(objConsulta);
+
+        var fnDoneCallBack = function (data) {
+            cargarTablaPreventivos(data);
+        };
+
+        var fnFailCallBack = function () {
+            cargarTablaPreventivos();
+        },
+    }
+
+    function cargarTablaPreventivos(data) {
+        var columns = [
+
+        ];
+
+        var columnDefs = [
+
+        ];
+
+        app.llenarTabla();
+    };
 
 
 })(window.jQuery, window, document);

@@ -1,18 +1,26 @@
 USE [DB_AHSECO]
 GO
 
-CREATE OR ALTER PROCEDURE [dbo].[USP_GAR_SEL_NUM_SERIE]
+CREATE OR ALTER PROCEDURE [dbo].[USP_PREV_SEL_PREVENTIVOS]
 (
 /*=======================================================================================================
 	Nombre:				Fecha:			Descripcion:
 	Diego Bazalar		18.11.24		Realiza el select de datos de la solicitud de venta por número de serie.
-	EXEC [USP_GAR_SEL_NUM_SERIE] @IsNumSerie=xc123
+	EXEC [USP_PREV_SEL_PREVENTIVOS] @IsNumSerie=xc123
 =======================================================================================================*/
-	@IsNumSerie VARCHAR(100) 
+	 @IsNumSerie		VARCHAR(100) 
+	,@IsNumProc			VARCHAR(15)
+	,@IsNumOrdCompra	VARCHAR(200)
+	,@IsNumFianza		VARCHAR(15)
+	,@IsEmpresa			VARCHAR(6)
+	,@IsPeriodoInicio	DATETIME
+	,@IsPeriodoFinal	DATETIME
+	,@IsEstado			VARCHAR(5)
 )
 AS
 BEGIN
 SET NOCOUNT ON
+
 	DECLARE @sql NVARCHAR(MAX),
 	@ID_SOLICITUD BIGINT
 	--@IsNumSerie VARCHAR(100) = 'xc123' ,

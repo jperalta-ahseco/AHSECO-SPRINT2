@@ -22,6 +22,8 @@ using System.Net;
 using System.Diagnostics.Eventing.Reader;
 using System.Security.Cryptography;
 using System.Xml.Linq;
+using System.Data.Common;
+using Microsoft.Win32;
 
 namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
 {
@@ -193,7 +195,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                         Vendedor = i.Single(d => d.Key.Equals("VENDEDOR")).Value.Parse<string>(),
                         CodEmpresa = i.Single(d => d.Key.Equals("CODEMPRESA")).Value.Parse<string>(),
                         FechaMax = i.Single(d => d.Key.Equals("FECHAMAX")).Value.Parse<DateTime>(),
-                        Destino = i.Single(d => d.Key.Equals("DESTINO")).Value.Parse<string>(),
+                        Destino = i.Single(d => d.Key.Equals("DESTINOS")).Value.Parse<string>(),
                         Estado = i.Single(d => d.Key.Equals("ESTADO")).Value.Parse<string>(),
                         CodEstado = i.Single(d => d.Key.Equals("CODESTADO")).Value.Parse<string>()
                     });
@@ -838,6 +840,32 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                 }
             }
             return result;
+        }
+
+        public RespuestaDTO CrearMantPrevent(long solicitud, string usuario)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using (var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+                var parameters = new DynamicParameters();
+
+                parameters.Add("isIdSolicitud", solicitud);
+                parameters.Add("UsrEjecuta", usuario);
+
+                var result = connection.Query(
+                    sql: "USP_INS_MANT_PREV",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new RespuestaDTO
+                    {
+                        Codigo = i.Single(d => d.Key.Equals("COD")).Value.Parse<int>(),
+                        Mensaje = i.Single(d => d.Key.Equals("MSG")).Value.Parse<string>()
+                    }).FirstOrDefault();
+                connection.Close();
+                return result;
+            }
         }
     }
 }
