@@ -14,5 +14,6 @@ namespace AHSECO.CCL.BE
         public string DesMantenimiento {  get; set; }
         public int Eliminar {  get; set; }
         public string UsrEjecuta {  get; set; }
+        public string Codigo { get; set; }
     }
 }

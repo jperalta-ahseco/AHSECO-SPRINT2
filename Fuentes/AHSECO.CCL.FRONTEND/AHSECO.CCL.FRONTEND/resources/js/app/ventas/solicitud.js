@@ -118,7 +118,20 @@
     var $DS_txtCodigo = $("#DS_txtCodigo");
     var $DS_txtDescripcion = $("#DS_txtDescripcion");
     var $DS_txtCantidad = $("#DS_txtCantidad");
+    var $DS_txtPrecio = $("#DS_txtPrecio");
+    var $DS_txtTotalVenta = $("#DS_txtTotalVenta");
     var $DS_btnCerrar = $("#DS_btnCerrar");
+    var $DS_tblServiciosDetalle = $("#DS_tblServiciosDetalle");
+    var detalleServicios = [];
+    var contadorDetalle = 0;
+    var $modalDetalleServicio = $("#modalDetalleServicio");
+    var $btnGuardarDetalleServicio = $("#btnGuardarDetalleServicio");
+    var $btnActualizarDetalleServicio = $("#btnActualizarDetalleServicio");
+    var $hdnIdDetalleServicio = $("#hdnIdDetalleServicio");
+    var $txtDetalleServicio = $("#txtDetalleServicio");
+    var $btnCerrarDetalleServicio = $("#btnCerrarDetalleServicio");
+    var $DS_hdnIdCotDetServ = $("#DS_hdnIdCotDetServ");
+    var $btnAgregarDetServ = $("#btnAgregarDetServ");
 
     /*Seccion Contacto*/
     var $btnAñadir = $('#btnAñadir');
@@ -341,8 +354,85 @@
         $btnCerrarHistorial.click($btnCerrarHistorial_click);
         $btnExportarLiquidacion.click($btnExportarLiquidacion_click);
         $DS_btnCerrar.click($DS_btnCerrar_click);
+        $btnCerrarDetalleServicio.click($btnCerrarDetalleServicio_click);
+        $btnActualizarDetalleServicio.click($btnActualizarDetalleServicio_click);
+        $btnAgregarDetServ.click($btnAgregarDetServ_click);
+        $btnGuardarDetalleServicio.click($btnGuardarDetalleServicio_click);
         cargaCombos();      
     };
+
+    function $btnGuardarDetalleServicio_click() {
+        if ($txtDetalleServicio.val() === "") {
+            app.message.error("Validación", "Debe ingresar una descripción del servicio.");
+            return false;
+        }
+
+        method = "POST";
+        url = "BandejaSolicitudesVentas/RegistrarDetServ";
+        objDetalle = {
+            CodItem: $DS_hdnIdCotDetServ.val(),
+            Descripcion: $txtDetalleServicio.val()
+        }
+        objParam = JSON.stringify(objDetalle);
+        var fnSi = function () {
+            var fnDoneCallback = function (data) {
+                objDetalle = {
+                    Id: data.Result.Id,
+                    DesMantenimiento: data.Result.DesMantenimiento,
+                    Eliminar: data.Result.Eliminar,
+                    Codigo: data.Result.Codigo
+                };
+                detalleServicios.push(objDetalle);
+
+                cargarTablaDetalleServicios(data.Result);
+                $modalDetalleServicio.modal('hide');
+            }
+            var fnFailCallback = function () {
+
+            };
+            app.llamarAjax(method, url, objParam, fnDoneCallback, fnFailCallback, null, null);
+        }
+        return app.message.confirm("Confimación", "¿Está seguro de agregar el detalle?", "Si", "No", fnSi, null);
+
+    }
+    function $btnAgregarDetServ_click() {
+        $btnActualizarDetalleServicio.hide();
+        $txtDetalleServicio.val("");
+        $modalDetalleServicio.modal('show');
+    }
+
+    function $btnActualizarDetalleServicio_click() {
+        if ($txtDetalleServicio.val() === "") {
+            app.message.error("Validación", "Debe ingresar una descripción del servicio.");
+            return false;
+        }
+
+        method = "POST";
+        url = "BandejaSolicitudesVentas/ActualizarDetServ";
+        objDetalle = {
+            CodItem: $DS_hdnIdCotDetServ.val(),
+            CodServDet: $hdnIdDetalleServicio.val(),
+            Descripcion: $txtDetalleServicio.val()
+        }
+        objParam = JSON.stringify(objDetalle);
+        var fnSi = function () {
+            var fnDoneCallback = function (data) {
+                cargarTablaDetalleServicios(data.Result);
+                $modalDetalleServicio.modal('hide');
+            }
+            var fnFailCallback = function () {
+
+            };
+            app.llamarAjax(method, url, objParam, fnDoneCallback, fnFailCallback, null, null);
+        }
+        return app.message.confirm("Confimación", "¿Está seguro de actualizar el detalle?", "Si", "No", fnSi, null);
+
+        
+    }
+
+    function $btnCerrarDetalleServicio_click() {
+        $modalDetalleServicio.modal('hide');
+    }
 
     function $DS_btnCerrar_click() {
         $('#modalDetalleItemServicio').modal('hide');
@@ -2922,15 +3012,87 @@
         var fnDoneCallBack = function (data) {
             opcGrillaItems = opc;
             $('#modalDetalleItemServicio').modal('show');
+            $DS_hdnIdCotDetServ.val(CodigoItem);
             var codigo = "000000"+data.Result.CodItem
             $DS_txtCodigo.val(codigo.substring(codigo.length - 6));
             $DS_txtDescripcion.val(data.Result.Descripcion);
-            
             $DS_txtCantidad.val(data.Result.Cantidad);
+            $DS_txtPrecio.val(data.Result.VentaUnitaria.toFixed(2));
+            $DS_txtTotalVenta.val(data.Result.VentaTotalSinIGV.toFixed(2));
+            detalleServicios = data.Result.DetallesServicio;
+            contadorDetalle = data.Result.DetallesServicio.length;
+            cargarTablaDetalleServicios(data.Result.DetallesServicio);
+           
         }
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+    }
+
+    function eliminarDetServ(Id, Codigo) {
+
+        console.log("entrado");
+        method = "POST";
+        url = "BandejaSolicitudesVentas/EliminarDetServicio";
+        objDetalle = {
+            CodItem: Id,
+            Codigo: Codigo
+        }
+        objParam = JSON.stringify(objDetalle);
+        var fnSi = function () {
+            var fnDoneCallback = function (data) {
+                console.log("borrado");
+                cargarTablaDetalleServicios(data.Result);
+            }
+            var fnFailCallback = function () {
+
+            };
+            app.llamarAjax(method, url, objParam, fnDoneCallback, fnFailCallback, null, null);
+        }
+        return app.message.confirm("Eliminación", "¿Está seguro de eliminar el detalle?", "Si", "No", fnSi, null);
+
+    }
+
+    function editarDetServ(Id,Codigo) {
+        $modalDetalleServicio.modal('toggle');
+        $btnGuardarDetalleServicio.css('display', 'none');
+        $btnActualizarDetalleServicio.css('display', 'inline-block');
+        var detalle = detalleServicios;
+        console.log("detalle:" + detalle);
+        if (Id > 0) {
+            detalle = detalle.find(detail => detail.Id == Id);
+        }
+        else {
+            detalle = detalle.find(detail => detail.Codigo == Codigo);
+        }
+
 
         
+        $hdnIdDetalleServicio.val(Id);
+        $txtDetalleServicio.val(detalle.DesMantenimiento);
+    }
+
+    function cargarTablaDetalleServicios(detalle) {
+        $('#DS_tblServiciosDetalle tbody').empty();
+        for (i = 0; i < detalle.length; i++) {
+            var indice = i + 1;
+            var html = '<div class="text-center">';
+            html += '<a class="btn btn-primary btn-xs" title="Editar" href="javascript:solicitud.editarDetServ(' + detalle[i].Id + ',\'' + detalle[i].Codigo +'\')" btn-xs"><i class="fa fa-pencil-square-o"></i></a>&nbsp;';
+            html += '<a class="btn btn-primary btn-xs" title="Eliminar" href="javascript:solicitud.eliminarDetServ(' + detalle[i].Id + ',\'' + detalle[i].Codigo +'\')" btn-xs"><i class="fa fa-trash"></i></a>&nbsp;';
+            html += '</div>';
+            var nuevoTr = '<tr id="rowDetalle" name="rowDetalle">' +
+                '<td><center>' + indice + '</center></td>' +
+                '<td><center>' + detalle[i].DesMantenimiento + '</center></td>' +
+                '<td><center>' + html + '</center></td>';
+
+            nuevoTr += '</tr>';
+            $DS_tblServiciosDetalle.append(nuevoTr);
+        }
+        if (detalle.length == 0) {
+            var nuevoTr = '<tr id="rowDetalle" name="rowDetalle">' +
+                '<td colspan=3><center>No existen registros</center></td>'
+            '</tr>';
+
+            $DS_tblServiciosDetalle.append(nuevoTr);
+        };
     }
     function quitarItemServ(CodigoItem, opc) {
 
@@ -2975,6 +3137,8 @@
         guardarSeries: guardarSeries,
         agregarItemServicio: agregarItemServicio,
         quitarItemServ: quitarItemServ,
-        editarItemServ: editarItemServ
+        editarItemServ: editarItemServ,
+        eliminarDetServ: eliminarDetServ,
+        editarDetServ: editarDetServ
     }
 })(window.jQuery, window, document);

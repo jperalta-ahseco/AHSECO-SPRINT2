@@ -1499,31 +1499,31 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 var servicioBL = new ServiciosBL();
                 List<CotizacionDetalleDTO> lstItems = GetCDIList(opcTablaTemporal);
 
-                var servicioDto = new ServicioDTO();
-                servicioDto.CodigoServicio = Convert.ToInt32(CodItem);
-
-                var servicio = servicioBL.ObtenerServicios(servicioDto).Result.First();
+                var servicio = servicioBL.GetFullService(CodItem).Result;
 
                 //Registro Detalle
                 var select = new CotizacionDetalleDTO();
                 select.CodItem = CodItem;
                 select.CodItemTemp = "";
-                select.Descripcion = "Servicio:"+servicio.TipoServicio.Trim()+", Equipo: "+servicio.Equipo.Trim()+", Modelo:  "+servicio.Modelo.Trim();
+                select.Descripcion = "Servicio:"+servicio.CabeceraServicio.TipoServicio.Trim()+", Equipo: "+servicio.CabeceraServicio.Equipo.Trim()+", Modelo:  "+servicio.CabeceraServicio.Modelo.Trim();
                 select.Stock = 0;
                 select.TipoItem = ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto;
                 select.EsItemPadre = true;
                 select.IsTempRecord = true;
                 select.CodItem_IsUpdatable = true;
                 select.Cantidad = 0;
-                select.VentaUnitaria = servicio.Precio;
+                select.VentaUnitaria = servicio.CabeceraServicio.Precio;
                 select.VentaTotalSinIGV = 0;
+
+                //Detalle del servicio:
+                select.DetallesServicio = servicio.servicios;
 
                 if (lstItems.Any()) { select.NroItem = lstItems.Max(x => x.NroItem) + 1; }
                 else { select.NroItem = 1; }
 
                 if (lstItems.Any(x => x.CodItem.TrimEnd() == CodItem.TrimEnd()))
                 { throw new Exception("Producto y/o Servicio ya fue selecionado"); }
-                if (select.Id == 0) { select.Id = (lstItems.Count() + 1) * -1; }
+                if (select.Id <= 0) { select.Id = select.NroItem * -1; }
 
                 lstItems.Add(select);
                 VariableSesion.setObject(TAG_CDI, lstItems);
@@ -1534,6 +1534,91 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             }
             catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
         }
+
+
+        [HttpPost]
+        public JsonResult ActualizarDetServ(string CodItem, long CodServDet, string Descripcion)
+        {
+            try
+            {
+                var servicioBL = new ServiciosBL();
+                List<CotizacionDetalleDTO> lstItems = GetCDIList(opcTablaTemporal);
+                var serv = lstItems.FirstOrDefault(p => p.CodItem == CodItem);
+                var detalle = serv.DetallesServicio.FirstOrDefault(p => p.Id == CodServDet);
+
+                if (detalle != null)
+                {
+                    detalle.DesMantenimiento = Descripcion;
+                }
+
+                VariableSesion.setObject(TAG_CDI, lstItems);
+                var response = new ResponseDTO<IEnumerable<DetalleServicioDTO>>(serv.DetallesServicio.ToList());
+                return Json(response);
+            }
+            catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
+        }
+
+        [HttpPost]
+        public JsonResult EliminarDetServicio(long CodItem, string Codigo)
+        {
+            try
+            {
+                var servicioBL = new ServiciosBL();
+                List<CotizacionDetalleDTO> lstItems = GetCDIList(opcTablaTemporal);
+                var serv = lstItems.FirstOrDefault(p => p.CodItem == CodItem.ToString());
+                var detalle = new DetalleServicioDTO();
+                if (CodItem == 0)
+                {
+                    detalle = serv.DetallesServicio.FirstOrDefault(p => p.Codigo == Codigo);
+                }
+                else
+                {
+                    detalle = serv.DetallesServicio.FirstOrDefault(p => p.Id == CodItem);
+                }
+
+                if (detalle != null)
+                {
+                    serv.DetallesServicio.Remove(detalle);
+                }
+
+                VariableSesion.setObject(TAG_CDI, lstItems);
+                var response = new ResponseDTO<IEnumerable<DetalleServicioDTO>>(serv.DetallesServicio.ToList());
+                return Json(response);
+            }
+            catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
+        }
+
+        [HttpPost]
+        public JsonResult RegistrarDetServ(string CodItem, string Descripcion)
+        {
+            try
+            {
+                var servicioBL = new ServiciosBL();
+                List<CotizacionDetalleDTO> lstItems = GetCDIList(opcTablaTemporal);
+                var serv = lstItems.FirstOrDefault(p => p.CodItem == CodItem);
+                var detalle = serv.DetallesServicio;
+                
+
+                var item = new DetalleServicioDTO()
+                {
+                    Id = 0,
+                    Id_Servicio = Convert.ToInt32(CodItem),
+                    DesMantenimiento = Descripcion,
+                    Eliminar = 0,
+                    Codigo = "TMP_"+DateTime.Now.ToString("ddMMyyyyhhmmss")
+                };
+
+                detalle.Add(item);
+                serv.DetallesServicio = detalle;
+
+
+                VariableSesion.setObject(TAG_CDI, lstItems);
+                var response = new ResponseDTO<IEnumerable<DetalleServicioDTO>>(serv.DetallesServicio.ToList());
+                return Json(response);
+            }
+            catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
+        }
+
 
         [HttpPost]
         public JsonResult AgregarItemCotDet(string CodItem)

@@ -3,7 +3,7 @@
     ViewBag.Title = "Detalle del Servicio";
 }
 <div style="display:none">
-    <input type="hidden" id="DI_hdnIdCotDet" value="" />
+    <input type="hidden" id="DS_hdnIdCotDetServ" value="" />
 </div>
 <div style="width:80%" class="modal-dialog modal-lg container-fluid" role="document">
     <!-- Modal content -->
@@ -23,36 +23,40 @@
                         <fieldset>
                             <legend><b>Informaci&oacute;n General</b></legend>
                             <div class="col-md-12">
-                                <div class="row container-fluid col-content-middleleft form-group">
-                                    <div class="col-md-3">
-                                        <label for="DI_txtCodigo">C&oacute;digo: </label>
-                                    </div>
-                                    <div class="col-md-9 col-content-middleleft">
-                                        <div class="col-md-6">
+                                <div class="row container-fluid">
+                                    <div class="col-md-12">
+                                        <label for="DS_txtCodigo">C&oacute;digo: </label>
+                                        <div class="form-group">
                                             <input disabled placeholder="Ingresar código de producto" type="text" class="form-control input-sm" id="DS_txtCodigo" value="">
                                         </div>
-                                        <div class="col-md-3 col-content-middleright">
-                                            &nbsp;
-                                        </div>
-                                        <div class="col-md-3">
-                                            &nbsp;
+                                    </div>
+                                </div>
+                                <div class="row container-fluid">
+                                    <div class="col-md-12">
+                                        <label for="DS_txtDescripcion">Descripci&oacute;n: </label>
+                                        <div class="form-group">
+                                            <textarea disabled placeholder="Ingresar nombre de producto" type="text" rows="3" class="form-control input-sm" id="DS_txtDescripcion" value=""></textarea>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row container-fluid col-content-middleleft form-group">
-                                    <div class="col-md-3">
-                                        <label for="DI_txtDescripcion">Descripci&oacute;n: </label>
+                                <div class="row container-fluid">
+                                    <div class="col-md-4">
+                                        <label for="DS_txtCantidad">Cantidad: </label>
+                                        <div class="form-group">
+                                            <input placeholder="Cantidad" type="number" maxlength="8" style="text-align:left" class="form-control input-sm" id="DS_txtCantidad" onkeyup="multiplicar();" value="" onkeypress="if (isNaN(String.fromCharCode(event.keyCode))) return false;">
+                                        </div>
                                     </div>
-                                    <div class="col-md-9">
-                                        <textarea disabled placeholder="Ingresar nombre de producto" type="text" rows="3" class="form-control input-sm" id="DS_txtDescripcion" value=""></textarea>
+                                    <div class="col-md-4">
+                                        <label for="DS_txtPrecio">Precio: </label>
+                                        <div class="form-group">
+                                            <input placeholder="Precio" type="text" maxlength="10" style="text-align:left" class="form-control input-sm" id="DS_txtPrecio" onkeyup="multiplicar();" value="" onchange="(function(el){el.value=parseFloat(el.value).toFixed(2);})(this)" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="row container-fluid col-content-middleleft form-group">
-                                    <div class="col-md-3">
-                                        <label for="DI_txtDimensiones">Cantidad: </label>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input @(ViewBag.PermitirEditarInfoVenta ? "" : "disabled") placeholder="Cantidad" type="number" maxlength="8" style="text-align:center" class="form-control input-sm" id="DS_txtCantidad" value="">
+                                    <div class="col-md-4">
+                                        <label for="DS_txtTotalVenta">Venta Total: </label>
+                                        <div class="form-group">
+                                            <input disabled type="text" maxlength="15" style="text-align:left" class="form-control input-sm" id="DS_txtTotalVenta" value="">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -64,10 +68,10 @@
                             <fieldset>
                                 <legend><b>Detalle del Servicio</b></legend>
                                 <div class="text-right" style="padding-top: 2px; padding-bottom: 2px">
-                                    <button style="@(ViewBag.MostrarCDI_Valorizacion ? "display:none" : "")" class="btn btn-default btn-sm" type="button" data-toggle="modal"  tabindex="14" onclick="javascript:cotvtacostos.agregarCostoItem('1')"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar Detalle</button>
+                                    <button class="btn btn-default btn-sm" type="button" data-toggle="modal"  tabindex="14" id="btnAgregarDetServ"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar Detalle</button>
                                 </div>
                                 <div class="row container-fluid">
-                                    <table id="DI_tblServiciosDetalle" class="table table-hover table-condensed table-striped table-bordered" style="width:100%">
+                                    <table id="DS_tblServiciosDetalle" class="table table-hover table-condensed table-striped table-bordered" style="width:100%">
                                         <thead>
                                             <tr>
                                                 <th style="text-align:center; width:10%">N°</th>
@@ -76,9 +80,6 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr id="NoRegDetServicios">
-                                                <td colspan="3" style="text-align:center;"> No existe registros</td>
-                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -94,3 +95,22 @@
         </div>
     </div>
 </div>
+<script>
+    function multiplicar() {
+        var total = 0;
+        var cantidad = $("#DS_txtCantidad").val();
+        var precio = $("#DS_txtPrecio").val();
+        if (cantidad == "" || cantidad == 'NaN') {
+            $("#DS_txtCantidad").val('0');
+            cantidad = 0;
+        }
+        if (precio == "" || precio == 'NaN') {
+            $("#DS_txtPrecio").val('0.00');
+            precio = 0;
+        }
+        cantidad = parseInt($("#DS_txtCantidad").val())
+        precio = parseFloat($("#DS_txtPrecio").val())
+        total = cantidad * precio;
+        $("#DS_txtTotalVenta").val(total.toFixed(2));
+    }
+</script>
