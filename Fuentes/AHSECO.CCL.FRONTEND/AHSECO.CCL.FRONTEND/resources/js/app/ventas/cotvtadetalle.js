@@ -561,6 +561,8 @@ var cotvtadet = (function ($, win, doc) {
                 }
             }
 
+            $DI_txtCostoFOB.val(data.Result.CostoFOB);
+
             if ($PermitirEditarGanancia.val() == "S") {
 
             }

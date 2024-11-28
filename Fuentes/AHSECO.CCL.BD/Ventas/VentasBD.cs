@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using static AHSECO.CCL.COMUN.ConstantesDTO.CotizacionVentaDetalle;
 
 namespace AHSECO.CCL.BD.Ventas
 {
@@ -354,6 +353,21 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("isVIGENCIA", cotizacion.Vigencia);
                 parameters.Add("isGARANTIA", cotizacion.Garantia);
                 parameters.Add("isOBSERVACION", cotizacion.Observacion);
+
+                if (cotizacion.PorcentajeDescuento.HasValue) { parameters.Add("isPORCDSCTO", cotizacion.PorcentajeDescuento.Value); }
+                else { parameters.Add("isPORCDSCTO", DBNull.Value,DbType.Decimal); }
+
+                if (cotizacion.IndDsctoRequiereAprob.HasValue) { 
+                    parameters.Add("isINDDSCTOREQAPROB", Utilidades.ParseStringSN<bool?>(cotizacion.IndDsctoRequiereAprob), DbType.String);
+                }
+                else { parameters.Add("isINDDSCTOREQAPROB", DBNull.Value, DbType.String); }
+
+                if (cotizacion.IndDsctoAprob.HasValue)
+                {
+                    parameters.Add("isINDDSCTOAPROB", Utilidades.ParseStringSN<bool?>(cotizacion.IndDsctoAprob), DbType.String);
+                }
+                else { parameters.Add("isINDDSCTOAPROB", DBNull.Value, DbType.String); }
+
                 parameters.Add("isESTADO", cotizacion.Estado);
                 parameters.Add("isUsrEjecuta", cotizacion.UsuarioRegistra);
                 parameters.Add("isFecEjecucion", cotizacion.FechaRegistro);

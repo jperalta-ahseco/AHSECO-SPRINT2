@@ -223,6 +223,21 @@
         //Se configura la pantalla por ROL
 
         if ($idRolUsuario.val() == $RolVenta_Asesor.val()) {
+
+            if ($CI_pnlInfoDestino.css("display") != "none") {
+                $CI_txtUbicacion.removeAttr("disabled");
+                $("#searchUbigeo").attr("data-target", "#modalUbigeo");
+                $("#searchUbigeo").css("cursor", "pointer");
+                $CI_txtDireccion.removeAttr("disabled");
+                $CI_txtAmbDestino.removeAttr("disabled");
+                $CI_txtNroPiso.removeAttr("disabled");
+            }
+
+            if ($CI_pnlInfoPreventivos.css("display") != "none") {
+                $CI_txtCantPrevent.removeAttr("disabled");
+                $CI_cmbCicloPreventivo.removeAttr("disabled");
+            }
+
             $CI_txtCantCosteo.removeAttr("disabled");
             if ($CI_pnlInfoCostos_MtoUnitario.css("display") != "none") {
                 $CI_txtMtoUnitarioCosto.attr("disabled", "disabled");
@@ -232,6 +247,21 @@
             }
         }
         else {
+
+            if ($CI_pnlInfoDestino.css("display") != "none") {
+                $CI_txtUbicacion.attr("disabled", "disabled");
+                $("#searchUbigeo").attr("data-target", "");
+                $("#searchUbigeo").css("cursor", "not-allowed");
+                $CI_txtDireccion.attr("disabled", "disabled");
+                $CI_txtAmbDestino.attr("disabled", "disabled");
+                $CI_txtNroPiso.attr("disabled", "disabled");
+            }
+
+            if ($CI_pnlInfoPreventivos.css("display") != "none") {
+                $CI_txtCantPrevent.attr("disabled", "disabled");
+                $CI_cmbCicloPreventivo.attr("disabled", "disabled");
+            }
+
             $CI_txtCantCosteo.attr("disabled", "disabled");
             if ($CI_pnlInfoCostos_MtoUnitario.css("display") != "none") {
                 $CI_txtMtoUnitarioCosto.removeAttr("disabled");
@@ -752,6 +782,10 @@
             $CI_txtUnidadMedida.val(data.Result.CotizacionDetalle.DescUnidad);
             if (data.Result.CodUbigeoDestino != null) {
                 ubigeo.setUbigeoById(data.Result.CodUbigeoDestino);
+                if ($CI_txtUbicacion.attr("readonly") == "readonly") {
+                    $CI_txtUbicacion.removeAttr("readonly");
+                    $CI_txtUbicacion.attr("disabled", "disabled");
+                }
             }
             $CI_txtDireccion.val(data.Result.Direccion);
             $CI_txtAmbDestino.val(data.Result.AmbienteDestino);
