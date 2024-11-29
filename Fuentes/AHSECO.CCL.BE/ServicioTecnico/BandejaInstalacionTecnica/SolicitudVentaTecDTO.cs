@@ -31,6 +31,7 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica
         public string TipoProceso { get; set; }
         public string NroProceso { get; set; }
         public string Contrato { get; set; }
+        public string FechaMaxima { get; set; }
 
     }
 }

@@ -22,6 +22,8 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica
         //public DateTime? FecLimInsta { get; set; }
         public decimal? MontoPrestPrin { get; set; }
         public decimal? MontoPrestAcc { get; set; }
+        public int NumInstalados  { get; set; }
+        public int NumProgramados { get; set; }
 
     }
 }
