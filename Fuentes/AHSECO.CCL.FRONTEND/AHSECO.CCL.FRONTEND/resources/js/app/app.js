@@ -699,6 +699,11 @@ var app = (function ($, win, doc) {
         return date;
     }
 
+    function stringToDate(data) {
+        var parts = data.split('/');
+        var date = new Date(parts[2], parts[1] - 1, parts[0]);
+        return date;
+    }
     // Verifica si el valor es nullo, vacío o no defindo.
     function isNull(valor) {
         if (typeof valor === "undefined" || valor === null || String(valor).trim().length === 0) {
@@ -856,6 +861,7 @@ var app = (function ($, win, doc) {
         llenarComboMultiSelect: llenarComboMultiSelect,
         llenarComboMultiResult: llenarComboMultiResult,
         parseDate: parseDate,
+        stringToDate: stringToDate,
         isNull: isNull,
         convertirEnFecha: convertirEnFecha,
         redirigirA: redirigirA,

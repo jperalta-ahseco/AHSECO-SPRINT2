@@ -340,7 +340,14 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("IsTipoProceso",cotizacion.TipoProceso);
                 parameters.Add("isIdCotizacion", cotizacion.IdCotizacion);
                 parameters.Add("isID_SOLICITUD", cotizacion.IdSolicitud);
-                parameters.Add("isFEC_COTIZACION", cotizacion.FecCotizacion);
+                if (cotizacion.FecCotizacion.HasValue)
+                {
+                    parameters.Add("isFEC_COTIZACION", cotizacion.FecCotizacion.Value, DbType.DateTime); 
+                }
+                else
+                { 
+                    parameters.Add("isFEC_COTIZACION", DBNull.Value, DbType.DateTime);
+                }
                 if (cotizacion.IdContacto.HasValue) { parameters.Add("isIDCONTACTO", cotizacion.IdContacto.Value); }
                 else { parameters.Add("isIDCONTACTO", DBNull.Value); }
                 parameters.Add("isNOMBRECONTACTO", cotizacion.NombreContacto);
@@ -354,8 +361,8 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("isGARANTIA", cotizacion.Garantia);
                 parameters.Add("isOBSERVACION", cotizacion.Observacion);
 
-                if (cotizacion.PorcentajeDescuento.HasValue) { parameters.Add("isPORCDSCTO", cotizacion.PorcentajeDescuento.Value); }
-                else { parameters.Add("isPORCDSCTO", DBNull.Value,DbType.Decimal); }
+                if (cotizacion.PorcentajeDescuento.HasValue) { parameters.Add("isPORCDSCTO", cotizacion.PorcentajeDescuento.Value, DbType.Decimal); }
+                else { parameters.Add("isPORCDSCTO", DBNull.Value, DbType.Decimal); }
 
                 if (cotizacion.IndDsctoRequiereAprob.HasValue) { 
                     parameters.Add("isINDDSCTOREQAPROB", Utilidades.ParseStringSN<bool?>(cotizacion.IndDsctoRequiereAprob), DbType.String);

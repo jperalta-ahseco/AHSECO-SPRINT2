@@ -77,9 +77,11 @@
     var $cmbTipoPago = $('#cmbTipoPago');
     var $cmbGarantia = $('#cmbGarantia');
     var $txtObs = $('#txtObs');
+    var $txtPorcentajeDscto = $("#txtPorcentajeDscto");
     var $NoRegMainProd = $('#NoRegMainProd');
     var $openRegdateCotizacion = $('#openRegdateCotizacion');
     var $btnRegistrarCotizacion = $('#btnRegistrarCotizacion');
+    var $btnActualizarCotizacion = $("#btnActualizarCotizacion");
     var $btnAgregarDetalle = $('#btnAgregarDetalle');
 
     /*Ver Historial de Cotizacion */
@@ -312,6 +314,7 @@
         $btnEliminarSol.click(btnEliminarSolClick);
         $btnGuardarObservacionReq.click(GuardarObservacionReqClick);
         $btnRegistrarCotizacion.click(registrarCotizacion);
+        $btnActualizarCotizacion.click(actualizarCotizacion);
         $btnAgregarDocumento.click($modalCargaDocumentoClick);
         $btnAgregarObservacion.click($modalObservacionClick);
         $openRegdateSolicitud.click($openRegdateSolicitudClick);
@@ -2191,9 +2194,7 @@
             codigoWorkFlow: $codigoWorkflow.val()
         };
         objParam = JSON.stringify(objSolicitud);
-
-
-
+        
         var fnSi = function () {
             function redirect() {
                 app.redirectTo("BandejaSolicitudesVentas");
@@ -2287,18 +2288,17 @@
             app.message.error("Validación", "Debe de seleccionar la forma de pago.");
             return;
         };
-
-
+        
         if ($cmbTipMoneda.val() === "" || $cmbTipMoneda.val() == undefined || $cmbTipMoneda.val() == null) {
             app.message.error("Validación", "Debe de seleccionar el tipo de moneda.");
             return;
         };
 
-        //if ($txtCostoEnvio.val().trim() === "" || $txtCostoEnvio.val().trim().length <= 0 || $txtCostoEnvio.val().trim() == null) {
-        //    app.message.error("Validación", "Debe de ingresar los costos de envío.");
-        //    return;
-        //};
-        
+        var vFecCotizacion = null;
+        if ($dateCotizacion.val() != "") {
+            vFecCotizacion = app.stringToDate($dateCotizacion.val());
+        }
+
         method = "POST";
         url = "BandejaSolicitudesVentas/RegistraCotizacionVenta"
         objCotizacion = {
@@ -2311,6 +2311,7 @@
             AreaContacto: $txtAreaContacto.val(),
             TelefonoContacto: $txtTelefono.val(),
             EmailContacto: $txtCorreo.val(),
+            FecCotizacion: vFecCotizacion,
             PlazoEntrega: $txtPlazoEntrega.val(),
             FormaPago: $cmbTipoPago.val(),
             Moneda: $cmbTipMoneda.val(),
@@ -2342,7 +2343,152 @@
         return;
 
     };
-    
+
+    function actualizarCotizacion() {
+
+
+        if ($nombreContacto.val().trim() === "" || $nombreContacto.val().trim().length <= 0 || $nombreContacto.val().trim() == null) {
+            app.message.error("Validación", "Debe de seleccionar un contacto registrado o ingresar el nombre de un nuevo contacto.");
+            return;
+        };
+
+        if (!isNaN($nombreContacto.val())) {
+            app.message.error("Validación", "El nombre del contacto no puede contener números.")
+            return;
+        };
+
+        if ($txtAreaContacto.val().trim() === "" || $txtAreaContacto.val().trim().length <= 0 || $txtAreaContacto.val().trim() == null) {
+            app.message.error("Validación", "Debe de seleccionar un contacto registrado o ingresar el área de un nuevo contacto.");
+            return;
+        };
+
+        if (!isNaN($txtAreaContacto.val())) {
+            app.message.error("Validación", "El área del contacto no puede contener números.")
+            return;
+        };
+
+        if ($txtTelefono.val().trim() === "" || $txtTelefono.val().trim().length <= 0 || $txtTelefono.val().trim() == null) {
+            app.message.error("Validación", "Debe de seleccionar un contacto registrado o ingresar el teléfono de un nuevo contacto.");
+            return;
+        };
+
+        var telefono = $txtTelefono.val().trim();
+
+        telefono = telefono.replace(/\s+/g, ' ');
+
+        if (isNaN($txtTelefono.val().trim()) || (telefono.length === 0 && telefono != "")) {
+            app.message.error("Validación", "El teléfono no está en el formato correcto.");
+            return
+        };
+
+        if ($txtCorreo.val().trim() === "" || $txtCorreo.val().trim().length <= 0 || $txtCorreo.val().trim() == null) {
+            app.message.error("Validación", "Debe de seleccionar un contacto registrado o ingresar el correo de un nuevo contacto.");
+            return;
+        };
+
+        if (!app.validarEmail($txtCorreo.val().trim()) && $txtCorreo.val().trim() != "") {
+            app.message.error("Validación", "Debe de colocar un correo con el formato correcto.");
+            return
+        };
+
+        if ($dateCotizacion.val().trim() === "" || $dateCotizacion.val().trim().length <= 0 || $dateCotizacion.val().trim() == null) {
+            app.message.error("Validación", "Debe ingresar la fecha de cotización.");
+            return;
+        };
+
+        if ($txtVigencia.val().trim() === "" || $txtVigencia.val().trim().length <= 0 || $txtVigencia.val().trim() == null) {
+            app.message.error("Validación", "Debe de ingresar el plazo de vigencia de la cotización.");
+            return;
+        };
+
+        if ($.trim($txtPlazoEntrega.val()) == "") {
+            app.message.error("Validación", "Debe de ingresar el plazo de entrega de la cotización.");
+            return;
+        }
+        else {
+            if (!app.validaNumeroEntero($txtPlazoEntrega.val())) {
+                app.message.error("Validación", "Número inválido para el Plazo de Entrega.");
+                return;
+            }
+        };
+
+        if ($cmbGarantia.attr("disabled") != "disabled") {
+            if ($cmbGarantia.val() === "" || $cmbGarantia.val() == undefined || $cmbGarantia.val() == null) {
+                app.message.error("Validación", "Debe de ingresar el periodo de garantía.");
+                return;
+            };
+        }
+
+        if ($cmbTipoPago.val() === "" || $cmbTipoPago.val() == undefined || $cmbTipoPago.val() == null) {
+            app.message.error("Validación", "Debe de seleccionar la forma de pago.");
+            return;
+        };
+
+        if ($cmbTipMoneda.attr("disabled") != "disabled") {
+            if ($cmbTipMoneda.val() === "" || $cmbTipMoneda.val() == undefined || $cmbTipMoneda.val() == null) {
+                app.message.error("Validación", "Debe de seleccionar el tipo de moneda.");
+                return;
+            };
+        }
+
+        var vFecCotizacion = null;
+        if ($dateCotizacion.val() != "") {
+            vFecCotizacion = app.stringToDate($dateCotizacion.val());
+        }
+
+        var vPorcDscto = null;
+        if ($txtPorcentajeDscto.attr("disabled") != "disabled") {
+            if ($txtPorcentajeDscto.val() != "") {
+                if (!app.validaNumeroDecimal($txtPorcentajeDscto.val())) {
+                    app.message.error("Validación", "N&uacute;mero inv&aacute;lido del campo Porcentaje de Descuento");
+                    return;
+                }
+                else { vPorcDscto = parseFloat($txtPorcentajeDscto.val()); }
+            }
+        }
+        
+        method = "POST";
+        url = "BandejaSolicitudesVentas/ActualizarCotizacionVenta"
+        objCotizacion = {
+            IdCliente: $idCliente.val(),
+            IdCotizacion: $idCotizacion.val(),
+            IdSolicitud: $numeroSolicitud.val(),
+            IdWorkFlow: $idWorkFlow.val(),
+            IdContacto: $txtCodContacto.val(),
+            NombreContacto: $nombreContacto.val(),
+            AreaContacto: $txtAreaContacto.val(),
+            TelefonoContacto: $txtTelefono.val(),
+            EmailContacto: $txtCorreo.val(),
+            FecCotizacion: vFecCotizacion,
+            PlazoEntrega: $txtPlazoEntrega.val(),
+            FormaPago: $cmbTipoPago.val(),
+            Moneda: $cmbTipMoneda.val(),
+            Vigencia: $txtVigencia.val(),
+            Garantia: $cmbGarantia.val(),
+            Observacion: $txtObs.val(),
+            PorcentajeDescuento: vPorcDscto,
+            Estado: "A"
+        };
+
+        objParam = JSON.stringify(objCotizacion);
+        
+        var fnDoneCallBackSol = function (data) {
+            $idCotizacion.val(data.Cotizacion.IdCotizacion);
+            $btnRegistrarCotizacion.attr("style", "display:none");
+            app.message.success("Cotización", "Se actualizó satisfactoriamente la cotización.", "Aceptar", null);
+        };
+
+        var fnFailCallBackSol = function (Mensaje) {
+            app.message.error("Validación", Mensaje);
+            return;
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBackSol, fnFailCallBackSol, null, null);
+
+        return;
+
+    }
+
     function eliminarObsTmp(idObs) {
         var fnSi = function () {
 

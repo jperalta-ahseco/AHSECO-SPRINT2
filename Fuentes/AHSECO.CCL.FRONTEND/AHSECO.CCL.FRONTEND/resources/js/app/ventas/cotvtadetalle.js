@@ -1293,7 +1293,6 @@ var cotvtadet = (function ($, win, doc) {
         RecargarFiltroFamilia: RecargarFiltroFamilia,
         agregarItem: agregarItem,
         quitarItem: quitarItem,
-        //cargarCiclosPreventivos: cargarCiclosPreventivos,
         editarItem: editarItem,
         quitarSubItem: quitarSubItem,
         editarSubItem: editarSubItem,
