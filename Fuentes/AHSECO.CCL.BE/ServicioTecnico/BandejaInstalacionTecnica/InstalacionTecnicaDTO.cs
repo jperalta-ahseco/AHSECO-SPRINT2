@@ -28,5 +28,7 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica
         public string Destino { get; set; } 
         public string Estado { get; set; }
         public string CodEstado { get; set; }
+
+        public string CodGarantia { get; set; }
     }
 }

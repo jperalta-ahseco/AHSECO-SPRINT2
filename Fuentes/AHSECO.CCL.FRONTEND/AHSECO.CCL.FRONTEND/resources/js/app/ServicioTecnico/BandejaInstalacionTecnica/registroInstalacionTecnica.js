@@ -212,7 +212,7 @@
         $btnBuscarTecnico.click(BuscarTecnicos);
         $btnRegistrarTecnicoExterno.click(CrearTecnico3ro_a_Producto);
         $btnAsignarTecnico.click(btnEjecutarAsignacionClick);
-        $dateSolicitud.val(hoy());
+        //$dateSolicitud.val(hoy());
         $fileCargaDocumentoSustento.on("change", $fileCargaDocumentoSustento_change);
         CargarTipoDocumento(3); //Cambiar a tipo de proceso Instalación Técnica.
         $cmbTipoCredencial.on('change', function (e) {
@@ -226,7 +226,10 @@
                 app.message.error("Validación", "Debe ingresar un Tipo de Documento para Registrar.");
             }
         })
-        cargarDatos();
+       
+        setTimeout(function () {
+            cargarDatos();
+        }, 2000); 
         btnCheck();
     };
 
@@ -695,6 +698,11 @@
             return;
         };
 
+        if ($cmbGarantias.val() == "" || $cmbGarantias.val() == null || $cmbGarantias.val().trim().length == 0) {
+            app.message.error("Validación", "Debe de ingresar una garantia.")
+            return;
+        };
+
         var fechaHoy = hoy();
 
         if ($dateSolicitud.val() < fechaHoy) {
@@ -729,6 +737,7 @@
                 , FechaMax: $dateSolicitud.val()
                 , Destino: destinos_select.toString()
                 , Estado: 'STREG'
+                , CodGarantia: $cmbGarantias.val()
             },
             DetalleInstalacion: productos,
             Observaciones: observaciones,
@@ -828,7 +837,7 @@
             cargarBandejaProductos(productos);
             $modalSolicitud.modal('toggle');
             $cmbDestino.prop('disabled', false);
-            $dateSolicitud.prop('disabled', false);
+            //$dateSolicitud.prop('disabled', false);
         };
 
         var fnFailCallBack = function () {
@@ -885,14 +894,16 @@
             $txtCargoContacto.val(requerimiento.CargoContacto);
             $txtTelefContacto.val(requerimiento.TelefonoContacto);
             $txtEstablecimientoCont.val(requerimiento.Establecimiento);
-            $cmbGarantias.val(requerimiento.Garantia).trigger('change.select2');
+            $cmbGarantias.val(requerimiento.CodGarantia).trigger('change.select2');
             $cmbTipVenta.val(requerimiento.TipoVenta).trigger('change.select2');
+
         if ($tipoproceso.val() == "") {
             $txtRuc.val(requerimiento.RUC);
             $txtNomEmpresa.val(requerimiento.RazonSocial);
             $txtEmpresa.val(requerimiento.Nom_Empresa);
             $txtUbigeo.val(requerimiento.Ubigeo);
             $txtAsesor.val(requerimiento.AsesorVenta);
+            $dateSolicitud.val(requerimiento.FechaMaxima);
         } else if ($tipoproceso.val() != "") {
             $txtRuc.val(requerimiento.RucEmpresa);
             $txtNomEmpresa.val(requerimiento.NomEmpresa);

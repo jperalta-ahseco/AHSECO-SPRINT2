@@ -6,7 +6,7 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_SEL_SOLICITUD_INSTALL_TEC]
 /*=======================================================================================================
 	Nombre:				Fecha:			Descripcion:
 	Diego Bazalar		24.10.24		Realiza el select del detalle de la solicitud de venta y de la cotización para la bandeja de instalación técnica.
-		[USP_SEL_SOLICITUD_INSTALL_TEC] 1
+		[USP_SEL_SOLICITUD_INSTALL_TEC] 13
   =======================================================================================================*/
 	@isIdSolicitud BIGINT
 )
@@ -33,6 +33,7 @@ BEGIN
 		,SOL.ESTADO							AS ESTADO
 		,TIPOPROCESO						AS TIPOPROCESO
 		,NROPROCESO							AS NROPROCESO
+		,ISNULL(CONVERT(VARCHAR(10),DESP.FECHAMAX,103),'') AS FECHAMAX
 	INTO #tmpSolicitudVenta										---Insertamos datos de la solicitud de venta
 	FROM [dbo].[TBM_SOLICITUDVENTA] AS SOL WITH(NOLOCK)
 	LEFT JOIN [dbo].[TBM_CLIENTES] AS cli WITH(NOLOCK) ON cli.ID = SOL.IDCLIENTE
@@ -42,6 +43,7 @@ BEGIN
 	LEFT JOIN [dbo].[TBD_DATOS_GENERALES] datos WITH(NOLOCK) ON datos.COD_VALOR1 = SOL.COD_EMPRESA
 	LEFT JOIN [dbo].[TBD_DATOS_GENERALES] AS TIPO ON TIPO.COD_VALOR1 = SOL.TIPO_SOL 
 	LEFT JOIN (SELECT COD_VALOR1,VALOR1 FROM [dbo].[TBD_DATOS_GENERALES] WHERE DOMINIO = 'FLOWSOL') AS FLUJO ON FLUJO.COD_VALOR1 = CAST(SOL.ID_FLUJO AS NVARCHAR)
+	LEFT JOIN (SELECT ID_SOLICITUD,FECHAMAX FROM TBM_DESPACHO WITH(NOLOCK) GROUP BY ID_SOLICITUD,FECHAMAX) DESP ON SOL.ID_SOLICITUD=DESP.ID_SOLICITUD
 	WHERE SOL.ID_SOLICITUD = @isIdSolicitud
 
 	SELECT
