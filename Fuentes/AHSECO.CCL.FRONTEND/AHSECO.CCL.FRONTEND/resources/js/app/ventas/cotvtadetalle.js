@@ -4,10 +4,13 @@ var cotvtadet = (function ($, win, doc) {
     var $idCotizacion = $("#idCotizacion");
     var $idRolUsuario = $("#idRolUsuario");
     var $idWorkFlow = $("#idWorkFlow");
+    var $RolVenta_Asesor = $("#RolVenta_Asesor");
     var $RolVenta_Gerente = $("#RolVenta_Gerente");
     var $RolVenta_Costos = $("#RolVenta_Costos");
-    var $HabilitarValorizacionCotDet = $("#HabilitarValorizacionCotDet");
+    var $PermitirEditarValorizacion = $("#PermitirEditarValorizacion");
     var $PermitirEditarGanancia = $("#PermitirEditarGanancia");
+    var $DI_pnlCostos_PrecioVenta = $("#DI_pnlCostos_PrecioVenta");
+    var $DI_pnlCostos_Ganancia = $("#DI_pnlCostos_Ganancia");
 
     var $cmbTipo = $('#cmbTipo');
 
@@ -21,7 +24,7 @@ var cotvtadet = (function ($, win, doc) {
     var $btnBuscarItems = $('#btnBuscarItems');
     var $tblItems = $('#tblItems');
     var $tblCotDet = $('#tblCotDet');
-
+    
     var $DI_hdnIdCotDet = $("#DI_hdnIdCotDet");
     var $DI_hdnCodigoPadre = $("#DI_hdnCodigoPadre");
     var $DI_hdnCodigo = $("#DI_hdnCodigo");
@@ -540,31 +543,35 @@ var cotvtadet = (function ($, win, doc) {
                     cotvtacostos.cargarGrillaCostosCotDet(resCostos);
                 }
             }
-
-            $DI_txtCostoFOB.attr("disabled", "disabled");
-            $DI_txtValorUnitario.attr("disabled", "disabled");
-
-            if ($idRolUsuario.val() == $RolVenta_Gerente.val()) {
-                $DI_radTieneStock_Si.removeAttr("disabled");
-                $DI_radTieneStock_No.removeAttr("disabled");
-                configurarTieneStock();
-            }
-
-            if ($idRolUsuario.val() == $RolVenta_Costos.val()) {
-                if ($DI_radTieneStock_Si.is(':checked')) {
-                    $DI_txtValorUnitario.removeAttr("disabled");
+            
+            //Como Jefe puede cambiar el flujo de STOCK y agregar los costos FOB y el valor unitario
+            if ($PermitirEditarValorizacion.val() == "S") {
+                if ($idRolUsuario.val() == $RolVenta_Gerente.val()) {
+                    $DI_radTieneStock_Si.removeAttr("disabled");
+                    $DI_radTieneStock_No.removeAttr("disabled");
+                    configurarTieneStock();
+                    $DI_txtCostoFOB.focus();
                 }
-                if ($DI_radTieneStock_No.is(':checked')) {
+                $DI_txtCostoFOB.val(data.Result.CostoFOB);
+                $DI_txtValorUnitario.val(data.Result.VentaUnitaria);
+                if ($idRolUsuario.val() == $RolVenta_Costos.val()) {
                     if ($DI_txtCostoFOB.val() != "") {
                         $DI_txtValorUnitario.removeAttr("disabled");
+                        $DI_txtValorUnitario.focus();
                     }
                 }
             }
 
-            $DI_txtCostoFOB.val(data.Result.CostoFOB);
-
+            //Cuando a la cotización detalle se le asignó el VALOR UNITARIO recien se puede agregar una ganancia
             if ($PermitirEditarGanancia.val() == "S") {
-
+                if ($DI_txtValorUnitario.val() != "") {
+                    $DI_txtGanancia.removeAttr("disabled");
+                    $DI_txtGanancia.focus();
+                }
+                $DI_txtDimensiones.removeAttr("disabled");
+                $DI_txtReqCliente.removeAttr("disabled");
+                $DI_txtObsInsta.removeAttr("disabled");
+                $DI_txtDescripcionAdic.removeAttr("disabled");
             }
 
             $('#modalDetalleItem').modal('show');
@@ -755,7 +762,7 @@ var cotvtadet = (function ($, win, doc) {
         var bMantPrevent = null;
         var bCalib = null;
 
-        if ($HabilitarValorizacionCotDet.val() == "S") {
+        if ($PermitirEditarValorizacion.val() == "S") {
 
             if ($DI_txtCostoFOB.attr("readonly") != "readonly" && $DI_txtCostoFOB.attr("disabled") != "disabled") {
                 if (!app.validaNumeroDecimal($DI_txtCostoFOB.val())) {
@@ -968,7 +975,7 @@ var cotvtadet = (function ($, win, doc) {
 
         var columns = [];
 
-        if ($HabilitarValorizacionCotDet.val() == "S") {
+        if ($PermitirEditarValorizacion.val() == "S") {
 
             columns = [
                 {
@@ -1131,6 +1138,7 @@ var cotvtadet = (function ($, win, doc) {
                         var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
                         var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
                         var quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                        if ($estadoSol.val() == "CVAL") { quitar = ""; }
                         return '<center>' + hidden + editar + ' ' + quitar + '</center>';
                     }
                 }
@@ -1139,8 +1147,10 @@ var cotvtadet = (function ($, win, doc) {
         }
         
         //Se quita los botones de acción para el asesor ya que se envio a valorizar la cotización
-        if ($estadoSol.val() == "CVAL" && $HabilitarValorizacionCotDet.val() == "N") {
-            columns.pop();
+        if ($estadoSol.val() == "CVAL" && $PermitirEditarValorizacion.val() == "N") {
+            if ($idRolUsuario.val() != $RolVenta_Asesor.val()) {
+                columns.pop();
+            }
         }
 
         var columnDefs =

@@ -12,7 +12,8 @@
     var $RolVenta_Importacion = $("#RolVenta_Importacion");
     var $RolVenta_Costos = $("#RolVenta_Costos");
     var $RolVenta_Logistica = $("#RolVenta_Logistica");
-    var $HabilitarValorizacionCotDet = $("#HabilitarValorizacionCotDet");
+    var $PermitirEditarValorizacion = $("#PermitirEditarValorizacion");
+    var $PermitirEditarGanancia = $("#PermitirEditarGanancia");
 
     var $DI_hdnIdCotDet = $("#DI_hdnIdCotDet");
     var $DI_hdnCodigo = $("#DI_hdnCodigo");
@@ -549,8 +550,13 @@
             }
         ];
 
-        //Se quita los botones de acción para el asesor que ya registro los detalles pero sin valorizacion
-        if ($HabilitarValorizacionCotDet.val() == "S") {
+        //Se quita los botones de acción por esta en valorizacion
+        if ($PermitirEditarValorizacion.val() == "S") {
+            columns.pop();
+        }
+
+        //Se quita los botones de acción para el Asesor que va a modificar su ganancia
+        if ($PermitirEditarGanancia.val() == "S") {
             columns.pop();
         }
 

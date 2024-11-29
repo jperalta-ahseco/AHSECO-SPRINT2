@@ -37,10 +37,6 @@
             ViewBag.disabled = true;
         }
     }
-    var strHabilitarValorizacion = "N";
-    if (ViewBag.MostrarCDI_Valorizacion == true) { strHabilitarValorizacion = "S"; }
-    var strPermitirEditarGanancia = "N";
-    if (ViewBag.PermitirEditarGanancia == true) { strPermitirEditarGanancia = "S"; }
 
 }
 
@@ -63,14 +59,12 @@
 <input type="hidden" id="RolVenta_Importacion" value="@RolVenta_Importacion" />
 <input type="hidden" id="RolVenta_Costos" value="@RolVenta_Costos" />
 <input type="hidden" id="RolVenta_Logistica" value="@RolVenta_Logistica" />
-<input type="hidden" id="HabilitarValorizacionCotDet" value="@strHabilitarValorizacion" />
 <input type="hidden" id="ContadorSeriesCS" value="@ViewBag.ContadorSeriesConStock" />
 <input type="hidden" id="TotalSeriesCS" value="@ViewBag.TotalSeriesConStock" />
 <input type="hidden" id="ContadorSeriesSS" value="@ViewBag.ContadorSeriesSinStock" />
 <input type="hidden" id="TotalSeriesSS" value="@ViewBag.TotalSeriesSinStock" />
 <input type="hidden" id="ValidaBtnObservacion" value="0" />
 <input type="hidden" id="CodStock" value="@ViewBag.CodStock" />
-<input type="hidden" id="PermitirEditarGanancia" value="@strPermitirEditarGanancia" />
 
 <div class="container-fluid">
     <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
@@ -412,7 +406,7 @@
                                                                 <div class="row container-fluid">
                                                                     <div class="text-right">
                                                                         <button style="@(ViewBag.PermitirEnvioCotizacion ? "" : "display:none")" class="btn btn-default btn-sm" type="button" id="btnEnviarCotizacion"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Enviar Cotizaci&oacute;n</button>
-                                                                        <button style="@(ViewBag.PermitirReCotizacion ? "" : "display:none")" class="btn btn-default btn-sm" type="button" id="btnRecotizacion"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Generar Nueva Cotizaci&oacute;n</button>
+                                                                        <button style="@(ViewBag.PermitirReCotizacion ? "" : "display:none")" class="btn btn-warning btn-sm" type="button" id="btnRecotizacion"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Generar Nueva Cotizaci&oacute;n</button>
                                                                         <button style="@(ViewBag.PermitirGuardarValorizacion ? "" : "display:none")" class="btn btn-default btn-sm" type="button" id="btnGuardarValorizacion"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Guardar Cotizaci&oacute;n</button>
                                                                     </div>
                                                                 </div>

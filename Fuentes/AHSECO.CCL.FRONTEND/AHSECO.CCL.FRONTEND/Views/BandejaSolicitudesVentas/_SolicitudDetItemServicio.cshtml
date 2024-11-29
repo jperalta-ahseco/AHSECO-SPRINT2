@@ -52,7 +52,7 @@
                                         <label for="DI_txtDimensiones">Cantidad: </label>
                                     </div>
                                     <div class="col-md-2">
-                                        <input @(ViewBag.PermitirEditarInfoVenta ? "" : "disabled") placeholder="Cantidad" type="number" maxlength="8" style="text-align:center" class="form-control input-sm" id="DS_txtCantidad" value="">
+                                        <input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") placeholder="Cantidad" type="number" maxlength="8" style="text-align:center" class="form-control input-sm" id="DS_txtCantidad" value="">
                                     </div>
                                 </div>
                             </div>
@@ -64,7 +64,7 @@
                             <fieldset>
                                 <legend><b>Detalle del Servicio</b></legend>
                                 <div class="text-right" style="padding-top: 2px; padding-bottom: 2px">
-                                    <button style="@(ViewBag.MostrarCDI_Valorizacion ? "display:none" : "")" class="btn btn-default btn-sm" type="button" data-toggle="modal"  tabindex="14" onclick="javascript:cotvtacostos.agregarCostoItem('1')"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar Detalle</button>
+                                    <button style="@(ViewBag.PermitirEditarValorizacion ? "display:none" : "")" class="btn btn-default btn-sm" type="button" data-toggle="modal"  tabindex="14" onclick="javascript:cotvtacostos.agregarCostoItem('1')"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar Detalle</button>
                                 </div>
                                 <div class="row container-fluid">
                                     <table id="DI_tblServiciosDetalle" class="table table-hover table-condensed table-striped table-bordered" style="width:100%">

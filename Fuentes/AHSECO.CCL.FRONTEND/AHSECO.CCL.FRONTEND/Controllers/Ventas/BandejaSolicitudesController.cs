@@ -94,7 +94,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.Btn_GuardarImportacion = "none";
             ViewBag.CodStock = "";
 
-            ViewBag.MostrarCDI_Valorizacion = true;
+            ViewBag.PermitirEditarValorizacion = true;
 
             string[] dtHeadProducto =
             {
@@ -130,8 +130,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.PermitirGuardarValorizacion = false;
             ViewBag.PermitirAgregarServicios = false;
             ViewBag.PermitirImprimirCotizacion = false;
-            ViewBag.MostrarCDI_Ganancia = false;
-            ViewBag.PermitirEditarInfoVenta = true;
+            ViewBag.PermitirEditarCotDetItem = true;
+            ViewBag.PermitirEditarValorizacion = false;
             ViewBag.PermitirEditarGanancia = false;
 
             ViewBag.PermitirTabDetCot = true;
@@ -161,14 +161,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Gerente || NombreRol == ConstantesDTO.WorkflowRol.Venta.Costos)
             {
-                ViewBag.MostrarCDI_Valorizacion = true;
-            }
-            else
-            {
-                ViewBag.MostrarCDI_Valorizacion = false;
+                ViewBag.PermitirEditarValorizacion = true;
             }
 
-            if (ViewBag.MostrarCDI_Valorizacion == true)
+            if (ViewBag.PermitirEditarValorizacion == true)
             {
                 string[] CD_Columns =
                 {
@@ -300,7 +296,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 ViewBag.ObservacionGerencia = validarSinStock.Result.Observacion;
                             }
                         }
-
 
                     }
 
@@ -464,7 +459,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Registrado
                     || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnCotizacion)
                 {
-                    if (ViewBag.MostrarCDI_Valorizacion == false)
+                    if (ViewBag.PermitirEditarValorizacion == false)
                     {
                         if(soli.Tipo_Sol == "TSOL01" || soli.Tipo_Sol == "TSOL03")
                         {
@@ -492,9 +487,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion)
                 {
 
-                    if (ViewBag.MostrarCDI_Valorizacion == true)
+                    ViewBag.PermitirEditarCotDetItem = false;
+
+                    if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
                     {
-                        ViewBag.PermitirEditarInfoVenta = false;
+                        ViewBag.PermitirEditarGanancia = true;
                     }
 
                     if (NombreRol == ConstantesDTO.WorkflowRol.Venta.ServTecnico)
@@ -513,11 +510,14 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     }
 
                     //Se quita los botones de acción para el asesor ya que se envio a valorizar la cotización
-                    if (ViewBag.MostrarCDI_Valorizacion == false)
+                    if (ViewBag.PermitirEditarValorizacion == false)
                     {
-                        string[] arrCotDetCols = ViewBag.CabeceraCotDet;
-                        int indexToRemove = arrCotDetCols.Length - 1;
-                        ViewBag.CabeceraCotDet = arrCotDetCols.Where((source, index) => index != indexToRemove).ToArray();
+                        if (NombreRol != ConstantesDTO.WorkflowRol.Venta.Asesor)
+                        {
+                            string[] arrCotDetCols = ViewBag.CabeceraCotDet;
+                            int indexToRemove = arrCotDetCols.Length - 1;
+                            ViewBag.CabeceraCotDet = arrCotDetCols.Where((source, index) => index != indexToRemove).ToArray();
+                        }
                     }
 
                 }
@@ -573,11 +573,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     ViewBag.Garantia = oCotizacion.Garantia;
                     ViewBag.Observacion = oCotizacion.Observacion;
 
-                    if (oCotizacion.IndCosteado.HasValue)
-                    {
-                        if (oCotizacion.IndCosteado.Value) { ViewBag.PermitirEditarGanancia = true; }
-                    }
-
                     if (oCotizacion.IdContacto.HasValue)
                     {
                         ViewBag.IdContacto = oCotizacion.IdContacto.Value;
@@ -609,12 +604,13 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
                         {
                             ViewBag.PermitirReCotizacion = true;
-                            ViewBag.MostrarCDI_Ganancia = true;
+                            ViewBag.PermitirEditarGanancia = true;
+                            ViewBag.PermitirGuardarValorizacion = true;
                         }
                     }
                     else
                     {
-                        if (ViewBag.MostrarCDI_Valorizacion == true)
+                        if (ViewBag.PermitirEditarValorizacion == true)
                         {
                             ViewBag.PermitirGuardarValorizacion = true;
                         }
@@ -2118,9 +2114,13 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 var resCotizacion = ventasBL.ObtenerCotizacionVenta(new CotizacionDTO() { IdCotizacion = IdCotizacion });
                 CotizacionDTO cotizacionDTO = resCotizacion.Result.ToList().First();
 
-                if (!lstItems.Any(x => !x.VentaUnitaria.HasValue))
+                if (!resCotizacion.Result.First().IndValorizado.HasValue)
                 {
-                    NotificarCotizacionValorizada(cotizacionDTO.IdSolicitud);
+                    NotificarCotizacionValorizada(resCotizacion.Result.First().IdSolicitud);
+                }
+                else if(!resCotizacion.Result.First().IndValorizado.Value)
+                {
+                    NotificarCotizacionValorizada(resCotizacion.Result.First().IdSolicitud);
                 }
 
                 return Json(new { Status = 1, Mensaje = "Cotización guardada correctamente" });
