@@ -676,6 +676,8 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                             MontoPrestPrin = reader.IsDBNull(reader.GetOrdinal("MONTOPPRINC")) ? 0 : reader.GetDecimal(reader.GetOrdinal("MONTOPPRINC")),
                             MontoPrestAcc = reader.IsDBNull(reader.GetOrdinal("MONTOPACCE")) ? 0 : reader.GetDecimal(reader.GetOrdinal("MONTOPACCE")),
                             //FecLimInsta = reader.GetDateTime(reader.GetOrdinal("FECLIMINSTA"))
+                            NumInstalados = reader.IsDBNull(reader.GetOrdinal("NUM_INST")) ? 0 : reader.GetInt32(reader.GetOrdinal("NUM_INST")),
+                            NumProgramados = reader.IsDBNull(reader.GetOrdinal("NUM_PROG")) ? 0 : reader.GetInt32(reader.GetOrdinal("NUM_PROG")),
                         };
                         _detalleCotizacion.Add(cotDetalle);
                     }
@@ -766,6 +768,8 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                             MontoPrestAcc = reader.IsDBNull(reader.GetOrdinal("MONTOPACCE")) ? 0 : reader.GetDecimal(reader.GetOrdinal("MONTOPACCE")),
                             MontoPrestPrin = reader.IsDBNull(reader.GetOrdinal("MONTOPPRINC")) ? 0 : reader.GetDecimal(reader.GetOrdinal("MONTOPPRINC")),
                             //FecLimInsta = reader.GetDateTime(reader.GetOrdinal("FECLIMINSTA")),
+                            NumInstalados = reader.IsDBNull(reader.GetOrdinal("NUM_INST")) ? 0 : reader.GetInt32(reader.GetOrdinal("NUM_INST")),
+                            NumProgramados = reader.IsDBNull(reader.GetOrdinal("NUM_PROG")) ? 0 : reader.GetInt32(reader.GetOrdinal("NUM_PROG")),
                         };
                         _listDetalle.Add(detalle);
                     }

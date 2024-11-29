@@ -21,5 +21,7 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica
         public decimal? MontoPrestPrin { get; set; }
         public decimal? MontoPrestAcc { get; set; }
         public List<ElementosxProductoDTO> Elementos { get; set; }
+        public int NumInstalados { get; set; }
+        public int NumProgramados { get; set; }
     }
 }

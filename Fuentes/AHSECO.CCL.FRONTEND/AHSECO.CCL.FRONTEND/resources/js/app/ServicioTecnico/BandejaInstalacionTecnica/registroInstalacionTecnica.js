@@ -512,6 +512,8 @@
                     MontoPrestAcc: data.Result[i].MontoPrestAcc,
                     MontoPrestPrin: data.Result[i].MontoPrestPrin,
                     FechaInstalacion: data.Result[i].FechaInstalacion,
+                    NumInstalados: data.Result[i].NumInstalados,
+                    NumProgramados: data.Result[i].NumProgramados,
                     Elementos: data.Result[i].Elementos
                 });
                 registroInstalacionTec.childProductos.push(data.Result[i].Elementos)
@@ -830,6 +832,8 @@
                         Dimensiones: data.Result.DetalleCotizacion[i].Dimensiones,
                         MontoPrestAcc: data.Result.DetalleCotizacion[i].MontoPrestAcc,
                         MontoPrestPrin: data.Result.DetalleCotizacion[i].MontoPrestPrin,
+                        NumInstalados: data.Result.DetalleCotizacion[i].NumInstalados,
+                        NumProgramados: data.Result.DetalleCotizacion[i].NumProgramados,
                         //FecLimInsta: app.obtenerFecha(data.Result.DetalleCotizacion[i].FecLimInsta),
                         Elementos : elementos
                 })
@@ -1023,15 +1027,15 @@
                 }
             },
             {
-                data: "MontoPrestAcc",
+                data: "NumInstalados",
                 render: function (data, type, row) {
-                    return '<center>' + 'S/'+data + '</center>'
+                    return '<center>' + data + '</center>'
                 }
             },
             {
-                data: "MontoPrestPrin",
+                data: "NumProgramados",
                 render: function (data, type, row) {
-                    return '<center>' +'S/'+data + '</center>'
+                    return '<center>' + data + '</center>'
                 }
             },
             {
@@ -1836,6 +1840,8 @@
                         Dimensiones: data.Result.DetalleInstalacion[i].Dimensiones,
                         MontoPrestAcc: data.Result.DetalleInstalacion[i].MontoPrestAcc,
                         MontoPrestPrin: data.Result.DetalleInstalacion[i].MontoPrestPrin,
+                        NumInstalados: data.Result.DetalleInstalacion[i].NumInstalados,
+                        NumProgramados: data.Result.DetalleInstalacion[i].NumProgramados,
                         //FecLimInsta: app.obtenerFecha(data.Result.DetalleInstalacion[i].FecLimInsta),
                         Elementos: elementos
                     });
