@@ -955,6 +955,11 @@
         Html.RenderPartial("_SolicitudCostoItem");
     }
 </div>
+<div class="modal fade" id="modalDetalleServicio" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_DetalleServicio");
+    }
+</div>
 
 <div class="modal fade" id="modalSeries" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <input type="hidden" id="codDetalleDespacho" value="" />

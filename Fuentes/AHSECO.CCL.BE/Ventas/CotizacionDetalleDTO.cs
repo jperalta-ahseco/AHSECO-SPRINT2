@@ -45,5 +45,11 @@ namespace AHSECO.CCL.BE.Ventas
         public string NumFianza { get; set; }
         #endregion
 
+        #region Servicios
+
+        public List<DetalleServicioDTO> DetallesServicio { get; set;}
+
+        #endregion
+
     }
 }
