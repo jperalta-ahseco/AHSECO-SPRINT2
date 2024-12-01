@@ -32,15 +32,16 @@ namespace AHSECO.CCL.BD
             {
                 Log.TraceInfo(Utilidades.GetCaller());
                 connection.Open();
+                var parameters = new DynamicParameters();
 
                 var result = connection.Query(
                     sql: "USP_SEL_GARANT_PROX_VENCER",
-                    param: "",
+                    param: parameters,
                     commandType: CommandType.StoredProcedure)
                     .Select(s => s as IDictionary<string, object>)
                     .Select(i => new GarantiaResultDTO()
                     {
-                        Id_Solicitud = i.Single(d => d.Key.Equals("SOLICITUD")).Parse<int>(),
+                        Id_Solicitud = i.Single(d => d.Key.Equals("SOLICITUD")).Parse<long>(),
                         Descripcion = i.Single(d => d.Key.Equals("DESCRIPCION")).Parse<string>(),
                         Marca = i.Single(d => d.Key.Equals("DESCMARCA")).Parse<string>(),
                         Modelo = i.Single(d => d.Key.Equals("MODELO")).Parse<string>(),
@@ -50,8 +51,6 @@ namespace AHSECO.CCL.BD
                         ValorGarantia = i.Single(d => d.Key.Equals("VALORGARANTIA")).Parse<string>(),
                         FechaVencimiento = i.Single(d => d.Key.Equals("FECHAVENCIMIENTO")).Parse<DateTime>()
                     });
-
-                connection.Close();
                 return result;
             }
         }
