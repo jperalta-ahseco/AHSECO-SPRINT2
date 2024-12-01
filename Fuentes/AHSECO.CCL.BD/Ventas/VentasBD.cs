@@ -341,13 +341,9 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("isIdCotizacion", cotizacion.IdCotizacion);
                 parameters.Add("isID_SOLICITUD", cotizacion.IdSolicitud);
                 if (cotizacion.FecCotizacion.HasValue)
-                {
-                    parameters.Add("isFEC_COTIZACION", cotizacion.FecCotizacion.Value, DbType.DateTime); 
-                }
+                { parameters.Add("isFEC_COTIZACION", cotizacion.FecCotizacion.Value, DbType.DateTime); }
                 else
-                { 
-                    parameters.Add("isFEC_COTIZACION", DBNull.Value, DbType.DateTime);
-                }
+                { parameters.Add("isFEC_COTIZACION", DBNull.Value, DbType.DateTime); }
                 if (cotizacion.IdContacto.HasValue) { parameters.Add("isIDCONTACTO", cotizacion.IdContacto.Value); }
                 else { parameters.Add("isIDCONTACTO", DBNull.Value); }
                 parameters.Add("isNOMBRECONTACTO", cotizacion.NombreContacto);

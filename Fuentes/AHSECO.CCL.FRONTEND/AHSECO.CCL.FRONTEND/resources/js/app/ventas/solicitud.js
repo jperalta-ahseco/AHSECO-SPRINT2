@@ -1525,18 +1525,18 @@
         var fnDoneCallback = function (data) {
 
             var filters = {};
-            filters.placeholder = "-- Seleccionar --";
+            filters.placeholder = "-- Seleccione --";
             filters.allowClear = false;
 
-            app.llenarComboMultiResult($cmbGarantia, data.Result.Garantias, null, "", "", filters);
-            app.llenarComboMultiResult($cmbTipMoneda, data.Result.TipoMoneda, null, "", "", filters);
+            app.llenarComboMultiResult($cmbGarantia, data.Result.Garantias, null, " ", "-- Seleccione --", filters);
+            app.llenarComboMultiResult($cmbTipMoneda, data.Result.TipoMoneda, null, " ", "-- Seleccione --", filters);
             app.llenarComboMultiResult($cmbFlujo, data.Result.Flujos, null, "", "", filters);
             app.llenarComboMultiResult($cmbTipo, data.Result.TipoSol, null, "", "", filters);
             app.llenarComboMultiResult($cmbMedioContacto, data.Result.MedioContacto, null, "", "", filters);
-            app.llenarComboMultiResult($cmbTipoPago, data.Result.FormPago, null, "", "", filters);
+            app.llenarComboMultiResult($cmbTipoPago, data.Result.FormPago, null, " ", "-- Seleccione --", filters);
             app.llenarComboMultiResult($cmbempresa, data.Result.Empresas, null, "", "", filters);
             app.llenarComboMultiResult($cmbTipoVenta, data.Result.TipoVenta, null, "", "", filters);
-            app.llenarComboMultiResult($cmbTipoDocumentoCarga, data.Result.TipoDocumento, null, 0, "--Seleccione--", filters);
+            app.llenarComboMultiResult($cmbTipoDocumentoCarga, data.Result.TipoDocumento, null, 0, "-- Seleccione --", filters);
 
             if (rol == "SGI_VENTA_COORDINASERV" || rol == "SGI_VENTA_COORDINAATC" || rol == "SGI_VENTA_ASESOR") {
                 $cmbFlujo.val(codFlujo).trigger("change.select2");
@@ -2279,17 +2279,17 @@
             }
         };
 
-        if ($cmbGarantia.val() === "" || $cmbGarantia.val() == undefined || $cmbGarantia.val() == null) {
+        if ($.trim($cmbGarantia.val()) === "" || $cmbGarantia.val() == undefined || $cmbGarantia.val() == null) {
             app.message.error("Validación", "Debe de ingresar el periodo de garantía.");
             return;
         };
 
-        if ($cmbTipoPago.val() === "" || $cmbTipoPago.val() == undefined || $cmbTipoPago.val() == null) {
+        if ($.trim($cmbTipoPago.val()) === "" || $cmbTipoPago.val() == undefined || $cmbTipoPago.val() == null) {
             app.message.error("Validación", "Debe de seleccionar la forma de pago.");
             return;
         };
         
-        if ($cmbTipMoneda.val() === "" || $cmbTipMoneda.val() == undefined || $cmbTipMoneda.val() == null) {
+        if ($.trim($cmbTipMoneda.val()) === "" || $cmbTipMoneda.val() == undefined || $cmbTipMoneda.val() == null) {
             app.message.error("Validación", "Debe de seleccionar el tipo de moneda.");
             return;
         };
@@ -2413,19 +2413,19 @@
         };
 
         if ($cmbGarantia.attr("disabled") != "disabled") {
-            if ($cmbGarantia.val() === "" || $cmbGarantia.val() == undefined || $cmbGarantia.val() == null) {
+            if ($.trim($cmbGarantia.val()) === "" || $cmbGarantia.val() == undefined || $cmbGarantia.val() == null) {
                 app.message.error("Validación", "Debe de ingresar el periodo de garantía.");
                 return;
             };
         }
 
-        if ($cmbTipoPago.val() === "" || $cmbTipoPago.val() == undefined || $cmbTipoPago.val() == null) {
+        if ($.trim($cmbTipoPago.val()) === "" || $cmbTipoPago.val() == undefined || $cmbTipoPago.val() == null) {
             app.message.error("Validación", "Debe de seleccionar la forma de pago.");
             return;
         };
 
         if ($cmbTipMoneda.attr("disabled") != "disabled") {
-            if ($cmbTipMoneda.val() === "" || $cmbTipMoneda.val() == undefined || $cmbTipMoneda.val() == null) {
+            if ($.trim($cmbTipMoneda.val()) === "" || $cmbTipMoneda.val() == undefined || $cmbTipMoneda.val() == null) {
                 app.message.error("Validación", "Debe de seleccionar el tipo de moneda.");
                 return;
             };
