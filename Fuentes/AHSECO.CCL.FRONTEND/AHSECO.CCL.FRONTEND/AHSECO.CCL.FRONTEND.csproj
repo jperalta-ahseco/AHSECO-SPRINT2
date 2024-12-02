@@ -958,6 +958,7 @@
     <Content Include="Views\Shared\_VerHistorialCotizacion.cshtml" />
     <Content Include="Views\Modelos\_Reclamo.cshtml" />
     <Content Include="Views\BandejaSolicitudesVentas\_SolicitudDetItemServicio.cshtml" />
+    <Content Include="Views\BandejaSolicitudesVentas\_SolicitudAprobDscto.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\css\font\" />

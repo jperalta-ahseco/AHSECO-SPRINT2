@@ -77,12 +77,21 @@
     var $cmbTipoPago = $('#cmbTipoPago');
     var $cmbGarantia = $('#cmbGarantia');
     var $txtObs = $('#txtObs');
+    var $btnAprobarDscto = $("#btnAprobarDscto");
     var $txtPorcentajeDscto = $("#txtPorcentajeDscto");
     var $NoRegMainProd = $('#NoRegMainProd');
     var $openRegdateCotizacion = $('#openRegdateCotizacion');
     var $btnRegistrarCotizacion = $('#btnRegistrarCotizacion');
     var $btnActualizarCotizacion = $("#btnActualizarCotizacion");
     var $btnAgregarDetalle = $('#btnAgregarDetalle');
+    var $DsctoRequiereAprobacion = $("#DsctoRequiereAprobacion");
+    var $DsctoAprobado = $("#DsctoAprobado");
+    var $DsctoRespondido = $("#DsctoRespondido");
+    var $modalAprobDscto = $("#modalAprobDscto");
+    var $AD_btnGuardarAprobDscto = $("#AD_btnGuardarAprobDscto");
+    var $AD_radRpta_Si = $("#AD_radRpta_Si");
+    var $AD_radRpta_No = $("#AD_radRpta_No");
+    var $AD_txtComentarios = $("#AD_txtComentarios");
 
     /*Ver Historial de Cotizacion */
     var $modalVerHistorialCotizacion = $("#modalVerHistorialCotizacion");
@@ -361,7 +370,11 @@
         $btnActualizarDetalleServicio.click($btnActualizarDetalleServicio_click);
         $btnAgregarDetServ.click($btnAgregarDetServ_click);
         $btnGuardarDetalleServicio.click($btnGuardarDetalleServicio_click);
-        cargaCombos();      
+        cargaCombos();
+        if ($DsctoRequiereAprobacion.val() == "S" && $DsctoRespondido.val() == "N") {
+            $modalAprobDscto.modal('show');
+        }
+        $AD_btnGuardarAprobDscto.click(guardarAprobDscto);
     };
 
     function $btnGuardarDetalleServicio_click() {
@@ -398,6 +411,7 @@
         return app.message.confirm("Confimación", "¿Está seguro de agregar el detalle?", "Si", "No", fnSi, null);
 
     }
+
     function $btnAgregarDetServ_click() {
         $btnActualizarDetalleServicio.hide();
         $txtDetalleServicio.val("");
@@ -464,6 +478,7 @@
     function $btnCerrarHistorial_click() {
         $modalVerHistorialCotizacion.modal("hide");
     }
+
     function verHistorial(codCotizacion) {
 
         method = 'POST';
@@ -518,8 +533,7 @@
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, mensajes.GenerarCotizacion);
     }
-
-
+    
     function grabarDatosCotDetServ() {
         method = "POST";
         url = "BandejaSolicitudesVentas/GrabarDatosCotDet";
@@ -640,8 +654,7 @@
 
         app.llenarTabla($('#tblDetCotCostos'), data, columns, columnDefs, "#tblDetCotCostos", rowCallback, null, filters);
     }
-
-
+    
     function $btnBuscarItemsServicio_click() {
         var method = "POST";
         var url = "BandejaServicios/ObtenerServicios";
@@ -663,8 +676,7 @@
         };
         return app.llamarAjax(method, url, data, fnDoneCallback, fnFailCallback, null, mensajes.obteniendoServicio);
     }
-
-
+    
     function cargarTablaItemsServicios(data) {
 
         var columns = [
@@ -1023,6 +1035,7 @@
         $modalObservacion.modal("show");
         
     }
+
     function $btnEnviarGuiaBO_click() {
         var documento_guiaBO = 0;
         adjuntos.forEach(function (currentValue, index, arr) {
@@ -1184,6 +1197,7 @@
         return app.message.confirm("Ventas", "¿Está seguro que desea actualizar los datos de despacho?", "Sí", "No", fnSi, null);
 
     }
+
     function $btnEnviarGuia_click() {
         var documento_guiaPedido = 0;
         adjuntos.forEach(function (currentValue, index, arr) {
@@ -1344,8 +1358,7 @@
     function $dateOrdenCompra_change() {
         CalcularFechaEntregaMaxima();
     }
-
-
+    
     function changeTipoVenta() {
         var tipo_venta = $cmbTipoVenta.val();
         $txtNroProceso.val('');
@@ -1492,10 +1505,6 @@
         };
         app.llenarTabla($tblHistorial, data, columns, columnDefs, "#tablaHistorial", null, null, filters);
     }
-
-
-
-
     
     function cargaCombos() {
 
@@ -1761,8 +1770,7 @@
 
         app.llamarAjax(method, url, objComb, fnDoneCallback, fnFailCallback, null, null);
     };
-
-
+    
     function cargarTablaContactos(contactos) {
         var data = Result = [];
         data.Result = contactos;
@@ -2949,8 +2957,7 @@
             };
         };
     };
-
-
+    
     function editarSeries(codDetalleDespacho) {
 
         $('#Serie' + codDetalleDespacho).removeAttr('readonly');
@@ -3240,6 +3247,7 @@
             $DS_tblServiciosDetalle.append(nuevoTr);
         };
     }
+
     function quitarItemServ(CodigoItem, opc) {
 
         var fnSi = function () {
@@ -3268,6 +3276,48 @@
             $('#modalDetalleCotizacionServicio').modal('hide');
         }
         return app.message.confirm("Ventas", " Al salir perder&aacute; todos los datos registrados. &iquest;Desea Salir?", "S&iacute;", "No", fnSi, null);
+    }
+
+    function guardarAprobDscto() {
+
+        var vAprobDscto = null;
+
+        if (!$AD_radRpta_Si.is(':checked') && !$AD_radRpta_No.is(':checked')) {
+            app.message.error("Validaci&oacute;n", "Defina si aprueba o no el descuento.");
+            return false;
+        }
+
+        if ($AD_radRpta_No.is(':checked') && $.trim($AD_txtComentarios.val()) == "") {
+            app.message.error("Validaci&oacute;n", "Ingrese el motivo del rechazo del descuento");
+            return false;
+        }
+
+        if ($AD_radRpta_Si.is(':checked')) { vAprobDscto = true; }
+        if ($AD_radRpta_No.is(':checked')) { vAprobDscto = false; }
+
+        method = "POST";
+        url = "BandejaSolicitudesVentas/GrabarAprobDscto";
+        var objDatos = {
+            IdCotizacion: $idCotizacion.val(),
+            IndDsctoAprob: vAprobDscto,
+            AprobDsctoComentario: {
+                Id_WorkFlow: $codigoWorkflow.val(),
+                Observacion: $AD_txtComentarios.val()
+            }
+        };
+        var objParam = JSON.stringify(objDatos);
+
+        var fnDoneCallBack = function (data) {
+            $btnAprobarDscto.css("display", "none");
+            $modalAprobDscto.modal('hide');
+            app.message.success("Validaci&oacute;n", "Se grab&oacute; el registro correctamente");
+        };
+
+        var fnFailCallback = function () {
+            app.message.error("Validaci&oacute;n", "Error al grabar la aprobaci&oacute;n");
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallback);
     }
 
     return {

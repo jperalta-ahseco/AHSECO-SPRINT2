@@ -837,6 +837,18 @@ var app = (function ($, win, doc) {
         return true;
     }
 
+    function obtenerCantidadDecimales(strMonto) {
+        if (strMonto == null) { return null; }
+        if (strMonto == undefined) { return null; }
+        var position = strMonto.indexOf(".");
+        var redondeo = 0;
+        if (position > 0) {
+            var dec = (strMonto.length - position) - 1;
+            if (dec > 0) { redondeo = dec; }
+        }
+        return redondeo;
+    }
+
     return {
         baseUrl: baseUrl,
         defaults: defaults,
@@ -868,6 +880,7 @@ var app = (function ($, win, doc) {
         abrirVentana: abrirVentana,
         validaNumeroDecimal: validaNumeroDecimal,
         validaNumeroEntero: validaNumeroEntero,
+        obtenerCantidadDecimales: obtenerCantidadDecimales,
         mostrarLoading: mostrarLoading,
         ocultarLoading: ocultarLoading
     }

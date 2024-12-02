@@ -7,6 +7,8 @@ using System.IO;
 using System.Net.Mail;
 using System.Net.Mime;
 using System.Net;
+using System.Threading;
+using System.Data.SqlTypes;
 
 namespace AHSECO.CCL.COMUN
 {
@@ -749,6 +751,20 @@ namespace AHSECO.CCL.COMUN
                 { return false; }
             }
             return null;
+        }
+
+        public static string parseDecimalToString(decimal? valDecimal, int? cant = null)
+        {
+            if (!valDecimal.HasValue) { return string.Empty; }
+            var posicion = valDecimal.Value.ToString().LastIndexOf(".");
+            var redondeo = 0;
+            if (posicion > 0) { redondeo = valDecimal.Value.ToString().Substring(posicion + 1).Length; }
+            var strFormato = "#";
+            if (cant.HasValue)
+            { redondeo = cant.Value; }
+            if (redondeo > 0)
+            { strFormato += "."; for (int a = 1; a <= redondeo; a++) { strFormato += "#"; } }
+            return valDecimal.Value.ToString(strFormato);
         }
 
     }

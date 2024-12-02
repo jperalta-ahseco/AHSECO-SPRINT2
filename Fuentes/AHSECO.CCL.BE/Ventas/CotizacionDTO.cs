@@ -35,5 +35,6 @@ namespace AHSECO.CCL.BE.Ventas
         public bool? IndValorizado { get; set; }
         public bool? IndCosteado { get; set; }
         public CotizacionDetalleDTO[] CotizacionDetalle { get; set; }
+        public ObservacionDTO AprobDsctoComentario { get; set; }
     }
 }

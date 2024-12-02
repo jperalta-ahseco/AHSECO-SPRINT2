@@ -15,6 +15,7 @@ namespace AHSECO.CCL.BE.Ventas
         public string Observacion{ get; set; }
         public string Nombre_Usuario{ get; set; }
         public string Perfil_Usuario { get; set; }
+        public string CodigoReferencia { get; set; }
         public string Fecha_Registro { get; set; }  
     }
 }

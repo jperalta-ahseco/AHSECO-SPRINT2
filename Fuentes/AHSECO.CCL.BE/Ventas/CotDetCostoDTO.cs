@@ -26,5 +26,6 @@ namespace AHSECO.CCL.BE.Ventas
         public decimal? MontoTotalCosto { get; set; }
         public CotizacionDetalleDTO CotizacionDetalle { get; set; }
         public bool IsTempRecord { get; set; }
+        public bool IsUpdated { get; set; }
     }
 }

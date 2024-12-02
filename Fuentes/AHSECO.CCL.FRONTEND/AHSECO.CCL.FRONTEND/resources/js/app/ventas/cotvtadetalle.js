@@ -401,6 +401,11 @@ var cotvtadet = (function ($, win, doc) {
             $DI_cmbGarantias.attr("disabled", "disabled");
         }
 
+        if (!$DI_radGarantAdic_Si.is(':checked') && !$DI_radGarantAdic_No.is(':checked')) {
+            $DI_cmbGarantias.val("").trigger("change.select2");
+            $DI_cmbGarantias.attr("disabled", "disabled");
+        }
+
         if ($DI_radGarantAdic_No.attr("disabled") == "disabled" || $DI_radGarantAdic_Si.attr("disabled") == "disabled"){
             $DI_cmbGarantias.attr("disabled", "disabled");
         }

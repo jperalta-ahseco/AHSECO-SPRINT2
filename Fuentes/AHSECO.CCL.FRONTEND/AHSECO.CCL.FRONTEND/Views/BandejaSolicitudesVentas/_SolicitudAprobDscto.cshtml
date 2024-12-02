@@ -1,0 +1,51 @@
+﻿<div style="width:35%" class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title">Aprobación de Descuento</h4>
+        </div>
+        <div class="modal-body">
+            <form id="formObservacion">
+                <div class="row container-fluid form-group">
+                    <div class="col-md-12 col-content-middleleft">
+                        <div class="col-md-7">
+                            <label for="AD_radRpta">Se ha solicitado el @ViewBag.PorcentajeDscto % de Descuento para esta cotización.<br />¿Desea aprobarla?</label>
+                        </div>
+                        <div class="col-md-1"></div>
+                        <div class="col-md-2">
+                            <table style="width:100%">
+                                <tr>
+                                    <td><input type="radio" name="AD_radRpta" class="input-sm" id="AD_radRpta_Si"></td>
+                                    <td style="padding-top:5px"><label>SI</label></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-2">
+                            <table style="width:100%">
+                                <tr>
+                                    <td><input type="radio" name="AD_radRpta" class="input-sm" id="AD_radRpta_No"></td>
+                                    <td style="padding-top:5px"><label>NO</label></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row container-fluid">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <input type="hidden" id="AD_hdnObservacionId" />
+                            <label for="AD_txtComentarios">Comentarios</label>
+                            <textarea class="form-control" rows="5" maxlength="4000" id="AD_txtComentarios" placeholder="Ingrese sus comentarios"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-danger btn-sm" type="button" id="AD_btnGuardarAprobDscto"><i class="fa fa-save"></i> Guardar</button>
+            <button class="btn btn-warning btn-sm pull-left" type="button" data-dismiss="modal"><i class="fa fa-times"></i> Cerrar</button>
+        </div>
+    </div>
+</div>

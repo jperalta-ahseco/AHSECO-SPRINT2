@@ -26,6 +26,7 @@ using NPOI.HSSF.Util;
 using NPOI.SS.UserModel;
 using NPOI.Util;
 using System.IdentityModel.Claims;
+using AHSECO.CCL.BL.ServicioTecnico.BandejaInstalacionTecnica;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 {
@@ -133,6 +134,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.PermitirEditarGanancia = false;
             ViewBag.PermitirActualizarCotizacion = false;
             ViewBag.PermitirEditarPorcentDscto = false;
+            ViewBag.DsctoRequiereAprobacion = false;
+            ViewBag.DsctoAprobado = false;
+            ViewBag.DsctoRespondido = false;
 
             ViewBag.PermitirTabDetCot = true;
             ViewBag.PermitirTabInsta = false;
@@ -567,7 +571,19 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     ViewBag.Vigencia = oCotizacion.Vigencia;
                     ViewBag.Garantia = oCotizacion.Garantia;
                     ViewBag.Observacion = oCotizacion.Observacion;
-                    ViewBag.PorcentajeDscto = oCotizacion.PorcentajeDescuento;
+                    ViewBag.PorcentajeDscto = Utilidades.parseDecimalToString(oCotizacion.PorcentajeDescuento);
+
+                    //Solo el GERENTE podrá acceder a la APROBACION DE DESCUENTOS
+                    if(NombreRol == ConstantesDTO.WorkflowRol.Venta.Gerente)
+                    {
+                        if (oCotizacion.IndDsctoRequiereAprob.HasValue)
+                        { ViewBag.DsctoRequiereAprobacion = oCotizacion.IndDsctoRequiereAprob.Value; }
+                    }
+                    if (oCotizacion.IndDsctoAprob.HasValue)
+                    {
+                        ViewBag.DsctoAprobado = oCotizacion.IndDsctoAprob.Value;
+                        ViewBag.DsctoRespondido = true;
+                    }
 
                     if (oCotizacion.IdContacto.HasValue)
                     {
@@ -601,15 +617,20 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                     if (swEsCotizacionValorizada == true)
                     {
+                        //Solo se podrá editar el porcentaje de descuento si se termino el costeo y si es ASESOR
+                        if (oCotizacion.IndCosteado.HasValue)
+                        {
+                            if (oCotizacion.IndCosteado.Value) { ViewBag.PermitirEditarPorcentDscto = true; }
+                        }
                         if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
                         {
                             ViewBag.PermitirReCotizacion = true;
                             ViewBag.PermitirEditarGanancia = true;
                             ViewBag.PermitirGuardarValorizacion = true;
                         }
-                        if (oCotizacion.IndCosteado.HasValue)
+                        else
                         {
-                            if (oCotizacion.IndCosteado.Value) { ViewBag.PermitirEditarPorcentDscto = true; }
+                            ViewBag.PermitirEditarPorcentDscto = false;
                         }
                     }
 
@@ -715,7 +736,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             x.CotizacionCostos = CotDet.CotizacionCostos;
                         }
                         //x.IsTempRecord = CotDet.IsTempRecord; // No se actualiza su indicador de registro temporal
-                        x.IsUpdated = CotDet.IsUpdated;
+                        x.IsUpdated = true;
                         x.CodItem_IsUpdatable = CotDet.CodItem_IsUpdatable;
                         x.CodItemTemp = CotDet.CodItemTemp;
                     }
@@ -726,6 +747,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             {
                 var CotDet_Aux = new CotizacionDetalleDTO();
                 CotDet.CopyProperties(ref CotDet_Aux);
+                CotDet_Aux.IsUpdated = true;
                 lstItems.Add(CotDet_Aux);
             }
 
@@ -2494,11 +2516,17 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         lstCostos.ForEach(x =>
                         {
                             if(x.Id == cotdetCosto.Id)
-                            { cotdetCosto.CopyProperties(ref x); }
+                            {
+                                cotdetCosto.CopyProperties(ref x);
+                                x.IsUpdated = true;
+                            }
                         });
                     }
                     else
-                    { lstCostos.Add(cotdetCosto); }
+                    {
+                        cotdetCosto.IsUpdated = true;
+                        lstCostos.Add(cotdetCosto);
+                    }
                 }
 
                 //Se completa los datos de cotizacion detalle para costos
@@ -2599,6 +2627,36 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             var response = new ResponseDTO<CotDetCostoDTO>(cdcItem);
 
+            return Json(response);
+        }
+
+        [HttpPost]
+        public JsonResult GrabarAprobDscto(CotizacionDTO cot)
+        {
+            var instaTecnicaBL = new InstalacionTecnicaBL();
+            var ventasBL = new VentasBL();
+
+            var oObs = cot.AprobDsctoComentario;
+            oObs.TipoProceso = ConstantesDTO.Observacion.TipoProceso.Insertar;
+            oObs.Estado_Instancia = ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion;
+            oObs.Nombre_Usuario = User.ObtenerUsuario();
+            oObs.UsuarioRegistra = User.ObtenerUsuario();
+            oObs.Perfil_Usuario = User.ObtenerPerfil();
+            oObs.CodigoReferencia = cot.IdCotizacion.ToString();
+
+            instaTecnicaBL.MantenimientoObservaciones(oObs);
+
+            var resCotizacion = ventasBL.ObtenerCotizacionVenta(new CotizacionDTO { IdCotizacion = cot.IdCotizacion });
+            var oCotizacion = resCotizacion.Result.First();
+
+            oCotizacion.TipoProceso = ConstantesDTO.CotizacionVenta.TipoProceso.Modificar;
+            oCotizacion.UsuarioRegistra = User.ObtenerUsuario();
+            oCotizacion.FechaRegistro = DateTime.Now;
+            oCotizacion.IndDsctoAprob = cot.IndDsctoAprob;
+
+            ventasBL.MantenimientoCotizacion(oCotizacion);
+
+            var response = new ResponseDTO<CotizacionDTO>(cot);
             return Json(response);
         }
 

@@ -811,17 +811,10 @@
     }
 
     function totalizarCostItem() {
-        var vMtoUnit = null;
         if ($CI_txtMtoTotalCosto.attr("readonly") == "readonly" || $CI_txtMtoTotalCosto.attr("disabled") == "disabled") {
             if ($CI_txtCantCosteo.val() != "" && $CI_txtMtoUnitarioCosto.val() != "") {
                 if (app.validaNumeroEntero($CI_txtCantCosteo.val()) && app.validaNumeroDecimal($CI_txtMtoUnitarioCosto.val())) {
-                    var strMonto = $CI_txtMtoUnitarioCosto.val();
-                    var position = strMonto.indexOf(".");
-                    var redondeo = 0;
-                    if (position > 0) {
-                        var dec = (strMonto.length - position) - 1;
-                        if (dec > 0) { redondeo = dec; }
-                    }
+                    var redondeo = app.obtenerCantidadDecimales($CI_txtMtoUnitarioCosto.val());
                     $CI_txtMtoTotalCosto.val((parseFloat($CI_txtMtoUnitarioCosto.val()) * parseInt($CI_txtCantCosteo.val())).toFixed(redondeo));
                 }
             }
@@ -829,13 +822,7 @@
         if ($CI_txtMtoUnitarioCosto.attr("readonly") == "readonly" || $CI_txtMtoUnitarioCosto.attr("disabled") == "disabled") {
             if ($CI_txtCantCosteo.val() != "" && $CI_txtMtoTotalCosto.val() != "") {
                 if (app.validaNumeroEntero($CI_txtCantCosteo.val()) && app.validaNumeroDecimal($CI_txtMtoTotalCosto.val())) {
-                    var strMonto = $CI_txtMtoTotalCosto.val();
-                    var position = strMonto.indexOf(".");
-                    var redondeo = 0;
-                    if (position > 0) {
-                        var dec = (strMonto.length - position) - 1;
-                        if (dec > 0) { redondeo = dec; }
-                    }
+                    var redondeo = app.obtenerCantidadDecimales($CI_txtMtoTotalCosto.val());
                     $CI_txtMtoUnitarioCosto.val((parseFloat($CI_txtMtoTotalCosto.val()) / parseInt($CI_txtCantCosteo.val())).toFixed(redondeo));
                 }
             }
