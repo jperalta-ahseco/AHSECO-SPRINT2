@@ -758,7 +758,7 @@
                 , FechaMax: $dateSolicitud.val()
                 , Destino: destinos_select.toString()
                 , Estado: 'STREG'
-                , CodGarantia: $cmbGarantias.val()
+                , Garantia: $cmbGarantias.val()
             },
             DetalleInstalacion: productos,
             Observaciones: observaciones,

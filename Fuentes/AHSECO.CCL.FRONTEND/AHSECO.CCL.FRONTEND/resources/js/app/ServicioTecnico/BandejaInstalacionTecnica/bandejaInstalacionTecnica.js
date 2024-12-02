@@ -502,7 +502,7 @@
                 }
             },
             {
-                data: "Vendedor",
+                data: "FecRegFormat",
                 render : function (data, type, row) {
                     return '<center>' + data + '</center>'
                 }

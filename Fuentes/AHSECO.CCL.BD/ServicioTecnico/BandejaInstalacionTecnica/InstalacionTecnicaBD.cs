@@ -197,7 +197,8 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                         FechaMax = i.Single(d => d.Key.Equals("FECHAMAX")).Value.Parse<DateTime>(),
                         Destino = i.Single(d => d.Key.Equals("DESTINOS")).Value.Parse<string>(),
                         Estado = i.Single(d => d.Key.Equals("ESTADO")).Value.Parse<string>(),
-                        CodEstado = i.Single(d => d.Key.Equals("CODESTADO")).Value.Parse<string>()
+                        CodEstado = i.Single(d => d.Key.Equals("CODESTADO")).Value.Parse<string>(),
+                        FecRegFormat = i.Single(d => d.Key.Equals("FECREGISTRO")).Value.Parse<string>(),
                     });
                 return result;
             };
@@ -340,7 +341,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                 parameters.Add("FECHAMAX", instalacion.FechaMax);
                 parameters.Add("DESTINO", instalacion.Destino);
                 parameters.Add("ESTADO", instalacion.Estado);
-                parameters.Add("GARANTIA", instalacion.CodGarantia);
+                parameters.Add("GARANTIA", instalacion.Garantia);
                 parameters.Add("UsrEjecuta", instalacion.UsuarioRegistra);
 
                 var result = connection.Query(
@@ -770,7 +771,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                         ,FechaMax = reader.GetDateTime(reader.GetOrdinal("FECHAMAX")) // reader.IsDBNull(reader.GetOrdinal("FECHAMAX")) ? "" : reader.GetString(reader.GetOrdinal("FECHAMAX"))
                         ,Destino = reader.IsDBNull(reader.GetOrdinal("DESTINO")) ? "" : reader.GetString(reader.GetOrdinal("DESTINO"))
                         ,Estado = reader.IsDBNull(reader.GetOrdinal("ESTADO")) ? "" : reader.GetString(reader.GetOrdinal("ESTADO"))
-                        ,CodGarantia = reader.IsDBNull(reader.GetOrdinal("CODGARANTIA")) ? "" : reader.GetString(reader.GetOrdinal("CODGARANTIA"))
+                        ,Garantia = reader.IsDBNull(reader.GetOrdinal("CODGARANTIA")) ? "" : reader.GetString(reader.GetOrdinal("CODGARANTIA"))
                     };
 
                     reader.NextResult();
