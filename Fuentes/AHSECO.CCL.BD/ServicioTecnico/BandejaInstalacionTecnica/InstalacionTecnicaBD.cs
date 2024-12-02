@@ -160,8 +160,8 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
             {
                 connection.Open();
                 var parameters = new DynamicParameters();
-                parameters.Add("isFecIni", filtros.FecIni);
-                parameters.Add("isFecFin", filtros.FecFin);
+                parameters.Add("isFecIni", filtros.FecIni == null ? "": filtros.FecIni);
+                parameters.Add("isFecFin", filtros.FecFin == null ? "": filtros.FecFin);
                 parameters.Add("IsRequerimiento", filtros.NumReq);
                 parameters.Add("IsEstado", filtros.Estado);
                 parameters.Add("IsDestino", filtros.Destino);
@@ -199,6 +199,9 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                         Estado = i.Single(d => d.Key.Equals("ESTADO")).Value.Parse<string>(),
                         CodEstado = i.Single(d => d.Key.Equals("CODESTADO")).Value.Parse<string>(),
                         FecRegFormat = i.Single(d => d.Key.Equals("FECREGISTRO")).Value.Parse<string>(),
+                        OrdenCompra = i.Single(d => d.Key.Equals("ORDENCOMPRA")).Value.Parse<string>(),
+                        NroProceso = i.Single(d => d.Key.Equals("NUMPROCESO")).Value.Parse<string>(),
+                        Contrato = i.Single(d => d.Key.Equals("CONTRATO")).Value.Parse<string>(),
                     });
                 return result;
             };

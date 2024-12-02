@@ -114,8 +114,8 @@
         var codDistrito = sessionStorage.getItem('codDistrito');
 
         var objBuscar = {
-            FecIni: $dateFecIni.val(),
-            FecFin: $dateFecFin.val(),
+            FecIni: $dateFecIni.val() == "" ? "" : app.parseDate($dateFecIni.val()),
+            FecFin: $dateFecFin.val() == "" ? "" : app.parseDate($dateFecFin.val()),
             NumReq: $txtNumReq.val() == "" ? "0" : $txtNumReq.val(),
             Estado: $cmbEstado.val() == 0 ? "" : $cmbEstado.val(),
             //Destino: codDepartamento,
@@ -484,7 +484,7 @@
                 }
             },
             {
-                data: "RucEmpresa",
+                data: "FecRegFormat",
                 render : function (data, type, row) {
                     return '<center>' + data + '</center>'
                 }
@@ -502,7 +502,7 @@
                 }
             },
             {
-                data: "FecRegFormat",
+                data: "Vendedor",
                 render : function (data, type, row) {
                     return '<center>' + data + '</center>'
                 }
@@ -522,6 +522,24 @@
             {
                 data: "Destino",
                 render : function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "NroProceso",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "Contrato",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "OrdenCompra",
+                render: function (data, type, row) {
                     return '<center>' + data + '</center>'
                 }
             },
