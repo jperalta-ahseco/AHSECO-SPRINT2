@@ -114,8 +114,8 @@
         var codDistrito = sessionStorage.getItem('codDistrito');
 
         var objBuscar = {
-            FecIni: $dateFecIni.val(),
-            FecFin: $dateFecFin.val(),
+            FecIni: $dateFecIni.val() == "" ? "" : app.parseDate($dateFecIni.val()),
+            FecFin: $dateFecFin.val() == "" ? "" : app.parseDate($dateFecFin.val()),
             NumReq: $txtNumReq.val() == "" ? "0" : $txtNumReq.val(),
             Estado: $cmbEstado.val() == 0 ? "" : $cmbEstado.val(),
             //Destino: codDepartamento,
@@ -484,7 +484,7 @@
                 }
             },
             {
-                data: "RucEmpresa",
+                data: "FecRegFormat",
                 render : function (data, type, row) {
                     return '<center>' + data + '</center>'
                 }
@@ -526,6 +526,24 @@
                 }
             },
             {
+                data: "NroProceso",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "Contrato",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "OrdenCompra",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
                 data: "Estado",
                 render : function (data, type, row) {
                     return '<center>' + data + '</center>'
@@ -536,15 +554,12 @@
                 render : function (data, type, row) {
                     var d = "'" + row.NumReq + "','" + row.CodEstado + "','" + row.Id_WorkFlow +"'"; 
                     var ver = '<a id="btnVer" class="btn btn-info btn-xs" title="Ver" href="javascript: bandejaInstalacionTecnica.ver(' + d + ')"><i class="fa fa-eye" aria-hidden="true"></i></a>';
-                    if (row.CodEstado == "STREG") {
-                        var accion = '<a id="btnEditar" class="btn btn-default btn-xs" title="Asignar Técnicos" href="javascript: bandejaInstalacionTecnica.editar(' + d + ')"><i class="fa fa-handshake-o" aria-hidden="true"></i></a>';
+                    if (row.CodEstado != "STFIN") {
+                        var accion = '<a id="btnEditar" class="btn btn-default btn-xs" title="Editar" href="javascript: bandejaInstalacionTecnica.editar(' + d + ')"><i class="fa fa-pencil" aria-hidden="true"></i></a>';
                     }
-                    else if (row.CodEstado == "STEPI" || row.CodEstado == "STEPP") {
-                        var accion = '<a id="btnEditar" class="btn btn-primary btn-xs" title="Cerrar Requerimiento" href="javascript: bandejaInstalacionTecnica.editar(' + d + ')"><i class="fa fa-check" aria-hidden="true"></i></a>';
+                    else {
+                        accion = "";
                     }
-                    else if (row.CodEstado == "STINS") {
-                        var accion = '';
-                    };
                     return '<center>' + accion + ' ' + ver +'</center>'
                 }
             }

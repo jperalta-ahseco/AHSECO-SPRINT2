@@ -160,8 +160,8 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
             {
                 connection.Open();
                 var parameters = new DynamicParameters();
-                parameters.Add("isFecIni", filtros.FecIni);
-                parameters.Add("isFecFin", filtros.FecFin);
+                parameters.Add("isFecIni", filtros.FecIni == null ? "": filtros.FecIni);
+                parameters.Add("isFecFin", filtros.FecFin == null ? "": filtros.FecFin);
                 parameters.Add("IsRequerimiento", filtros.NumReq);
                 parameters.Add("IsEstado", filtros.Estado);
                 parameters.Add("IsDestino", filtros.Destino);
@@ -197,7 +197,11 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                         FechaMax = i.Single(d => d.Key.Equals("FECHAMAX")).Value.Parse<DateTime>(),
                         Destino = i.Single(d => d.Key.Equals("DESTINOS")).Value.Parse<string>(),
                         Estado = i.Single(d => d.Key.Equals("ESTADO")).Value.Parse<string>(),
-                        CodEstado = i.Single(d => d.Key.Equals("CODESTADO")).Value.Parse<string>()
+                        CodEstado = i.Single(d => d.Key.Equals("CODESTADO")).Value.Parse<string>(),
+                        FecRegFormat = i.Single(d => d.Key.Equals("FECREGISTRO")).Value.Parse<string>(),
+                        OrdenCompra = i.Single(d => d.Key.Equals("ORDENCOMPRA")).Value.Parse<string>(),
+                        NroProceso = i.Single(d => d.Key.Equals("NUMPROCESO")).Value.Parse<string>(),
+                        Contrato = i.Single(d => d.Key.Equals("CONTRATO")).Value.Parse<string>(),
                     });
                 return result;
             };
@@ -340,7 +344,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                 parameters.Add("FECHAMAX", instalacion.FechaMax);
                 parameters.Add("DESTINO", instalacion.Destino);
                 parameters.Add("ESTADO", instalacion.Estado);
-                parameters.Add("GARANTIA", instalacion.CodGarantia);
+                parameters.Add("GARANTIA", instalacion.Garantia);
                 parameters.Add("UsrEjecuta", instalacion.UsuarioRegistra);
 
                 var result = connection.Query(
@@ -475,9 +479,32 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                             Codigo = i.Single(d => d.Key.Equals("COD")).Value.Parse<int>(),
                             Mensaje = i.Single(d => d.Key.Equals("MSG")).Value.Parse<string>()
                         }).FirstOrDefault();
+                    result.Codigo = ValidadorEstado(result.Codigo);
                     return result;
             }
         }
+
+        public int ValidadorEstado(int IdDespacho)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using(var connection = Factory.ConnectionFactory())
+            {
+                int codigo;
+                connection.Open();
+                var parameters = new DynamicParameters();
+                parameters.Add("IsIdDespacho", IdDespacho);
+
+                var result = connection.Query(
+                    sql: "USP_SEL_INSTALL_ESTADO",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => codigo = i.Single(d => d.Key.Equals("COD")).Value.Parse<int>()).FirstOrDefault();
+
+                return result;
+            }
+        }
+
         //public RespuestaDTO AsignaTecnico(ElementosxProductoDTO elemento)
         //{
         //    using (var connection = Factory.ConnectionFactory())
@@ -751,7 +778,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                         ,FechaMax = reader.GetDateTime(reader.GetOrdinal("FECHAMAX")) // reader.IsDBNull(reader.GetOrdinal("FECHAMAX")) ? "" : reader.GetString(reader.GetOrdinal("FECHAMAX"))
                         ,Destino = reader.IsDBNull(reader.GetOrdinal("DESTINO")) ? "" : reader.GetString(reader.GetOrdinal("DESTINO"))
                         ,Estado = reader.IsDBNull(reader.GetOrdinal("ESTADO")) ? "" : reader.GetString(reader.GetOrdinal("ESTADO"))
-                        ,CodGarantia = reader.IsDBNull(reader.GetOrdinal("CODGARANTIA")) ? "" : reader.GetString(reader.GetOrdinal("CODGARANTIA"))
+                        ,Garantia = reader.IsDBNull(reader.GetOrdinal("CODGARANTIA")) ? "" : reader.GetString(reader.GetOrdinal("CODGARANTIA"))
                     };
 
                     reader.NextResult();

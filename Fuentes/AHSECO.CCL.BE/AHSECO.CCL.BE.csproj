@@ -90,8 +90,10 @@
     <Compile Include="ServicioTecnico\BandejaInstalacionTecnica\TecnicoInstalacionDTO.cs" />
     <Compile Include="FiltroArticuloDTO.cs" />
     <Compile Include="AlmacenDTO.cs" />
+    <Compile Include="ServicioTecnico\BandejaPreventivos\GrupoMantPreventivoDTO.cs" />
     <Compile Include="ServicioTecnico\BandejaPreventivos\ReqPreventivoDTO.cs" />
     <Compile Include="ServicioTecnico\BandejaPreventivos\ResultPreventivoDTO.cs" />
+    <Compile Include="ServicioTecnico\BandejaPreventivos\TecnicoMantPreventivoDTO.cs" />
     <Compile Include="Ventas\CotDetCostoDTO.cs" />
     <Compile Include="Ventas\DetalleDespachoDTO.cs" />
     <Compile Include="Ventas\CotDetDespachoDTO.cs" />

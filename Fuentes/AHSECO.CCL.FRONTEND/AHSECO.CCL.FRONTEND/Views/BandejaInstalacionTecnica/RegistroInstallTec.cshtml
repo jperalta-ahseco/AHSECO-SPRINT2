@@ -111,7 +111,7 @@
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12">
-                            <label for="dateSolicitud">Fecha M&aacute;xima: </label>
+                            <label for="dateSolicitud">Fecha M&aacute;xima de Entrega: </label>
                             <div class="input-group date">
                                 <input disabled type="text" class="form-control input-sm" id="dateSolicitud" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
                                 <span class="input-group-addon input-sm" id="openRegdateSolicitud">
@@ -215,18 +215,26 @@
                                 {
                                     if (tipoProceso != "V")
                                     {
-                                        <div class="row container-fluid">
-                                            <div class="text-right">
-                                                @if (codEstado == "STREG")
-                                                {
-                                                    <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnProcesoInst" tabindex="14"><i class="fa fa-cog" aria-hidden="true"></i>&nbsp;Cambiar a Estado</button>
-                                                }
-                                                @if (codEstado == "STEPI" || codEstado == "STEPP")
-                                                {
-                                                    <button class="btn btn-default btn-sm" type="button" id="btnFinalizarReq"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Finalizar Requerimiento</button>
-                                                }
-                                            </div>
-                                        </div>
+                                        if (codEstado != "STFIN")
+                                        {
+                                            if (codEstado == "STINS")
+                                            {
+                                                <div class="row container-fluid">
+                                                    <div class="text-right">
+                                                        <button class="btn btn-default btn-sm" type="button" id="btnFinalizarReq"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Finalizar Requerimiento</button>
+                                                    </div>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="row container-fluid">
+                                                    <div class="text-right">
+                                                        <button class="btn btn-default btn-sm" disabled type="button" id="btnFinalizarReq"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Finalizar Requerimiento</button>
+                                                    </div>
+                                                </div>
+                                            }
+
+                                        }
                                     }
                                 }
                             </div>

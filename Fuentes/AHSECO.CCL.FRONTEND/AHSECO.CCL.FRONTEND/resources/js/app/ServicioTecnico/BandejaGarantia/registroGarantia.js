@@ -339,7 +339,11 @@
             } else if (data.Result.CodRpta == 0) {
                 app.message.error("Validación", "El número de serie no ha sido registrado en el sistema, por favor revisar.");
                 return;
-            } else {
+            } else if (data.Result.CodRpta == 2) {
+                app.message.error("Validación", "El número de serie aún no cuenta con fecha de intalación, por favor revisar.");
+                return;
+            }
+            else {
                 app.message.error("Error", "Se obtuvo información incompleta.");
                 return;
             }
@@ -521,7 +525,8 @@
         ]
 
         var filters = {};
-        filters.pageLength = 5;
+        filters.dataTablePageLength = 5;
+        filters.dataTableInfo = true;
 
         app.llenarTabla($tblTecnicos, data, columns, columnDefs, "#tblTecnicos", null, null, filters);
     }
