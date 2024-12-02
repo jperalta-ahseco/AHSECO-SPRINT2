@@ -27,6 +27,7 @@ using System.Web.Http.Results;
 using Microsoft.Ajax.Utilities;
 using AHSECO.CCL.BL.ServicioTecnico.BandejaPreventivos;
 using AHSECO.CCL.BE.ServicioTecnico.BandejaPreventivos;
+using static NPOI.HSSF.Util.HSSFColor;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
 {
@@ -36,9 +37,17 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
         [Permissions(Permissions = "BANDEJAPREVENTIVO")]
         public ActionResult Index()
         {
+            VariableSesion.setCadena("NumMant", "");
+            VariableSesion.setCadena("TipoTarea", "");
+
             return View();
         }
         
+        public ActionResult RegistroPreventivo()
+        {
+            return View();
+        }
+
         public JsonResult ObtenerFiltrosPreventivos()
         {
             var preventivosBL = new PreventivosBL();
@@ -73,10 +82,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
             var result = instalacionTecnicaBL.ObtenerInstalacionesTec(filtros);
             return Json(result);
         }
-        public JsonResult ObtenerMainInstalacion(long NumReq, long IdWorkFlow)
+        public JsonResult ObtenerMainMant(long NumMant, long IdWorkFlow)
         {
-            var instalacionTecnicaBL = new InstalacionTecnicaBL();
-            var result = instalacionTecnicaBL.ObtenerMainInstalacion(NumReq, IdWorkFlow);
+            var preventivoBL = new PreventivosBL();
+            var result = preventivoBL.ObtenerMainMant(NumMant, IdWorkFlow);
             return Json(result);
         }
         public JsonResult ObtenerDetalleInstalacion(InstalacionTecnicaDetalleDTO detalle)
@@ -85,63 +94,12 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
             var result = instalacionTecnicaBL.ObtenerDetalleInstalacion(detalle);
             return Json(result);
         }
-        public ActionResult RegistroPreventivo()
-        {
-            string[] cabeceraProductos1 = //tener en consideración que después de la coma, se define el ancho de la columna en %, ejemplo : 5%
-            {
-                "Id,5",
-                "Descripcion,10",
-                "Marca,10",
-                "Modelo,10",
-                "Serie,10",
-                "Cantidad,10",
-                "Cantidad Prev.,12",
-                "Periodicidad,10",
-                "Garantia,10",
-                "Numero Fianza,10",
-            };
-
-            string[] cabeceraProductos2 = //tener en consideración que después de la coma, se define el ancho de la columna en %, ejemplo : 5%
-            {
-                "Id,5",
-                "Descripción,10",
-                "Marca,10",
-                "Modelo,10",
-                "Serie,10",
-                "Cantidad,5",
-                "Cantidad Prev,5",
-                "Periodicidad,5",
-                "Garantia,5",
-                "Numero Fianza,5",
-                "Fecha Programación,15",
-                "Fecha Instalacion,15"
-            };
-
-            var tipoProceso = VariableSesion.getCadena("TipoProceso");
-
-            if (tipoProceso == "U")
-            {
-                ViewBag.cabecera = cabeceraProductos2;
-            }
-            else if (tipoProceso =="V")
-            {
-                ViewBag.cabecera = cabeceraProductos2;
-            }
-            else{
-                ViewBag.cabecera = cabeceraProductos1;
-            }
-
-            return View();
-        }
-
-        public JsonResult SetVariablesGenerales(InstalacionTecnicaDTO instalacion)
+        public JsonResult SetVariablesGenerales(ReqPreventivoDTO req)
         {
             try
             {
-                VariableSesion.setCadena("NumReq", instalacion.NumReq.ToString());
-                VariableSesion.setCadena("CodEstado", instalacion.CodEstado);
-                VariableSesion.setCadena("IdWorkFlow", instalacion.Id_WorkFlow.ToString());
-                VariableSesion.setCadena("TipoProceso", instalacion.TipoProceso);
+                VariableSesion.setCadena("NumMant", req.Id_Mant.ToString());
+                VariableSesion.setCadena("TipoTarea", req.TipoTarea);
                 return Json(new
                 {
                     Status = 1

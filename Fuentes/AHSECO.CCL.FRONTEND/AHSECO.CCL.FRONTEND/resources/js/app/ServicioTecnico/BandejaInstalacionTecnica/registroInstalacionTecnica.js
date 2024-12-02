@@ -193,7 +193,7 @@
             minViewMode: 0,
             format: 'dd/mm/yyyy'
         });
-        $btnProcesoInst.click(cambiarEstadoProceso);
+       // $btnProcesoInst.click(cambiarEstadoProceso);
         $btnFinalizarReq.click(CerrarRequerimiento);
         $btnGuardarUbigeo.click(seleccionar);
         $btnEditarReq.click(EditarRequerimiento);
@@ -460,18 +460,37 @@
         }
 
         var objParams = JSON.stringify(objAsignacion);
-        var fnDoneCallback = function () {
+        var fnDoneCallback = function (data) {
             $txtEmpresaTecnico.val("");
             $txtEmpresaTecnico.prop('disabled', true);
             $txtTecnico.val("");
 
-            var fnSi = function () {
+            var fnSi = function (data) {
                 $modalObservacionClick();
-                obtenerDetalleInstalacion();
+                if (data.Result.Codigo == 1) {
+                    cambiarEstadoInstalado();
+                    obtenerDetalleInstalacion();
+                }
+                else if (data.Result.Codigo == 2) {
+                    cambiarEstadoProceso();
+                    obtenerDetalleInstalacion();
+                }
+                else {
+                    obtenerDetalleInstalacion();
+                }
             };
 
             var fnNo = function () {
-                obtenerDetalleInstalacion();
+                if (data.Result.Codigo == 1) {
+                    cambiarEstadoInstalado();
+                    obtenerDetalleInstalacion();
+                } else if (data.Result.Codigo == 2) {
+                    cambiarEstadoProceso();
+                    obtenerDetalleInstalacion();
+                }
+                else {
+                    obtenerDetalleInstalacion();
+                }
             };
 
             app.message.confirm("Éxito", "Asígnación completada, ¿Desea agregar un comentario adicional?","Sí","No",fnSi,fnNo);
@@ -1210,13 +1229,31 @@
         var fnSi = function () {
             var fnDoneCallBack = function (data) {
 
-                var fnSi = function () {
+                var fnSi = function (data) {
                     $modalObservacionClick();
-                    obtenerDetalleInstalacion();
-                };
+                    if (data.Result.Codigo == 1) {
+                        cambiarEstadoInstalado();
+                        obtenerDetalleInstalacion();
+                    }
+                    else if (data.Result.Codigo == 2) {
+                        cambiarEstadoProceso();
+                        obtenerDetalleInstalacion();
+                    }
+                    else {
+                        obtenerDetalleInstalacion();
+                    }                };
 
                 var fnNo = function () {
-                    obtenerDetalleInstalacion();
+                    if (data.Result.Codigo == 1) {
+                        cambiarEstadoInstalado();
+                        obtenerDetalleInstalacion();
+                    } else if (data.Result.Codigo == 2) {
+                        cambiarEstadoProceso();
+                        obtenerDetalleInstalacion();
+                    }
+                    else {
+                        obtenerDetalleInstalacion();
+                    }
                 };
                 
                 app.message.confirm("Éxito", "Se estableció la fecha de programación. ¿Desea agregar algún comentario adicional?","Sí","No",fnSi,fnNo);
@@ -1289,7 +1326,17 @@
         var fnSi = function () {
             var fnDoneCallBack = function (data) {
                 app.message.success("Éxito", "Se estableció la fecha de instalación.");
-                obtenerDetalleInstalacion();
+                if (data.Result.Codigo == 1) {
+                    cambiarEstadoInstalado();
+                    obtenerDetalleInstalacion();
+                }
+                else if (data.Result.Codigo == 2) {
+                    cambiarEstadoProceso();
+                    obtenerDetalleInstalacion();
+                }
+                else {
+                    obtenerDetalleInstalacion();
+                }
             };
 
             var fnFailCallBack = function () {
@@ -2021,9 +2068,13 @@
                 targets: [0],
                 visible: false
             }
-        ]
+        ];
 
-        app.llenarTabla($tblTecnicos, data, columns, columnDefs, "#tblTecnicos", null);
+        var filters = {};
+        filters.dataTablePageLength = 5;
+        filters.dataTableInfo = true;
+
+        app.llenarTabla($tblTecnicos, data, columns, columnDefs, "#tblTecnicos", null, null, filters);
     }
     function seleccionarTecnico(codigo, nombreTecnico, nombreEmpresa) {
         $hdnIdTecnico.val(codigo);
@@ -2212,87 +2263,66 @@
     }
 
     function cambiarEstadoProceso() {
-        var validador = 0;
-
-        //var producto = productos.find(producto => producto.Elementos.length == 0)
-        registroInstalacionTec.childProductos.forEach(function (elemento) {
-            if (elemento.FechaProgramacion == "") {
-                validador += 1;
-            };
-        });
-
-        if (registroInstalacionTec.childProductos.length == validador) {
-            app.message.error("Validación", 'Por lo menos una instalación debe de contar con "Fecha de Programación", registrada.');
+        if ($estadoReq.val() == "STEPI"){
             return;
         };
 
-        validador = 0;
-        registroInstalacionTec.childProductos.forEach(function (elemento) {
-            if (elemento.FechaInstalacion == "") {
-                validador += 1;
-            };
-        });
+        var method = "POST";
+        var url = "BandejaInstalacionTecnica/EnProcesoInstalacion";
 
-        if (registroInstalacionTec.childProductos.length == validador) {
-            app.message.error("Validación", 'Por lo menos una instalación debe de contar con "Fecha de Instalación", registrada.');
-            return;
+        var objReq = {
+            TipoProceso: "U",
+            NumReq: $numeroReq.val(),
+            Id_WorkFlow: $codigoWorkflow.val(),
+            FechaMax: $dateSolicitud.val(),
+            Destino: destinos_select.toString(),
+            Estado: "STEPI",
+            OrdenCompra: $txtOrdCompra.val(),
+            NroProceso: $txtProceso.val(),
+            Contrato: $txtContrato.val()
         };
 
-        validador = 0;
-        registroInstalacionTec.childProductos.forEach(function (elemento) {
-            if (elemento.NombreCompletoTecnico == "  ") {
-                validador += 1;
-            };
-        });
+        var objParam = JSON.stringify(objReq);
 
-        if (registroInstalacionTec.childProductos.length == validador) {
-            app.message.error("Validación", "Debe de asignar por lo menos, un técnico a un producto.");
-            return;
+        var fnDoneCallBack = function () {
+            $spanEstadoSol.text("En Proceso de Instalación");
+            $estadoReq.val("STEPI");
+        };
+        var fnFailCallBack = function () {
+
+        };
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);   
+    }
+
+    function cambiarEstadoInstalado() {
+        
+        var method = "POST";
+        var url = "BandejaInstalacionTecnica/Instalado";
+
+        var objReq = {
+            TipoProceso: "U",
+            NumReq: $numeroReq.val(),
+            Id_WorkFlow: $codigoWorkflow.val(),
+            FechaMax: $dateSolicitud.val(),
+            Destino: destinos_select.toString(),
+            Estado: "STINS",
+            OrdenCompra: $txtOrdCompra.val(),
+            NroProceso: $txtProceso.val(),
+            Contrato: $txtContrato.val()
         };
 
-        if ($estadoReq.val() == "STREG") {
-            var method = "POST";
-            var url = "BandejaInstalacionTecnica/EnProcesoActualizacion";
+        var objParam = JSON.stringify(objReq);
 
-            var objReq = {
-                TipoProceso: "U",
-                NumReq: $numeroReq.val(),
-                Id_WorkFlow: $codigoWorkflow.val(),
-                FechaMax: $dateSolicitud.val(),
-                Destino: destinos_select.toString(),
-                Estado: "STEPP",
-                OrdenCompra: $txtOrdCompra.val(),
-                NroProceso: $txtProceso.val(),
-                Contrato: $txtContrato.val()
-            };
-
-            if (validador == 0) {
-                objReq.Estado = "STEPI";
-            };
-
-            var objParam = JSON.stringify(objReq);
-
-            var fnSi = function () {
-                var fnDoneCallBack = function () {
-                    function redirect() {
-                        app.redirectTo("BandejaInstalacionTecnica");
-                    }
-                    app.message.success("Éxito", "Se realizó el cambio de estado a: En Proceso de Instalación.", "Aceptar", redirect);
-                };
-                var fnFailCallBack = function () {
-                    app.message.error("Validación", "Se presentó un problema al realizar el cambio de estado, por favor revisar.");
-                };
-                app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
-            }
-            if (validador == 0) {
-                return app.message.confirm("Confirmación", "¿Desea realizar el cambio de estado a: En proceso de Instalación. ?", "Si", "No", fnSi, null);
-            }
-            else {
-                return app.message.confirm("Confirmación", "¿Desea realizar el cambio de estado a: En proceso de Instalación Parcial. ?", "Si", "No", fnSi, null);
-            }
+        var fnDoneCallBack = function () {
+            $spanEstadoSol.text("Instalado");
+            $estadoReq.val("STFIN");
+            $btnFinalizarReq.prop('disabled', false);
         };
+        var fnFailCallBack = function () {
+
+        };
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);        
     };
-
     function VerElementosdeProducto(codigo) {
         $txtTecnico.val("");
         $hdnIdTecnico.val("");  
@@ -2525,46 +2555,10 @@
 
     };
     function CerrarRequerimiento() {
+        var validador = 1
 
-        var validador = 0;
-
-        //var producto = productos.find(producto => producto.Elementos.length == 0)
-        registroInstalacionTec.childProductos.forEach(function (elemento) {
-            if (elemento.FechaProgramacion == "") {
-                validador = 1;
-            };
-        });
-
-        if (validador == 1) {
-            app.message.error("Validación", 'Todos los productos deben de contar con Fecha de Programación.');
-            return;
-        };
-
-        validador = 0;
-        registroInstalacionTec.childProductos.forEach(function (elemento) {
-            if (elemento.FechaInstalacion == "") {
-                validador = 1;
-            };
-        });
-
-        if (validador == 1) {
-            app.message.error("Validación", 'Todos los productos deben de contar con Fecha de Instalación.');
-            return;
-        };
-
-        validador = 0;
-        registroInstalacionTec.childProductos.forEach(function (elemento) {
-            if (elemento.NombreCompletoTecnico == "  ") {
-                validador = 1;
-            };
-        });
-
-        if (validador == 1) {
-            app.message.error("Validación", 'Todos los productos deben de contar con un técnico asignado.');
-            return;
-        };
-        
-        validador = 1
+        var method = "POST";
+        var url = "BandejaInstalacionTecnica/CerrarInstalacion"
 
         for (var i = 0; i < adjuntos.length; i++) {
             if (adjuntos[i].CodigoTipoDocumento == "DI01") {
@@ -2577,35 +2571,28 @@
             return;
         };
 
-        if ($estadoReq.val() == "STEPI" || $estadoReq.val() == "STEPP") {
-            var method = "POST";
-            var url = "BandejaInstalacionTecnica/CerrarInstalacion";
-
-            var objReq = {
-                TipoProceso: "U",
-                NumReq: $numeroReq.val(),
-                FechaMax: $dateSolicitud.val(),
-                Destino: destinos_select.toString(),
-                Estado: "STINS",
-                OrdenCompra: $txtOrdCompra.val(),
-                NroProceso: $txtProceso.val(),
-                Contrato: $txtContrato.val()
-            };
-
-            var objParam = JSON.stringify(objReq);
-
-            var fnSi = function () {
-                var fnDoneCallBack = function () {
-                    crearMantPrevent();
-                };
-                var fnFailCallBack = function () {
-                    app.message.error("Validación", "Se presentó un problema al realizar el cambio de estado, por favor revisar.");
-                };
-                app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
-            }
-            return app.message.confirm("Confirmación", "¿Desea realizar el cambio de estado a: 'Instalado'. ?", "Si", "No", fnSi, null);
+        
+        var objReq = {
+            TipoProceso: "U",
+            NumReq: $numeroReq.val(),
+            FechaMax: $dateSolicitud.val(),
+            Destino: destinos_select.toString(),
+            Estado: "STFIN",
+            OrdenCompra: $txtOrdCompra.val(),
+            NroProceso: $txtProceso.val(),
+            Contrato: $txtContrato.val()
         };
-    }
+
+        var objParam = JSON.stringify(objReq);
+
+        var fnDoneCallBack = function () {
+            crearMantPrevent();
+        };
+        var fnFailCallBack = function () {
+            app.message.error("Validación", "Se presentó un problema al realizar el cambio de estado, por favor revisar.");
+        };
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+    };
 
     return {
         eliminarObsTmp: eliminarObsTmp,

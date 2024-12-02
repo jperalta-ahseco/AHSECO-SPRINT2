@@ -14,7 +14,7 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaGarantias
         public int MantPreventivo           { get;set;}
         public int preventReal              { get;set;}
         public int PreventPendiente         { get;set;}
-        public DateTime FechaInstalacion    { get;set;}
+        public DateTime? FechaInstalacion    { get;set;}
         public string CodGarantia           { get;set;}
         public string ValorGarantia         { get;set;}
         public string FechaVencimiento      { get; set; }

@@ -475,9 +475,32 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                             Codigo = i.Single(d => d.Key.Equals("COD")).Value.Parse<int>(),
                             Mensaje = i.Single(d => d.Key.Equals("MSG")).Value.Parse<string>()
                         }).FirstOrDefault();
+                    result.Codigo = ValidadorEstado(result.Codigo);
                     return result;
             }
         }
+
+        public int ValidadorEstado(int IdDespacho)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using(var connection = Factory.ConnectionFactory())
+            {
+                int codigo;
+                connection.Open();
+                var parameters = new DynamicParameters();
+                parameters.Add("IsIdDespacho", IdDespacho);
+
+                var result = connection.Query(
+                    sql: "USP_SEL_INSTALL_ESTADO",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => codigo = i.Single(d => d.Key.Equals("COD")).Value.Parse<int>()).FirstOrDefault();
+
+                return result;
+            }
+        }
+
         //public RespuestaDTO AsignaTecnico(ElementosxProductoDTO elemento)
         //{
         //    using (var connection = Factory.ConnectionFactory())

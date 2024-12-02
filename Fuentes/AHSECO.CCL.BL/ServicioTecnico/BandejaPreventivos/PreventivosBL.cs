@@ -56,6 +56,18 @@ namespace AHSECO.CCL.BL.ServicioTecnico.BandejaPreventivos
             }
         }
 
-
+        public ResponseDTO<GrupoMantPreventivoDTO> ObtenerMainMant(long NumMant, long IdWorkFlow)
+        {
+            try
+            {
+                var result = Repository.ObtenerMainMant(NumMant, IdWorkFlow);
+                return new ResponseDTO<GrupoMantPreventivoDTO>(result);
+            }
+            catch(Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + " :: " + ex.Message);
+                return new ResponseDTO<GrupoMantPreventivoDTO>(ex);
+            }
+        }
     }
 }

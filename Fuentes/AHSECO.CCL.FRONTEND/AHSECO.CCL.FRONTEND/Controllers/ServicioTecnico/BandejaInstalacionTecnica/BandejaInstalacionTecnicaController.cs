@@ -590,8 +590,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
 
             return File(ruta, contentType, nombreDoc);
         }
-        
-        public JsonResult EnProcesoActualizacion(InstalacionTecnicaDTO instalacion)
+
+        public JsonResult EnProcesoInstalacion(InstalacionTecnicaDTO instalacion)
         {
             var result = new RespuestaDTO();
             try
@@ -605,7 +605,45 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
                 var log = new FiltroWorkflowLogDTO();
                 log.CodigoWorkflow = instalacion.Id_WorkFlow;
                 log.Usuario = User.ObtenerUsuario();
-                log.CodigoEstado = "STEPP";
+                log.CodigoEstado = "STEPI";
+                log.UsuarioRegistro = User.ObtenerUsuario();
+                procesosBL.InsertarWorkflowLog(log);
+
+                result.Codigo = 1;
+                result.Mensaje = "Se realizó el cambio de estado satisfactoriamente";
+                return Json(new
+                {
+                    Status = 1,
+                    Message = result.Mensaje
+                });
+            }
+            catch (Exception ex)
+            {
+                result.Codigo = 0;
+                result.Mensaje = "Ocurrió un error al realizar el cambio de estado, por favor revisar." + ex.Message;
+                return Json(new
+                {
+                    Status = 0,
+                    Message = result.Mensaje
+                });
+            }
+        }
+
+        public JsonResult Instalado(InstalacionTecnicaDTO instalacion)
+        {
+            var result = new RespuestaDTO();
+            try
+            {
+                var instalacionBL = new InstalacionTecnicaBL();
+                var procesosBL = new ProcesosBL();
+
+                var response = instalacionBL.MantInstalacion(instalacion);
+
+                //Se realiza el registro de seguimiento de workflow:
+                var log = new FiltroWorkflowLogDTO();
+                log.CodigoWorkflow = instalacion.Id_WorkFlow;
+                log.Usuario = User.ObtenerUsuario();
+                log.CodigoEstado = "STINS";
                 log.UsuarioRegistro = User.ObtenerUsuario();
                 procesosBL.InsertarWorkflowLog(log);
 
@@ -641,7 +679,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
                 var log = new FiltroWorkflowLogDTO();
                 log.CodigoWorkflow = response.Result.Codigo;
                 log.Usuario = User.ObtenerUsuario();
-                log.CodigoEstado = "STINS";
+                log.CodigoEstado = "STFIN";
                 log.UsuarioRegistro = User.ObtenerUsuario();
                 procesosBL.InsertarWorkflowLog(log);
 
@@ -659,7 +697,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
                 {
                     if (doc.CodigoTipoDocumento == "DI01" && doc.Eliminado == 0) //Solo documentos de tipo Acta de Instalación:
                     {
-                        string pao_files = ConfigurationManager.AppSettings.Get("tempFiles");
+                        string pao_files = ConfigurationManager.AppSettings.Get("tempFilesInsTec");
                         string ruta = pao_files + doc.RutaDocumento;
                         adjuntos.Add(ruta);
                     }

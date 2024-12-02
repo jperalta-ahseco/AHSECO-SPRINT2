@@ -624,30 +624,37 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
 
                     if (reader.Read())
                     {
-                        DetalleSolicitudGarantiaDTO solicitud = new DetalleSolicitudGarantiaDTO()
+                        try{
+                            DetalleSolicitudGarantiaDTO solicitud = new DetalleSolicitudGarantiaDTO()
+                            {
+                                Id_Despacho_Dist = reader.IsDBNull(reader.GetOrdinal("ID_DESPACHO_DIST")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_DESPACHO_DIST")),
+                                NumSerie = reader.IsDBNull(reader.GetOrdinal("NUMSERIE")) ? "" : reader.GetString(reader.GetOrdinal("NUMSERIE")),
+                                Id_Cotizacion = reader.IsDBNull(reader.GetOrdinal("ID_COTIZACION")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_COTIZACION")),
+                                Descripcion = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION")),
+                                Desmarca = reader.IsDBNull(reader.GetOrdinal("DESCMARCA")) ? "" : reader.GetString(reader.GetOrdinal("DESCMARCA")),
+                                Modelo = reader.IsDBNull(reader.GetOrdinal("MODELO")) ? "" : reader.GetString(reader.GetOrdinal("MODELO")),
+                                CodigoProducto = reader.IsDBNull(reader.GetOrdinal("CODIGOPRODUCTO")) ? "" : reader.GetString(reader.GetOrdinal("CODIGOPRODUCTO")),
+                                MantPreventivo = reader.IsDBNull(reader.GetOrdinal("MANTPREVENTIVO")) ? 0 : reader.GetInt32(reader.GetOrdinal("MANTPREVENTIVO")),
+                                preventReal = reader.IsDBNull(reader.GetOrdinal("PREVREAL")) ? 0 : reader.GetInt32(reader.GetOrdinal("PREVREAL")),
+                                PreventPendiente = reader.IsDBNull(reader.GetOrdinal("PREVPEND")) ? 0 : reader.GetInt32(reader.GetOrdinal("PREVPEND")),
+                                FechaInstalacion = reader.GetDateTime(reader.GetOrdinal("FECHAINSTALL")),
+                                CodGarantia = reader.IsDBNull(reader.GetOrdinal("GARANTIA")) ? "" : reader.GetString(reader.GetOrdinal("GARANTIA")),
+                                ValorGarantia = reader.IsDBNull(reader.GetOrdinal("VALORGARANTIA")) ? "" : reader.GetString(reader.GetOrdinal("VALORGARANTIA")),
+                                Direccion = reader.IsDBNull(reader.GetOrdinal("DIRECCION")) ? "" : reader.GetString(reader.GetOrdinal("DIRECCION")),
+                                UbicacionDestino = reader.IsDBNull(reader.GetOrdinal("UBIDESTINO")) ? "" : reader.GetString(reader.GetOrdinal("UBIDESTINO")),
+                                CodUbicacionDestino = reader.IsDBNull(reader.GetOrdinal("CODUBIGEODEST")) ? "" : reader.GetString(reader.GetOrdinal("CODUBIGEODEST")),
+                                NumFianza = reader.IsDBNull(reader.GetOrdinal("NUMFIANZA")) ? "" : reader.GetString(reader.GetOrdinal("NUMFIANZA")),
+                                FechaVencimiento = reader.IsDBNull(reader.GetOrdinal("FECHAVENCIMIENTO")) ? "" : reader.GetString(reader.GetOrdinal("FECHAVENCIMIENTO")),
+                                EstadoGarant = reader.IsDBNull(reader.GetOrdinal("ESTADOGARANT")) ? "" : reader.GetString(reader.GetOrdinal("ESTADOGARANT"))
+                            };
+                            result.CodRpta += 1;
+                            result.Detalle = solicitud;
+                        }
+                        catch(Exception ex)
                         {
-                            Id_Despacho_Dist = reader.IsDBNull(reader.GetOrdinal("ID_DESPACHO_DIST")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_DESPACHO_DIST")),
-                            NumSerie = reader.IsDBNull(reader.GetOrdinal("NUMSERIE")) ? "" : reader.GetString(reader.GetOrdinal("NUMSERIE")),
-                            Id_Cotizacion = reader.IsDBNull(reader.GetOrdinal("ID_COTIZACION")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_COTIZACION")),
-                            Descripcion = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION")),
-                            Desmarca = reader.IsDBNull(reader.GetOrdinal("DESCMARCA")) ? "" : reader.GetString(reader.GetOrdinal("DESCMARCA")),
-                            Modelo = reader.IsDBNull(reader.GetOrdinal("MODELO")) ? "" : reader.GetString(reader.GetOrdinal("MODELO")),
-                            CodigoProducto = reader.IsDBNull(reader.GetOrdinal("CODIGOPRODUCTO")) ? "" : reader.GetString(reader.GetOrdinal("CODIGOPRODUCTO")),
-                            MantPreventivo = reader.IsDBNull(reader.GetOrdinal("MANTPREVENTIVO")) ? 0 : reader.GetInt32(reader.GetOrdinal("MANTPREVENTIVO")),
-                            preventReal = reader.IsDBNull(reader.GetOrdinal("PREVREAL")) ? 0 : reader.GetInt32(reader.GetOrdinal("PREVREAL")),
-                            PreventPendiente = reader.IsDBNull(reader.GetOrdinal("PREVPEND")) ? 0 : reader.GetInt32(reader.GetOrdinal("PREVPEND")),
-                            FechaInstalacion = reader.GetDateTime(reader.GetOrdinal("FECHAINSTALL")),
-                            CodGarantia = reader.IsDBNull(reader.GetOrdinal("GARANTIA")) ? "" : reader.GetString(reader.GetOrdinal("GARANTIA")),
-                            ValorGarantia = reader.IsDBNull(reader.GetOrdinal("VALORGARANTIA")) ? "" : reader.GetString(reader.GetOrdinal("VALORGARANTIA")),
-                            Direccion = reader.IsDBNull(reader.GetOrdinal("DIRECCION")) ? "" : reader.GetString(reader.GetOrdinal("DIRECCION")),
-                            UbicacionDestino = reader.IsDBNull(reader.GetOrdinal("UBIDESTINO")) ? "" : reader.GetString(reader.GetOrdinal("UBIDESTINO")),
-                            CodUbicacionDestino = reader.IsDBNull(reader.GetOrdinal("CODUBIGEODEST")) ? "" : reader.GetString(reader.GetOrdinal("CODUBIGEODEST")),
-                            NumFianza = reader.IsDBNull(reader.GetOrdinal("NUMFIANZA")) ? "" : reader.GetString(reader.GetOrdinal("NUMFIANZA")),
-                            FechaVencimiento = reader.IsDBNull(reader.GetOrdinal("FECHAVENCIMIENTO")) ? "" : reader.GetString(reader.GetOrdinal("FECHAVENCIMIENTO")),
-                            EstadoGarant = reader.IsDBNull(reader.GetOrdinal("ESTADOGARANT")) ? "" : reader.GetString(reader.GetOrdinal("ESTADOGARANT"))
-                        };
-                        result.Detalle = solicitud;
-                        result.CodRpta += 1;
+                            DetalleSolicitudGarantiaDTO solicitud = new DetalleSolicitudGarantiaDTO();
+                            result.Detalle = solicitud;
+                        }
                     }
                     else
                     {
