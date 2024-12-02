@@ -683,8 +683,8 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                         nomEstado = reader.IsDBNull(reader.GetOrdinal("ESTADO")) ? "" : reader.GetString(reader.GetOrdinal("ESTADO")),
                         NroProceso = reader.IsDBNull(reader.GetOrdinal("NROPROCESO")) ? "" : reader.GetString(reader.GetOrdinal("NROPROCESO")),
                         TipoProceso = reader.IsDBNull(reader.GetOrdinal("TIPOPROCESO")) ? "" : reader.GetString(reader.GetOrdinal("TIPOPROCESO")),
-                        FechaMaxima = reader.IsDBNull(reader.GetOrdinal("FECHAMAX")) ? "" : reader.GetString(reader.GetOrdinal("FECHAMAX"))
-
+                        FechaMaxima = reader.IsDBNull(reader.GetOrdinal("FECHAMAX")) ? "" : reader.GetString(reader.GetOrdinal("FECHAMAX")),
+                        OrdenCompra = reader.IsDBNull(reader.GetOrdinal("NUMORDEN")) ? "" : reader.GetString(reader.GetOrdinal("NUMORDEN")),
                     };
                     reader.NextResult();
 

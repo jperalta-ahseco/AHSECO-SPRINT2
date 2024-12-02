@@ -924,6 +924,7 @@
             $txtNomContacto.val(requerimiento.NombreContacto);
             $txtCargoContacto.val(requerimiento.CargoContacto);
             $txtTelefContacto.val(requerimiento.TelefonoContacto);
+            $txtOrdCompra.val(requerimiento.OrdenCompra);
             $txtEstablecimientoCont.val(requerimiento.Establecimiento);
             $cmbGarantias.val(requerimiento.Garantia).trigger('change.select2');
             $cmbTipVenta.val(requerimiento.TipoVenta).trigger('change.select2');
