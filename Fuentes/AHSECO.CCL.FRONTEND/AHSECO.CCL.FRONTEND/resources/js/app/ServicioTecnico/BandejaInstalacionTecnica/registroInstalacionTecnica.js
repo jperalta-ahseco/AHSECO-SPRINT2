@@ -80,6 +80,7 @@
     var $modalZona = $('#modalZona');
     var $modalDetalleInstalacion = $('#modalDetalleInstalacion');
     var $modalElementosDeProducto = $('#modalElementosDeProducto');
+    var $btnAsignarTecnicoCerrar = $('#btnAsignarTecnicoCerrar');
     //var $modalUbigeo = $('#modalZona');
 
     /*ModalElementos de Producto */
@@ -212,6 +213,7 @@
         $btnBuscarTecnico.click(BuscarTecnicos);
         $btnRegistrarTecnicoExterno.click(CrearTecnico3ro_a_Producto);
         $btnAsignarTecnico.click(btnEjecutarAsignacionClick);
+        $btnAsignarTecnicoCerrar.click($btnAsignarTecnicoCerrar_click);
         //$dateSolicitud.val(hoy());
         $fileCargaDocumentoSustento.on("change", $fileCargaDocumentoSustento_change);
         CargarTipoDocumento(3); //Cambiar a tipo de proceso Instalación Técnica.
@@ -232,6 +234,12 @@
         }, 2000); 
         btnCheck();
     };
+
+    function $btnAsignarTecnicoCerrar_click() {
+        cargarDatos();
+        $modalElementosDeProducto.modal('hide');
+
+    }
 
 
     /*Lógica Ubigeo*/
@@ -1046,13 +1054,13 @@
                 }
             },
             {
-                data: "NumInstalados",
+                data: "NumProgramados",
                 render: function (data, type, row) {
                     return '<center>' + data + '</center>'
                 }
             },
             {
-                data: "NumProgramados",
+                data: "NumInstalados",
                 render: function (data, type, row) {
                     return '<center>' + data + '</center>'
                 }
@@ -1060,7 +1068,7 @@
             {
                 data: "Id",
                 render: function (data, type, row) {
-                    var verElementosDeProducto = '<a id="btnVerElementos" class="btn btn-primary btn-xs" title="Ver Elementos" href="javascript: registroInstalacionTec.VerElementosdeProducto(' + data + ')"><i class="fa fa-cubes" aria-hidden="true"></i></a>';
+                    var verElementosDeProducto = '<a id="btnVerElementos" class="btn btn-primary btn-xs" title="Ver Equipos" href="javascript: registroInstalacionTec.VerElementosdeProducto(' + data + ')"><i class="fa fa-cubes" aria-hidden="true"></i></a>';
                     return '<center>' + verElementosDeProducto +'</center>'
                 }
             }
