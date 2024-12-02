@@ -469,7 +469,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             ViewBag.PermitirAgregarCotDet = true;
                         }
 
-                        
                         ViewBag.PermitirEnvioCotizacion = true;
                     }
                 }
@@ -594,6 +593,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         {
                             if (oCotizacion.IndValorizado.Value) { swEsCotizacionValorizada = true; }
                         }
+                        if (ViewBag.PermitirEditarValorizacion == true)
+                        {
+                            ViewBag.PermitirGuardarValorizacion = true;
+                        }
                     }
 
                     if (swEsCotizacionValorizada == true)
@@ -607,13 +610,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         if (oCotizacion.IndCosteado.HasValue)
                         {
                             if (oCotizacion.IndCosteado.Value) { ViewBag.PermitirEditarPorcentDscto = true; }
-                        }
-                    }
-                    else
-                    {
-                        if (ViewBag.PermitirEditarValorizacion == true)
-                        {
-                            ViewBag.PermitirGuardarValorizacion = true;
                         }
                     }
 

@@ -10,7 +10,22 @@ var cotvtadet = (function ($, win, doc) {
     var $PermitirEditarValorizacion = $("#PermitirEditarValorizacion");
     var $PermitirEditarGanancia = $("#PermitirEditarGanancia");
     var $DI_pnlCostos_PrecioVenta = $("#DI_pnlCostos_PrecioVenta");
+    var $DI_pnlCostos_CostoFOB = $("#DI_pnlCostos_CostoFOB");
+    var $DI_pnlCostos_ValorUnitario = $("#DI_pnlCostos_ValorUnitario");
+    var $DI_pnlCostos_TieneStock = $("#DI_pnlCostos_TieneStock");
+    var $DI_pnlCostos_Calibracion = $("#DI_pnlCostos_Calibracion");
     var $DI_pnlCostos_Ganancia = $("#DI_pnlCostos_Ganancia");
+    var $DI_pnlCostos_CompraLocal = $("#DI_pnlCostos_CompraLocal");
+    var $DI_pnlCostos_ReqPlaca = $("#DI_pnlCostos_ReqPlaca");
+    var $DI_pnlCostos_MantPrevent = $("#DI_pnlCostos_MantPrevent");
+    var $DI_pnlCostos_Manuales = $("#DI_pnlCostos_Manuales");
+    var $DI_pnlCostos_Videos = $("#DI_pnlCostos_Videos");
+    var $DI_pnlCostos_InstaCapa = $("#DI_pnlCostos_InstaCapa");
+    var $DI_pnlCostos_GarantAdic = $("#DI_pnlCostos_GarantAdic");
+    var $DI_pnlCostos_GarantAdic_Combo = $("#DI_pnlCostos_GarantAdic_Combo");
+    var $DI_pnlCostos_ReqCliente = $("#DI_pnlCostos_ReqCliente");
+    var $DI_pnlCostos_ObsInsta = $("#DI_pnlCostos_ObsInsta");
+    var $DI_pnlDestinos = $("#DI_pnlDestinos");
 
     var $cmbTipo = $('#cmbTipo');
 
@@ -544,7 +559,7 @@ var cotvtadet = (function ($, win, doc) {
                 }
             }
             
-            //Como Jefe puede cambiar el flujo de STOCK y agregar los costos FOB y el valor unitario
+            //Como Jefe puede cambiar el flujo de STOCK y agregar el COSTO FOB y el VALOR UNITARIO
             if ($PermitirEditarValorizacion.val() == "S") {
                 if ($idRolUsuario.val() == $RolVenta_Gerente.val()) {
                     $DI_radTieneStock_Si.removeAttr("disabled");
@@ -555,7 +570,13 @@ var cotvtadet = (function ($, win, doc) {
                 $DI_txtCostoFOB.val(data.Result.CostoFOB);
                 $DI_txtValorUnitario.val(data.Result.VentaUnitaria);
                 if ($idRolUsuario.val() == $RolVenta_Costos.val()) {
+                    //Si tiene Costo FOB quiere decir que puede proseguir con el VALOR UNITARIO
                     if ($DI_txtCostoFOB.val() != "") {
+                        $DI_txtValorUnitario.removeAttr("disabled");
+                        $DI_txtValorUnitario.focus();
+                    }
+                    //Si tiene stock quiere decir que puede proseguir con el VALOR UNITARIO
+                    if ($DI_radTieneStock_Si.is(':checked')) {
                         $DI_txtValorUnitario.removeAttr("disabled");
                         $DI_txtValorUnitario.focus();
                     }
@@ -744,6 +765,24 @@ var cotvtadet = (function ($, win, doc) {
             opcGrillaItems = 1;
             LimpiarModalDetItem();
             MostrarDatosItem(data);
+            $DI_pnlCostos_PrecioVenta.css("display", "");
+            $DI_pnlCostos_CostoFOB.css("display", "none");
+            $DI_pnlCostos_ValorUnitario.css("display", "");
+            $DI_txtValorUnitario.removeAttr("disabled");
+            $DI_pnlCostos_TieneStock.css("display", "none");
+            $DI_pnlCostos_Calibracion.css("display", "none");
+            $DI_pnlCostos_Ganancia.css("display", "none");
+            $DI_pnlCostos_CompraLocal.css("display", "");
+            $DI_pnlCostos_ReqPlaca.css("display", "none");
+            $DI_pnlCostos_MantPrevent.css("display", "none");
+            $DI_pnlCostos_Manuales.css("display", "none");
+            $DI_pnlCostos_Videos.css("display", "none");
+            $DI_pnlCostos_InstaCapa.css("display", "none");
+            $DI_pnlCostos_GarantAdic.css("display", "none");
+            $DI_pnlCostos_GarantAdic_Combo.css("display", "none");
+            $DI_pnlCostos_ReqCliente.css("display", "none");
+            $DI_pnlCostos_ObsInsta.css("display", "none");
+            $DI_pnlDestinos.css("display", "none");
             $('#modalDetalleItem').modal('show');
         };
 
@@ -762,8 +801,29 @@ var cotvtadet = (function ($, win, doc) {
         var bMantPrevent = null;
         var bCalib = null;
 
-        if ($PermitirEditarValorizacion.val() == "S") {
+        if ($.trim($DI_txtCodigo.val()) == "") {
+            app.message.error("Validaci&oacute;n", "Campo C&oacute;digo no puede ser vac&iacute;o");
+            return false;
+        }
 
+        if ($DI_txtCantidad.val() == "") {
+            app.message.error("Validaci&oacute;n", "Campo Cantidad no puede ser vac&iacute;o");
+            return false;
+        }
+        else {
+            if (!app.validaNumeroEntero($DI_txtCantidad.val())) {
+                app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Cantidad");
+                return false;
+            }
+            else {
+                if (parseInt($DI_txtCantidad.val()) <= 0) {
+                    app.message.error("Validaci&oacute;n", "La cantidad debe ser mayor a 0.");
+                    return false;
+                }
+            }
+        }
+
+        if ($DI_pnlCostos_CostoFOB.css("display") != "none") {
             if ($DI_txtCostoFOB.attr("readonly") != "readonly" && $DI_txtCostoFOB.attr("disabled") != "disabled") {
                 if (!app.validaNumeroDecimal($DI_txtCostoFOB.val())) {
                     app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Costo FOB");
@@ -776,7 +836,9 @@ var cotvtadet = (function ($, win, doc) {
                     }
                 }
             }
+        }
 
+        if ($DI_pnlCostos_ValorUnitario.css("display") != "none") {
             if ($DI_txtValorUnitario.attr("readonly") != "readonly" && $DI_txtValorUnitario.attr("disabled") != "disabled") {
                 if (!app.validaNumeroDecimal($DI_txtValorUnitario.val())) {
                     app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Valor Unitario");
@@ -789,32 +851,9 @@ var cotvtadet = (function ($, win, doc) {
                     }
                 }
             }
-
         }
-        else {
 
-            if ($.trim($DI_txtCodigo.val()) == "") {
-                app.message.error("Validaci&oacute;n", "Campo C&oacute;digo no puede ser vac&iacute;o");
-                return false;
-            }
-
-            if ($DI_txtCantidad.val() == "") {
-                app.message.error("Validaci&oacute;n", "Campo Cantidad no puede ser vac&iacute;o");
-                return false;
-            }
-            else {
-                if (!app.validaNumeroEntero($DI_txtCantidad.val())) {
-                    app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Cantidad");
-                    return false;
-                }
-                else {
-                    if (parseInt($DI_txtCantidad.val()) <= 0) {
-                        app.message.error("Validaci&oacute;n", "La cantidad debe ser mayor a 0.");
-                        return false;
-                    }
-                }
-            }
-
+        if ($DI_pnlCostos_Ganancia.css("display") != "none") {
             if ($DI_txtGanancia.attr("readonly") != "readonly" && $DI_txtGanancia.attr("disabled") != "disabled") {
                 if (!app.validaNumeroDecimal($DI_txtGanancia.val())) {
                     app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Ganancia");
@@ -827,83 +866,124 @@ var cotvtadet = (function ($, win, doc) {
                     }
                 }
             }
+        }
 
+        if ($DI_pnlCostos_GarantAdic.css("display") != "none") {
             if ($DI_cmbGarantias.attr("readonly") != "readonly" && $DI_cmbGarantias.attr("disabled") != "disabled") {
                 if ($.trim($DI_cmbGarantias.val()) == "") {
                     app.message.error("Validaci&oacute;n", "Se debe elegir el tipo de garant&iacute;a.");
                     return false;
                 }
             }
-
-            if (!$DI_radTieneStock_Si.is(':checked') && !$DI_radTieneStock_No.is(':checked')) {
-                app.message.error("Validaci&oacute;n", "Elija Si o No si el producto tiene STOCK");
-                return false;
-            }
-
-            if (!$DI_radReqPlaca_Si.is(':checked') && !$DI_radReqPlaca_No.is(':checked')) {
-                app.message.error("Validaci&oacute;n", "Elija Si o No en campo de Requiere placa");
-                return false;
-            }
-            
-            if (!$DI_radManuales_Si.is(':checked') && !$DI_radManuales_No.is(':checked')) {
-                app.message.error("Validaci&oacute;n", "Elija Si o No en campo Manuales");
-                return false;
-            }
-
-            if (!$DI_radVideos_Si.is(':checked') && !$DI_radVideos_No.is(':checked')) {
-                app.message.error("Validaci&oacute;n", "Elija Si o No en campo Videos");
-                return false;
-            }
-
-            if (!$DI_radInstaCapa_Si.is(':checked') && !$DI_radInstaCapa_No.is(':checked')) {
-                app.message.error("Validaci&oacute;n", "Elija Si o No en campo Instalaci&oacute;n y Capacitaci&oacute;n");
-                return false;
-            }
-
-            if (!$DI_radGarantAdic_Si.is(':checked') && !$DI_radGarantAdic_No.is(':checked')) {
-                app.message.error("Validaci&oacute;n", "Elija Si o No en campo Garant&iacute;a adicional");
-                return false;
-            }
-
-            if (!$DI_radMantPrevent_Si.is(':checked') && !$DI_radMantPrevent_No.is(':checked')) {
-                app.message.error("Validaci&oacute;n", "Elija Si o No en campo Mantenimiento Preventivo");
-                return false;
-            }
-
-            if (!$DI_radCalibracion_Si.is(':checked') && !$DI_radCalibracion_No.is(':checked')) {
-                app.message.error("Validaci&oacute;n", "Elija Si o No en campo Calibraci&oacute;n");
-                return false;
-            }
-
-            if ($DI_radReqPlaca_Si.is(':checked')) { bReqPlaca = true; }
-            if ($DI_radReqPlaca_No.is(':checked')) { bReqPlaca = false; }
-
-            if ($DI_radCompraLocal_Si.is(':checked')) { bCompraLocal = true; }
-            if ($DI_radCompraLocal_No.is(':checked')) { bCompraLocal = false; }
-
-            if ($DI_radManuales_Si.is(':checked')) { bManuales = true; }
-            if ($DI_radManuales_No.is(':checked')) { bManuales = false; }
-
-            if ($DI_radVideos_Si.is(':checked')) { bVideos = true; }
-            if ($DI_radVideos_No.is(':checked')) { bVideos = false; }
-
-            if ($DI_radInstaCapa_Si.is(':checked')) { bInstaCapa = true; }
-            if ($DI_radInstaCapa_No.is(':checked')) { bInstaCapa = false; }
-
-            if ($DI_radMantPrevent_Si.is(':checked')) { bMantPrevent = true; }
-            if ($DI_radMantPrevent_No.is(':checked')) { bMantPrevent = false; }
-
-            if ($DI_radGarantAdic_Si.is(':checked')) { bGarantiaAdic = true; }
-            if ($DI_radGarantAdic_No.is(':checked')) { bGarantiaAdic = false; }
-
-            if ($DI_radCalibracion_Si.is(':checked')) { bCalib = true; }
-            if ($DI_radCalibracion_No.is(':checked')) { bCalib = false; }
-
         }
+
+        if ($DI_pnlCostos_TieneStock.css("display") != "none") {
+            if ($DI_radTieneStock_Si.attr("readonly") != "readonly" && $DI_radTieneStock_Si.attr("disabled") != "disabled" &&
+                $DI_radTieneStock_No.attr("readonly") != "readonly" && $DI_radTieneStock_No.attr("disabled") != "disabled") {
+                if (!$DI_radTieneStock_Si.is(':checked') && !$DI_radTieneStock_No.is(':checked')) {
+                    app.message.error("Validaci&oacute;n", "Elija Si o No si el producto tiene STOCK");
+                    return false;
+                }
+            }
+        }
+
+        if ($DI_pnlCostos_ReqPlaca.css("display") != "none") {
+            if ($DI_radReqPlaca_Si.attr("readonly") != "readonly" && $DI_radReqPlaca_Si.attr("disabled") != "disabled" &&
+                $DI_radReqPlaca_No.attr("readonly") != "readonly" && $DI_radReqPlaca_No.attr("disabled") != "disabled") {
+                if (!$DI_radReqPlaca_Si.is(':checked') && !$DI_radReqPlaca_No.is(':checked')) {
+                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo de Requiere placa");
+                    return false;
+                }
+            }
+        }
+
+        if ($DI_pnlCostos_Manuales.css("display") != "none") {
+            if ($DI_radManuales_Si.attr("readonly") != "readonly" && $DI_radManuales_Si.attr("disabled") != "disabled" &&
+                $DI_radManuales_No.attr("readonly") != "readonly" && $DI_radManuales_No.attr("disabled") != "disabled") {
+                if (!$DI_radManuales_Si.is(':checked') && !$DI_radManuales_No.is(':checked')) {
+                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Manuales");
+                    return false;
+                }
+            }
+        }
+
+        if ($DI_pnlCostos_Videos.css("display") != "none") {
+            if ($DI_radVideos_Si.attr("readonly") != "readonly" && $DI_radVideos_Si.attr("disabled") != "disabled" &&
+                $DI_radVideos_No.attr("readonly") != "readonly" && $DI_radVideos_No.attr("disabled") != "disabled") {
+                if (!$DI_radVideos_Si.is(':checked') && !$DI_radVideos_No.is(':checked')) {
+                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Videos");
+                    return false;
+                }
+            }
+        }
+
+        if ($DI_pnlCostos_InstaCapa.css("display") != "none") {
+            if ($DI_radInstaCapa_Si.attr("readonly") != "readonly" && $DI_radInstaCapa_Si.attr("disabled") != "disabled" &&
+                $DI_radInstaCapa_No.attr("readonly") != "readonly" && $DI_radInstaCapa_No.attr("disabled") != "disabled") {
+                if (!$DI_radInstaCapa_Si.is(':checked') && !$DI_radInstaCapa_No.is(':checked')) {
+                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Instalaci&oacute;n y Capacitaci&oacute;n");
+                    return false;
+                }
+            }
+        }
+
+        if ($DI_pnlCostos_GarantAdic.css("display") != "none") {
+            if ($DI_radGarantAdic_Si.attr("readonly") != "readonly" && $DI_radGarantAdic_Si.attr("disabled") != "disabled" &&
+                $DI_radGarantAdic_No.attr("readonly") != "readonly" && $DI_radGarantAdic_No.attr("disabled") != "disabled") {
+                if (!$DI_radGarantAdic_Si.is(':checked') && !$DI_radGarantAdic_No.is(':checked')) {
+                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Garant&iacute;a adicional");
+                    return false;
+                }
+            }
+        }
+
+        if ($DI_pnlCostos_MantPrevent.css("display") != "none") {
+            if ($DI_radMantPrevent_Si.attr("readonly") != "readonly" && $DI_radMantPrevent_Si.attr("disabled") != "disabled" &&
+                $DI_radMantPrevent_No.attr("readonly") != "readonly" && $DI_radMantPrevent_No.attr("disabled") != "disabled") {
+                if (!$DI_radMantPrevent_Si.is(':checked') && !$DI_radMantPrevent_No.is(':checked')) {
+                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Mantenimiento Preventivo");
+                    return false;
+                }
+            }
+        }
+
+        if ($DI_pnlCostos_Calibracion.css("display") != "none") {
+            if ($DI_radCalibracion_Si.attr("readonly") != "readonly" && $DI_radCalibracion_Si.attr("disabled") != "disabled" &&
+                $DI_radCalibracion_No.attr("readonly") != "readonly" && $DI_radCalibracion_No.attr("disabled") != "disabled") {
+                if (!$DI_radCalibracion_Si.is(':checked') && !$DI_radCalibracion_No.is(':checked')) {
+                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Calibraci&oacute;n");
+                    return false;
+                }
+            }
+        }
+
+        if ($DI_radReqPlaca_Si.is(':checked')) { bReqPlaca = true; }
+        if ($DI_radReqPlaca_No.is(':checked')) { bReqPlaca = false; }
+
+        if ($DI_radCompraLocal_Si.is(':checked')) { bCompraLocal = true; }
+        if ($DI_radCompraLocal_No.is(':checked')) { bCompraLocal = false; }
+
+        if ($DI_radManuales_Si.is(':checked')) { bManuales = true; }
+        if ($DI_radManuales_No.is(':checked')) { bManuales = false; }
+
+        if ($DI_radVideos_Si.is(':checked')) { bVideos = true; }
+        if ($DI_radVideos_No.is(':checked')) { bVideos = false; }
+
+        if ($DI_radInstaCapa_Si.is(':checked')) { bInstaCapa = true; }
+        if ($DI_radInstaCapa_No.is(':checked')) { bInstaCapa = false; }
+
+        if ($DI_radMantPrevent_Si.is(':checked')) { bMantPrevent = true; }
+        if ($DI_radMantPrevent_No.is(':checked')) { bMantPrevent = false; }
+
+        if ($DI_radGarantAdic_Si.is(':checked')) { bGarantiaAdic = true; }
+        if ($DI_radGarantAdic_No.is(':checked')) { bGarantiaAdic = false; }
+
+        if ($DI_radCalibracion_Si.is(':checked')) { bCalib = true; }
+        if ($DI_radCalibracion_No.is(':checked')) { bCalib = false; }
 
         if ($DI_radTieneStock_Si.is(':checked')) { bTieneStock = true; }
         if ($DI_radTieneStock_No.is(':checked')) { bTieneStock = false; }
-        
+
         method = "POST";
         url = "BandejaSolicitudesVentas/GrabarDatosCotDetItem";
         var objDatos = {

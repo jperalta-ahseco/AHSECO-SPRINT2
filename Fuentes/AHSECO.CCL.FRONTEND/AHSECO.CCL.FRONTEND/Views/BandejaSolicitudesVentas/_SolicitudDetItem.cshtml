@@ -81,7 +81,7 @@
                         <fieldset class="form-group">
                             <legend><b>Informaci&oacute;n de Costos</b></legend>
                             <div id="DI_pnlCostos_PrecioVenta" class="row container-fluid form-group" style="@(ViewBag.PermitirEditarValorizacion ? "" : "display:none")">
-                                <div class="col-md-6 col-content-middleleft">
+                                <div id="DI_pnlCostos_CostoFOB" class="col-md-6 col-content-middleleft">
                                     <div class="col-md-3">
                                         <label for="DI_txtCostoFOB">Costo FOB: </label>
                                     </div>
@@ -89,7 +89,7 @@
                                         <input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") placeholder="Ingresar Costo" type="text" maxlength="20" class="form-control input-sm" id="DI_txtCostoFOB" value="">
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-content-middleleft">
+                                <div id="DI_pnlCostos_ValorUnitario" class="col-md-6 col-content-middleleft">
                                     <div class="col-md-3">
                                         <label for="DI_txtValorUnitario">Val. Unitario: </label>
                                     </div>
@@ -99,7 +99,7 @@
                                 </div>
                             </div>
                             <div class="row container-fluid col-content-middleleft">
-                                <div class="col-md-4 col-content-middleleft">
+                                <div id="DI_pnlCostos_TieneStock" class="col-md-4 col-content-middleleft">
                                     <div class="col-md-5">
                                         <label for="DI_radTieneStock">TIENE STOCK: </label>
                                     </div>
@@ -120,7 +120,7 @@
                                         </table>
                                     </div>
                                 </div>
-                                <div class="col-md-4 col-content-middleleft">
+                                <div id="DI_pnlCostos_Calibracion" class="col-md-4 col-content-middleleft">
                                     <div class="col-md-5">
                                         <label for="DI_radCalibracion" style="flex: 0 0 120px">Calibraci&oacute;n: </label>
                                     </div>
@@ -151,7 +151,7 @@
                                 </div>
                             </div>
                             <div class="row container-fluid col-content-middleleft">
-                                <div class="col-md-4 col-content-middleleft">
+                                <div id="DI_pnlCostos_CompraLocal" class="col-md-4 col-content-middleleft">
                                     <div class="col-md-5">
                                         <label for="DI_radCompraLocal">Compra Local: </label>
                                     </div>
@@ -172,7 +172,7 @@
                                         </table>
                                     </div>
                                 </div>
-                                <div class="col-md-4 col-content-middleleft">
+                                <div id="DI_pnlCostos_ReqPlaca" class="col-md-4 col-content-middleleft">
                                     <div class="col-md-5">
                                         <label for="DI_radReqPlaca" style="flex: 0 0 120px">Requiere Placa: </label>
                                     </div>
@@ -193,7 +193,7 @@
                                         </table>
                                     </div>
                                 </div>
-                                <div class="col-md-4 col-content-middleleft">
+                                <div id="DI_pnlCostos_MantPrevent" class="col-md-4 col-content-middleleft">
                                     <div class="col-md-7">
                                         <label for="DI_radMantPrevent" style="flex: 0 0 120px">Mantenimiento Preventivo: </label>
                                     </div>
@@ -216,7 +216,7 @@
                                 </div>
                             </div>
                             <div class="row container-fluid col-content-middleleft">
-                                <div class="col-md-4 col-content-middleleft">
+                                <div id="DI_pnlCostos_Manuales" class="col-md-4 col-content-middleleft">
                                     <div class="col-md-5">
                                         <label for="DI_radManuales" style="flex: 0 0 120px">Manuales: </label>
                                     </div>
@@ -237,7 +237,7 @@
                                         </table>
                                     </div>
                                 </div>
-                                <div class="col-md-4 col-content-middleleft">
+                                <div id="DI_pnlCostos_Videos" class="col-md-4 col-content-middleleft">
                                     <div class="col-md-5">
                                         <label for="DI_radVideos">Videos: </label>
                                     </div>
@@ -258,7 +258,7 @@
                                         </table>
                                     </div>
                                 </div>
-                                <div class="col-md-4 col-content-middleleft">
+                                <div id="DI_pnlCostos_InstaCapa" class="col-md-4 col-content-middleleft">
                                     <div class="col-md-7">
                                         <label for="DI_radInstaCapa">Instalaci&oacute;n y Capacitaci&oacute;n: </label>
                                     </div>
@@ -281,7 +281,7 @@
                                 </div>
                             </div>
                             <div class="row container-fluid col-content-middleleft">
-                                <div class="col-md-4 col-content-middleleft">
+                                <div id="DI_pnlCostos_GarantAdic" class="col-md-4 col-content-middleleft">
                                     <div class="col-md-5">
                                         <label for="DI_radGarantAdic" style="flex: 0 0 120px">Garantía Adicional: </label>
                                     </div>
@@ -302,7 +302,7 @@
                                         </table>
                                     </div>
                                 </div>
-                                <div class="col-md-4 col-content-middleleft">
+                                <div id="DI_pnlCostos_GarantAdic_Combo" class="col-md-4 col-content-middleleft">
                                     <div class="col-md-5">
                                         <label for="DI_cmbGarantias" style="flex: 0 0 120px">Tipo de Garantía Adicional: </label>
                                     </div>
@@ -313,7 +313,7 @@
                                 </div>
                             </div>
                             <div class="row container-fluid col-content-middleleft">
-                                <div class="col-md-6">
+                                <div id="DI_pnlCostos_ReqCliente" class="col-md-6">
                                     <div class="col-md-11">
                                         <div class="row container-fluid">
                                             <label for="DI_txtReqCliente">Requisitos del Cliente: </label>
@@ -321,7 +321,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div id="DI_pnlCostos_ObsInsta" class="col-md-6">
                                     <div class="col-md-11">
                                         <div class="row container-fluid">
                                             <label for="DI_txtObsInsta">Observaciones de la Instalación: </label>
@@ -333,7 +333,7 @@
                         </fieldset>
                     </div>
                     <div class="container-fluid">
-                        <div class="col-md-12">
+                        <div id="DI_pnlDestinos" class="col-md-12">
                             <fieldset>
                                 <legend><b>Detalle de Destinos</b></legend>
                                 <div class="text-right" style="padding-top: 2px; padding-bottom: 2px">
