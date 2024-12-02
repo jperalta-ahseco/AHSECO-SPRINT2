@@ -906,5 +906,42 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                 return result;
             }
         }
+
+        public IEnumerable<DetalleInfoSolDTO> ObtenerDetalleInfoSolicitud(long codDetalle)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+
+            using (var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+                var parameters = new DynamicParameters();
+                parameters.Add("ID_COTDETALLE", codDetalle);
+
+                var result = connection.Query(
+                    sql: "USP_SEL_INFO_SOL",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new DetalleInfoSolDTO
+                    {
+                        IdCodigoDetalle = i.Single(d => d.Key.Equals("ID_COTDETALLE")).Value.Parse<long>(),
+                        IndicadorInfoManual = i.Single(d => d.Key.Equals("INDINFOMANUAL")).Value.Parse<string>(),
+                        IndicadorCalibracion = i.Single(d => d.Key.Equals("INDCALIB")).Value.Parse<string>(),
+                        IndicadorInfoVideo = i.Single(d => d.Key.Equals("INDINFOVIDEO")).Value.Parse<string>(),
+                        IndicadorMantPreventivo = i.Single(d => d.Key.Equals("INDMANTPREVENT")).Value.Parse<string>(),
+                        IndicadorInstalacion = i.Single(d => d.Key.Equals("INDINSTA")).Value.Parse<string>(),
+                        IndicadorCapacitacion = i.Single(d => d.Key.Equals("INDCAPA")).Value.Parse<string>(),
+                        IndicadorRequierePlaca = i.Single(d => d.Key.Equals("INDREQPLACA")).Value.Parse<string>(),
+                        IndicadorGarantiaAdi = i.Single(d => d.Key.Equals("INDGARANADIC")).Value.Parse<string>(),
+                        CodGarantia = i.Single(d => d.Key.Equals("CODGARANADIC")).Value.Parse<string>(),
+                        NomGarantia = i.Single(d => d.Key.Equals("NOMGARANTIADIC")).Value.Parse<string>(),
+                        ObservacionCliente = i.Single(d => d.Key.Equals("OBSCLIENTE")).Value.Parse<string>(),
+                        ObservacionDespacho = i.Single(d => d.Key.Equals("OBSDESPACHO")).Value.Parse<string>(),
+                        Dimensiones = i.Single(d => d.Key.Equals("DIMENSIONES")).Value.Parse<string>()
+                    });
+                connection.Close();
+                return result;
+            };
+        }
     }
 }

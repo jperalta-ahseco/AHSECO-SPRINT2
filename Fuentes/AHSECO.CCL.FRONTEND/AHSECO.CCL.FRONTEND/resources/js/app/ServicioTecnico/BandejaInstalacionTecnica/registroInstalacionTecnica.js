@@ -162,6 +162,19 @@
     var $btnAsignarTecnico = $('#btnAsignarTecnico');
     var $tituloModalObservacion = $('#tituloModalObservacion');
 
+    var $txtTieneManual = $('#txtTieneManual');
+    var $txtTieneCalib = $('#txtTieneCalib');
+    var $txtTieneVideo = $('#txtTieneVideo');
+    var $txtTieneMantPrev = $('#txtTieneMantPrev');
+    var $txtTieneInst = $('#txtTieneInst');
+    var $txtTieneCapacitacion = $('#txtTieneCapacitacion');
+    var $txtReqPlaca = $('#txtReqPlaca');
+    var $txtTieneGarantiaAdi = $('#txtTieneGarantiaAdi');
+    var $txtGarantiaAdi = $('#txtGarantiaAdi');
+    var $txtDimension = $('#txtDimension');
+    var $txtObsCliente = $('#txtObsCliente');
+    var $txtObsDespacho = $('#txtObsDespacho');
+    var $btnInfoAdicional = $('#btnInfoAdicional');
 
     /*Modal Buscar Tecnicos*/
     var $cmbTipDocTecnico = $('#cmbTipDocTecnico');
@@ -214,6 +227,7 @@
         $btnRegistrarTecnicoExterno.click(CrearTecnico3ro_a_Producto);
         $btnAsignarTecnico.click(btnEjecutarAsignacionClick);
         $btnAsignarTecnicoCerrar.click($btnAsignarTecnicoCerrar_click);
+        $btnInfoAdicional.click($btnInfoAdicional_click);
         //$dateSolicitud.val(hoy());
         $fileCargaDocumentoSustento.on("change", $fileCargaDocumentoSustento_change);
         CargarTipoDocumento(3); //Cambiar a tipo de proceso Instalación Técnica.
@@ -239,6 +253,35 @@
         cargarDatos();
         $modalElementosDeProducto.modal('hide');
 
+    }
+
+    function $btnInfoAdicional_click() {
+
+        cargarDataInfoAdicional(1);
+    }
+
+    function cargarDataInfoAdicional(codDetalle) {
+        var method = "POST";
+        var url = "BandejaInstalacionTecnica/ObtenerDetalleInfoSolicitud?codDetalle=" + codDetalle;
+        var objParams = ""
+
+        var fnDoneCallback = function (data) {
+
+            $txtTieneManual.val(data.Result[0].IndicadorInfoManual);
+            $txtTieneCalib.val(data.Result[0].IndicadorCalibracion);
+            $txtTieneVideo.val(data.Result[0].IndicadorInfoVideo);
+            $txtTieneMantPrev.val(data.Result[0].IndicadorMantPreventivo);
+            $txtTieneInst.val(data.Result[0].IndicadorInstalacion);
+            $txtTieneCapacitacion.val(data.Result[0].IndicadorCapacitacion);
+            $txtReqPlaca.val(data.Result[0].IndicadorRequierePlaca);
+            $txtTieneGarantiaAdi.val(data.Result[0].IndicadorGarantiaAdi);
+            $txtGarantiaAdi.val(data.Result[0].NomGarantia);
+            $txtDimension.val(data.Result[0].Dimensiones);
+            $txtObsCliente.val(data.Result[0].ObservacionCliente);
+            $txtObsDespacho.val(data.Result[0].ObservacionDespacho);
+
+        }
+        return app.llamarAjax(method, url, objParams, fnDoneCallback, null, null, null);
     }
 
 

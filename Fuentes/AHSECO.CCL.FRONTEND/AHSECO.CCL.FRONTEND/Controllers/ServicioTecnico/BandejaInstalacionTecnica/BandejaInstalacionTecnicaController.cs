@@ -755,6 +755,13 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
             return Json(result);
         }
 
+        public JsonResult ObtenerDetalleInfoSolicitud(long codDetalle)
+        {
+            var instalacionTecnicaBL = new InstalacionTecnicaBL();
+            var result = instalacionTecnicaBL.ObtenerDetalleInfoSolicitud(codDetalle);
+            return Json(result);
+        }
+
         #region Tecnico/Empleados
         public JsonResult ObtenerTecnico(FiltroEmpleadosDTO filtroEmpleadosDTO)
         {
