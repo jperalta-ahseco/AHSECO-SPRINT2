@@ -917,7 +917,7 @@
             $txtCargoContacto.val(requerimiento.CargoContacto);
             $txtTelefContacto.val(requerimiento.TelefonoContacto);
             $txtEstablecimientoCont.val(requerimiento.Establecimiento);
-            $cmbGarantias.val(requerimiento.CodGarantia).trigger('change.select2');
+            $cmbGarantias.val(requerimiento.Garantia).trigger('change.select2');
             $cmbTipVenta.val(requerimiento.TipoVenta).trigger('change.select2');
 
         if ($tipoproceso.val() == "") {
