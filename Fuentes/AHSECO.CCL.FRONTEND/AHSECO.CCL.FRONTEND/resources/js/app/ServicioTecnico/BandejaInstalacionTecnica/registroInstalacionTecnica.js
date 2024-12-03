@@ -544,7 +544,7 @@
                 else {
                     obtenerDetalleInstalacion();
                 }
-            };
+            }
 
             var fnNo = function () {
                 if (data.Result.Codigo == 1) {
@@ -557,17 +557,16 @@
                 else {
                     obtenerDetalleInstalacion();
                 }
-            };
+            }
 
-            app.message.confirm("Éxito", "Asígnación completada, ¿Desea agregar un comentario adicional?","Sí","No",fnSi,fnNo);
-            //ObtenerListClientevsAsesor();
+            app.message.confirm("Éxito", "Asignación completada, ¿Desea agregar un comentario adicional?","Sí","No",fnSi,fnNo);
         }
         var fnFailCallBack = function () {
             app.message.error("Validación", "Se produjo un error en la asignación.");
             return;
         }
 
-        app.llamarAjax(method, url, objParams, fnDoneCallback, fnFailCallBack, null, mensajes.llenarAsignaciones);
+        app.llamarAjax(method, url, objParams, fnDoneCallback, fnFailCallBack, null, null);
     }
 
     function obtenerDetalleInstalacion() {
@@ -1716,7 +1715,7 @@
                         Observacion: $txtObservacion.val(),
                         Nombre_Usuario: $nombreusuario.val(),
                         Id_WorkFlow: $codigoWorkflow.val(),
-                        Estado_Instancia: $estadoReq.val
+                        Estado_Instancia: $estadoReq.val()
                     }
                 );
                 var nuevoTr = "<tr id=row" + registroInstalacionTec.contadorObservaciones + ">" +
@@ -1927,6 +1926,15 @@
             registroInstalacionTec.requerimiento = [];
             adjuntos = [];
             $contadordoc.val("");
+
+            if ($estadoReq.val() === "STINS" || $estadoReq.val() === "STFIN") {
+                $btnEditarReq.hide();
+            }
+
+            if ($tipoproceso.val() === "V") {
+                $btnAgregarDocumento.hide();
+                $btnAgregarObservacion.hide();
+            }
 
             var method = "POST";
             var url = "BandejaInstalacionTecnica/ObtenerMainInstalacion"
@@ -2392,7 +2400,10 @@
     };
     function VerElementosdeProducto(codigo) {
         $txtTecnico.val("");
-        $hdnIdTecnico.val("");  
+        $hdnIdTecnico.val("");
+        $txtEmpresaTecnico.val("");
+        $txtEmpresaTecnico.prop('disabled', true);
+        LimpiarTecnicoExterno();
         registroInstalacionTec.xasignar = [];
         var elementos = [];
         var detalle = productos.filter(producto => producto.Id == codigo)
@@ -2402,6 +2413,18 @@
         $modalElementosDeProducto.modal('toggle');
         $hdnIdProduct.val(codigo);
     };
+
+    function LimpiarTecnicoExterno() {
+        $txtNombreTecnico.val('');
+        $txtApellidoPaternoTec.val('');
+        $txtApellidoMaternoTec.val('');
+        $txtNumDocumento.val('');
+        $txtTelefono.val('');
+        $txtCorreo.val('');
+        $txtCodUbicacion.val('');
+        $hdnIdZona.val('');
+        $txtZona.val('');
+    }
 
     function cargarTablaElementosdDeProducto(listProductos) {
         var data = {}
