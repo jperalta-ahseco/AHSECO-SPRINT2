@@ -25,7 +25,7 @@
         <div class="modal-body d-flex justify-content-center" align-items-center>
             <form id="formItem" class="d-flex flex-row">
                 <div class="row d-flex justify-content-center">
-                    <div class="container-fluid">
+                    <div id="DI_pnlInfoGeneral" class="container-fluid">
                         <fieldset>
                             <legend><b>Informaci&oacute;n General</b></legend>
                             <div class="col-md-5">
@@ -55,7 +55,7 @@
                                         <textarea disabled placeholder="Ingresar nombre de producto" type="text" rows="2" class="form-control input-sm" id="DI_txtDescripcion" value=""></textarea>
                                     </div>
                                 </div>
-                                <div class="row container-fluid col-content-middleleft form-group">
+                                <div id="DI_pnlInfoGeneral_Dimensiones" class="row container-fluid col-content-middleleft form-group">
                                     <div class="col-md-3">
                                         <label for="DI_txtDimensiones">Dimensiones: </label>
                                     </div>
@@ -258,14 +258,14 @@
                                         </table>
                                     </div>
                                 </div>
-                                <div id="DI_pnlCostos_InstaCapa" class="col-md-4 col-content-middleleft">
+                                <div id="DI_pnlCostos_Instalacion" class="col-md-4 col-content-middleleft">
                                     <div class="col-md-7">
-                                        <label for="DI_radInstaCapa">Instalaci&oacute;n y Capacitaci&oacute;n: </label>
+                                        <label for="DI_radInstalacion">Instalaci&oacute;n: </label>
                                     </div>
                                     <div class="col-md-2">
                                         <table style="width:100%">
                                             <tr>
-                                                <td><input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") type="radio" name="DI_radInstaCapa" class="input-sm" id="DI_radInstaCapa_Si"></td>
+                                                <td><input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") type="radio" name="DI_radInstalacion" class="input-sm" id="DI_radInstalacion_Si"></td>
                                                 <td style="padding-top:5px"><label>SI</label></td>
                                             </tr>
                                         </table>
@@ -273,7 +273,7 @@
                                     <div class="col-md-2">
                                         <table style="width:100%">
                                             <tr>
-                                                <td><input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") type="radio" name="DI_radInstaCapa" class="input-sm" id="DI_radInstaCapa_No"></td>
+                                                <td><input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") type="radio" name="DI_radInstalacion" class="input-sm" id="DI_radInstalacion_No"></td>
                                                 <td style="padding-top:5px"><label>NO</label></td>
                                             </tr>
                                         </table>
@@ -306,9 +306,30 @@
                                     <div class="col-md-5">
                                         <label for="DI_cmbGarantias" style="flex: 0 0 120px">Tipo de Garantía Adicional: </label>
                                     </div>
-                                    <div class="col-md-7">
+                                    <div class="col-md-6">
                                         <select class="form-control select2 input-sm" style="width:100%;" id="DI_cmbGarantias" data-selected="">
                                         </select>
+                                    </div>
+                                </div>
+                                <div id="DI_pnlCostos_Capacitacion" class="col-md-4 col-content-middleleft">
+                                    <div class="col-md-7">
+                                        <label for="DI_radCapacitacion">Capacitaci&oacute;n: </label>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <table style="width:100%">
+                                            <tr>
+                                                <td><input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") type="radio" name="DI_radCapacitacion" class="input-sm" id="DI_radCapacitacion_Si"></td>
+                                                <td style="padding-top:5px"><label>SI</label></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <table style="width:100%">
+                                            <tr>
+                                                <td><input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") type="radio" name="DI_radCapacitacion" class="input-sm" id="DI_radCapacitacion_No"></td>
+                                                <td style="padding-top:5px"><label>NO</label></td>
+                                            </tr>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
@@ -336,7 +357,7 @@
                         <div id="DI_pnlDestinos" class="col-md-12">
                             <fieldset>
                                 <legend><b>Detalle de Destinos</b></legend>
-                                <div class="text-right" style="padding-top: 2px; padding-bottom: 2px">
+                                <div class="text-right" style="padding-bottom: 2px">
                                     <button style="@(ViewBag.PermitirEditarCotDetItem ? "" : "display:none")" class="btn btn-default btn-sm" type="button" data-toggle="modal" tabindex="14" onclick="javascript:cotvtacostos.agregarCostoItem('1')"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar Costo</button>
                                 </div>
                                 <div class="row container-fluid">

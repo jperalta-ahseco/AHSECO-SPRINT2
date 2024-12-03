@@ -25,6 +25,11 @@
     var idflujo = VariableSesion.getCadena("idFlujo");
     var idWorkFlow = VariableSesion.getCadena("idWorkFlow");
     var idCotizacion = ViewBag.IdCotizacion;
+    var TipoSol_Servicio = ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.Servicio;
+    var TipoSol_RepOComes = ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.RepuestosOComestibles;
+    var TipoSol_ServYRep = ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.ServiciosYRepuestos;
+    var TipoSol_VentaMat = ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.VentaMateriales;
+    var TipoSol_VentaEqu = ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.VentaEquipos;
     ViewBag.disabled = false; //
     if (NombreRol != "SGI_VENTA_ASESOR" && NombreRol != "SGI_VENTA_COORDINASERV" && NombreRol != "SGI_VENTA_COORDINAATC") //habilitado solo cuando es nuevo y con  los perfiles de vendedores
     {
@@ -73,6 +78,8 @@
 <input type="hidden" id="DsctoRequiereAprobacion" value="@strDsctoRequiereAprobacion" />
 <input type="hidden" id="DsctoAprobado" value="@strDsctoAprobado" />
 <input type="hidden" id="DsctoRespondido" value="@strDsctoRespondido" />
+<input type="hidden" id="TipoSol_VentaMateriales" value="@TipoSol_VentaMat" />
+<input type="hidden" id="TipoSol_VentaEquipos" value="@TipoSol_VentaEqu" />
 
 <div class="container-fluid">
     <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
@@ -377,7 +384,10 @@
                                                                 <a href="#navCotDet" data-toggle="tab" style="font-weight:bold; color:black;" tabindex="20"><i class="fa fa-cubes" aria-hidden="true"></i> Detalle de Productos</a>
                                                             </li>
                                                             <li class="" id="tabInsta" style="@(ViewBag.PermitirTabInsta ? "" : "display:none")">
-                                                                <a href="#navInsta" onclick="javascript:cotvtacostos.setTab_InstCapa()" data-toggle="tab" style="font-weight: bold; color: black; " tabindex="20"><i class="fa fa-gears" aria-hidden="true"></i> Instalaci&oacute;n</a>
+                                                                <a href="#navInsta" onclick="javascript:cotvtacostos.setTab_Instalacion()" data-toggle="tab" style="font-weight: bold; color: black; " tabindex="20"><i class="fa fa-gears" aria-hidden="true"></i> Instalaci&oacute;n</a>
+                                                            </li>
+                                                            <li class="" id="tabCapa" style="@(ViewBag.PermitirTabCapa ? "" : "display:none")">
+                                                                <a href="#navCapa" onclick="javascript:cotvtacostos.setTab_Capacitacion()" data-toggle="tab" style="font-weight: bold; color: black; " tabindex="20"><i class="fa fa-gears" aria-hidden="true"></i> Instalaci&oacute;n</a>
                                                             </li>
                                                             <li class="" id="tabMantPrevent" style="@(ViewBag.PermitirTabMantPrevent ? "" : "display:none")">
                                                                 <a href="#navMantPrevent" onclick="javascript:cotvtacostos.setTab_MantPrevent()" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-male" aria-hidden="true"></i> Mantenimiento</a>
@@ -390,9 +400,6 @@
                                                             </li>
                                                             <li class="" id="tabVideos" style="@(ViewBag.PermitirTabVideos ? "" : "display:none")">
                                                                 <a href="#navVideos" onclick="javascript:cotvtacostos.setTab_Videos()" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-wrench" aria-hidden="true"></i> Videos</a>
-                                                            </li>
-                                                            <li class="" id="tabGarantiaAdic" style="@(ViewBag.PermitirTabGarantiaAdic ? "" : "display:none")">
-                                                                <a href="#navGarantiaAdic" onclick="javascript:cotvtacostos.setTab_GarantAdic()" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-wrench" aria-hidden="true"></i> Garantía Adicional</a>
                                                             </li>
                                                             <li class="" id="tabCalib" style="@(ViewBag.PermitirTabCalib ? "" : "display:none")">
                                                                 <a href="#navCalib" onclick="javascript:cotvtacostos.setTab_Calibra()" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-wrench" aria-hidden="true"></i> Calibraci&oacute;n</a>
@@ -432,6 +439,25 @@
                                                             <div id="navInsta" class="tab-pane fade">
                                                                 <div class="table-responsive">
                                                                     <table id="tblInstaCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th style="text-align:center; width:5%">Código</th>
+                                                                                <th style="text-align:center; width:5%">Producto</th>
+                                                                                <th style="text-align:center; width:5%">Unidad Medida</th>
+                                                                                <th style="text-align:center; width:5%">Cantidad</th>
+                                                                                <th style="text-align:center; width:5%">Costo Unitario</th>
+                                                                                <th style="text-align:center; width:5%">Costo Total</th>
+                                                                                <th style="text-align:center; width:5%">Acción</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                            <div id="navCapa" class="tab-pane fade">
+                                                                <div class="table-responsive">
+                                                                    <table id="tblCapaCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                                                         <thead>
                                                                             <tr>
                                                                                 <th style="text-align:center; width:5%">Código</th>
@@ -508,25 +534,6 @@
                                                             <div id="navVideos" class="tab-pane fade">
                                                                 <div class="table-responsive">
                                                                     <table id="tblVideosCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
-                                                                        <thead>
-                                                                            <tr>
-                                                                                <th style="text-align:center; width:5%">Código</th>
-                                                                                <th style="text-align:center; width:5%">Producto</th>
-                                                                                <th style="text-align:center; width:5%">Unidad Medida</th>
-                                                                                <th style="text-align:center; width:5%">Cantidad</th>
-                                                                                <th style="text-align:center; width:5%">Costo Unitario</th>
-                                                                                <th style="text-align:center; width:5%">Costo Total</th>
-                                                                                <th style="text-align:center; width:5%">Acción</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
-                                                            </div>
-                                                            <div id="navGarantiaAdic" class="tab-pane fade">
-                                                                <div class="table-responsive">
-                                                                    <table id="tblGaranAdicCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                                                         <thead>
                                                                             <tr>
                                                                                 <th style="text-align:center; width:5%">Código</th>

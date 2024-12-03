@@ -8,7 +8,8 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_MANT_TBM_COTDET_DESPACHO]
 @pId_CodDetalle BIGINT,
 @pIndInfoVideo CHAR(1),
 @pIndInfoManual CHAR(1),
-@pIndInstaCapa CHAR(1),
+@pIndInstalacion CHAR(1),
+@pIndCapacitacion CHAR(1),
 @pIndGarantiaAdic CHAR(1),
 @pCodGarantiaAdic NVARCHAR(10),
 @pIndMantPrevent CHAR(1),
@@ -39,7 +40,7 @@ BEGIN
 		
 		INSERT INTO [dbo].[TBM_COTDET_DESPACHO]
 		([ID_COTDETALLE],
-		[INDINFOVIDEO],[INDINFOMANUAL],[INDINSTACAPA],
+		[INDINFOVIDEO],[INDINFOMANUAL],[INDINSTALACION],[INDCAPACITACION],
 		[INDGARANADIC],[CODGARANADIC],[DIMENSIONES],
 		[INDCOMPRALOCAL],[OBSCLIENTE],[INDMANTPREVENT],
 		[INDCALIB],[INDREQPLACA],[OBSDESPACHO],
@@ -47,7 +48,7 @@ BEGIN
 		[MONTOPPRINC],[MONTOPACCE],[USR_REG],[FEC_REG])
 		VALUES
 		(@pId_CodDetalle,
-		@pIndInfoVideo,@pIndInfoManual,@pIndInstaCapa,
+		@pIndInfoVideo,@pIndInfoManual,@pIndInstalacion,@pIndCapacitacion,
 		@pIndGarantiaAdic,@pCodGarantiaAdic,@pDimensiones,
 		@pIndCompraLocal,@pObsCliente,@pIndMantPrevent,
 		@pIndCalib,@pIndReqPlaca,@pObsDespacho,
@@ -64,7 +65,7 @@ BEGIN
 		
 		UPDATE [dbo].[TBM_COTDET_DESPACHO]
 		SET ID_COTDETALLE = @pId_CodDetalle,
-		INDINFOVIDEO = @pIndInfoVideo, INDINFOMANUAL = @pIndInfoManual, INDINSTACAPA = @pIndInstaCapa, 
+		INDINFOVIDEO = @pIndInfoVideo, INDINFOMANUAL = @pIndInfoManual, INDINSTALACION = @pIndInstalacion, INDCAPACITACION = @pIndCapacitacion, 
 		INDGARANADIC = @pIndGarantiaAdic, CODGARANADIC = @pCodGarantiaAdic, DIMENSIONES = @pDimensiones, 
 		INDCOMPRALOCAL = @pIndCompraLocal, OBSCLIENTE = @pObsCliente, INDMANTPREVENT = @pIndMantPrevent,
 		INDCALIB = @pIndCalib, INDREQPLACA = @pIndReqPlaca, OBSDESPACHO = @pObsDespacho, 

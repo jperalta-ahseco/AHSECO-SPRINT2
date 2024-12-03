@@ -72,6 +72,33 @@ namespace AHSECO.CCL.COMUN
                 public static string Decamestral = "CIPR0013";
                 public static string Anual = "CIPR0014";
             }
+            public struct CostosEnvio
+            {
+                public static string LlaveEnMano = "CXCD0001";
+                public static string Instalacion = "CXCD0002";
+                public static string Capacitacion = "CXCD0003";
+                public static string Manuales = "CXCD0004";
+                public static string Videos = "CXCD0005";
+                public static string MantPrevent = "CXCD0006";
+                public static string Calibracion = "CXCD0007";
+                public static string Flete = "CXCD0008";
+            }
+            public struct TipoSolicitud
+            {
+                public static string Servicio = "TSOL0001";
+                public static string RepuestosOComestibles = "TSOL0002";
+                public static string ServiciosYRepuestos = "TSOL0003";
+                public static string VentaMateriales = "TSOL0004";
+                public static string VentaEquipos = "TSOL0005";
+                public struct Valor1
+                {
+                    public static string Servicio = "TSOL01";
+                    public static string RepuestosOComestibles = "TSOL02";
+                    public static string ServiciosYRepuestos = "TSOL03";
+                    public static string VentaMateriales = "TSOL04";
+                    public static string VentaEquipos = "TSOL05";
+                }
+            }
         }
 
         public struct Procesos
@@ -196,11 +223,11 @@ namespace AHSECO.CCL.COMUN
             public struct Costos
             {
                 public static string LLaveMano { get { return "CXCD0001"; } }
-                public static string InstCapa { get { return "CXCD0002"; } }
-                public static string Manuales { get { return "CXCD0003"; } }
-                public static string Videos { get { return "CXCD0004"; } }
-                public static string MantPrevent { get { return "CXCD0005"; } }
-                public static string GarantAdic { get { return "CXCD0006"; } }
+                public static string Instalacion { get { return "CXCD0002"; } }
+                public static string Capacitacion { get { return "CXCD0003"; } }
+                public static string Manuales { get { return "CXCD0004"; } }
+                public static string Videos { get { return "CXCD0005"; } }
+                public static string MantPrevent { get { return "CXCD0006"; } }
                 public static string Calibra { get { return "CXCD0007"; } }
                 public static string Flete { get { return "CXCD0008"; } }
             }

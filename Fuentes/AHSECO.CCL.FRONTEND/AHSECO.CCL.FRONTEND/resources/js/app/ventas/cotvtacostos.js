@@ -19,15 +19,27 @@
     var $DI_hdnCodigo = $("#DI_hdnCodigo");
     var $DI_txtDescripcion = $("#DI_txtDescripcion");
     var $DI_txtCantidad = $("#DI_txtCantidad");
+    var $DI_radInstalacion_Si = $("#DI_radInstalacion_Si");
+    var $DI_radInstalacion_No = $("#DI_radInstalacion_No");
+    var $DI_radCapacitacion_Si = $("#DI_radCapacitacion_Si");
+    var $DI_radCapacitacion_No = $("#DI_radCapacitacion_No");
+    var $DI_radManuales_Si = $("#DI_radManuales_Si");
+    var $DI_radManuales_No = $("#DI_radManuales_No");
+    var $DI_radVideos_Si = $("#DI_radVideos_Si");
+    var $DI_radVideos_No = $("#DI_radVideos_No");
+    var $DI_radMantPrevent_Si = $("#DI_radMantPrevent_Si");
+    var $DI_radMantPrevent_No = $("#DI_radMantPrevent_No");
+    var $DI_radCalibracion_Si = $("#DI_radCalibracion_Si");
+    var $DI_radCalibracion_No = $("#DI_radCalibracion_No");
     
     var $DI_tblCostos = $("#DI_tblCostos");
 
     var $CI_CodCosto_LLaveMano = $("#CI_CodCosto_LLaveMano");
-    var $CI_CodCosto_InstCapa = $("#CI_CodCosto_InstCapa");
+    var $CI_CodCosto_Instalacion = $("#CI_CodCosto_Instalacion");
+    var $CI_CodCosto_Capacitacion = $("#CI_CodCosto_Capacitacion");
     var $CI_CodCosto_Manuales = $("#CI_CodCosto_Manuales");
     var $CI_CodCosto_Videos = $("#CI_CodCosto_Videos");
     var $CI_CodCosto_MantPrevent = $("#CI_CodCosto_MantPrevent");
-    var $CI_CodCosto_GarantAdic = $("#CI_CodCosto_GarantAdic");
     var $CI_CodCosto_Calibra = $("#CI_CodCosto_Calibra");
     var $CI_CodCosto_Flete = $("#CI_CodCosto_Flete");
 
@@ -62,11 +74,11 @@
 
     var $tblDetCotCostos = $('#tblDetCotCostos');
     var $tblInstaCostos = $("#tblInstaCostos");
+    var $tblCapaCostos = $("#tblCapaCostos");
     var $tblMantPreventCostos = $("#tblMantPreventCostos");
     var $tblLLaveManoCostos = $("#tblLLaveManoCostos");
     var $tblManualesCostos = $("#tblManualesCostos");
     var $tblVideosCostos = $("#tblVideosCostos");
-    var $tblGarantAdicCostos = $("#tblGaranAdicCostos");
     var $tblCalibCostos = $("#tblCalibCostos");
     var $tblFleteCostos = $("#tblFleteCostos");
 
@@ -76,7 +88,6 @@
     var $tabLLaveMano = $("#tabLLaveMano");
     var $tabManuales = $("#tabManuales");
     var $tabVideos = $("#tabVideos");
-    var $tabGarantiaAdic = $("#tabGarantiaAdic");
     var $tabCalib = $("#tabCalib");
     var $tabFlete = $("#tabFlete");
 
@@ -96,16 +107,29 @@
 
         $CI_cmbCDItem.on("change", cargarCotDetSeleccionada);
 
+        $DI_radInstalacion_Si.click(cargarTipoCostos);
+        $DI_radInstalacion_No.click(cargarTipoCostos);
+        $DI_radCapacitacion_Si.click(cargarTipoCostos);
+        $DI_radCapacitacion_No.click(cargarTipoCostos);
+        $DI_radManuales_Si.click(cargarTipoCostos);
+        $DI_radManuales_No.click(cargarTipoCostos);
+        $DI_radVideos_Si.click(cargarTipoCostos);
+        $DI_radVideos_No.click(cargarTipoCostos);
+        $DI_radMantPrevent_Si.click(cargarTipoCostos);
+        $DI_radMantPrevent_No.click(cargarTipoCostos);
+        $DI_radCalibracion_Si.click(cargarTipoCostos);
+        $DI_radCalibracion_No.click(cargarTipoCostos);
+
         $CI_cmbTipoCosto.on("change", configurarModalCosto);
 
         $CI_btnGuardar.click(guardarCostoItem);
 
         cargarCostosItemsxTab($CI_CodCosto_LLaveMano.val());
-        cargarCostosItemsxTab($CI_CodCosto_InstCapa.val());
+        cargarCostosItemsxTab($CI_CodCosto_Instalacion.val());
+        cargarCostosItemsxTab($CI_CodCosto_Capacitacion.val());
         cargarCostosItemsxTab($CI_CodCosto_Manuales.val());
         cargarCostosItemsxTab($CI_CodCosto_Videos.val());
         cargarCostosItemsxTab($CI_CodCosto_MantPrevent.val());
-        cargarCostosItemsxTab($CI_CodCosto_GarantAdic.val());
         cargarCostosItemsxTab($CI_CodCosto_Calibra.val());
         cargarCostosItemsxTab($CI_CodCosto_Flete.val());
 
@@ -127,8 +151,12 @@
         setTab($CI_CodCosto_LLaveMano.val());
     }
 
-    function setTab_InstCapa() {
-        setTab($CI_CodCosto_InstCapa.val());
+    function setTab_Instalacion() {
+        setTab($CI_CodCosto_Instalacion.val());
+    }
+
+    function setTab_Capacitacion() {
+        setTab($CI_CodCosto_Capacitacion.val());
     }
 
     function setTab_Manuales() {
@@ -142,11 +170,7 @@
     function setTab_MantPrevent() {
         setTab($CI_CodCosto_MantPrevent.val());
     }
-
-    function setTab_GarantAdic() {
-        setTab($CI_CodCosto_GarantAdic.val());
-    }
-
+    
     function setTab_Calibra() {
         setTab($CI_CodCosto_Calibra.val());
     }
@@ -181,7 +205,8 @@
 
         //Se configura la pantalla por TIPO DE COSTO
 
-        if ($CI_cmbTipoCosto.val() == $CI_CodCosto_Manuales.val() || $CI_cmbTipoCosto.val() == $CI_CodCosto_Videos.val()) {
+        if ($CI_cmbTipoCosto.val() == $CI_CodCosto_Manuales.val() || $CI_cmbTipoCosto.val() == $CI_CodCosto_Videos.val() ||
+            $CI_cmbTipoCosto.val() == $CI_CodCosto_Capacitacion.val() || $CI_cmbTipoCosto.val() == $CI_CodCosto_Calibra.val()) {
             $CI_pnlInfoDestino.css("display", "none");
             $CI_txtUbicacion.attr("disabled", "disabled");
             $("#searchUbigeo").attr("data-target", "");
@@ -349,9 +374,44 @@
     }
 
     function cargarTipoCostos() {
+
+        var vInstalacion = null;
+        var vCapacitacion = null;
+        var vManuales = null;
+        var vVideos = null;
+        var vMantPrevent = null;
+        var vCalibracion = null;
+
+        if ($DI_radInstalacion_Si.is(':checked')) { vInstalacion = true; }
+        if ($DI_radInstalacion_No.is(':checked')) { vInstalacion = false; }
+
+        if ($DI_radCapacitacion_Si.is(':checked')) { vCapacitacion = true; }
+        if ($DI_radCapacitacion_No.is(':checked')) { vCapacitacion = false; }
+
+        if ($DI_radManuales_Si.is(':checked')) { vManuales = true; }
+        if ($DI_radManuales_No.is(':checked')) { vManuales = false; }
+
+        if ($DI_radVideos_Si.is(':checked')) { vVideos = true; }
+        if ($DI_radVideos_No.is(':checked')) { vVideos = false; }
+
+        if ($DI_radMantPrevent_Si.is(':checked')) { vMantPrevent = true; }
+        if ($DI_radMantPrevent_No.is(':checked')) { vMantPrevent = false; }
+
+        if ($DI_radCalibracion_Si.is(':checked')) { vCalibracion = true; }
+        if ($DI_radCalibracion_No.is(':checked')) { vCalibracion = false; }
+
         var method = "POST";
         var url = "BandejaSolicitudesVentas/ObtenerTipoCostos";
-        var oValores = {};
+        var oValores = {
+            CotizacionDespacho: {
+                IndInstalacion: vInstalacion,
+                IndCapacitacion: vCapacitacion,
+                IndInfoManual: vManuales,
+                IndInfoVideo: vVideos,
+                IndMantPreventivo: vMantPrevent,
+                IndCalibracion: vCalibracion
+            }
+        };
         var objParam = JSON.stringify(oValores);
         var fnDoneCallback = function (data) {
             var filters = {};
@@ -359,7 +419,7 @@
             filters.allowClear = false;
             app.llenarComboMultiResult($CI_cmbTipoCosto, data.Result, null, " ", "-- Seleccione --", filters);
         }
-        return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, null);
+        return app.llamarAjaxNoLoading(method, url, objParam, fnDoneCallback, null, null, null);
     }
 
     function cargarCotDetSeleccionada() {
@@ -387,8 +447,11 @@
         if (strCodCosto == $CI_CodCosto_LLaveMano.val()) {
             cargarGrillaCostos_Default(data, $tblLLaveManoCostos.attr("id"));
         }
-        if (strCodCosto == $CI_CodCosto_InstCapa.val()) {
+        if (strCodCosto == $CI_CodCosto_Instalacion.val()) {
             cargarGrillaCostos_Default(data, $tblInstaCostos.attr("id"));
+        }
+        if (strCodCosto == $CI_CodCosto_Capacitacion.val()) {
+            cargarGrillaCostos_Default(data, $tblCapaCostos.attr("id"));
         }
         if (strCodCosto == $CI_CodCosto_Manuales.val()) {
             cargarGrillaCostos_Default(data, $tblManualesCostos.attr("id"));
@@ -398,9 +461,6 @@
         }
         if (strCodCosto == $CI_CodCosto_MantPrevent.val()) {
             cargarGrillaCostos_Default(data, $tblMantPreventCostos.attr("id"));
-        }
-        if (strCodCosto == $CI_CodCosto_GarantAdic.val()) {
-            cargarGrillaCostos_Default(data, $tblGarantAdicCostos.attr("id"));
         }
         if (strCodCosto == $CI_CodCosto_Calibra.val()) {
             cargarGrillaCostos_Default(data, $tblCalibCostos.attr("id"));
@@ -856,11 +916,11 @@
 
     return {
         setTab_LLaveMano: setTab_LLaveMano,
-        setTab_InstCapa: setTab_InstCapa,
+        setTab_Instalacion: setTab_Instalacion,
+        setTab_Capacitacion: setTab_Capacitacion,
         setTab_Manuales: setTab_Manuales,
         setTab_Videos: setTab_Videos,
         setTab_MantPrevent: setTab_MantPrevent,
-        setTab_GarantAdic: setTab_GarantAdic,
         setTab_Calibra: setTab_Calibra,
         setTab_Flete: setTab_Flete,
         LimpiarModalCostos: LimpiarModalCostos,

@@ -13,7 +13,8 @@ namespace AHSECO.CCL.BE.Ventas
         public long IdCotizacionDetalle { get; set; }
         public bool? IndInfoVideo { get; set; }
         public bool? IndInfoManual { get; set; }
-        public bool? IndInstaCapa { get; set; }
+        public bool? IndInstalacion { get; set; }
+        public bool? IndCapacitacion { get; set; }
         public bool? IndGarantiaAdicional { get; set; }
         public string CodGarantiaAdicional { get; set; }
         public bool? IndMantPreventivo { get; set; }

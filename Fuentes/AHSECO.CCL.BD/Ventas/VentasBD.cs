@@ -170,7 +170,8 @@ namespace AHSECO.CCL.BD.Ventas
                             Id = Utilidades.Parse<int>(i.Single(d => d.Key.Equals("ID_COTDETDESPACHO")).Value),
                             IndInfoVideo = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDINFOVIDEO")).Value.Parse<string>()),
                             IndInfoManual = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDINFOMANUAL")).Value.Parse<string>()),
-                            IndInstaCapa = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDINSTACAPA")).Value.Parse<string>()),
+                            IndInstalacion = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDINSTALACION")).Value.Parse<string>()),
+                            IndCapacitacion = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDCAPACITACION")).Value.Parse<string>()),
                             IndGarantiaAdicional = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDGARANADIC")).Value.Parse<string>()),
                             CodGarantiaAdicional = i.Single(d => d.Key.Equals("CODGARANADIC")).Value.Parse<string>(),
                             IndMantPreventivo = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDMANTPREVENT")).Value.Parse<string>()),
@@ -215,7 +216,8 @@ namespace AHSECO.CCL.BD.Ventas
                         IdCotizacionDetalle = Utilidades.Parse<int>(i.Single(d => d.Key.Equals("ID_COTDETALLE")).Value),
                         IndInfoVideo = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDINFOVIDEO")).Value.Parse<string>()),
                         IndInfoManual = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDINFOMANUAL")).Value.Parse<string>()),
-                        IndInstaCapa = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDINSTACAPA")).Value.Parse<string>()),
+                        IndInstalacion = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDINSTALACION")).Value.Parse<string>()),
+                        IndCapacitacion = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDCAPACITACION")).Value.Parse<string>()),
                         IndGarantiaAdicional = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDGARANADIC")).Value.Parse<string>()),
                         CodGarantiaAdicional = i.Single(d => d.Key.Equals("CODGARANADIC")).Value.Parse<string>(),
                         IndMantPreventivo = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDMANTPREVENT")).Value.Parse<string>()),
@@ -465,10 +467,14 @@ namespace AHSECO.CCL.BD.Ventas
                 { parameters.Add("pIndInfoManual", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndInfoManual), DbType.String); }
                 else
                 { parameters.Add("pIndInfoManual", DBNull.Value, DbType.String); }
-                if (detCotDespacho.IndInstaCapa.HasValue)
-                { parameters.Add("pIndInstaCapa", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndInstaCapa), DbType.String); }
+                if (detCotDespacho.IndInstalacion.HasValue)
+                { parameters.Add("pIndInstalacion", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndInstalacion), DbType.String); }
                 else
-                { parameters.Add("pIndInstaCapa", DBNull.Value, DbType.String); }
+                { parameters.Add("pIndInstalacion", DBNull.Value, DbType.String); }
+                if (detCotDespacho.IndCapacitacion.HasValue)
+                { parameters.Add("pIndCapacitacion", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndCapacitacion), DbType.String); }
+                else
+                { parameters.Add("pIndCapacitacion", DBNull.Value, DbType.String); }
                 if (detCotDespacho.IndGarantiaAdicional.HasValue)
                 { parameters.Add("pIndGarantiaAdic", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndGarantiaAdicional), DbType.String); }
                 else
@@ -493,6 +499,8 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("pObsCliente", detCotDespacho.ObsCliente);
                 if (detCotDespacho.IndRequierePlaca.HasValue)
                 { parameters.Add("pIndReqPlaca", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndRequierePlaca), DbType.String); }
+                else
+                { parameters.Add("pIndReqPlaca", DBNull.Value, DbType.String); }
                 parameters.Add("pObsDespacho", detCotDespacho.ObsDespacho);
                 if (detCotDespacho.MontoTotalCosto.HasValue)
                 { parameters.Add("pMontoTotalCosto", detCotDespacho.MontoTotalCosto.Value,DbType.Decimal); }

@@ -4,11 +4,18 @@ var cotvtadet = (function ($, win, doc) {
     var $idCotizacion = $("#idCotizacion");
     var $idRolUsuario = $("#idRolUsuario");
     var $idWorkFlow = $("#idWorkFlow");
+
+    var $cmbTipo = $('#cmbTipo');
+
+    var $TipoSol_VentaMateriales = $("#TipoSol_VentaMateriales");
+    var $TipoSol_VentaEquipos = $("#TipoSol_VentaEquipos");
+
     var $RolVenta_Asesor = $("#RolVenta_Asesor");
     var $RolVenta_Gerente = $("#RolVenta_Gerente");
     var $RolVenta_Costos = $("#RolVenta_Costos");
     var $PermitirEditarValorizacion = $("#PermitirEditarValorizacion");
     var $PermitirEditarGanancia = $("#PermitirEditarGanancia");
+    var $DI_pnlInfoGeneral_Dimensiones = $("#DI_pnlInfoGeneral_Dimensiones");
     var $DI_pnlCostos_PrecioVenta = $("#DI_pnlCostos_PrecioVenta");
     var $DI_pnlCostos_CostoFOB = $("#DI_pnlCostos_CostoFOB");
     var $DI_pnlCostos_ValorUnitario = $("#DI_pnlCostos_ValorUnitario");
@@ -20,22 +27,20 @@ var cotvtadet = (function ($, win, doc) {
     var $DI_pnlCostos_MantPrevent = $("#DI_pnlCostos_MantPrevent");
     var $DI_pnlCostos_Manuales = $("#DI_pnlCostos_Manuales");
     var $DI_pnlCostos_Videos = $("#DI_pnlCostos_Videos");
-    var $DI_pnlCostos_InstaCapa = $("#DI_pnlCostos_InstaCapa");
+    var $DI_pnlCostos_Instalacion = $("#DI_pnlCostos_Instalacion");
+    var $DI_pnlCostos_Capacitacion = $("#DI_pnlCostos_Capacitacion");
     var $DI_pnlCostos_GarantAdic = $("#DI_pnlCostos_GarantAdic");
     var $DI_pnlCostos_GarantAdic_Combo = $("#DI_pnlCostos_GarantAdic_Combo");
     var $DI_pnlCostos_ReqCliente = $("#DI_pnlCostos_ReqCliente");
     var $DI_pnlCostos_ObsInsta = $("#DI_pnlCostos_ObsInsta");
     var $DI_pnlDestinos = $("#DI_pnlDestinos");
-
-    var $cmbTipo = $('#cmbTipo');
-
+    
     var $BI_cmbFamilia = $('#BI_cmbFamilia');
     var $BI_txtCodProducto = $('#BI_txtCodProducto');
     var $BI_txtNomProducto = $('#BI_txtNomProducto');
     var $BI_cmbTipoMedida = $('#BI_cmbTipoMedida');
     var $BI_cmbMarca = $('#BI_cmbMarca');
-
-    var $btnAgregarDetalle = $("#btnAgregarDetalle");
+    
     var $btnBuscarItems = $('#btnBuscarItems');
     var $tblItems = $('#tblItems');
     var $tblCotDet = $('#tblCotDet');
@@ -68,8 +73,10 @@ var cotvtadet = (function ($, win, doc) {
     var $DI_radManuales_No = $("#DI_radManuales_No");
     var $DI_radVideos_Si = $("#DI_radVideos_Si");
     var $DI_radVideos_No = $("#DI_radVideos_No");
-    var $DI_radInstaCapa_Si = $("#DI_radInstaCapa_Si");
-    var $DI_radInstaCapa_No = $("#DI_radInstaCapa_No");
+    var $DI_radInstalacion_Si = $("#DI_radInstalacion_Si");
+    var $DI_radInstalacion_No = $("#DI_radInstalacion_No");
+    var $DI_radCapacitacion_Si = $("#DI_radCapacitacion_Si");
+    var $DI_radCapacitacion_No = $("#DI_radCapacitacion_No");
     var $DI_txtReqCliente = $("#DI_txtReqCliente");
     var $DI_txtObsInsta = $("#DI_txtObsInsta");
     
@@ -451,8 +458,10 @@ var cotvtadet = (function ($, win, doc) {
         $DI_radGarantAdic_Si.removeAttr("checked");
         $DI_radGarantAdic_No.removeAttr("checked");
         configurarGarantias();
-        $DI_radInstaCapa_Si.removeAttr("checked");
-        $DI_radInstaCapa_No.removeAttr("checked");
+        $DI_radInstalacion_Si.removeAttr("checked");
+        $DI_radInstalacion_No.removeAttr("checked");
+        $DI_radCapacitacion_Si.removeAttr("checked");
+        $DI_radCapacitacion_No.removeAttr("checked");
         $DI_radCalibracion_Si.removeAttr("checked");
         $DI_radCalibracion_No.removeAttr("checked");
         $DI_txtReqCliente.val("");
@@ -513,9 +522,13 @@ var cotvtadet = (function ($, win, doc) {
                     if (data.Result.CotizacionDespacho.IndInfoVideo == true) { $DI_radVideos_Si.prop("checked", true); }
                     else { $DI_radVideos_No.prop("checked", true); }
                 }
-                if (data.Result.CotizacionDespacho.IndInstaCapa != null) {
-                    if (data.Result.CotizacionDespacho.IndInstaCapa == true) { $DI_radInstaCapa_Si.prop("checked", true); }
-                    else { $DI_radInstaCapa_No.prop("checked", true); }
+                if (data.Result.CotizacionDespacho.IndInstalacion != null) {
+                    if (data.Result.CotizacionDespacho.IndInstalacion == true) { $DI_radInstalacion_Si.prop("checked", true); }
+                    else { $DI_radInstalacion_No.prop("checked", true); }
+                }
+                if (data.Result.CotizacionDespacho.IndCapacitacion != null) {
+                    if (data.Result.CotizacionDespacho.IndCapacitacion == true) { $DI_radCapacitacion_Si.prop("checked", true); }
+                    else { $DI_radCapacitacion_No.prop("checked", true); }
                 }
                 if (data.Result.CotizacionDespacho.IndMantPreventivo != null) {
                     if (data.Result.CotizacionDespacho.IndMantPreventivo == true) { $DI_radMantPrevent_Si.prop("checked", true); }
@@ -598,6 +611,24 @@ var cotvtadet = (function ($, win, doc) {
                 $DI_txtReqCliente.removeAttr("disabled");
                 $DI_txtObsInsta.removeAttr("disabled");
                 $DI_txtDescripcionAdic.removeAttr("disabled");
+            }
+
+            if ($cmbTipo.val() == $TipoSol_VentaMateriales.val()) {
+                $DI_pnlInfoGeneral_Dimensiones.css("display", "none");
+                $DI_txtDescripcionAdic.attr("rows", "4");
+                $DI_pnlCostos_Calibracion.css("display", "none");
+                $DI_pnlCostos_Ganancia.css("display", "none");
+                $DI_pnlCostos_CompraLocal.css("display", "none");
+                $DI_pnlCostos_ReqPlaca.css("display", "none");
+                $DI_pnlCostos_MantPrevent.css("display", "none");
+                $DI_pnlCostos_Manuales.css("display", "none");
+                $DI_pnlCostos_Videos.css("display", "none");
+                $DI_pnlCostos_Instalacion.css("display", "none");
+                $DI_pnlCostos_Capacitacion.css("display", "none");
+                $DI_pnlCostos_GarantAdic.css("display", "none");
+                $DI_pnlCostos_GarantAdic_Combo.css("display", "none");
+                $DI_pnlCostos_ObsInsta.css("display", "none");
+                $DI_pnlDestinos.css("display", "none");
             }
 
             $('#modalDetalleItem').modal('show');
@@ -770,6 +801,7 @@ var cotvtadet = (function ($, win, doc) {
             opcGrillaItems = 1;
             LimpiarModalDetItem();
             MostrarDatosItem(data);
+            $DI_pnlInfoGeneral_Dimensiones.css("display", "");
             $DI_pnlCostos_PrecioVenta.css("display", "");
             $DI_pnlCostos_CostoFOB.css("display", "none");
             $DI_pnlCostos_ValorUnitario.css("display", "");
@@ -782,7 +814,8 @@ var cotvtadet = (function ($, win, doc) {
             $DI_pnlCostos_MantPrevent.css("display", "none");
             $DI_pnlCostos_Manuales.css("display", "none");
             $DI_pnlCostos_Videos.css("display", "none");
-            $DI_pnlCostos_InstaCapa.css("display", "none");
+            $DI_pnlCostos_Instalacion.css("display", "none");
+            $DI_pnlCostos_Capacitacion.css("display", "none");
             $DI_pnlCostos_GarantAdic.css("display", "none");
             $DI_pnlCostos_GarantAdic_Combo.css("display", "none");
             $DI_pnlCostos_ReqCliente.css("display", "none");
@@ -801,7 +834,8 @@ var cotvtadet = (function ($, win, doc) {
         var bReqPlaca = null;
         var bManuales = null;
         var bVideos = null;
-        var bInstaCapa = null;
+        var bInstalacion = null;
+        var bCapacitacion = null;
         var bGarantiaAdic = null;
         var bMantPrevent = null;
         var bCalib = null;
@@ -922,11 +956,21 @@ var cotvtadet = (function ($, win, doc) {
             }
         }
 
-        if ($DI_pnlCostos_InstaCapa.css("display") != "none") {
-            if ($DI_radInstaCapa_Si.attr("readonly") != "readonly" && $DI_radInstaCapa_Si.attr("disabled") != "disabled" &&
-                $DI_radInstaCapa_No.attr("readonly") != "readonly" && $DI_radInstaCapa_No.attr("disabled") != "disabled") {
-                if (!$DI_radInstaCapa_Si.is(':checked') && !$DI_radInstaCapa_No.is(':checked')) {
-                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Instalaci&oacute;n y Capacitaci&oacute;n");
+        if ($DI_pnlCostos_Instalacion.css("display") != "none") {
+            if ($DI_radInstalacion_Si.attr("readonly") != "readonly" && $DI_radInstalacion_Si.attr("disabled") != "disabled" &&
+                $DI_radInstalacion_No.attr("readonly") != "readonly" && $DI_radInstalacion_No.attr("disabled") != "disabled") {
+                if (!$DI_radInstalacion_Si.is(':checked') && !$DI_radInstalacion_No.is(':checked')) {
+                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Instalaci&oacute;n");
+                    return false;
+                }
+            }
+        }
+
+        if ($DI_pnlCostos_Capacitacion.css("display") != "none") {
+            if ($DI_radCapacitacion_Si.attr("readonly") != "readonly" && $DI_radCapacitacion_Si.attr("disabled") != "disabled" &&
+                $DI_radCapacitacion_No.attr("readonly") != "readonly" && $DI_radCapacitacion_No.attr("disabled") != "disabled") {
+                if (!$DI_radCapacitacion_Si.is(':checked') && !$DI_radCapacitacion_No.is(':checked')) {
+                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Capacitaci&oacute;n");
                     return false;
                 }
             }
@@ -974,8 +1018,11 @@ var cotvtadet = (function ($, win, doc) {
         if ($DI_radVideos_Si.is(':checked')) { bVideos = true; }
         if ($DI_radVideos_No.is(':checked')) { bVideos = false; }
 
-        if ($DI_radInstaCapa_Si.is(':checked')) { bInstaCapa = true; }
-        if ($DI_radInstaCapa_No.is(':checked')) { bInstaCapa = false; }
+        if ($DI_radInstalacion_Si.is(':checked')) { bInstalacion = true; }
+        if ($DI_radInstalacion_No.is(':checked')) { bInstalacion = false; }
+
+        if ($DI_radCapacitacion_Si.is(':checked')) { bCapacitacion = true; }
+        if ($DI_radCapacitacion_No.is(':checked')) { bCapacitacion = false; }
 
         if ($DI_radMantPrevent_Si.is(':checked')) { bMantPrevent = true; }
         if ($DI_radMantPrevent_No.is(':checked')) { bMantPrevent = false; }
@@ -1013,7 +1060,8 @@ var cotvtadet = (function ($, win, doc) {
                     IndCalibracion: bCalib,
                     IndGarantiaAdicional: bGarantiaAdic,
                     CodGarantiaAdicional: $DI_cmbGarantias.val(),
-                    IndInstaCapa: bInstaCapa,
+                    IndInstalacion: bInstalacion,
+                    IndCapacitacion: bCapacitacion,
                     ObsCliente: $DI_txtReqCliente.val(),
                     ObsDespacho: $DI_txtObsInsta.val()
                 }
