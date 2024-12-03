@@ -467,23 +467,15 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
-            cell.SetCellValue("Número de Requerimiento");
+            cell.SetCellValue("N° Requerimiento");
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
-            cell.SetCellValue("Número de Solicitud");    
+            cell.SetCellValue("Fecha Registro");    
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
-            cell.SetCellValue("R.U.C");
-
-            cell = row.CreateCell(cellnum++);
-            cell.CellStyle = style;
-            cell.SetCellValue("Nombre de Empresa");
-
-            cell = row.CreateCell(cellnum++);
-            cell.CellStyle = style;
-            cell.SetCellValue("Ubicación de Empresa");
+            cell.SetCellValue("Cliente");
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
@@ -499,43 +491,45 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
-            cell.SetCellValue("Fecha Máxima");
+            cell.SetCellValue("Fecha Máxima de Entrega");
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
-            cell.SetCellValue("Destino");
+            cell.SetCellValue("Destinos (Departamentos)");
+
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
+            cell.SetCellValue("N° Proceso");
+
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
+            cell.SetCellValue("N° Contrato");
+
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
+            cell.SetCellValue("N° Orden Compra");
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
             cell.SetCellValue("Estado");
-
-            cell = row.CreateCell(cellnum++);
-            cell.CellStyle = style;
-            cell.SetCellValue("Estado");
-
-            cell = row.CreateCell(cellnum++);
-            cell.CellStyle = style;
-            cell.SetCellValue("Fecha de Registro");
-
 
 
             //// Impresión de la data
             foreach (var item in instalaciones)
             {
+                cellnum = 0;
+                row = sh.CreateRow(rownum++);
+
+                var num_req = "000000" + item.NumReq.ToString();
+                var format = num_req.Substring(num_req.Length - 6);
                 cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.NumReq);
+                cell.SetCellValue(format);
 
                 cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.Id_Solicitud);
-
-                cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.RucEmpresa);
+                cell.SetCellValue(item.FecRegFormat);
 
                 cell = row.CreateCell(cellnum++);
                 cell.SetCellValue(item.NomEmpresa);
-
-                cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.Ubicacion);
 
                 cell = row.CreateCell(cellnum++);
                 cell.SetCellValue(item.TipoVenta);
@@ -547,11 +541,19 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
                 cell.SetCellValue(item.CodEmpresa);
 
                 cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.FechaMax);
+                cell.SetCellValue(item.FechaMax.ToString("dd/MM/yyyy"));
 
                 cell = row.CreateCell(cellnum++);
-                cell.CellStyle = styleDate;
                 cell.SetCellValue(item.Destino);
+
+                cell = row.CreateCell(cellnum++);
+                cell.SetCellValue(item.NroProceso);
+
+                cell = row.CreateCell(cellnum++);
+                cell.SetCellValue(item.Contrato);
+
+                cell = row.CreateCell(cellnum++);
+                cell.SetCellValue(item.OrdenCompra);
 
                 cell = row.CreateCell(cellnum++);
                 cell.SetCellValue(item.Estado);
@@ -752,6 +754,13 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
             var instalacionBL = new InstalacionTecnicaBL();
             var usuario = User.ObtenerUsuario();
             var result = instalacionBL.CrearMantPrevent(solicitud, usuario);
+            return Json(result);
+        }
+
+        public JsonResult ObtenerDetalleInfoSolicitud(long codDetalle)
+        {
+            var instalacionTecnicaBL = new InstalacionTecnicaBL();
+            var result = instalacionTecnicaBL.ObtenerDetalleInfoSolicitud(codDetalle);
             return Json(result);
         }
 

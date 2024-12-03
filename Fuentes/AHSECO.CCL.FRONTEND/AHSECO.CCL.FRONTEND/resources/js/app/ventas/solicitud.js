@@ -143,7 +143,7 @@
     var $btnCerrarDetalleServicio = $("#btnCerrarDetalleServicio");
     var $DS_hdnIdCotDetServ = $("#DS_hdnIdCotDetServ");
     var $btnAgregarDetServ = $("#btnAgregarDetServ");
-
+    var $DS_btnGuardar = $("#DS_btnGuardar");
     /*Seccion Contacto*/
     var $btnAñadir = $('#btnAñadir');
     var $agregarContacto = $('#agregarContacto');
@@ -370,12 +370,48 @@
         $btnActualizarDetalleServicio.click($btnActualizarDetalleServicio_click);
         $btnAgregarDetServ.click($btnAgregarDetServ_click);
         $btnGuardarDetalleServicio.click($btnGuardarDetalleServicio_click);
+        $DS_btnGuardar.click($DS_btnGuardar_click);
         cargaCombos();
         if ($DsctoRequiereAprobacion.val() == "S" && $DsctoRespondido.val() == "N") {
             $modalAprobDscto.modal('show');
         }
         $AD_btnGuardarAprobDscto.click(guardarAprobDscto);
     };
+
+    function $DS_btnGuardar_click() {
+
+        if ($DS_txtCantidad.val() === "0") {
+            app.message.error("Validación", "Debe ingresar un número mayor a cero en cantidad del servicio.");
+            return false;
+        }
+
+        if ($DS_txtPrecio.val() === "0.00" || $DS_txtPrecio.val() === "") {
+            app.message.error("Validación", "Debe ingresar un número mayor a cero en el precio del servicio.");
+            return false;
+        }
+
+        method = "POST";
+        url = "BandejaSolicitudesVentas/ActualizarServ";
+
+        var objFiltros = {
+            CodItem: $DS_hdnIdCotDetServ.val(),
+            Cantidad: $DS_txtCantidad.val(),
+            VentaUnitaria: $DS_txtPrecio.val(),
+            VentaTotalSinIGV: $DS_txtTotalVenta.val(),
+            DetallesServicio: detalleServicios
+        };
+        var objParam = JSON.stringify(objFiltros);
+        var fnSi = function () {
+            var fnDoneCallBack = function (data) {
+                cargarTablaCotDetServ(data);
+                $('#modalDetalleItemServicio').modal('hide');
+            };
+
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+        }
+
+        return app.message.confirm("Actualización", "¿Está seguro de actualizar los datos?", "Si", "No", fnSi, null);
+    }
 
     function $btnGuardarDetalleServicio_click() {
         if ($txtDetalleServicio.val() === "") {
@@ -577,25 +613,6 @@
                     }
                 },
                 {
-                    data: "Stock",
-                    render: function (data) {
-                        if (data == null) { data = ""; }
-                        else {
-                            if (data == 0) {
-                                data = "";
-                            }
-                        }
-                        return '<center>' + data + '</center>';
-                    }
-                },
-                {
-                    data: "DescUnidad",
-                    render: function (data) {
-                        if (data == null) { data = ""; }
-                        return '<center>' + data + '</center>';
-                    }
-                },
-                {
                     data: "Cantidad",
                     render: function (data) {
                         if (data == null) { data = ""; }
@@ -603,24 +620,15 @@
                     }
                 },
                 {
+                    data: "VentaUnitaria",
+                    render: function (data) {
+                        return '<center>' + data.toFixed(2) + '</center>';
+                    }
+                },
+                {
                     data: "VentaTotalSinIGV",
                     render: function (data) {
-                        if (data == null) { data = ""; }
-                        return '<center>' + data + '</center>';
-                    }
-                },
-                {
-                    data: "PorcentajeGanancia",
-                    render: function (data) {
-                        if (data == null) { data = ""; }
-                        return '<center>' + data + '</center>';
-                    }
-                },
-                {
-                    data: "VentaTotalSinIGVConGanacia",
-                    render: function (data) {
-                        if (data == null) { data = ""; }
-                        return '<center>' + data + '</center>';
+                        return '<center>' + data.toFixed(2) + '</center>';
                     }
                 },
                 {
@@ -652,7 +660,7 @@
         filters.dataTableInfo = false;
         filters.dataTablePaging = true;
 
-        app.llenarTabla($('#tblDetCotCostos'), data, columns, columnDefs, "#tblDetCotCostos", rowCallback, null, filters);
+        app.llenarTabla($('#tblDetCotCostosServ'), data, columns, columnDefs, "#tblDetCotCostosServ", rowCallback, null, filters);
     }
     
     function $btnBuscarItemsServicio_click() {
@@ -3116,6 +3124,16 @@
             },
             {
                 data: "VentaUnitaria",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    else {
+                        data = data.toFixed(2);
+                    }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "VentaTotalSinIGV",
                 render: function (data) {
                     if (data == null) { data = ""; }
                     else {

@@ -414,7 +414,7 @@
                                                                     <button style="@(ViewBag.PermitirAgregarServicios ? "" : "display:none")" class="btn btn-default btn-sm" type="button" data-target="#modalDetalleCotizacionServicio" data-toggle="modal" id="btnAgregarServicios" tabindex="14"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar / Modificar Servicios</button>
                                                                     <button style="@(ViewBag.PermitirAgregarCotDet ? "" : "display:none")" class="btn btn-default btn-sm" type="button" data-target="#modalDetalleCotizacion" data-toggle="modal" id="btnAgregarDetalle" tabindex="14"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar / Modificar Detalle</button>
                                                                 </div>
-                                                                <div class="table-responsive">
+                                                                <div class="table-responsive" style="@(ViewBag.VerBandejaCotizacion ? "" : "display:none")">
                                                                     <table id="tblDetCotCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                                                         <thead>
                                                                             <tr>
@@ -422,6 +422,23 @@
                                                                                 {
                                                                                     <th style="text-align:center">@ViewBag.CabeceraCotDet[i]</th>
                                                                                 }
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                                <div class="table-responsive" style="@(ViewBag.VerBandejaServiciosCotizacion ? "" : "display:none")">
+                                                                    <table id="tblDetCotCostosServ" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th style="text-align: center; width: 7%;">Nro. Item</th>
+                                                                                <th style="text-align: center; width: 10%;">C&oacute;digo Servicio</th>
+                                                                                <th style="text-align: center; width: 48%;">Descripci&oacute;n</th>
+                                                                                <th style="text-align: center; width: 5%;">Cantidad</th>
+                                                                                <th style="text-align: center; width: 10%;">Precio</th>
+                                                                                <th style="text-align: center; width: 10%;">Valor Venta</th>
+                                                                                <th style="text-align: center; width: 15%;">Acci&oacute;n</th>
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>

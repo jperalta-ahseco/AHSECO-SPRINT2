@@ -15,6 +15,11 @@
         visualizar = true;
     };
 
+    if(tipoProceso == "V")
+    {
+        ViewBag.Title = "Consulta Instalación Técnica";
+    };
+
 }
 
 <input hidden id="numeroReq" value="@numReq" />
@@ -334,6 +339,11 @@
     }
 </div>
 
+<div class="modal fade" id="modalVerInfoAdicional" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_VerInfoAdiServicioTecnico");
+    }
+</div>
 
 @section scripts{
     <script type="text/javascript" src="~/resources/js/app/ServicioTecnico/BandejaInstalacionTecnica/registroInstalacionTecnica.js"></script>

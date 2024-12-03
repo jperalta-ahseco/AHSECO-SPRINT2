@@ -27,6 +27,7 @@ using NPOI.SS.UserModel;
 using NPOI.Util;
 using System.IdentityModel.Claims;
 using AHSECO.CCL.BL.ServicioTecnico.BandejaInstalacionTecnica;
+using Microsoft.Ajax.Utilities;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 {
@@ -173,6 +174,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.TotalSeriesConStock = 0;
             ViewBag.TotalSeriesSinStock = 0;
             ViewBag.InActiveSinStock = "";
+
+            ViewBag.VerBandejaServiciosCotizacion = false;
+            ViewBag.VerBandejaCotizacion = false;
 
             if (FlujoValorizacionPermitido())
             {
@@ -467,6 +471,15 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         }
                     }
 
+                }
+
+                if (soli.Tipo_Sol == "TSOL01" || soli.Tipo_Sol == "TSOL03")
+                {
+                    ViewBag.VerBandejaServiciosCotizacion = true;
+                }
+                if (soli.Tipo_Sol == "TSOL02" || soli.Tipo_Sol == "TSOL03" || soli.Tipo_Sol == "TSOL04" || soli.Tipo_Sol == "TSOL05")
+                {
+                    ViewBag.VerBandejaCotizacion = true;
                 }
 
                 if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Registrado
@@ -1653,6 +1666,46 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         }
 
         [HttpPost]
+        public JsonResult ActualizarServ(CotizacionDetalleDTO datos)
+        {
+            try
+            {
+                List<CotizacionDetalleDTO> lstItems = GetCDIList(opcTablaTemporal);
+                var item = lstItems.FirstOrDefault(x => x.CodItem == datos.CodItem);
+
+                var detalleServicio = new List<DetalleServicioDTO>();
+
+                if(datos.DetallesServicio != null)
+                {
+                    foreach (var dato in datos.DetallesServicio)
+                    {
+                        var x = new DetalleServicioDTO();
+                        x.Id = dato.Id;
+                        x.Id_Servicio = dato.Id_Servicio;
+                        x.Codigo = dato.Codigo;
+                        x.DesMantenimiento = dato.DesMantenimiento;
+                        x.Eliminar = dato.Eliminar;
+                        detalleServicio.Add(x);
+                    }
+                }
+              
+                if (item != null)
+                {
+                    item.Cantidad = datos.Cantidad;
+                    item.VentaUnitaria = datos.VentaUnitaria;
+                    item.VentaTotalSinIGV = datos.VentaTotalSinIGV;
+                    item.DetallesServicio = detalleServicio;
+                }
+                 
+                VariableSesion.setObject(TAG_CDI, lstItems);
+
+                var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems);
+                return Json(response);
+            }
+            catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
+        }
+
+        [HttpPost]
         public JsonResult ActualizarDetServ(string CodItem, long CodServDet, string Descripcion)
         {
             try
@@ -1714,21 +1767,24 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 var serv = lstItems.FirstOrDefault(p => p.CodItem == CodItem);
                 var detalle = serv.DetallesServicio;
                 
-
-                var item = new DetalleServicioDTO()
+                if(detalle != null)
                 {
-                    Id = 0,
-                    Id_Servicio = Convert.ToInt32(CodItem),
-                    DesMantenimiento = Descripcion,
-                    Eliminar = 0,
-                    Codigo = "TMP_"+DateTime.Now.ToString("ddMMyyyyhhmmss")
-                };
+                    var item = new DetalleServicioDTO()
+                    {
+                        Id = 0,
+                        Id_Servicio = Convert.ToInt32(CodItem),
+                        DesMantenimiento = Descripcion,
+                        Eliminar = 0,
+                        Codigo = "TMP_" + DateTime.Now.ToString("ddMMyyyyhhmmss")
+                    };
 
-                detalle.Add(item);
-                serv.DetallesServicio = detalle;
+                    detalle.Add(item);
+                    serv.DetallesServicio = detalle;
 
+                    VariableSesion.setObject(TAG_CDI, lstItems);
+                }
 
-                VariableSesion.setObject(TAG_CDI, lstItems);
+                
                 var response = new ResponseDTO<IEnumerable<DetalleServicioDTO>>(serv.DetallesServicio.ToList());
                 return Json(response);
             }

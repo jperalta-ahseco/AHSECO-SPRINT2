@@ -209,5 +209,19 @@ namespace AHSECO.CCL.BL.ServicioTecnico.BandejaInstalacionTecnica
             }
         }
 
+        public ResponseDTO<IEnumerable<DetalleInfoSolDTO>> ObtenerDetalleInfoSolicitud(long codDetalle)
+        {
+            try
+            {
+                var result = Repository.ObtenerDetalleInfoSolicitud(codDetalle);
+                return new ResponseDTO<IEnumerable<DetalleInfoSolDTO>>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<IEnumerable<DetalleInfoSolDTO>>(ex);
+            }
+        }
+
     }
 }
