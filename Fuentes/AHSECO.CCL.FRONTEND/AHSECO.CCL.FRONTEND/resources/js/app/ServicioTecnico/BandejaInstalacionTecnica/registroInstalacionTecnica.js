@@ -256,8 +256,23 @@
     }
 
     function $btnInfoAdicional_click() {
+        LimpiarInfoAdi();
+        cargarDataInfoAdicional($hdnIdProduct.val());
+    }
 
-        cargarDataInfoAdicional(1);
+    function LimpiarInfoAdi() {
+        $txtTieneManual.val('');
+        $txtTieneCalib.val('');
+        $txtTieneVideo.val('');
+        $txtTieneMantPrev.val('');
+        $txtTieneInst.val('');
+        $txtTieneCapacitacion.val('');
+        $txtReqPlaca.val('');
+        $txtTieneGarantiaAdi.val('');
+        $txtGarantiaAdi.val('');
+        $txtDimension.val('');
+        $txtObsCliente.val('');
+        $txtObsDespacho.val('');
     }
 
     function cargarDataInfoAdicional(codDetalle) {
@@ -2382,9 +2397,10 @@
         var elementos = [];
         var detalle = productos.filter(producto => producto.Id == codigo)
         elementos = detalle[0].Elementos;
-        $hdnIdProduct.val(codigo);
+        
         cargarTablaElementosdDeProducto(elementos);
         $modalElementosDeProducto.modal('toggle');
+        $hdnIdProduct.val(codigo);
     };
 
     function cargarTablaElementosdDeProducto(listProductos) {
