@@ -158,15 +158,15 @@
             return false;
         }
         $("#hidden_fields").empty();
-        $("<input>", { type: "hidden", name: "FecIni", value: $dateFecIni.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "FecFin", value: $dateFecFin.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "NumReq", value: $txtNumReq.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "Estado", value: $cmbEstado.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "FecIni", value: $dateFecIni.val() == "" ? "" : app.parseDate($dateFecIni.val()) }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "FecFin", value: $dateFecFin.val() == "" ? "" : app.parseDate($dateFecFin.val()) }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "NumReq", value: $txtNumReq.val() == "" ? "0" : $txtNumReq.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "Estado", value: $cmbEstado.val() == 0 ? "" : $cmbEstado.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "Destino", value: $txtUbicacion.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "Vendedor", value: $cmbVendedor.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "RucEmpresa", value: $cmbCliente.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "CodEmpresa", value: $cmbempresa.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "TipoVenta", value: $cmbTipVenta.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "Vendedor", value: $cmbVendedor.val() == 0 ? "" : $cmbVendedor.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "RucEmpresa", value: $cmbCliente.val() == 0 ? "" : $cmbCliente.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "CodEmpresa", value: $cmbempresa.val() == 0 ? "" : $cmbempresa.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "TipoVenta", value: $cmbTipVenta.val() == "" ? "0" : $cmbTipVenta.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "NroProceso", value: $txtNumProc.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "Contrato", value: $txtNumContrato.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "OrdenCompra", value: $txtNumOrdCompra.val() }).appendTo("#hidden_fields");
