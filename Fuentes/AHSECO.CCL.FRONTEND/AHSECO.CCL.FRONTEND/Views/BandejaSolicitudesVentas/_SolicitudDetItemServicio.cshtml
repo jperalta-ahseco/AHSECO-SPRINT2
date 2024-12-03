@@ -43,7 +43,7 @@
                                     <div class="col-md-4">
                                         <label for="DS_txtCantidad">Cantidad: </label>
                                         <div class="form-group">
-                                            <input placeholder="Cantidad" type="number" maxlength="8" style="text-align:left" class="form-control input-sm" id="DS_txtCantidad" onkeyup="multiplicar();" value="" onkeypress="if (isNaN(String.fromCharCode(event.keyCode))) return false;">
+                                            <input placeholder="Cantidad" type="number" min="0" maxlength="8" style="text-align:left" class="form-control input-sm" id="DS_txtCantidad" onkeyup="multiplicar();" value="" onkeypress="if (isNaN(String.fromCharCode(event.keyCode))) return false;">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -87,7 +87,7 @@
                         </div>
                     </div>
                     <div class="text-center">
-                        <button class="btn btn-default btn-sm" type="button" id="DI_btnGuardar"><i class="fa fa-save" aria-hidden="true"></i> Guardar</button>
+                        <button class="btn btn-default btn-sm" type="button" id="DS_btnGuardar"><i class="fa fa-save" aria-hidden="true"></i> Guardar</button>
                         <button class="btn btn-danger btn-sm" type="button" id="DS_btnCerrar"><i class="fa fa-plus" aria-hidden="true"></i> Cancelar</button>
                     </div>
                 </div>
