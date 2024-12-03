@@ -6,7 +6,7 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_GAR_SEL_NUM_SERIE]
 /*=======================================================================================================
 	Nombre:				Fecha:			Descripcion:
 	Diego Bazalar		18.11.24		Realiza el select de datos de la solicitud de venta por número de serie.
-	EXEC [USP_GAR_SEL_NUM_SERIE] @IsNumSerie=xc123
+	EXEC [USP_GAR_SEL_NUM_SERIE] @IsNumSerie='124231asd'
 =======================================================================================================*/
 	@IsNumSerie VARCHAR(100) 
 )
@@ -26,11 +26,10 @@ SET NOCOUNT ON
 	SELECT
 		TOP 1 @ID_SOLICITUD = COTIZ.ID_SOLICITUD
 	FROM [dbo].[TBD_DESPACHO_DIST] AS DESPACHO WITH(NOLOCK)
-	INNER JOIN [dbo].[TBD_COTIZACIONCOSTOS] AS COTCOST WITH(NOLOCK) ON DESPACHO.ID_COTCOSTOS = DESPACHO.ID
+	INNER JOIN [dbo].[TBD_COTIZACIONCOSTOS] AS COTCOST WITH(NOLOCK) ON DESPACHO.ID_COTCOSTOS = COTCOST.ID
 	INNER JOIN [dbo].[TBD_COTIZACIONVENTA]	AS COTDET WITH(NOLOCK) ON COTDET.ID = COTCOST.ID_COTDETALLE
 	LEFT JOIN [dbo].[TBM_COTIZACIONVENTA]	AS COTIZ WITH(NOLOCK) ON COTIZ.ID_COTIZACION = COTDET.ID_COTIZACION
 	WHERE DESPACHO.NUMSERIE = CAST(@IsNumSerie AS VARCHAR(100))
-
 
 	/*Detalle de la cabecera de solicitud*/
 	SELECT
