@@ -187,7 +187,7 @@
         $btnAñadirTecnico.click(AgregarTecnicoExterno);
         $btnRegistrarTecnicoExterno.click(CrearTecnico3ro_a_Producto);
         $btnAgregarDocumento.click($modalCargaDocumentoClick);
-        $btnEditarRec.click(EditarReclamo);
+        $btnEditarRec.click(actualizarReclamo);
         $btnGuardarUbigeo.click(seleccionar);
         $btnFinalizarRec.click(FinalizarReclamo);
         $btnCargarDocumento.click($btnCargarDocumento_click);
@@ -206,8 +206,8 @@
         $dateProgramacion.val(hoy());
         $fileCargaDocumentoSustento.on("change", $fileCargaDocumentoSustento_change);
         CargarTipoDocumento(7); //Cambiar a tipo de proceso Instalación Técnica.
-        cargarDatos();
         IniciarBotonSeleccionarTecnico();
+        cargarDatos();
         $cmbTipoCredencial.on('change', function (e) {
             if (e.target.value === "GETD0001") {
                 $txtNumDocumento.attr("maxlength", '8');
@@ -378,29 +378,6 @@
 
         $txtZona.val(nomDepartamento + ' / ' + nomProvincia + ' / ' + nomDistrito);
         $modalZona.modal('toggle');
-    };
-
-    function EditarReclamo() {
-        var btnEditr = document.getElementById("btnEditarRec");
-        var btnRegresar = document.getElementById("btnRegresar");
-        if (btnEditr != null) {
-
-            $txtReclamo.prop('disabled', false);
-            $cmbUrgencia.prop('disabled', false);
-            $cmbMotivo.prop('disabled', false);
-            $dateSolicitud.prop('disabled', false);
-            $dateProgramacion.prop('disabled', false);
-            $btnBuscarTecnicos.prop('disabled', false);
-            $btnAñadirTecnico.prop('disabled', false);
-            //$btnDesasignarTecnico.prop('disabled', false);
-            btnEditr.innerHTML = '<i class="fa fa-wrench" aria-hidden="true"></i> Actualizar';
-            btnRegresar.innerHTML = '<i class="fa fa-times" aria-hidden="true"></i> Cancelar'
-            btnEditr.id = 'btnActualizar';
-            btnRegresar.id = 'btnCancelarRec';
-        }
-        else {
-            actualizarReclamo()
-        }
     };
 
     function actualizarReclamo() {
@@ -831,10 +808,9 @@
     }; //OKA
 
     function llenarInfoReclamo(reclamo) {
-        $txtReclamo.prop('disabled', true);
-        $dateSolicitud.prop('disabled', true);
-        $txtReclamo.prop('disabled', true);
-        $txtReclamo.prop('disabled', true);
+        //$dateSolicitud.prop('disabled', true);
+        //$txtReclamo.prop('disabled', true);
+
 
         $dateSolicitud.val(app.obtenerFecha(reclamo.FechaReclamo));
         $txtReclamo.val(reclamo.Motivo);
@@ -954,7 +930,7 @@
         $cmbUrgencia.val("").trigger('change.select2');
         $dateProgramacion.val(hoy());
         $cmbUrgencia.prop('disabled', true);
-        $txtReclamo.prop('disabled', true);
+        //$txtReclamo.prop('disabled', true);
         $dateSolicitud.prop('disabled', true);
         $cmbMotivo.prop('disabled', true);
     };
@@ -1017,52 +993,7 @@
         $modalCargaDocumento.modal("show");
     };
     function btnRegresarClick() {
-        if ($tipoproceso.val() == "V") {
-            app.redirectTo("BandejaGarantia");
-        }
-        else {
-            var btnRegresar = document.getElementById("btnRegresar");
-            if (btnRegresar != null) {
-                var fnSi = function () {
-                    app.redirectTo("BandejaGarantia");
-                };
-                return app.message.confirm("Confirmación", "¿Está seguro que desea retroceder? Se perderán los cambios no guardados.", "Si", "No", fnSi, null);
-            }
-            else {
-                var fnSi = function () {
-                    cancelarEditRec();
-                };
-                return app.message.confirm("Confirmación", "¿Está seguro que desea cancelar? Se perderán los cambios no guardados.", "Si", "No", fnSi, null);
-            };
-        };
-    };
-
-    function cancelarEditRec() {
-        var btnActualizar = document.getElementById("btnActualizar");
-        var btnCancelar = document.getElementById("btnCancelarRec");
-
-        //$cmbDestino.val(destinos_select).trigger("change.select2");
-
-        $dateSolicitud.val(app.obtenerFecha(garantias.reclamo.FechaReclamo));
-        // rellenar detalles.
-        $cmbUrgencia.val(garantias.reclamo.Urgencia).trigger('change.select2');
-        $cmbMotivo.val(garantias.reclamo.TipoMotivo).trigger('change.select2');
-        $txtReclamo.val(garantias.reclamo.Motivo);
-        $dateProgramacion.val(app.obtenerFecha(garantias.reclamo.FechaProgramacion));
-
-        //$cmbDestino.prop("disabled", true);
-        $dateSolicitud.prop("disabled", true);
-        $btnBuscarTecnicos.prop('disabled',true);
-        $btnAñadirTecnico.prop('disabled', true);
-        $cmbUrgencia.prop('disabled', true);
-        $cmbMotivo.prop('disabled', true);
-        $txtReclamo.prop('disabled', true);
-        $dateProgramacion.prop('disabled', true);
-
-        btnActualizar.innerHTML = '<i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar Reclamo';
-        btnCancelar.innerHTML = '<i class="fa fa-undo" aria-hidden="true"></i> Regresar'
-        btnActualizar.id = 'btnEditarRec';
-        btnCancelar.id = 'btnRegresar';
+      app.redirectTo("BandejaGarantia");
     };
 
     function $btnCargarDocumento_click() {
@@ -1360,7 +1291,15 @@
         return app.message.confirm("Confirmación", "¿Desea grabar?", "Sí", "No", fnSi, null);
     }
     function cargarTablaMainTecnicos(tecnicos) {
-
+        var cant_tecnicos = tecnicos.length;
+        if (cant_tecnicos == 0) {
+            $btnBuscarTecnicos.show();
+            $btnAñadirTecnico.show();
+        }
+        else {
+            $btnBuscarTecnicos.hide();
+            $btnAñadirTecnico.hide();
+        }
         $NoExisteTec.hide();
         var data = {}
         data.Result = [];
@@ -1896,6 +1835,18 @@
         $hdnTipoEmpleado.val("E");
     };
 
+    function HabilitarCampos() {
+        $txtReclamo.prop('disabled', false);
+        $cmbUrgencia.prop('disabled', false);
+        $cmbMotivo.prop('disabled', false);
+       
+        $dateProgramacion.prop('disabled', false);
+        $btnBuscarTecnicos.prop('disabled', false);
+        $btnAñadirTecnico.prop('disabled', false);
+        $dateSolicitud.prop('disabled', false);
+        //$btnDesasignarTecnico.prop('disabled', false);
+    }
+
     function cargarDatos() {
         if ($numReclamo.val() != "") {
             $contadordoc.val("");
@@ -1960,12 +1911,14 @@
                     TipoMotivo: data.Result.Reclamo.TipoMotivo
                 };
 
+                HabilitarCampos();
+
                 cargarCabecera(requerimiento);
                 cargarCuerpoEquipo(equipo);
                 cargarInfoContactos(contacto)
                 llenarInfoReclamo(reclamo);
                 $dateProgramacion.val(app.obtenerFecha(data.Result.Reclamo.FechaProgramacion));
-                $dateProgramacion.prop('disabled', true);
+                //$dateProgramacion.prop('disabled', true);
 
                 for (var i = 0; i < data.Result.Tecnicos.length; i++) {
                     garantias.tecnicosAsig.push({
