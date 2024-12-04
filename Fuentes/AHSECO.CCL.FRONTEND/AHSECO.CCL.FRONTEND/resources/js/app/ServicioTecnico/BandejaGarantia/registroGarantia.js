@@ -340,7 +340,7 @@
                 app.message.error("Validación", "El número de serie no ha sido registrado en el sistema, por favor revisar.");
                 return;
             } else if (data.Result.CodRpta == 2) {
-                app.message.error("Validación", "El número de serie aún no cuenta con fecha de intalación, por favor revisar.");
+                app.message.error("Validación", "El número de serie aún no cuenta con fecha de instalación, por favor revisar.");
                 return;
             }
             else {
