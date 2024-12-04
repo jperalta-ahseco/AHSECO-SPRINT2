@@ -16,7 +16,9 @@
     var $hdnCodEmpresa = $('#hdnCodEmpresa');
     var $spanEstadoSol = $('#spanEstadoSol');
     var $tipoproceso = $('#tipoproceso');
+    var $txtCodUbicacion = $('#txtCodUbicacion');
     //Btns
+    var $btnGuardarUbigeo = $('#btnGuardarUbigeo');
     var $searchSolVenta = $('#searchSolVenta');
     var $btnRegresar = $('#btnRegresar');
     var $btnRegistrarRec = $('#btnRegistrarRec');
@@ -74,12 +76,16 @@
     var $cmbTipoCredencial = $('#cmbTipoCredencial');
     var $txtUbiDestino = $('#txtUbiDestino');
     var $cmbDocumentoCarga = $('#cmbDocumentoCarga');
+    var $cmbDepartamento = $('#cmbDepartamento');
+    var $cmbProvincia = $('#cmbProvincia');
+    var $cmbDistrito = $('#cmbDistrito');
 
     /*Modales*/
     var $modalCargaDocumento = $('#modalCargaDocumento');
     var $modalObservacion = $('#modalObservacion');
     var $modalBusquedaTecnico = $('#modalBusquedaTecnico');
-
+    var $modalZona = $('#modalZona');
+    var $añadirTecnico = $('#añadirTecnico');
     /*Modales Observacion*/
     var $NoExisteRegObs = $('#NoExisteRegObs');
     var $btnAgregarObservacion = $('#btnAgregarObservacion');
@@ -135,7 +141,7 @@
     var $btnRegistrarTecnicoExterno = $('#btnRegistrarTecnicoExterno');
     var $NoExisteTec = $('#NoExisteTec');
     var $tbodyTecnicos = $('#tbodyTecnicos');
-
+    var $searchZona = $('#searchZona');
     /*Sección Reclamo*/
     var $hdnIdReclamo = $('#hdnIdReclamo');
     var $cmbUrgencia = $('#cmbUrgencia');
@@ -177,10 +183,12 @@
         $btnAgregarObservacion.click($modalObservacionClick);
         $btnBuscarTecnicos.click(BuscarTecnicos);
         $btnBuscarTecnico.click(BuscarTecnicos);
+        $searchZona.click(logicUbigeo);
         $btnAñadirTecnico.click(AgregarTecnicoExterno);
         $btnRegistrarTecnicoExterno.click(CrearTecnico3ro_a_Producto);
         $btnAgregarDocumento.click($modalCargaDocumentoClick);
         $btnEditarRec.click(EditarReclamo);
+        $btnGuardarUbigeo.click(seleccionar);
         $btnFinalizarRec.click(FinalizarReclamo);
         $btnCargarDocumento.click($btnCargarDocumento_click);
         $dateSolicitud.datepicker({
@@ -200,8 +208,177 @@
         CargarTipoDocumento(7); //Cambiar a tipo de proceso Instalación Técnica.
         cargarDatos();
         IniciarBotonSeleccionarTecnico();
+        $cmbTipoCredencial.on('change', function (e) {
+            if (e.target.value === "GETD0001") {
+                $txtNumDocumento.attr("maxlength", '8');
+                $txtNumDocumento.prop("pattern", "/^\d{8}$/");
+            } else if (e.target.value === "GETD0002") {
+                $txtNumDocumento.attr("maxlength", '12');
+                $txtNumDocumento.prop("pattern", "");
+            } else {
+                app.message.error("Validación", "Debe ingresar un Tipo de Documento para Registrar.");
+            }
+        })
     };
 
+
+    /*Lógica Ubigeo*/
+    function logicUbigeo() {
+        $cmbProvincia.prop("disabled", true);
+        $cmbDistrito.prop("disabled", true);
+        getDepartamentos();
+    }
+    function getDepartamentos() {
+        var method = "POST";
+        var url = "Ubigeo/ObtenerUbigeo";
+        var ubigeoObj = {}
+
+        var objParam = JSON.stringify(ubigeoObj);
+        var fnDoneCallback = function (data) {
+
+            var resultado = { Result: [] };
+
+            var distritos = { Result: [] };
+            for (let i = 0; i < data.Result.length; i++) {
+                var departamento = {
+                    Id: data.Result[i].CodDepartamento,
+                    Text: data.Result[i].NombreDepartamento,
+                }
+                resultado.Result.push(departamento);
+            }
+
+            resultado.Result = resultado.Result.reduce((acumulador, itemActual) => {
+                // Verificar si el Id ya está en el acumulador
+                if (!acumulador.some(item => item.Id === itemActual.Id)) {
+                    acumulador.push(itemActual);
+                }
+                return acumulador;
+            }, []);
+            $cmbDepartamento.on('change', function () {
+                const codDepartamento = $(this).val();
+                const nomDepartamento = $('select[id="cmbDepartamento"] option:selected').text();
+                sessionStorage.setItem('nomDepartamento', `${nomDepartamento}`);
+                if (!codDepartamento === null || !codDepartamento === '') {
+                    $(this).prop('disabled', false);
+
+                } else {
+                    $cmbProvincia.prop('disabled', false);
+                    obtenerProvincia(codDepartamento, data);
+                    $cmbDistrito.prop("disabled", true);
+                }
+                $cmbDistrito.val("").trigger("change");
+            });
+            var filters = {};
+            filters.placeholder = "-- Seleccione --";
+            filters.allowClear = false;
+            app.llenarCombo($cmbDepartamento, resultado, null, "", "<--Seleccione-->", filters);
+        }
+        var fnFailCallback = function () {
+            app.mensajes.error("Error", "No se ejecutó correctamente la carga de departamentos")
+        }
+        return app.llamarAjax(method, url, objParam, fnDoneCallback, fnFailCallback, null, mensajes.procesandoUbigeo)
+
+    }
+    function obtenerProvincia(codDepartamento, data) {
+        var provincias = { Result: [] };
+        for (let i = 0; i < data.Result.length; i++) {
+            var provincia = {
+                Id: data.Result[i].CodProvincia,
+                Text: data.Result[i].NombreProvincia,
+            }
+            provincias.Result.push(provincia);
+
+        }
+        provincias.Result = provincias.Result.reduce((acumulador, itemActual) => {
+            const isDuplicate = acumulador.some(item => item.Id === itemActual.Id);
+            const startsWithCodDepartamento = itemActual.Id.startsWith(codDepartamento);
+            if (!isDuplicate && startsWithCodDepartamento) {
+                acumulador.push(itemActual);
+            }
+            return acumulador;
+        }, []);
+        $cmbProvincia.on('change', function () {
+            const codProvincia = $(this).val();
+            const nomProvincia = $('select[id="cmbProvincia"] option:selected').text();
+            sessionStorage.setItem('nomProvincia', `${nomProvincia}`);
+
+            if (!codProvincia === null || !codProvincia === '') {
+                $(this).prop('disabled', false);
+
+            } else {
+                $cmbProvincia.prop('disabled', false);
+                $cmbDistrito.prop('disabled', false)
+                obtenerDistrito(codProvincia, data);
+            }
+        });
+
+        var filters = {};
+        filters.placeholder = "-- Seleccione --";
+        filters.allowClear = false;
+        app.llenarCombo($cmbProvincia, provincias, null, "", "<--Seleccione-->", filters)
+    }
+
+    function obtenerDistrito(codProvincia, data) {
+        var distritos = { Result: [] };
+        for (let i = 0; i < data.Result.length; i++) {
+            var distrito = {
+                Id: data.Result[i].UbigeoId,
+                Text: data.Result[i].NombreDistrito,
+            }
+            distritos.Result.push(distrito);
+
+        }
+        distritos.Result = distritos.Result.reduce((acumulador, itemActual) => {
+            const isDuplicate = acumulador.some(item => item.Id === itemActual.Id);
+            const startsWithCodProvincia = itemActual.Id.startsWith(codProvincia);
+            if (!isDuplicate && startsWithCodProvincia) {
+                acumulador.push(itemActual);
+            }
+            return acumulador;
+        }, []);
+
+        $cmbDistrito.on('change', function () {
+            const codDistrito = $(this).val();
+            const nombreDistrito = $('select[id="cmbDistrito"] option:selected').text();
+            sessionStorage.setItem('codDistrito', `${codDistrito}`);
+            sessionStorage.setItem('nombreDistrito', `${nombreDistrito}`);
+            $txtCodUbicacion.val(codDistrito);
+        });
+
+
+        var filters = {};
+        filters.placeholder = "-- Seleccione --";
+        filters.allowClear = false;
+        app.llenarCombo($cmbDistrito, distritos, null, "", "<--Seleccione-->", filters)
+    }
+
+
+    function seleccionar() {
+
+        var codDistrito = sessionStorage.getItem('codDistrito');
+
+        var nomDepartamento = sessionStorage.getItem('nomDepartamento')
+        var nomProvincia = sessionStorage.getItem('nomProvincia');
+        var nomDistrito = sessionStorage.getItem('nombreDistrito');
+
+        if ($cmbDepartamento.val().trim() === "" || $cmbDepartamento.val().trim() === null || $cmbDepartamento.val().trim() === undefined) {
+            app.message.error("Validacion", "Debe seleccionar un departamento");
+            return;
+        }
+
+        if ($cmbProvincia.val().trim() === "" || $cmbProvincia.val().trim() === null || $cmbProvincia.val().trim() === undefined) {
+            app.message.error("Validacion", "Debe seleccionar una provincia");
+            return;
+        }
+
+        if ($cmbDistrito.val().trim() === "" || $cmbDistrito.val().trim() === null || $cmbDistrito.val().trim() === undefined) {
+            app.message.error("Validacion", "Debe seleccionar un distrito");
+            return;
+        }
+
+        $txtZona.val(nomDepartamento + ' / ' + nomProvincia + ' / ' + nomDistrito);
+        $modalZona.modal('toggle');
+    };
 
     function EditarReclamo() {
         var btnEditr = document.getElementById("btnEditarRec");
@@ -1145,6 +1322,43 @@
         $txtObservacion.val("");
     }
 
+    function saveEmpresaTecnico(CodTecnico) {
+        var empresa = $('#txtNomEmpresa' + CodTecnico).val();
+
+        if (empresa == "" || empresa.trim().length == 0) {
+            app.message.error("Validación", "Debe de ingresar un nombre de empresa");
+            return;
+        };
+
+        var method = "POST";
+        var url = "BandejaGarantia/MantTecnicosReclamo";
+
+        var objTecnico = {
+            TipoProceso: "A",
+            Id_Asig: CodTecnico,
+            Id_Reclamo: $numReclamo.val(),
+            Empresa: empresa,
+            Estado: true
+        };
+
+        var objParam = JSON.stringify(objTecnico);
+
+
+        var fnSi = function () {
+            var fnDoneCallback = function () {
+                app.message.success("Éxito", "Se grabó correctamente.");
+                ObtenerTecnicosReclamo();
+            };
+
+            var fnFailCallBack = function () {
+                app.message.error("Error", "Ocurrió un problema al modificar al técnico, por favor revisar.");
+            };
+
+            app.llamarAjax(method, url, objParam, fnDoneCallback, fnFailCallBack, null, null);
+        };
+
+        return app.message.confirm("Confirmación", "¿Desea grabar?", "Sí", "No", fnSi, null);
+    }
     function cargarTablaMainTecnicos(tecnicos) {
 
         $NoExisteTec.hide();
@@ -1221,8 +1435,18 @@
                     }
                     else if (row.TipoTecnico == "E") {
                         if (data == "" || data == null) {
-                            var empresa = '<input placeholder="--Empresa--" type="text" class="form-control input-sm" id="txtNomEmpresa'+row.Id+'">'
-                            return '<center>' + empresa + '</center>';
+                            if ($tipoproceso.val() == "U") {
+                                var html = '';
+                                html += '<div class="form-group">' + '<div class="input-group input-group-sm date">'
+                                    + '<input placeholder="--Empresa--" type="text" class="form-control input-sm" id="txtNomEmpresa' + row.Cod_Tecnico + '">';
+                                html += '<a class="input-group-addon input-sm" id="saveEmpresaTecnico' + row.Cod_Tecnico + '" href="javascript:garantias.saveEmpresaTecnico(' + row.Cod_Tecnico + ')"" >' +
+                                    '<i class="fa fa-save" aria-hidden="true"></i>' +
+                                    '</a>';
+                                return '<center>' + html + '</center>';
+                            }
+                            else {
+                                return '<center>' + 'No definido' + '</center>';
+                            }
                         } else {
                             return '<center>' + data + '</center>';
                         }
@@ -1575,12 +1799,8 @@
         var objEmpleado = JSON.stringify(objParam);
 
         var fnDoneCallback = function (data) {
-            $txtTecnico.val($txtNombreTecnico.val().trim() + ' ' + $txtApellidoPaternoTec.val().trim() + ' ' + $txtApellidoMaternoTec.val().trim());
-            $txtEmpresaTecnico.val("");
-            $txtEmpresaTecnico.prop('disabled', false);
-            app.message.confirm("Éxito", "Se realizó la creación del técnico satisfactoriamente.");
-            $hdnIdTecnico.val(data.Codigo);
-            $modalAsignacion.modal('toggle');
+            app.message.success("Éxito", "Se realizó la creación del técnico satisfactoriamente.");
+            $añadirTecnico.modal('toggle');
         };
         var fnFailCallback = function () {
             app.message.error("Error", "Error en la inserción o documento de identidad ya ha sido ingresado con anterioridad, por favor revisar.");
@@ -1960,6 +2180,7 @@
         download: download,
         eliminarDocumento: eliminarDocumento,
         eliminarDocTemp: eliminarDocTemp,
-        eliminarObsTmp: eliminarObsTmp
+        eliminarObsTmp: eliminarObsTmp,
+        saveEmpresaTecnico: saveEmpresaTecnico
     }
 })(window.jQuery, window, document);
