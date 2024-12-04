@@ -47,5 +47,9 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaGarantias
         public int PreventPendientes { get; set; }
         public string FechaVencimiento { get; set; }
         public string EstadoGarantia { get; set; }
+        public int CodTecnico { get; set; }
+        public string NomTecnico { get; set;}
+
+        public string FechaProgramacionFormat { get; set; }
     }
 }

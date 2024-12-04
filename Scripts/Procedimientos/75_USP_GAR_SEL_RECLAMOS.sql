@@ -6,7 +6,7 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_GAR_SEL_RECLAMOS]
 /*=======================================================================================================
 	Nombre:				Fecha:			Descripcion:
 	Diego Bazalar		18.11.24		Realiza el select de la tabla [TBM_INSTALACION] con parámetros de búsqueda para la bandeja de instalacion técnica.
-	EXEC [USP_GAR_SEL_RECLAMOS] '','','','','','','','','0','','','','436485'
+	EXEC [USP_GAR_SEL_RECLAMOS] '','','','','','','','','0','','','','','124231asd'
   =======================================================================================================*/
 	@isFecIni			VARCHAR(10)
   ,@isFecFin			VARCHAR(10) 
@@ -57,7 +57,7 @@ BEGIN
 						,RECLAMO.NUMFIANZA
 						,RECLAMO.FECHAINSTALACION
 						,RECLAMO.FECHARECLAMO
-						,RECLAMO.FECHAPROGRAMACION
+						,ISNULL(CONVERT(VARCHAR,RECLAMO.FECHAPROGRAMACION,103),'''') FECHAPROGRAMACION
 						,RECLAMO.UBIGEO
 						,CONCAT(UBI.NOMDEPARTAMENTO,'' / '',UBI.NOMPROVINCIA, '' / '', UBI.NOMDISTRITO) AS DESCUBIGEODEST
 						,RECLAMO.DIRECCION
@@ -68,13 +68,15 @@ BEGIN
 						,RECLAMO.ESTADO							AS CODESTADO
 						,RECLAMO.USR_REG
 						,RECLAMO.FEC_REG
+						,tec.COD_TECNICO
+						,(ISNULL(tec.NOMBRES,'''')+'' ''+ISNULL(tec.APELLIDOPATERNO,'''')+'' ''+ISNULL(tec.APELLIDOMATERNO,'''')) AS NOM_TECNICO
 					FROM [TBM_RECLAMOS] AS RECLAMO WITH(NOLOCK)
 					LEFT JOIN [dbo].[TBD_DATOS_GENERALES] datos WITH(NOLOCK) ON datos.COD_VALOR1 = RECLAMO.CODEMPRESA
 					LEFT JOIN [dbo].[TBD_DATOS_GENERALES] tipos WITH(NOLOCK) ON tipos.COD_VALOR1 = RECLAMO.TIPOVENTA AND tipos.DOMINIO = ''TIPOVENTA''
 					LEFT JOIN [dbo].[TBM_PROCESOESTADOS] estado WITH(NOLOCK) ON estado.COD_ESTADO = RECLAMO.ESTADO AND ID_PROCESO = 7
 					LEFT JOIN [dbo].[TBD_DATOS_GENERALES] urgencia WITH(NOLOCK) ON urgencia.COD_VALOR1 = RECLAMO.URGENCIA
 					LEFT JOIN [dbo].[TBM_UBIGEO] ubi WITH(NOLOCK) ON ubi.CODUBIGEO = RECLAMO.UBIGEO
-					
+					LEFT JOIN [dbo].[TBD_TECNICOGARANTIA] tec WITH(NOLOCK) ON RECLAMO.ID_RECLAMO=tec.ID_RECLAMO AND tec.estado=1
 					WHERE 1 = 1'
 	IF (@isFecIni != '' AND @isFecFin != '')
 	BEGIN

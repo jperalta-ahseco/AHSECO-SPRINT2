@@ -146,6 +146,10 @@
         e.preventDefault();
         var cant = $tblReclamos.DataTable().rows().data().length;
 
+        var codDepartamento = sessionStorage.getItem('codDepartamento');
+        var codProvincia = sessionStorage.getItem('codProvincia');
+        var codDistrito = sessionStorage.getItem('codDistrito');
+
         if (cant === 0) {
             app.message.error("Reporte de Clientes", "La búsqueda no produjo resultados", "Aceptar");
             return false;
@@ -153,17 +157,18 @@
         $("#hidden_fields").empty();
         $("<input>", { type: "hidden", name: "FecIni", value: $dateFecRecIni.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "FecFin", value: $dateFecRecFin.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "NumReclamo", value: $txtNumRec.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "RucEmpresa", value: $cmbCliente.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "CodUbigeoDest", value: $txtUbicacion.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "NumReclamo", value: $txtNumRec.val() == "" ? "0" : $txtNumRec.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "RucEmpresa", value: $cmbCliente.val() == 0 ? "" : $cmbCliente.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "CodUbigeoDest", value: codDepartamento + codProvincia.slice(2, 4) + codDistrito.slice(4, 6) }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "Vendedor", value: "" }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "Estado", value: $cmbEstado.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "Estado", value: $cmbEstado.val() == 0 ? "" : $cmbEstado.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "CodEmpresa", value: "" }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "TipoVenta", value: "0" }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "NroProceso", value: "" }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "Contrato", value: "" }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "OrdenCompra", value: "" }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "NumFianza", value: "" }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "NumeroSerie", value: $txtNumSerie.val() == null ? "" : $txtNumSerie.val() }).appendTo("#hidden_fields");
         $formReclamos.attr('action', href);
         $formReclamos.submit();
     }
@@ -495,6 +500,12 @@
                 }
             },
             {
+                data: "Serie",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
                 data: "FechaReclamo",
                 render: function (data, type, row) {
                     return '<center>' + app.obtenerFecha(data) + '</center>'
@@ -507,9 +518,15 @@
                 }
             },
             {
-                data: "FechaProgramacion",
+                data: "FechaProgramacionFormat",
                 render: function (data, type, row) {
-                    return '<center>' + app.obtenerFecha(data) + '</center>'
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "NomTecnico",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
                 }
             },
             {
