@@ -3352,15 +3352,15 @@ fieldset[disabled] .btn {
 	border-color: #00aeef;
 }
 
-	.btn-default:hover,
-	.btn-default:focus,
-	.btn-default:active,
-	.btn-default.active,
-	.open > .dropdown-toggle.btn-default {
-		color: #ffffff;
-		background-color: #00aeef;
-		border-color: #00aeef;
-	}
+.btn-default:hover,
+.btn-default:focus,
+.btn-default:active,
+.btn-default.active,
+.open > .dropdown-toggle.btn-default {
+	color: #ffffff;
+	background-color: #00aeef;
+	border-color: #00aeef;
+}
 
 .btn-default:active,
 .btn-default.active,
@@ -3619,6 +3619,52 @@ fieldset[disabled] .btn-danger.active {
 
 .btn-danger .badge {
 	color: #df382c;
+	background-color: #ffffff
+}
+
+.btn-orange {
+	color: #ffffff;
+	background-color: #ff5733;
+	border-color: #ff5733;
+}
+
+.btn-orange:hover,
+.btn-orange:focus,
+.btn-orange:active,
+.btn-orange.active,
+.open > .dropdown-toggle.btn-orange {
+	color: #ffffff;
+	background-color: #ff5733;
+	border-color: #ff5733;
+}
+
+.btn-orange:active,
+.btn-orange.active,
+.open > .dropdown-toggle.btn-orange {
+	background-image: none
+}
+
+.btn-orange.disabled,
+.btn-orange[disabled],
+fieldset[disabled] .btn-orange,
+.btn-orange.disabled:hover,
+.btn-orange[disabled]:hover,
+fieldset[disabled] .btn-orange:hover,
+.btn-orange.disabled:focus,
+.btn-orange[disabled]:focus,
+fieldset[disabled] .btn-orange:focus,
+.btn-orange.disabled:active,
+.btn-orange[disabled]:active,
+fieldset[disabled] .btn-orange:active,
+.btn-orange.disabled.active,
+.btn-orange[disabled].active,
+fieldset[disabled] .btn-orange.active {
+	background-color: #aea79f;
+	border-color: #aea79f
+}
+
+.btn-orange .badge {
+	color: #aea79f;
 	background-color: #ffffff
 }
 

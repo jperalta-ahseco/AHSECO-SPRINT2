@@ -78,12 +78,12 @@
     var $cmbGarantia = $('#cmbGarantia');
     var $txtObs = $('#txtObs');
     var $btnAprobarDscto = $("#btnAprobarDscto");
-    var $txtPorcentajeDscto = $("#txtPorcentajeDscto");
     var $NoRegMainProd = $('#NoRegMainProd');
     var $openRegdateCotizacion = $('#openRegdateCotizacion');
     var $btnRegistrarCotizacion = $('#btnRegistrarCotizacion');
-    var $btnActualizarCotizacion = $("#btnActualizarCotizacion");
     var $btnAgregarDetalle = $('#btnAgregarDetalle');
+    var $hdnPorcentajeDscto = $("#hdnPorcentajeDscto");
+    var $txtPorcentajeDscto = $("#txtPorcentajeDscto");
     var $DsctoRequiereAprobacion = $("#DsctoRequiereAprobacion");
     var $DsctoAprobado = $("#DsctoAprobado");
     var $DsctoRespondido = $("#DsctoRespondido");
@@ -92,6 +92,8 @@
     var $AD_radRpta_Si = $("#AD_radRpta_Si");
     var $AD_radRpta_No = $("#AD_radRpta_No");
     var $AD_txtComentarios = $("#AD_txtComentarios");
+    var $btnVerComentarioDscto = $("#btnVerComentarioDscto");
+    var $btnAprobarCotizacion = $("#btnAprobarCotizacion");
 
     /*Ver Historial de Cotizacion */
     var $modalVerHistorialCotizacion = $("#modalVerHistorialCotizacion");
@@ -271,8 +273,7 @@
         solicitud.itemMant = [];
         solicitud.itemTransporte = [];
         solicitud.nuevoContacto = false;
-
-
+        
         $dateSolicitud.datepicker({
             viewMode: 0,
             minViewMode: 0,
@@ -323,7 +324,6 @@
         $btnEliminarSol.click(btnEliminarSolClick);
         $btnGuardarObservacionReq.click(GuardarObservacionReqClick);
         $btnRegistrarCotizacion.click(registrarCotizacion);
-        $btnActualizarCotizacion.click(actualizarCotizacion);
         $btnAgregarDocumento.click($modalCargaDocumentoClick);
         $btnAgregarObservacion.click($modalObservacionClick);
         $openRegdateSolicitud.click($openRegdateSolicitudClick);
@@ -376,6 +376,8 @@
             $modalAprobDscto.modal('show');
         }
         $AD_btnGuardarAprobDscto.click(guardarAprobDscto);
+        $btnVerComentarioDscto.click(verComentarioDscto);
+        $btnAprobarCotizacion.click(aprobarCotizacion);
     };
 
     function $DS_btnGuardar_click() {
@@ -2359,152 +2361,7 @@
         return;
 
     };
-
-    function actualizarCotizacion() {
-
-
-        if ($nombreContacto.val().trim() === "" || $nombreContacto.val().trim().length <= 0 || $nombreContacto.val().trim() == null) {
-            app.message.error("Validación", "Debe de seleccionar un contacto registrado o ingresar el nombre de un nuevo contacto.");
-            return;
-        };
-
-        if (!isNaN($nombreContacto.val())) {
-            app.message.error("Validación", "El nombre del contacto no puede contener números.")
-            return;
-        };
-
-        if ($txtAreaContacto.val().trim() === "" || $txtAreaContacto.val().trim().length <= 0 || $txtAreaContacto.val().trim() == null) {
-            app.message.error("Validación", "Debe de seleccionar un contacto registrado o ingresar el área de un nuevo contacto.");
-            return;
-        };
-
-        if (!isNaN($txtAreaContacto.val())) {
-            app.message.error("Validación", "El área del contacto no puede contener números.")
-            return;
-        };
-
-        if ($txtTelefono.val().trim() === "" || $txtTelefono.val().trim().length <= 0 || $txtTelefono.val().trim() == null) {
-            app.message.error("Validación", "Debe de seleccionar un contacto registrado o ingresar el teléfono de un nuevo contacto.");
-            return;
-        };
-
-        var telefono = $txtTelefono.val().trim();
-
-        telefono = telefono.replace(/\s+/g, ' ');
-
-        if (isNaN($txtTelefono.val().trim()) || (telefono.length === 0 && telefono != "")) {
-            app.message.error("Validación", "El teléfono no está en el formato correcto.");
-            return
-        };
-
-        if ($txtCorreo.val().trim() === "" || $txtCorreo.val().trim().length <= 0 || $txtCorreo.val().trim() == null) {
-            app.message.error("Validación", "Debe de seleccionar un contacto registrado o ingresar el correo de un nuevo contacto.");
-            return;
-        };
-
-        if (!app.validarEmail($txtCorreo.val().trim()) && $txtCorreo.val().trim() != "") {
-            app.message.error("Validación", "Debe de colocar un correo con el formato correcto.");
-            return
-        };
-
-        if ($dateCotizacion.val().trim() === "" || $dateCotizacion.val().trim().length <= 0 || $dateCotizacion.val().trim() == null) {
-            app.message.error("Validación", "Debe ingresar la fecha de cotización.");
-            return;
-        };
-
-        if ($txtVigencia.val().trim() === "" || $txtVigencia.val().trim().length <= 0 || $txtVigencia.val().trim() == null) {
-            app.message.error("Validación", "Debe de ingresar el plazo de vigencia de la cotización.");
-            return;
-        };
-
-        if ($.trim($txtPlazoEntrega.val()) == "") {
-            app.message.error("Validación", "Debe de ingresar el plazo de entrega de la cotización.");
-            return;
-        }
-        else {
-            if (!app.validaNumeroEntero($txtPlazoEntrega.val())) {
-                app.message.error("Validación", "Número inválido para el Plazo de Entrega.");
-                return;
-            }
-        };
-
-        if ($cmbGarantia.attr("disabled") != "disabled") {
-            if ($.trim($cmbGarantia.val()) === "" || $cmbGarantia.val() == undefined || $cmbGarantia.val() == null) {
-                app.message.error("Validación", "Debe de ingresar el periodo de garantía.");
-                return;
-            };
-        }
-
-        if ($.trim($cmbTipoPago.val()) === "" || $cmbTipoPago.val() == undefined || $cmbTipoPago.val() == null) {
-            app.message.error("Validación", "Debe de seleccionar la forma de pago.");
-            return;
-        };
-
-        if ($cmbTipMoneda.attr("disabled") != "disabled") {
-            if ($.trim($cmbTipMoneda.val()) === "" || $cmbTipMoneda.val() == undefined || $cmbTipMoneda.val() == null) {
-                app.message.error("Validación", "Debe de seleccionar el tipo de moneda.");
-                return;
-            };
-        }
-
-        var vFecCotizacion = null;
-        if ($dateCotizacion.val() != "") {
-            vFecCotizacion = app.stringToDate($dateCotizacion.val());
-        }
-
-        var vPorcDscto = null;
-        if ($txtPorcentajeDscto.attr("disabled") != "disabled") {
-            if ($txtPorcentajeDscto.val() != "") {
-                if (!app.validaNumeroDecimal($txtPorcentajeDscto.val())) {
-                    app.message.error("Validación", "N&uacute;mero inv&aacute;lido del campo Porcentaje de Descuento");
-                    return;
-                }
-                else { vPorcDscto = parseFloat($txtPorcentajeDscto.val()); }
-            }
-        }
-        
-        method = "POST";
-        url = "BandejaSolicitudesVentas/ActualizarCotizacionVenta"
-        objCotizacion = {
-            IdCliente: $idCliente.val(),
-            IdCotizacion: $idCotizacion.val(),
-            IdSolicitud: $numeroSolicitud.val(),
-            IdWorkFlow: $idWorkFlow.val(),
-            IdContacto: $txtCodContacto.val(),
-            NombreContacto: $nombreContacto.val(),
-            AreaContacto: $txtAreaContacto.val(),
-            TelefonoContacto: $txtTelefono.val(),
-            EmailContacto: $txtCorreo.val(),
-            FecCotizacion: vFecCotizacion,
-            PlazoEntrega: $txtPlazoEntrega.val(),
-            FormaPago: $cmbTipoPago.val(),
-            Moneda: $cmbTipMoneda.val(),
-            Vigencia: $txtVigencia.val(),
-            Garantia: $cmbGarantia.val(),
-            Observacion: $txtObs.val(),
-            PorcentajeDescuento: vPorcDscto,
-            Estado: "A"
-        };
-
-        objParam = JSON.stringify(objCotizacion);
-        
-        var fnDoneCallBackSol = function (data) {
-            $idCotizacion.val(data.Cotizacion.IdCotizacion);
-            $btnRegistrarCotizacion.attr("style", "display:none");
-            app.message.success("Cotización", "Se actualizó satisfactoriamente la cotización.", "Aceptar", null);
-        };
-
-        var fnFailCallBackSol = function (Mensaje) {
-            app.message.error("Validación", Mensaje);
-            return;
-        };
-
-        app.llamarAjax(method, url, objParam, fnDoneCallBackSol, fnFailCallBackSol, null, null);
-
-        return;
-
-    }
-
+    
     function eliminarObsTmp(idObs) {
         var fnSi = function () {
 
@@ -3333,6 +3190,71 @@
 
         var fnFailCallback = function () {
             app.message.error("Validaci&oacute;n", "Error al grabar la aprobaci&oacute;n");
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallback);
+    }
+
+    function verComentarioDscto() {
+        if ($DsctoRespondido.val() == "S") {
+            $AD_radRpta_Si.attr("disabled", "disabled");
+            $AD_radRpta_No.attr("disabled", "disabled");
+            $AD_txtComentarios.attr("disabled", "disabled");
+            if ($DsctoAprobado.val() == "S") {
+                $AD_radRpta_No.prop("checked", false);
+                $AD_radRpta_Si.prop("checked", true);
+            }
+            else {
+                $AD_radRpta_No.prop("checked", true);
+                $AD_radRpta_Si.prop("checked", false);
+            }
+        }
+        $AD_btnGuardarAprobDscto.css("display", "none");
+        $modalAprobDscto.modal('show');
+    }
+
+    function aprobarCotizacion() {
+
+        if ($.trim($hdnPorcentajeDscto.val()) != "") {
+            if ($.trim($hdnPorcentajeDscto.val()) != $.trim($txtPorcentajeDscto.val())) {
+                app.message.error("Validación", "Porcentaje de Descuento ha sido cambiado, Deberá ser aprobado nuevamente.");
+                return;
+            }
+        }
+        else {
+            if ($.trim($hdnPorcentajeDscto.val()) != $.trim($txtPorcentajeDscto.val())) {
+                app.message.error("Validación", "Porcentaje de Descuento debe estar aprobado previamente.");
+                return;
+            }
+        }
+
+        if ($.trim($hdnPorcentajeDscto.val()) != "") {
+            if ($DsctoRequiereAprobacion.val() == "S") {
+                if ($DsctoAprobado.val() != "S") {
+                    app.message.error("Validación", "Porcentaje de Descuento aun no ha sido aprobado");
+                    return;
+                }
+            }
+        }
+
+        method = "POST";
+        url = "BandejaSolicitudesVentas/AprobarCotizacion";
+        var objDatos = {
+            IdCotizacion: $idCotizacion.val(),
+            IdSolicitud: $numeroSolicitud.val(),
+        };
+        var objParam = JSON.stringify(objDatos);
+
+        function redirect() {
+            app.redirectTo("BandejaSolicitudesVentas/SolicitudVenta");
+        };
+
+        var fnDoneCallBack = function (data) {
+            app.message.success("Validaci&oacute;n", "Se aprob&oacute; la cotizaci&oacute;n correctamente", "Aceptar", redirect);
+        };
+
+        var fnFailCallback = function () {
+            app.message.error("Validaci&oacute;n", "Error al aprobar la cotizaci&oacute;n");
         };
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallback);

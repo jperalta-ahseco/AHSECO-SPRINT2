@@ -10,6 +10,24 @@ var cotvtadet = (function ($, win, doc) {
     var $TipoSol_VentaMateriales = $("#TipoSol_VentaMateriales");
     var $TipoSol_VentaEquipos = $("#TipoSol_VentaEquipos");
 
+    var $idCliente = $("#idCliente");
+    var $numeroSolicitud = $("#numeroSolicitud");
+    var $idWorkFlow = $("#idWorkFlow");
+    var $idCotizacion = $("#idCotizacion");
+    var $txtCodContacto = $('#txtCodContacto');
+    var $nombreContacto = $('#nombreContacto');
+    var $txtAreaContacto = $('#txtAreaContacto');
+    var $txtTelefono = $('#txtTelefono');
+    var $txtCorreo = $('#txtCorreo');
+    var $dateCotizacion = $('#dateCotizacion');
+    var $txtPlazoEntrega = $('#txtPlazoEntrega');
+    var $cmbTipoPago = $('#cmbTipoPago');
+    var $cmbTipMoneda = $('#cmbTipMoneda');
+    var $txtVigencia = $('#txtVigencia');
+    var $cmbGarantia = $('#cmbGarantia');
+    var $txtObs = $('#txtObs');
+    var $txtPorcentajeDscto = $("#txtPorcentajeDscto");
+
     var $RolVenta_Asesor = $("#RolVenta_Asesor");
     var $RolVenta_Gerente = $("#RolVenta_Gerente");
     var $RolVenta_Costos = $("#RolVenta_Costos");
@@ -1286,6 +1304,11 @@ var cotvtadet = (function ($, win, doc) {
             }
         }
 
+        //Se quita los botones de acción al aprobar la cotización
+        if ($estadoSol.val() == "CAPR") {
+            columns.pop();
+        }
+
         var columnDefs =
         {
             targets: [0],
@@ -1312,13 +1335,147 @@ var cotvtadet = (function ($, win, doc) {
         return app.message.confirm("Ventas", " Al salir perder&aacute; todos los datos registrados. &iquest;Desea Salir?", "S&iacute;", "No", fnSi, null);
     }
 
+    function validarCotizacion() {
+
+
+        if ($nombreContacto.val().trim() === "" || $nombreContacto.val().trim().length <= 0 || $nombreContacto.val().trim() == null) {
+            app.message.error("Validación", "Debe de seleccionar un contacto registrado o ingresar el nombre de un nuevo contacto.");
+            return;
+        };
+
+        if (!isNaN($nombreContacto.val())) {
+            app.message.error("Validación", "El nombre del contacto no puede contener números.")
+            return;
+        };
+
+        if ($txtAreaContacto.val().trim() === "" || $txtAreaContacto.val().trim().length <= 0 || $txtAreaContacto.val().trim() == null) {
+            app.message.error("Validación", "Debe de seleccionar un contacto registrado o ingresar el área de un nuevo contacto.");
+            return;
+        };
+
+        if (!isNaN($txtAreaContacto.val())) {
+            app.message.error("Validación", "El área del contacto no puede contener números.")
+            return;
+        };
+
+        if ($txtTelefono.val().trim() === "" || $txtTelefono.val().trim().length <= 0 || $txtTelefono.val().trim() == null) {
+            app.message.error("Validación", "Debe de seleccionar un contacto registrado o ingresar el teléfono de un nuevo contacto.");
+            return;
+        };
+
+        var telefono = $txtTelefono.val().trim();
+
+        telefono = telefono.replace(/\s+/g, ' ');
+
+        if (isNaN($txtTelefono.val().trim()) || (telefono.length === 0 && telefono != "")) {
+            app.message.error("Validación", "El teléfono no está en el formato correcto.");
+            return
+        };
+
+        if ($txtCorreo.val().trim() === "" || $txtCorreo.val().trim().length <= 0 || $txtCorreo.val().trim() == null) {
+            app.message.error("Validación", "Debe de seleccionar un contacto registrado o ingresar el correo de un nuevo contacto.");
+            return;
+        };
+
+        if (!app.validarEmail($txtCorreo.val().trim()) && $txtCorreo.val().trim() != "") {
+            app.message.error("Validación", "Debe de colocar un correo con el formato correcto.");
+            return
+        };
+
+        if ($dateCotizacion.val().trim() === "" || $dateCotizacion.val().trim().length <= 0 || $dateCotizacion.val().trim() == null) {
+            app.message.error("Validación", "Debe ingresar la fecha de cotización.");
+            return;
+        };
+
+        if ($txtVigencia.val().trim() === "" || $txtVigencia.val().trim().length <= 0 || $txtVigencia.val().trim() == null) {
+            app.message.error("Validación", "Debe de ingresar el plazo de vigencia de la cotización.");
+            return;
+        };
+
+        if ($.trim($txtPlazoEntrega.val()) == "") {
+            app.message.error("Validación", "Debe de ingresar el plazo de entrega de la cotización.");
+            return;
+        }
+        else {
+            if (!app.validaNumeroEntero($txtPlazoEntrega.val())) {
+                app.message.error("Validación", "Número inválido para el Plazo de Entrega.");
+                return;
+            }
+        };
+
+        if ($cmbGarantia.attr("disabled") != "disabled") {
+            if ($.trim($cmbGarantia.val()) === "" || $cmbGarantia.val() == undefined || $cmbGarantia.val() == null) {
+                app.message.error("Validación", "Debe de ingresar el periodo de garantía.");
+                return;
+            };
+        }
+
+        if ($.trim($cmbTipoPago.val()) === "" || $cmbTipoPago.val() == undefined || $cmbTipoPago.val() == null) {
+            app.message.error("Validación", "Debe de seleccionar la forma de pago.");
+            return;
+        };
+
+        if ($cmbTipMoneda.attr("disabled") != "disabled") {
+            if ($.trim($cmbTipMoneda.val()) === "" || $cmbTipMoneda.val() == undefined || $cmbTipMoneda.val() == null) {
+                app.message.error("Validación", "Debe de seleccionar el tipo de moneda.");
+                return;
+            };
+        }
+
+        var vFecCotizacion = null;
+        if ($dateCotizacion.val() != "") {
+            vFecCotizacion = app.stringToDate($dateCotizacion.val());
+        }
+
+        var vPorcDscto = null;
+        if ($txtPorcentajeDscto.attr("disabled") != "disabled") {
+            if ($txtPorcentajeDscto.val() != "") {
+                if (!app.validaNumeroDecimal($txtPorcentajeDscto.val())) {
+                    app.message.error("Validación", "N&uacute;mero inv&aacute;lido del campo Porcentaje de Descuento");
+                    return;
+                }
+                else { vPorcDscto = parseFloat($txtPorcentajeDscto.val()); }
+            }
+        }
+
+        return true;
+
+    }
+
     function enviarCotizacion() {
+
+        if (!validarCotizacion()) { return false; }
+
+        var vFecCotizacion = null;
+        if ($dateCotizacion.val() != "") {
+            vFecCotizacion = app.stringToDate($dateCotizacion.val());
+        }
+
+        var vPorcDscto = null;
+        if ($txtPorcentajeDscto.val() != "") {
+            if (app.validaNumeroDecimal($txtPorcentajeDscto.val())) { vPorcDscto = parseFloat($txtPorcentajeDscto.val()); }
+        }
 
         method = "POST";
         url = "BandejaSolicitudesVentas/EnviarCotizacion";
         var objDatos = {
+            IdCliente: $idCliente.val(),
             IdCotizacion: $idCotizacion.val(),
-            IdWorkFlow: $idWorkFlow.val()
+            IdSolicitud: $numeroSolicitud.val(),
+            IdWorkFlow: $idWorkFlow.val(),
+            IdContacto: $txtCodContacto.val(),
+            NombreContacto: $nombreContacto.val(),
+            AreaContacto: $txtAreaContacto.val(),
+            TelefonoContacto: $txtTelefono.val(),
+            EmailContacto: $txtCorreo.val(),
+            FecCotizacion: vFecCotizacion,
+            PlazoEntrega: $txtPlazoEntrega.val(),
+            FormaPago: $cmbTipoPago.val(),
+            Moneda: $cmbTipMoneda.val(),
+            Vigencia: $txtVigencia.val(),
+            Garantia: $cmbGarantia.val(),
+            Observacion: $txtObs.val(),
+            PorcentajeDescuento: vPorcDscto
         };
         var objParam = JSON.stringify(objDatos);
 
@@ -1402,10 +1559,38 @@ var cotvtadet = (function ($, win, doc) {
 
     function guardarValorizacion() {
 
+        if (!validarCotizacion()) { return false; }
+
+        var vFecCotizacion = null;
+        if ($dateCotizacion.val() != "") {
+            vFecCotizacion = app.stringToDate($dateCotizacion.val());
+        }
+
+        var vPorcDscto = null;
+        if ($txtPorcentajeDscto.val() != "") {
+            if (app.validaNumeroDecimal($txtPorcentajeDscto.val())) { vPorcDscto = parseFloat($txtPorcentajeDscto.val()); }
+        }
+
         method = "POST";
         url = "BandejaSolicitudesVentas/GuardarValorizacion";
         var objDatos = {
-            IdCotizacion: $idCotizacion.val()
+            IdCliente: $idCliente.val(),
+            IdCotizacion: $idCotizacion.val(),
+            IdSolicitud: $numeroSolicitud.val(),
+            IdWorkFlow: $idWorkFlow.val(),
+            IdContacto: $txtCodContacto.val(),
+            NombreContacto: $nombreContacto.val(),
+            AreaContacto: $txtAreaContacto.val(),
+            TelefonoContacto: $txtTelefono.val(),
+            EmailContacto: $txtCorreo.val(),
+            FecCotizacion: vFecCotizacion,
+            PlazoEntrega: $txtPlazoEntrega.val(),
+            FormaPago: $cmbTipoPago.val(),
+            Moneda: $cmbTipMoneda.val(),
+            Vigencia: $txtVigencia.val(),
+            Garantia: $cmbGarantia.val(),
+            Observacion: $txtObs.val(),
+            PorcentajeDescuento: vPorcDscto
         };
         var objParam = JSON.stringify(objDatos);
 

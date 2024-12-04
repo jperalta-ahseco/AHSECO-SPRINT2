@@ -75,6 +75,7 @@
 <input type="hidden" id="TotalSeriesSS" value="@ViewBag.TotalSeriesSinStock" />
 <input type="hidden" id="ValidaBtnObservacion" value="0" />
 <input type="hidden" id="CodStock" value="@ViewBag.CodStock" />
+<input type="hidden" id="hdnPorcentajeDscto" value="@ViewBag.PorcentajeDscto">
 <input type="hidden" id="DsctoRequiereAprobacion" value="@strDsctoRequiereAprobacion" />
 <input type="hidden" id="DsctoAprobado" value="@strDsctoAprobado" />
 <input type="hidden" id="DsctoRespondido" value="@strDsctoRespondido" />
@@ -361,8 +362,8 @@
                                                         {
                                                             <button class="btn btn-info btn-sm" type="button" id="btnExportarLiquidacion"><i class="fa fa-table" aria-hidden="true"></i>&nbsp;Exportar Liquidaci&oacute;n</button>
                                                             <button style="@(ViewBag.PermitirImprimirCotizacion ? "" : "display:none")" class="btn btn-primary btn-sm" type="button" id="btnImprimirCotizacion"><i class="fa fa-print" aria-hidden="true"></i>&nbsp;Imprimir Cotizaci&oacute;n</button>
-                                                            <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnActualizarCotizacion" tabindex="14"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Guardar Cambios</button>
                                                             <button style="@(ViewBag.DsctoRequiereAprobacion && ViewBag.DsctoRespondido == false ? "" : "display:none")" data-target="#modalAprobDscto" data-toggle="modal" class="btn btn-warning btn-sm" type="button" data-dismiss="modal" id="btnAprobarDscto" tabindex="14"><i class="fa fa-percent" aria-hidden="true"></i>&nbsp;Aprobar Descuento</button>
+                                                            <button style="@(ViewBag.DsctoRequiereAprobacion && ViewBag.DsctoRespondido == true ? "" : "display:none")" class="btn btn-warning btn-sm" type="button" data-dismiss="modal" id="btnVerComentarioDscto" tabindex="14"><i class="fa fa-percent" aria-hidden="true"></i>&nbsp;Aprobación de Descuento</button>
                                                         }
                                                         else
                                                         {
@@ -448,8 +449,9 @@
                                                                 <div class="row container-fluid">
                                                                     <div class="text-right">
                                                                         <button style="@(ViewBag.PermitirEnvioCotizacion ? "" : "display:none")" class="btn btn-default btn-sm" type="button" id="btnEnviarCotizacion"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Enviar Cotizaci&oacute;n</button>
-                                                                        <button style="@(ViewBag.PermitirReCotizacion ? "" : "display:none")" class="btn btn-warning btn-sm" type="button" id="btnRecotizacion"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Generar Nueva Cotizaci&oacute;n</button>
-                                                                        <button style="@(ViewBag.PermitirGuardarValorizacion ? "" : "display:none")" class="btn btn-default btn-sm" type="button" id="btnGuardarValorizacion"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Guardar Detalles</button>
+                                                                        <button style="@(ViewBag.PermitirReCotizacion ? "" : "display:none")" class="btn btn-warning btn-sm" type="button" id="btnRecotizacion"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Volver a Cotizar</button>
+                                                                        <button style="@(ViewBag.PermitirGuardarValorizacion ? "" : "display:none")" class="btn btn-default btn-sm" type="button" id="btnGuardarValorizacion"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Guardar Cotización</button>
+                                                                        <button style="@(ViewBag.PermitirAprobarCotizacion ? "" : "display:none")" class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnAprobarCotizacion" tabindex="14"><i class="fa fa-check-circle" aria-hidden="true"></i>&nbsp;Aprobar Cotización</button>
                                                                     </div>
                                                                 </div>
                                                             </div>

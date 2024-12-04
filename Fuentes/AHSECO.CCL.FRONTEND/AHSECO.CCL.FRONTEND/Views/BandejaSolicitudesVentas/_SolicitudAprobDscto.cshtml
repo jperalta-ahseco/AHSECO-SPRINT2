@@ -10,9 +10,18 @@
             <form id="formObservacion">
                 <div class="row container-fluid form-group">
                     <div class="col-md-12 col-content-middleleft">
-                        <div class="col-md-7">
-                            <label for="AD_radRpta">Se ha solicitado el @ViewBag.PorcentajeDscto % de Descuento para esta cotización.<br />¿Desea aprobarla?</label>
-                        </div>
+                        @if (ViewBag.DsctoRespondido)
+                        {
+                            <div class="col-md-7">
+                                <label for="AD_radRpta">La respuesta de la aprobación del descuento es la siguiente:</label>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-md-7">
+                                <label for="AD_radRpta">Se ha solicitado el @ViewBag.PorcentajeDscto % de Descuento para esta cotización.<br />¿Desea aprobarla?</label>
+                            </div>
+                        }
                         <div class="col-md-1"></div>
                         <div class="col-md-2">
                             <table style="width:100%">
