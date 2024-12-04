@@ -2335,27 +2335,20 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     }
                 }
 
-                //Se consulta para saber el estado actual del proceso de venta
-                var resCotizacionActual = ventasBL.ObtenerCotizacionVenta(new CotizacionDTO() { IdCotizacion = oCotizacion.IdCotizacion });
-                CotizacionDTO cotActualDTO = resCotizacionActual.Result.ToList().First();
+                if (lstItems.Where(x => x.IndStock.HasValue).Any(y => !y.IndStock.Value))
+                { NotificarValorizacion_CostoFOB(cotizacionDTO.IdSolicitud); }
 
-                var swValorizado = false;
-                if (cotActualDTO.IndValorizado.HasValue)
+                if (lstItems.Where(x => x.IndStock.HasValue).Any(y => y.IndStock.Value))
+                { NotificarValorizacion_ValorUnitario(cotizacionDTO.IdSolicitud); }
+
+                var numSol = VariableSesion.getCadena("numSol");
+                var resSol = ventasBL.ObtenerSolicitudes(new SolicitudDTO { Id_Solicitud = int.Parse(numSol) });
+                var oSolicitud = resSol.Result.First();
+
+                if(oSolicitud.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaEquipos)
                 {
-                    if (cotActualDTO.IndValorizado.Value) { swValorizado = true; }
+                    NotificarCosteoPendiente_ServicioTecnico(cotizacionDTO.IdSolicitud);
                 }
-
-                var swCosteado = false;
-                if (cotActualDTO.IndCosteado.HasValue)
-                {
-                    if (cotActualDTO.IndCosteado.Value) { swCosteado = true; }
-                }
-
-                if (!swValorizado)
-                { NotificarValorizacionPendiente(cotActualDTO.IdSolicitud); }
-
-                if (!swCosteado)
-                { NotificarCosteoPendiente(cotActualDTO.IdSolicitud); }
 
                 return Json(new { Status = 1, Mensaje = "Cotización Enviada correctamente" });
             }
@@ -2458,11 +2451,13 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                     var swValorizado = false;
                     if (cotActualDTO.IndValorizado.HasValue)
-                    {
-                        if (cotActualDTO.IndValorizado.Value) { swValorizado = true; }
-                    }
+                    { if (cotActualDTO.IndValorizado.Value) { swValorizado = true; } }
 
-                    if (swValorizado)
+                    var swCosteado = false;
+                    if (cotActualDTO.IndCosteado.HasValue)
+                    { if (cotActualDTO.IndCosteado.Value) { swCosteado = true; } }
+
+                    if (swValorizado && swCosteado)
                     {
                         NotificarCotizacionValorizada(cotActualDTO.IdSolicitud);
                     }
@@ -2694,6 +2689,27 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     //Se carga todos los costos
                     var resCostos = ventasBL.ObtenerCotDetCostos(new CotDetCostoDTO() { CotizacionDetalle = cotdetCosto.CotizacionDetalle });
                     lstCostos = resCostos.Result.ToList();
+
+                    var resCD = ventasBL.ObtenerCotizacionVentaDetalle(new CotizacionDetalleDTO() { Id = cotdetCosto.IdCotizacionDetalle });
+                    var oCotDetActual = resCD.Result.First();
+
+                    //Se consulta para saber el estado actual del proceso de venta
+                    var resCotizacionActual = ventasBL.ObtenerCotizacionVenta(new CotizacionDTO() { IdCotizacion = oCotDetActual.IdCotizacion });
+                    CotizacionDTO cotActualDTO = resCotizacionActual.Result.ToList().First();
+
+                    var swValorizado = false;
+                    if (cotActualDTO.IndValorizado.HasValue)
+                    { if (cotActualDTO.IndValorizado.Value) { swValorizado = true; } }
+
+                    var swCosteado = false;
+                    if (cotActualDTO.IndCosteado.HasValue)
+                    { if (cotActualDTO.IndCosteado.Value) { swCosteado = true; } }
+
+                    if (swValorizado && swCosteado)
+                    {
+                        NotificarCotizacionValorizada(cotActualDTO.IdSolicitud);
+                    }
+
                 }
                 else
                 {
@@ -3238,7 +3254,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             return Json(new ResponseDTO<RespuestaDTO>(result));
         }
 
-        private void NotificarValorizacionPendiente(long codigoSolicitud)
+        private void NotificarValorizacion_CostoFOB(long codigoSolicitud)
         {
             var result = new RespuestaDTO();
             var ventasBL = new VentasBL();
@@ -3262,6 +3278,35 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 result.Mensaje = "No se pudo enviar el correo de la solicitud N° " + codigoSolicitud.ToString();
                 //throw new Exception(respuesta);
             }
+        }
+
+        private void NotificarValorizacion_ValorUnitario(long codigoSolicitud)
+        {
+            var result = new RespuestaDTO();
+            var ventasBL = new VentasBL();
+
+            var plantillasBL = new PlantillasBL();
+            var filtros = new FiltroPlantillaDTO();
+            PlantillaCorreoDTO datos_correo = null;
+            string respuesta = null;
+
+            //Envio de correo de costo
+            filtros.CodigoProceso = ConstantesDTO.Procesos.Ventas.ID;
+            filtros.CodigoPlantilla = ConstantesDTO.Plantillas.Ventas.CotCostos;
+            filtros.Usuario = User.ObtenerUsuario();
+            filtros.Codigo = Convert.ToInt32(codigoSolicitud);
+            datos_correo = plantillasBL.ConsultarPlantillaCorreo(filtros).Result;
+
+            respuesta = Utilidades.Send(datos_correo.To, datos_correo.CC, "", datos_correo.Subject, datos_correo.Body, null, "");
+            if (respuesta != "OK")
+            {
+                CCLog Log = new CCLog();
+                Log.TraceInfo("Solicitud N° " + codigoSolicitud.ToString() + ":" + respuesta);
+                result.Codigo = 0;
+                result.Mensaje = "No se pudo enviar el correo de costos de la solicitud N° " + codigoSolicitud.ToString();
+                //throw new Exception(respuesta);
+            }
+
         }
 
         private void NotificarCotizacionValorizada(long codigoSolicitud)
@@ -3290,7 +3335,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             }
         }
 
-        private void NotificarCosteoPendiente(long codigoSolicitud)
+        private void NotificarCosteoPendiente_Logistica(long codigoSolicitud)
         {
             var result = new RespuestaDTO();
             var ventasBL = new VentasBL();
@@ -3300,9 +3345,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             PlantillaCorreoDTO datos_correo = null;
             string respuesta = null;
 
-            //Envio de correo de costos
+            //Envio de correo a logistica
             filtros.CodigoProceso = ConstantesDTO.Procesos.Ventas.ID;
-            filtros.CodigoPlantilla = ConstantesDTO.Plantillas.Ventas.CotCostos;
+            filtros.CodigoPlantilla = ConstantesDTO.Plantillas.Ventas.CotLogistica;
             filtros.Usuario = User.ObtenerUsuario();
             filtros.Codigo = Convert.ToInt32(codigoSolicitud);
             datos_correo = plantillasBL.ConsultarPlantillaCorreo(filtros).Result;
@@ -3313,13 +3358,25 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 CCLog Log = new CCLog();
                 Log.TraceInfo("Solicitud N° " + codigoSolicitud.ToString() + ":" + respuesta);
                 result.Codigo = 0;
-                result.Mensaje = "No se pudo enviar el correo de costos de la solicitud N° " + codigoSolicitud.ToString();
+                result.Mensaje = "No se pudo enviar el correo para logistica de la solicitud N° " + codigoSolicitud.ToString();
                 //throw new Exception(respuesta);
             }
 
-            //Envio de correo a logistica
+        }
+
+        private void NotificarCosteoPendiente_ServicioTecnico(long codigoSolicitud)
+        {
+            var result = new RespuestaDTO();
+            var ventasBL = new VentasBL();
+
+            var plantillasBL = new PlantillasBL();
+            var filtros = new FiltroPlantillaDTO();
+            PlantillaCorreoDTO datos_correo = null;
+            string respuesta = null;
+
+            //Envio de correo a Servicio Tecnico
             filtros.CodigoProceso = ConstantesDTO.Procesos.Ventas.ID;
-            filtros.CodigoPlantilla = ConstantesDTO.Plantillas.Ventas.CotLogistica;
+            filtros.CodigoPlantilla = ConstantesDTO.Plantillas.Ventas.CotServTecnio;
             filtros.Usuario = User.ObtenerUsuario();
             filtros.Codigo = Convert.ToInt32(codigoSolicitud);
             datos_correo = plantillasBL.ConsultarPlantillaCorreo(filtros).Result;
