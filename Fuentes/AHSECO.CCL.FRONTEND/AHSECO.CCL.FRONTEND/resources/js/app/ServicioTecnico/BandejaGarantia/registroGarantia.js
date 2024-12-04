@@ -181,7 +181,7 @@
         $btnRegistrarRec.click(RegistrarReclamo);
         $btnGuardarObservacionReq.click(GuardarObservacionReqClick);
         $btnAgregarObservacion.click($modalObservacionClick);
-        $btnBuscarTecnicos.click(BuscarTecnicos);
+        $btnBuscarTecnicos.click(BuscarTecnicosClick);
         $btnBuscarTecnico.click(BuscarTecnicos);
         $searchZona.click(logicUbigeo);
         $btnAñadirTecnico.click(AgregarTecnicoExterno);
@@ -199,7 +199,8 @@
         $dateProgramacion.datepicker({
             viewMode: 0,
             minViewMode: 0,
-            format: 'dd/mm/yyyy'
+            format: 'dd/mm/yyyy',
+            startDate: hoy()
         });
         $btnAdjuntarDocumento.click($adjuntarDocumento_click);
         $dateSolicitud.val(hoy());
@@ -221,6 +222,15 @@
         })
     };
 
+    function BuscarTecnicosClick() {
+        $cmbTipDocTecnico.val("").trigger("change");
+        $txtNumDocTec.val('');
+        $cmbTipoEmpleado.val(0).trigger("change");
+        $txtNombres.val('');
+        $txtApePat.val('');
+        $txtApeMat.val('');
+        BuscarTecnicos();
+    }
 
     /*Lógica Ubigeo*/
     function logicUbigeo() {
@@ -387,6 +397,10 @@
             return;
         };
 
+        if (($dateSolicitud.val() <= $txtFechaInstall.val())) {
+            app.message.error("Validación", "La fecha de reclamo no puede ser menor o igual a la fecha de instalación.");
+            return;
+        };
 
         if ($cmbUrgencia.val() == "" || $cmbUrgencia.val() == 0) {
             app.message.error("Validación", "Se debe de escoger un nivel de urgencia");
@@ -1550,6 +1564,12 @@
             return;
         };
 
+        if (($dateSolicitud.val() <= $txtFechaInstall.val()))
+        {
+            app.message.error("Validación", "La fecha de reclamo no puede ser menor o igual a la fecha de instalación.");
+            return;
+        };
+
 
         if ($cmbUrgencia.val() == "" || $cmbUrgencia.val() == 0) {
             app.message.error("Validación", "Se debe de escoger un nivel de urgencia");
@@ -2034,6 +2054,11 @@
 
         if ($dateSolicitud.val() == "" || $dateSolicitud.val() == null || $dateSolicitud.val().trim().length == 0) {
             app.message.error("Validación", "Se debe de ingresar la fecha de reclamo.");
+            return;
+        };
+
+        if (($dateSolicitud.val() <= $txtFechaInstall.val())) {
+            app.message.error("Validación", "La fecha de reclamo no puede ser menor o igual a la fecha de instalación.");
             return;
         };
 
