@@ -182,6 +182,7 @@ namespace AHSECO.CCL.COMUN
             {
                 public static string Producto { get { return "PRO"; } }
                 public static string Accesorio { get { return "ACC"; } }
+                public static string Servicio { get { return "SER"; } }
             }
         }
 

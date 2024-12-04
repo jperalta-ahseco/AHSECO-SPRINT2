@@ -635,8 +635,8 @@
                     data: "CodItem",
                     render: function (data) {
                         var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
-                        var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                        var quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                        var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: solicitud.editarItemServ(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                        var quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: solicitud.quitarItemServ(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
                         return '<center>' + hidden + editar + ' ' + quitar + '</center>';
                     }
                 }
@@ -3279,7 +3279,13 @@
             var objParam = JSON.stringify(objFiltros);
             var fnDoneCallBack = function (data) {
                 var fnCallback = function () {
-                    cargarTablaCotDetServ(data);
+                    if (opc > 1) {
+                        grabarDatosCotDetServ();
+                    }
+                    else {
+                        cargarTablaCotDetServ(data);
+                    }
+                    
                 };
                 app.message.success("Grabar", "Registro eliminado con &eacute;xito.", "Aceptar", fnCallback);
             };
