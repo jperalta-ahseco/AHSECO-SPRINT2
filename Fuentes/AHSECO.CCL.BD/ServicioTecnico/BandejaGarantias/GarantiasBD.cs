@@ -203,7 +203,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
                         NumFianza = i.Single(d => d.Key.Equals("NUMFIANZA")).Value.Parse<string>(),
                         FechaInstalacion = i.Single(d => d.Key.Equals("FECHAINSTALACION")).Value.Parse<DateTime>(),
                         FechaReclamo = i.Single(d => d.Key.Equals("FECHARECLAMO")).Value.Parse<DateTime>(),
-                        FechaProgramacion = i.Single(d => d.Key.Equals("FECHAPROGRAMACION")).Value.Parse<DateTime>(),
+                        FechaProgramacionFormat = i.Single(d => d.Key.Equals("FECHAPROGRAMACION")).Value.Parse<string>(),
                         CodUbigeo = i.Single(d => d.Key.Equals("UBIGEO")).Value.Parse<string>(),
                         Ubigeo = i.Single(d => d.Key.Equals("DESCUBIGEODEST")).Value.Parse<string>(),
                         Direccion = i.Single(d => d.Key.Equals("DIRECCION")).Value.Parse<string>(),
@@ -213,7 +213,9 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
                         Estado = i.Single(d => d.Key.Equals("ESTADO")).Value.Parse<string>(),
                         CodEstado = i.Single(d => d.Key.Equals("CODESTADO")).Value.Parse<string>(),
                         UsuarioRegistra = i.Single(d => d.Key.Equals("USR_REG")).Value.Parse<string>(),
-                        FechaRegistro = i.Single(d => d.Key.Equals("FEC_REG")).Value.Parse<DateTime>()
+                        FechaRegistro = i.Single(d => d.Key.Equals("FEC_REG")).Value.Parse<DateTime>(),
+                        CodTecnico = i.Single(d => d.Key.Equals("COD_TECNICO")).Value.Parse<int>(),
+                        NomTecnico = i.Single(d => d.Key.Equals("NOM_TECNICO")).Value.Parse<string>()
                     });
                 connection.Close();
                 return result;

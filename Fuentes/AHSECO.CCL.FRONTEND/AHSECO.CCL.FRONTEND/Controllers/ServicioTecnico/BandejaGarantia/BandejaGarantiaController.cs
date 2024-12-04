@@ -361,13 +361,13 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
                 });
             }
         }
-        public void GenerarReporte(FiltroInstalacionTecDTO filtros)
+        public void GenerarReporte(FiltroReclamosDTO filtros)
         {
-            var instalacionTecnicaBL = new InstalacionTecnicaBL();
-            var instalaciones = instalacionTecnicaBL.ObtenerInstalacionesTec(filtros).Result.ToList();
+            var garantiasBL = new GarantiasBL();
+            var garantias = garantiasBL.ObtenerReclamos(filtros).Result.ToList();
 
             var hssfworkbook = new HSSFWorkbook();
-            ISheet sh = hssfworkbook.CreateSheet("Requerimientos");
+            ISheet sh = hssfworkbook.CreateSheet("Reclamos");
 
             // Creacion del estilo
             var fontbold = hssfworkbook.CreateFont();
@@ -423,94 +423,73 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
-            cell.SetCellValue("Número de Requerimiento");
+            cell.SetCellValue("N° Reclamo");
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
-            cell.SetCellValue("Número de Solicitud");    
+            cell.SetCellValue("Nombre de Cliente");    
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
-            cell.SetCellValue("R.U.C");
+            cell.SetCellValue("N° Serie");
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
-            cell.SetCellValue("Nombre de Empresa");
+            cell.SetCellValue("Fecha Reclamo");
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
-            cell.SetCellValue("Ubicación de Empresa");
+            cell.SetCellValue("Urgencia");
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
-            cell.SetCellValue("Tipo de Venta");
+            cell.SetCellValue("Fecha Programación");
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
-            cell.SetCellValue("Vendedor");
-
-            cell = row.CreateCell(cellnum++);
-            cell.CellStyle = style;
-            cell.SetCellValue("Empresa");
-
-            cell = row.CreateCell(cellnum++);
-            cell.CellStyle = style;
-            cell.SetCellValue("Fecha Máxima");
-
-            cell = row.CreateCell(cellnum++);
-            cell.CellStyle = style;
-            cell.SetCellValue("Destino");
+            cell.SetCellValue("Técnico Asignado");
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
             cell.SetCellValue("Estado");
 
-            cell = row.CreateCell(cellnum++);
-            cell.CellStyle = style;
-            cell.SetCellValue("Estado");
-
-            cell = row.CreateCell(cellnum++);
-            cell.CellStyle = style;
-            cell.SetCellValue("Fecha de Registro");
-
+           
 
 
             //// Impresión de la data
-            foreach (var item in instalaciones)
+            foreach (var item in garantias)
             {
-                cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.NumReq);
+                cellnum = 0;
+                row = sh.CreateRow(rownum++);
+
+                var num_rec = "000000" + item.Id_Reclamo.ToString();
+                var format = num_rec.Substring(num_rec.Length - 6);
 
                 cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.Id_Solicitud);
-
-                cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.RucEmpresa);
+                cell.SetCellValue(format);
 
                 cell = row.CreateCell(cellnum++);
                 cell.SetCellValue(item.NomEmpresa);
 
                 cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.Ubicacion);
+                cell.SetCellValue(item.Serie);
 
                 cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.TipoVenta);
+                cell.SetCellValue(item.FechaReclamo.ToString("dd/MM/yyyy"));
 
                 cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.Vendedor);
+                cell.SetCellValue(item.Urgencia);
 
                 cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.CodEmpresa);
+                cell.SetCellValue(item.FechaProgramacionFormat);
 
                 cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.FechaMax);
-
-                cell = row.CreateCell(cellnum++);
-                cell.CellStyle = styleDate;
-                cell.SetCellValue(item.Destino);
+                cell.SetCellValue(item.NomTecnico);
 
                 cell = row.CreateCell(cellnum++);
                 cell.SetCellValue(item.Estado);
+
+              
 
                 sh.SetColumnWidth(0, 20 * 256);
                 sh.SetColumnWidth(1, 20 * 256);
@@ -520,13 +499,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
                 sh.SetColumnWidth(5, 20 * 256);
                 sh.SetColumnWidth(6, 20 * 256);
                 sh.SetColumnWidth(7, 20 * 256);
-                sh.SetColumnWidth(8, 20 * 256);
-                sh.SetColumnWidth(9, 20 * 256);
-                sh.SetColumnWidth(10, 20 * 256);
 
             }
 
-            var filename = "REPORTE" + DateTime.Now.ToString("ddMMyyyyHHmmss") + ".xls";
+            var filename = "REPORTE_GAR_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + ".xls";
             Response.AddHeader("content-disposition", "attachment; filename=" + filename);
             Response.ContentType = "application/vnd.ms-excel";
 
