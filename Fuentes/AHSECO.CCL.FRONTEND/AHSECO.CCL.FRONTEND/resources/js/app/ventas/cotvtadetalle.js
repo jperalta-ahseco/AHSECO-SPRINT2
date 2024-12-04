@@ -1522,9 +1522,89 @@ var cotvtadet = (function ($, win, doc) {
         var fnDoneCallBack = function (data) {
             cargarTablaCotDet(data);
             cargarTablaDetCotCostos(data);
+
+            cargarTablaDetCotCostosServ2(data);
         };
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+    }
+
+    function cargarTablaDetCotCostosServ2(data) {
+
+        var columns = [];
+
+        columns = [
+            {
+                data: "NroItem",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "CodItem",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+
+                    return ("000000" + data).substring(("000000" + data).length - 6, ("000000" + data).length);
+                }
+            },
+            {
+                data: "Descripcion",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "Cantidad",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "VentaUnitaria",
+                render: function (data) {
+                    return '<center>' + data.toFixed(2) + '</center>';
+                }
+            },
+            {
+                data: "VentaTotalSinIGV",
+                render: function (data) {
+                    return '<center>' + data.toFixed(2) + '</center>';
+                }
+            },
+            {
+                data: "CodItem",
+                render: function (data) {
+                    var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
+                    var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: solicitud.editarItemServ(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                    var quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: solicitud.quitarItemServ(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                    return '<center>' + hidden + editar + ' ' + quitar + '</center>';
+                }
+            }
+        ];
+
+
+
+
+        var columnDefs =
+        {
+            targets: [0],
+            visible: false
+        }
+
+        var rowCallback = function (row, data, index) {
+            // Asignar un ID único basado en el índice de datos o algún identificador único
+            $(row).attr('id', 'row' + index);
+        };
+
+        var filters = {}
+        filters.dataTableInfo = false;
+        filters.dataTablePaging = true;
+
+        app.llenarTabla($('#tblDetCotCostosServ'), data, columns, columnDefs, "#tblDetCotCostosServ", rowCallback, null, filters);
     }
 
     function listarCotDetItemsTemp() {

@@ -202,13 +202,13 @@
                                     </div>
                                 </div>
                                 <div class="col-md-4 col-sm-12">
-                                    <label for="txtPrevRealiEquipo">Preventicos Realizados:</label>
+                                    <label for="txtPrevRealiEquipo">Preventivos Realizados:</label>
                                     <div class="form-group">
                                         <input placeholder="--Preventido Realizados--" disabled type="text" class="form-control input-sm" id="txtPrevRealiEquipo" value="">
                                     </div>
                                 </div>
                                 <div class="col-md-4 col-sm-12">
-                                    <label for="txtPrevFaltEquipo">Preventicos Faltantes:</label>
+                                    <label for="txtPrevFaltEquipo">Preventivos Faltantes:</label>
                                     <div class="form-group">
                                         <input placeholder="--Preventivos Faltantes--" disabled type="text" class="form-control input-sm" id="txtPrevFaltEquipo" value="">
                                     </div>
@@ -270,7 +270,7 @@
                         {
                             if (numReclamo != "")
                             {
-                                <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnEditarRec" tabindex="14"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;Editar Reclamo</button>
+                                <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnEditarRec" tabindex="14"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Guardar</button>
                                 if (codEstado == "REG")
                                 {
                                     <button class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnFinalizarRec" tabindex="14"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;Finalizar Reclamo</button>
@@ -346,9 +346,9 @@
                                 <div class="text-right">
                                     @if (tipoProceso != "V")
                                     {
-                                        <button disabled class="btn btn-default btn-sm" type="button" id="btnBuscarTecnicos" data-target="#modalBusquedaTecnico" data-toggle="modal"><i class="fa fa-search"></i> Buscar Técnicos</button>
+                                        <button style="display:none;" class="btn btn-default btn-sm" type="button" id="btnBuscarTecnicos" data-target="#modalBusquedaTecnico" data-toggle="modal"><i class="fa fa-search"></i> Buscar Técnicos</button>
                                         <span id="hidden_fields"></span>
-                                        <button disabled class="btn btn-primary btn-sm" type="button" id="btnAñadirTecnico" data-toggle="modal" data-target="#añadirTecnico"><i class="fa fa-plus"></i> Crear Técnico Externo</button>
+                                        <button style="display:none;" class="btn btn-primary btn-sm" type="button" id="btnAñadirTecnico" data-toggle="modal" data-target="#añadirTecnico"><i class="fa fa-plus"></i> Crear Técnico Externo</button>
                                     }
 
                                 </div>

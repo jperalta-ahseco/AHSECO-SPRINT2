@@ -1591,7 +1591,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 select.CodItemTemp = "";
                 select.Descripcion = "Servicio:"+servicio.CabeceraServicio.TipoServicio.Trim()+", Equipo: "+servicio.CabeceraServicio.Equipo.Trim()+", Modelo:  "+servicio.CabeceraServicio.Modelo.Trim();
                 select.Stock = 0;
-                select.TipoItem = ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto;
+                select.TipoItem = ConstantesDTO.CotizacionVentaDetalle.TipoItem.Servicio;
                 select.EsItemPadre = true;
                 select.IsTempRecord = true;
                 select.CodItem_IsUpdatable = true;
