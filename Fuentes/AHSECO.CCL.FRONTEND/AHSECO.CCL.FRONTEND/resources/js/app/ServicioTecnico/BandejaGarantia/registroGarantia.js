@@ -208,7 +208,11 @@
         $fileCargaDocumentoSustento.on("change", $fileCargaDocumentoSustento_change);
         CargarTipoDocumento(7); //Cambiar a tipo de proceso Instalación Técnica.
         IniciarBotonSeleccionarTecnico();
-        cargarDatos();
+
+        setTimeout(function () {
+            cargarDatos();
+        }, 2000);
+        
         $cmbTipoCredencial.on('change', function (e) {
             if (e.target.value === "GETD0001") {
                 $txtNumDocumento.attr("maxlength", '8');
@@ -281,7 +285,7 @@
             var filters = {};
             filters.placeholder = "-- Seleccione --";
             filters.allowClear = false;
-            app.llenarCombo($cmbDepartamento, resultado, null, "", "<--Seleccione-->", filters);
+            app.llenarCombo($cmbDepartamento, resultado, $modalZona, "", "<--Seleccione-->", filters);
         }
         var fnFailCallback = function () {
             app.mensajes.error("Error", "No se ejecutó correctamente la carga de departamentos")
@@ -325,7 +329,7 @@
         var filters = {};
         filters.placeholder = "-- Seleccione --";
         filters.allowClear = false;
-        app.llenarCombo($cmbProvincia, provincias, null, "", "<--Seleccione-->", filters)
+        app.llenarCombo($cmbProvincia, provincias, $modalZona, "", "<--Seleccione-->", filters)
     }
 
     function obtenerDistrito(codProvincia, data) {
@@ -359,7 +363,7 @@
         var filters = {};
         filters.placeholder = "-- Seleccione --";
         filters.allowClear = false;
-        app.llenarCombo($cmbDistrito, distritos, null, "", "<--Seleccione-->", filters)
+        app.llenarCombo($cmbDistrito, distritos, $modalZona, "", "<--Seleccione-->", filters)
     }
 
 
@@ -595,6 +599,7 @@
         $txtNumDocumento.val("");
         $txtTelefono.val("");
         $txtCorreo.val("");
+        $hdnIdZona.val("");
         $txtZona.val("");
         $txtTipoTecnico.val("");
         $hdnIdTecnico.val("");
@@ -1303,6 +1308,7 @@
         return app.message.confirm("Confirmación", "¿Desea grabar?", "Sí", "No", fnSi, null);
     }
     function cargarTablaMainTecnicos(tecnicos) {
+        
         var cant_tecnicos = tecnicos.length;
         if (cant_tecnicos == 0) {
             $btnBuscarTecnicos.show();
@@ -1849,6 +1855,7 @@
     }
 
     function AgregarTecnicoExterno() {
+        limpiarAsignacionTecnicos();
         $txtTipoTecnico.val("Externo");
         $hdnTipoEmpleado.val("E");
     };
@@ -2031,6 +2038,10 @@
                 $btnAgregarDocumento.css('display', 'none');
                 $btnAgregarObservacion.css('display', 'none');
             }
+        }
+        else {
+            $btnBuscarTecnicos.show();
+            $btnAñadirTecnico.show();
         }
 
     };
