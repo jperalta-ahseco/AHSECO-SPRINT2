@@ -687,7 +687,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
 
                 var filtros = new FiltroPlantillaDTO();
                 filtros.CodigoProceso = 3;
-                filtros.CodigoPlantilla = "PLANINSTECVEN";
+                filtros.CodigoPlantilla = "PLANINSTEC";
                 filtros.Usuario = User.ObtenerUsuario();
                 filtros.Codigo = Convert.ToInt32(instalacion.NumReq);
 
