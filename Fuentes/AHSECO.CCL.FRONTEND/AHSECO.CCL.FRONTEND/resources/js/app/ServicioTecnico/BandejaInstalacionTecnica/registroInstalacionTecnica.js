@@ -1370,18 +1370,21 @@
         };
 
         if ($('#dateFechaInstalacion' + id).val() == "" || $('#dateFechaInstalacion' + id).val() == null) {
-            app.message.error("Validación", "Para registrar la Fecha de Instalación, debe de estar registrada la Fecha de Programación");
+            app.message.error("Validación", "La Fecha de Instalación no puede estar vacía.");
+            return;
+        };
+
+        if ($('#dateFechaProgramacion' + id).val() == "" || $('#dateFechaProgramacion' + id).val() == null) {
+            app.message.error("Validación", "Para insertar la fecha de instalación, primero debe ingresar la fecha de Programación.");
             return;
         };
 
         if ($('#dateFechaInstalacion' + id).val() < $('#dateFechaProgramacion' + id).val()) {
             app.message.error("Validación", "La Fecha de Instalación no puede ser menor a la Fecha de Programación");
-            return
+            return;
         };
 
-        if ($('#dateFechaProgramacion' + id).val() == "" || $('#dateFechaProgramacion' + id).val() == null) {
-            app.message.error("","")
-        };
+
 
         var idDespacho = id;
 
