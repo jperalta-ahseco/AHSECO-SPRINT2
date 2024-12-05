@@ -51,25 +51,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Mantenimientos
             var empleadosBL = new EmpleadosBL();
             empleadoDTO.UsuarioRegistra = User.ObtenerUsuario();
             var response = empleadosBL.EmpleadosMant(empleadoDTO);
-
-            if (response.Result.Codigo == 0)
-            {
-                return Json(new
-                {
-                    Status = 0,
-                    Codigo = response.Result.Codigo,
-                    Mensaje = "Error en la inserción o documento de identidad duplicado"
-                });
-            }
-            else
-            {
-                return Json(new
-                {
-                    Status = 1,
-                    Codigo = response.Result.Codigo,
-                    Mensaje = "Inserción completada"
-                });
-            }
+            return Json(response);
+            
 
         }
         public void ExportarEmpleados(FiltroEmpleadosDTO filtrpoEmpleadosDTO)

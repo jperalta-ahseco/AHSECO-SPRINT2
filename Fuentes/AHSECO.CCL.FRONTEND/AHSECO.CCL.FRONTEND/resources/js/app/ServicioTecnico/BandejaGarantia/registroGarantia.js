@@ -599,11 +599,11 @@
         $txtNumDocumento.val("");
         $txtTelefono.val("");
         $txtCorreo.val("");
-        $hdnIdZona.val("");
         $txtZona.val("");
-        $txtTipoTecnico.val("");
         $hdnIdTecnico.val("");
-        $cmbTipoCredencial.val("").trigger('change.select2');
+        $cmbProvincia.val("").trigger('change.select2');
+        $cmbProvincia.val("").trigger('change.select2');
+        $cmbDistrito.val("").trigger('change.select2');
     };
 
     function cargarBandejaTecnicos(data) {
@@ -1762,11 +1762,17 @@
         var objEmpleado = JSON.stringify(objParam);
 
         var fnDoneCallback = function (data) {
-            app.message.success("Éxito", "Se realizó la creación del técnico satisfactoriamente.");
-            $añadirTecnico.modal('toggle');
+            if (data.Result.Codigo > 0) {
+                app.message.success("Éxito", "Se realizó la creación del técnico satisfactoriamente.");
+                $añadirTecnico.modal('toggle');
+            }
+            else {
+                app.message.error("Validación", data.Result.Mensaje);
+            }
+
         };
-        var fnFailCallback = function () {
-            app.message.error("Error", "Error en la inserción o documento de identidad ya ha sido ingresado con anterioridad, por favor revisar.");
+        var fnFailCallback = function (data) {
+            app.message.error("Error", data.Result.Mensaje);
         };
 
         app.llamarAjax(method, url, objEmpleado, fnDoneCallback, fnFailCallback, null, null);
