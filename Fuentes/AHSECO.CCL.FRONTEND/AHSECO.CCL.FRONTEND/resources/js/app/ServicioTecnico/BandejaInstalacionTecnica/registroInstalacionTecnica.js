@@ -533,32 +533,24 @@
             $txtEmpresaTecnico.prop('disabled', true);
             $txtTecnico.val("");
 
-            var fnSi = function (data) {
+            var fnSi = function () {
                 $modalObservacionClick();
                 if (data.Result.Codigo == 1) {
                     cambiarEstadoInstalado();
-                    obtenerDetalleInstalacion();
                 }
                 else if (data.Result.Codigo == 2) {
                     cambiarEstadoProceso();
-                    obtenerDetalleInstalacion();
                 }
-                else {
-                    obtenerDetalleInstalacion();
-                }
+                obtenerDetalleInstalacion();
             }
 
             var fnNo = function () {
                 if (data.Result.Codigo == 1) {
                     cambiarEstadoInstalado();
-                    obtenerDetalleInstalacion();
                 } else if (data.Result.Codigo == 2) {
                     cambiarEstadoProceso();
-                    obtenerDetalleInstalacion();
                 }
-                else {
-                    obtenerDetalleInstalacion();
-                }
+                obtenerDetalleInstalacion();
             }
 
             app.message.confirm("Éxito", "Asignación completada, ¿Desea agregar un comentario adicional?","Sí","No",fnSi,fnNo);
@@ -1304,19 +1296,16 @@
         var fnSi = function () {
             var fnDoneCallBack = function (data) {
 
-                var fnSi = function (data) {
+                var fnSi = function () {
                     $modalObservacionClick();
                     if (data.Result.Codigo == 1) {
                         cambiarEstadoInstalado();
-                        obtenerDetalleInstalacion();
                     }
                     else if (data.Result.Codigo == 2) {
                         cambiarEstadoProceso();
-                        obtenerDetalleInstalacion();
                     }
-                    else {
-                        obtenerDetalleInstalacion();
-                    }                };
+                    obtenerDetalleInstalacion();
+                };
 
                 var fnNo = function () {
                     if (data.Result.Codigo == 1) {
@@ -2570,7 +2559,7 @@
                         html += '<div class="form-group">' +
                             '<div class="input-group input-group-sm date">' +
                             '<input disabled type="date" class="form-control input-sm" id="dateFechaProgramacion' + row.Id_Despacho + '" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" value="' + row.FechaProgramacion + '">';
-                        if ($tipoproceso.val() == "U") {
+                        if ($tipoproceso.val() == "U" & ($estadoReq.val() != "STINS" & $estadoReq.val() != "STFIN")) {
                             html += '<a style="cursor:pointer;background-color: #096bff;color: white;" class="input-group-addon input-sm" id="activeFechaProgramacion' + row.Id_Despacho + '" title="Ingresar Fecha Programación" href="javascript:registroInstalacionTec.activarFechaProgramacion(' + row.Id_Despacho + ')">' +
                                 '<i class="fa fa-pencil" aria-hidden="true"></i>' +
                                 '</a>';
@@ -2599,7 +2588,7 @@
                             '<div class="input-group input-group-sm date">' +
                             '<input disabled type="date" class="form-control input-sm" id="dateFechaInstalacion' + row.Id_Despacho + '" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" value="' + row.FechaInstalacion + '">';
 
-                        if ($tipoproceso.val() == "U") {
+                        if ($tipoproceso.val() == "U" & ($estadoReq.val() != "STINS" & $estadoReq.val() != "STFIN")) {
                             html += '<a style="cursor:pointer;background-color: #096bff;color: white;" class="input-group-addon input-sm" id="activeFechaInstalacion' + row.Id_Despacho + '" title="Ingresar Fecha Instalación" href="javascript:registroInstalacionTec.activarFechaInstalacion(' + row.Id_Despacho + ')">' +
                                 '<i class="fa fa-pencil" aria-hidden="true"></i>' +
                                 '</a>';
@@ -2630,9 +2619,11 @@
             ];
         }
 
-        if ($tipoproceso.val() == "V") {
+        if ($tipoproceso.val() == "V" ) {
             columns.splice(1, 1);
         };
+
+
 
         var columnsDefs = [
             {
