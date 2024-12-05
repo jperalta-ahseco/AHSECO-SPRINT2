@@ -386,7 +386,7 @@ var cotvtadet = (function ($, win, doc) {
             var method = "POST";
             var url = "BandejaSolicitudesVentas/QuitarItemCotDet";
             var objFiltros = {
-                CodItem: CodigoItem,
+                CotizacionDetalle: { CodItem: CodigoItem },
                 opcGrillaItems: opc
             };
             var objParam = JSON.stringify(objFiltros);
@@ -578,7 +578,7 @@ var cotvtadet = (function ($, win, doc) {
         method = "POST";
         url = "BandejaSolicitudesVentas/EditarItemCotDet";
         var objFiltros = {
-            CodItem: CodigoItem,
+            CotizacionDetalle: { CodItem: CodigoItem },
             opcGrillaItems: opc
         };
         var objParam = JSON.stringify(objFiltros);
@@ -625,17 +625,16 @@ var cotvtadet = (function ($, win, doc) {
                     $DI_txtGanancia.removeAttr("disabled");
                     $DI_txtGanancia.focus();
                 }
-                $DI_txtDimensiones.removeAttr("disabled");
-                $DI_txtReqCliente.removeAttr("disabled");
-                $DI_txtObsInsta.removeAttr("disabled");
-                $DI_txtDescripcionAdic.removeAttr("disabled");
+            }
+            else {
+                $DI_txtGanancia.attr("disabled", "disabled");
             }
 
             if ($cmbTipo.val() == $TipoSol_VentaMateriales.val()) {
                 $DI_pnlInfoGeneral_Dimensiones.css("display", "none");
                 $DI_txtDescripcionAdic.attr("rows", "4");
                 $DI_pnlCostos_Calibracion.css("display", "none");
-                $DI_pnlCostos_Ganancia.css("display", "none");
+                //$DI_pnlCostos_Ganancia.css("display", "none");
                 $DI_pnlCostos_CompraLocal.css("display", "none");
                 $DI_pnlCostos_ReqPlaca.css("display", "none");
                 $DI_pnlCostos_MantPrevent.css("display", "none");
@@ -648,7 +647,34 @@ var cotvtadet = (function ($, win, doc) {
                 $DI_pnlCostos_ObsInsta.css("display", "none");
                 $DI_pnlDestinos.css("display", "none");
             }
+            else {
+                $DI_pnlInfoGeneral_Dimensiones.css("display", "");
+                $DI_txtDescripcionAdic.attr("rows", "6");
+                $DI_pnlCostos_Calibracion.css("display", "");
+                //$DI_pnlCostos_Ganancia.css("display", "");
+                $DI_pnlCostos_CompraLocal.css("display", "");
+                $DI_pnlCostos_ReqPlaca.css("display", "");
+                $DI_pnlCostos_MantPrevent.css("display", "");
+                $DI_pnlCostos_Manuales.css("display", "");
+                $DI_pnlCostos_Videos.css("display", "");
+                $DI_pnlCostos_Instalacion.css("display", "");
+                $DI_pnlCostos_Capacitacion.css("display", "");
+                $DI_pnlCostos_GarantAdic.css("display", "");
+                $DI_pnlCostos_GarantAdic_Combo.css("display", "");
+                $DI_pnlCostos_ObsInsta.css("display", "");
+                $DI_pnlDestinos.css("display", "");
+            }
 
+            if ($DI_pnlInfoGeneral_Dimensiones.css("display") != "none") {
+                $DI_txtDimensiones.removeAttr("disabled");
+            }
+            if ($DI_pnlCostos_ReqCliente.css("display") != "none") {
+                $DI_txtReqCliente.removeAttr("disabled");
+            }
+            if ($DI_pnlCostos_ObsInsta.css("display") != "none") {
+                $DI_txtObsInsta.removeAttr("disabled");
+            }
+            
             $('#modalDetalleItem').modal('show');
         };
         
@@ -661,7 +687,7 @@ var cotvtadet = (function ($, win, doc) {
         method = "POST";
         url = "BandejaSolicitudesVentas/SeleccionarRowCotDet";
         var objFiltros = {
-            CodigoItem: ID
+            CodItem: ID
         };
         var objParam = JSON.stringify(objFiltros);
 
@@ -720,7 +746,7 @@ var cotvtadet = (function ($, win, doc) {
         method = "POST";
         url = "BandejaSolicitudesVentas/ObtenerSubItems";
         var objFiltros = {
-            CodItemPadre: CodigoItem
+            CodItem: CodigoItem
         };
         var objParam = JSON.stringify(objFiltros);
 
@@ -790,8 +816,8 @@ var cotvtadet = (function ($, win, doc) {
         method = "POST";
         url = "BandejaSolicitudesVentas/QuitarSubItemCotDet";
         var objFiltros = {
-            CodItemPadre: CodigoItemPadre,
-            CodItem: CodigoItem
+            CotizacionDetallePadre: { CodItem: CodigoItemPadre },
+            CotizacionDetalle: { CodItem: CodigoItem }
         };
         var objParam = JSON.stringify(objFiltros);
         var CodItemPadre = CodigoItemPadre;
@@ -810,8 +836,8 @@ var cotvtadet = (function ($, win, doc) {
         method = "POST";
         url = "BandejaSolicitudesVentas/EditarSubItemCotDet";
         var objFiltros = {
-            CodItemPadre: CodigoItemPadre,
-            CodItem: CodigoItem
+            CotizacionDetallePadre: { CodItem: CodigoItemPadre },
+            CotizacionDetalle: { CodItem: CodigoItem }
         };
         var objParam = JSON.stringify(objFiltros);
 
@@ -1057,8 +1083,8 @@ var cotvtadet = (function ($, win, doc) {
         method = "POST";
         url = "BandejaSolicitudesVentas/GrabarDatosCotDetItem";
         var objDatos = {
-            CodItemPadre: $DI_hdnCodigoPadre.val(),
-            CotDet: {
+            CotizacionDetallePadre: { CodItem: $DI_hdnCodigoPadre.val() },
+            CotizacionDetalle: {
                 CodItem: $DI_hdnCodigo.val(),
                 CodItemTemp: $DI_txtCodigo.val(),
                 DescripcionAdicional: $DI_txtDescripcionAdic.val(),
