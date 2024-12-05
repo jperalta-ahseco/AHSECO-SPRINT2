@@ -238,6 +238,8 @@
 
     /*Lógica Ubigeo*/
     function logicUbigeo() {
+        $cmbProvincia.val('').trigger("change");
+        $cmbDistrito.val('').trigger("change");
         $cmbProvincia.prop("disabled", true);
         $cmbDistrito.prop("disabled", true);
         getDepartamentos();

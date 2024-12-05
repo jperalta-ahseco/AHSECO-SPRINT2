@@ -302,6 +302,8 @@
 
     /*Lógica Ubigeo*/
     function logicUbigeo() {
+        $cmbProvincia.val('').trigger("change");
+        $cmbDistrito.val('').trigger("change");
         $cmbProvincia.prop("disabled", true);
         $cmbDistrito.prop("disabled", true);
         getDepartamentos();
@@ -349,7 +351,7 @@
             var filters = {};
             filters.placeholder = "-- Seleccione --";
             filters.allowClear = false;
-            app.llenarCombo($cmbDepartamento, resultado, null, "", "<--Seleccione-->", filters);
+            app.llenarCombo($cmbDepartamento, resultado, $modalZona, "", "<--Seleccione-->", filters);
         }
         var fnFailCallback = function () {
             app.mensajes.error("Error", "No se ejecutó correctamente la carga de departamentos")
@@ -393,7 +395,7 @@
         var filters = {};
         filters.placeholder = "-- Seleccione --";
         filters.allowClear = false;
-        app.llenarCombo($cmbProvincia, provincias, null, "", "<--Seleccione-->", filters)
+        app.llenarCombo($cmbProvincia, provincias, $modalZona, "", "<--Seleccione-->", filters)
     }
 
     function obtenerDistrito(codProvincia, data) {
@@ -427,7 +429,7 @@
         var filters = {};
         filters.placeholder = "-- Seleccione --";
         filters.allowClear = false;
-        app.llenarCombo($cmbDistrito, distritos, null, "", "<--Seleccione-->", filters)
+        app.llenarCombo($cmbDistrito, distritos, $modalZona, "", "<--Seleccione-->", filters)
     }
     
 
@@ -704,15 +706,22 @@
         var objEmpleado = JSON.stringify(objParam);
 
         var fnDoneCallback = function (data) {
-            $txtTecnico.val($txtNombreTecnico.val().trim() + ' ' + $txtApellidoPaternoTec.val().trim() + ' ' + $txtApellidoMaternoTec.val().trim());
-            $txtEmpresaTecnico.val("");
-            $txtEmpresaTecnico.prop('disabled', false);
-            app.message.confirm("Éxito", "Se realizó la creación del técnico satisfactoriamente.");
-            $hdnIdTecnico.val(data.Codigo);
-            $modalAsignacion.modal('toggle');
+           
+
+            if (data.Result.Codigo > 0) {
+                $txtTecnico.val($txtNombreTecnico.val().trim() + ' ' + $txtApellidoPaternoTec.val().trim() + ' ' + $txtApellidoMaternoTec.val().trim());
+                $txtEmpresaTecnico.val("");
+                $txtEmpresaTecnico.prop('disabled', false);
+                app.message.success("Éxito", "Se realizó la creación del técnico satisfactoriamente.");
+                $hdnIdTecnico.val(data.Codigo);
+                $modalAsignacion.modal('toggle');
+            }
+            else {
+                app.message.error("Validación", data.Result.Mensaje);
+            }
         };
         var fnFailCallback = function () {
-            app.message.error("Error", "Error en la inserción o documento de identidad ya ha sido ingresado con anterioridad, por favor revisar.");
+            app.message.error("Error", data.Result.Mensaje);
         };
 
         app.llamarAjax(method, url, objEmpleado, fnDoneCallback, fnFailCallback, null, null);
@@ -1414,11 +1423,25 @@
         return app.message.confirm("Confirmación", "¿Desea establecer la fecha seleccionada como: 'Fecha de Instalación'?", "Sí", "No", fnSi, null);
     }
     function AgregarTecnicoExterno() {
+        $txtNombreTecnico.val('');
+        $txtApellidoPaternoTec.val('');
+        $txtApellidoMaternoTec.val('');
         $txtTipoTecnico.val("Externo");
         $hdnTipoEmpleado.val("E");
+        $cmbTipoCredencial.val('').trigger("change.select2");
+        $txtNumDocumento.val('');
+        $txtTelefono.val('');
+        $txtCorreo.val('');
+        $txtZona.val('');
     };
 
     function abrirModalTecnicos() {
+        $cmbTipDocTecnico.val('').trigger("change.select2");
+        $txtNumDocTec.val('');
+        $cmbTipoEmpleado.val('').trigger("change.select2");
+        $txtNombres.val('');
+        $txtApePat.val('');
+        $txtApeMat.val('');
         BuscarTecnicos();
     };
     function cargarTipoDoc() {
