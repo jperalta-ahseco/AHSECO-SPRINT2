@@ -11,8 +11,14 @@
             <h2><i class="glyphicon glyphicon-list"></i> Bandeja de Mantenimientos Preventivos</h2>
         </div>
         <div class="box-content">
-            <form id="formInstallTec">
+            <form id="formPreventivo">
                 <div class="row container-fluid" style="margin-bottom:10px">
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtIdMant">N° de Mantenimiento:</label>
+                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                            <input class="form-control input-sm" type="text" id="txtIdMant" placeholder="Ingresar el número de Mantenimiento" />
+                        </div>
+                    </div>
                     <div class="col-md-4 col-sm-12">
                         <label for="txtSerie">N° de Serie:</label>
                         <div class="input-group col-sm-12 col-md-12 col-lg-12">
@@ -23,13 +29,6 @@
                         <label for="txtNumProc">N° Proceso:</label>
                         <div class="input-group col-sm-12 col-md-12 col-lg-12">
                             <input class="form-control input-sm" type="text" id="txtNumProc" placeholder="Ingresar el número de Proceso" />
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-sm-12">
-                        <label for="txtTipDoc">Estado:</label>
-                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
-                            <select aria-hide="false" id="cmbEstado" type="text" class="input form-control input-sm">
-                            </select>
                         </div>
                     </div>
                 </div>
@@ -77,21 +76,24 @@
                     <div class="text-right">
                         <button class="btn btn-primary btn-sm" type="button" id="btnBuscar"><i class="fa fa-search"></i> Buscar</button>
                         <span id="hidden_fields"></span>
-                        <a class="btn btn-info btn-sm" type="button" id="btnExportar" href="BandejaInstalacionTecnica/GenerarReporte"><i class="fa fa-table"></i> Exportar</a>
+                        <a class="btn btn-info btn-sm" type="button" id="btnExportar" href="BandejaPreventivo/GenerarReporte"><i class="fa fa-table"></i> Exportar</a>
                     </div>
             </form>
             <br />
             <div class="table-responsive">
-                <table id="tblInstallTec" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                <table id="tblMantenimientos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                     <thead>
                         <tr>
-                            <th style="text-align: center;">N° Mantenimiento</th>
-                            <th style="text-align: center;">Num. Serie</th>
-                            <th style="text-align: center;">Nombre Equipo</th>
-                            <th style="text-align: center;">Nombre Empresa</th>
-                            <th style="text-align: center;">Tiempo. Garantía.</th>
-                            <th style="text-align: center;">Fecha Instalaci&oacute;n</th>
-                            <th style="text-align: center;">Acciones</th>
+                            <th style="text-align: center; width: 5%">N° Mantenimiento</th>
+                            <th style="text-align: center; width: 5%">Num. Serie</th>
+                            <th style="text-align: center; width: 15%">Nombre Equipo</th>
+                            <th style="text-align: center; width: 5%">Fecha Instalación</th>
+                            <th style="text-align: center; width: 5%">Fecha Próx. Mantenimiento</th>
+                            <th style="text-align: center; width: 5%">Cantidad de Preventivos</th>
+                            <th style="text-align: center; width: 5%">Prev. Realizados</th>
+                            <th style="text-align: center; width: 5%">Prev. Pendientes</th>
+                            <th style="text-align: center; width: 15%">Ubigeo Destino</th>
+                            <th style="text-align: center; width: 5%">Acciones</th>
                         </tr>
                     </thead>
                     <tbody></tbody>

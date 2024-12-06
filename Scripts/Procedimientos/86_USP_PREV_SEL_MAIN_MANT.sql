@@ -7,18 +7,18 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_PREV_SEL_MAIN_MANT]
 	Nombre:				Fecha:			Descripcion:
 	Diego Bazalar		21.11.24		Realiza el select MAIN para la bandeja de preventivos. 
 	EXEC [USP_PREV_SEL_MAIN_MANT]	123,1
-	EXEC [USP_PREV_SEL_MAIN_MANT] @IsNumMant =1 ,@IsIdWorkFlow = 672
+	EXEC [USP_PREV_SEL_MAIN_MANT] @IsNumPreventivo=1 ,@IsIdWorkFlow = 672
   =======================================================================================================*/
-  @IsNumMant BIGINT
+  @IsNumPreventivo BIGINT
   ,@IsIdWorkFlow BIGINT 
 )
 AS
 BEGIN
 SET NOCOUNT ON 
 	--Cabecera de Mant
-	EXEC [dbo].[USP_PREV_SEL_DETALLE_MANT] @IsNumMant = @IsNumMant
+	EXEC [dbo].[USP_PREV_SEL_DETALLE_MANT] @IsNumPreventivo = @IsNumPreventivo
 	--Tecnicos
-	EXEC [dbo].[USP_PREV_SEL_TECNICOS] @IsNumMant = @IsNumMant 
+	EXEC [dbo].[USP_PREV_SEL_TECNICOS] @IsNumPreventivo = @IsNumPreventivo 
 
 	--Documentos adjuntos:
 	SELECT A.COD_DOCUMENTO,
@@ -48,7 +48,7 @@ SET NOCOUNT ON
 					ISNULL(CONVERT(varchar,A.AUDIT_REG_FEC,103),'') FECREG, 
 					ISNULL(CONVERT(varchar,A.AUDIT_REG_FEC,8),'') HORAREG 
 		FROM TBM_WORKFLOWLOG A WITH(NOLOCK) 
-		LEFT JOIN TBM_PROCESOESTADOS  B WITH(NOLOCK)  ON A.COD_ESTADO=B.COD_ESTADO AND ID_PROCESO = 7
+		LEFT JOIN TBM_PROCESOESTADOS  B WITH(NOLOCK)  ON A.COD_ESTADO=B.COD_ESTADO AND ID_PROCESO = 6
 		LEFT JOIN TBM_SEGURIDAD_USUARIO C WITH(NOLOCK) ON A.AUDIT_REG_USR=C.USUARIO
 		WHERE A.ID_WORKFLOW = @IsIdWorkFlow
 SET NOCOUNT OFF 

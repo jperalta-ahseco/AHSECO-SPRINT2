@@ -8,13 +8,13 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_PREV_SEL_TECNICOS]
 	Diego Bazalar		28.11.24		Realiza el select de la los técnicos para la bandeja de preventivos.
 	EXEC [USP_PREV_SEL_TECNICOS] 1
   =======================================================================================================*/
-	@IsNumMant BIGINT
+	@IsNumPreventivo BIGINT
 )
 AS
 BEGIN
 	SELECT 
 		TECNICO.ID
-		,TECNICO.ID_MANT
+		,TECNICO.ID_DETALLE
 		,TECNICO.COD_TECNICO
 		,TECNICO.NOMBRES
 		,TECNICO.APELLIDOPATERNO
@@ -36,6 +36,6 @@ BEGIN
 	LEFT JOIN [dbo].[TBM_UBIGEO] AS UBI WITH(NOLOCK) ON UBI.CODUBIGEO = TECNICO.ZONA
 	LEFT JOIN [dbo].[TBD_DATOS_GENERALES] datos WITH(NOLOCK) ON datos.PARAMETRO = TECNICO.TIPO_DOCUMENTO
 	LEFT JOIN [dbo].[TBD_DATOS_GENERALES] tipo WITH(NOLOCK) ON tipo.COD_VALOR1 = TECNICO.TIPOTECNICO
-	WHERE TECNICO.ESTADO = '1' AND ID_MANT = @IsNumMant
+	WHERE TECNICO.ESTADO = '1' AND ID_DETALLE = @IsNumPreventivo
 
 END

@@ -16,7 +16,7 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_PREV_SEL_PREVENTIVOS]
 	,@IsEmpresa			VARCHAR(6)
 	,@IsPeriodoInicio	VARCHAR(7)
 	,@IsPeriodoFinal	VARCHAR(7)
-	,@IsEstado			VARCHAR(5)
+	--,@IsEstado			VARCHAR(5)
 )
 AS
 BEGIN
@@ -67,7 +67,7 @@ SET NOCOUNT ON
 			COUNT(MANTDET.ID_MANT) PENDIENTES
 			,MANTDET.ID_MANT
 		FROM [dbo].[TBM_MANT_PREV] MANT
-		LEFT JOIN [dbo].[TBD_MANT_PREV] MANTDET ON MANT.ID_MANT = MANTDET.ID_MANT AND MANTDET.ESTADO = 'PEND'
+		LEFT JOIN [dbo].[TBD_MANT_PREV] MANTDET ON MANT.ID_MANT = MANTDET.ID_MANT AND MANTDET.ESTADO != 'COM'
 		GROUP BY MANTDET.ID_MANT
 	),
 	CTE_3 AS (																						----------------------------------
@@ -152,10 +152,10 @@ SET NOCOUNT ON
 	BEGIN
 		SET @sql = @sql +' AND SOl.COD_EMPRESA = '''+CAST(@IsEmpresa AS VARCHAR)+''' '
 	END
-	IF (@IsEstado != '')
-	BEGIN
-		SET @sql = @sql +' AND MANT.ESTADO = '''+CAST(@IsEstado AS VARCHAR)+''' '
-	END
+	--IF (@IsEstado != '')
+	--BEGIN
+	--	SET @sql = @sql +' AND MANT.ESTADO = '''+CAST(@IsEstado AS VARCHAR)+''' '
+	--END
 
 	SET @sql = @sql +'
 				GROUP BY MANT.ID_MANT

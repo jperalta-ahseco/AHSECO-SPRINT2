@@ -10,7 +10,7 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaPreventivos
 {
     public class GrupoMantPreventivoDTO
     {
-        public  ResultPreventivoDTO MantPreventivo{ get; set; }
+        public  MantPreventivoDTO MantPreventivo{ get; set; }
         public List<TecnicoMantPreventivoDTO> Tecnicos { get; set; }
         public List<WorkflowLogDTO> Seguimiento { get; set; }
         public List<ObservacionDTO> Observaciones { get; set; }
