@@ -1066,7 +1066,7 @@
                 if ($numReclamo.val() != "") {
 
                     var method = "POST";
-                    var url = "BandejaInstalacionTecnica/GuardarAdjunto";
+                    var url = "BandejaGarantia/GuardarAdjunto";
                     var obj = {
                         Accion: "I",
                         CodigoDocumento: 0,
