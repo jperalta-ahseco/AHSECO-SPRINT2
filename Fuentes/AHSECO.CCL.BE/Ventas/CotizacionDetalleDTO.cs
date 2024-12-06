@@ -17,7 +17,7 @@ namespace AHSECO.CCL.BE.Ventas
         public string CodItem { get; set; }
         public string Descripcion { get; set; }
         public string DescripcionAdicional { get; set; }
-        public int Stock { get; set; }
+        public int? Stock { get; set; }
         public bool? IndStock { get; set; }
         public string CodUnidad { get; set; }
         public string DescUnidad { get; set; }
@@ -33,8 +33,6 @@ namespace AHSECO.CCL.BE.Ventas
         public int CantSubItem { get; set; }
         public CotDetDespachoDTO CotizacionDespacho { get; set; }
         public CotDetCostoDTO[] CotizacionCostos { get; set; }
-        public bool IsTempRecord { get; set; }
-        public bool IsUpdated { get; set; }
         public bool CodItem_IsUpdatable { get; set; }
         public string CodItemTemp { get; set; }
 

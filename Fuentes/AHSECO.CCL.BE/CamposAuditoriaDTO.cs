@@ -15,6 +15,8 @@ namespace AHSECO.CCL.BE
         public string UsuarioModifica { get; set; }
         public DateTime? FechaModifica { get; set; }
         public string IpMaquinaModifica { get; set; }
+        public bool IsTempRecord { get; set; }
+        public bool IsUpdated { get; set; }
 
         public void CopyProperties<Target>(ref Target target)
         {

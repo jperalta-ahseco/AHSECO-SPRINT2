@@ -63,7 +63,6 @@ namespace AHSECO.CCL.BE
         public string DescAlmacen { get; set; }
         public bool EsDisponible { get; set; }
         public AlmacenDTO[] Almacenes { get; set; }
-        public bool IsTempRecord { get; set; }
         public string CodArticuloTemp { get; set; }
     }
 }

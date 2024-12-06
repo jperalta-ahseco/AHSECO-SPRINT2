@@ -105,6 +105,7 @@ var cotvtadet = (function ($, win, doc) {
     var $DC_btnCerrar = $("#DC_btnCerrar");
 
     var $btnEnviarCotizacion = $("#btnEnviarCotizacion");
+    var $btnGuardarCotizacion = $("#btnGuardarCotizacion");
     var $btnRecotizacion = $("#btnRecotizacion");
     var $btnGuardarValorizacion = $("#btnGuardarValorizacion");
     
@@ -127,6 +128,7 @@ var cotvtadet = (function ($, win, doc) {
         $DI_btnCerrar.click(cerrarModalDetItem);
         $DC_btnCerrar.click(cerrarModalDetCot);
         $btnEnviarCotizacion.click(enviarCotizacion);
+        $btnGuardarCotizacion.click(guardarCotizacion)
         $btnRecotizacion.click(recotizarSolicitud);
         $btnGuardarValorizacion.click(guardarValorizacion);
         $DI_radGarantAdic_Si.click(configurarGarantias);
@@ -1537,6 +1539,54 @@ var cotvtadet = (function ($, win, doc) {
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
     }
 
+    function guardarCotizacion() {
+
+        if (!validarCotizacion()) { return false; }
+
+        var vFecCotizacion = null;
+        if ($dateCotizacion.val() != "") {
+            vFecCotizacion = app.stringToDate($dateCotizacion.val());
+        }
+
+        var vPorcDscto = null;
+        if ($txtPorcentajeDscto.val() != "") {
+            if (app.validaNumeroDecimal($txtPorcentajeDscto.val())) { vPorcDscto = parseFloat($txtPorcentajeDscto.val()); }
+        }
+
+        method = "POST";
+        url = "BandejaSolicitudesVentas/GuardarCotizacion";
+        var objDatos = {
+            IdCliente: $idCliente.val(),
+            IdCotizacion: $idCotizacion.val(),
+            IdSolicitud: $numeroSolicitud.val(),
+            IdWorkFlow: $idWorkFlow.val(),
+            IdContacto: $txtCodContacto.val(),
+            NombreContacto: $nombreContacto.val(),
+            AreaContacto: $txtAreaContacto.val(),
+            TelefonoContacto: $txtTelefono.val(),
+            EmailContacto: $txtCorreo.val(),
+            FecCotizacion: vFecCotizacion,
+            PlazoEntrega: $txtPlazoEntrega.val(),
+            FormaPago: $cmbTipoPago.val(),
+            Moneda: $cmbTipMoneda.val(),
+            Vigencia: $txtVigencia.val(),
+            Garantia: $cmbGarantia.val(),
+            Observacion: $txtObs.val(),
+            PorcentajeDescuento: vPorcDscto
+        };
+        var objParam = JSON.stringify(objDatos);
+
+        function redirect() {
+            app.redirectTo("BandejaSolicitudesVentas/SolicitudVenta");
+        };
+
+        var fnDoneCallBack = function (data) {
+            app.message.success("Cotizacion", "Se envi&oacute; la cotizaci&oacute;n correctamente.", "Aceptar", redirect);
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+    }
+
     function listarCotDetItems() {
         method = "POST";
         url = "BandejaSolicitudesVentas/ListarCotDetItems";
@@ -1548,91 +1598,12 @@ var cotvtadet = (function ($, win, doc) {
         var fnDoneCallBack = function (data) {
             cargarTablaCotDet(data);
             cargarTablaDetCotCostos(data);
-
-            cargarTablaDetCotCostosServ2(data);
+            solicitud.cargarTablaDetCotServicios(data);
         };
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
     }
-
-    function cargarTablaDetCotCostosServ2(data) {
-
-        var columns = [];
-
-        columns = [
-            {
-                data: "NroItem",
-                render: function (data) {
-                    if (data == null) { data = ""; }
-                    return '<center>' + data + '</center>';
-                }
-            },
-            {
-                data: "CodItem",
-                render: function (data) {
-                    if (data == null) { data = ""; }
-
-                    return ("000000" + data).substring(("000000" + data).length - 6, ("000000" + data).length);
-                }
-            },
-            {
-                data: "Descripcion",
-                render: function (data) {
-                    if (data == null) { data = ""; }
-                    return '<center>' + data + '</center>';
-                }
-            },
-            {
-                data: "Cantidad",
-                render: function (data) {
-                    if (data == null) { data = ""; }
-                    return '<center>' + data + '</center>';
-                }
-            },
-            {
-                data: "VentaUnitaria",
-                render: function (data) {
-                    return '<center>' + data.toFixed(2) + '</center>';
-                }
-            },
-            {
-                data: "VentaTotalSinIGV",
-                render: function (data) {
-                    return '<center>' + data.toFixed(2) + '</center>';
-                }
-            },
-            {
-                data: "CodItem",
-                render: function (data) {
-                    var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
-                    var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: solicitud.editarItemServ(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                    var quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: solicitud.quitarItemServ(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
-                    return '<center>' + hidden + editar + ' ' + quitar + '</center>';
-                }
-            }
-        ];
-
-
-
-
-        var columnDefs =
-        {
-            targets: [0],
-            visible: false
-        }
-
-        var rowCallback = function (row, data, index) {
-            // Asignar un ID único basado en el índice de datos o algún identificador único
-            $(row).attr('id', 'row' + index);
-        };
-
-        var filters = {}
-        filters.dataTableInfo = false;
-        filters.dataTablePaging = true;
-
-        app.llenarTabla($('#tblDetCotCostosServ'), data, columns, columnDefs, "#tblDetCotCostosServ", rowCallback, null, filters);
-    }
-
+    
     function listarCotDetItemsTemp() {
         method = "POST";
         url = "BandejaSolicitudesVentas/ListarCotDetItems";

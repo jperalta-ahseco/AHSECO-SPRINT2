@@ -120,12 +120,13 @@
     var $btnCerrarHistorial = $("#btnCerrarHistorial");
 
     /*Servicios*/
+    var $DS_hdnOpcGrillaItems = $("#DS_hdnOpcGrillaItems");
     var $cmbTipoServicio = $("#cmbTipoServicio");
     var $txtBusqEquipo = $("#txtBusqEquipo");
     var $txtBusqModelo = $("#txtBusqModelo");
     var $txtBusqMarca = $("#txtBusqMarca");
     var $tblItemsServicios = $("#tblItemsServicios");
-    var $tblCotDetServ = $("#tblCotDetServ");
+    var $tblCotDetServiciosAgregados = $("#tblCotDetServiciosAgregados");
     var $DC_btnCerrarServ = $("#DC_btnCerrarServ");
     var $DC_btnGuardarServ = $("#DC_btnGuardarServ");
     var $DS_txtCodigo = $("#DS_txtCodigo");
@@ -135,7 +136,7 @@
     var $DS_txtTotalVenta = $("#DS_txtTotalVenta");
     var $DS_btnCerrar = $("#DS_btnCerrar");
     var $DS_tblServiciosDetalle = $("#DS_tblServiciosDetalle");
-    var detalleServicios = [];
+    //var detalleServicios = [];
     var contadorDetalle = 0;
     var $modalDetalleServicio = $("#modalDetalleServicio");
     var $btnGuardarDetalleServicio = $("#btnGuardarDetalleServicio");
@@ -146,6 +147,7 @@
     var $DS_hdnIdCotDetServ = $("#DS_hdnIdCotDetServ");
     var $btnAgregarDetServ = $("#btnAgregarDetServ");
     var $DS_btnGuardar = $("#DS_btnGuardar");
+
     /*Seccion Contacto*/
     var $btnAñadir = $('#btnAñadir');
     var $agregarContacto = $('#agregarContacto');
@@ -378,7 +380,34 @@
         $AD_btnGuardarAprobDscto.click(guardarAprobDscto);
         $btnVerComentarioDscto.click(verComentarioDscto);
         $btnAprobarCotizacion.click(aprobarCotizacion);
+        $DS_hdnOpcGrillaItems.val("2");
+
     };
+
+    function cargarGrillaCotDetServicios(opc) {
+        
+        method = "POST";
+        url = "BandejaSolicitudesVentas/CargarCotDetServicios";
+
+        var objFiltros = {
+            opcGrillaItems: $DS_hdnOpcGrillaItems.val()
+        };
+
+        var objParam = JSON.stringify(objFiltros);
+
+        var fnDoneCallBack = function (data) {
+            if (opc == "1") {
+                cargarTablaServiciosAgregados(data);
+            }
+            else {
+                cargarTablaDetCotServicios(data);
+                cargarTablaServiciosAgregados(data);
+            }
+            $('#modalDetalleItemServicio').modal('hide');
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, null, null, null);
+    }
 
     function $DS_btnGuardar_click() {
 
@@ -396,16 +425,26 @@
         url = "BandejaSolicitudesVentas/ActualizarServ";
 
         var objFiltros = {
+            datos: {
             CodItem: $DS_hdnIdCotDetServ.val(),
             Cantidad: $DS_txtCantidad.val(),
             VentaUnitaria: $DS_txtPrecio.val(),
-            VentaTotalSinIGV: $DS_txtTotalVenta.val(),
-            DetallesServicio: detalleServicios
+            VentaTotalSinIGV: $DS_txtTotalVenta.val()
+            },
+            opcGrillaItems: $DS_hdnOpcGrillaItems.val()
         };
+
         var objParam = JSON.stringify(objFiltros);
+
         var fnSi = function () {
             var fnDoneCallBack = function (data) {
-                cargarTablaCotDetServ(data);
+                if ($DS_hdnOpcGrillaItems.val() == "1") {
+                    cargarTablaServiciosAgregados(data);
+                }
+                else {
+                    cargarTablaDetCotServicios(data);
+                    cargarTablaServiciosAgregados(data);
+                }
                 $('#modalDetalleItemServicio').modal('hide');
             };
 
@@ -430,14 +469,6 @@
         objParam = JSON.stringify(objDetalle);
         var fnSi = function () {
             var fnDoneCallback = function (data) {
-                objDetalle = {
-                    Id: data.Result.Id,
-                    DesMantenimiento: data.Result.DesMantenimiento,
-                    Eliminar: data.Result.Eliminar,
-                    Codigo: data.Result.Codigo
-                };
-                detalleServicios.push(objDetalle);
-
                 cargarTablaDetalleServicios(data.Result);
                 $modalDetalleServicio.modal('hide');
             }
@@ -447,7 +478,6 @@
             app.llamarAjax(method, url, objParam, fnDoneCallback, fnFailCallback, null, null);
         }
         return app.message.confirm("Confimación", "¿Está seguro de agregar el detalle?", "Si", "No", fnSi, null);
-
     }
 
     function $btnAgregarDetServ_click() {
@@ -481,8 +511,6 @@
             app.llamarAjax(method, url, objParam, fnDoneCallback, fnFailCallback, null, null);
         }
         return app.message.confirm("Confimación", "¿Está seguro de actualizar el detalle?", "Si", "No", fnSi, null);
-
-        
     }
 
     function $btnCerrarDetalleServicio_click() {
@@ -524,8 +552,7 @@
         objParam = '';
         var fnDoneCallBack = function (data) {
             $modalVerHistorialCotizacion.modal("show");
-
-
+            
             //Se pinta el detalle del historial:
             $tituloModalHistorial.html("N° Cotización: " + data.Result.DocumentoCabecera.NumeroCotizacion);
             $txtHistNomContacto.val(data.Result.DocumentoCabecera.NombreContacto);
@@ -561,10 +588,9 @@
             $txtHistTotal.val(data.Result.DocumentoCabecera.Total);
             $txtHistIGV.val(data.Result.DocumentoCabecera.Igv);
             $txtHistSubtotal.val(data.Result.DocumentoCabecera.Subtotal);
-
-
-
+            
         }
+
         var fnFailCallBack = function () {
 
         }
@@ -579,73 +605,72 @@
         var objParam = JSON.stringify(objDatos);
 
         var fnDoneCallBack = function (data) {
+            $DS_hdnOpcGrillaItems.val("2");
             $('#modalDetalleCotizacionServicio').modal('hide');
-            cargarTablaDetCotCostosServ(data);
-            $("#btnEnviarCotizacion").css("display", "");
+            cargarTablaDetCotServicios(data);
         };
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
     }
 
-    function cargarTablaDetCotCostosServ(data) {
+    function cargarTablaDetCotServicios(data) {
 
         var columns = [];
 
         columns = [
-                {
-                    data: "NroItem",
-                    render: function (data) {
-                        if (data == null) { data = ""; }
-                        return '<center>' + data + '</center>';
-                    }
-                },
-                {
-                    data: "CodItem",
-                    render: function (data) {
-                        if (data == null) { data = ""; }
-
-                        return ("000000" + data).substring(("000000" + data).length - 6, ("000000" + data).length);
-                    }
-                },
-                {
-                    data: "Descripcion",
-                    render: function (data) {
-                        if (data == null) { data = ""; }
-                        return '<center>' + data + '</center>';
-                    }
-                },
-                {
-                    data: "Cantidad",
-                    render: function (data) {
-                        if (data == null) { data = ""; }
-                        return '<center>' + data + '</center>';
-                    }
-                },
-                {
-                    data: "VentaUnitaria",
-                    render: function (data) {
-                        return '<center>' + data.toFixed(2) + '</center>';
-                    }
-                },
-                {
-                    data: "VentaTotalSinIGV",
-                    render: function (data) {
-                        return '<center>' + data.toFixed(2) + '</center>';
-                    }
-                },
-                {
-                    data: "CodItem",
-                    render: function (data) {
-                        var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
-                        var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: solicitud.editarItemServ(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                        var quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: solicitud.quitarItemServ(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
-                        return '<center>' + hidden + editar + ' ' + quitar + '</center>';
-                    }
+            {
+                data: "NroItem",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
                 }
-            ];
-
-        
-
+            },
+            {
+                data: "CodItem",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    var newData = ("000000" + data).substring(("000000" + data).length - 6, ("000000" + data).length);
+                    return '<center>' + newData + '</center>';
+                }
+            },
+            {
+                data: "Descripcion",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "Cantidad",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "VentaUnitaria",
+                render: function (data) {
+                    return '<center>' + data.toFixed(2) + '</center>';
+                }
+            },
+            {
+                data: "VentaTotalSinIGV",
+                render: function (data) {
+                    var newData = '<center></center>';
+                    if (data != null) { newData = '<center>' + data.toFixed(2) + '</center>'; }
+                    return newData;
+                }
+            },
+            {
+                data: "CodItem",
+                render: function (data) {
+                    var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
+                    var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: solicitud.editarItemServ(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                    var quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: solicitud.quitarItemServ(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                    return '<center>' + hidden + editar + ' ' + quitar + '</center>';
+                }
+            }
+        ];
 
         var columnDefs =
         {
@@ -662,7 +687,7 @@
         filters.dataTableInfo = false;
         filters.dataTablePaging = true;
 
-        app.llenarTabla($('#tblDetCotCostosServ'), data, columns, columnDefs, "#tblDetCotCostosServ", rowCallback, null, filters);
+        app.llenarTabla($('#tblDetCotServicios'), data, columns, columnDefs, "#tblDetCotServicios", rowCallback, null, filters);
     }
     
     function $btnBuscarItemsServicio_click() {
@@ -754,15 +779,15 @@
     function $btnAgregarDetalle_click() {
         $('#BI_cmbFamilia').get(0).selectedIndex = 0;
         $('#BI_cmbFamilia').trigger("change.select2");
-        //$('#BI_txtCodProducto').val('').trigger("change.select2");
-        //$('#BI_txtNomProducto').val('').trigger("change.select2");
         $('#BI_cmbTipoMedida').val('').trigger("change.select2");
         $('#BI_cmbMarca').val('').trigger("change.select2");
         buscarItems_Solicitud();
     }
 
     function $btnAgregarServicios_click() {
+        $DS_hdnOpcGrillaItems.val("1");
         CargarTipoServicio();
+        cargarGrillaCotDetServicios("1");
     }
 
     function CargarTipoServicio() {
@@ -2936,24 +2961,15 @@
         var objParam = JSON.stringify(objFiltros);
 
         var fnDoneCallBack = function (data) {
-            cargarTablaCotDetServ(data);
+            cargarTablaServiciosAgregados(data);
         };
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
     }
 
-    function cargarTablaCotDetServ(data) {
+    function cargarTablaServiciosAgregados(data) {
 
         var columns = [
-            {
-                data: "Select",
-                render: function (data) {
-                    var select = "";
-                    if (data == true) { select = "checked='checked'"; }
-                    var input = "<input type='checkbox' id='chkCotDet' " + select + " onclick=''>";
-                    return '<center>' + input + '</center>';
-                }
-            },
             {
                 data: "CodItem",
                 render: function (data) {
@@ -2992,11 +3008,9 @@
             {
                 data: "VentaTotalSinIGV",
                 render: function (data) {
-                    if (data == null) { data = ""; }
-                    else {
-                        data = data.toFixed(2);
-                    }
-                    return '<center>' + data + '</center>';
+                    var newData = '<center></center>';
+                    if (data != null) { newData = '<center>' + data.toFixed(2) + '</center>'; }
+                    return newData;
                 }
             },
         
@@ -3026,7 +3040,7 @@
         filters.dataTableInfo = true;
         filters.dataTablePageLength = 3;
 
-        app.llenarTabla($tblCotDetServ, data, columns, columnDefs, "#tblCotDetServ", rowCallback, null, filters);
+        app.llenarTabla($tblCotDetServiciosAgregados, data, columns, columnDefs, "#tblCotDetServiciosAgregados", rowCallback, null, filters);
     }
 
     function editarItemServ(CodigoItem, opc) {
@@ -3046,11 +3060,14 @@
             $DS_txtDescripcion.val(data.Result.Descripcion);
             $DS_txtCantidad.val(data.Result.Cantidad);
             $DS_txtPrecio.val(data.Result.VentaUnitaria.toFixed(2));
-            $DS_txtTotalVenta.val(data.Result.VentaTotalSinIGV.toFixed(2));
-            detalleServicios = data.Result.DetallesServicio;
-            contadorDetalle = data.Result.DetallesServicio.length;
+            if (data.Result.VentaUnitaria != null) { $DS_txtPrecio.val(data.Result.VentaUnitaria.toFixed(2)); }
+            else { $DS_txtPrecio.val(""); }
+            if (data.Result.VentaTotalSinIGV != null) { $DS_txtTotalVenta.val(data.Result.VentaTotalSinIGV.toFixed(2)); }
+            else { $DS_txtTotalVenta.val(""); }
+            //detalleServicios = data.Result.DetallesServicio;
+            if (data.Result.DetallesServicio != null) { contadorDetalle = data.Result.DetallesServicio.length; }
+            contadorDetalle = 0;
             cargarTablaDetalleServicios(data.Result.DetallesServicio);
-           
         }
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
     }
@@ -3083,16 +3100,15 @@
         $modalDetalleServicio.modal('toggle');
         $btnGuardarDetalleServicio.css('display', 'none');
         $btnActualizarDetalleServicio.css('display', 'inline-block');
-        var detalle = detalleServicios;
-        console.log("detalle:" + detalle);
-        if (Id > 0) {
-            detalle = detalle.find(detail => detail.Id == Id);
-        }
-        else {
-            detalle = detalle.find(detail => detail.Codigo == Codigo);
-        }
 
-
+        //var detalle = detalleServicios;
+        //console.log("detalle:" + detalle);
+        //if (Id > 0) {
+        //    detalle = detalle.find(detail => detail.Id == Id);
+        //}
+        //else {
+        //    detalle = detalle.find(detail => detail.Codigo == Codigo);
+        //}
         
         $hdnIdDetalleServicio.val(Id);
         $txtDetalleServicio.val(detalle.DesMantenimiento);
@@ -3100,21 +3116,25 @@
 
     function cargarTablaDetalleServicios(detalle) {
         $('#DS_tblServiciosDetalle tbody').empty();
-        for (i = 0; i < detalle.length; i++) {
-            var indice = i + 1;
-            var html = '<div class="text-center">';
-            html += '<a class="btn btn-primary btn-xs" title="Editar" href="javascript:solicitud.editarDetServ(' + detalle[i].Id + ',\'' + detalle[i].Codigo +'\')" btn-xs"><i class="fa fa-pencil-square-o"></i></a>&nbsp;';
-            html += '<a class="btn btn-primary btn-xs" title="Eliminar" href="javascript:solicitud.eliminarDetServ(' + detalle[i].Id + ',\'' + detalle[i].Codigo +'\')" btn-xs"><i class="fa fa-trash"></i></a>&nbsp;';
-            html += '</div>';
-            var nuevoTr = '<tr id="rowDetalle" name="rowDetalle">' +
-                '<td><center>' + indice + '</center></td>' +
-                '<td><center>' + detalle[i].DesMantenimiento + '</center></td>' +
-                '<td><center>' + html + '</center></td>';
+        var swDetalle = false;
+        if (detalle != null) {
+            for (i = 0; i < detalle.length; i++) {
+                var indice = i + 1;
+                var html = '<div class="text-center">';
+                html += '<a class="btn btn-primary btn-xs" title="Editar" href="javascript:solicitud.editarDetServ(' + detalle[i].Id + ',\'' + detalle[i].Codigo + '\')" btn-xs"><i class="fa fa-pencil-square-o"></i></a>&nbsp;';
+                html += '<a class="btn btn-primary btn-xs" title="Eliminar" href="javascript:solicitud.eliminarDetServ(' + detalle[i].Id + ',\'' + detalle[i].Codigo + '\')" btn-xs"><i class="fa fa-trash"></i></a>&nbsp;';
+                html += '</div>';
+                var nuevoTr = '<tr id="rowDetalle" name="rowDetalle">' +
+                    '<td><center>' + indice + '</center></td>' +
+                    '<td><center>' + detalle[i].DesMantenimiento + '</center></td>' +
+                    '<td><center>' + html + '</center></td>';
 
-            nuevoTr += '</tr>';
-            $DS_tblServiciosDetalle.append(nuevoTr);
+                nuevoTr += '</tr>';
+                $DS_tblServiciosDetalle.append(nuevoTr);
+                swDetalle = true;
+            }
         }
-        if (detalle.length == 0) {
+        if (swDetalle) {
             var nuevoTr = '<tr id="rowDetalle" name="rowDetalle">' +
                 '<td colspan=3><center>No existen registros</center></td>'
             '</tr>';
@@ -3140,7 +3160,7 @@
                         grabarDatosCotDetServ();
                     }
                     else {
-                        cargarTablaCotDetServ(data);
+                        cargarTablaServiciosAgregados(data);
                     }
                     
                 };
@@ -3152,7 +3172,6 @@
     }
 
     function cerrarModalDetCotServ() {
-
         var fnSi = function () {
             $('#modalDetalleCotizacionServicio').modal('hide');
         }
@@ -3277,6 +3296,7 @@
         verHistorial: verHistorial,
         editarSeries: editarSeries,
         guardarSeries: guardarSeries,
+        cargarTablaDetCotServicios: cargarTablaDetCotServicios,
         agregarItemServicio: agregarItemServicio,
         quitarItemServ: quitarItemServ,
         editarItemServ: editarItemServ,

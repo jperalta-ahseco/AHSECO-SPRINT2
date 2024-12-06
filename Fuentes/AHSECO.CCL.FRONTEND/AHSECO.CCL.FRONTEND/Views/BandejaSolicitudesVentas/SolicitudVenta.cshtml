@@ -382,7 +382,7 @@
                                                         <br />
                                                         <ul class="nav nav-tabs" style="padding-top: 5px;">
                                                             <li class="" id="tabDetCot" style="@(ViewBag.PermitirTabDetCot ? "" : "display:none")">
-                                                                <a href="#navCotDet" data-toggle="tab" style="font-weight:bold; color:black;" tabindex="20"><i class="fa fa-cubes" aria-hidden="true"></i> Detalle de Productos</a>
+                                                                <a href="#navCotDet" data-toggle="tab" style="font-weight:bold; color:black;" tabindex="20"><i class="fa fa-cubes" aria-hidden="true"></i> Detalle de Productos / Servicios</a>
                                                             </li>
                                                             <li class="" id="tabInsta" style="@(ViewBag.PermitirTabInsta ? "" : "display:none")">
                                                                 <a href="#navInsta" onclick="javascript:cotvtacostos.setTab_Instalacion()" data-toggle="tab" style="font-weight: bold; color: black; " tabindex="20"><i class="fa fa-gears" aria-hidden="true"></i> Instalaci&oacute;n</a>
@@ -430,7 +430,7 @@
                                                                     </table>
                                                                 </div>
                                                                 <div class="table-responsive" style="@(ViewBag.VerBandejaServiciosCotizacion ? "" : "display:none")">
-                                                                    <table id="tblDetCotCostosServ" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                    <table id="tblDetCotServicios" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                                                         <thead>
                                                                             <tr>
                                                                                 <th style="text-align: center; width: 7%;">Nro. Item</th>
@@ -449,6 +449,7 @@
                                                                 <div class="row container-fluid">
                                                                     <div class="text-right">
                                                                         <button style="@(ViewBag.PermitirEnvioCotizacion ? "" : "display:none")" class="btn btn-default btn-sm" type="button" id="btnEnviarCotizacion"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Enviar Cotizaci&oacute;n</button>
+                                                                        <button style="@(ViewBag.PermitirGuardarCotizacion ? "" : "display:none")" class="btn btn-default btn-sm" type="button" id="btnGuardarCotizacion"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Guardar Cotizaci&oacute;n</button>
                                                                         <button style="@(ViewBag.PermitirReCotizacion ? "" : "display:none")" class="btn btn-warning btn-sm" type="button" id="btnRecotizacion"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Volver a Cotizar</button>
                                                                         <button style="@(ViewBag.PermitirGuardarValorizacion ? "" : "display:none")" class="btn btn-default btn-sm" type="button" id="btnGuardarValorizacion"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Guardar Cotización</button>
                                                                         <button style="@(ViewBag.PermitirAprobarCotizacion ? "" : "display:none")" class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnAprobarCotizacion" tabindex="14"><i class="fa fa-check-circle" aria-hidden="true"></i>&nbsp;Aprobar Cotización</button>

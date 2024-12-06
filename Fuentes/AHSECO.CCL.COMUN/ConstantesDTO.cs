@@ -130,11 +130,32 @@ namespace AHSECO.CCL.COMUN
             }
             public struct TipoSolicitud
             {
+
+                /// <summary>
+                /// TSOL01 - Servicio
+                /// </summary>
                 public static string Servicio { get { return "TSOL01"; } }
-                public static string RespuestosoConsumibles { get { return "TSOL02"; } }
+
+                /// <summary>
+                /// TSOL02 - Repuestos o Consumibles
+                /// </summary>
+                public static string RepuestosoConsumibles { get { return "TSOL02"; } }
+
+                /// <summary>
+                /// TSOL03 - Servicios y Repuestos
+                /// </summary>
                 public static string ServiciosyRepuestos { get { return "TSOL03"; } }
+
+                /// <summary>
+                /// TSOL04 - Venta de Materiales
+                /// </summary>
                 public static string VentaMateriales { get { return "TSOL04"; } }
+
+                /// <summary>
+                /// TSOL05 - Venta de Equipos
+                /// </summary>
                 public static string VentaEquipos { get { return "TSOL05"; } }
+
             }
         }
 

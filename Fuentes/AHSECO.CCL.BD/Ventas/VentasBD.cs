@@ -154,7 +154,7 @@ namespace AHSECO.CCL.BD.Ventas
                         CodItem = i.Single(d => d.Key.Equals("CODITEM")).Value.Parse<string>(),
                         Descripcion = i.Single(d => d.Key.Equals("DESCRIPCION")).Value.Parse<string>(),
                         DescripcionAdicional = i.Single(d => d.Key.Equals("DESCRIPADIC")).Value.Parse<string>(),
-                        Stock = i.Single(d => d.Key.Equals("STOCK")).Value.Parse<int>(),
+                        Stock = i.Single(d => d.Key.Equals("STOCK")).Value.Parse<int?>(),
                         IndStock = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDSTOCK")).Value.Parse<string>()),
                         CodUnidad = i.Single(d => d.Key.Equals("UNDMED")).Value.Parse<string>(),
                         Cantidad = i.Single(d => d.Key.Equals("CANTIDAD")).Value.Parse<int>(),
@@ -409,7 +409,10 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("isCODITEM", detalleCotizacion.CodItem);
                 parameters.Add("isDESCRIPCION", detalleCotizacion.Descripcion);
                 parameters.Add("isDESCRIPADIC", detalleCotizacion.DescripcionAdicional);
-                parameters.Add("isSTOCK", detalleCotizacion.Stock);
+                if (detalleCotizacion.Stock.HasValue)
+                { parameters.Add("isSTOCK", detalleCotizacion.Stock.Value); }
+                else
+                { parameters.Add("isSTOCK", DBNull.Value, DbType.Int32); }
                 if (detalleCotizacion.IndStock.HasValue)
                 { parameters.Add("isINDSTOCK", Utilidades.ParseStringSN<bool?>(detalleCotizacion.IndStock)); }
                 else
