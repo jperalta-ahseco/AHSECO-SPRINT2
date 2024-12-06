@@ -91,7 +91,11 @@
     <Compile Include="ServicioTecnico\BandejaInstalacionTecnica\TecnicoInstalacionDTO.cs" />
     <Compile Include="FiltroArticuloDTO.cs" />
     <Compile Include="AlmacenDTO.cs" />
+    <Compile Include="ServicioTecnico\BandejaPreventivos\CabeceraMantDTO.cs" />
+    <Compile Include="ServicioTecnico\BandejaPreventivos\EquipoPrevDTO.cs" />
     <Compile Include="ServicioTecnico\BandejaPreventivos\GrupoMantPreventivoDTO.cs" />
+    <Compile Include="ServicioTecnico\BandejaPreventivos\GrupoPrevEquipoDTO.cs" />
+    <Compile Include="ServicioTecnico\BandejaPreventivos\MantPreventivoDTO.cs" />
     <Compile Include="ServicioTecnico\BandejaPreventivos\ReqPreventivoDTO.cs" />
     <Compile Include="ServicioTecnico\BandejaPreventivos\ResultPreventivoDTO.cs" />
     <Compile Include="ServicioTecnico\BandejaPreventivos\TecnicoMantPreventivoDTO.cs" />
