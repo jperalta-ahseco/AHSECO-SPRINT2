@@ -960,6 +960,7 @@
     <Content Include="Views\BandejaSolicitudesVentas\_SolicitudDetItemServicio.cshtml" />
     <Content Include="Views\BandejaSolicitudesVentas\_SolicitudAprobDscto.cshtml" />
     <Content Include="Views\Shared\_VerInfoAdiServicioTecnico.cshtml" />
+    <Content Include="Views\BandejaPreventivo\DetallePreventivo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\css\font\" />
