@@ -28,6 +28,8 @@ using Microsoft.Ajax.Utilities;
 using AHSECO.CCL.BL.ServicioTecnico.BandejaPreventivos;
 using AHSECO.CCL.BE.ServicioTecnico.BandejaPreventivos;
 using static NPOI.HSSF.Util.HSSFColor;
+using AHSECO.CCL.BE.ServicioTecnico.BandejaGarantias;
+using AHSECO.CCL.BL.ServicioTecnico.BandejaGarantias;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
 {
@@ -44,6 +46,16 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
         }
         
         public ActionResult RegistroPreventivo()
+        {
+            VariableSesion.setCadena("NumPreventivo", "");
+            VariableSesion.setCadena("TipoAccion", "");
+            VariableSesion.setCadena("EstadoPrev", "");
+            VariableSesion.setCadena("idWorkFlow", "");
+            VariableSesion.setCadena("IdMant", "");
+            return View();
+        }
+
+        public ActionResult DetallePreventivo()
         {
             return View();
         }
@@ -82,10 +94,25 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
             var result = instalacionTecnicaBL.ObtenerInstalacionesTec(filtros);
             return Json(result);
         }
-        public JsonResult ObtenerMainMant(long NumMant, long IdWorkFlow)
+
+        public JsonResult ObtenerTecnicosPreventivos(long NumPreventivo)
+        {
+            var preventivosBL = new PreventivosBL();
+            var result = preventivosBL.ObtenerTecnicosPreventivos(NumPreventivo);
+            return Json(result);
+        }
+
+        public JsonResult MantTecnicosPrev(TecnicoMantPreventivoDTO tecnico)
         {
             var preventivoBL = new PreventivosBL();
-            var result = preventivoBL.ObtenerMainMant(NumMant, IdWorkFlow);
+            tecnico.UsuarioRegistra = User.ObtenerUsuario();
+            var result = preventivoBL.MantTecnicosPrev(tecnico);
+            return Json(result);
+        }
+        public JsonResult ObtenerMainMant(long NumMant)
+        {
+            var preventivoBL = new PreventivosBL();
+            var result = preventivoBL.ObtenerMainMant(NumMant);
             return Json(result);
         }
         public JsonResult ObtenerDetalleInstalacion(InstalacionTecnicaDetalleDTO detalle)
@@ -100,6 +127,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
             {
                 VariableSesion.setCadena("NumMant", req.Id_Mant.ToString());
                 VariableSesion.setCadena("TipoTarea", req.TipoTarea);
+
                 return Json(new
                 {
                     Status = 1
@@ -114,127 +142,291 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
                 });
             }
         }
-        public JsonResult RegistroRequerimientoMain(GrupoInstalacionTecnicaDTO grupoInstalacionTecnicaDTO)
+
+        public JsonResult ProgramarMant(ReqPreventivoDTO req)
         {
+            var preventivoBL = new PreventivosBL();
+            var procesosBL = new ProcesosBL();
+
             try
             {
-                var procesoBL = new ProcesosBL();
-                var instalacionTecnicaBL = new InstalacionTecnicaBL();
-                var documentosBL = new DocumentosBL();
-
-                var workflow = new FiltroWorkflowDTO();
-                workflow.CodigoProceso = 3; //Código de proceso de SERVICIO TÉCNICO
-                workflow.UsuarioRegistro = User.ObtenerUsuario();
-                workflow.SubTipo = "";
-
-                var rpta = procesoBL.InsertarWorkflow(workflow);
-                grupoInstalacionTecnicaDTO.CabeceraInstalacion.Id_WorkFlow = rpta.Result;
-                grupoInstalacionTecnicaDTO.CabeceraInstalacion.UsuarioRegistra = User.ObtenerUsuario();
-
-                //Registra Main Solicitudes
-                var mainRequerimiento = instalacionTecnicaBL.MantInstalacion(grupoInstalacionTecnicaDTO.CabeceraInstalacion);
-
-                foreach (var detalle in grupoInstalacionTecnicaDTO.DetalleInstalacion)
-                {
-                    detalle.TipoProceso = "I";
-                    detalle.NumReq = mainRequerimiento.Result.Codigo;
-                    detalle.UsuarioRegistra = User.ObtenerUsuario();
-                    var rptaDetalle = instalacionTecnicaBL.MantInstalacionTecnicaDetalle(detalle);
-                    if (rptaDetalle.Result.Codigo == 0)
-                    {
-                        return Json(new
-                        {
-                            Status = 0,
-                            Mensaje = rptaDetalle.Result.Mensaje
-                        });
-                    };
-                }
-
-                //Registra documentos
-                if (grupoInstalacionTecnicaDTO.Adjuntos != null)
-                {
-                    foreach (var documento in grupoInstalacionTecnicaDTO.Adjuntos)
-                    {
-                        documento.Accion = "I";
-                        documento.CodigoWorkFlow = rpta.Result;
-                        documento.NombreUsuario = User.ObtenerNombresCompletos();
-                        documento.NombrePerfil = User.ObtenerPerfil();
-                        documento.UsuarioRegistra = User.ObtenerUsuario();
-                        documentosBL.MantenimientoDocumentos(documento);
-                    };
-                };
-
-                if (grupoInstalacionTecnicaDTO.Observaciones != null)
-                {
-                    foreach (var observacion in grupoInstalacionTecnicaDTO.Observaciones)
-                    {
-                        observacion.Id_WorkFlow = rpta.Result;
-                        observacion.Nombre_Usuario = User.ObtenerUsuario();
-                        observacion.UsuarioRegistra = User.ObtenerUsuario();
-                        observacion.Perfil_Usuario = User.ObtenerPerfil();
-
-                        var resultObservacion = instalacionTecnicaBL.MantenimientoObservaciones(observacion);
-                    };
-                };
+                req.UsuarioRegistra = User.ObtenerUsuario();
+                var respuesta = preventivoBL.MantPreventivos(req);
 
                 //Se realiza el registro de seguimiento de workflow:
                 var log = new FiltroWorkflowLogDTO();
-                log.CodigoWorkflow = rpta.Result;
+                log.CodigoWorkflow = req.Id_WorkFlow;
                 log.Usuario = User.ObtenerUsuario();
-                log.CodigoEstado = "REG";
+                log.CodigoEstado = "PROG";
                 log.UsuarioRegistro = User.ObtenerUsuario();
-                var result2 = procesoBL.InsertarWorkflowLog(log);
+                var result2 = procesosBL.InsertarWorkflowLog(log);
 
-                //result.CodigoSolicitud = "1";
-                //result.Mensaje = "Se realizo el registro con exito";
+
+                if (respuesta.Result.Codigo == 0)
+                {
+                    return Json(new
+                    {
+                        Status = 0,
+                        Mensaje = respuesta.Result.Mensaje
+                    });
+                }
+                else
+                {
+                    return Json(new
+                    {
+                        Status = 1,
+                        Mensaje = respuesta.Result.Mensaje
+                    });
+                }
+
+            }
+            catch (Exception ex)
+            {
                 return Json(new
                 {
-                    Status = 1,
-                    Requerimiento = new InstalacionTecnicaDTO()
+                    Status = 0,
+                    Mensaje = ex.Message
+                });
+            }
+        }
+
+        public JsonResult FinalizarMant(ReqPreventivoDTO req)
+        {
+            var preventivoBL = new PreventivosBL();
+            var procesosBL = new ProcesosBL();
+
+            try
+            {
+                req.UsuarioRegistra = User.ObtenerUsuario();
+                var respuesta = preventivoBL.MantPreventivos(req);
+
+                //Se realiza el registro de seguimiento de workflow:
+                var log = new FiltroWorkflowLogDTO();
+                log.CodigoWorkflow = req.Id_WorkFlow;
+                log.Usuario = User.ObtenerUsuario();
+                log.CodigoEstado = "FIN";
+                log.UsuarioRegistro = User.ObtenerUsuario();
+                var result2 = procesosBL.InsertarWorkflowLog(log);
+
+                var filtros = new FiltroPlantillaDTO();
+                filtros.CodigoProceso = 6;
+                filtros.CodigoPlantilla = "PLANPREV";
+                filtros.Usuario = User.ObtenerUsuario();
+                filtros.Codigo = Convert.ToInt32(req.Id_Detalle);
+
+                var adjuntos = new List<string>();
+                var documentosBL = new DocumentosBL();
+                var documentos = documentosBL.ConsultaDocumentos(respuesta.Result.Codigo);
+                foreach (var doc in documentos.Result)
+                {
+                    if (doc.CodigoTipoDocumento == "DP04" && doc.Eliminado == 0) //Solo documentos de tipo Acta de Instalación:
                     {
-                        NumReq = mainRequerimiento.Result.Codigo,
-                        Estado = grupoInstalacionTecnicaDTO.CabeceraInstalacion.Estado,
-                        Id_WorkFlow = rpta.Result
+                        string pao_files = ConfigurationManager.AppSettings.Get("tempMantPreventivo");
+                        string ruta = pao_files + doc.RutaDocumento;
+                        adjuntos.Add(ruta);
+                    };
+                };
+
+                //Envío de correo.
+                var plantillasBL = new PlantillasBL();
+                var datos_correo = plantillasBL.ConsultarPlantillaCorreo(filtros).Result;
+                var response = Utilidades.Send(datos_correo.To, datos_correo.CC, "", datos_correo.Subject, datos_correo.Body, adjuntos, "");
+                CCLog Log = new CCLog();
+                if (response != "OK")
+                {
+                    Log.TraceInfo("Mantenimiento N° " + req.Id_Detalle + ":" + respuesta);
+                }
+                else
+                {
+                    Log.TraceInfo("Envio exitoso de correo para el mantenimiento N° " + req.Id_Detalle);
+                }
+
+                if (respuesta.Result.Codigo == 0)
+                {
+                    return Json(new
+                    {
+                        Status = 0,
+                        Mensaje = respuesta.Result.Mensaje
+                    });
+                }
+                else
+                {
+                    return Json(new
+                    {
+                        Status = 1,
+                        Mensaje = respuesta.Result.Mensaje
+                    });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    Status = 0,
+                    Mensaje = ex.Message
+                });
+            }
+        }
+
+        public JsonResult CerrarMantenimiento(ReqPreventivoDTO req)
+        {
+            var preventivoBL = new PreventivosBL();
+            var procesosBL = new ProcesosBL();
+
+            try
+            {
+                req.UsuarioRegistra = User.ObtenerUsuario();
+                var respuesta = preventivoBL.MantPreventivos(req);
+
+                //Se realiza el registro de seguimiento de workflow:
+                var log = new FiltroWorkflowLogDTO();
+                log.CodigoWorkflow = req.Id_WorkFlow;
+                log.Usuario = User.ObtenerUsuario();
+                log.CodigoEstado = "COM";
+                log.UsuarioRegistro = User.ObtenerUsuario();
+                var result2 = procesosBL.InsertarWorkflowLog(log);
+
+
+                if (respuesta.Result.Codigo == 0)
+                {
+                    return Json(new
+                    {
+                        Status = 0,
+                        Mensaje = respuesta.Result.Mensaje
+                    });
+                }
+                else
+                {
+                    return Json(new
+                    {
+                        Status = 1,
+                        Mensaje = respuesta.Result.Mensaje
+                    });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    Status = 0,
+                    Mensaje = ex.Message
+                });
+            }
+        }
+
+
+        public virtual JsonResult UploadFiles(string extension)
+        {
+            CCLog log = new CCLog();
+            try
+            {
+                log.TraceInfo(Utilidades.GetCaller());
+
+                var correlativo = DateTime.Now.ToString("yyyyMMddHHmmss");
+                string nombre = "MANTPREV" + correlativo;
+                string rutaArchivo = "";
+                string fileName = "";
+
+                string ruta_temporal = Utilidades.ObtenerValorConfig("tempMantPreventivo");
+                string UploadSize = Utilidades.ObtenerValorConfig("UploadSize");
+
+                log.TraceError("ruta_temporal::" + ruta_temporal);
+                log.TraceError("UploadSize::" + UploadSize);
+
+                string folder = DateTime.Now.ToString("yyyyMM");
+                string rutafinal = ruta_temporal + folder;
+
+                log.TraceError("rutafinal::" + rutafinal);
+
+                bool exists = System.IO.Directory.Exists(rutafinal);
+
+                if (!exists)
+                    System.IO.Directory.CreateDirectory(rutafinal);
+
+
+                if (System.IO.Directory.Exists(rutafinal))
+                {
+                    for (int i = 0; i < Request.Files.Count; i++)
+                    {
+
+                        rutaArchivo = rutafinal + "\\" + nombre;
+
+                        HttpPostedFileBase file = Request.Files[i]; //Uploaded file
+
+                        long fileSize = file.ContentLength;
+                        var sizereal = (fileSize / 1024L);
+
+                        if (sizereal > Convert.ToInt32(UploadSize))
+                        {
+                            return Json("false");
+                        }
+
+                        fileName = nombre;
+                        string mimeType = file.ContentType;
+                        System.IO.Stream fileContent = file.InputStream;
+
+
+                        string rutaFin = rutaArchivo + "." + extension;
+
+                        log.TraceError("rutaFin::" + rutaFin);
+
+                        file.SaveAs(rutaFin); //File will be saved in application root
+
+
+
                     }
+                    log.TraceError("Llego imprimir::" + folder + fileName);
+                    return Json(folder + "\\" + nombre + "." + extension);
+                }
+                else
+                {
+                    log.TraceError("Ruta no existe::" + rutafinal);
+                    return Json("false");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                log.TraceError(Utilidades.GetCaller() + "::Error::" + ex.Message.ToString());
+                return Json("error");
+            }
+        }
+
+
+        public JsonResult SetMantPrev(MantPreventivoDTO mantenimiento)
+        {
+            try
+            {
+                VariableSesion.setCadena("NumPreventivo", mantenimiento.Id.ToString());
+                VariableSesion.setCadena("TipoAccion", mantenimiento.TipoTarea);
+                VariableSesion.setCadena("EstadoPrev", mantenimiento.CodEstado);
+                VariableSesion.setCadena("idWorkFlow", mantenimiento.Id_WorkFlow.ToString());
+                VariableSesion.setCadena("IdMant", mantenimiento.Id_Mant.ToString());
+                return Json(new
+                {
+                    Status = 1
                 });
             }
             catch (Exception ex)
             {
-                //result.Codigo = 0;
-                //result.Mensaje = ex.Message.ToString();
                 return Json(new
-                {
-                    Status = 0,
-                    Mensaje = ex.Message,
-                });
+                            {
+                                Status = 0,
+                                Message = ex.Message
+                            });
             }
-            //return Json(new ResponseDTO<RespuestaDTO>(result));
         }
 
-        public JsonResult MantInstalacion(InstalacionTecnicaDTO instalacion)
+        public JsonResult MantPreventivos(ReqPreventivoDTO req)
         {
-            var instalacionTecnicaBL = new InstalacionTecnicaBL();
-            instalacion.UsuarioRegistra = User.ObtenerUsuario();
-            var result = instalacionTecnicaBL.MantInstalacion(instalacion);
+            var preventivoBL = new PreventivosBL();
+            req.UsuarioRegistra = User.ObtenerUsuario();
+            var result = preventivoBL.MantPreventivos(req);
             return Json(result);
         }
 
-        public JsonResult MantInstalacionTecnicaDetalle(InstalacionTecnicaDetalleDTO detalle)
-        {
-            var instalacionTecnicaBL = new InstalacionTecnicaBL();
-            detalle.UsuarioRegistra = User.ObtenerUsuario();
-            var result = instalacionTecnicaBL.MantInstalacionTecnicaDetalle(detalle);
-            return Json(result);
-        }
-
-        public JsonResult MantTecnicoxDetalle(TecnicoInstalacionDTO tecnico)
-        {
-            var instalacionTecnicaBL = new InstalacionTecnicaBL();
-            tecnico.UsuarioRegistra = User.ObtenerUsuario();
-            var result = instalacionTecnicaBL.MantTecnicoxDetalle(tecnico);
-            return Json(result);
-        }
-               
         [HttpPost]
         public JsonResult GuardarAdjunto(DocumentoDTO documentoDTO)
         {
@@ -308,13 +500,13 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
                 });
             }
         }
-        public void GenerarReporte(FiltroInstalacionTecDTO filtros)
+        public void GenerarReporte(ReqPreventivoDTO req)
         {
-            var instalacionTecnicaBL = new InstalacionTecnicaBL();
-            var instalaciones = instalacionTecnicaBL.ObtenerInstalacionesTec(filtros).Result.ToList();
+            var preventivoBL = new PreventivosBL();
+            var preventivos = preventivoBL.ObtenerPreventivos(req).Result.ToList();
 
             var hssfworkbook = new HSSFWorkbook();
-            ISheet sh = hssfworkbook.CreateSheet("Requerimientos");
+            ISheet sh = hssfworkbook.CreateSheet("Mant. Preventivos");
 
             // Creacion del estilo
             var fontbold = hssfworkbook.CreateFont();
@@ -370,94 +562,69 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
-            cell.SetCellValue("Número de Requerimiento");
+            cell.SetCellValue("Número de Mantenimiento");
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
-            cell.SetCellValue("Número de Solicitud");    
+            cell.SetCellValue("Número de Serie");    
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
-            cell.SetCellValue("R.U.C");
+            cell.SetCellValue("Nombre de Equipo");
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
-            cell.SetCellValue("Nombre de Empresa");
+            cell.SetCellValue("Fecha de Instalación");
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
-            cell.SetCellValue("Ubicación de Empresa");
+            cell.SetCellValue("Fecha de Próximo mantenimiento");
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
-            cell.SetCellValue("Tipo de Venta");
+            cell.SetCellValue("Total de Preventivos");
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
-            cell.SetCellValue("Vendedor");
+            cell.SetCellValue("Preventivos Completados");
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
-            cell.SetCellValue("Empresa");
+            cell.SetCellValue("Preventivos Pendientes");
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
-            cell.SetCellValue("Fecha Máxima");
-
-            cell = row.CreateCell(cellnum++);
-            cell.CellStyle = style;
-            cell.SetCellValue("Destino");
-
-            cell = row.CreateCell(cellnum++);
-            cell.CellStyle = style;
-            cell.SetCellValue("Estado");
-
-            cell = row.CreateCell(cellnum++);
-            cell.CellStyle = style;
-            cell.SetCellValue("Estado");
-
-            cell = row.CreateCell(cellnum++);
-            cell.CellStyle = style;
-            cell.SetCellValue("Fecha de Registro");
-
-
+            cell.SetCellValue("Ubicación de Instalación");
 
             //// Impresión de la data
-            foreach (var item in instalaciones)
+            foreach (var item in preventivos)
             {
                 cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.NumReq);
+                cell.SetCellValue(item.Id_Mant);
 
                 cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.Id_Solicitud);
+                cell.SetCellValue(item.Serie);
 
                 cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.RucEmpresa);
+                cell.SetCellValue(item.Descripcion);
 
                 cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.NomEmpresa);
+                cell.SetCellValue(item.FechaInstalacion);
 
                 cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.Ubicacion);
+                cell.SetCellValue(item.ProxFechaMant);
 
                 cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.TipoVenta);
+                cell.SetCellValue(item.TotalPrevent);
 
                 cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.Vendedor);
+                cell.SetCellValue(item.PreventReal);
 
                 cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.CodEmpresa);
+                cell.SetCellValue(item.PreventPend);
 
                 cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.FechaMax);
-
-                cell = row.CreateCell(cellnum++);
-                cell.CellStyle = styleDate;
-                cell.SetCellValue(item.Destino);
-
-                cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.Estado);
+                cell.SetCellValue(item.UbigeoDest);
 
                 sh.SetColumnWidth(0, 20 * 256);
                 sh.SetColumnWidth(1, 20 * 256);
@@ -481,11 +648,12 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
             hssfworkbook.Write(outStream);
             outStream.Close();
             Response.End();
-
         }
+
+
         public FileResult DescargarFile(string url, string nombreDoc)
         {
-            string pao_files = ConfigurationManager.AppSettings.Get("temppFiles");
+            string pao_files = ConfigurationManager.AppSettings.Get("tempMantPreventivo");
             string ruta = pao_files + url;
 
             var fileName = Path.GetFileName(url);
@@ -493,37 +661,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
 
             return File(ruta, contentType, nombreDoc);
         }
-        
-        public JsonResult EnProcesoActualizacion(InstalacionTecnicaDTO instalacion)
-        {
-            var result = new RespuestaDTO();
-            try
-            {
-                var instalacionBL = new InstalacionTecnicaBL();
-                var procesosBL = new ProcesosBL();
-
-                var response = instalacionBL.MantInstalacion(instalacion);
-
-                //Se realiza el registro de seguimiento de workflow:
-                var log = new FiltroWorkflowLogDTO();
-                log.CodigoWorkflow = response.Result.Codigo;
-                log.Usuario = User.ObtenerUsuario();
-                log.CodigoEstado = "STEPI";
-                log.UsuarioRegistro = User.ObtenerUsuario();
-                procesosBL.InsertarWorkflowLog(log);
-
-                result.Codigo = 1;
-                result.Mensaje = "Se realizó el cambio de estado satisfactoriamente";
-                return Json(result);
-            }
-            catch(Exception ex)
-            {
-                result.Codigo = 0;
-                result.Mensaje = "Ocurrió un error al realizar el cambio de estado, por favor revisar.";
-                return Json(result);
-            }
-        }
-
         public JsonResult CerrarInstalacion(InstalacionTecnicaDTO instalacion)
         {
             var result = new RespuestaDTO();
@@ -585,6 +722,13 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
                 result.Mensaje = ex.Message;
                 return Json(result);
             }
+        }
+
+        public JsonResult ObtenerMainPreventivo(long NumPreventivo, long IdWorkFlow)
+        {
+            var preventivosBL = new PreventivosBL();
+            var result = preventivosBL.ObtenerMainPreventivo(NumPreventivo, IdWorkFlow);
+            return Json(result);
         }
 
         #region Tecnico/Empleados

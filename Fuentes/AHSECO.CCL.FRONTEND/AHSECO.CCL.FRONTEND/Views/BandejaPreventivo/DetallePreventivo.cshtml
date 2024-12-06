@@ -1,0 +1,319 @@
+﻿@using AHSECO.CCL.FRONTEND.Core;
+
+@{
+    ViewBag.Title = "Registro de Mantenimientos Preventivos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var numPreventivo = VariableSesion.getCadena("NumPreventivo");
+    var tipoAccion = VariableSesion.getCadena("tipoAccion");
+    var idWorkFlow = VariableSesion.getCadena("idWorkFlow");
+    var estadoMant = VariableSesion.getCadena("EstadoPrev");
+    var idMant = VariableSesion.getCadena("IdMant");
+
+    var visualizar = false;
+
+    if (tipoAccion != "")
+    {
+        visualizar = true;
+    };
+
+}
+<input hidden id="numPreventivo" value="@numPreventivo" />
+<input hidden id="tipoAccion" value="@tipoAccion" />
+<input hidden id="codigoWorkflow" value="@idWorkFlow" />
+<input hidden id="estadoMant" value="@estadoMant" />
+<input hidden id="idMantPadre" value="@idMant"/>
+
+<div class="container-fluid">
+    @if (numPreventivo == "")
+    {
+        <h4><i class="fa fa-comment" aria-hidden="true"></i> @ViewBag.Title</h4>
+    }
+    else
+    {
+        <h4><i class="fa fa-wrench" aria-hidden="true"></i> Mantenimiento Preventivo</h4>
+    }
+
+    <div class="box-inner">
+        <div class="box-header well" data-original-title="">
+            <div style="display: flex;justify-content: space-between;">
+                @if (numPreventivo != "")
+                {
+                    var numReqFormateado = ("000000" + numPreventivo);
+
+                    numReqFormateado = numReqFormateado.Substring((numReqFormateado.Length) - 6, numReqFormateado.Length - ((numReqFormateado.Length) - 6));
+
+                    <h2>N&uacute;mero: @numReqFormateado</h2> <!--- Aquí tendremos que controlar-->
+
+                    <div class="text-right">
+                        <!--- Aquí tendremos que controlar-->
+                        <label>ESTADO: <span style="color:red" id="spanEstadoSol"></span></label>
+                    </div>
+                }
+
+            </div>
+        </div>
+        <div class="box-content">
+            <div class="container-fluid" style="margin-right: 15px;">
+                <div class="box-inner" id="boxReclamo">
+                    <div class="box-header well" data-original-title="" style="background-color: beige;">
+                        <div>
+                            <p id="titleNomProducto"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Detalle del Mantenimiento</p>
+                        </div>
+                    </div>
+                    <div class="box-content" style="background-color: #f5f5dc30;">
+                        <form id="formMant">
+                            <div class="row container-fluid">
+                                <div class="col-md-4 col-sm-12">
+                                    <label for="dateFechaMant">Fecha de Mantenimiento</label>
+                                    <div class="input-group date">
+                                        <input disabled type="text" class="form-control input-sm" id="dateFechaMant" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
+                                        <span class="input-group-addon input-sm" id="openRegdateMant">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-12">
+                                    <label for="txtMontoAcce">Prestación Accesoria</label>
+                                    <div class="form-group">
+                                        <div class="input-group input-group-sm">
+                                            <span style="cursor:pointer;background-color: gray;color: white; pointer-events: none" class="input-group-addon input-sm" id="spanSi">
+                                                SÍ
+                                            </span>
+                                            <span style="cursor: pointer; background-color: gray; color: white; pointer-events: none" class="input-group-addon input-sm" id="spanNo">
+                                                NO
+                                            </span>
+                                            <input disabled type="text" class="form-control input-sm" id="txtMontoAcce" value="" placeholder="---Ingresar Monto Prestación Accesoria---" aria-describedby="sizing-addon3" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-12">
+                                    <label for="txtMontoAcce">Repuestos:</label>
+                                    <div class="form-group">
+                                        <div class="input-group input-group-sm">
+                                            <span style="cursor:pointer;background-color: gray;color: white; pointer-events: none" class="input-group-addon input-sm" id="spanCon">
+                                                Con Repuestos
+                                            </span>
+                                            <span style="cursor: pointer; background-color: gray; color: white; pointer-events: none" class="input-group-addon input-sm" id="spanSin">
+                                                Sin Repuestos
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @if (estadoMant == "FIN" || tipoAccion == "V")
+                            {
+                                <div class="row container-fluid">
+                                    <div class="col-md-4 col-sm-12">
+                                        <label for="">Número de Factura</label>
+                                        <div class="form-group">
+                                            <input disabled placeholder="--N° de Factura--" type="text" class="form-control input-sm" id="txtNumFactura" value="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-12">
+                                        <label for="dateFechaMant">Fecha de Factura</label>
+                                        <div class="input-group date">
+                                            <input disabled type="text" class="form-control input-sm" id="dateFechaFact" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
+                                            <span class="input-group-addon input-sm" id="openRegdateFact">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </form>
+                    </div>
+                </div>
+                <br />
+                <div class="row container-fluid">
+                    <div class="text-right">
+                        @if (tipoAccion != "V")
+                        {
+                            if (numPreventivo != "")
+                            {
+
+                                if (estadoMant == "FIN")
+                                {
+                                    <button class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnCerrar" tabindex="14"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;Completado</button>
+
+                                }
+                                else
+                                {
+                                    <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnEditarMant" tabindex="14"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;Editar Mantenimiento</button>
+                                       <button disabled class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnFinalizarMant" tabindex="14"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;Finalizar</button>
+                                }
+                            }
+                            else
+                            {
+                                <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnRegistrarPrev" tabindex="14"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Registrar</button>
+                            }
+                        }
+                        <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegresar" tabindex="14"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Regresar</button>
+                    </div>
+                </div>
+                <ul class="nav nav-tabs" style="padding-top: 5px;">
+                    @if (numPreventivo != "")
+                    {
+                        <li class="" id="tabSeguimiento">
+                            <a href="#navSeguimiento" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-code-fork" aria-hidden="true"></i>  Seguimiento</a>
+                        </li>
+                    }
+                    <li class="" id="tabTecnicos">
+                        <a href="#navTecnicos" data-toggle="tab" style="font-weight: bold; color: #158304;" tabindex="21"><i class="fa fa-users" aria-hidden="true"></i><i class="fa fa-wrench" aria-hidden="true"></i> Tecnicos</a>
+                    </li>
+                    <li class="" id="tabObservaciones">
+                        <a href="#navObservaciones" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-exclamation" aria-hidden="true"></i> Observaciones</a>
+                    </li>
+                    <li class="" id="tabAdjuntos">
+                        <a href="#navDocumentos" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-file-text" aria-hidden="true"></i> Adjunto de Documentos</a>
+                    </li>
+                </ul>
+                <div class="tab-content" style="padding-top: 5px;">
+                    @if (numPreventivo != "")
+                    {
+                        <div id="navSeguimiento" class="tab-pane fade in active">
+                            @{
+                                Html.RenderPartial("~/Views/Modelos/_Seguimiento.cshtml");
+                            }
+                        </div>
+                    }
+                    <div id="navDocumentos" class="tab-pane fade">
+                        @{
+                            Html.RenderPartial("~/Views/Modelos/_Documentos.cshtml");
+                        }
+                    </div>
+                    <div id="navTecnicos" class="tab-pane fade">
+                        <br />
+                        <form id="formRegistro" class="d-flex flex-row">
+                            <div class="row container-fluid d-flex justify-content-center">
+                                <div class="text-right">
+                                    @if (tipoAccion != "V")
+                                    {
+                                        if (estadoMant != "FIN")
+                                        {
+                                            <button class="btn btn-default btn-sm" type="button" id="btnBusquedaTecnico" data-target="#modalBusquedaTecnico" data-toggle="modal"><i class="fa fa-search"></i> Buscar Técnicos</button>
+                                            <span id="hidden_fields"></span>
+                                            <button class="btn btn-primary btn-sm" type="button" id="btnAñadirTecnico" data-toggle="modal" data-target="#añadirTecnico"><i class="fa fa-plus"></i> Crear Técnico Externo</button>
+                                        }
+                                    }
+                                </div>
+                                <br />
+                                <div class="table-responsive">
+                                    <table id="tblMainTecnicos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Id</th>
+                                                <th style="text-align: center; width:10%">Tip. de Doc.</th>
+                                                <th style="text-align: center; width:10%">N&uacute;m. de Doc.</th>
+                                                <th style="text-align: center; width:20%">Nombres y Apellidos</th>
+                                                <th style="text-align: center; width:15%">Tel&eacute;fono</th>
+                                                <th style="text-align: center; width:15%;">Correo</th>
+                                                <th style="text-align: center; width:15%;">Empresa</th>
+                                                <th style="text-align: center; width:50%;"><center>Acciones</center></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbodyTecnicos">
+                                        </tbody>
+                                        <tr id="NoExisteTec"><td colspan="11" style="text-align:center"> No se han añadido técnicos</td></tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <br />
+                        </form>
+                    </div>
+                    <div id="navObservaciones" class="tab-pane fade">
+                        @{
+                            Html.RenderPartial("~/Views/Modelos/_Observaciones.cshtml");
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+
+        $('#txtMontoAcce').on('blur', function () {
+            let valor = $(this).val();
+
+            // Eliminar caracteres que no son números o punto
+            valor = valor.replace(/[^0-9.]/g, '');
+
+            // Contar cuántos puntos hay
+            const puntoCount = (valor.match(/\./g) || []).length;
+
+            // Permitir solo un punto
+            if (puntoCount > 1) {
+                valor = valor.replace(/\.+$/, ''); // Eliminar el último punto si hay más de uno
+            }
+
+            // Si hay un punto, limitar a dos decimales
+            const partes = valor.split('.');
+            if (partes.length > 1) {
+                partes[1] = partes[1].substring(0, 2); // Limitar a dos decimales
+            } else {
+                partes[1] = ''; // Si no hay parte decimal, inicializar
+            }
+
+            // Formatear la parte entera con separadores de miles
+            let partesEntera = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            let valorFormateado = partesEntera;
+
+            // Agregar la parte decimal (con ceros si es necesario)
+            if (partes[1]) {
+                valorFormateado += '.' + partes[1];
+            } else {
+                if (partes[0] == '') {
+                    valorFormateado += ''
+                }
+                else {
+                    valorFormateado += '.00'; // Si no hay parte decimal, agregar .00
+                }
+            }
+
+            // Asignar el valor formateado al input
+            $(this).val(valorFormateado);
+        });
+
+
+
+    });
+</script>
+
+@{
+    Html.RenderPartial("~/Views/Modelos/_Modales.cshtml");
+}
+
+
+
+<div class="modal fade" id="añadirTecnico" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_AsignacionTecnico");
+    }
+</div>
+
+
+<div class="modal fade" id="modalSolicitud" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_BusquedaSolicitud");
+    }
+</div>
+
+
+<div class="modal fade" id="modalBusquedaTecnico" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_BuscarTecnico");
+    }
+</div>
+
+<div class="modal fade" id="modalZona" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_Ubigeo");
+    }
+</div>
+
+@section scripts{
+    <script type="text/javascript" src="~/resources/js/app/ServicioTecnico/BandejaPreventivo/detallePreventivo.js"></script>
+}

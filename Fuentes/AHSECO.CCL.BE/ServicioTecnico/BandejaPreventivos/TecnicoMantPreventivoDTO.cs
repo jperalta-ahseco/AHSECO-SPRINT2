@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace AHSECO.CCL.BE.ServicioTecnico.BandejaPreventivos
 {
-    public class TecnicoMantPreventivoDTO
+    public class TecnicoMantPreventivoDTO : CamposAuditoriaDTO
     {
+        public long Id_Mant{ get; set; }
         public string TipoProceso { get; set; }
         public long Id_Asig { get; set; }
-        public long Id_Mant { get; set; }
+        public long Id_Detalle { get; set; }
         public int Cod_Tecnico { get; set; }
         public string Nombres { get; set; }
         public string ApePaterno { get; set; }

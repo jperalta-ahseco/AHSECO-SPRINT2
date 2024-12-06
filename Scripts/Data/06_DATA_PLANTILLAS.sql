@@ -94,3 +94,12 @@ VALUES('PLANGARANT',7,'Plantilla de Alertas de garantias proximas a vencer','ser
 <p>{TABLA_DETALLE}</p>
 <p>Por favor ingrese al sistema para visualizar la informaci&oacute;n a m&aacute;s detalle. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a>&nbsp;.</p>','SYSTEM',GETDATE(),NULL,NULL);
 
+--Mantenimiento Preventivo
+INSERT INTO TBM_PLANTILLAS
+VALUES('PLANPREV',6,'Plantilla de Envío de Guía Manuscrita','pminetti@ahsecoperu.pe','','MANTENIMIENTO PREVENTIVO',
+			   '<p>Estimado Sr. {NOM_GERENTE},</p>
+<p>Se env&iacute;a el documento: Gu&iacute;a Manuscrita, para su revisión</p>
+<p>Se realizó el mantenimiento preventivo N°{NRO_PREV} del equipo: {NOM_EQUIPO} de la solicitud N°{NRO_SOL} para el cliente {CLIENTE}.</p>
+<p>Por favor ingrese al sistema para visualizar la informaci&oacute;n a m&aacute;s detalle. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a>&nbsp;.</p>','SYSTEM',GETDATE(),NULL,NULL);
+
+

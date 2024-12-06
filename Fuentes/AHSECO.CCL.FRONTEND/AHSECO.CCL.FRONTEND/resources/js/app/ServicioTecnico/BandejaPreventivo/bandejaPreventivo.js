@@ -11,26 +11,27 @@
     var $openPeriodoIni = $('#openPeriodoIni');
     var $openPeriodoFin = $('#openPeriodoFin');
     var $txtIdMant = $('#txtIdMant');
+    var $formPreventivo = $('#formPreventivo');
+
 
     /*Combos*/
     var $cmbempresa = $('#cmbempresa');
-    var $cmbEstado = $('#cmbEstado');
+    //var $cmbEstado = $('#cmbEstado');
 
     /*Buttons*/
     var $btnBuscar = $('#btnBuscar');
     var $btnExportar = $('#btnExportar');
 
-    var $tblInstallTec = $('#tblInstallTec');
+    var $tblMantenimientos = $('#tblMantenimientos');
 
     function Initializer() {
-
-
         ObtenerFiltrosPreventivos();
         $btnBuscar.click(BuscarPreventivos);
         $openPeriodoIni.click($openRegFecIni_click);
         $openPeriodoFin.click($openRegFecFin_click);
 
         $periodoIni.val(mesActual());
+        $periodoFin.val(mesPosterior());
 
         $periodoIni.datepicker({
             viewMode: "months",
@@ -44,7 +45,7 @@
             format: 'yyyy.mm',
             startDate: $periodoIni.val()
         });
-
+        $btnExportar.click(btnExportarClick);
         $periodoIni.datepicker().on("changeDate", changeDateFechaInicialRegFecIni);
 
 
@@ -62,7 +63,7 @@
             filters.allowClear = false;
 
             app.llenarComboMultiResult($cmbempresa, data.Result.Empresas, null, "0", "--Todos--", filters);
-            app.llenarComboMultiResult($cmbEstado, data.Result.Estados, null, 0, "--Todos--", filters);
+            //app.llenarComboMultiResult($cmbEstado, data.Result.Estados, null, 0, "--Todos--", filters);
         };
 
         var fnFailCallBack = function () {
@@ -103,7 +104,7 @@
             Empresa: $cmbempresa.val() == "" ? "0" : $cmbempresa.val(),
             PeriodoInicio: $periodoIni.val().replace("/","."),
             PeriodoFinal: $periodoFin.val().replace("/", "."),
-            Estado: $cmbEstado.val() == "" || $cmbEstado.val() == 0 ? "" : $cmbEstado.val(),
+            //Estado: $cmbEstado.val() == "" || $cmbEstado.val() == 0 ? "" : $cmbEstado.val(),
         };
 
         var objParam = JSON.stringify(objConsulta);
@@ -119,7 +120,29 @@
         app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
 
     }
+    function btnExportarClick(e) {
+        var self = jQuery(this);
+        var href = self.attr('href');
+        e.preventDefault();
+        var cant = $tblMantenimientos.DataTable().rows().data().length;
 
+        if (cant === 0) {
+            app.message.error("Reporte de Mantenimientos", "La búsqueda no produjo resultados", "Aceptar");
+            return false;
+        }
+        $("#hidden_fields").empty();
+        $("<input>", { type: "hidden", name: "Id_Mant", value: $txtIdMant.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "NumSerie", value: $txtSerie.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "NumProc", value: $txtNumProc.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "NumOrdCompra", value: $txtNumOrdCompra.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "NumFianza", value: $txtNumFianza.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "Empresa", value: $cmbempresa.val() == "0" || $cmbempresa.val() == null ? "" : $cmbempresa.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "PeriodoInicio", value: app.isNull($periodoIni.val()) || $periodoIni.val() == "" ? "" : app.parseDate($periodoIni.val()) }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "PeriodoFinal", value: app.isNull($periodoFin.val()) || $periodoFin.val() == "" ? "" : app.parseDate($periodoFin.val()) }).appendTo("#hidden_fields");
+
+        $formPreventivo.attr('action', href);
+        $formPreventivo.submit();
+    }
     function cargarTablaPreventivos(data) {
         var columns = [
             {
@@ -198,15 +221,27 @@
         filters.dataTablePageLength = 10;
         filters.dataTablePaging = true;
 
-        app.llenarTabla($tblInstallTec, data, columns, columnDefs, "#tblInstallTec", null, null,filters);
+        app.llenarTabla($tblMantenimientos, data, columns, columnDefs, "#tblMantenimientos", null, null,filters);
     };
 
     function mesActual() {
         var date = new Date();
-        var dia = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
         var mesActual = (date.getMonth() + 1);
         var mes = mesActual < 10 ? '0' + mesActual : mesActual;
         var year = date.getFullYear();
+        return `${year}.${mes}`;
+    }
+
+    function mesPosterior() {
+        var date = new Date();
+        var mesActual = (date.getMonth() + 1);
+        var mes = mesActual < 10 ? '0' + mesActual : mesActual;
+        var intMes = parseInt(mes)+1;
+        var year = date.getFullYear();
+        if (intMes > 12) {
+            year += 1;
+            mes = '01'
+        };
         return `${year}.${mes}`;
     }
 
