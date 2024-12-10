@@ -406,6 +406,7 @@
         $btnAgregarDetServ.click($btnAgregarDetServ_click);
         $btnGuardarDetalleServicio.click($btnGuardarDetalleServicio_click);
         $DS_btnGuardar.click($DS_btnGuardar_click);
+        cargarGrillaCotDetServicios("2");
         IniciarBotonSeleccionarTecnico();
         cargaCombos();
         if ($DsctoRequiereAprobacion.val() == "S" && $DsctoRespondido.val() == "N") {
@@ -1066,7 +1067,7 @@
         url = "BandejaSolicitudesVentas/CargarCotDetServicios";
 
         var objFiltros = {
-            opcGrillaItems: $DS_hdnOpcGrillaItems.val()
+            opcGrillaItems: opc//DS_hdnOpcGrillaItems.val()
         };
 
         var objParam = JSON.stringify(objFiltros);
@@ -1326,7 +1327,9 @@
             {
                 data: "VentaUnitaria",
                 render: function (data) {
-                    return '<center>' + data.toFixed(2) + '</center>';
+                    var newData = '<center></center>';
+                    if (data != null) { newData = '<center>' + data.toFixed(2) + '</center>'; }
+                    return newData;
                 }
             },
             {
@@ -3770,7 +3773,6 @@
             $DS_txtCodigo.val(codigo.substring(codigo.length - 6));
             $DS_txtDescripcion.val(data.Result.Descripcion);
             $DS_txtCantidad.val(data.Result.Cantidad);
-            $DS_txtPrecio.val(data.Result.VentaUnitaria.toFixed(2));
             if (data.Result.VentaUnitaria != null) { $DS_txtPrecio.val(data.Result.VentaUnitaria.toFixed(2)); }
             else { $DS_txtPrecio.val(""); }
             if (data.Result.VentaTotalSinIGV != null) { $DS_txtTotalVenta.val(data.Result.VentaTotalSinIGV.toFixed(2)); }

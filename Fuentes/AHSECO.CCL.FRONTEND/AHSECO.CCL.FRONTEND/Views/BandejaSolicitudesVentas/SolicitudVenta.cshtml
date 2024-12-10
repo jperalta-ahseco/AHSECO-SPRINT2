@@ -223,7 +223,6 @@
                         <li class="" id="tabDetalleSolicitud">
                             <a href="#navDetalleSolicitud" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-info-circle" aria-hidden="true"></i> Detalle</a>
                         </li>
-
                         <li class="" id="tabAdjuntos">
                             <a href="#navDocumentos" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-file-text" aria-hidden="true"></i> Adjunto de Documentos</a>
                         </li>
@@ -416,8 +415,8 @@
                                                         <div class="tab-content">
                                                             <div id="navCotDet" class="tab-pane fade in active">
                                                                 <div class="text-right" style="padding-top: 10px; padding-bottom: 10px">
+                                                                    <button style="@(ViewBag.PermitirAgregarCotDet ? "" : "display:none")" class="btn btn-default btn-sm" type="button" data-target="#modalDetalleCotizacion" data-toggle="modal" id="btnAgregarDetalle" tabindex="14"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar / Modificar Productos</button>
                                                                     <button style="@(ViewBag.PermitirAgregarServicios ? "" : "display:none")" class="btn btn-default btn-sm" type="button" data-target="#modalDetalleCotizacionServicio" data-toggle="modal" id="btnAgregarServicios" tabindex="14"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar / Modificar Servicios</button>
-                                                                    <button style="@(ViewBag.PermitirAgregarCotDet ? "" : "display:none")" class="btn btn-default btn-sm" type="button" data-target="#modalDetalleCotizacion" data-toggle="modal" id="btnAgregarDetalle" tabindex="14"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar / Modificar Detalle</button>
                                                                 </div>
                                                                 <div class="table-responsive" style="@(ViewBag.VerBandejaCotizacion ? "" : "display:none")">
                                                                     <table id="tblDetCotCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">

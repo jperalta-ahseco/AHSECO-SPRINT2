@@ -1604,7 +1604,6 @@ var cotvtadet = (function ($, win, doc) {
         var fnDoneCallBack = function (data) {
             cargarTablaCotDet(data);
             cargarTablaDetCotCostos(data);
-            solicitud.cargarTablaDetCotServicios(data);
         };
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
