@@ -228,6 +228,39 @@
     var $tblSeriesSS = $("#tblSeriesSS");
     var $NoRegSeriesSS = $("#NoRegSeriesSS");
 
+    /*Tecnicos:*/
+    var $btnBuscarTecnicos = $('#btnBuscarTecnicos');
+    var $btnAñadirTecnico = $('#btnAñadirTecnico');
+    var $tblTecnicos = $('#tblTecnicos');
+    var $cmbTipDocTecnico = $('#cmbTipDocTecnico');
+    var $txtNumDocTec = $('#txtNumDocTec');
+    var $cmbTipoEmpleado = $('#cmbTipoEmpleado');
+    var $txtNombres = $('#txtNombres');
+    var $txtApePat = $('#txtApePat');
+    var $txtApeMat = $('#txtApeMat');
+    var $btnBuscarTecnico = $('#btnBuscarTecnico');
+    var $cmbTipoCredencial = $("#cmbTipoCredencial");
+    var $txtTipoTecnico = $("#txtTipoTecnico");
+    var $txtNombreTecnico = $("#txtNombreTecnico");
+    var $txtApellidoPaternoTec = $("#txtApellidoPaternoTec");
+    var $txtApellidoMaternoTec = $("#txtApellidoMaternoTec");
+    var $hdnTipoEmpleado = $("#hdnTipoEmpleado");
+    var $hdnTipoDoc = $("#hdnTipoDoc");
+    var $txtNumDocumento = $("#txtNumDocumento");
+    var $txtZona = $("#txtZona");
+    var $hdnIdZona = $("#hdnIdZona");
+    var $searchZona = $("#searchZona");
+    var $hdnIdTecnico = $("#hdnIdTecnico");
+    var $cmbDepartamento = $('#cmbDepartamento');
+    var $cmbProvincia = $('#cmbProvincia');
+    var $cmbDistrito = $('#cmbDistrito');
+    var $modalZona = $('#modalZona');
+    var $btnRegistrarTecnicoExterno = $('#btnRegistrarTecnicoExterno');
+    var $tblMainTecnicos = $("#tblMainTecnicos");
+    var $modalBusquedaTecnico = $("#modalBusquedaTecnico");
+    var $NoExisteTec = $("#NoExisteTec");
+    var tecnicosAsig = [];
+
     var mensajes = {
         consultaContactos: "Consultando contactos, por favor espere....",
         consultandoFlujos: "Consultando tipos de flujos, por favor espere....",
@@ -373,6 +406,7 @@
         $btnAgregarDetServ.click($btnAgregarDetServ_click);
         $btnGuardarDetalleServicio.click($btnGuardarDetalleServicio_click);
         $DS_btnGuardar.click($DS_btnGuardar_click);
+        IniciarBotonSeleccionarTecnico();
         cargaCombos();
         if ($DsctoRequiereAprobacion.val() == "S" && $DsctoRespondido.val() == "N") {
             $modalAprobDscto.modal('show');
@@ -382,7 +416,649 @@
         $btnAprobarCotizacion.click(aprobarCotizacion);
         $DS_hdnOpcGrillaItems.val("2");
 
+        $btnBuscarTecnicos.click(BuscarTecnicosClick);
+        $btnBuscarTecnico.click(BuscarTecnicos);
+        $btnAñadirTecnico.click(AgregarTecnicoExterno);
+        $searchZona.click(logicUbigeo);
+        $btnRegistrarTecnicoExterno.click(CrearTecnico3ro_a_Producto);
+
     };
+
+    function DesasignarTecnico(CodAsignacion) {
+        var method = "POST";
+        var url = "BandejaSolicitudesVentas/MantTecnicosDespacho";
+
+        var objTecnico = {
+            TipoProceso: "D",
+            Id_Reclamo: $numeroSolicitud.val(),
+            Cod_Tecnico: CodAsignacion,
+            Estado: false
+        };
+
+        var objParam = JSON.stringify(objTecnico);
+
+
+        var fnSi = function () {
+            var fnDoneCallback = function () {
+                app.message.success("Éxito", "Se realizó la desasignación del técnico.");
+                tecnicosAsig = tecnicosAsig.filter(tecnico => tecnico.Cod_Tecnico != CodAsignacion);
+                cargarTablaMainTecnicos(tecnicosAsig);
+            };
+
+            var fnFailCallBack = function () {
+                app.message.error("Error", "Ocurrió un problema al modificar al técnico, por favor revisar.");
+            };
+
+            app.llamarAjax(method, url, objParam, fnDoneCallback, fnFailCallBack, null, null);
+        };
+
+        return app.message.confirm("Confirmación", "¿Desea desasignar al técnico del despacho?", "Sí", "No", fnSi, null);
+    }
+
+    function asignarTecnico(data) {
+
+        var method = "POST";
+        var url = "BandejaSolicitudesVentas/MantTecnicosDespacho";
+
+        var objReclamo = {
+            TipoProceso: "I",
+            Id_Asig: 0,
+            Id_Reclamo: $numeroSolicitud.val(),
+            Cod_Tecnico: data.CodigoEmpleado,
+            Nombres: data.NombresEmpleado,
+            ApePaterno: data.ApellidoPaternoEmpleado,
+            ApeMaterno: data.ApellidoMaternoEmpleado,
+            Documento: data.NumeroDocumento,
+            Tipo_Documento: data.Documento.Parametro,
+            Correo: data.EmailEmpleado,
+            Telefono: data.TelefonoEmpleado,
+            Zona: data.LugarLaboral.UbigeoId,
+            Empresa: data.Empresa.Valor1,
+            TipoTecnico: data.CodigoTipoEmpleado,
+            Estado: true,
+        };
+
+        var objParam = JSON.stringify(objReclamo);
+
+        var fnSi = function () {
+            var fnDoneCallBack = function () {
+                app.message.success("Éxito", "Se realizó la asignación de manera correcta");
+
+                tecnicosAsig.push({
+                    Cod_Tecnico: data.CodigoEmpleado,
+                    TipoDoc: data.Documento.Descripcion,
+                    Documento: data.NumeroDocumento,
+                    Tipo_Documento: data.Documento.Parametro,
+                    Nombres: data.NombresEmpleado,
+                    ApePaterno: data.ApellidoPaternoEmpleado,
+                    ApeMaterno: data.ApellidoMaternoEmpleado,
+                    NombreCompleto: data.NombresCompletosEmpleado,
+                    TipoTecnico: data.CodigoTipoEmpleado,
+                    Telefono: data.TelefonoEmpleado,
+                    Correo: data.EmailEmpleado,
+                    Empresa: data.Empresa.Valor1,
+                    Zona: data.LugarLaboral.UbigeoId,
+                    DescZona: data.LugarLaboral.NombreDepartamento + data.LugarLaboral.NombreProvincia + data.LugarLaboral.NombreDistrito,
+                    Estado: true
+                });
+
+                cargarTablaMainTecnicos(tecnicosAsig);
+                $modalBusquedaTecnico.modal('toggle');
+
+
+            };
+
+            var fnFailCallBack = function () {
+                app.message.error("Error", "Ocurrió un problema al realizar la inserción.");
+            };
+
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+        };
+        return app.message.confirm("Confirmación", "¿Desea asignar el técnico seleccionado al despacho de ventas?", "Sí", "No", fnSi, null);
+    };
+
+    function cargarTablaMainTecnicos(tecnicos) {
+
+        var data = {}
+        data.Result = [];
+        data.Result = tecnicos;
+
+        if (tecnicos.length > 0) {
+            $NoExisteTec.hide();
+        }
+        else {
+            $NoExisteTec.show();
+        }
+
+
+
+        var columns = [
+            {
+                data: "Cod_Tecnico",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "TipoDoc",
+                render: function (data, type, row) {
+                    if (data == "" || data == null) {
+                        return '<center>No definido</center>';
+                    } else {
+                        return '<center>' + data + '</center>';
+                    }
+                }
+
+            },
+            {
+                data: "Documento",
+                render: function (data, type, row) {
+                    if (data == "" || data == null) {
+                        return '<center>No definido</center>';
+                    } else {
+                        return '<center>' + data + '</center>';
+                    }
+                }
+
+            },
+            {
+                data: "NombreCompleto",
+                render: function (data, type, row) {
+                    if (data == "" || data == null) {
+                        return '<center>No definido</center>';
+                    } else {
+                        return '<center>' + data + '</center>';
+                    }
+                }
+
+            },
+            {
+                data: "Telefono",
+                render: function (data, type, row) {
+                    if (data == "" || data == null) {
+                        return '<center>No definido</center>';
+                    } else {
+                        return '<center>' + data + '</center>';
+                    }
+                }
+
+            },
+            {
+                data: "Correo",
+                render: function (data, type, row) {
+                    if (data == "" || data == null) {
+                        return '<center>No definido</center>';
+                    } else {
+                        return '<center>' + data + '</center>';
+                    }
+                }
+
+            },
+            {
+                data: "Empresa",
+                render: function (data, type, row) {
+                    if (row.TipoTecnico == "I") {
+                        if (data == "" || data == null) {
+                            return '<center>No definido</center>';
+                        } else {
+                            return '<center>' + data + '</center>';
+                        }
+                    }
+                    else if (row.TipoTecnico == "E") {
+                        if (data == "" || data == null) {
+                                var html = '';
+                                html += '<div class="form-group">' + '<div class="input-group input-group-sm date">'
+                                    + '<input placeholder="--Empresa--" type="text" class="form-control input-sm" id="txtNomEmpresa' + row.Cod_Tecnico + '">';
+                                html += '<a class="input-group-addon input-sm" id="saveEmpresaTecnico' + row.Cod_Tecnico + '" href="javascript:garantias.saveEmpresaTecnico(' + row.Cod_Tecnico + ')"" >' +
+                                    '<i class="fa fa-save" aria-hidden="true"></i>' +
+                                    '</a>';
+                                return '<center>' + html + '</center>';
+
+                        } else {
+                            return '<center>' + data + '</center>';
+                        }
+                    }
+                }
+
+            },
+            {
+                data: "Cod_Tecnico",
+                render: function (data, type, row) {
+                        var retirar = '<a id="btnDesasignarTecnico" class="btn btn-danger btn-xs" title="Desasignar Tecnico" href="javascript:solicitud.DesasignarTecnico(' + data + ')"><i class="fa fa-minus-square-o" aria-hidden="true"></i></a>'
+                        return '<center>' + retirar + '</center>';
+
+
+                }
+            }
+        ];
+
+        var columnDefs = [
+            {
+                targets: [0],
+                visible: false
+            }
+        ];
+
+        app.llenarTabla($tblMainTecnicos, data, columns, columnDefs, "#tblMainTecnicos");
+    };
+
+    function IniciarBotonSeleccionarTecnico() {
+        $('#tblTecnicos tbody').on('click', 'td #btnSeleccionarTecnico', function () {
+
+            
+            //limpiarDetalleInfoAdcional()
+            var tr = $(this).closest('tr');
+            var row = $('#tblTecnicos').dataTable().api().row(tr);
+            var info = row.data();
+            asignarTecnico(info)
+        });
+    };
+
+
+    function CrearTecnico3ro_a_Producto() {
+        //var idProducto = $hdnIdProduct.val();
+        if ($txtNombreTecnico.val() == "" || $txtNombreTecnico.val() == null || $txtNombreTecnico.val().trim().length == 0) {
+            app.message.error("Validación", "Debe ingresar el nombre del técnico.");
+            return;
+        };
+
+        if ($txtApellidoPaternoTec.val() == "" || $txtApellidoPaternoTec.val() == null || $txtApellidoPaternoTec.val().trim().length == 0) {
+            app.message.error("Validación", "Debe ingresar el apellido paterno del técnico.");
+            return;
+        };
+
+        if ($txtApellidoMaternoTec.val() == "" || $txtApellidoMaternoTec.val() == null || $txtApellidoMaternoTec.val().trim().length == 0) {
+            app.message.error("Validación", "Debe ingresar el apellido materno del técnico.");
+            return;
+        };
+
+
+        if ($txtTipoTecnico.val() == "") {
+            app.message.error("Validación", "Debe de seleccionar un técnico o realizar el ingreso de uno nuevo.");
+            return;
+        };
+
+        if ($cmbTipoCredencial.val() == "" || $cmbTipoCredencial.val() == "0" || $cmbTipoCredencial.val() == null) {
+            app.message.error("Validación", "Debe de seleccionar un tipo de documento.");
+            return;
+        };
+
+        if ($txtNumDocumento.val() == "" || $txtNumDocumento.val().trim().length == 0) {
+            app.message.error("Validación", "Debe de ingresar el número de documento.");
+            return;
+        };
+
+        if (isNaN($txtNumDocumento.val())) {
+            app.message.error("Validación", "El número de documento debe de ser un número");
+            return;
+        };
+
+        if ($txtTelefono.val() == "" && $txtCorreo.val() == "") {
+            app.message.error("Validación", "Debe de tener por lo menos un medio de contacto, ingresar teléfono o email.");
+            return;
+        };
+
+        if (!app.validarEmail($txtCorreo.val().trim()) && $txtCorreo.val() != "") {
+            app.message.error("Validación", "El formato del correo es inválido");
+            return;
+        };
+
+        if ($txtZona.val() == "") {
+            app.message.error("Validación", "Debe de ingresar la zona");
+            return;
+        };
+
+
+        var method = "POST";
+        var url = "BandejaEmpleados/MantenimientoEmpleados";
+
+        var objParam = {
+            TipoMantenimiento: '1',
+            CodigoEmpleado: 0,
+            NombresEmpleado: $txtNombreTecnico.val().trim(), //agregar campo para nombres
+            ApellidoPaternoEmpleado: $txtApellidoPaternoTec.val().trim(), //agregar campo para apellido paterno
+            ApellidoMaternoEmpleado: $txtApellidoMaternoTec.val().trim(), //agregar campo para apellido materno
+            Cargo: {
+                CodigoCargo: 8,//Técnico
+                Area: {
+                    CodigoArea: ""
+                }
+            },
+            FechaNacimiento: null,
+            LugarLaboral: {
+                UbigeoId: $txtCodUbicacion.val(),
+            },
+            TelefonoEmpleado: $txtTelefono.val(),
+            EmailEmpleado: $txtCorreo.val(),
+            DireccionEmpleado: "",
+            SexoEmpleado: "",
+            Documento: {
+                Parametro: $cmbTipoCredencial.val(),
+            },
+            NumeroDocumento: $txtNumDocumento.val(),
+            Empresa: {
+                CodValor1: null,
+            },
+            CodigoJefe: "",
+            FechaIngreso: "",
+            TipoEmpleado: "E",
+            Estado: 1,
+            FechaRegistroFormat: null,
+            UsuarioRegistro: null
+        }
+        var objEmpleado = JSON.stringify(objParam);
+
+        var fnDoneCallback = function (data) {
+            if (data.Result.Codigo > 0) {
+                app.message.success("Éxito", "Se realizó la creación del técnico satisfactoriamente.");
+                $añadirTecnico.modal('toggle');
+            }
+            else {
+                app.message.error("Validación", data.Result.Mensaje);
+            }
+
+        };
+        var fnFailCallback = function (data) {
+            app.message.error("Error", data.Result.Mensaje);
+        };
+
+        app.llamarAjax(method, url, objEmpleado, fnDoneCallback, fnFailCallback, null, null);
+    };
+
+
+    function logicUbigeo() {
+        $cmbProvincia.val('').trigger("change");
+        $cmbDistrito.val('').trigger("change");
+        $cmbProvincia.prop("disabled", true);
+        $cmbDistrito.prop("disabled", true);
+        getDepartamentos();
+        
+    }
+
+    function getDepartamentos() {
+        var method = "POST";
+        var url = "Ubigeo/ObtenerUbigeo";
+        var ubigeoObj = {}
+
+        var objParam = JSON.stringify(ubigeoObj);
+        var fnDoneCallback = function (data) {
+
+            var resultado = { Result: [] };
+
+            var distritos = { Result: [] };
+            for (let i = 0; i < data.Result.length; i++) {
+                var departamento = {
+                    Id: data.Result[i].CodDepartamento,
+                    Text: data.Result[i].NombreDepartamento,
+                }
+                resultado.Result.push(departamento);
+            }
+
+            resultado.Result = resultado.Result.reduce((acumulador, itemActual) => {
+                // Verificar si el Id ya está en el acumulador
+                if (!acumulador.some(item => item.Id === itemActual.Id)) {
+                    acumulador.push(itemActual);
+                }
+                return acumulador;
+            }, []);
+            $cmbDepartamento.on('change', function () {
+                const codDepartamento = $(this).val();
+                const nomDepartamento = $('select[id="cmbDepartamento"] option:selected').text();
+                sessionStorage.setItem('nomDepartamento', `${nomDepartamento}`);
+                if (!codDepartamento === null || !codDepartamento === '') {
+                    $(this).prop('disabled', false);
+
+                } else {
+                    $cmbProvincia.prop('disabled', false);
+                    obtenerProvincia(codDepartamento, data); $cmbDepartamento
+                    $cmbDistrito.prop("disabled", true);
+                }
+                $cmbDistrito.val("").trigger("change");
+            });
+            var filters = {};
+            filters.placeholder = "-- Seleccione --";
+            filters.allowClear = false;
+            app.llenarCombo($cmbDepartamento, resultado, $modalZona, "", "<--Seleccione-->", filters);
+        }
+        var fnFailCallback = function () {
+            app.mensajes.error("Error", "No se ejecutó correctamente la carga de departamentos")
+        }
+        return app.llamarAjax(method, url, objParam, fnDoneCallback, fnFailCallback, null, mensajes.procesandoUbigeo)
+
+    }
+    function obtenerProvincia(codDepartamento, data) {
+        var provincias = { Result: [] };
+        for (let i = 0; i < data.Result.length; i++) {
+            var provincia = {
+                Id: data.Result[i].CodProvincia,
+                Text: data.Result[i].NombreProvincia,
+            }
+            provincias.Result.push(provincia);
+
+        }
+        provincias.Result = provincias.Result.reduce((acumulador, itemActual) => {
+            const isDuplicate = acumulador.some(item => item.Id === itemActual.Id);
+            const startsWithCodDepartamento = itemActual.Id.startsWith(codDepartamento);
+            if (!isDuplicate && startsWithCodDepartamento) {
+                acumulador.push(itemActual);
+            }
+            return acumulador;
+        }, []);
+        $cmbProvincia.on('change', function () {
+            const codProvincia = $(this).val();
+            const nomProvincia = $('select[id="cmbProvincia"] option:selected').text();
+            sessionStorage.setItem('nomProvincia', `${nomProvincia}`);
+
+            if (!codProvincia === null || !codProvincia === '') {
+                $(this).prop('disabled', false);
+
+            } else {
+                $cmbProvincia.prop('disabled', false);
+                $cmbDistrito.prop('disabled', false)
+                obtenerDistrito(codProvincia, data);
+            }
+        });
+
+        var filters = {};
+        filters.placeholder = "-- Seleccione --";
+        filters.allowClear = false;
+        app.llenarCombo($cmbProvincia, provincias, $modalZona, "", "<--Seleccione-->", filters)
+    }
+
+    function obtenerDistrito(codProvincia, data) {
+        var distritos = { Result: [] };
+        for (let i = 0; i < data.Result.length; i++) {
+            var distrito = {
+                Id: data.Result[i].UbigeoId,
+                Text: data.Result[i].NombreDistrito,
+            }
+            distritos.Result.push(distrito);
+
+        }
+        distritos.Result = distritos.Result.reduce((acumulador, itemActual) => {
+            const isDuplicate = acumulador.some(item => item.Id === itemActual.Id);
+            const startsWithCodProvincia = itemActual.Id.startsWith(codProvincia);
+            if (!isDuplicate && startsWithCodProvincia) {
+                acumulador.push(itemActual);
+            }
+            return acumulador;
+        }, []);
+
+        $cmbDistrito.on('change', function () {
+            const codDistrito = $(this).val();
+            const nombreDistrito = $('select[id="cmbDistrito"] option:selected').text();
+            sessionStorage.setItem('codDistrito', `${codDistrito}`);
+            sessionStorage.setItem('nombreDistrito', `${nombreDistrito}`);
+            $txtCodUbicacion.val(codDistrito);
+        });
+
+
+        var filters = {};
+        filters.placeholder = "-- Seleccione --";
+        filters.allowClear = false;
+        app.llenarCombo($cmbDistrito, distritos, $modalZona, "", "<--Seleccione-->", filters)
+    }
+
+
+    function AgregarTecnicoExterno() {
+        limpiarAsignacionTecnicos();
+        $txtTipoTecnico.val("Externo");
+        $hdnTipoEmpleado.val("E");
+    };
+
+    function limpiarAsignacionTecnicos() {
+        $txtNombreTecnico.val("");
+        $txtApellidoPaternoTec.val("");
+        $txtApellidoMaternoTec.val("");
+        $txtNumDocumento.val("");
+        $txtTelefono.val("");
+        $txtCorreo.val("");
+        $txtZona.val("");
+        $hdnIdTecnico.val("");
+       // $cmbDepartamento.val("").trigger('change.select2');
+        $cmbProvincia.val("").trigger('change.select2');
+        $cmbDistrito.val("").trigger('change.select2');
+    };
+
+    function BuscarTecnicosClick() {
+        $cmbTipDocTecnico.val("").trigger("change");
+        $txtNumDocTec.val('');
+        $cmbTipoEmpleado.val(0).trigger("change");
+        $txtNombres.val('');
+        $txtApePat.val('');
+        $txtApeMat.val('');
+        BuscarTecnicos();
+    }
+
+    function BuscarTecnicos() {
+        var method = "POST";
+        var url = "BandejaGarantia/ObtenerTecnico"
+        var objTecnico = {
+            CodigoEmpleado: 0,
+            NombreEmpleado: $txtNombres.val() == null ? "" : $txtNombres.val().trim(),
+            ApellidoPaternoEmpleado: $txtApePat.val() == null ? "" : $txtApePat.val().trim(),
+            ApellidoMaternoEmpleado: $txtApeMat.val() == null ? "" : $txtApeMat.val().trim(),
+            CodigoCargo: 8,//-->8 es Técnico
+            TipoDocumento: $cmbTipDocTecnico.val(),
+            TipoEmpleado: $cmbTipoEmpleado.val() == 0 ? "" : $cmbTipoEmpleado.val(),
+            NumeroDocumento: $txtNumDocTec.val() == null ? "" : $txtNumDocTec.val(),
+            Estado: 1,
+            FechaInicio: "",
+            FechaFinal: ""
+        };
+
+        var objParam = JSON.stringify(objTecnico);
+
+        var fnDoneCallBack = function (data) {
+            //limpiarAsignacionTecnicos();
+            cargarBandejaTecnicos(data);
+        };
+
+        var fnFailCallBack = function () {
+            app.message.error("Validación", "Error al cargar la bandeja de técnicos.");
+            cargarBandejaTecnicos()
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+    }
+
+    function cargarBandejaTecnicos(data) {
+        var columns = [
+            {
+                data: "CodigoEmpleado",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "NumeroDocumento",
+                render: function (data, type, row) {
+                    if (data == "" || data == null) {
+                        return '<center>No definido</center>';
+                    } else {
+                        return '<center>' + data + '</center>';
+                    }
+                }
+            },
+            {
+                data: "Documento.Descripcion",
+                render: function (data, type, row) {
+                    if (data == "" || data == null) {
+                        return '<center>No definido</center>';
+                    } else {
+                        return '<center>' + data + '</center>';
+                    }
+                }
+            },
+            {
+                data: "NombresCompletosEmpleado",
+                render: function (data, type, row) {
+                    if (data == "") {
+                        return '<center>No definido</center>';
+                    } else {
+                        return '<center>' + data + '</center>';
+                    }
+                }
+            },
+            {
+                data: "TelefonoEmpleado",
+                render: function (data, type, row) {
+                    if (data == "") {
+                        return '<center>No definido</center>';
+                    } else {
+                        return '<center>' + data + '</center>';
+                    }
+                }
+            },
+            {
+                data: "EmailEmpleado",
+                render: function (data, type, row) {
+                    if (data == "") {
+                        return '<center>No definido</center>';
+                    } else {
+                        return '<center>' + data + '</center>';
+                    }
+                }
+            },
+            {
+                data: "LugarLaboral.UbigeoId",
+                render: function (data, type, row) {
+                    var zona = row.LugarLaboral.NombreDepartamento + '/' + row.LugarLaboral.NombreProvincia + '/' + row.LugarLaboral.NombreDistrito;
+                    return '<center>' + zona + '</center>'
+                }
+            },
+            {
+                data: "TipoEmpleado",
+                render: function (data, type, row) {
+                    if (data == "") {
+                        return '<center>No definido</center>';
+                    } else {
+                        return '<center>' + data + '</center>';
+                    }
+                }
+            },
+            {
+                data: "CodigoEmpleado",
+                render: function (data, type, row) {
+                    var d = "'" + row.CodigoEmpleado + "','" + row.NombresCompletosEmpleado + "','" + row.Empresa.Valor1 + "'";
+                    var seleccionar = '<a id="btnSeleccionarTecnico" class="btn btn-default btn-xs" title="Seleccionar"><i class="fa fa-level-down" aria-hidden="true"></i> Seleccionar</a>';
+                    return '<center>' + seleccionar + '</center>';
+                }
+            }
+        ]
+        var columnDefs = [
+            {
+                targets: [0],
+                visible: false
+            }
+        ]
+
+        var filters = {};
+        filters.dataTablePageLength = 5;
+        filters.dataTableInfo = true;
+
+        app.llenarTabla($tblTecnicos, data, columns, columnDefs, "#tblTecnicos", null, null, filters);
+    }
 
     function cargarGrillaCotDetServicios(opc) {
         
@@ -1369,6 +2045,9 @@
 
                         return app.llamarAjax(m2, url2, objParam2, fnDoneCallback2, null, null, mensajes.RegistrarGestionVenta);
                     }
+                    else {
+                        location.reload();
+                    }
                 };
                 if (data.Result.Codigo > 0) {
                     app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
@@ -1586,6 +2265,9 @@
             app.llenarComboMultiResult($cmbempresa, data.Result.Empresas, null, "", "", filters);
             app.llenarComboMultiResult($cmbTipoVenta, data.Result.TipoVenta, null, "", "", filters);
             app.llenarComboMultiResult($cmbTipoDocumentoCarga, data.Result.TipoDocumento, null, 0, "-- Seleccione --", filters);
+            app.llenarComboMultiResult($cmbTipDocTecnico, data.Result.TipoDocumentoTecnico, null, 0, "-- Seleccione --", filters);
+            app.llenarComboMultiResult($cmbTipoEmpleado, data.Result.TipoEmpleado, null, 0, "-- Seleccione --", filters);
+            app.llenarComboMultiResult($cmbTipoCredencial, data.Result.TipoDocumentoTecnico, "", 0, "", false);
 
             if (rol == "SGI_VENTA_COORDINASERV" || rol == "SGI_VENTA_COORDINAATC" || rol == "SGI_VENTA_ASESOR") {
                 $cmbFlujo.val(codFlujo).trigger("change.select2");
@@ -1729,6 +2411,30 @@
                     }
                 }
 
+                if (data.Result.TecnicosDespacho.length > 0) {
+
+                    for (i = 0; i < data.Result.TecnicosDespacho.length; i++) {
+                        tecnicosAsig.push({
+                            Cod_Tecnico: data.Result.TecnicosDespacho[i].Cod_Tecnico,
+                            TipoDoc: data.Result.TecnicosDespacho[i].Nom_TipDocumento,
+                            Documento: data.Result.TecnicosDespacho[i].Documento,
+                            Tipo_Documento: "",
+                            Nombres: data.Result.TecnicosDespacho[i].NombreTecnico,
+                            ApePaterno: data.Result.TecnicosDespacho[i].ApellidoPaterno,
+                            ApeMaterno: data.Result.TecnicosDespacho[i].ApellidoMaterno,
+                            NombreCompleto: data.Result.TecnicosDespacho[i].NombreTecnico + " " + data.Result.TecnicosDespacho[i].ApellidoPaterno + " " + data.Result.TecnicosDespacho[i].ApellidoMaterno,
+                            TipoTecnico: data.Result.TecnicosDespacho[i].TipoTecnico,
+                            Telefono: data.Result.TecnicosDespacho[i].Telefono,
+                            Correo: data.Result.TecnicosDespacho[i].Correo,
+                            Empresa: data.Result.TecnicosDespacho[i].Empresa,
+                            Zona: data.Result.TecnicosDespacho[i].Zona,
+                            DescZona: "",
+                            Estado: data.Result.TecnicosDespacho[i].Estado
+                        });
+                    }
+                    
+                    cargarTablaMainTecnicos(tecnicosAsig);
+                }
 
 
                 cotvtadet.RecargarFiltroFamilia();
@@ -3306,6 +4012,7 @@
         quitarItemServ: quitarItemServ,
         editarItemServ: editarItemServ,
         eliminarDetServ: eliminarDetServ,
-        editarDetServ: editarDetServ
+        editarDetServ: editarDetServ,
+        DesasignarTecnico: DesasignarTecnico,
     }
 })(window.jQuery, window, document);

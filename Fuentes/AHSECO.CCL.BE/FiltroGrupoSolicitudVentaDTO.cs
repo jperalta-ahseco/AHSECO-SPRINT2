@@ -1,4 +1,5 @@
-﻿using AHSECO.CCL.BE.Ventas;
+﻿using AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica;
+using AHSECO.CCL.BE.Ventas;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,8 @@ namespace AHSECO.CCL.BE
         public List<ComboDTO> Empresas { get; set; }
         public List<ComboDTO> TipoVenta { get; set; }
         public List<ComboDTO> TipoDocumento { get; set; }
+        public List<ComboDTO> TipoDocumentoTecnico { get; set; }
+        public List<ComboDTO> TipoEmpleado { get; set; }
         //Para traer la informacion a pintar de la solicitud de ventas:
         public SolicitudDTO Solicitud { get; set; }
         public List<DocumentoDTO> Adjuntos { get; set; }
@@ -29,6 +32,7 @@ namespace AHSECO.CCL.BE
         public List<DetalleDespachoDTO> DespachoDetalleConStock { get; set; }
         public CabeceraDespachoDTO DespachoCabeceraSinStock { get; set; }
         public List<DetalleDespachoDTO> DespachoDetalleSinStock { get; set; }
+        public List<TecnicoInstalacionDTO> TecnicosDespacho { get; set; }
 
     }
 }
