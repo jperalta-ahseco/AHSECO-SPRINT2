@@ -2,6 +2,7 @@
 using AHSECO.CCL.BD.Ventas;
 using AHSECO.CCL.BE;
 using AHSECO.CCL.BE.Mantenimiento;
+using AHSECO.CCL.BE.ServicioTecnico.BandejaGarantias;
 using AHSECO.CCL.BE.Ventas;
 using AHSECO.CCL.COMUN;
 using System;
@@ -403,6 +404,21 @@ namespace AHSECO.CCL.BL.Ventas
             {
                 Log.TraceError(Utilidades.GetCaller() + ":: " + ex.Message);
                 return new ResponseDTO<IEnumerable<ClienteDTO>>(ex);
+            };
+        }
+
+        public ResponseDTO<RespuestaDTO> MantTecnicosDespacho(TecnicoGarantiaDTO tecnico)
+        {
+            try
+            {
+                var result = Repository.MantTecnicosDespacho(tecnico);
+
+                return new ResponseDTO<RespuestaDTO>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + ":: " + ex.Message);
+                return new ResponseDTO<RespuestaDTO>(ex);
             };
         }
 

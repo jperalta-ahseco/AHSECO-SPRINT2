@@ -679,6 +679,13 @@
                                                     <li class="" id="tabSinStock" style="@(ViewBag.VerNavSinStock ? "":"display:none");">
                                                         <a href="#navSinStock" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="221"><i class="fa fa-wrench" aria-hidden="true"></i> Sin Stock</a>
                                                     </li>
+                                                    @if (tipoSol == "TSOL01" || tipoSol == "TSOL03") 
+                                                    {
+                                                        <li class="" id="tabTecnicos">
+                                                            <a href = "#navTecnicos" data-toggle="tab" style="font-weight: bold; color: #158304;" tabindex="21"><i class="fa fa-users" aria-hidden="true"></i><i class="fa fa-wrench" aria-hidden="true"></i> Tecnicos</a>
+                                                        </li>
+                                                    }
+                                                       
                                                 </ul>
                                                 <div class="tab-content">
                                                     <div id="navConStock" class="tab-pane fade in active" style="@(ViewBag.VerNavConStock ? "":"display:none");">
@@ -820,6 +827,39 @@
                                                             </div>
                                                         </div>
 
+                                                    </div>
+                                                    <div id="navTecnicos" class="tab-pane fade">
+                                                        <br />
+                                                        <form id="formRegistroTecnico" class="d-flex flex-row">
+                                                            <div class="row container-fluid d-flex justify-content-center">
+                                                                <div class="text-right">
+                                                                        <button class="btn btn-default btn-sm" type="button" id="btnBuscarTecnicos" data-target="#modalBusquedaTecnico" data-toggle="modal"><i class="fa fa-search"></i> Buscar Técnicos</button>
+                                                                        <span id="hidden_fields"></span>
+                                                                        <button class="btn btn-primary btn-sm" type="button" id="btnAñadirTecnico" data-toggle="modal" data-target="#añadirTecnico"><i class="fa fa-plus"></i> Crear Técnico Externo</button>
+                                                                </div>
+                                                                <br />
+                                                                <div class="table-responsive">
+                                                                    <table id="tblMainTecnicos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th>Id</th>
+                                                                                <th style="text-align: center; width:10%">Tip. de Doc.</th>
+                                                                                <th style="text-align: center; width:10%">N&uacute;m. de Doc.</th>
+                                                                                <th style="text-align: center; width:20%">Nombres y Apellidos</th>
+                                                                                <th style="text-align: center; width:15%">Tel&eacute;fono</th>
+                                                                                <th style="text-align: center; width:15%;">Correo</th>
+                                                                                <th style="text-align: center; width:15%;">Empresa</th>
+                                                                                <th style="text-align: center; width:50%;"><center>Acciones</center></th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody id="tbodyTecnicos">
+                                                                        </tbody>
+                                                                        <tr id="NoExisteTec"><td colspan="11" style="text-align:center"> No se han añadido técnicos</td></tr>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                            <br />
+                                                        </form>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1007,6 +1047,24 @@
 <div class="modal fade" id="modalDetalleServicio" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     @{
         Html.RenderPartial("_DetalleServicio");
+    }
+</div>
+
+<div class="modal fade" id="modalBusquedaTecnico" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_BuscarTecnico");
+    }
+</div>
+
+<div class="modal fade" id="añadirTecnico" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_AsignacionTecnico");
+    }
+</div>
+
+<div class="modal fade" id="modalZona" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_Ubigeo");
     }
 </div>
 

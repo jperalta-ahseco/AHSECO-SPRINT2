@@ -1,5 +1,7 @@
 ﻿using AHSECO.CCL.BE;
 using AHSECO.CCL.BE.Mantenimiento;
+using AHSECO.CCL.BE.ServicioTecnico.BandejaGarantias;
+using AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica;
 using AHSECO.CCL.BE.Ventas;
 using AHSECO.CCL.COMUN;
 using Dapper;
@@ -1014,6 +1016,30 @@ namespace AHSECO.CCL.BD.Ventas
                     };
 
                     reader.NextResult();
+                    List<ComboDTO> _tipoDocumentoTecnico = new List<ComboDTO>();
+                    while (reader.Read())
+                    {
+                        var docTec = new ComboDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("CODIGO")) ? "" : reader.GetString(reader.GetOrdinal("CODIGO")),
+                            Text = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION"))
+                        };
+                        _tipoDocumentoTecnico.Add(docTec);
+                    };
+
+                    reader.NextResult();
+                    List<ComboDTO> _tipoEmpleado = new List<ComboDTO>();
+                    while (reader.Read())
+                    {
+                        var Tipoempleado = new ComboDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("COD_VALOR1")) ? "" : reader.GetString(reader.GetOrdinal("COD_VALOR1")),
+                            Text = reader.IsDBNull(reader.GetOrdinal("VALOR1")) ? "" : reader.GetString(reader.GetOrdinal("VALOR1"))
+                        };
+                        _tipoEmpleado.Add(Tipoempleado);
+                    };
+
+                    reader.NextResult();
                     SolicitudDTO solicitud = null;
                     if (reader.HasRows)
                     {
@@ -1237,6 +1263,34 @@ namespace AHSECO.CCL.BD.Ventas
                         };
                     }
 
+                    reader.NextResult();
+
+                    List<TecnicoInstalacionDTO> _listaTecnicosDespacho = new List<TecnicoInstalacionDTO>();
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            var tecnicoDespacho = new TecnicoInstalacionDTO()
+                            {
+                                Id = reader.IsDBNull(reader.GetOrdinal("ID")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID")),
+                                Id_Detalle = reader.IsDBNull(reader.GetOrdinal("ID_DESPACHO")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_DESPACHO")),
+                                Cod_Tecnico = reader.IsDBNull(reader.GetOrdinal("COD_TECNICO")) ? 0 : reader.GetInt32(reader.GetOrdinal("COD_TECNICO")),
+                                NombreTecnico = reader.IsDBNull(reader.GetOrdinal("NOMBRES")) ? "" : reader.GetString(reader.GetOrdinal("NOMBRES")),
+                                ApellidoPaterno = reader.IsDBNull(reader.GetOrdinal("APELLIDOPATERNO")) ? "" : reader.GetString(reader.GetOrdinal("APELLIDOPATERNO")),
+                                ApellidoMaterno = reader.IsDBNull(reader.GetOrdinal("APELLIDOMATERNO")) ? "" : reader.GetString(reader.GetOrdinal("APELLIDOMATERNO")),
+                                Documento = reader.IsDBNull(reader.GetOrdinal("DOCUMENTO")) ? "" : reader.GetString(reader.GetOrdinal("DOCUMENTO")),
+                                Nom_TipDocumento = reader.IsDBNull(reader.GetOrdinal("NOMTIPODOC")) ? "" : reader.GetString(reader.GetOrdinal("NOMTIPODOC")),
+                                Correo = reader.IsDBNull(reader.GetOrdinal("CORREO")) ? "" : reader.GetString(reader.GetOrdinal("CORREO")),
+                                Telefono = reader.IsDBNull(reader.GetOrdinal("TELEFONO")) ? "" : reader.GetString(reader.GetOrdinal("TELEFONO")),
+                                Zona = reader.IsDBNull(reader.GetOrdinal("ZONA")) ? "" : reader.GetString(reader.GetOrdinal("ZONA")),
+                                Empresa = reader.IsDBNull(reader.GetOrdinal("EMPRESA")) ? "" : reader.GetString(reader.GetOrdinal("EMPRESA")),
+                                TipoTecnico = reader.IsDBNull(reader.GetOrdinal("TIPOTECNICO")) ? "" : reader.GetString(reader.GetOrdinal("TIPOTECNICO")),
+                                Estado = reader.IsDBNull(reader.GetOrdinal("ESTADO")) ? false : reader.GetBoolean(reader.GetOrdinal("ESTADO"))
+                            };
+                            _listaTecnicosDespacho.Add(tecnicoDespacho);
+                        };
+                    }
+
                     result.Flujos = _flujos;
                     result.TipoSol = _tipoSol;
                     result.MedioContacto = _medioContacto;
@@ -1246,6 +1300,8 @@ namespace AHSECO.CCL.BD.Ventas
                     result.Empresas = _empresas;
                     result.TipoVenta = _tipoVenta;
                     result.TipoDocumento = _tipoDocumento;
+                    result.TipoDocumentoTecnico = _tipoDocumentoTecnico;
+                    result.TipoEmpleado = _tipoEmpleado;
                     result.Solicitud = solicitud;
                     result.Adjuntos = _listaAdjuntos;
                     result.Observaciones = _listaObservaciones;
@@ -1255,6 +1311,7 @@ namespace AHSECO.CCL.BD.Ventas
                     result.DespachoDetalleConStock = _listaDetalleDespachoconStock;
                     result.DespachoCabeceraSinStock = cabeceraDespachosinStock;
                     result.DespachoDetalleSinStock = _listaDetalleDespachosinStock;
+                    result.TecnicosDespacho = _listaTecnicosDespacho;
                 };
                 return result;
             };
@@ -1909,6 +1966,47 @@ namespace AHSECO.CCL.BD.Ventas
                             NombresCompletosEmpleado = i.Single(d => d.Key.Equals("ASESOR")).Value.Parse<string>()
                         }
                     });
+
+                connection.Close();
+
+                return result;
+            }
+        }
+
+        public RespuestaDTO MantTecnicosDespacho(TecnicoGarantiaDTO tecnico)
+        {
+            using (var connection = Factory.ConnectionFactory())
+            {
+                var parameters = new DynamicParameters();
+                connection.Open();
+
+                parameters.Add("TIPO", tecnico.TipoProceso);
+                parameters.Add("ID", tecnico.Id_Asig);
+                parameters.Add("ID_SOLICITUD", tecnico.Id_Reclamo);
+                parameters.Add("COD_TECNICO", tecnico.Cod_Tecnico);
+                parameters.Add("NOMBRE", tecnico.Nombres);
+                parameters.Add("APELLIDOPATERNO", tecnico.ApePaterno);
+                parameters.Add("APELLIDOMATERNO", tecnico.ApeMaterno);
+                parameters.Add("DOCUMENTO", tecnico.Documento);
+                parameters.Add("TIPODOCUMENTO", tecnico.Tipo_Documento);
+                parameters.Add("CORREO", tecnico.Correo);
+                parameters.Add("TELEFONO", tecnico.Telefono);
+                parameters.Add("ZONA", tecnico.Zona);
+                parameters.Add("EMPRESA", tecnico.Empresa);
+                parameters.Add("TIPOTECNICO", tecnico.TipoTecnico);
+                parameters.Add("ESTADO", tecnico.Estado);
+                parameters.Add("USR_REG", tecnico.UsuarioRegistra);
+
+                var result = connection.Query(
+                    sql: "USP_MANT_TECNICOS_DESPACHO",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new RespuestaDTO
+                    {
+                        Codigo = i.Single(d => d.Key.Equals("COD")).Value.Parse<int>(),
+                        Mensaje = i.Single(d => d.Key.Equals("MSG")).Value.Parse<string>()
+                    }).FirstOrDefault();
 
                 connection.Close();
 

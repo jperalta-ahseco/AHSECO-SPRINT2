@@ -28,6 +28,7 @@ using NPOI.Util;
 using System.IdentityModel.Claims;
 using AHSECO.CCL.BL.ServicioTecnico.BandejaInstalacionTecnica;
 using Microsoft.Ajax.Utilities;
+using AHSECO.CCL.BE.ServicioTecnico.BandejaGarantias;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 {
@@ -3947,6 +3948,15 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 return Json(new ResponseDTO<CotizacionDetalleDTO>(itemCotDet));
             }
             catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
+        }
+
+        [HttpPost]
+        public JsonResult MantTecnicosDespacho(TecnicoGarantiaDTO tecnico)
+        {
+            var ventasBL = new VentasBL();
+            tecnico.UsuarioRegistra = User.ObtenerUsuario();
+            var response = ventasBL.MantTecnicosDespacho(tecnico);
+            return Json(response);
         }
 
     }
