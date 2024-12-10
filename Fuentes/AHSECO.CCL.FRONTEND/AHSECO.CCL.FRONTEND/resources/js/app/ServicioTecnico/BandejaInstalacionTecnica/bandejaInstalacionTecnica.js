@@ -20,7 +20,7 @@
     var $btnSeleccionar = $('#btnGuardarUbigeo');
     var $txtNumReq = $('#txtNumReq');
     var $txtNumProc = $('#txtNumProc');
-    var $txtNumContrato = $('#txtNumContrato');
+    var $txtTipProceso = $('#txtTipProceso');
     var $txtNumOrdCompra = $('#txtNumOrdCompra');
     var $txtNumFianza = $('#txtNumFianza');
     var $formInstallTec = $('#formInstallTec');
@@ -125,7 +125,7 @@
             CodEmpresa: $cmbempresa.val() == 0 ? "" : $cmbempresa.val(),
             TipoVenta: $cmbTipVenta.val() == "" ? "0" : $cmbTipVenta.val(),
             NroProceso: $txtNumProc.val(),
-            Contrato: $txtNumContrato.val(),
+            TipoProceso: $txtTipProceso.val(),
             OrdenCompra: $txtNumOrdCompra.val(),
             NumFianza: $txtNumFianza.val(),
         };
@@ -168,7 +168,7 @@
         $("<input>", { type: "hidden", name: "CodEmpresa", value: $cmbempresa.val() == 0 ? "" : $cmbempresa.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "TipoVenta", value: $cmbTipVenta.val() == "" ? "0" : $cmbTipVenta.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "NroProceso", value: $txtNumProc.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "Contrato", value: $txtNumContrato.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "Contrato", value: $txtTipProceso.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "OrdenCompra", value: $txtNumOrdCompra.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "NumFianza", value: $txtNumFianza.val() }).appendTo("#hidden_fields");
         $formInstallTec.attr('action', href);
@@ -532,7 +532,7 @@
                 }
             },
             {
-                data: "Contrato",
+                data: "TipoProcesoVenta",
                 render: function (data, type, row) {
                     return '<center>' + data + '</center>'
                 }

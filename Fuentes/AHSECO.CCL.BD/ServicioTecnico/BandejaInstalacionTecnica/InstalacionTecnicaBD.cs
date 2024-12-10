@@ -170,7 +170,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                 parameters.Add("IsCodEmpresa", filtros.CodEmpresa);
                 parameters.Add("IsTipVenta", filtros.TipoVenta);
                 parameters.Add("IsNumProceso", filtros.NroProceso);
-                parameters.Add("IsNumContrato", filtros.Contrato);
+                parameters.Add("IsTipoProcesoVenta", filtros.TipoProceso);
                 parameters.Add("IsNumOrdenCompra", filtros.OrdenCompra); //pendiente de añadir en ventas
                 parameters.Add("IsNumFianza", filtros.NumFianza);
 
@@ -201,7 +201,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                         FecRegFormat = i.Single(d => d.Key.Equals("FECREGISTRO")).Value.Parse<string>(),
                         OrdenCompra = i.Single(d => d.Key.Equals("ORDENCOMPRA")).Value.Parse<string>(),
                         NroProceso = i.Single(d => d.Key.Equals("NUMPROCESO")).Value.Parse<string>(),
-                        Contrato = i.Single(d => d.Key.Equals("CONTRATO")).Value.Parse<string>(),
+                        TipoProcesoVenta = i.Single(d => d.Key.Equals("TIPOPROCESO")).Value.Parse<string>(),
                     });
                 return result;
             };
@@ -339,7 +339,6 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                 parameters.Add("ORDENCOMPRA", instalacion.OrdenCompra);          //pendiente de crear en solicitud ventas
                 parameters.Add("NUMPROCESO", instalacion.NroProceso);
                 parameters.Add("TIPOPROCESO", instalacion.TipoProcesoVenta);
-                parameters.Add("CONTRATO", instalacion.Contrato);               //pendiente de crear en solicitud ventas
                 parameters.Add("VENDEDOR", instalacion.Vendedor);
                 parameters.Add("FECHAMAX", instalacion.FechaMax);
                 parameters.Add("DESTINO", instalacion.Destino);
@@ -728,7 +727,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                             NumSec = reader.IsDBNull(reader.GetOrdinal("NUMSEC")) ? 0 : reader.GetInt32(reader.GetOrdinal("NUMSEC")),
                             CantPreventivo = reader.IsDBNull(reader.GetOrdinal("CANTPREVENTIVO")) ? 0 : reader.GetInt32(reader.GetOrdinal("CANTPREVENTIVO")),
                             CodCicloPreventivo = reader.IsDBNull(reader.GetOrdinal("CODCICLOPREVENT")) ? "" : reader.GetString(reader.GetOrdinal("CODCICLOPREVENT")),
-                            CodUbigeoDestino = reader.IsDBNull(reader.GetOrdinal("CODUBIGEODEST")) ? "" : reader.GetString(reader.GetOrdinal("CODUBIGEODEST")),
+                            CodUbigeoDestino = reader.IsDBNull(reader.GetOrdinal("CODDEPARTAMENTO")) ? "" : reader.GetString(reader.GetOrdinal("CODDEPARTAMENTO")),
                             DescUbigeoDestino = reader.IsDBNull(reader.GetOrdinal("DESCUBIGEODEST")) ? "" : reader.GetString(reader.GetOrdinal("DESCUBIGEODEST")),
                             Direccion = reader.IsDBNull(reader.GetOrdinal("DIRECCION")) ? "" : reader.GetString(reader.GetOrdinal("DIRECCION")),
                             NroPiso = reader.IsDBNull(reader.GetOrdinal("NROPISO")) ? 0: reader.GetInt32(reader.GetOrdinal("NROPISO")),
@@ -771,7 +770,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                         ,OrdenCompra = reader.IsDBNull(reader.GetOrdinal("ORDENCOMPRA")) ? "" : reader.GetString(reader.GetOrdinal("ORDENCOMPRA"))
                         ,NroProceso = reader.IsDBNull(reader.GetOrdinal("NUMPROCESO")) ? "" : reader.GetString(reader.GetOrdinal("NUMPROCESO"))
                         ,TipoProceso = reader.IsDBNull(reader.GetOrdinal("TIPOPROCESO")) ? "" : reader.GetString(reader.GetOrdinal("TIPOPROCESO"))
-                        ,Contrato = reader.IsDBNull(reader.GetOrdinal("CONTRATO")) ? "" : reader.GetString(reader.GetOrdinal("CONTRATO"))
+                        //,Contrato = reader.IsDBNull(reader.GetOrdinal("CONTRATO")) ? "" : reader.GetString(reader.GetOrdinal("CONTRATO"))
                         ,TipoVenta = reader.IsDBNull(reader.GetOrdinal("CODTIPOVENTA")) ? "" : reader.GetString(reader.GetOrdinal("CODTIPOVENTA"))
                         ,Vendedor = reader.IsDBNull(reader.GetOrdinal("VENDEDOR")) ? "" : reader.GetString(reader.GetOrdinal("VENDEDOR"))
                         ,CodEmpresa = reader.IsDBNull(reader.GetOrdinal("CODEMPRESA")) ? "" : reader.GetString(reader.GetOrdinal("CODEMPRESA"))

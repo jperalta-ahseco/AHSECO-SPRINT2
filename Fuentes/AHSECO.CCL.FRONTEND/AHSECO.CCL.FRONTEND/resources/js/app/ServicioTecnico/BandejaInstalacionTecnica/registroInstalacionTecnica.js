@@ -700,7 +700,7 @@
         var fnDoneCallback = function (data) {
            
 
-            if (data.Result.Codigo > 0) {
+            if (data.Codigo > 0) {
                 $txtTecnico.val($txtNombreTecnico.val().trim() + ' ' + $txtApellidoPaternoTec.val().trim() + ' ' + $txtApellidoMaternoTec.val().trim());
                 $txtEmpresaTecnico.val("");
                 $txtEmpresaTecnico.prop('disabled', false);
@@ -709,11 +709,11 @@
                 $modalAsignacion.modal('toggle');
             }
             else {
-                app.message.error("Validación", data.Result.Mensaje);
+                app.message.error("Validación", data.Mensaje);
             }
         };
         var fnFailCallback = function () {
-            app.message.error("Error", data.Result.Mensaje);
+            app.message.error("Error", data.Mensaje);
         };
 
         app.llamarAjax(method, url, objEmpleado, fnDoneCallback, fnFailCallback, null, null);
@@ -902,30 +902,43 @@
             //$cmbDestino.val("00");
             cargarCabecera(data.Result.Solicitud)
 
+            var arrayDep = [];
+
+            for (var i = 0; i < data.Result.ElementosDeProducto.length; i++) {
+
+                if (!arrayDep.includes(data.Result.ElementosDeProducto[i].CodUbigeoDestino)) {
+                    arrayDep.push(data.Result.ElementosDeProducto[i].CodUbigeoDestino);
+                };
+            };
+
+            destinos_select = arrayDep;
+            $cmbDestino.val(destinos_select).trigger('change.select2');
+
             for (var i = 0; i < data.Result.DetalleCotizacion.length; i++) {
                 var elementos = data.Result.ElementosDeProducto.filter(elemento => elemento.Id_Detalle == data.Result.DetalleCotizacion[i].Id);
 
-                    productos.push({
-                        Id: data.Result.DetalleCotizacion[i].Id,
-                        CodProducto: data.Result.DetalleCotizacion[i].CodItem,
-                        DescProducto: data.Result.DetalleCotizacion[i].Descripcion,
-                        Marca: data.Result.DetalleCotizacion[i].Marca,
-                        Cantidad: data.Result.DetalleCotizacion[i].Cantidad,
-                        IndFianza: data.Result.DetalleCotizacion[i].IndFianza,
-                        NumFianza: data.Result.DetalleCotizacion[i].NumFianza,
-                        //IndLLaveMano: data.Result.DetalleCotizacion[i].IndLLaveMano,
-                        Dimensiones: data.Result.DetalleCotizacion[i].Dimensiones,
-                        MontoPrestAcc: data.Result.DetalleCotizacion[i].MontoPrestAcc,
-                        MontoPrestPrin: data.Result.DetalleCotizacion[i].MontoPrestPrin,
-                        NumInstalados: data.Result.DetalleCotizacion[i].NumInstalados,
-                        NumProgramados: data.Result.DetalleCotizacion[i].NumProgramados,
-                        //FecLimInsta: app.obtenerFecha(data.Result.DetalleCotizacion[i].FecLimInsta),
-                        Elementos : elementos
-                })
+                productos.push({
+                    Id: data.Result.DetalleCotizacion[i].Id,
+                    CodProducto: data.Result.DetalleCotizacion[i].CodItem,
+                    DescProducto: data.Result.DetalleCotizacion[i].Descripcion,
+                    Marca: data.Result.DetalleCotizacion[i].Marca,
+                    Cantidad: data.Result.DetalleCotizacion[i].Cantidad,
+                    IndFianza: data.Result.DetalleCotizacion[i].IndFianza,
+                    NumFianza: data.Result.DetalleCotizacion[i].NumFianza,
+                    //IndLLaveMano: data.Result.DetalleCotizacion[i].IndLLaveMano,
+                    Dimensiones: data.Result.DetalleCotizacion[i].Dimensiones,
+                    MontoPrestAcc: data.Result.DetalleCotizacion[i].MontoPrestAcc,
+                    MontoPrestPrin: data.Result.DetalleCotizacion[i].MontoPrestPrin,
+                    NumInstalados: data.Result.DetalleCotizacion[i].NumInstalados,
+                    NumProgramados: data.Result.DetalleCotizacion[i].NumProgramados,
+                    //FecLimInsta: app.obtenerFecha(data.Result.DetalleCotizacion[i].FecLimInsta),
+                    Elementos: elementos
+                });
+
             };
             cargarBandejaProductos(productos);
             $modalSolicitud.modal('toggle');
-            $cmbDestino.prop('disabled', false);
+            //$cmbDestino.prop('disabled', false);
             //$dateSolicitud.prop('disabled', false);
         };
 
@@ -1238,6 +1251,14 @@
     function guardarFechaProgramacion(id) {
         /*Al guardar alguna fecha se restablecen las demás fechas para no generar inconsistencias*/
 
+        for (var i = 0; i < productos.length; i++) {
+            for (var j = 0; j < productos[i].Elementos.length; j++) {
+                if (productos[i].Elementos[j].Id == id) {
+                    $('#dateFechaInstalacion' + productos[i].Elementos[j].Id).val(productos[i].Elementos[j].FechaInstalacion);
+                };
+            };
+        };
+
         var date = new Date();
         var dia = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
         var mesActual = (date.getMonth() + 1);
@@ -1262,10 +1283,6 @@
         if (fechaProgramacion < fechahoy) {
             app.message.error("Validación", "La Fecha de Programación no puede ser menor a la fecha actual");
             return;
-        };
-
-        for (var i = 0; i < productos.length; i++) {
-            $('#dateFechaInstalacion' + productos[i].Id).val(productos[i].FechaInstalacion);
         };
 
         if (fechaProgramacion == "" || fechaProgramacion == null) {
@@ -1335,8 +1352,6 @@
 
     function guardarFechaInstalacion(id) {
         /*Al guardar alguna fecha se restablecen las demás fechas para no generar inconsistencias*/
-        var fechaProgramacion = $('#dateFechaProgramacion' + id).val();
-        var fechaInstalacion = $('#dateFechaInstalacion' + id).val();
 
         for (var i = 0; i < productos.length; i++) {
             for (var j = 0; j < productos[i].Elementos.length; j++) {
@@ -1347,6 +1362,7 @@
         };
 
         var fecha = $('#dateFechaInstalacion' + id).val();
+        var fechaProgramacion = $('#dateFechaProgramacion' + id).val();
 
         if (fecha.length > 10) {
             app.message.error("Validación", "Formato de fecha incorrecta, por favor rectifique.");
@@ -1383,7 +1399,7 @@
             TipoProceso: "F",
             Id: idDespacho,
             FechaProgramacion: fechaProgramacion,
-            FechaInstalacion: fechaInstalacion,
+            FechaInstalacion: fecha,
             CodTecnico: 0,
             Empresa: " "
         };
@@ -1858,7 +1874,7 @@
 
         var nombre = documento.NombreDocumento;
 
-        app.abrirVentana("BandejaInstalacionTecnica/DescargarFile?url=" + ruta + "&nombreDoc=" + nombre);
+        app.redirectTo("BandejaInstalacionTecnica/DescargarFile?url=" + ruta + "&nombreDoc=" + nombre);
     }
 
     function cargarTablaSolicitudes(data) {
@@ -2693,13 +2709,16 @@
 
         var objParam = JSON.stringify(objReq);
 
-        var fnDoneCallBack = function () {
-            crearMantPrevent();
-        };
-        var fnFailCallBack = function () {
-            app.message.error("Validación", "Se presentó un problema al realizar el cambio de estado, por favor revisar.");
-        };
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+        var fnSi = function () {
+            var fnDoneCallBack = function () {
+                crearMantPrevent();
+            };
+            var fnFailCallBack = function () {
+                app.message.error("Validación", "Se presentó un problema al realizar el cambio de estado, por favor revisar.");
+            };
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+        }
+        return app.message.confirm("Confirmación", "¿Desea cerrar el requerimiento?", "Sí", "No", fnSi, null);
     };
 
     return {

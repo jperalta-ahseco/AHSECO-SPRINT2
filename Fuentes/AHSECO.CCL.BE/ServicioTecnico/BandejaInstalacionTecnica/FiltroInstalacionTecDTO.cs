@@ -11,6 +11,7 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica
         public string RucEmpresa { get; set; }
         public string OrdenCompra { get; set; }
         public string NroProceso { get; set; }
+        public string TipoProceso { get; set; }
         public string Contrato { get; set; }
         public string Vendedor { get; set; }
         public string CodEmpresa { get; set; }

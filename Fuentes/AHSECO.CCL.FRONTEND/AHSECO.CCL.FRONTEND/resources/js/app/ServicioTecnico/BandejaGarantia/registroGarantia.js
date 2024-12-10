@@ -1207,7 +1207,6 @@
 
             var fnSi = function () {
                 var fnDoneCallBack = function (data) {
-                    app.message.success("Garantías", "Se realizó el registro de la observación correctamente.");
 
                     garantias.contadorObservaciones += 1;
 
@@ -1233,9 +1232,13 @@
                     $NoExisteRegObs.hide();
                     $modalObservacion.modal('toggle');
 
-                    
+                    var redirectTo = function () {
+                        if (rptaFinal == 1) {
+                            app.redirectTo('BandejaGarantia');
+                        };
+                    };
 
-                    return app.message.success("Éxito", "Se registró la observación satisfactoriamente", "Aceptar", null);
+                    app.message.success("Éxito", "Se registró la observación satisfactoriamente", "Aceptar", redirectTo);
                 };
 
                 var fnFailCallBack = function () {
@@ -2139,7 +2142,7 @@
             var fnDoneCallBack = function () {
 
                 
-                var fnSi = function () {
+                var fnSiExito = function () {
 
                     $tituloModalObservacion.html("Finalizar Reclamo.");
                     $grpAuditoriaObservacion.hide();
@@ -2150,11 +2153,9 @@
                 };
 
                 var fnNo = function () {
-                    var redirect = function () {
-                        app.redirectTo('BandejaGarantia');
-                    };
+                    app.redirectTo('BandejaGarantia');
                 };
-                return app.message.confirm("Éxito", "Se finalizó el requerimiento satisfactoriamente \n ¿Desea agregar un comentario adicional?", "Sí","No",fnSi,fnNo);
+                return app.message.confirm("Éxito", "Se finalizó el requerimiento satisfactoriamente \n ¿Desea agregar un comentario adicional?", "Sí", "No", fnSiExito, fnNo);
 
             };
 
