@@ -43,7 +43,7 @@
                                             <label for="DI_txtCantidad">Cantidad: </label>
                                         </div>
                                         <div class="col-md-3">
-                                            <input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") placeholder="Cantidad" type="number" maxlength="8" style="text-align:center" class="form-control input-sm" id="DI_txtCantidad" value="">
+                                            <input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") placeholder="Cantidad" type="number" min="0" maxlength="8" style="text-align:center" class="form-control input-sm" id="DI_txtCantidad" value="">
                                         </div>
                                     </div>
                                 </div>

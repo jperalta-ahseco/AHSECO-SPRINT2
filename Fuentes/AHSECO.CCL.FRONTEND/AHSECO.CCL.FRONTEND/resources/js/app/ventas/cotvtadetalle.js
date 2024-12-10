@@ -7,8 +7,11 @@ var cotvtadet = (function ($, win, doc) {
 
     var $cmbTipo = $('#cmbTipo');
 
-    var $TipoSol_VentaMateriales = $("#TipoSol_VentaMateriales");
-    var $TipoSol_VentaEquipos = $("#TipoSol_VentaEquipos");
+    var $TipoSol_Servicio = $("#TipoSol_Servicio");
+    var $TipoSol_RepOComes = $("#TipoSol_RepOComes");
+    var $TipoSol_ServYRep = $("#TipoSol_ServYRep");
+    var $TipoSol_VentaMat = $("#TipoSol_VentaMat");
+    var $TipoSol_VentaEqu = $("#TipoSol_VentaEqu");
 
     var $idCliente = $("#idCliente");
     var $numeroSolicitud = $("#numeroSolicitud");
@@ -31,8 +34,11 @@ var cotvtadet = (function ($, win, doc) {
     var $RolVenta_Asesor = $("#RolVenta_Asesor");
     var $RolVenta_Gerente = $("#RolVenta_Gerente");
     var $RolVenta_Costos = $("#RolVenta_Costos");
+
+    var $PermitirEnvioCotizacion = $("#PermitirEnvioCotizacion");
     var $PermitirEditarValorizacion = $("#PermitirEditarValorizacion");
     var $PermitirEditarGanancia = $("#PermitirEditarGanancia");
+
     var $DI_pnlInfoGeneral_Dimensiones = $("#DI_pnlInfoGeneral_Dimensiones");
     var $DI_pnlCostos_PrecioVenta = $("#DI_pnlCostos_PrecioVenta");
     var $DI_pnlCostos_CostoFOB = $("#DI_pnlCostos_CostoFOB");
@@ -597,6 +603,49 @@ var cotvtadet = (function ($, win, doc) {
                 }
             }
             
+            if ($cmbTipo.val() == $TipoSol_VentaMat.val() || $cmbTipo.val() == $TipoSol_RepOComes.val()) {
+                $DI_pnlInfoGeneral_Dimensiones.css("display", "none");
+                $DI_txtDescripcionAdic.attr("rows", "4");
+                $DI_pnlCostos_Calibracion.css("display", "none");
+                $DI_pnlCostos_Ganancia.css("display", "none");
+                $DI_pnlCostos_CompraLocal.css("display", "none");
+                $DI_pnlCostos_ReqPlaca.css("display", "none");
+                $DI_pnlCostos_MantPrevent.css("display", "none");
+                $DI_pnlCostos_Manuales.css("display", "none");
+                $DI_pnlCostos_Videos.css("display", "none");
+                $DI_pnlCostos_Instalacion.css("display", "none");
+                $DI_pnlCostos_Capacitacion.css("display", "none");
+                $DI_pnlCostos_GarantAdic.css("display", "none");
+                $DI_pnlCostos_GarantAdic_Combo.css("display", "none");
+                $DI_pnlCostos_ObsInsta.css("display", "none");
+                $DI_pnlDestinos.css("display", "none");
+            }
+            else {
+                $DI_pnlInfoGeneral_Dimensiones.css("display", "");
+                $DI_txtDescripcionAdic.attr("rows", "6");
+                $DI_pnlCostos_Calibracion.css("display", "");
+                $DI_pnlCostos_Ganancia.css("display", "");
+                $DI_pnlCostos_CompraLocal.css("display", "");
+                $DI_pnlCostos_ReqPlaca.css("display", "");
+                $DI_pnlCostos_MantPrevent.css("display", "");
+                $DI_pnlCostos_Manuales.css("display", "");
+                $DI_pnlCostos_Videos.css("display", "");
+                $DI_pnlCostos_Instalacion.css("display", "");
+                $DI_pnlCostos_Capacitacion.css("display", "");
+                $DI_pnlCostos_GarantAdic.css("display", "");
+                $DI_pnlCostos_GarantAdic_Combo.css("display", "");
+                $DI_pnlCostos_ObsInsta.css("display", "");
+                $DI_pnlDestinos.css("display", "");
+            }
+
+            if ($DI_pnlInfoGeneral_Dimensiones.css("display") != "none") {
+                $DI_txtDimensiones.removeAttr("disabled");
+            }
+
+            if ($DI_pnlCostos_ObsInsta.css("display") != "none") {
+                $DI_txtObsInsta.removeAttr("disabled");
+            }
+
             //Como Jefe puede cambiar el flujo de STOCK y agregar el COSTO FOB y el VALOR UNITARIO
             if ($PermitirEditarValorizacion.val() == "S") {
                 if ($idRolUsuario.val() == $RolVenta_Gerente.val()) {
@@ -632,51 +681,6 @@ var cotvtadet = (function ($, win, doc) {
                 $DI_txtGanancia.attr("disabled", "disabled");
             }
 
-            if ($cmbTipo.val() == $TipoSol_VentaMateriales.val()) {
-                $DI_pnlInfoGeneral_Dimensiones.css("display", "none");
-                $DI_txtDescripcionAdic.attr("rows", "4");
-                $DI_pnlCostos_Calibracion.css("display", "none");
-                //$DI_pnlCostos_Ganancia.css("display", "none");
-                $DI_pnlCostos_CompraLocal.css("display", "none");
-                $DI_pnlCostos_ReqPlaca.css("display", "none");
-                $DI_pnlCostos_MantPrevent.css("display", "none");
-                $DI_pnlCostos_Manuales.css("display", "none");
-                $DI_pnlCostos_Videos.css("display", "none");
-                $DI_pnlCostos_Instalacion.css("display", "none");
-                $DI_pnlCostos_Capacitacion.css("display", "none");
-                $DI_pnlCostos_GarantAdic.css("display", "none");
-                $DI_pnlCostos_GarantAdic_Combo.css("display", "none");
-                $DI_pnlCostos_ObsInsta.css("display", "none");
-                $DI_pnlDestinos.css("display", "none");
-            }
-            else {
-                $DI_pnlInfoGeneral_Dimensiones.css("display", "");
-                $DI_txtDescripcionAdic.attr("rows", "6");
-                $DI_pnlCostos_Calibracion.css("display", "");
-                //$DI_pnlCostos_Ganancia.css("display", "");
-                $DI_pnlCostos_CompraLocal.css("display", "");
-                $DI_pnlCostos_ReqPlaca.css("display", "");
-                $DI_pnlCostos_MantPrevent.css("display", "");
-                $DI_pnlCostos_Manuales.css("display", "");
-                $DI_pnlCostos_Videos.css("display", "");
-                $DI_pnlCostos_Instalacion.css("display", "");
-                $DI_pnlCostos_Capacitacion.css("display", "");
-                $DI_pnlCostos_GarantAdic.css("display", "");
-                $DI_pnlCostos_GarantAdic_Combo.css("display", "");
-                $DI_pnlCostos_ObsInsta.css("display", "");
-                $DI_pnlDestinos.css("display", "");
-            }
-
-            if ($DI_pnlInfoGeneral_Dimensiones.css("display") != "none") {
-                $DI_txtDimensiones.removeAttr("disabled");
-            }
-            if ($DI_pnlCostos_ReqCliente.css("display") != "none") {
-                $DI_txtReqCliente.removeAttr("disabled");
-            }
-            if ($DI_pnlCostos_ObsInsta.css("display") != "none") {
-                $DI_txtObsInsta.removeAttr("disabled");
-            }
-            
             $('#modalDetalleItem').modal('show');
         };
         
@@ -1138,13 +1142,15 @@ var cotvtadet = (function ($, win, doc) {
     function grabarDatosCotDet() {
         method = "POST";
         url = "BandejaSolicitudesVentas/GrabarDatosCotDet";
-        var objDatos = { };
+        var objDatos = { TipoItem: "PRO" };
         var objParam = JSON.stringify(objDatos);
 
         var fnDoneCallBack = function (data) {
             $('#modalDetalleCotizacion').modal('hide');
             cargarTablaDetCotCostos(data);
-            $btnEnviarCotizacion.css("display", "");
+            if ($PermitirEnvioCotizacion.val() == "S") {
+                $btnEnviarCotizacion.css("display", "");
+            }
         };
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);

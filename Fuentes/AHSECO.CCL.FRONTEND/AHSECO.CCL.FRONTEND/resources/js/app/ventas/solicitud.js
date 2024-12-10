@@ -601,7 +601,7 @@
     function grabarDatosCotDetServ() {
         method = "POST";
         url = "BandejaSolicitudesVentas/GrabarDatosCotDet";
-        var objDatos = {};
+        var objDatos = { TipoItem: "SER" };
         var objParam = JSON.stringify(objDatos);
 
         var fnDoneCallBack = function (data) {
@@ -671,6 +671,11 @@
                 }
             }
         ];
+
+        //Se quita los botones de acción al aprobar la cotización
+        if ($estadoSol.val() == "CAPR") {
+            columns.pop();
+        }
 
         var columnDefs =
         {
