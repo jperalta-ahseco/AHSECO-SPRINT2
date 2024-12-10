@@ -17,33 +17,33 @@
             <form id="formRegistro" class="d-flex flex-row">
                 <div class="row container-fluid d-flex justify-content-center">
                     <div class="row container-fluid">
-                        <div class="col-md-3 col-sm-12">
+                        <div class="col-md-3">
                             <label for="cmbFamilia">Familia Producto: </label>
                             <div class="form-group">
                                 <select class="form-control select2 input-sm" style="width:100%;" id="BI_cmbFamilia" data-selected="">
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3 col-sm-12">
+                        <div class="col-md-3">
                             <label for="BI_txtNomProducto">Nombre de Producto: </label>
                             <div class="form-group">
                                 <input placeholder="Ingresar nombre de producto" type="text" maxlength="100" class="form-control input-sm" id="BI_txtNomProducto" value="">
                             </div>
                         </div>
-                        <div class="col-md-2 col-sm-12">
+                        <div class="col-md-2">
                             <label for="BI_txtCodProducto">C&oacute;digo Producto: </label>
                             <div class="form-group">
                                 <input placeholder="Ingresar código de producto" type="text" class="form-control input-sm" id="BI_txtCodProducto" value="">
                             </div>
                         </div>
-                        <div class="col-md-2 col-sm-12">
+                        <div class="col-md-2">
                             <label for="BI_cmbTipoMedida">Tipo de Medida: </label>
                             <div class="form-group">
                                 <select class="form-control select2 input-sm" style="width:100%;" id="BI_cmbTipoMedida" data-selected="">
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-2 col-sm-12">
+                        <div class="col-md-2">
                             <label for="BI_cmbMarca">Marca: </label>
                             <div class="form-group">
                                 <select class="form-control select2 input-sm" style="width:100%;" id="BI_cmbMarca" data-selected="">
@@ -51,9 +51,21 @@
                             </div>
                         </div>
                     </div>
-                    <div class="text-right">
-                        <button class="btn btn-primary btn-sm" type="button" id="btnBuscarItems"><i class="fa fa-search" aria-hidden="true"></i>  Buscar</button>
-                        <span id="hidden_fields"></span>
+                    <div class="row container-fluid">
+                        <div class="col-md-2">
+                            <label for="BI_cmbMarca">Almacén: </label>
+                            <div class="form-group">
+                                <select class="form-control select2 input-sm" style="width:100%;" id="BI_cmbAlmacen" data-selected="">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-10">
+                            <br />
+                            <div class="text-right">
+                                <button class="btn btn-primary btn-sm" type="button" id="btnBuscarItems"><i class="fa fa-search" aria-hidden="true"></i>  Buscar</button>
+                                <span id="hidden_fields"></span>
+                            </div>
+                        </div>
                     </div>
                     <label>Productos de Almac&eacute;n: </label>
                     <div class="table-responsive">
@@ -63,8 +75,10 @@
                                     <th style="text-align:center; width:5%">Cod.Producto</th>
                                     <th style="text-align:center; width:10%">Familia</th>
                                     <th style="text-align:center; width:20%">Descripción</th>
+                                    <th style="text-align:center; width:20%">Almacén</th>
                                     <th style="text-align:center; width:3%">Stock</th>
                                     <th style="text-align:center; width:5%">Precio Ref.</th>
+                                    <th style="text-align:center; width:5%">Moneda</th>
                                     <th style="text-align:center; width:5%">Und. Med.</th>
                                     <th style="text-align:center; width:5%">Marca</th>
                                     <th style="text-align:center; width:5%">Modelo</th>

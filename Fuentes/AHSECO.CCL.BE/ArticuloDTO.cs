@@ -41,6 +41,8 @@ namespace AHSECO.CCL.BE
         public string DescMarca { get; set; }
         public int StockDisponible { get; set; }
         public decimal PrecioRef { get; set; }
+        public string CodMonCompra { get; set; }
+        public string DescMonCompra { get; set; }
         public string CodModelo { get; set; }
         public string DescModelo { get; set; }
         public string DescRealModelo

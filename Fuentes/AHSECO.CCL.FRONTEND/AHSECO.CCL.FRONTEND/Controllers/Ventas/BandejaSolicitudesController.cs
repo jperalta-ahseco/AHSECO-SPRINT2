@@ -545,7 +545,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion)
                 {
 
-                    ViewBag.PermitirEditarCotizacion_Sec = true;
+                    if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
+                    {
+                        ViewBag.PermitirEditarCotizacion_Sec = true;
+                    }
+
                     ViewBag.PermitirEditarCotDetItem = false;
 
                     if (NombreRol == ConstantesDTO.WorkflowRol.Venta.ServTecnico)
@@ -1392,7 +1396,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             try
             {
                 var dgBL = new DatosGeneralesBL();
-                var rpta = dgBL.Obtener(new DatosGeneralesDetalleDTO() { Dominio = "RAZSOCIAL" });
+                var rpta = dgBL.Obtener(new DatosGeneralesDetalleDTO() { Dominio = ConstantesDTO.DatosGenerales.Dominios.RazonSocial });
                 var lstEmpresas = new List<ComboDTO>();
 
                 if (rpta.Result.Any())

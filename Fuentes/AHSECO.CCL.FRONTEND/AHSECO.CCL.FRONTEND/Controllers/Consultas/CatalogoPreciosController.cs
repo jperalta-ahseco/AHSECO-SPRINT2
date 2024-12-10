@@ -66,6 +66,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Consultas
                     }
                 }
             }
+            if (filtros.Result.Almacenes != null)
+            {
+                filtros.Result.TodosAlmacenes = string.Join(";", filtros.Result.Almacenes.Select(x => x.Id).ToArray());
+            }
             return Json(filtros);
         }
 

@@ -1544,6 +1544,13 @@
                 }
             },
             {
+                data: "DescAlmacen",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
                 data: "StockDisponible",
                 render: function (data) {
                     return '<center>' + data + '</center>';
@@ -1554,6 +1561,13 @@
                 render: function (data) {
                     var precio = data.toFixed(2)
                     return '<center>' + precio + '</center>';
+                }
+            },
+            {
+                data: "DescMonCompra",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
                 }
             },
             {

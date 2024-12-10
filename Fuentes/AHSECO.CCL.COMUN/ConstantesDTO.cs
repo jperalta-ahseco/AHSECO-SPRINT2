@@ -54,6 +54,7 @@ namespace AHSECO.CCL.COMUN
                 public static string CicloPreventivo = "CICLOPREV";
                 public static string CostoEnvio = "COSTOXCD";
                 public static string Garantias = "GARANTIAS";
+                public static string RazonSocial = "RAZSOCIAL";
             }
             public struct CicloPreventivo
             {

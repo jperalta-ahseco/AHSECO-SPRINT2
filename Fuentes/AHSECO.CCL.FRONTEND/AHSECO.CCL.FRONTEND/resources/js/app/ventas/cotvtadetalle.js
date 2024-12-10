@@ -64,6 +64,7 @@ var cotvtadet = (function ($, win, doc) {
     var $BI_txtNomProducto = $('#BI_txtNomProducto');
     var $BI_cmbTipoMedida = $('#BI_cmbTipoMedida');
     var $BI_cmbMarca = $('#BI_cmbMarca');
+    var $BI_cmbAlmacen = $("#BI_cmbAlmacen");
     
     var $btnBuscarItems = $('#btnBuscarItems');
     var $tblItems = $('#tblItems');
@@ -157,16 +158,24 @@ var cotvtadet = (function ($, win, doc) {
         var fnDoneCallback = function (data) {
 
             //Cargar combo de marcas:
+            var filters1 = {};
+            filters1.placeholder = "-- Todos --";
+            filters1.allowClear = false;
+            app.llenarComboMultiResult($BI_cmbMarca, data.Result.Marcas, null, " ", "-- Todos --", filters1);
+            
+            //Cargar combo de medidas:
             var filters2 = {};
             filters2.placeholder = "-- Todos --";
             filters2.allowClear = false;
-            app.llenarComboMultiResult($BI_cmbMarca, data.Result.Marcas, null, " ", "-- Todos --", filters2);
-            
-            //Cargar combo de medidas:
-            var filters4 = {};
-            filters4.placeholder = "-- Todos --";
-            filters4.allowClear = false;
-            app.llenarComboMultiResult($BI_cmbTipoMedida, data.Result.Medidas, null, " ", "-- Todos --", filters4);
+            app.llenarComboMultiResult($BI_cmbTipoMedida, data.Result.Medidas, null, " ", "-- Todos --", filters2);
+
+            //Cargar combo de almacenes:
+            var filters3 = {};
+            filters3.placeholder = "-- Todos --";
+            filters3.allowClear = false;
+            var opcTodos = data.Result.TodosAlmacenes;
+            if (opcTodos == "" || opcTodos == null) { opcTodos = ""; }
+            app.llenarComboMultiResult($BI_cmbAlmacen, data.Result.Almacenes, null, opcTodos, "-- Todos --", filters3);
 
         }
         return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, mensajes.obteniendoFiltros);
@@ -192,7 +201,7 @@ var cotvtadet = (function ($, win, doc) {
         }
         return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, mensajes.obteniendoFiltros);
     }
-
+    
     function buscarItems() {
         method = "POST";
         url = "BandejaSolicitudesVentas/ObtenerArticulos";
@@ -202,6 +211,7 @@ var cotvtadet = (function ($, win, doc) {
             CodsUnidad: $BI_cmbTipoMedida.val(),
             CodsFamilia: $BI_cmbFamilia.val(),
             CodsMarca: $BI_cmbMarca.val(),
+            CodsAlma: $BI_cmbAlmacen.val(),
             AddDescriptionAsNewRecord: true,
             CantidadRegistros: 20
         };
@@ -243,6 +253,13 @@ var cotvtadet = (function ($, win, doc) {
                 }
             },
             {
+                data: "DescAlmacen",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
                 data: "StockDisponible",
                 render: function (data) {
                     return '<center>' + data + '</center>';
@@ -253,6 +270,13 @@ var cotvtadet = (function ($, win, doc) {
                 render: function (data) {
                     var precio = data.toFixed(2)
                     return '<center>' + precio + '</center>';
+                }
+            },
+            {
+                data: "DescMonCompra",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
                 }
             },
             {

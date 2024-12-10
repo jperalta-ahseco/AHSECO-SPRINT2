@@ -1544,6 +1544,8 @@ namespace AHSECO.CCL.BD.Ventas
                             DescMarca = i.Single(d => d.Key.Equals("DESC_MARCA")).Value.Parse<string>(),
                             StockDisponible = i.Single(d => d.Key.Equals("STOCK_DISPO")).Value.Parse<int>(),
                             PrecioRef = i.Single(d => d.Key.Equals("PRECIO_REF")).Value.Parse<decimal>(),
+                            CodMonCompra = i.Single(d => d.Key.Equals("COD_MONCOM")).Value.Parse<string>(),
+                            DescMonCompra = i.Single(d => d.Key.Equals("DESC_MONCOM")).Value.Parse<string>(),
                             CodModelo = i.Single(d => d.Key.Equals("COD_MODELO")).Value.Parse<string>(),
                             DescModelo = i.Single(d => d.Key.Equals("DESC_MODELO")).Value.Parse<string>(),
                             CodAlmacen = i.Single(d => d.Key.Equals("COD_ALMACEN")).Value.Parse<string>(),
@@ -1560,17 +1562,7 @@ namespace AHSECO.CCL.BD.Ventas
                             var lstArticulo = result.Where(x => x.CodArticulo == codArti).ToList();
                             var oArticulo = lstArticulo.FirstOrDefault(x => x.CodArticulo == codArti);
                             var newItem = new ArticuloDTO();
-                            newItem.CodArticulo = oArticulo.CodArticulo;
-                            newItem.DescArticulo = oArticulo.DescArticulo;
-                            newItem.CodUnidad = oArticulo.CodUnidad;
-                            newItem.DescUnidad = oArticulo.DescUnidad;
-                            newItem.CodFamilia = oArticulo.CodFamilia;
-                            newItem.DescFamilia = oArticulo.DescFamilia;
-                            newItem.CodLinea = oArticulo.CodLinea;
-                            newItem.DescLinea = oArticulo.DescLinea;
-                            newItem.CodMarca = oArticulo.CodMarca;
-                            newItem.DescMarca = oArticulo.DescMarca;
-                            newItem.PrecioRef = oArticulo.PrecioRef;
+                            oArticulo.CopyProperties(ref newItem);
                             if (oArticulo != null && lstArticulo.Any())
                             {
                                 var Almacenes = new List<AlmacenDTO>();
