@@ -21,15 +21,15 @@ namespace AHSECO.CCL.BE.Ventas
         public bool? IndCalibracion { get; set; }
         public string Dimensiones { get; set; }
         public bool? IndCompraLocal { get; set; }
-        public string ObsCliente { get; set; }
         public bool? IndRequierePlaca { get; set; }
+        public bool? IndFlete { get; set; }
+        public string ObsCliente { get; set; }
         public string ObsDespacho { get; set; }
         public decimal? MontoTotalCosto { get; set; }
         public bool? IndFianza { get; set; }
         public string NumFianza { get; set; }
         public decimal? MontoPrestPrin { get; set; }
         public decimal? MontoPrestAcc { get; set; }
-        public bool IsUpdated { get; set; }
 
     }
 

@@ -31,6 +31,8 @@
     var $DI_radMantPrevent_No = $("#DI_radMantPrevent_No");
     var $DI_radCalibracion_Si = $("#DI_radCalibracion_Si");
     var $DI_radCalibracion_No = $("#DI_radCalibracion_No");
+    var $DI_radFlete_Si = $("#DI_radFlete_Si");
+    var $DI_radFlete_No = $("#DI_radFlete_No");
     
     var $DI_tblCostos = $("#DI_tblCostos");
 
@@ -182,9 +184,11 @@
     function LimpiarModalCostos() {
         $CI_hdnIdCotDetCosto.val("");
         $CI_cmbCDItem.removeAttr("disabled");
-        $CI_cmbCDItem.val("").trigger("change.select2");
+        $CI_cmbCDItem.get(0).selectedIndex = 0;
+        $CI_cmbCDItem.trigger("change.select2");
         $CI_cmbTipoCosto.removeAttr("disabled");
-        $CI_cmbTipoCosto.val("").trigger("change.select2");
+        $CI_cmbTipoCosto.get(0).selectedIndex = 0;
+        $CI_cmbTipoCosto.trigger("change.select2");
         $CI_txtCantCotDet.val("");
         $CI_txtUnidadMedida.val("");
         $CI_hdnUbicacion.val("");
@@ -196,7 +200,9 @@
         $CI_txtCantCosteo.val("");
         $CI_txtMtoUnitarioCosto.val("");
         $CI_txtMtoTotalCosto.val("");
-        $CI_cmbCicloPreventivo.val("").trigger("change.select2");
+        $CI_txtCantPrevent.val("");
+        $CI_cmbCicloPreventivo.get(0).selectedIndex = 0;
+        $CI_cmbCicloPreventivo.trigger("change.select2");
     }
 
     function configurarModalCosto() {
@@ -381,6 +387,7 @@
         var vVideos = null;
         var vMantPrevent = null;
         var vCalibracion = null;
+        var vFlete = null;
 
         if ($DI_radInstalacion_Si.is(':checked')) { vInstalacion = true; }
         if ($DI_radInstalacion_No.is(':checked')) { vInstalacion = false; }
@@ -400,6 +407,9 @@
         if ($DI_radCalibracion_Si.is(':checked')) { vCalibracion = true; }
         if ($DI_radCalibracion_No.is(':checked')) { vCalibracion = false; }
 
+        if ($DI_radFlete_Si.is(':checked')) { vFlete = true; }
+        if ($DI_radFlete_No.is(':checked')) { vFlete = false; }
+
         var method = "POST";
         var url = "BandejaSolicitudesVentas/ObtenerTipoCostos";
         var oValores = {
@@ -409,7 +419,8 @@
                 IndInfoManual: vManuales,
                 IndInfoVideo: vVideos,
                 IndMantPreventivo: vMantPrevent,
-                IndCalibracion: vCalibracion
+                IndCalibracion: vCalibracion,
+                IndFlete: vFlete
             }
         };
         var objParam = JSON.stringify(oValores);
@@ -811,8 +822,43 @@
             else {
                 loadGridbyCost(data, $CI_hdnCodCosto.val());
             }
-            cerrarModalCostosItem();
-            app.message.success("Costos", "Se guard&oacute; el costos correctamente.", "Aceptar", null);
+
+            var fnCallback = function () {
+                var fnSi = function () {
+
+                    $CI_hdnIdCotDetCosto.val("");
+                    if ($CI_cmbCDItem.attr("disabled") != "disabled" && $CI_cmbCDItem.attr("readonly") != "readonly") {
+                        $CI_cmbCDItem.get(0).selectedIndex = 0;
+                        $CI_cmbCDItem.trigger("change.select2");
+                        $CI_txtCantCotDet.val("");
+                        $CI_txtUnidadMedida.val("");
+                    }
+                    if ($CI_cmbTipoCosto.attr("disabled") != "disabled" && $CI_cmbTipoCosto.attr("readonly") != "readonly") {
+                        $CI_cmbTipoCosto.get(0).selectedIndex = 0;
+                        $CI_cmbTipoCosto.trigger("change.select2");
+                    }
+                    $CI_hdnUbicacion.val("");
+                    $CI_txtUbicacion.val("");
+                    ubigeo.setUbigeoById("");
+                    $CI_txtDireccion.val("");
+                    $CI_txtAmbDestino.val("");
+                    $CI_txtNroPiso.val("");
+                    $CI_txtCantCosteo.val("");
+                    $CI_txtMtoUnitarioCosto.val("");
+                    $CI_txtMtoTotalCosto.val("");
+                    $CI_txtCantPrevent.val("");
+                    $CI_cmbCicloPreventivo.get(0).selectedIndex = 0;
+                    $CI_cmbCicloPreventivo.trigger("change.select2");
+                    return true;
+                }
+                var fnNo = function () {
+                    cerrarModalCostosItem();
+                    return true;
+                }
+                return app.message.confirm("Costos", "¿Des&eacute;a seguir agregando m&aacute;s costos?", "S&iacute;", "No", fnSi, fnNo);
+            };
+
+            app.message.success("Costos", "Se guard&oacute; el costo correctamente.", "Aceptar", fnCallback);
         };
         
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);

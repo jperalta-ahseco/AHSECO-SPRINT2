@@ -1,4 +1,5 @@
 ﻿var solicitud = (function ($, win, doc) {
+
     var $numeroSolicitud = $("#numeroSolicitud");
     var $nombreusuario = $('#nombreusuario');
     var $perfilnombre = $('#perfilnombre');
@@ -14,6 +15,7 @@
     var $idWorkFlow = $("#idWorkFlow");
     var $idCotizacion = $("#idCotizacion");
     var $TipoSolicitud = $("#TipoSolicitud");
+
     /*Modales*/
     var $modalObservacion = $('#modalObservacion'); 
     var $modalCargaDocumento = $('#modalCargaDocumento');
@@ -96,7 +98,6 @@
     var $btnVerComentarioDscto = $("#btnVerComentarioDscto");
     var $btnAprobarCotizacion = $("#btnAprobarCotizacion");
     
-
     /*Ver Historial de Cotizacion */
     var $modalVerHistorialCotizacion = $("#modalVerHistorialCotizacion");
     var $txtHistNomContacto = $("#txtHistNomContacto");
@@ -627,8 +628,7 @@
                 cargarTablaMainTecnicos(tecnicosAsig);
 
                 $modalBusquedaTecnico.modal('toggle');
-
-
+                
             };
 
             var fnFailCallBack = function () {
@@ -655,10 +655,7 @@
             $btnBuscarTecnicos.show();
             $btnAñadirTecnico.show();
         }
-
-
-
-
+        
         var columns = [
             {
                 data: "Cod_Tecnico",
@@ -675,7 +672,6 @@
                         return '<center>' + data + '</center>';
                     }
                 }
-
             },
             {
                 data: "Documento",
@@ -686,7 +682,6 @@
                         return '<center>' + data + '</center>';
                     }
                 }
-
             },
             {
                 data: "NombreCompleto",
@@ -697,7 +692,6 @@
                         return '<center>' + data + '</center>';
                     }
                 }
-
             },
             {
                 data: "Telefono",
@@ -708,7 +702,6 @@
                         return '<center>' + data + '</center>';
                     }
                 }
-
             },
             {
                 data: "Correo",
@@ -719,7 +712,6 @@
                         return '<center>' + data + '</center>';
                     }
                 }
-
             },
             {
                 data: "Empresa",
@@ -746,7 +738,6 @@
                         }
                     }
                 }
-
             },
             {
                 data: "Cod_Tecnico",
@@ -783,8 +774,7 @@
             asignarTecnico(info)
         });
     };
-
-
+    
     function CrearTecnico3ro_a_Producto() {
         //var idProducto = $hdnIdProduct.val();
         if ($txtNombreTecnico.val() == "" || $txtNombreTecnico.val() == null || $txtNombreTecnico.val().trim().length == 0) {
@@ -801,8 +791,7 @@
             app.message.error("Validación", "Debe ingresar el apellido materno del técnico.");
             return;
         };
-
-
+        
         if ($txtTipoTecnico.val() == "") {
             app.message.error("Validación", "Debe de seleccionar un técnico o realizar el ingreso de uno nuevo.");
             return;
@@ -894,15 +883,13 @@
 
         app.llamarAjax(method, url, objEmpleado, fnDoneCallback, fnFailCallback, null, null);
     };
-
-
+    
     function logicUbigeo() {
         $cmbProvincia.val('').trigger("change");
         $cmbDistrito.val('').trigger("change");
         $cmbProvincia.prop("disabled", true);
         $cmbDistrito.prop("disabled", true);
         getDepartamentos();
-        
     }
 
     function getDepartamentos() {
@@ -956,6 +943,7 @@
         return app.llamarAjax(method, url, objParam, fnDoneCallback, fnFailCallback, null, mensajes.procesandoUbigeo)
 
     }
+
     function obtenerProvincia(codDepartamento, data) {
         var provincias = { Result: [] };
         for (let i = 0; i < data.Result.length; i++) {
@@ -1028,7 +1016,6 @@
         filters.allowClear = false;
         app.llenarCombo($cmbDistrito, distritos, $modalZona, "", "<--Seleccione-->", filters)
     }
-
 
     function AgregarTecnicoExterno() {
         limpiarAsignacionTecnicos();
@@ -1592,9 +1579,13 @@
     function $btnAgregarDetalle_click() {
         $('#BI_cmbFamilia').get(0).selectedIndex = 0;
         $('#BI_cmbFamilia').trigger("change.select2");
-        $('#BI_cmbTipoMedida').val('').trigger("change.select2");
-        $('#BI_cmbMarca').val('').trigger("change.select2");
-        buscarItems_Solicitud();
+        $('#BI_cmbTipoMedida').get(0).selectedIndex = 0;
+        $('#BI_cmbTipoMedida').trigger("change.select2");
+        $('#BI_cmbMarca').get(0).selectedIndex = 0;
+        $('#BI_cmbMarca').trigger("change.select2");
+        $('#BI_cmbAlmacen').get(0).selectedIndex = 0;
+        $('#BI_cmbAlmacen').trigger("change.select2");
+        cotvtadet.buscarItems();
     }
 
     function $btnAgregarServicios_click() {
@@ -1622,132 +1613,7 @@
 
         app.llamarAjax(method, url, opjParam, fnDoneCallBack, fnFailCallBack, null, mensajes.ObteniendoTipoServicio);
     };
-
-    function buscarItems_Solicitud() {
-        method = "POST";
-        url = "BandejaSolicitudesVentas/ObtenerArticulos";
-        var objFiltros = {
-            CodsArticulo: $('#BI_txtCodProducto').val(),
-            DescArticulo: $('#BI_txtNomProducto').val(),
-            CodsUnidad: $('#BI_cmbTipoMedida').val(),
-            CodsFamilia: $('#BI_cmbFamilia').val(),
-            CodsMarca: $('#BI_cmbMarca').val(),
-            CodsAlma: $('#BI_cmbAlmacen').val(),
-            AddDescriptionAsNewRecord: true,
-            CantidadRegistros: 20
-        };
-        var objParam = JSON.stringify(objFiltros);
-
-        var fnDoneCallBack = function (data) {
-            cargarTablaItems2(data);
-        };
-
-        var fnFailCallback = function () {
-            app.message.error("Validaci&oacute;n", "No hay productos.");
-        };
-
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallback);
-    }
-
-    function cargarTablaItems2(data) {
-
-        var columns = [
-            {
-                data: "CodArticuloTemp",
-                render: function (data) {
-                    if (data == null) { data = ""; }
-                    return '<center>' + data + '</center>';
-                }
-            },
-            {
-                data: "DescFamilia",
-                render: function (data) {
-                    if (data == null) { data = ""; }
-                    return '<center>' + data + '</center>';
-                }
-            },
-            {
-                data: "DescRealArticulo",
-                render: function (data) {
-                    if (data == null) { data = ""; }
-                    return '<center>' + data + '</center>';
-                }
-            },
-            {
-                data: "DescAlmacen",
-                render: function (data) {
-                    if (data == null) { data = ""; }
-                    return '<center>' + data + '</center>';
-                }
-            },
-            {
-                data: "StockDisponible",
-                render: function (data) {
-                    return '<center>' + data + '</center>';
-                }
-            },
-            {
-                data: "PrecioRef",
-                render: function (data) {
-                    var precio = data.toFixed(2)
-                    return '<center>' + precio + '</center>';
-                }
-            },
-            {
-                data: "DescMonCompra",
-                render: function (data) {
-                    if (data == null) { data = ""; }
-                    return '<center>' + data + '</center>';
-                }
-            },
-            {
-                data: "DescUnidad",
-                render: function (data) {
-                    if (data == null) { data = ""; }
-                    return '<center>' + data + '</center>';
-                }
-            },
-            {
-                data: "DescMarca",
-                render: function (data) {
-                    if (data == null) { data = ""; }
-                    return '<center>' + data + '</center>';
-                }
-            },
-            {
-                data: "DescRealModelo",
-                render: function (data) {
-                    if (data == null) { data = ""; }
-                    return '<center>' + data + '</center>';
-                }
-            },
-            {
-                data: "CodArticulo",
-                render: function (data) {
-                    var seleccionar = '<a class="btn btn-default btn-xs" title="Agregar" href="javascript: cotvtadet.agregarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ')"><i class="fa fa-level-down" aria-hidden="true"></i> Agregar</a>';
-                    return '<center>' + seleccionar + '</center>';
-                }
-            }
-        ];
-
-        var columnDefs =
-        {
-            targets: [0],
-            visible: false
-        }
-
-        var rowCallback = function (row, data, index) {
-            // Asignar un ID único basado en el índice de datos o algún identificador único
-            $(row).attr('id', 'row' + index);
-        };
-
-        var filters = {}
-        filters.dataTableInfo = true;
-        filters.dataTablePageLength = 3;
-
-        app.llenarTabla($('#tblItems'), data, columns, columnDefs, "#tblItems", rowCallback, null, filters);
-    }
-
+    
     function $btnEditarGestionLogisticaSE_click() {
         $dateEntregaPedidoSE.prop('disabled', false);
         $opendateEntregaPedidoSE.prop('disabled', false);

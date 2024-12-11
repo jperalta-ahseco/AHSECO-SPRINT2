@@ -185,7 +185,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.InActiveTecnico = "";
             ViewBag.EnvioServicio = 0;
 
-
             ViewBag.VerBandejaServiciosCotizacion = false;
             ViewBag.VerBandejaCotizacion = false;
 
@@ -223,6 +222,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     "Stock Disponible",
                     "Unidad Medida",
                     "Cantidad",
+                    "Valor Venta Unitario",
                     "Valor. Venta Total Sin IGV (Sin Ganancia)",
                     "Ganancia(%)",
                     "Valor. Venta Total Sin IGV Con Ganancia)",
@@ -1659,6 +1659,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     if (!oCDesp.IndCalibracion.Value)
                     { lstDG = lstDG.Where(x => x.Parametro != ConstantesDTO.DatosGenerales.CostosEnvio.Calibracion); }
                 }
+                if (oCDesp.IndFlete.HasValue)
+                {
+                    if (!oCDesp.IndFlete.Value)
+                    { lstDG = lstDG.Where(x => x.Parametro != ConstantesDTO.DatosGenerales.CostosEnvio.Flete); }
+                }
             }
             var lst = new List<ComboDTO>();
             foreach (DatosGeneralesDetalleDTO item in lstDG)
@@ -2172,22 +2177,71 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             try
             {
                 List<CotizacionDetalleDTO> lstItems = GetCDIList(opcGrillaItems);
+                List<CotDetCostoDTO> lstCostos = (List<CotDetCostoDTO>)VariableSesion.getObject(TAG_CDCI);
 
                 if (lstItems.Any(x => x.CodItem.Trim() == CotizacionDetalle.CodItemTemp.Trim() && CotizacionDetalle.CodItem_IsUpdatable))
-                {
-                    throw new Exception("El código '" + CotizacionDetalle.CodItemTemp.Trim() + "' ya está siendo usado en la cotización");
-                }
+                { throw new Exception("El código '" + CotizacionDetalle.CodItemTemp.Trim() + "' ya está siendo usado en la cotización"); }
 
                 CotizacionDetalleDTO oCotDetItem = null;
                 if (string.IsNullOrEmpty(CotizacionDetallePadre.CodItem))
-                {
-                    oCotDetItem = lstItems.FirstOrDefault(x => x.CodItem.Trim() == CotizacionDetalle.CodItem.Trim() && x.EsItemPadre == true);
-                }
+                { oCotDetItem = lstItems.FirstOrDefault(x => x.CodItem.Trim() == CotizacionDetalle.CodItem.Trim() && x.EsItemPadre == true); }
                 else
                 {
                     var oCotDetItemPadre = lstItems.FirstOrDefault(x => x.CodItem.Trim() == CotizacionDetallePadre.CodItem.Trim() && x.EsItemPadre == true);
                     oCotDetItem = lstItems.FirstOrDefault(x => x.NroItem == oCotDetItemPadre.NroItem && x.CodItem == CotizacionDetalle.CodItem);
                 }
+
+                var oCotDesp = CotizacionDetalle.CotizacionDespacho;
+                var indInstalacion = false;
+                var indCapacitacion = false;
+                var indManuales = false;
+                var indVideos = false;
+                var indMantPrevent = false;
+                var indCalibracion = false;
+                var indFlete = false;
+
+                if (oCotDesp != null)
+                {
+                    if (oCotDesp.IndInstalacion.HasValue)
+                    { if (oCotDesp.IndInstalacion.Value) { indInstalacion = true; } }
+                    if (oCotDesp.IndCapacitacion.HasValue)
+                    { if (oCotDesp.IndCapacitacion.Value) { indCapacitacion = true; } }
+                    if (oCotDesp.IndInfoManual.HasValue)
+                    { if (oCotDesp.IndInfoManual.Value) { indManuales = true; } }
+                    if (oCotDesp.IndInfoVideo.HasValue)
+                    { if (oCotDesp.IndInfoVideo.Value) { indVideos = true; } }
+                    if (oCotDesp.IndMantPreventivo.HasValue)
+                    { if (oCotDesp.IndMantPreventivo.Value) { indMantPrevent = true; } }
+                    if (oCotDesp.IndCalibracion.HasValue)
+                    { if (oCotDesp.IndCalibracion.Value) { indCalibracion = true; } }
+                    if (oCotDesp.IndFlete.HasValue)
+                    { if (oCotDesp.IndFlete.Value) { indFlete = true; } }
+                }
+
+                var swCompleto = true;
+                if (oCotDetItem.CotizacionCostos != null)
+                {
+                    if (indInstalacion && !oCotDetItem.CotizacionCostos.Any(x => x.CodCosto == ConstantesDTO.DatosGenerales.CostosEnvio.Instalacion))
+                    { swCompleto = false; }
+                    if (indCapacitacion && !oCotDetItem.CotizacionCostos.Any(x => x.CodCosto == ConstantesDTO.DatosGenerales.CostosEnvio.Capacitacion))
+                    { swCompleto = false; }
+                    if (indManuales && !oCotDetItem.CotizacionCostos.Any(x => x.CodCosto == ConstantesDTO.DatosGenerales.CostosEnvio.Manuales))
+                    { swCompleto = false; }
+                    if (indVideos && !oCotDetItem.CotizacionCostos.Any(x => x.CodCosto == ConstantesDTO.DatosGenerales.CostosEnvio.Videos))
+                    { swCompleto = false; }
+                    if (indMantPrevent && !oCotDetItem.CotizacionCostos.Any(x => x.CodCosto == ConstantesDTO.DatosGenerales.CostosEnvio.MantPrevent))
+                    { swCompleto = false; }
+                    if (indCalibracion && !oCotDetItem.CotizacionCostos.Any(x => x.CodCosto == ConstantesDTO.DatosGenerales.CostosEnvio.Calibracion))
+                    { swCompleto = false; }
+                }
+                else
+                {
+                    if (indInstalacion || indCapacitacion || indManuales || indVideos || indMantPrevent || indCalibracion || indFlete)
+                    { swCompleto = false; }
+                }
+
+                if (!swCompleto)
+                { throw new Exception("Se debe completar los costos indicados en pantalla"); }
 
                 var oCotDetItemAux = new CotizacionDetalleDTO();
                 oCotDetItem.CopyProperties(ref oCotDetItemAux);
@@ -2202,23 +2256,20 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 oCotDetItemAux.PorcentajeGanancia = CotizacionDetalle.PorcentajeGanancia;
                 oCotDetItemAux.IndStock = CotizacionDetalle.IndStock;
 
+                var oCotDetDespItemAux = new CotDetDespachoDTO();
                 if (CotizacionDetalle.CotizacionDespacho != null)
                 {
-                    if (oCotDetItemAux.CotizacionDespacho != null)
+                    CotizacionDetalle.CotizacionDespacho.CopyProperties(ref oCotDetDespItemAux);
+                    if (oCotDetItem.CotizacionDespacho != null)
                     {
-                        var IDCotDet = oCotDetItemAux.Id;
-                        var IDCotDetDesp = oCotDetItemAux.CotizacionDespacho.Id;
-                        if (IDCotDetDesp != 0) { CotizacionDetalle.CotizacionDespacho.Id = IDCotDetDesp; }
-                        if (IDCotDet != 0) { CotizacionDetalle.CotizacionDespacho.IdCotizacionDetalle = IDCotDet; }
-                        oCotDetItemAux.CotizacionDespacho = CotizacionDetalle.CotizacionDespacho;
-                    }
-                    else
-                    {
-                        oCotDetItemAux.CotizacionDespacho = CotizacionDetalle.CotizacionDespacho;
+                        oCotDetDespItemAux.Id = oCotDetItem.CotizacionDespacho.Id;
                     }
                 }
 
-                if (VariableSesion.getObject(TAG_CDCI) != null) { oCotDetItemAux.CotizacionCostos = ((List<CotDetCostoDTO>)VariableSesion.getObject(TAG_CDCI)).ToArray(); }
+                oCotDetItemAux.CotizacionDespacho = oCotDetDespItemAux;
+                oCotDetItemAux.CotizacionDespacho.IdCotizacionDetalle = oCotDetItemAux.Id;
+
+                if (lstCostos != null) { oCotDetItemAux.CotizacionCostos = lstCostos.ToArray(); }
 
                 oCotDetItemAux.IsUpdated = true;
                 AddModifyCDI(oCotDetItemAux);
@@ -2227,7 +2278,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 lstItems = CompletarInfoCotDet(lstItems);
 
                 //Solo cargar los productos en pantalla
-                var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems.Where(x => 
+                var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems.Where(x =>
                 x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto));
 
                 return Json(response);
@@ -2946,13 +2997,17 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 }
                 else
                 {
-                    if (cotdetCosto.CotizacionDetalle != null)
-                    {
-                        itemCD = cotdetCosto.CotizacionDetalle;
-                    }
+                    //if (cotdetCosto.CotizacionDetalle != null)
+                    //{
+                    //    itemCD = cotdetCosto.CotizacionDetalle;
+                    //}
+                    lstItems = GetCDIList(opcTablaTemporal);
+                    itemCD = lstItems.FirstOrDefault(x => x.Id == cotdetCosto.IdCotizacionDetalle);
                 }
 
-                if (lstCostos.Where(o => o.CantidadCosto.HasValue && o.Id != cotdetCosto.Id && o.CodCosto == cotdetCosto.CodCosto).Select(x => x.CantidadCosto.Value).Sum() + cotdetCosto.CantidadCosto.Value > itemCD.Cantidad)
+                var cantAgregada = lstCostos.Where(o => o.CantidadCosto.HasValue && o.Id != cotdetCosto.Id && o.CodCosto == cotdetCosto.CodCosto).Select(x => x.CantidadCosto.Value).Sum();
+
+                if (cantAgregada + cotdetCosto.CantidadCosto.Value > itemCD.Cantidad)
                 {
                     throw new Exception("La cantidad total que se está costeando no puede ser mayor a la cotizada");
                 }
@@ -3041,6 +3096,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         x.MontoUnitarioCosto = x.MontoTotalCosto.Value / x.CantidadCosto.Value;
                     }
                 });
+
+
+                itemCD.CotizacionCostos = lstCostos.ToArray();
+                AddModifyCDI(itemCD);
 
                 VariableSesion.setObject(TAG_CDCI, lstCostos);
 

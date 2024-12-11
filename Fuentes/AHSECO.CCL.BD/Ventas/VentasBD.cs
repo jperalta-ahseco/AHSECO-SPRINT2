@@ -180,8 +180,9 @@ namespace AHSECO.CCL.BD.Ventas
                             IndCalibracion = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDCALIB")).Value.Parse<string>()),
                             Dimensiones = i.Single(d => d.Key.Equals("DIMENSIONES")).Value.Parse<string>(),
                             IndCompraLocal = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDCOMPRALOCAL")).Value.Parse<string>()),
-                            ObsCliente = i.Single(d => d.Key.Equals("OBSCLIENTE")).Value.Parse<string>(),
                             IndRequierePlaca = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDREQPLACA")).Value.Parse<string>()),
+                            IndFlete = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDFLETE")).Value.Parse<string>()),
+                            ObsCliente = i.Single(d => d.Key.Equals("OBSCLIENTE")).Value.Parse<string>(),
                             ObsDespacho = i.Single(d => d.Key.Equals("OBSDESPACHO")).Value.Parse<string>(),
                             MontoTotalCosto = i.Single(d => d.Key.Equals("MTOTOTALCOSTO")).Value.Parse<decimal?>(),
                             IndFianza = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDFIANZA")).Value.Parse<string>()),
@@ -226,8 +227,9 @@ namespace AHSECO.CCL.BD.Ventas
                         IndCalibracion = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDCALIB")).Value.Parse<string>()),
                         Dimensiones = i.Single(d => d.Key.Equals("DIMENSIONES")).Value.Parse<string>(),
                         IndCompraLocal = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDCOMPRALOCAL")).Value.Parse<string>()),
-                        ObsCliente = i.Single(d => d.Key.Equals("OBSCLIENTE")).Value.Parse<string>(),
                         IndRequierePlaca = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDREQPLACA")).Value.Parse<string>()),
+                        IndFlete = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDFLETE")).Value.Parse<string>()),
+                        ObsCliente = i.Single(d => d.Key.Equals("OBSCLIENTE")).Value.Parse<string>(),
                         ObsDespacho = i.Single(d => d.Key.Equals("OBSDESPACHO")).Value.Parse<string>(),
                         MontoTotalCosto = i.Single(d => d.Key.Equals("MTOTOTALCOSTO")).Value.Parse<decimal?>(),
                         IndFianza = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDFIANZA")).Value.Parse<string>()),
@@ -1661,7 +1663,6 @@ namespace AHSECO.CCL.BD.Ventas
             }
         }
 
-
         public RespuestaDTO MantenimientoDespacho(DatosDespachoDTO datosDespachoDTO)
         {
             var rpta = new RespuestaDTO();
@@ -2014,5 +2015,6 @@ namespace AHSECO.CCL.BD.Ventas
                 return result;
             }
         }
+
     }
 }
