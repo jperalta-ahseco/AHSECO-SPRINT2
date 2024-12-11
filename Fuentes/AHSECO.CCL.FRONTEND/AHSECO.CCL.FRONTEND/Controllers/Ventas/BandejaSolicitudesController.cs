@@ -81,6 +81,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.Btn_GuardarGestionLogistica = "none";
             ViewBag.Btn_EnviarGuia = "none";
             ViewBag.Btn_EnviarGuiaBO = "none";
+            ViewBag.Btn_EnviarServicio = "none";
             ViewBag.Btn_GuiaPedido = "none";
             ViewBag.Btn_GuiaBO = "none";
             ViewBag.Btn_Aprobar = "none";
@@ -106,6 +107,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.VerObservacionGerencia = false;
             ViewBag.Btn_GuardarImportacion = "none";
             ViewBag.CodStock = "";
+            ViewBag.FechaFactura = "disabled";
+            ViewBag.TxtNumeroFacturaServ = "disabled";
+            ViewBag.Btn_GuardarFactura = "none";
 
             string[] dtHeadProducto =
             {
@@ -176,6 +180,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.TotalSeriesConStock = 0;
             ViewBag.TotalSeriesSinStock = 0;
             ViewBag.InActiveSinStock = "";
+            ViewBag.InActiveServicio = "";
+            ViewBag.VerNavServicio = false;
+            ViewBag.InActiveTecnico = "";
+            ViewBag.EnvioServicio = 0;
+
 
             ViewBag.VerBandejaServiciosCotizacion = false;
             ViewBag.VerBandejaCotizacion = false;
@@ -239,7 +248,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     ViewBag.ContadorSeriesSinStock = validarDespacho.Result.ContadorSeriesSinStock;
                     ViewBag.TotalSeriesConStock = validarDespacho.Result.NumeroConStock;
                     ViewBag.TotalSeriesSinStock = validarDespacho.Result.NumeroSinStock;
-
+                    ViewBag.EnvioServicio = validarDespacho.Result.EnvioServicio;
+                    
                     if (validarDespacho.Result.ContadorSinStock > 0)
                     {
                         ViewBag.CodStock = "N";
@@ -307,6 +317,18 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 ViewBag.Btn_GuiaPedido = "inline-block";
                                 ViewBag.VerNavConStock = true;
                             }
+
+                            if(validarDespacho.Result.EnvioServicio == 0)
+                            {
+                                ViewBag.Btn_EnviarServicio = "inline-block";
+                                ViewBag.InActiveTecnico = "in active";
+                            }
+                            else
+                            {
+                                ViewBag.VerNavServicio = true;
+                                ViewBag.InActiveServicio = "in active";
+                                ViewBag.InActiveTecnico = "";
+                            }
                         }
 
                         if (validarSinStock.Result != null)
@@ -317,6 +339,15 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 ViewBag.ObservacionGerencia = validarSinStock.Result.Observacion;
                             }
                         }
+
+                        if(soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio)
+                        {
+                            ViewBag.Btn_EnviarGuiaBO = "none";
+                            ViewBag.Btn_GuiaBO = "none";
+
+                         
+                        }
+
 
                     }
 
@@ -337,6 +368,12 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 ViewBag.VerNavConStock = true;
 
                             }
+
+
+                                ViewBag.VerNavServicio = true;
+                                ViewBag.InActiveServicio = "in active";
+                                ViewBag.InActiveTecnico = "";
+
                         }
 
                     }
@@ -357,6 +394,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 ViewBag.VerNavConStock = true;
 
                             }
+
+                            ViewBag.VerNavServicio = true;
+                            ViewBag.InActiveServicio = "in active";
+                            ViewBag.InActiveTecnico = "";
                         }
                     }
 
@@ -471,11 +512,48 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     }
 
                 }
+                else if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Facturador)
+                {
+                   
+                    if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnProcVentas)
+                    {
+                        ViewBag.VerGestionLogistica = true;
+                        if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio
+                            || soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
+                        {
+                            ViewBag.VerNavServicio = true;
+                            ViewBag.InActiveServicio = "in active";
+                            ViewBag.FechaFactura = "";
+                            ViewBag.TxtNumeroFacturaServ = "";
+                           
+                            if (validarDespacho.Result != null)
+                            {
+                                if (validarDespacho.Result.EnvioServicio > 0)
+                                {
+                                    ViewBag.Btn_GuardarFactura = "inline-block";
+                                }
+                            }
+                        }
+                    }
+                    if(soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.VentaProg ||
+                        soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Finalizado)
+                    {
+                        ViewBag.VerGestionLogistica = true;
+                        if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio
+                           || soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
+                        {
+                            ViewBag.VerNavServicio = true;
+                            ViewBag.InActiveServicio = "in active";
+                        }
+                    }
+                }
 
                 if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio
                     || soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
                 {
                     ViewBag.VerBandejaServiciosCotizacion = true;
+                    ViewBag.VerNavConStock = false;
+                    ViewBag.VerNavSinStock = false;
                 }
 
                 if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.RepuestosoConsumibles
@@ -3206,7 +3284,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     {
                         stock = "";
                     }
-                    var envio_log = ventasBL.ActualizarEnvioDespacho(codigoSolicitud, stock, 1, 2, User.ObtenerUsuario());
+                    var envio_log = ventasBL.ActualizarEnvioDespacho(codigoSolicitud, stock, 1, 2,2, User.ObtenerUsuario());
                     if (envio_log.Result.Codigo > 0)
                     {
                         result.Codigo = 1;
@@ -3229,6 +3307,102 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             }
             return Json(new ResponseDTO<RespuestaDTO>(result));
         }
+
+
+        [HttpPost]
+        public JsonResult EnviarServicios(long codigoSolicitud, long codigoWorkFlow)
+        {
+            var result = new RespuestaDTO();
+            var ventasBL = new VentasBL();
+            try
+            {
+                var plantillasBL = new PlantillasBL();
+                //Envio de correo:
+                var filtros = new FiltroPlantillaDTO();
+                filtros.CodigoProceso = 1;
+                filtros.CodigoPlantilla = "PLANFACTUR";
+                filtros.Usuario = User.ObtenerUsuario();
+                filtros.Codigo = Convert.ToInt32(codigoSolicitud);
+
+                var datos_correo = plantillasBL.ConsultarPlantillaCorreo(filtros).Result;
+
+                //Se verifica los adjuntos:
+                var adjuntos = new List<string>();
+                var documentosBL = new DocumentosBL();
+                var documentos = documentosBL.ConsultaDocumentos(codigoWorkFlow);
+
+                var docs_actConformidad = documentos.Result.Where(t => t.CodigoTipoDocumento == "DVT01" && t.Eliminado == 0).
+                                        OrderByDescending(e => e.CodigoDocumento);
+
+                var docs_constancia= documentos.Result.Where(t => t.CodigoTipoDocumento == "DVT02" && t.Eliminado == 0).
+                                        OrderByDescending(e => e.CodigoDocumento);
+
+                var docs_guiaManuscrita = documentos.Result.Where(t => t.CodigoTipoDocumento == "DVT05" && t.Eliminado == 0).
+                                        OrderByDescending(e => e.CodigoDocumento);
+
+                string pao_files = ConfigurationManager.AppSettings.Get("tempFiles");
+
+                foreach (var doc in docs_actConformidad)
+                {
+                   string ruta = pao_files + doc.RutaDocumento;
+                   adjuntos.Add(ruta);
+                   break;
+                }
+
+                foreach (var doc in docs_constancia)
+                {
+                    string ruta = pao_files + doc.RutaDocumento;
+                    adjuntos.Add(ruta);
+                    break;
+                }
+
+                foreach (var doc in docs_guiaManuscrita)
+                {
+                    string ruta = pao_files + doc.RutaDocumento;
+                    adjuntos.Add(ruta);
+                    break;
+                }
+
+                var respuesta = Utilidades.Send(datos_correo.To, datos_correo.CC, "", datos_correo.Subject, datos_correo.Body, adjuntos, "");
+                CCLog Log = new CCLog();
+                if (respuesta != "OK")
+                {
+                    Log.TraceInfo("Solicitud N° " + codigoSolicitud.ToString() + ":" + respuesta);
+
+                    result.Codigo = 0;
+                    result.Mensaje = "No se pudo enviar el correo de la solicitud N° " + codigoSolicitud.ToString();
+                }
+                else
+                {
+                    Log.TraceInfo("Envio exitoso del servicio de la solicitud N° " + codigoSolicitud.ToString());
+
+                    var envio_log = ventasBL.ActualizarEnvioDespacho(codigoSolicitud, "", 1, 2, 1, User.ObtenerUsuario());
+                    if (envio_log.Result.Codigo > 0)
+                    {
+                        result.Codigo = 1;
+                        result.Mensaje = "Se realizó el envio del servicio de la solicitud N° " + codigoSolicitud.ToString();
+                    }
+                    else
+                    {
+                        Log.TraceInfo("Solicitud N° " + codigoSolicitud.ToString() + ":" + envio_log.Result.Mensaje);
+                        result.Codigo = 0;
+                        result.Mensaje = "No se pudo enviar el correo de la solicitud N° " + codigoSolicitud.ToString();
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                result.Codigo = 0;
+                result.Mensaje = ex.Message.ToString();
+            }
+            return Json(new ResponseDTO<RespuestaDTO>(result));
+        }
+
+
+
+
 
         [HttpPost]
         public JsonResult EnviarGuiaBO(long codigoSolicitud, long codigoWorkFlow)
@@ -3276,7 +3450,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 {
                     Log.TraceInfo("Envio exitoso de la guia de BO de la solicitud N° " + codigoSolicitud.ToString());
 
-                    var envio_log = ventasBL.ActualizarEnvioDespacho(codigoSolicitud, "N", 2, 1, User.ObtenerUsuario());
+                    var envio_log = ventasBL.ActualizarEnvioDespacho(codigoSolicitud, "N", 2, 1, 2, User.ObtenerUsuario());
                     if (envio_log.Result.Codigo > 0)
                     {
                         result.Codigo = 1;
@@ -3392,7 +3566,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 {
                     Log.TraceInfo("Envio exitoso para servicio tecnico de la solicitud N° " + codigoSolicitud.ToString());
 
-                    var envio_log = ventasBL.ActualizarEnvioDespacho(codigoSolicitud, "", 1, 2, User.ObtenerUsuario());
+                    var envio_log = ventasBL.ActualizarEnvioDespacho(codigoSolicitud, "", 1, 2,2, User.ObtenerUsuario());
                     if (envio_log.Result.Codigo > 0)
                     {
                         result.Codigo = 1;
@@ -4035,6 +4209,64 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             tecnico.UsuarioRegistra = User.ObtenerUsuario();
             var response = ventasBL.MantTecnicosDespacho(tecnico);
             return Json(response);
+        }
+
+        [HttpPost]
+        public JsonResult EnviarGestionFacturacion(DatosDespachoDTO datosDespachoDTO)
+        {
+            var result = new RespuestaDTO();
+            var ventasBL = new VentasBL();
+            try
+            {
+                var plantillasBL = new PlantillasBL();
+                //Envio de correo:
+                var filtros = new FiltroPlantillaDTO();
+                filtros.CodigoProceso = 1;
+                filtros.CodigoPlantilla = "PLANATFACT";
+                filtros.Usuario = User.ObtenerUsuario();
+                filtros.Codigo = Convert.ToInt32(datosDespachoDTO.CodigoSolicitud);
+
+                var datos_correo = plantillasBL.ConsultarPlantillaCorreo(filtros).Result;
+
+                var respuesta = Utilidades.Send(datos_correo.To, datos_correo.CC, "", datos_correo.Subject, datos_correo.Body, null, "");
+                CCLog Log = new CCLog();
+                if (respuesta != "OK")
+                {
+                    Log.TraceInfo("Solicitud N° " + datosDespachoDTO.CodigoSolicitud.ToString() + ":" + respuesta);
+
+                    result.Codigo = 0;
+                    result.Mensaje = "No se pudo enviar el correo de la solicitud N° " + datosDespachoDTO.CodigoSolicitud.ToString();
+                }
+                else
+                {
+                    Log.TraceInfo("Envio exitoso de la guia de pedidos de la solicitud N° " + datosDespachoDTO.CodigoSolicitud.ToString());
+
+
+                    datosDespachoDTO.UsuarioRegistro = User.ObtenerUsuario();
+                    datosDespachoDTO.NombrePerfil = User.ObtenerPerfil();
+                    var envio_log = ventasBL.MantenimientoDespacho(datosDespachoDTO);
+
+                    if (envio_log.Result.Codigo > 0)
+                    {
+                        result.Codigo = 1;
+                        result.Mensaje = "Se realizó el envio de la gestión de la solicitud N° " + datosDespachoDTO.CodigoSolicitud.ToString();
+                    }
+                    else
+                    {
+                        Log.TraceInfo("Solicitud N° " + datosDespachoDTO.CodigoSolicitud.ToString() + ":" + envio_log.Result.Mensaje);
+                        result.Codigo = 0;
+                        result.Mensaje = "No se pudo enviar el correo de la solicitud N° " + datosDespachoDTO.CodigoSolicitud.ToString();
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                result.Codigo = 0;
+                result.Mensaje = ex.Message.ToString();
+            }
+            return Json(new ResponseDTO<RespuestaDTO>(result));
         }
 
     }

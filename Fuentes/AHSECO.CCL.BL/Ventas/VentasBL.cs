@@ -349,11 +349,11 @@ namespace AHSECO.CCL.BL.Ventas
             };
         }
 
-        public ResponseDTO<RespuestaDTO> ActualizarEnvioDespacho(long CodigoSolicitud, string Stock, int EnvioGP, int EnvioBO, string Usuario)
+        public ResponseDTO<RespuestaDTO> ActualizarEnvioDespacho(long CodigoSolicitud, string Stock, int EnvioGP, int EnvioBO,int EnvioFC, string Usuario)
         {
             try
             {
-                var result = Repository.ActualizarEnvioDespacho(CodigoSolicitud,Stock,EnvioGP,EnvioBO,Usuario);
+                var result = Repository.ActualizarEnvioDespacho(CodigoSolicitud,Stock,EnvioGP,EnvioBO, EnvioFC,Usuario);
                 return new ResponseDTO<RespuestaDTO>(result);
             }
             catch (Exception ex)

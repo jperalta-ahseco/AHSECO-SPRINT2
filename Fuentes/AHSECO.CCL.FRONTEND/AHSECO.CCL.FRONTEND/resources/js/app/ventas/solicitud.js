@@ -13,6 +13,7 @@
     var $contadordoc = $("#contadordoc");
     var $idWorkFlow = $("#idWorkFlow");
     var $idCotizacion = $("#idCotizacion");
+    var $TipoSolicitud = $("#TipoSolicitud");
     /*Modales*/
     var $modalObservacion = $('#modalObservacion'); 
     var $modalCargaDocumento = $('#modalCargaDocumento');
@@ -94,6 +95,7 @@
     var $AD_txtComentarios = $("#AD_txtComentarios");
     var $btnVerComentarioDscto = $("#btnVerComentarioDscto");
     var $btnAprobarCotizacion = $("#btnAprobarCotizacion");
+    
 
     /*Ver Historial de Cotizacion */
     var $modalVerHistorialCotizacion = $("#modalVerHistorialCotizacion");
@@ -227,6 +229,12 @@
     var $btnEditarGestionLogisticaSE = $("#btnEditarGestionLogisticaSE");
     var $tblSeriesSS = $("#tblSeriesSS");
     var $NoRegSeriesSS = $("#NoRegSeriesSS");
+    var $btnEnviarServicio = $("#btnEnviarServicio");
+    var $dateFactura = $("#dateFactura");
+    var $opendateFactura = $("#opendateFactura");
+    var $txtNumeroFacturaServ = $("#txtNumeroFacturaServ");
+    var $EnvioServicio = $("#EnvioServicio");
+    var $btnGuardarFactura = $("#btnGuardarFactura");
 
     /*Tecnicos:*/
     var $btnBuscarTecnicos = $('#btnBuscarTecnicos');
@@ -349,12 +357,20 @@
             startDate: hoy()
         });
 
+        $dateFactura.datepicker({
+            viewMode: 0,
+            minViewMode: 0,
+            format: 'dd/mm/yyyy',
+            startDate: hoy()
+        });
+
         $dateSolicitud.val(hoy());
         $dateCotizacion.val(hoy());
         $dateOrdenCompra.val(hoy());
         $dateEntregaPedidoCE.val(hoy());
         $dateIngresoAlmacenSE.val(hoy());
         $dateEntregaPedidoSE.val(hoy());
+        $dateFactura.val(hoy());
         $fileCargaDocumentoSustento.on("change", $fileCargaDocumentoSustento_change);
         $btnEliminarSol.click(btnEliminarSolClick);
         $btnGuardarObservacionReq.click(GuardarObservacionReqClick);
@@ -422,8 +438,113 @@
         $btnAñadirTecnico.click(AgregarTecnicoExterno);
         $searchZona.click(logicUbigeo);
         $btnRegistrarTecnicoExterno.click(CrearTecnico3ro_a_Producto);
+        $btnEnviarServicio.click(btnEnviarServicioClick);
+        $btnGuardarFactura.click($btnGuardarFactura_click);
 
     };
+
+    function $btnGuardarFactura_click() {
+        if ($dateFactura.val() === "" || $dateFactura.val() === null) {
+            app.message.error("Validación", "Debe ingresar la Fecha de la Factura.");
+            return false;
+        }
+        if ($txtNumeroFacturaServ.val() === "" || $txtNumeroFacturaServ.val() === null) {
+            app.message.error("Validación", "Debe ingresar el N° de la Factura.");
+            return false;
+        }
+
+        var fnSi = function () {
+
+            var m = "POST";
+            var url = "BandejaSolicitudesVentas/EnviarGestionFacturacion";
+            var obj = {
+                Tipo: "F",
+                CodigoSolicitud: $numeroSolicitud.val(),
+                CodigoWorkFlow: $idWorkFlow.val(),
+                FechaEntrega: $dateFactura.val(),
+                NumeroFactura: $txtNumeroFacturaServ.val()
+            }
+            var objParam = JSON.stringify(obj);
+            var fnDoneCallback = function (data) {
+                var fnCallback = function () {
+                    location.reload();
+                };
+                if (data.Result.Codigo > 0) {
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+                else {
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+
+            };
+            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.RegistrarGestionVenta);
+        }
+        return app.message.confirm("Ventas", "¿Está seguro que desea guardar los datos de la facturación?", "Sí", "No", fnSi, null);
+    }
+
+    function btnEnviarServicioClick() {
+        var documento_actaConformidad = 0;
+        var documento_constanciaServicio = 0;
+        var documento_guiaManuscrita = 0;
+
+        if (tecnicosAsig.length == 0) {
+            app.message.error("Validación", "Debe seleccionar un técnico para realizar el servicio.");
+            return;
+        };
+        adjuntos.forEach(function (currentValue, index, arr) {
+            if (adjuntos[index].CodigoTipoDocumento == "DVT01") {
+                documento_actaConformidad = 1;
+            }
+        });
+
+        if (documento_actaConformidad === 0) {
+            app.message.error("Validación", "Debe adjuntar un documento con el acta de conformidad.");
+            return false;
+        }
+
+        adjuntos.forEach(function (currentValue, index, arr) {
+            if (adjuntos[index].CodigoTipoDocumento == "DVT02") {
+                documento_constanciaServicio = 1;
+            }
+        });
+
+        if (documento_constanciaServicio === 0) {
+            app.message.error("Validación", "Debe adjuntar un documento con la constancia del servicio técnico.");
+            return false;
+        }
+
+        adjuntos.forEach(function (currentValue, index, arr) {
+            if (adjuntos[index].CodigoTipoDocumento == "DVT05") {
+                documento_guiaManuscrita = 1;
+            }
+        });
+
+        if (documento_guiaManuscrita === 0) {
+            app.message.error("Validación", "Debe adjuntar un documento con la Guía Manuscrita.");
+            return false;
+        }
+
+        var fnSi = function () {
+
+            var m = "POST";
+            var url = "BandejaSolicitudesVentas/EnviarServicios?codigoSolicitud=" + $numeroSolicitud.val() + "&codigoWorkFlow=" + $codigoWorkflow.val();
+            var objParam = '';
+            var fnDoneCallback = function (data) {
+                var fnCallback = function () {
+                    location.reload();
+                };
+                if (data.Result.Codigo > 0) {
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+                else {
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+
+            };
+            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.EnvioGuiaPedido);
+        }
+        return app.message.confirm("Ventas", "¿Está seguro que desea enviar el servicio a Facturación?", "Sí", "No", fnSi, null);
+    }
 
     function DesasignarTecnico(CodAsignacion) {
         var method = "POST";
@@ -504,6 +625,7 @@
                 });
 
                 cargarTablaMainTecnicos(tecnicosAsig);
+
                 $modalBusquedaTecnico.modal('toggle');
 
 
@@ -526,10 +648,14 @@
 
         if (tecnicos.length > 0) {
             $NoExisteTec.hide();
+            $btnBuscarTecnicos.hide();
+            $btnAñadirTecnico.hide();
         }
         else {
-            $NoExisteTec.show();
+            $btnBuscarTecnicos.show();
+            $btnAñadirTecnico.show();
         }
+
 
 
 
@@ -625,8 +751,11 @@
             {
                 data: "Cod_Tecnico",
                 render: function (data, type, row) {
-                        var retirar = '<a id="btnDesasignarTecnico" class="btn btn-danger btn-xs" title="Desasignar Tecnico" href="javascript:solicitud.DesasignarTecnico(' + data + ')"><i class="fa fa-minus-square-o" aria-hidden="true"></i></a>'
-                        return '<center>' + retirar + '</center>';
+                    var retirar = "";
+                    if ($EnvioServicio.val() == 0) {
+                        retirar = '<a id="btnDesasignarTecnico" class="btn btn-danger btn-xs" title="Desasignar Tecnico" href="javascript:solicitud.DesasignarTecnico(' + data + ')"><i class="fa fa-minus-square-o" aria-hidden="true"></i></a>';
+                    }
+                    return '<center>' + retirar + '</center>';
 
 
                 }
@@ -1773,7 +1902,7 @@
     function $btnEnviarGuiaBO_click() {
         var documento_guiaBO = 0;
         adjuntos.forEach(function (currentValue, index, arr) {
-            if (adjuntos[index].CodigoTipoDocumento == "DVT03") { //Guia de BO
+            if (adjuntos[index].CodigoTipoDocumento == "DVT06") { //Guia de BO
                 documento_guiaBO = 1;
             }
         });
@@ -1935,7 +2064,7 @@
     function $btnEnviarGuia_click() {
         var documento_guiaPedido = 0;
         adjuntos.forEach(function (currentValue, index, arr) {
-            if (adjuntos[index].CodigoTipoDocumento == "DVT04") {
+            if (adjuntos[index].CodigoTipoDocumento == "DVT07") {
                 documento_guiaPedido = 1;
             }
         });
@@ -1973,6 +2102,10 @@
         $openRegdateOrdenCompra.prop('disabled', false);
         $btnEditarGestion.hide();
         $btnActualizarGestion.show();
+
+        if ($TipoSolicitud.val() === "TSOL01") {
+            $btnEnviarServicio.hide();
+        }
     }
 
     function $btnActualizarGestion_click() {
@@ -2383,6 +2516,16 @@
                     $dateEntregaPedidoSE.val(data.Result.DespachoCabeceraSinStock.FechaEntrega);
                     $txtNumeroFacturaSE.val(data.Result.DespachoCabeceraSinStock.NumeroFactura);
                     $txtNumeroGuiaRemisionSE.val(data.Result.DespachoCabeceraSinStock.NumeroGuiaRemision);
+
+                    if (data.Result.DespachoCabeceraConStock.CodigoSolicitud > 0) {
+                        $dateFactura.val(data.Result.DespachoCabeceraConStock.FechaFacturaServicio);
+                        $txtNumeroFacturaServ.val(data.Result.DespachoCabeceraConStock.NumeroFacturaServicio);
+                    }
+
+                    if (data.Result.DespachoCabeceraSinStock.CodigoSolicitud > 0) {
+                        $dateFactura.val(data.Result.DespachoCabeceraSinStock.FechaFacturaServicio);
+                        $txtNumeroFacturaServ.val(data.Result.DespachoCabeceraSinStock.NumeroFacturaServicio);
+                    }
 
                     if (data.Result.ContadorCabecera.GestionLogSinStock > 0) {
                         $dateEntregaPedidoSE.prop('disabled', true);

@@ -25,6 +25,7 @@ namespace AHSECO.CCL.COMUN
                 public static string Logistica = "SGI_VENTA_LOGISTICA";
                 public static string CoordServ = "SGI_VENTA_COORDINASERV";
                 public static string CoordAtc = "SGI_VENTA_COORDINAATC";
+                public static string Facturador = "SGI_VENTA_FACTURA";
             }
             public struct Viatico
             {
