@@ -1771,6 +1771,33 @@
             return false;
         }
 
+        if ($TipoSolicitud.val() === "TSOL04") //Para ventas de materiales:
+        {
+            var documento_guiaRemision = 0;
+            var documento_factura = 0;
+            adjuntos.forEach(function (currentValue, index, arr) {
+                if (adjuntos[index].CodigoTipoDocumento == "DVT03") { //Factura
+                    documento_factura = 1;
+                }
+            });
+
+            if (documento_factura === 0) {
+                app.message.error("Validación", "Debe adjuntar un documento de Factura.");
+                return false;
+            }
+            adjuntos.forEach(function (currentValue, index, arr) {
+                if (adjuntos[index].CodigoTipoDocumento == "DVT08") { //Guia de Remision
+                    documento_guiaRemision = 1;
+                }
+            });
+
+            if (documento_guiaRemision === 0) {
+                app.message.error("Validación", "Debe adjuntar un documento de Guía de Remisión.");
+                return false;
+            }
+        }
+
+
         var fnSi = function () {
 
             var m = "POST";
@@ -1815,7 +1842,7 @@
         var fnSi = function () {
 
             var m = "POST";
-            var url = "BandejaSolicitudesVentas/MantenimientoDespacho";
+            var url = "BandejaSolicitudesVentas/GestionImportacion";
             var obj = {
                 Tipo: "Y",
                 CodigoSolicitud: $numeroSolicitud.val(),
@@ -2511,7 +2538,11 @@
                     }
                     else {
                         $txtCodigoPedidoSE.val(data.Result.DespachoCabeceraSinStock.NumeroPedido);
-                        $dateIngresoAlmacenSE.val(data.Result.DespachoCabeceraSinStock.FechaIngreso);
+                        var fechaIngresoAlmacen = data.Result.DespachoCabeceraSinStock.FechaIngreso;
+                        if (fechaIngresoAlmacen == null && fechaIngresoAlmacen === "") {
+                            $dateIngresoAlmacenSE.val(data.Result.DespachoCabeceraSinStock.FechaIngreso);
+                        }
+                        
                         $txtCodigoPedidoSE.prop('disabled', true);
                         $opendateIngresoAlmacenSE.prop('disabled', true);
                         $dateIngresoAlmacenSE.prop('disabled', true);
@@ -2539,8 +2570,13 @@
                         $tblSeriesSS.append(nuevoTr);
                     }
 
+                    var fecha_entregapedidoSE = data.Result.DespachoCabeceraSinStock.FechaEntrega;
+                    if (fecha_entregapedidoSE == null && fecha_entregapedidoSE === "") {
+                        $dateEntregaPedidoSE.val(data.Result.DespachoCabeceraSinStock.FechaEntrega);
+                    }
+                    
 
-                    $dateEntregaPedidoSE.val(data.Result.DespachoCabeceraSinStock.FechaEntrega);
+
                     $txtNumeroFacturaSE.val(data.Result.DespachoCabeceraSinStock.NumeroFactura);
                     $txtNumeroGuiaRemisionSE.val(data.Result.DespachoCabeceraSinStock.NumeroGuiaRemision);
 
