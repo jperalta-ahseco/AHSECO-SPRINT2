@@ -194,8 +194,11 @@
         $dateSolicitud.datepicker({
             viewMode: 0,
             minViewMode: 0,
-            format: 'dd/mm/yyyy'
+            format: 'dd/mm/yyyy',
+            endDate: '+1d',
+            datesDisabled: '+1d',
         });
+
         $dateProgramacion.datepicker({
             viewMode: 0,
             minViewMode: 0,
@@ -403,7 +406,10 @@
             return;
         };
 
-        if (($dateSolicitud.val() <= $txtFechaInstall.val())) {
+        var fec1 = app.stringToDate($dateSolicitud.val());
+        var fec2 = app.stringToDate($txtFechaInstall.val());
+
+        if (fec1.getTime() <= fec2.getTime()) {
             app.message.error("Validación", "La fecha de reclamo no puede ser menor o igual a la fecha de instalación.");
             return;
         };
@@ -536,7 +542,7 @@
             $txtReclamo.prop('disabled', false);    
             $cmbMotivo.prop('disabled', false);
             $btnBuscarTecnicos.prop('disabled', false);
-            $btnAñadirTecnico.prop('disabled', false);
+            $btnAñadirTecnico.prop('disabled', false);  
         };
 
         var fnFailCallBack = function () {
@@ -843,8 +849,11 @@
 
         $txtSerieVenta.prop('disabled', true);
         //$cmbDestino.prop('disabled', false);
-        $dateSolicitud.prop('disabled', false);
-        $dateProgramacion.prop('disabled', false);
+        if ($estadoReq.val() != "FIN") {
+            $dateSolicitud.prop('disabled', false);
+            $dateProgramacion.prop('disabled', false);
+        }
+        
         limpiarCabecera();
 
         if (requerimiento.NroProceso != "" && requerimiento.NroProceso != null) {
@@ -1234,7 +1243,7 @@
 
                     var redirectTo = function () {
                         if (rptaFinal == 1) {
-                            app.redirectTo('BandejaGarantia');
+                            establecerVariablesSession();
                         };
                     };
 
@@ -1274,6 +1283,30 @@
         };
         $txtObservacion.val("");
     }
+
+    function establecerVariablesSession() {
+        var method = "POST";
+        var url = "BandejaGarantia/SetVariablesGenerales";
+        var objEditar = {
+            Id_Reclamo: $numReclamo.val(),
+            CodEstado: "FIN",
+            TipoProceso: "V",
+            Id_Workflow: $codigoWorkflow.val()
+        };
+
+        var objParam = JSON.stringify(objEditar);
+
+        var fnDoneCallBack = function () {
+            location.reload();
+        };
+
+        var fnFailCallBack = function (Message) {
+            app.message.error("Validación", Message);
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+    };
+
 
     function saveEmpresaTecnico(CodTecnico) {
         var empresa = $('#txtNomEmpresa' + CodTecnico).val();
@@ -1509,6 +1542,7 @@
     }
     function $adjuntarDocumento_click() {
         //$fileCargaDocumentoSustento.click();
+        $fileCargaDocumentoSustento.val("");
         $lblNombreArchivo.text("");
         myfile = "";
         document.getElementById('fileCargaDocumentoSustento').click();
@@ -1575,7 +1609,10 @@
             return;
         };
 
-        if (($dateSolicitud.val() <= $txtFechaInstall.val()))
+        var fec1 = app.stringToDate($dateSolicitud.val());
+        var fec2 = app.stringToDate($txtFechaInstall.val());
+
+        if (fec1.getTime() <= fec2.getTime())
         {
             app.message.error("Validación", "La fecha de reclamo no puede ser menor o igual a la fecha de instalación.");
             return;
@@ -1604,10 +1641,15 @@
 
         var fechaHoy = hoy();
 
-        if ($dateProgramacion.val() < fechaHoy) {
-            app.message.error("Validación", "La fecha de programación no puede ser menor a la fecha de hoy");
+        var fec1 = app.stringToDate($dateProgramacion.val());
+        var fec2 = app.stringToDate($txtFechaInstall.val());
+
+        if (fec1.getTime() <= fec2.getTime()) {
+            app.message.error("Validación", "La fecha de programación no puede ser menor o igual a la fecha de instalación.");
             return;
         };
+
+
 
         if ($dateProgramacion.val() == "" || $dateProgramacion.val() == null || $dateProgramacion.val().trim().length == 0) {
             app.message.error("Validación", "Se debe de ingresar la fecha de programación.");
@@ -1770,14 +1812,10 @@
             if (data.Result.Codigo > 0) {
                 app.message.success("Éxito", "Se realizó la creación del técnico satisfactoriamente.");
                 $añadirTecnico.modal('toggle');
-            }
-            else {
-                app.message.error("Validación", data.Result.Mensaje);
-            }
-
+            };
         };
         var fnFailCallback = function (data) {
-            app.message.error("Error", data.Result.Mensaje);
+            //app.message.error("Error", data.Result.Mensaje);
         };
 
         app.llamarAjax(method, url, objEmpleado, fnDoneCallback, fnFailCallback, null, null);
@@ -1872,14 +1910,16 @@
     };
 
     function HabilitarCampos() {
-        $txtReclamo.prop('disabled', false);
-        $cmbUrgencia.prop('disabled', false);
-        $cmbMotivo.prop('disabled', false);
-       
-        $dateProgramacion.prop('disabled', false);
-        $btnBuscarTecnicos.prop('disabled', false);
-        $btnAñadirTecnico.prop('disabled', false);
-        $dateSolicitud.prop('disabled', false);
+        if ($estadoReq.val() != "FIN") {
+            $txtReclamo.prop('disabled', false);
+            $cmbUrgencia.prop('disabled', false);
+            $cmbMotivo.prop('disabled', false);
+
+            $dateProgramacion.prop('disabled', false);
+            $btnBuscarTecnicos.prop('disabled', false);
+            $btnAñadirTecnico.prop('disabled', false);
+            $dateSolicitud.prop('disabled', false);
+        };
         //$btnDesasignarTecnico.prop('disabled', false);
     }
 
@@ -2048,7 +2088,14 @@
             if ($tipoproceso.val() == "V") {
                 $btnAgregarDocumento.css('display', 'none');
                 $btnAgregarObservacion.css('display', 'none');
-            }
+            };
+            if ($estadoReq.val() == "FIN") {
+                $dateSolicitud.prop('disabled', true);
+                $cmbUrgencia.prop('disabled', true);
+                $cmbMotivo.prop('disabled', true);
+                $txtReclamo.prop('disabled', true);
+                $dateProgramacion.prop('disabled', true);
+            };
         }
         else {
             $btnBuscarTecnicos.show();

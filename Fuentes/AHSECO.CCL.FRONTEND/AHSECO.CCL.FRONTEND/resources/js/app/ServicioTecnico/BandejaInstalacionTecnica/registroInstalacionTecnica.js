@@ -545,6 +545,7 @@
             }
 
             var fnNo = function () {
+                app.message.success("Éxito", "Se realizó la modificación con éxito.");
                 if (data.Result.Codigo == 1) {
                     cambiarEstadoInstalado();
                 } else if (data.Result.Codigo == 2) {
@@ -594,7 +595,10 @@
                     NumProgramados: data.Result[i].NumProgramados,
                     Elementos: data.Result[i].Elementos
                 });
-                registroInstalacionTec.childProductos.push(data.Result[i].Elementos)
+
+                for (var j = 0; j < data.Result[i].Elementos.length; j++) {
+                    registroInstalacionTec.childProductos.push(data.Result[i].Elementos[j]);
+                };
             };
             var elemento = productos.find(elemento => elemento.Id == codigo);
 
@@ -611,7 +615,6 @@
 
 
     function CrearTecnico3ro_a_Producto() {
-        //var idProducto = $hdnIdProduct.val();
         if ($txtNombreTecnico.val() == "" || $txtNombreTecnico.val() == null || $txtNombreTecnico.val().trim().length == 0) {
             app.message.error("Validación", "Debe de seleccionar un técnico o ingresar el nombre de uno nuevo.");
             return;
@@ -698,8 +701,6 @@
         var objEmpleado = JSON.stringify(objParam);
 
         var fnDoneCallback = function (data) {
-           
-
             if (data.Codigo > 0) {
                 $txtTecnico.val($txtNombreTecnico.val().trim() + ' ' + $txtApellidoPaternoTec.val().trim() + ' ' + $txtApellidoMaternoTec.val().trim());
                 $txtEmpresaTecnico.val("");
@@ -708,12 +709,9 @@
                 $hdnIdTecnico.val(data.Codigo);
                 $modalAsignacion.modal('toggle');
             }
-            else {
-                app.message.error("Validación", data.Mensaje);
-            }
         };
         var fnFailCallback = function () {
-            app.message.error("Error", data.Mensaje);
+            //app.message.error("Error", data.Mensaje);
         };
 
         app.llamarAjax(method, url, objEmpleado, fnDoneCallback, fnFailCallback, null, null);
@@ -1333,6 +1331,7 @@
                         obtenerDetalleInstalacion();
                     }
                     else {
+                        app.message.success("Éxito", "Se realizó la modificación con éxito.");
                         obtenerDetalleInstalacion();
                     }
                 };
@@ -1686,19 +1685,18 @@
     function eliminarDocTemp(cont) {
 
         var fnSi = function () {
+            adjuntos.forEach(function (currentValue, index, arr) {
+                if (adjuntos[index].Id == cont) {
+                    adjuntos.splice(index, 1);
+                }
+            });
+            $("#filadoc" + cont).remove();
 
+            if (adjuntos.length == 0) {
+                $NoExisteRegDoc.show();
+            }
         }
         return app.message.confirm("Confirmación", "¿Está seguro(a) que desea eliminar el documento adjunto?", "Sí", "No", fnSi, null);
-        adjuntos.forEach(function (currentValue, index, arr) {
-            if (adjuntos[index].Id == cont) {
-                adjuntos.splice(index, 1);
-            }
-        });
-        $("#filadoc" + cont).remove();
-
-        if (adjuntos.length == 0) {
-            $NoExisteRegDoc.show();
-        }
     }
     function $modalObservacionClick() {
         $tituloModalObservacion.html("Nueva observación");
@@ -1755,7 +1753,7 @@
                     "<th style='text-align: center;'>" + hoy() + "</th>" +
                     "<th style='text-align: center;'>" + objObservacion.Observacion + "</th>" +
                     "<th style='text-align: center;'>" +
-                    "<a id='btnEliminarObs' class='btn btn-default btn-xs' title='Eliminar' href='javascript: registroInstalacionTec.eliminarObsTmp(" + registroInstalacionTec.contadorObservaciones + ")' > <i class='fa fa-trash' aria-hidden='true'></i></a>" +
+                   // "<a id='btnEliminarObs' class='btn btn-default btn-xs' title='Eliminar' href='javascript: registroInstalacionTec.eliminarObsTmp(" + registroInstalacionTec.contadorObservaciones + ")' > <i class='fa fa-trash' aria-hidden='true'></i></a>" +
                     "</th> " +
                     "</tr>";
                 $tblObservaciones.append(nuevoTr);
@@ -2190,13 +2188,13 @@
     };
     function $adjuntarDocumento_click() {
         //$fileCargaDocumentoSustento.click();
+        $fileCargaDocumentoSustento.val("");
         $lblNombreArchivo.text("");
         myfile = "";
         document.getElementById('fileCargaDocumentoSustento').click();
 
     }
     function $fileCargaDocumentoSustento_change() {
-
 
         var fileInput = document.getElementById("fileCargaDocumentoSustento");
 
@@ -2576,9 +2574,16 @@
                             '<div class="input-group input-group-sm date">' +
                             '<input disabled type="date" class="form-control input-sm" id="dateFechaProgramacion' + row.Id_Despacho + '" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" value="' + row.FechaProgramacion + '">';
                         if ($tipoproceso.val() == "U" & ($estadoReq.val() != "STINS" & $estadoReq.val() != "STFIN")) {
-                            html += '<a style="cursor:pointer;background-color: #096bff;color: white;" class="input-group-addon input-sm" id="activeFechaProgramacion' + row.Id_Despacho + '" title="Ingresar Fecha Programación" href="javascript:registroInstalacionTec.activarFechaProgramacion(' + row.Id_Despacho + ')">' +
-                                '<i class="fa fa-pencil" aria-hidden="true"></i>' +
-                                '</a>';
+                            if (row.FechaInstalacion != "") {
+                                html += '<a  style="pointer-events:none; background-color: gray;color: white;" class="input-group-addon input-sm" id="activeFechaProgramacion' + row.Id_Despacho + '" title="Ingresar Fecha Programación" href="javascript:registroInstalacionTec.activarFechaProgramacion(' + row.Id_Despacho + ')">' +
+                                    '<i class="fa fa-pencil" aria-hidden="true"></i>' +
+                                    '</a>';
+                            }
+                            else {
+                                html += '<a style="cursor:pointer;background-color: #096bff;color: white;" class="input-group-addon input-sm" id="activeFechaProgramacion' + row.Id_Despacho + '" title="Ingresar Fecha Programación" href="javascript:registroInstalacionTec.activarFechaProgramacion(' + row.Id_Despacho + ')">' +
+                                    '<i class="fa fa-pencil" aria-hidden="true"></i>' +
+                                    '</a>';
+                            }
                             html += '<a disabled style="pointer-events:none; background-color: gray;color: white;" class="input-group-addon input-sm" id="cancelFechaProgramacion' + row.Id_Despacho + '" href="javascript:registroInstalacionTec.desactivarFechaProgramacion(' + row.Id_Despacho + ')"" >' +
                                 '<i class="fa fa-times" aria-hidden="true"></i>' +
                                 '</a>';
@@ -2605,9 +2610,24 @@
                             '<input disabled type="date" class="form-control input-sm" id="dateFechaInstalacion' + row.Id_Despacho + '" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" value="' + row.FechaInstalacion + '">';
 
                         if ($tipoproceso.val() == "U" & ($estadoReq.val() != "STINS" & $estadoReq.val() != "STFIN")) {
-                            html += '<a style="cursor:pointer;background-color: #096bff;color: white;" class="input-group-addon input-sm" id="activeFechaInstalacion' + row.Id_Despacho + '" title="Ingresar Fecha Instalación" href="javascript:registroInstalacionTec.activarFechaInstalacion(' + row.Id_Despacho + ')">' +
-                                '<i class="fa fa-pencil" aria-hidden="true"></i>' +
-                                '</a>';
+                            if (row.FechaProgramacion != "") {
+                                if (row.FechaInstalacion != "") {
+                                    html += '<a style="pointer-events:none; background-color: gray;color: white;" class="input-group-addon input-sm" id="activeFechaInstalacion' + row.Id_Despacho + '" title="Ingresar Fecha Instalación" href="javascript:registroInstalacionTec.activarFechaInstalacion(' + row.Id_Despacho + ')">' +
+                                        '<i class="fa fa-pencil" aria-hidden="true"></i>' +
+                                        '</a>';
+                                }
+                                else {
+                                    html += '<a style="cursor:pointer;background-color: #096bff;color: white;" class="input-group-addon input-sm" id="activeFechaInstalacion' + row.Id_Despacho + '" title="Ingresar Fecha Instalación" href="javascript:registroInstalacionTec.activarFechaInstalacion(' + row.Id_Despacho + ')">' +
+                                        '<i class="fa fa-pencil" aria-hidden="true"></i>' +
+                                        '</a>';
+                                };
+                            }
+                            else {
+                                html += '<a style="pointer-events:none; background-color: gray;color: white;" class="input-group-addon input-sm" id="activeFechaInstalacion' + row.Id_Despacho + '" title="Ingresar Fecha Instalación" href="javascript:registroInstalacionTec.activarFechaInstalacion(' + row.Id_Despacho + ')">' +
+                                    '<i class="fa fa-pencil" aria-hidden="true"></i>' +
+                                    '</a>';
+                            }
+                            
                             html += '<a disabled style="pointer-events:none; background-color: gray;color: white;" class="input-group-addon input-sm" id="cancelEditInstalacion' + row.Id_Despacho + '" href="javascript:registroInstalacionTec.desactivarFechaInstalacion(' + row.Id_Despacho + ')"" >' +
                                 '<i class="fa fa-times" aria-hidden="true"></i>' +
                                 '</a>';
@@ -2667,7 +2687,7 @@
             var redirect = function () {
                 app.redirectTo("BandejaInstalacionTecnica");
             }
-            app.message.success("Éxito", "Se realizó el cambio de estado a: 'Instalado'", "Aceptar", redirect);
+            app.message.success("Éxito", "Se realizó el cambio de estado a: 'Finalizado'", "Aceptar", redirect);
 
         };
 
@@ -2718,7 +2738,7 @@
             };
             app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
         }
-        return app.message.confirm("Confirmación", "¿Desea cerrar el requerimiento?", "Sí", "No", fnSi, null);
+        return app.message.confirm("Confirmación", "¿Desea finalizar el requerimiento?", "Sí", "No", fnSi, null);
     };
 
     return {

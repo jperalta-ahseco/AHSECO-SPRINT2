@@ -533,6 +533,10 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
                 parameters.Add("@isOBSERVACION", observacionDTO.Observacion);
                 parameters.Add("@isNOMBRE_USUARIO", observacionDTO.Nombre_Usuario);
                 parameters.Add("@isPERFIL_USUARIO", observacionDTO.Perfil_Usuario);
+                if (!string.IsNullOrEmpty(observacionDTO.CodigoReferencia))
+                { parameters.Add("@isCODREF", observacionDTO.CodigoReferencia); }
+                else
+                { parameters.Add("@isCODREF", DBNull.Value, DbType.String); }
                 parameters.Add("@isUSR_REG", observacionDTO.UsuarioRegistra);
 
                 var result = connection.Query(
