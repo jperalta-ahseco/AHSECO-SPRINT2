@@ -84,7 +84,9 @@
 <input type="hidden" id="TipoSol_ServYRep" value="@TipoSol_ServYRep" />
 <input type="hidden" id="TipoSol_VentaMat" value="@TipoSol_VentaMat" />
 <input type="hidden" id="TipoSol_VentaEqu" value="@TipoSol_VentaEqu" />
+<input type="hidden" id="TipoSolicitud" value="@tipoSol"/>
 <input type="hidden" id="PermitirEnvioCotizacion" value="@strPermitirEnvioCotizacion" />
+<input type="hidden" id="EnvioServicio" value="@ViewBag.EnvioServicio"/>
 
 <div class="container-fluid">
     <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
@@ -223,6 +225,7 @@
                         <li class="" id="tabDetalleSolicitud">
                             <a href="#navDetalleSolicitud" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-info-circle" aria-hidden="true"></i> Detalle</a>
                         </li>
+
                         <li class="" id="tabAdjuntos">
                             <a href="#navDocumentos" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-file-text" aria-hidden="true"></i> Adjunto de Documentos</a>
                         </li>
@@ -660,6 +663,7 @@
                                                 </div>
                                                 <div class="row container-fluid">
                                                     <div class="text-right">
+                                                        <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnEnviarServicio" style="display:@ViewBag.Btn_EnviarServicio"><i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar Servicio</button>
                                                         <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnEnviarGuia" style="display:@ViewBag.Btn_EnviarGuia"><i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar Guia de Pedido</button>
                                                         <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnEnviarGuiaBO" style="display:@ViewBag.Btn_EnviarGuiaBO"><i class="fa fa-envelope" aria-hidden="true" tabindex="111"></i>&nbsp;Enviar Guia de BO</button>
                                                         <button class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnGuiaBO" style="display:@ViewBag.Btn_GuiaBO"><i class="fa fa-file" aria-hidden="true" tabindex="112"></i>&nbsp;Generar Gu&iacute;a de BO</button>
@@ -676,21 +680,63 @@
                                             </div>
                                             <div class="box-content" style="@(ViewBag.VerGestionLogistica ? "" : "display:none");">
                                                 <ul class="nav nav-tabs" style="padding-top: 5px;">
+                                                    @if (tipoSol == "TSOL01" || tipoSol == "TSOL03")
+                                                    {
+                                                     <li class="" id="tabServ" style="@(ViewBag.VerNavServicio ? "":"display:none");">
+                                                        <a href="#navServicio" data-toggle="tab" style="font-weight:bold; color:black;" tabindex="220"><i class="fa fa-user" aria-hidden="true"></i> Servicio</a>
+                                                     </li>
+                                                    }
                                                     <li class="" id="tabConStock" style="@(ViewBag.VerNavConStock ? "":"display:none");">
-                                                        <a href="#navConStock" data-toggle="tab" style="font-weight:bold; color:black;" tabindex="220"><i class="fa fa-cubes" aria-hidden="true"></i> Con Stock</a>
+                                                        <a href="#navConStock" data-toggle="tab" style="font-weight:bold; color:black;" tabindex="221"><i class="fa fa-cubes" aria-hidden="true"></i> Con Stock</a>
                                                     </li>
                                                     <li class="" id="tabSinStock" style="@(ViewBag.VerNavSinStock ? "":"display:none");">
-                                                        <a href="#navSinStock" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="221"><i class="fa fa-wrench" aria-hidden="true"></i> Sin Stock</a>
+                                                        <a href="#navSinStock" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="222"><i class="fa fa-wrench" aria-hidden="true"></i> Sin Stock</a>
                                                     </li>
-                                                    @if (tipoSol == "TSOL01" || tipoSol == "TSOL03") 
+                                                    @if (tipoSol == "TSOL01" || tipoSol == "TSOL03")
                                                     {
                                                         <li class="" id="tabTecnicos">
-                                                            <a href = "#navTecnicos" data-toggle="tab" style="font-weight: bold; color: #158304;" tabindex="21"><i class="fa fa-users" aria-hidden="true"></i><i class="fa fa-wrench" aria-hidden="true"></i> Tecnicos</a>
+                                                            <a href="#navTecnicos" data-toggle="tab" style="font-weight: bold; color: #158304;" tabindex="223"><i class="fa fa-users" aria-hidden="true"></i><i class="fa fa-wrench" aria-hidden="true"></i> Tecnicos</a>
                                                         </li>
                                                     }
-                                                       
+
                                                 </ul>
                                                 <div class="tab-content">
+                                                    <div id="navServicio" class="tab-pane fade @ViewBag.InActiveServicio" style="@(ViewBag.VerNavServicio ? "":"display:none");">
+                                                        <div class="row container-fluid">
+                                                            &nbsp;
+                                                        </div>
+
+                                                        <div class="row container-fluid">
+                                                            <div class="col-md-4 col-sm-12">
+                                                                <label for="dateFactura">Fecha de Factura: </label>
+                                                                <div class="input-group date">
+                                                                    <input type="text" class="form-control input-sm" id="dateFactura" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" readonly maxlength="10" @ViewBag.FechaFactura>
+                                                                    <span class="input-group-addon input-sm" id="opendateFactura" @ViewBag.FechaFactura>
+                                                                        <i class="fa fa-calendar"></i>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4 col-sm-12">
+                                                                <label for="txtNumeroFacturaServ">N° de Factura: </label>
+                                                                <div class="form-group">
+                                                                    <input type="text" class="form-control input-sm" id="txtNumeroFacturaServ" placeholder="Ingresar Número de Factura" @ViewBag.TxtNumeroFacturaServ>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4 col-sm-12">
+                                                                &nbsp;
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row container-fluid">
+                                                            <div class="text-right">
+                                                                <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnGuardarFactura" tabindex="121" style="display:@ViewBag.Btn_GuardarFactura"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar Factura&nbsp;</button>&nbsp;
+                                                            </div>
+                                                        </div>
+                                                        <div class="row container-fluid">
+                                                            &nbsp;
+                                                        </div>
+
+                                                    </div>
                                                     <div id="navConStock" class="tab-pane fade in active" style="@(ViewBag.VerNavConStock ? "":"display:none");">
                                                         <div class="row container-fluid">
                                                             &nbsp;
@@ -831,14 +877,14 @@
                                                         </div>
 
                                                     </div>
-                                                    <div id="navTecnicos" class="tab-pane fade">
+                                                    <div id="navTecnicos" class="tab-pane fade @ViewBag.InActiveTecnico">
                                                         <br />
                                                         <form id="formRegistroTecnico" class="d-flex flex-row">
                                                             <div class="row container-fluid d-flex justify-content-center">
                                                                 <div class="text-right">
-                                                                        <button class="btn btn-default btn-sm" type="button" id="btnBuscarTecnicos" data-target="#modalBusquedaTecnico" data-toggle="modal"><i class="fa fa-search"></i> Buscar Técnicos</button>
-                                                                        <span id="hidden_fields"></span>
-                                                                        <button class="btn btn-primary btn-sm" type="button" id="btnAñadirTecnico" data-toggle="modal" data-target="#añadirTecnico"><i class="fa fa-plus"></i> Crear Técnico Externo</button>
+                                                                    <button class="btn btn-default btn-sm" type="button" style="display:none;" id="btnBuscarTecnicos" data-target="#modalBusquedaTecnico" data-toggle="modal"><i class="fa fa-search"></i> Buscar Técnicos</button>
+                                                                    <span id="hidden_fields"></span>
+                                                                    <button class="btn btn-primary btn-sm" type="button" style="display:none;" id="btnAñadirTecnico" data-toggle="modal" data-target="#añadirTecnico"><i class="fa fa-plus"></i> Crear Técnico Externo</button>
                                                                 </div>
                                                                 <br />
                                                                 <div class="table-responsive">

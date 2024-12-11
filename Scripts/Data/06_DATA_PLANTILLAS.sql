@@ -85,6 +85,19 @@ VALUES('PLANAPRIMP',1,'Plantilla de Envio de Aprobacion a Importar','importacion
 <p>Su apoyo con la atención.</p>
 <p>Por favor ingrese al sistema para continuar con el flujo de venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
 
+INSERT INTO TBM_PLANTILLAS
+VALUES('PLANFACTUR',1,'Plantilla de Envio de Facturacion','facturacion@ahsecoperu.com','','ATENCIÓN DE FACTURACIÓN - N° SOLICITUD {NRO_SOL}',
+			   '<p>Estimada Área de Facturación,</p>
+<p>Se realiza el envío de la solicitud N°{NRO_SOL} para el cliente {CLIENTE}.</p>
+<p>Su apoyo con la atención del ingreso de datos de la factura de servicio.</p>
+<p>Por favor ingrese al sistema para continuar con el flujo de venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
+
+INSERT INTO TBM_PLANTILLAS
+VALUES('PLANATFACT',1,'Plantilla de Atencion de Facturacion','','','ATENCION DE FACTURACIÓN - N° SOLICITUD {NRO_SOL}',
+			   '<p>Sr(a). Vendedor(a), {NOM_VENDEDOR}</p>
+<p>Se realiza el ingreso de la facturación de la solicitud N°{NRO_SOL} para el cliente {CLIENTE}.</p>
+<p>Por favor ingrese al sistema para continuar con el flujo de venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
+
 
 --ALERTA DE GARANTIAS:
 INSERT INTO TBM_PLANTILLAS

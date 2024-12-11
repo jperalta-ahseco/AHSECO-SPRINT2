@@ -1155,7 +1155,9 @@ namespace AHSECO.CCL.BD.Ventas
                             GestionLogConStock = reader.IsDBNull(reader.GetOrdinal("GESLOG_CS")) ? 0 : reader.GetInt32(reader.GetOrdinal("GESLOG_CS")),
                             GestionLogSinStock = reader.IsDBNull(reader.GetOrdinal("GESLOG_SS")) ? 0 : reader.GetInt32(reader.GetOrdinal("GESLOG_SS")),
                             ContadorSeriesConStock = reader.IsDBNull(reader.GetOrdinal("SERIE_CS")) ? 0 : reader.GetInt32(reader.GetOrdinal("SERIE_CS")),
-                            ContadorSeriesSinStock = reader.IsDBNull(reader.GetOrdinal("SERIE_SS")) ? 0 : reader.GetInt32(reader.GetOrdinal("SERIE_SS"))
+                            ContadorSeriesSinStock = reader.IsDBNull(reader.GetOrdinal("SERIE_SS")) ? 0 : reader.GetInt32(reader.GetOrdinal("SERIE_SS")),
+                            EnvioServicio = reader.IsDBNull(reader.GetOrdinal("ENVIOFC")) ? 0 : reader.GetInt32(reader.GetOrdinal("ENVIOFC")),
+                            GestionLogServicio = reader.IsDBNull(reader.GetOrdinal("GESFAC")) ? 0 : reader.GetInt32(reader.GetOrdinal("GESFAC"))
                         };
                     }
 
@@ -1181,6 +1183,8 @@ namespace AHSECO.CCL.BD.Ventas
                             EstadoAprobacion = reader.IsDBNull(reader.GetOrdinal("ESTAPROB")) ? "" : reader.GetString(reader.GetOrdinal("ESTAPROB")),
                             FechaAprobacion = reader.IsDBNull(reader.GetOrdinal("FECAPROB")) ? "" : reader.GetString(reader.GetOrdinal("FECAPROB")),
                             Observacion = reader.IsDBNull(reader.GetOrdinal("OBSERVACION")) ? "" : reader.GetString(reader.GetOrdinal("OBSERVACION")),
+                            NumeroFacturaServicio = reader.IsDBNull(reader.GetOrdinal("NUMFACTSERV")) ? "" : reader.GetString(reader.GetOrdinal("NUMFACTSERV")),
+                            FechaFacturaServicio = reader.IsDBNull(reader.GetOrdinal("FECHAFACTURA")) ? "" : reader.GetString(reader.GetOrdinal("FECHAFACTURA")),
                             UsuarioRegistra = reader.IsDBNull(reader.GetOrdinal("USR_REG")) ? "" : reader.GetString(reader.GetOrdinal("USR_REG")),
                             FechaRegistro = reader.IsDBNull(reader.GetOrdinal("FEC_REG")) ? DateTime.Now : reader.GetDateTime(reader.GetOrdinal("FEC_REG")),
                             UsuarioModifica = reader.IsDBNull(reader.GetOrdinal("USR_MOD")) ? "" : reader.GetString(reader.GetOrdinal("USR_MOD")),
@@ -1233,6 +1237,8 @@ namespace AHSECO.CCL.BD.Ventas
                             EstadoAprobacion = reader.IsDBNull(reader.GetOrdinal("ESTAPROB")) ? "" : reader.GetString(reader.GetOrdinal("ESTAPROB")),
                             FechaAprobacion = reader.IsDBNull(reader.GetOrdinal("FECAPROB")) ? "" : reader.GetString(reader.GetOrdinal("FECAPROB")),
                             Observacion = reader.IsDBNull(reader.GetOrdinal("OBSERVACION")) ? "" : reader.GetString(reader.GetOrdinal("OBSERVACION")),
+                            NumeroFacturaServicio = reader.IsDBNull(reader.GetOrdinal("NUMFACTSERV")) ? "" : reader.GetString(reader.GetOrdinal("NUMFACTSERV")),
+                            FechaFacturaServicio = reader.IsDBNull(reader.GetOrdinal("FECHAFACTURA")) ? "" : reader.GetString(reader.GetOrdinal("FECHAFACTURA")),
                             UsuarioRegistra = reader.IsDBNull(reader.GetOrdinal("USR_REG")) ? "" : reader.GetString(reader.GetOrdinal("USR_REG")),
                             FechaRegistro = reader.IsDBNull(reader.GetOrdinal("FEC_REG")) ? DateTime.Now : reader.GetDateTime(reader.GetOrdinal("FEC_REG")),
                             UsuarioModifica = reader.IsDBNull(reader.GetOrdinal("USR_MOD")) ? "" : reader.GetString(reader.GetOrdinal("USR_MOD")),
@@ -1739,7 +1745,9 @@ namespace AHSECO.CCL.BD.Ventas
                         GestionLogConStock = i.Single(d => d.Key.Equals("GESLOG_CS")).Value.Parse<int>(),
                         GestionLogSinStock = i.Single(d => d.Key.Equals("GESLOG_SS")).Value.Parse<int>(),
                         ContadorSeriesConStock = i.Single(d => d.Key.Equals("SERIE_CS")).Value.Parse<int>(),
-                        ContadorSeriesSinStock = i.Single(d => d.Key.Equals("SERIE_SS")).Value.Parse<int>()
+                        ContadorSeriesSinStock = i.Single(d => d.Key.Equals("SERIE_SS")).Value.Parse<int>(),
+                        EnvioServicio = i.Single(d => d.Key.Equals("ENVIOFC")).Value.Parse<int>(),
+                        GestionLogServicio = i.Single(d => d.Key.Equals("GESFAC")).Value.Parse<int>()
                     }).FirstOrDefault();
 
                 return result;
@@ -1811,7 +1819,7 @@ namespace AHSECO.CCL.BD.Ventas
             }
         }
 
-        public RespuestaDTO ActualizarEnvioDespacho(long CodigoSolicitud, string Stock, int EnvioGP, int EnvioBO, string Usuario)
+        public RespuestaDTO ActualizarEnvioDespacho(long CodigoSolicitud, string Stock, int EnvioGP, int EnvioBO, int EnvioFC, string Usuario)
         {
             var rpta = new RespuestaDTO();
             Log.TraceInfo(Utilidades.GetCaller());
@@ -1826,6 +1834,7 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("STOCK", Stock);
                 parameters.Add("ENVIOGP", EnvioGP);
                 parameters.Add("ENVIOBO", EnvioBO);
+                parameters.Add("ENVIOFC", EnvioFC);
                 parameters.Add("USER", Usuario);
                 var result = connection.Query
                 (

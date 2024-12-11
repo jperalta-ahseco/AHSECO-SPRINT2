@@ -24,6 +24,8 @@ namespace AHSECO.CCL.BE.Ventas
         public string FechaAprobacion { get; set; }
         public string Observacion { get; set; }
 
+        public string NumeroFacturaServicio { get; set; }
+        public string FechaFacturaServicio { get; set; }
     }
 
     public class ContadorCabeceraDespacho
@@ -47,5 +49,7 @@ namespace AHSECO.CCL.BE.Ventas
         public int GestionLogSinStock { get; set; }
         public int ContadorSeriesConStock { get; set; }
         public int ContadorSeriesSinStock { get; set; }
+        public int EnvioServicio { get; set; }
+        public int GestionLogServicio { get; set; }
     }
 }
