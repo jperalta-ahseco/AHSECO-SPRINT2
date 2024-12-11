@@ -386,6 +386,7 @@
 
     function $adjuntarDocumento_click() {
         //$fileCargaDocumentoSustento.click();
+        $fileCargaDocumentoSustento.val("");
         $lblNombreArchivo.text("");
         myfile = "";
         document.getElementById('fileCargaDocumentoSustento').click();
@@ -560,7 +561,7 @@
             $añadirTecnico.modal('toggle');
         };
         var fnFailCallback = function () {
-            app.message.error("Error", "Error en la inserción o documento de identidad ya ha sido ingresado con anterioridad, por favor revisar.");
+            //app.message.error("Error", "Error en la inserción o documento de identidad ya ha sido ingresado con anterioridad, por favor revisar.");
         };
 
         app.llamarAjax(method, url, objEmpleado, fnDoneCallback, fnFailCallback, null, null);
@@ -1642,8 +1643,13 @@
         };
         $dateFechaMant.val(mantenimiento.FechaMantenimiento);
         $txtMontoAcce.val(mantenimiento.MontoPrestAcce);
-        $txtNumFactura.val();
-        $dateFechaFact.val();
+        $txtNumFactura.val(mantenimiento.NumFactura);
+        $dateFechaFact.val(mantenimiento.FecFactura);
+
+        if (mantenimiento.CodEstado == "FIN") {
+            $txtNumFactura.prop('disabled',false);
+            $dateFechaFact.prop('disabled', false);
+        };
 
         if (mantenimiento.IndPrestacion == true) {
             botonSi();

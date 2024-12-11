@@ -454,7 +454,7 @@
         };
 
         var fnFailCallBack = function (Message) {
-            ap.message.error("Validación", Message);
+            app.message.error("Validación", Message);
         };
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
@@ -476,7 +476,7 @@
         };
 
         var fnFailCallBack = function (Message) {
-            ap.message.error("Validación", Message);
+            app.message.error("Validación", Message);
         };
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);

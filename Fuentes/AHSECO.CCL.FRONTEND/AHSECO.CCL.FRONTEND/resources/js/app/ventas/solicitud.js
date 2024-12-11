@@ -1637,6 +1637,33 @@
             return false;
         }
 
+        if ($TipoSolicitud.val() === "TSOL04") //Para ventas de materiales:
+        {
+            var documento_guiaRemision = 0;
+            var documento_factura = 0;
+            adjuntos.forEach(function (currentValue, index, arr) {
+                if (adjuntos[index].CodigoTipoDocumento == "DVT03") { //Factura
+                    documento_factura = 1;
+                }
+            });
+
+            if (documento_factura === 0) {
+                app.message.error("Validación", "Debe adjuntar un documento de Factura.");
+                return false;
+            }
+            adjuntos.forEach(function (currentValue, index, arr) {
+                if (adjuntos[index].CodigoTipoDocumento == "DVT08") { //Guia de Remision
+                    documento_guiaRemision = 1;
+                }
+            });
+
+            if (documento_guiaRemision === 0) {
+                app.message.error("Validación", "Debe adjuntar un documento de Guía de Remisión.");
+                return false;
+            }
+        }
+
+
         var fnSi = function () {
 
             var m = "POST";
@@ -1681,7 +1708,7 @@
         var fnSi = function () {
 
             var m = "POST";
-            var url = "BandejaSolicitudesVentas/MantenimientoDespacho";
+            var url = "BandejaSolicitudesVentas/GestionImportacion";
             var obj = {
                 Tipo: "Y",
                 CodigoSolicitud: $numeroSolicitud.val(),
@@ -1896,6 +1923,32 @@
             return false;
         }
 
+        if ($TipoSolicitud.val() === "TSOL04") //Para ventas de materiales:
+        {
+            var documento_guiaRemision = 0;
+            var documento_factura = 0;
+            adjuntos.forEach(function (currentValue, index, arr) {
+                if (adjuntos[index].CodigoTipoDocumento == "DVT03") { //Factura
+                    documento_factura = 1;
+                }
+            });
+
+            if (documento_factura === 0) {
+                app.message.error("Validación", "Debe adjuntar un documento de Factura.");
+                return false;
+            }
+            adjuntos.forEach(function (currentValue, index, arr) {
+                if (adjuntos[index].CodigoTipoDocumento == "DVT08") { //Guia de Remision
+                    documento_guiaRemision = 1;
+                }
+            });
+
+            if (documento_guiaRemision === 0) {
+                app.message.error("Validación", "Debe adjuntar un documento de Guía de Remisión.");
+                return false;
+            }
+        }
+
         var fnSi = function () {
 
             var m = "POST";
@@ -1904,6 +1957,7 @@
                 Tipo: "P",
                 CodigoSolicitud: $numeroSolicitud.val(),
                 Stock: "S",
+                CodigoWorkFlow: $codigoWorkflow.val(),
                 NumeroGuiaRemision: $txtNumeroGuiaRemisionCE.val(),
                 NumeroFactura: $txtNumeroFacturaCE.val(),
                 FechaEntrega: $dateEntregaPedidoCE.val()
@@ -2350,7 +2404,11 @@
                     }
                     else {
                         $txtCodigoPedidoSE.val(data.Result.DespachoCabeceraSinStock.NumeroPedido);
-                        $dateIngresoAlmacenSE.val(data.Result.DespachoCabeceraSinStock.FechaIngreso);
+                        var fechaIngresoAlmacen = data.Result.DespachoCabeceraSinStock.FechaIngreso;
+                        if (fechaIngresoAlmacen == null && fechaIngresoAlmacen === "") {
+                            $dateIngresoAlmacenSE.val(data.Result.DespachoCabeceraSinStock.FechaIngreso);
+                        }
+                        
                         $txtCodigoPedidoSE.prop('disabled', true);
                         $opendateIngresoAlmacenSE.prop('disabled', true);
                         $dateIngresoAlmacenSE.prop('disabled', true);
@@ -2378,8 +2436,13 @@
                         $tblSeriesSS.append(nuevoTr);
                     }
 
+                    var fecha_entregapedidoSE = data.Result.DespachoCabeceraSinStock.FechaEntrega;
+                    if (fecha_entregapedidoSE == null && fecha_entregapedidoSE === "") {
+                        $dateEntregaPedidoSE.val(data.Result.DespachoCabeceraSinStock.FechaEntrega);
+                    }
+                    
 
-                    $dateEntregaPedidoSE.val(data.Result.DespachoCabeceraSinStock.FechaEntrega);
+
                     $txtNumeroFacturaSE.val(data.Result.DespachoCabeceraSinStock.NumeroFactura);
                     $txtNumeroGuiaRemisionSE.val(data.Result.DespachoCabeceraSinStock.NumeroGuiaRemision);
 
@@ -2425,7 +2488,11 @@
                         $tblSeriesCS.append(nuevoTr);
                     }
 
-                    $dateEntregaPedidoCE.val(data.Result.DespachoCabeceraConStock.FechaEntrega);
+                    var fecha_entrega = data.Result.DespachoCabeceraConStock.FechaEntrega;
+                    if (fecha_entrega == null && fecha_entrega === "") {
+                        $dateEntregaPedidoCE.val(data.Result.DespachoCabeceraConStock.FechaEntrega);
+                    }
+                   
                     $txtNumeroFacturaCE.val(data.Result.DespachoCabeceraConStock.NumeroFactura);
                     $txtNumeroGuiaRemisionCE.val(data.Result.DespachoCabeceraConStock.NumeroGuiaRemision);
 
@@ -2517,8 +2584,9 @@
                         var html = '<div class="text-center">';
                         //var d = "'" + data.Result.Adjuntos[i].CodigoDocumento + "','" + data.Result.Adjuntos[i].RutaDocumento + "'";
                         html += ' <a class="btn btn-default btn-xs" title="Descargar"  href="javascript:solicitud.download(' + data.Result.Adjuntos[i].CodigoDocumento + ')"><i class="fa fa-download" aria-hidden="true"></i></a>&nbsp;';
-                        html += ' <a class="btn btn-default btn-xs" title="Eliminar"  href="javascript:solicitud.eliminarDocumento(' + data.Result.Adjuntos[i].CodigoDocumento + ')"><i class="fa fa-ban" aria-hidden="true"></i></a>&nbsp;';
-
+                        if ($estadoSol.val() != "SFIN" && $estadoSol.val() != "NOVT") {
+                            html += ' <a class="btn btn-default btn-xs" title="Eliminar"  href="javascript:solicitud.eliminarDocumento(' + data.Result.Adjuntos[i].CodigoDocumento + ')"><i class="fa fa-ban" aria-hidden="true"></i></a>&nbsp;';
+                        }
                         html += '</div>';
 
                         var nuevoTr = "<tr id='row" + data.Result.Adjuntos[i].CodigoDocumento + "'>" +
@@ -2776,7 +2844,9 @@
                                 }                             
                             );
                             var html = '<div class="text-center">';
-                            html += ' <a class="btn btn-default btn-xs" title="Eliminar"  href="javascript:solicitud.eliminarDocumento(' + data.Result.Codigo + ')"><i class="fa fa-ban" aria-hidden="true"></i></a>';
+                            if ($estadoSol.val() != "SFIN" && $estadoSol.val() != "NOVT") {
+                                html += ' <a class="btn btn-default btn-xs" title="Eliminar"  href="javascript:solicitud.eliminarDocumento(' + data.Result.Codigo + ')"><i class="fa fa-ban" aria-hidden="true"></i></a>';
+                            }
                             html += ' <a class="btn btn-default btn-xs" title="Descargar"  href="javascript:solicitud.download(' + data.Result.Codigo + ')"><i class="fa fa-download" aria-hidden="true"></i></a>&nbsp;';
                             html += '</div>';
 

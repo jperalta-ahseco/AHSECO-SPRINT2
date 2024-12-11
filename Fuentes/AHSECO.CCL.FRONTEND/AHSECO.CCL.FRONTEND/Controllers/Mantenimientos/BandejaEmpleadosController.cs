@@ -51,8 +51,34 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Mantenimientos
             var empleadosBL = new EmpleadosBL();
             empleadoDTO.UsuarioRegistra = User.ObtenerUsuario();
             var response = empleadosBL.EmpleadosMant(empleadoDTO);
-            return Json(response);
-            
+
+            if (response.Result.Codigo == -1)
+            {
+                return Json(new
+                {
+                    Status = 0,
+                    Codigo = response.Result.Codigo,
+                    CurrentException = response.Result.Mensaje
+                });
+            }
+            else if (response.Result.Codigo == 0)
+            {
+                return Json(new
+                {
+                    Status = 0,
+                    Codigo = response.Result.Codigo,
+                    CurrentException = "Error en la inserción"
+                });
+            }
+            else
+            {
+                return Json(new
+                {
+                    Status = 1,
+                    Codigo = response.Result.Codigo,
+                    Mensaje = "Inserción completada"
+                });
+            }
 
         }
         public void ExportarEmpleados(FiltroEmpleadosDTO filtrpoEmpleadosDTO)

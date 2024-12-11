@@ -97,7 +97,9 @@
                 @if (numSol != null)
                 {
                     var numSolFormateado = ("000000" + numSol);
+
                     numSolFormateado = numSolFormateado.Substring((numSolFormateado.Length) - 6, numSolFormateado.Length - ((numSolFormateado.Length) - 6));
+
                     <h2>N&uacute;mero de Solicitud: @numSolFormateado</h2> <!--- Aquí tendremos que controlar-->
                 }
             </div>
@@ -774,27 +776,31 @@
                                                         <div class="row container-fluid">
                                                             &nbsp;
                                                         </div>
-                                                        <div class="row container-fluid">
-                                                            <div class="table-responsive">
-                                                                <table id="tblSeriesCS" class="table table-hover table-condensed table-striped table-bordered" width="100%">
-                                                                    <thead>
-                                                                        <tr>
-                                                                            <th style="text-align:center; width:5%; color:white; background-color:cornflowerblue">N°</th>
-                                                                            <th style="text-align: center; width: 15%; color:white; background-color: cornflowerblue">C&oacute;digo</th>
-                                                                            <th style="text-align: center; width: 30%; color: white; background-color: cornflowerblue">Descripci&oacute;n Equipo</th>
-                                                                            <th style="text-align: center; width: 20%; color: white; background-color: cornflowerblue">Marca</th>
-                                                                            <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">N° Serie</th>
-                                                                            <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">Acciones</th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        <tr id="NoRegSeries">
-                                                                            <td align="center" colspan="6">No existen registros</td>
-                                                                        </tr>
-                                                                    </tbody>
-                                                                </table>
+                                                        @if (tipoSol == "TSOL02" || tipoSol == "TSOL03" || tipoSol == "TSOL05")
+                                                        {
+                                                            <div class="row container-fluid">
+                                                                <div class="table-responsive">
+                                                                    <table id="tblSeriesCS" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th style="text-align:center; width:5%; color:white; background-color:cornflowerblue">N°</th>
+                                                                                <th style="text-align: center; width: 15%; color:white; background-color: cornflowerblue">C&oacute;digo</th>
+                                                                                <th style="text-align: center; width: 30%; color: white; background-color: cornflowerblue">Descripci&oacute;n Equipo</th>
+                                                                                <th style="text-align: center; width: 20%; color: white; background-color: cornflowerblue">Marca</th>
+                                                                                <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">N° Serie</th>
+                                                                                <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">Acciones</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <tr id="NoRegSeries">
+                                                                                <td align="center" colspan="6">No existen registros</td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
                                                             </div>
-                                                        </div>
+                                                        }
+
 
                                                     </div>
                                                     <div id="navSinStock" class="tab-pane fade @ViewBag.InActiveSinStock" style="@(ViewBag.VerNavSinStock ? "":"display:none");">
@@ -852,27 +858,31 @@
                                                         <div class="row container-fluid">
                                                             &nbsp;
                                                         </div>
-                                                        <div class="row container-fluid">
-                                                            <div class="table-responsive">
-                                                                <table id="tblSeriesSS" class="table table-hover table-condensed table-striped table-bordered" width="100%">
-                                                                    <thead>
-                                                                        <tr>
-                                                                            <th style="text-align:center; width:5%; color:white; background-color:cornflowerblue">N°</th>
-                                                                            <th style="text-align: center; width: 15%; color:white; background-color: cornflowerblue">C&oacute;digo</th>
-                                                                            <th style="text-align: center; width: 30%; color: white; background-color: cornflowerblue">Descripci&oacute;n Equipo</th>
-                                                                            <th style="text-align: center; width: 20%; color: white; background-color: cornflowerblue">Marca</th>
-                                                                            <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">N° Serie</th>
-                                                                            <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">Acciones</th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        <tr id="NoRegSeriesSS">
-                                                                            <td align="center" colspan="6">No existen registros</td>
-                                                                        </tr>
-                                                                    </tbody>
-                                                                </table>
+                                                        @if (tipoSol == "TSOL02" || tipoSol == "TSOL03" || tipoSol == "TSOL05")
+                                                        {
+                                                            <div class="row container-fluid">
+                                                                <div class="table-responsive">
+                                                                    <table id="tblSeriesSS" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th style="text-align:center; width:5%; color:white; background-color:cornflowerblue">N°</th>
+                                                                                <th style="text-align: center; width: 15%; color:white; background-color: cornflowerblue">C&oacute;digo</th>
+                                                                                <th style="text-align: center; width: 30%; color: white; background-color: cornflowerblue">Descripci&oacute;n Equipo</th>
+                                                                                <th style="text-align: center; width: 20%; color: white; background-color: cornflowerblue">Marca</th>
+                                                                                <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">N° Serie</th>
+                                                                                <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">Acciones</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <tr id="NoRegSeriesSS">
+                                                                                <td align="center" colspan="6">No existen registros</td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
                                                             </div>
-                                                        </div>
+                                                        }
+                                                            
 
                                                     </div>
                                                     <div id="navTecnicos" class="tab-pane fade @ViewBag.InActiveTecnico">
