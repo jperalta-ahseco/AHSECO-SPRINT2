@@ -161,21 +161,21 @@ var cotvtadet = (function ($, win, doc) {
             var filters1 = {};
             filters1.placeholder = "-- Todos --";
             filters1.allowClear = false;
-            app.llenarComboMultiResult($BI_cmbMarca, data.Result.Marcas, null, " ", "-- Todos --", filters1);
+            app.llenarComboMultiResult($BI_cmbMarca, data.Result.Marcas, $("#modalDetalleCotizacion"), " ", "-- Todos --", filters1);
             
             //Cargar combo de medidas:
             var filters2 = {};
             filters2.placeholder = "-- Todos --";
             filters2.allowClear = false;
-            app.llenarComboMultiResult($BI_cmbTipoMedida, data.Result.Medidas, null, " ", "-- Todos --", filters2);
+            app.llenarComboMultiResult($BI_cmbTipoMedida, data.Result.Medidas, $("#modalDetalleCotizacion"), " ", "-- Todos --", filters2);
 
             //Cargar combo de almacenes:
             var filters3 = {};
             filters3.placeholder = "-- Todos --";
             filters3.allowClear = false;
             var opcTodos = data.Result.TodosAlmacenes;
-            if (opcTodos == "" || opcTodos == null) { opcTodos = ""; }
-            app.llenarComboMultiResult($BI_cmbAlmacen, data.Result.Almacenes, null, opcTodos, "-- Todos --", filters3);
+            if (opcTodos == "" || opcTodos == null) { opcTodos = " "; }
+            app.llenarComboMultiResult($BI_cmbAlmacen, data.Result.Almacenes, $("#modalDetalleCotizacion"), opcTodos, "-- Todos --", filters3);
 
         }
         return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, mensajes.obteniendoFiltros);
@@ -195,8 +195,8 @@ var cotvtadet = (function ($, win, doc) {
             filters3.placeholder = "-- Todos --";
             filters3.allowClear = false;
             var opcTodos = data.Result.TodasFamilias;
-            if (opcTodos == "" || opcTodos == null) { opcTodos = ""; }
-            app.llenarComboMultiResult($BI_cmbFamilia, data.Result.Familias, null, opcTodos, "-- Todos --", filters3);
+            if (opcTodos == "" || opcTodos == null) { opcTodos = " "; }
+            app.llenarComboMultiResult($BI_cmbFamilia, data.Result.Familias, $("#modalDetalleCotizacion"), opcTodos, "-- Todos --", filters3);
 
         }
         return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, mensajes.obteniendoFiltros);
@@ -670,16 +670,12 @@ var cotvtadet = (function ($, win, doc) {
                 $DI_txtObsInsta.removeAttr("disabled");
             }
 
-            //Como Jefe puede cambiar el flujo de STOCK y agregar el COSTO FOB y el VALOR UNITARIO
+            //Para flujo de valorizacion puede agregar el COSTO FOB y el VALOR UNITARIO
             if ($PermitirEditarValorizacion.val() == "S") {
                 if ($idRolUsuario.val() == $RolVenta_Gerente.val()) {
-                    $DI_radTieneStock_Si.removeAttr("disabled");
-                    $DI_radTieneStock_No.removeAttr("disabled");
                     configurarTieneStock();
                     $DI_txtCostoFOB.focus();
                 }
-                $DI_txtCostoFOB.val(data.Result.CostoFOB);
-                $DI_txtValorUnitario.val(data.Result.VentaUnitaria);
                 if ($idRolUsuario.val() == $RolVenta_Costos.val()) {
                     //Si tiene Costo FOB quiere decir que puede proseguir con el VALOR UNITARIO
                     if ($DI_txtCostoFOB.val() != "") {
@@ -1233,6 +1229,7 @@ var cotvtadet = (function ($, win, doc) {
                     data: "CostoFOB",
                     render: function (data) {
                         if (data == null) { data = ""; }
+                        else { data = parseFloat(data).toFixed(2); }
                         return '<center>' + data + '</center>';
                     }
                 },
@@ -1240,6 +1237,7 @@ var cotvtadet = (function ($, win, doc) {
                     data: "VentaUnitaria",
                     render: function (data) {
                         if (data == null) { data = ""; }
+                        else { data = parseFloat(data).toFixed(2); }
                         return '<center>' + data + '</center>';
                     }
                 },
@@ -1247,6 +1245,7 @@ var cotvtadet = (function ($, win, doc) {
                     data: "VentaTotalSinIGV",
                     render: function (data) {
                         if (data == null) { data = ""; }
+                        else { data = parseFloat(data).toFixed(2); }
                         return '<center>' + data + '</center>';
                     }
                 },
@@ -1261,6 +1260,7 @@ var cotvtadet = (function ($, win, doc) {
                     data: "VentaTotalSinIGVConGanacia",
                     render: function (data) {
                         if (data == null) { data = ""; }
+                        else { data = parseFloat(data).toFixed(2); }
                         return '<center>' + data + '</center>';
                     }
                 },
@@ -1324,6 +1324,7 @@ var cotvtadet = (function ($, win, doc) {
                     data: "VentaTotalSinIGV",
                     render: function (data) {
                         if (data == null) { data = ""; }
+                        else { data = parseFloat(data).toFixed(2); }
                         return '<center>' + data + '</center>';
                     }
                 },
@@ -1338,6 +1339,7 @@ var cotvtadet = (function ($, win, doc) {
                     data: "VentaTotalSinIGVConGanacia",
                     render: function (data) {
                         if (data == null) { data = ""; }
+                        else { data = parseFloat(data).toFixed(2); }
                         return '<center>' + data + '</center>';
                     }
                 },

@@ -1503,6 +1503,7 @@
             CodsUnidad: $('#BI_cmbTipoMedida').val(),
             CodsFamilia: $('#BI_cmbFamilia').val(),
             CodsMarca: $('#BI_cmbMarca').val(),
+            CodsAlma: $('#BI_cmbAlmacen').val(),
             AddDescriptionAsNewRecord: true,
             CantidadRegistros: 20
         };
