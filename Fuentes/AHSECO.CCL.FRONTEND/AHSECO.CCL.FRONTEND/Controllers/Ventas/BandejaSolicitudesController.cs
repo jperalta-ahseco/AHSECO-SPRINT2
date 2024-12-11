@@ -311,6 +311,12 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 ViewBag.VerNavSinStock = true;
                                 ViewBag.InActiveSinStock = "in active";
                             }
+                            if(validarDespacho.Result.ContadorConStock > 0)
+                            {
+                                ViewBag.Btn_EnviarGuia = "inline-block";
+                                ViewBag.Btn_GuiaPedido = "inline-block";
+                            }
+
                             if (validarDespacho.Result.ContadorConStock > 0 && validarDespacho.Result.EnvioGPConStock > 0)
                             {
                                 ViewBag.Btn_EnviarGuia = "inline-block";
@@ -318,17 +324,22 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 ViewBag.VerNavConStock = true;
                             }
 
-                            if(validarDespacho.Result.EnvioServicio == 0)
+                            if(soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio ||
+                                soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
                             {
-                                ViewBag.Btn_EnviarServicio = "inline-block";
-                                ViewBag.InActiveTecnico = "in active";
+                                if (validarDespacho.Result.EnvioServicio == 0)
+                                {
+                                    ViewBag.Btn_EnviarServicio = "inline-block";
+                                    ViewBag.InActiveTecnico = "in active";
+                                }
+                                else
+                                {
+                                    ViewBag.VerNavServicio = true;
+                                    ViewBag.InActiveServicio = "in active";
+                                    ViewBag.InActiveTecnico = "";
+                                }
                             }
-                            else
-                            {
-                                ViewBag.VerNavServicio = true;
-                                ViewBag.InActiveServicio = "in active";
-                                ViewBag.InActiveTecnico = "";
-                            }
+                         
                         }
 
                         if (validarSinStock.Result != null)
@@ -369,10 +380,14 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                             }
 
-
+                            if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio ||
+                               soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
+                            {
                                 ViewBag.VerNavServicio = true;
                                 ViewBag.InActiveServicio = "in active";
                                 ViewBag.InActiveTecnico = "";
+                            }
+                                
 
                         }
 
@@ -395,9 +410,14 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                             }
 
-                            ViewBag.VerNavServicio = true;
-                            ViewBag.InActiveServicio = "in active";
-                            ViewBag.InActiveTecnico = "";
+                            if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio ||
+                               soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
+                            {
+                                ViewBag.VerNavServicio = true;
+                                ViewBag.InActiveServicio = "in active";
+                                ViewBag.InActiveTecnico = "";
+                            }
+                               
                         }
                     }
 
