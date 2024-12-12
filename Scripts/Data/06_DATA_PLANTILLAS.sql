@@ -37,12 +37,12 @@ VALUES('PLANCOTVEN',1,'Plantilla de cotización para vendedor','','','FINALIZACIÓ
 
 INSERT INTO TBM_PLANTILLAS
 VALUES('PLANINSTEC',3,'Plantilla de instalación técnica para vendedor','','pminetti@ahsecoperu.com;facturacion@ahsecoperu.com;ahseco@ahsecoperu.com;cobranzas@ahsecoperu.com','FINALIZACIÓN DE INSTALACIÓN DE EQUIPOS - N° SOLICITUD {NRO_SOL}',
-			   '<p>Sr(a). Vendedor(a), {NOM_VENDEDOR},</p>
-<p>Se finalizó la instalación de los equipos pertenecientes a la solicitud N°{NRO_SOL} para el cliente {CLIENTE} con el requerimiento N°{NRO_REQ}.</p>
+			   '<p>Estimado(a)s,</p>
+<p>Se finalizó la instalación de los equipos pertenecientes a la solicitud de venta N°{NRO_SOL} para el cliente {CLIENTE} con el requerimiento N°{NRO_REQ}.</p>
 <p>Detalle:</p>
 {DETALLE_EQUIPOS}
 <p>Se adjunta el documento: Acta de Instalación, que contiene un mayor detalle.</p>
-<p>Por favor ingrese al sistema para continuar con el flujo de venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
+<p>Ingrese al siguiente link para más información: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
 
 -- para despacho:
 INSERT INTO TBM_PLANTILLAS
@@ -100,7 +100,7 @@ VALUES('PLANATFACT',1,'Plantilla de Atencion de Facturacion','','','ATENCION DE 
 
 INSERT INTO TBM_PLANTILLAS
 VALUES('PLANATEIMP',1,'Plantilla de Atencion de Importación','','','ATENCION DE IMPORTACIÓN - N° SOLICITUD {NRO_SOL}',
-			   '<p>Sr(a). Vendedor(a), {NOM_VENDEDOR}</p>
+			   '<p>Estimado(a). Vendedor(a), {NOM_VENDEDOR}</p>
 <p>Se realiza el ingreso de los datos de importación de la solicitud N°{NRO_SOL} para el cliente {CLIENTE}.</p>
 <p>Por favor ingrese al sistema para continuar con el flujo de venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
 
@@ -120,7 +120,7 @@ INSERT INTO TBM_PLANTILLAS
 VALUES('PLANPREV',6,'Plantilla de Envío de Guía Manuscrita','pminetti@ahsecoperu.pe','','MANTENIMIENTO PREVENTIVO',
 			   '<p>Estimado Sr. {NOM_GERENTE},</p>
 <p>Se env&iacute;a el documento: Gu&iacute;a Manuscrita, para su revisión</p>
-<p>Se realizó el mantenimiento preventivo N°{NRO_PREV} del equipo: {NOM_EQUIPO} de la solicitud N°{NRO_SOL} para el cliente {CLIENTE}.</p>
+<p>Se realizó el mantenimiento preventivo N°{NRO_PREV} del equipo: {NOM_EQUIPO} de la solicitud de venta N°{NRO_SOL} para el cliente {CLIENTE}.</p>
 <p>Por favor ingrese al sistema para visualizar la informaci&oacute;n a m&aacute;s detalle. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a>&nbsp;.</p>','SYSTEM',GETDATE(),NULL,NULL);
 
 

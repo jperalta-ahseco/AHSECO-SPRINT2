@@ -777,6 +777,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                         ,FechaMax = reader.GetDateTime(reader.GetOrdinal("FECHAMAX")) // reader.IsDBNull(reader.GetOrdinal("FECHAMAX")) ? "" : reader.GetString(reader.GetOrdinal("FECHAMAX"))
                         ,Destino = reader.IsDBNull(reader.GetOrdinal("DESTINO")) ? "" : reader.GetString(reader.GetOrdinal("DESTINO"))
                         ,Estado = reader.IsDBNull(reader.GetOrdinal("ESTADO")) ? "" : reader.GetString(reader.GetOrdinal("ESTADO"))
+                        ,CodEstado = reader.IsDBNull(reader.GetOrdinal("CODESTADO")) ? "" : reader.GetString(reader.GetOrdinal("CODESTADO"))
                         ,Garantia = reader.IsDBNull(reader.GetOrdinal("CODGARANTIA")) ? "" : reader.GetString(reader.GetOrdinal("CODGARANTIA"))
                     };
 

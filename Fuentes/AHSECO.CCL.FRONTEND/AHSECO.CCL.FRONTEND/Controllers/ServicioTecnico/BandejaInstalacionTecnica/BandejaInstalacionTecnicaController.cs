@@ -679,7 +679,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
                 var response = instalacionBL.MantInstalacion(instalacion);
                 //Se realiza el registro de seguimiento de workflow:
                 var log = new FiltroWorkflowLogDTO();
-                log.CodigoWorkflow = response.Result.Codigo;
+                log.CodigoWorkflow = instalacion.Id_WorkFlow;
                 log.Usuario = User.ObtenerUsuario();
                 log.CodigoEstado = "STFIN";
                 log.UsuarioRegistro = User.ObtenerUsuario();
@@ -694,7 +694,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
                 //Se verifica los adjuntos:
                 var adjuntos = new List<string>();
                 var documentosBL = new DocumentosBL();
-                var documentos = documentosBL.ConsultaDocumentos(response.Result.Codigo);
+                var documentos = documentosBL.ConsultaDocumentos(instalacion.Id_WorkFlow);
                 foreach (var doc in documentos.Result)
                 {
                     if (doc.CodigoTipoDocumento == "DI01" && doc.Eliminado == 0) //Solo documentos de tipo Acta de Instalación:

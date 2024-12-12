@@ -186,13 +186,14 @@
     var $btnBuscarTecnico = $('#btnBuscarTecnico');
     var $btnRegresarTecnico = $('#btnRegresarTecnico');
     var $tblTecnicos = $('#tblTecnicos');
-
+    var $rowElementos = $('#rowElementos');
     var $spanEstadoSol = $('#spanEstadoSol');
 
     let productos = [];
     let destinos_select = [];
     let observaciones = [];
     let adjuntos = [];
+    const baseUrl = window.location.origin;
     function Initializer() {
         ObtenerFiltrosInstalacion();
         cargarTipoDoc();
@@ -1555,16 +1556,30 @@
 
         var formdata = new FormData(); //FormData object
         //Appending each file to FormData object
-        formdata.append(fileInput.files[0].name, fileInput.files[0]);
-        formdata.append('name', name);
-
-        var fileInput = document.getElementById("fileCargaDocumentoSustento");
         var file = fileInput.files[0];
+        var blob = new Blob([file], { type: file.type });
+        formdata.append('file', blob);
+        //formdata.append('name', name);
+
+        var archivo = $fileCargaDocumentoSustento.val();
         var req = new XMLHttpRequest();
         var ext = fileInput.files[0].name.split('.').pop();
-        req.open("POST", "UploadFiles?extension=" + ext, true);
+        req.open("POST","UploadFiles?extension=" + ext, true);
         req.setRequestHeader("File-Name", file.name);
-        req.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+        //req.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+        req.setRequestHeader("X-File-Size", file.size);
+        req.setRequestHeader("X-File-Type", file.type);
+        req.onload = function () {
+            if (req.status === 200) {
+                console.log('Archivo subido correctamente');
+            } else {
+                console.error('Error al subir el archivo:', req.status, req.responseText);
+            }
+        };
+
+        req.onerror = function () {
+            console.error('Error de red o de servidor al intentar enviar el archivo');
+        };
         req.send(formdata);
 
         req.onreadystatechange = function () {
@@ -1574,9 +1589,6 @@
                     app.message.error('Validación', 'Hubo un error al cargar el archivo', 'Aceptar', null);
                     return false;
                 }
-
-
-
                 var cont = parseInt($contadordoc.val());
                 cont = cont + 1;
 
@@ -2026,8 +2038,9 @@
                         var html = '<div class="text-center">';
                         //var d = "'" + data.Result.Adjuntos[i].CodigoDocumento + "','" + data.Result.Adjuntos[i].RutaDocumento + "'";
                         html += ' <a class="btn btn-default btn-xs" title="Descargar"  href="javascript:registroInstalacionTec.download(' + data.Result.Adjuntos[i].CodigoDocumento + ')"><i class="fa fa-download" aria-hidden="true"></i></a>&nbsp;';
-                        html += ' <a class="btn btn-default btn-xs" title="Eliminar"  href="javascript:registroInstalacionTec.eliminarDocumento(' + data.Result.Adjuntos[i].CodigoDocumento + ')"><i class="fa fa-ban" aria-hidden="true"></i></a>&nbsp;';
-
+                        if (data.Result.CabeceraInstalacion.CodEstado != "STFIN" && $tipoproceso.val() == "U") {
+                            html += ' <a class="btn btn-default btn-xs" title="Eliminar"  href="javascript:registroInstalacionTec.eliminarDocumento(' + data.Result.Adjuntos[i].CodigoDocumento + ')"><i class="fa fa-ban" aria-hidden="true"></i></a>&nbsp;';
+                        }
                         html += '</div>';
 
                         var nuevoTr = "<tr id='row" + data.Result.Adjuntos[i].CodigoDocumento + "'>" +
@@ -2419,8 +2432,13 @@
 
         var fnDoneCallBack = function () {
             $spanEstadoSol.text("Instalado");
-            $estadoReq.val("STFIN");
+            $estadoReq.val("STINS");
             $btnFinalizarReq.prop('disabled', false);
+            var chekTOdos = document.querySelector('.form-check-input');
+            var padreBtnCheck = chekTOdos.parentElement; 
+            padreBtnCheck.innerHTML = "";
+            $btnAsignarTecnico.css('display', 'none');
+            $rowElementos.css('display', 'none');
         };
         var fnFailCallBack = function () {
 
@@ -2516,8 +2534,13 @@
                 {
                     data:"Id_Despacho",
                     render: function (data, type, row) {
-                        var seleccionar = '<input class="form-check-input cheks" name="checkSeleccionar" type="checkbox" value="' + data + '" id="checkSeleccionar">';
-                        return '<center>' + seleccionar + '</center>';
+                        if (row.FechaInstalacion != "" && row.FechaProgramacion != "") {
+                            return '<center></center>';
+                        }
+                        else{
+                            var seleccionar = '<input class="form-check-input cheks" name="checkSeleccionar" type="checkbox" value="' + data + '" id="checkSeleccionar">';
+                            return '<center>' + seleccionar + '</center>';
+                        }
                     }
                 },
                 {
@@ -2655,7 +2678,7 @@
             ];
         }
 
-        if ($tipoproceso.val() == "V" ) {
+        if ($tipoproceso.val() == "V" || $estadoReq.val() == "STINS") {
             columns.splice(1, 1);
         };
 
@@ -2724,7 +2747,8 @@
             Estado: "STFIN",
             OrdenCompra: $txtOrdCompra.val(),
             NroProceso: $txtProceso.val(),
-            Contrato: $txtContrato.val()
+            Contrato: $txtContrato.val(),
+            Id_WorkFlow: $codigoWorkflow.val()
         };
 
         var objParam = JSON.stringify(objReq);
