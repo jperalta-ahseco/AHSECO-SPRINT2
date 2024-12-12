@@ -586,7 +586,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
-            cell.SetCellValue("Preventivos Completados");
+            cell.SetCellValue("Preventivos Realizados");
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
@@ -599,6 +599,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
             //// Impresión de la data
             foreach (var item in preventivos)
             {
+                cellnum = 0;
+                row = sh.CreateRow(rownum++);
+
                 cell = row.CreateCell(cellnum++);
                 cell.SetCellValue(item.Id_Mant);
 
@@ -609,7 +612,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
                 cell.SetCellValue(item.Descripcion);
 
                 cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.FechaInstalacion);
+                cell.CellStyle = styleDate;
+                DateTime fechaRegistro = DateTime.Parse(item.FechaInstalacion.ToString("dd/MM/yyyy"));
+                cell.SetCellValue(fechaRegistro);
 
                 cell = row.CreateCell(cellnum++);
                 cell.SetCellValue(item.ProxFechaMant);

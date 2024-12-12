@@ -133,7 +133,8 @@
         $dateFechaMant.datepicker({
             viewMode: 0,
             minViewMode: 0,
-            format: 'dd/mm/yyyy'
+            format: 'dd/mm/yyyy',
+            startDate: hoy()
         });
         detallePreventivo.MantPreventivo = []
         detallePreventivo.contadorObservaciones = 0;
@@ -156,11 +157,13 @@
         $btnRegresar.click(btnRegresarClick);
         $spanSi.on('click', function () {
             botonSi();
-            
+            $txtMontoAcce.prop('disabled', false);
         });
 
         $spanNo.on('click', function () {
             botonNo();
+            $txtMontoAcce.prop('disabled', true);
+            $txtMontoAcce.val("0.00");
         });
 
         $spanCon.on('click', function () {
@@ -191,7 +194,6 @@
 
     function botonSi() {
         indPrest = 1;
-        $txtMontoAcce.prop('disabled', false);
         $spanNo.css('background-color', 'gray')
         $spanSi.css('background-color', 'green')
     }
@@ -445,8 +447,6 @@
 
     function botonNo() {
         indPrest = 0;
-        $txtMontoAcce.prop('disabled', true);
-        $txtMontoAcce.val("0.00");
         $spanSi.css('background-color', 'gray')
         $spanNo.css('background-color', 'red')
     }
@@ -584,8 +584,9 @@
         else {
             var btnRegresar = document.getElementById("btnRegresar");
             if (btnRegresar != null) {
-                if (detallePreventivo.tecnicosAsig.length == 0) {
-                    app.message.error("Validación", "Debe de registrar por lo menos un técnico");
+                if ($estadoMant.val() == "PROG" || detallePreventivo.tecnicosAsig.length == 0)
+                {
+                    app.message.error("Validación", "Debe de existir por lo menos un técnico registrado en estado 'Programado'");
                     $("#tabTecnicos").addClass("active");
                     $("#navTecnicos").addClass("active in");
                     $("#tabReclamo").removeClass("active");
@@ -597,7 +598,7 @@
                     $("#navDocumentos").removeClass("active in");
                     $("#navSeguimiento").removeClass("active in");
                     return;
-                }
+                };
                 var fnSi = function () {
                     setDatos();
                     app.redirectTo("BandejaPreventivo/RegistroPreventivo");
@@ -788,12 +789,12 @@
             return;
         };
 
-        var fecHoy = hoy()
+        //var fecHoy = hoy()
 
-        if ($dateFechaMant.val() < fecHoy) {
-            app.message.error("Validación", "La Fecha de Mantenimiento no puede ser menor a la fecha actual.");
-            return;
-        };
+        //if ($dateFechaMant.val() < fecHoy) {
+        //    app.message.error("Validación", "La Fecha de Mantenimiento no puede ser menor a la fecha actual.");
+        //    return;
+        //};
         
         if (indPrest == 1 && ($txtMontoAcce.val() == "" || $txtMontoAcce.val().trim().length == 0 || $txtMontoAcce.val() == "0" || $txtMontoAcce.val() == "0.00")) {
             app.message.error("Validación", "Debe de ingresar un Monto de Prestación Accesoria");
@@ -867,11 +868,10 @@
         var method = "POST";
         var url = "BandejaPreventivo/MantTecnicosPrev";
 
-        if (detallePreventivo.tecnicosAsig.length == 1) {
-            app.message.error("Validación", "Debe de contar por lo menos con un técnico");
-            return;
-        };
-
+        //if (detallePreventivo.tecnicosAsig.length == 1) {
+        //    app.message.error("Validación", "Debe de contar por lo menos con un técnico");
+        //    return;
+        //};
 
         var objTecnico = {
             TipoProceso: "U",
@@ -948,7 +948,7 @@
             var filters = {};
             filters.placeholder = "-- Seleccione --";
             filters.allowClear = false;
-            app.llenarCombo($cmbDepartamento, resultado, null, "", "<--Seleccione-->", filters);
+            app.llenarCombo($cmbDepartamento, resultado, $modalZona, "", "<--Seleccione-->", filters);
         }
         var fnFailCallback = function () {
             app.mensajes.error("Error", "No se ejecutó correctamente la carga de departamentos")
@@ -992,7 +992,7 @@
         var filters = {};
         filters.placeholder = "-- Seleccione --";
         filters.allowClear = false;
-        app.llenarCombo($cmbProvincia, provincias, null, "", "<--Seleccione-->", filters)
+        app.llenarCombo($cmbProvincia, provincias, $modalZona, "", "<--Seleccione-->", filters)
     }
 
     function obtenerDistrito(codProvincia, data) {
@@ -1026,7 +1026,7 @@
         var filters = {};
         filters.placeholder = "-- Seleccione --";
         filters.allowClear = false;
-        app.llenarCombo($cmbDistrito, distritos, null, "", "<--Seleccione-->", filters)
+        app.llenarCombo($cmbDistrito, distritos, $modalZona, "", "<--Seleccione-->", filters)
     }
 
 
@@ -1166,45 +1166,48 @@
 
         var objParam = JSON.stringify(objTecnico);
 
-        var fnDoneCallBack = function (data) {
-            app.message.success("Éxito", "Se realizó la inserción correctamente.");
+        var fnSi = function () {
+            var fnDoneCallBack = function (data) {
+                app.message.success("Éxito", "Se realizó la inserción correctamente.");
 
-            detallePreventivo.tecnicosAsig.push({
-                Id: data.Result.Codigo,
-                TipoDoc: info.Documento.Descripcion,
-                Documento: info.NumeroDocumento,
-                Tipo_Documento: info.Documento.Parametro,
-                Nombres: info.NombresEmpleado,
-                ApePaterno: info.ApellidoPaternoEmpleado,
-                ApeMaterno: info.ApellidoMaternoEmpleado,
-                NombreCompleto: info.NombresCompletosEmpleado,
-                TipoTecnico: info.CodigoTipoEmpleado,
-                Telefono: info.TelefonoEmpleado,
-                Correo: info.EmailEmpleado,
-                Empresa: info.Empresa.Valor1,
-                Zona: info.LugarLaboral.UbigeoId,
-                DescZona: info.LugarLaboral.NombreDepartamento + info.LugarLaboral.NombreProvincia + info.LugarLaboral.NombreDistrito,
-                Estado: true
-            });
+                detallePreventivo.tecnicosAsig.push({
+                    Id: data.Result.Codigo,
+                    TipoDoc: info.Documento.Descripcion,
+                    Documento: info.NumeroDocumento,
+                    Tipo_Documento: info.Documento.Parametro,
+                    Nombres: info.NombresEmpleado,
+                    ApePaterno: info.ApellidoPaternoEmpleado,
+                    ApeMaterno: info.ApellidoMaternoEmpleado,
+                    NombreCompleto: info.NombresCompletosEmpleado,
+                    TipoTecnico: info.CodigoTipoEmpleado,
+                    Telefono: info.TelefonoEmpleado,
+                    Correo: info.EmailEmpleado,
+                    Empresa: info.Empresa.Valor1,
+                    Zona: info.LugarLaboral.UbigeoId,
+                    DescZona: info.LugarLaboral.NombreDepartamento + info.LugarLaboral.NombreProvincia + info.LugarLaboral.NombreDistrito,
+                    Estado: true
+                });
 
-            cargarTablaMainTecnicos(detallePreventivo.tecnicosAsig);
-            $modalBusquedaTecnico.modal('toggle');
+                cargarTablaMainTecnicos(detallePreventivo.tecnicosAsig);
+                $modalBusquedaTecnico.modal('toggle');
 
-            if (detallePreventivo.tecnicosAsig.length == 1) {
-                CambiarEstado();
+                if (detallePreventivo.tecnicosAsig.length == 1) {
+                    CambiarEstado();
+                };
             };
-        };
 
-        var fnFailCallBack = function () {
-            app.message.error("Error", "Ocurrió un error al realizar la inserción del técnico, por favor revisar.");
-        };
+            var fnFailCallBack = function () {
+                app.message.error("Error", "Ocurrió un error al realizar la inserción del técnico, por favor revisar.");
+            };
 
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+        }
+        return app.message.confirm("Confirmación", "Desea asignar el técnico seleccionado al mantenimiento preventivo actual?","Sí","No",fnSi, null);
     };
 
     function BuscarTecnicos() {
         var method = "POST";
-        var url = "BandejaGarantia/ObtenerTecnico"
+        var url = "BandejaPreventivo/ObtenerTecnico"
         var objTecnico = {
             CodigoEmpleado: 0,
             NombreEmpleado: $txtNombres.val() == null ? "" : $txtNombres.val().trim(),

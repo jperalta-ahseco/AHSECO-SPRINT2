@@ -81,7 +81,31 @@ BEGIN
 							SET @MSG = 'REGISTRO REALIZADO CON EXITO'
 						END
 					END
-				END 
+				END
+				ELSE
+				BEGIN
+				UPDATE [TBD_MANT_PREV]
+						SET 
+							FECHAMANTENIMIENTO = @IsFECHAMANTENIMIENTO
+							,MONTOPRESTACCE = @IsMONTOPRESTACCE
+							,INDPRESTACION = @IsINDPRESTACION
+							,INDREPUESTO = @IsINDREPUESTO
+							,ESTADO		= @IsESTADO
+							,USR_MOD	= @IsUsrEjecuta
+							,FEC_MOD	= GETDATE()
+						WHERE ID = @IsID
+
+						IF @@ROWCOUNT = 0
+						BEGIN
+							SET @CODPREV = 0;
+							SET @MSG = 'ERROR EN LA ACTUALIZACIÓN DE LA TABLA [TBD_MANT_PREV]'
+						END
+						ELSE
+						BEGIN
+							SET @CODPREV = @IsID;
+							SET @MSG = 'REGISTRO REALIZADO CON EXITO'
+						END
+				END
 			END
 		IF(@IsTipoEjecucion = 'E')
 		BEGIN

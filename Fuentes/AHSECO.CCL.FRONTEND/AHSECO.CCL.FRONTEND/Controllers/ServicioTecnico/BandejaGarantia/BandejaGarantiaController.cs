@@ -453,8 +453,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
             cell.CellStyle = style;
             cell.SetCellValue("Estado");
 
-           
-
 
             //// Impresión de la data
             foreach (var item in garantias)

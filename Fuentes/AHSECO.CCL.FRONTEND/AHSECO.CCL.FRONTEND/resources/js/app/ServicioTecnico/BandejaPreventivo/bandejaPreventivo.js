@@ -137,8 +137,8 @@
         $("<input>", { type: "hidden", name: "NumOrdCompra", value: $txtNumOrdCompra.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "NumFianza", value: $txtNumFianza.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "Empresa", value: $cmbempresa.val() == "0" || $cmbempresa.val() == null ? "" : $cmbempresa.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "PeriodoInicio", value: app.isNull($periodoIni.val()) || $periodoIni.val() == "" ? "" : app.parseDate($periodoIni.val()) }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "PeriodoFinal", value: app.isNull($periodoFin.val()) || $periodoFin.val() == "" ? "" : app.parseDate($periodoFin.val()) }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "PeriodoInicio", value: $periodoIni.val().toString().replace("/",".")}).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "PeriodoFinal", value: $periodoFin.val().toString().replace("/", ".")}).appendTo("#hidden_fields");
 
         $formPreventivo.attr('action', href);
         $formPreventivo.submit();

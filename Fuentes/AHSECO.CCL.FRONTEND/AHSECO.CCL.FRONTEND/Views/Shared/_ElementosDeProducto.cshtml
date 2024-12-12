@@ -24,7 +24,7 @@
                 <div class="row container-fluid d-flex justify-content-center">
                     @if (tipoProceso == "U" && (codEst != "STINS" & codEst != "STFIN"))
                     {
-                        <div class="row container-fluid">
+                        <div class="row container-fluid" id="rowElementos">
                             <div class="col-md-4 col-sm-12">
                                 <label for="txtNombreTecnico">T&eacute;cnico: </label>
                                 <div class="form-group">
@@ -63,7 +63,7 @@
                             <thead>
                                 <tr>
                                     <th hidden style="text-align:center; width: 5%">Id</th>
-                                    @if (tipoProceso == "U" )
+                                    @if (tipoProceso == "U" && codEst != "STINS")
                                     {
                                         <th style="text-align: center; width: 5%;">Todos: <input class="form-check-input" type="checkbox" value="" id="checkSeleccionarTodos"></th>
                                     }
