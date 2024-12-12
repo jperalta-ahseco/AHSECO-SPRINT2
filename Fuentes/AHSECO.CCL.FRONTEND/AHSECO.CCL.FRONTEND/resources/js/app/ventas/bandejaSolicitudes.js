@@ -26,15 +26,13 @@
 
     function Initialize() {
 
-        Buscar();
         $btnBuscar.click(Buscar);
         $btnNuevo.click(btnNuevoClick);
         $btnRegresar.click(btnRegresarClick);
         CargarComboEstado();
+        //Buscar();
 
-        setInterval(function () {
-            refrescar();
-        }, 60000);
+        //setInterval(function () { refrescar(); }, 60000);
     };
 
     function CargarComboEstado() {
@@ -50,6 +48,16 @@
             filters.allowClear = false;
             
             app.llenarComboMultiResult($cmbEstado, data.EstadosSolicitud, null, " ", "-- Todos --", filters);
+
+            if (data.EstadoPorDefecto != null && data.EstadoPorDefecto != "") {
+                $cmbEstado.attr("data-selected", data.EstadoPorDefecto);
+                $cmbEstado.val(data.EstadoPorDefecto).trigger('change.select2');
+                $cmbEstado.trigger("change");
+            }
+
+            Buscar();
+            setInterval(refrescar, 60000);
+
         };
 
         var fnFailCallback = function () {
@@ -72,32 +80,40 @@
 
         objParam = JSON.stringify(objBuscar);
 
-        var m = method;
-        var u = baseUrl + url;
-        var d = objParam;
+        var fnDoneCallback = function (data) {
+            cargarTabla(data);
+        };
 
+        var fnFailCallback = function () {
 
+        };
 
-        return $.ajax({
-            method: m,
-            url: u,
-            data: d,
-            contentType: 'application/json',
-            dataType: "json"
-        }).done(function (data, textStatus, jqXhr) {
-            if (data.Status === 1) {
-                cargarTabla(data);
-            } else if (data.Status === 0) {
-                message.error("Error", data.CurrentException, "Aceptar", null);
-            }
-        }).fail(function (jqXhr, textStatus, errorThrow) {
-            message.error("Error inesperado", errorThrow, "Aceptar", null);
-        }).always(function () {
+        return app.llamarAjaxNoLoading(method, url, objParam, fnDoneCallback, fnFailCallback, null, null);
 
-            if (typeof (fnAlwaysCallback) !== "undefined" && fnAlwaysCallback != null) {
-                fnAlwaysCallback();
-            }
-        });
+        //var m = method;
+        //var u = baseUrl + url;
+        //var d = objParam;
+
+        //return $.ajax({
+        //    method: m,
+        //    url: u,
+        //    data: d,
+        //    contentType: 'application/json',
+        //    dataType: "json"
+        //}).done(function (data, textStatus, jqXhr) {
+        //    if (data.Status === 1) {
+        //        cargarTabla(data);
+        //    } else if (data.Status === 0) {
+        //        message.error("Error", data.CurrentException, "Aceptar", null);
+        //    }
+        //}).fail(function (jqXhr, textStatus, errorThrow) {
+        //    message.error("Error inesperado", errorThrow, "Aceptar", null);
+        //}).always(function () {
+
+        //    if (typeof (fnAlwaysCallback) !== "undefined" && fnAlwaysCallback != null) {
+        //        fnAlwaysCallback();
+        //    }
+        //});
     }
 
     function Buscar() {

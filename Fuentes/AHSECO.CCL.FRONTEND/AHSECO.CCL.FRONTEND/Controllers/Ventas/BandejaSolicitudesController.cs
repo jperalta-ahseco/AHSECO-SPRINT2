@@ -587,19 +587,22 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnCotizacion)
                 {
 
-                    if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Registrado)
+                    if(NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
                     {
-                        ViewBag.PermitirEditarCotizacion_Pri = true;
+                        if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Registrado)
+                        { ViewBag.PermitirEditarCotizacion_Pri = true; }
+                        ViewBag.PermitirEditarCotizacion_Sec = true;
                     }
-
-                    ViewBag.PermitirEditarCotizacion_Sec = true;
 
                     if (ViewBag.PermitirEditarValorizacion == false)
                     {
                         if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio
                             || soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
                         {
-                            ViewBag.PermitirAgregarServicios = true;
+                            if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
+                            {
+                                ViewBag.PermitirAgregarServicios = true;
+                            }
                         }
 
                         if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.RepuestosoConsumibles
@@ -607,7 +610,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             || soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaMateriales
                             || soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaEquipos)
                         {
-                            ViewBag.PermitirAgregarCotDet = true;
+                            if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
+                            {
+                                ViewBag.PermitirAgregarCotDet = true;
+                            }
                         }
 
                         if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaMateriales
@@ -615,7 +621,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             || soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaEquipos
                             || soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
                         {
-                            ViewBag.PermitirEnvioCotizacion = true;
+                            if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
+                            {
+                                ViewBag.PermitirEnvioCotizacion = true;
+                            }
                         }
 
                         //Para las solicitudes de Solo Servicios se podrá guardar la cotizacion unicamente
@@ -1493,6 +1502,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 var ventaBL = new VentasBL();
                 var rpta = ventaBL.ObtenerEstadosProcesos(new ProcesoEstadoDTO() { IdProceso = ConstantesDTO.Procesos.Ventas.ID });
                 var lstEstados = new List<ComboDTO>();
+                var NombreRol = VariableSesion.getCadena("VENTA_NOMBRE_ROL");
+                var strEstadoPorDefecto = string.Empty;
 
                 if (rpta.Result.Any())
                 {
@@ -1503,7 +1514,12 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     }
                 }
 
-                return Json(new { Status = 1, EstadosSolicitud = lstEstados });
+                if(NombreRol != ConstantesDTO.WorkflowRol.Venta.Asesor)
+                {
+                    strEstadoPorDefecto = ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion;
+                }
+
+                return Json(new { Status = 1, EstadosSolicitud = lstEstados, EstadoPorDefecto = strEstadoPorDefecto });
             }
             catch (Exception ex) { return Json(new { Status = 0, Mensaje = ex.Message }); }
         }
@@ -2583,6 +2599,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     NotificarCosteoPendiente_ServicioTecnico(oCotizacion.IdSolicitud);
                 }
 
+                NotificarCosteoPendiente_Logistica(oCotizacion.IdSolicitud);
+
                 return Json(new { Status = 1, Mensaje = "Cotización Enviada correctamente" });
             }
             catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
@@ -3427,7 +3445,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             return Json(new ResponseDTO<RespuestaDTO>(result));
         }
 
-
         [HttpPost]
         public JsonResult EnviarServicios(long codigoSolicitud, long codigoWorkFlow)
         {
@@ -3518,10 +3535,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             }
             return Json(new ResponseDTO<RespuestaDTO>(result));
         }
-
-
-
-
 
         [HttpPost]
         public JsonResult EnviarGuiaBO(long codigoSolicitud, long codigoWorkFlow)

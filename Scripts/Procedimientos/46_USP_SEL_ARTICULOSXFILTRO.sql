@@ -69,7 +69,7 @@ BEGIN
 	END;
 	
 	IF ISNULL(@pAR_CDESCRI,'') <> '' BEGIN
-		SET @SQL = @SQL + ' AND A.AR_CDESCRI LIKE ''%'+@pAR_CDESCRI+'%'' ';
+		SET @SQL = @SQL + ' AND REPLACE(A.AR_CDESCRI,'' '','''') LIKE REPLACE(''%'+TRIM(@pAR_CDESCRI)+'%'','' '','''') ';
 	END;
 	
 	IF ISNULL(@pAR_CUNIDAD,'') <> '' BEGIN

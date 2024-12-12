@@ -272,7 +272,13 @@
 
             $CI_txtCantCosteo.removeAttr("disabled");
             if ($CI_pnlInfoCostos_MtoUnitario.css("display") != "none") {
-                $CI_txtMtoUnitarioCosto.attr("disabled", "disabled");
+                //Solo el Asesor para Calibración puede agregar el MONTO UNITARIO
+                if ($CI_cmbTipoCosto.val() == $CI_CodCosto_Calibra.val()) {
+                    $CI_txtMtoUnitarioCosto.removeAttr("disabled");
+                }
+                else {
+                    $CI_txtMtoUnitarioCosto.attr("disabled", "disabled");
+                }
             }
             if ($CI_pnlInfoCostos_MtoTotal.css("display") != "none") {
                 $CI_txtMtoTotalCosto.attr("disabled", "disabled");
@@ -428,7 +434,7 @@
             var filters = {};
             filters.placeholder = "-- Seleccione --";
             filters.allowClear = false;
-            app.llenarComboMultiResult($CI_cmbTipoCosto, data.Result, null, " ", "-- Seleccione --", filters);
+            app.llenarComboMultiResult($CI_cmbTipoCosto, data.Result, $("#modalCostoItem"), " ", "-- Seleccione --", filters);
         }
         return app.llamarAjaxNoLoading(method, url, objParam, fnDoneCallback, null, null, null);
     }
