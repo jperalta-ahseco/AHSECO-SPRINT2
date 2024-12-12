@@ -816,6 +816,7 @@
         var objParam = JSON.stringify(objDatos);
 
         var fnDoneCallBack = function (data) {
+
             if ($CI_opcGrilla.val() == "1") {
                 cargarGrillaCostosCotDet(data);
             }
@@ -830,30 +831,38 @@
                     if ($CI_cmbCDItem.attr("disabled") != "disabled" && $CI_cmbCDItem.attr("readonly") != "readonly") {
                         $CI_cmbCDItem.get(0).selectedIndex = 0;
                         $CI_cmbCDItem.trigger("change.select2");
+                        cargarCotDetSeleccionada();
                         $CI_txtCantCotDet.val("");
                         $CI_txtUnidadMedida.val("");
                     }
                     if ($CI_cmbTipoCosto.attr("disabled") != "disabled" && $CI_cmbTipoCosto.attr("readonly") != "readonly") {
                         $CI_cmbTipoCosto.get(0).selectedIndex = 0;
                         $CI_cmbTipoCosto.trigger("change.select2");
+                        configurarModalCosto();
                     }
-                    $CI_hdnUbicacion.val("");
-                    $CI_txtUbicacion.val("");
-                    ubigeo.setUbigeoById("");
-                    $CI_txtDireccion.val("");
-                    $CI_txtAmbDestino.val("");
-                    $CI_txtNroPiso.val("");
+                    if ($CI_pnlInfoDestino.css("display") != "none") {
+                        $CI_hdnUbicacion.val("");
+                        $CI_txtUbicacion.val("");
+                        ubigeo.setUbigeoById("");
+                        $CI_txtDireccion.val("");
+                        $CI_txtAmbDestino.val("");
+                        $CI_txtNroPiso.val("");
+                    }
                     $CI_txtCantCosteo.val("");
-                    $CI_txtMtoUnitarioCosto.val("");
-                    $CI_txtMtoTotalCosto.val("");
-                    $CI_txtCantPrevent.val("");
-                    $CI_cmbCicloPreventivo.get(0).selectedIndex = 0;
-                    $CI_cmbCicloPreventivo.trigger("change.select2");
-                    return true;
+                    if ($CI_pnlInfoCostos_MtoUnitario.css("display") != "none") {
+                        $CI_txtMtoUnitarioCosto.val("");
+                    }
+                    if ($CI_pnlInfoCostos_MtoTotal.css("display") != "none") {
+                        $CI_txtMtoTotalCosto.val("");
+                    }
+                    if ($CI_pnlInfoPreventivos.css("display") != "none") {
+                        $CI_txtCantPrevent.val("");
+                        $CI_cmbCicloPreventivo.get(0).selectedIndex = 0;
+                        $CI_cmbCicloPreventivo.trigger("change.select2");
+                    }
                 }
                 var fnNo = function () {
                     cerrarModalCostosItem();
-                    return true;
                 }
                 return app.message.confirm("Costos", "¿Des&eacute;a seguir agregando m&aacute;s costos?", "S&iacute;", "No", fnSi, fnNo);
             };
@@ -890,8 +899,12 @@
                 $CI_cmbTipoCosto.val($CI_hdnCodCosto.val()).trigger("change.select2");
             }
             $CI_cmbTipoCosto.attr("disabled", "disabled");
-            $CI_txtCantCotDet.val(data.Result.CotizacionDetalle.Cantidad);
-            $CI_txtUnidadMedida.val(data.Result.CotizacionDetalle.DescUnidad);
+            if (data.Result.CotizacionDetalle != null) {
+                $CI_txtCantCotDet.val(data.Result.CotizacionDetalle.Cantidad);
+                $CI_txtUnidadMedida.val(data.Result.CotizacionDetalle.DescUnidad);
+            }
+            $CI_txtCantCotDet.val(data.Result.CantidadCotizada);
+            $CI_txtUnidadMedida.val(data.Result.DescUnidadCotizada);
             if (data.Result.CodUbigeoDestino != null) {
                 ubigeo.setUbigeoById(data.Result.CodUbigeoDestino);
                 if ($CI_txtUbicacion.attr("readonly") == "readonly") {
@@ -949,7 +962,14 @@
         var objParam = JSON.stringify(objDatos);
 
         var fnDoneCallBack = function (data) {
-            loadGridbyCost(data, strCodCosto);
+
+            if (opcGrilla == "1") {
+                cargarGrillaCostosCotDet(data);
+            }
+            else {
+                loadGridbyCost(data, strCodCosto);
+            }
+
             app.message.success("Costos", "Se elimin&oacute; el costo correctamente.", "Aceptar", null);
         };
         

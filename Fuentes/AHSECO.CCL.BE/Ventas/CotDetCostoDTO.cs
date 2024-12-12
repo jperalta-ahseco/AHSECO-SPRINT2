@@ -25,5 +25,13 @@ namespace AHSECO.CCL.BE.Ventas
         public decimal? MontoUnitarioCosto { get; set; }
         public decimal? MontoTotalCosto { get; set; }
         public CotizacionDetalleDTO CotizacionDetalle { get; set; }
+
+        #region "Cotizacion Detalle"
+        public long IdCotizacion { get; set; }
+        public int CantidadCotizada { get; set; }
+        public string CodUnidadCotizada { get; set; }
+        public string DescUnidadCotizada { get; set; }
+        #endregion
+
     }
 }

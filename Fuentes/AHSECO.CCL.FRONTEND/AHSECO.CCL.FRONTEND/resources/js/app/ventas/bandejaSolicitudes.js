@@ -1,4 +1,5 @@
 ﻿var bandejaSolicitudes = (function ($, win, doc) {
+
     var $idCliente = $("#idCliente");
     var $btnNuevo = $('#btnNuevo');
     var $btnBuscar = $('#btnBuscar');
@@ -6,6 +7,16 @@
     var $btnRegresar = $('#btnRegresar');
     var $tblSolicitudes = $('#tblSolicitudes');
     var $cmbEstado = $("#cmbEstado");
+
+    var $RolVenta_Asesor = $("#RolVenta_Asesor");
+    var $RolVenta_Gerente = $("#RolVenta_Gerente");
+    var $RolVenta_Jefe = $("#RolVenta_Jefe");
+    var $RolVenta_CoordVta = $("#RolVenta_CoordVta");
+    var $RolVenta_ServTecnio = $("#RolVenta_ServTecnio");
+    var $RolVenta_Gerente = $("#RolVenta_Gerente");
+    var $RolVenta_Importacion = $("#RolVenta_Importacion");
+    var $RolVenta_Costos = $("#RolVenta_Costos");
+    var $RolVenta_Logistica = $("#RolVenta_Logistica");
 
     var mensajes = {
         cargandoSolicitudes: "Cargando Solicitudes, por favor espere....."

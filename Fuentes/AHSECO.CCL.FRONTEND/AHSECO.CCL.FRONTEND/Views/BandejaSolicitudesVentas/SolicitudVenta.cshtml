@@ -97,9 +97,7 @@
                 @if (numSol != null)
                 {
                     var numSolFormateado = ("000000" + numSol);
-
                     numSolFormateado = numSolFormateado.Substring((numSolFormateado.Length) - 6, numSolFormateado.Length - ((numSolFormateado.Length) - 6));
-
                     <h2>N&uacute;mero de Solicitud: @numSolFormateado</h2> <!--- Aquí tendremos que controlar-->
                 }
             </div>
@@ -225,7 +223,6 @@
                         <li class="" id="tabDetalleSolicitud">
                             <a href="#navDetalleSolicitud" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-info-circle" aria-hidden="true"></i> Detalle</a>
                         </li>
-
                         <li class="" id="tabAdjuntos">
                             <a href="#navDocumentos" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-file-text" aria-hidden="true"></i> Adjunto de Documentos</a>
                         </li>
