@@ -1,0 +1,142 @@
+USE [DB_AHSECO]
+GO
+
+CREATE OR ALTER PROCEDURE [dbo].[USP_SEL_PREV_PROX_VENCER]
+/*=======================================================================================================
+	Nombre:				Fecha:			Descripcion:
+	Diego Bazalar		25.11.24		Selecciona los mantenimientos preventivos que se deben ejecutar en el rango de fecha parametrizado
+	EXEC [USP_SEL_PREV_PROX_VENCER]
+=======================================================================================================*/
+
+AS
+BEGIN
+SET NOCOUNT ON
+	DECLARE @IsNumDias INT
+	DECLARE @FecHoy DATETIME 
+	DECLARE @FecFinal DATETIME
+
+	SET @IsNumDias = (SELECT TOP 1 CAST(VALOR1 AS INT) FROM TBD_DATOS_GENERALES WHERE DOMINIO = 'DIASGAR') --Obtenemos el número de días. 
+
+/************************************************************/
+	IF OBJECT_ID('tempdb..#tmpDetalleParcial') IS NOT NULL
+		DROP TABLE #tmpDetalleParcial
+	IF OBJECT_ID('tempdb..#tmpDetalle') IS NOT NULL
+		DROP TABLE #tmpDetalle
+	IF OBJECT_ID('tempdb..#tmpParcial') IS NOT NULL 
+		DROP TABLE #tmpParcial
+	IF OBJECT_ID('tempdb..#tmpMantPrev') IS NOT NULL 
+		DROP TABLE #tmpMantPrev
+/************************************************************/
+
+----Se Establece los rangos de Fecha------------------------------------------------------------------------------------------------------------------------------------------------
+	SET @FecHoy = GETDATE()
+	SET @FecFinal = DATEADD(DAY,@IsNumDias,@FecHoy)
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	CREATE TABLE #tmpMantPrev
+	(
+		ID_MANT BIGINT
+		,TOTALPREVE INT
+		,PENDIENTES INT
+		,COMPLETADOS INT
+	)
+
+	;WITH CTE_1 As (
+		SELECT
+			COUNT(MANTDET.ID_MANT) TOTALPREVE
+			,MANTDET.ID_MANT
+		FROM [dbo].[TBM_MANT_PREV] MANT
+		LEFT JOIN [dbo].[TBD_MANT_PREV] MANTDET ON MANT.ID_MANT = MANTDET.ID_MANT
+		GROUP BY MANTDET.ID_MANT
+		),
+	CTE_2 AS (
+		SELECT
+			COUNT(MANTDET.ID_MANT) PENDIENTES
+			,MANTDET.ID_MANT
+		FROM [dbo].[TBM_MANT_PREV] MANT
+		LEFT JOIN [dbo].[TBD_MANT_PREV] MANTDET ON MANT.ID_MANT = MANTDET.ID_MANT AND MANTDET.ESTADO != 'COM'
+		GROUP BY MANTDET.ID_MANT
+	),
+	CTE_3 AS (																						----------------------------------
+		SELECT
+			COUNT(MANTDET.ID_MANT) COMPLETADOS
+			,MANTDET.ID_MANT
+		FROM [dbo].[TBM_MANT_PREV] MANT
+		LEFT JOIN [dbo].[TBD_MANT_PREV] MANTDET ON MANT.ID_MANT = MANTDET.ID_MANT 
+		WHERE MANTDET.ESTADO = 'COM'
+		GROUP BY MANTDET.ID_MANT
+	)
+	INSERT INTO #tmpMantPrev(ID_MANT, TOTALPREVE, PENDIENTES, COMPLETADOS)
+	SELECT
+		MANT.ID_MANT
+		,ISNULL(TOTALPREVE,0)  TOTALPREVE
+		,ISNULL(PENDIENTES,0)  PENDIENTES
+		,ISNULL(COMPLETADOS,0) COMPLETADOS
+	FROM [dbo].[TBM_MANT_PREV] MANT
+	LEFT JOIN CTE_1 cte1 ON cte1.ID_MANT = MANT.ID_MANT
+	LEFT JOIN CTE_2 cte2 ON cte2.ID_MANT = MANT.ID_MANT
+	LEFT JOIN CTE_3 cte3 ON cte3.ID_MANT = MANT.ID_MANT
+
+	SELECT
+			ROW_NUMBER() OVER(ORDER BY SERIE) AS CONTADOR
+			,SERIE
+			,FECHAINSTALACION
+			,MIN(FECHAMANTENIMIENTO) PROXFECHAMANT
+	INTO #tmpProxavencer
+	FROM TBM_MANT_PREV MANT
+	LEFT JOIN [dbo].[TBD_MANT_PREV] MANTDET ON MANT.ID_MANT = MANTDET.ID_MANT AND ESTADO = 'PEND'
+	GROUP BY SERIE,FECHAINSTALACION
+
+	SELECT 																				
+		MANT.ID_MANT				   AS ID_MANT										
+		,SERIE						   AS SERIE											
+		,MANT.FECHAINSTALACION		   AS FECHAINSTALACION								
+		,SOL.COD_EMPRESA			   AS COD_EMPRESA									
+		,MANT.DIRECCION				   AS DIRECCION										
+		,MANT.UBIGEODEST			   AS UBIGEODEST									
+		,COTDET.CODITEM				   AS CODITEM										
+		,COTDET.DESCRIPCION			   AS DESCRIPCION									
+		,COTIZ.GARANTIA				   AS CODGARANTIA									
+		,MANT.NUMPROCESO			   AS NUMPROCESO									
+		,MANT.TIPOPROCESO			   AS TIPOPROCESO									
+		,MANT.ORDENCOMPRA			   AS ORDENCOMPRA									
+		,MANT.NUMFIANZA				   AS NUMFIANZA										
+	INTO #tmpParcial
+	FROM [dbo].[TBM_MANT_PREV] MANT WITH(NOLOCK)										
+	LEFT JOIN [dbo].[TBD_MANT_PREV] MANTDET WITH(NOLOCK) ON MANT.ID_MANT = MANTDET.ID_MANT
+	LEFT JOIN [dbo].[TBD_DESPACHO_DIST] DESP WITH(NOLOCK) ON MANT.SERIE = DESP.NUMSERIE
+	LEFT JOIN [dbo].[TBD_COTIZACIONVENTA] COTDET WITH(NOLOCK) ON COTDET.ID = DESP.ID_COTDETALLE
+	LEFT JOIN [dbo].[TBM_COTIZACIONVENTA] COTIZ WITH(NOLOCK) ON COTIZ.ID_COTIZACION = COTDET.ID_COTIZACION
+	LEFT JOIN [dbo].[TBM_SOLICITUDVENTA] SOL WITH(NOLOCK) ON SOL.ID_SOLICITUD = COTIZ.ID_SOLICITUD
+	GROUP BY MANT.ID_MANT
+		,SERIE
+		,MANT.FECHAINSTALACION
+		,SOL.COD_EMPRESA
+		,MANT.DIRECCION
+		,MANT.UBIGEODEST
+		,COTDET.CODITEM
+		,COTDET.DESCRIPCION
+		,COTIZ.GARANTIA
+		,MANT.NUMPROCESO
+		,MANT.TIPOPROCESO
+		,MANT.ORDENCOMPRA
+		,MANT.NUMFIANZA
+
+	SELECT
+		parcial.ID_MANT
+		,parcial.SERIE
+		,parcial.DESCRIPCION
+		,parcial.FECHAINSTALACION
+		,ISNULL(CONVERT(VARCHAR(10),prox.PROXFECHAMANT,103),'') PROXFECHAMANT
+		,calc.TOTALPREVE
+		,calc.COMPLETADOS
+		,calc.PENDIENTES
+		,CONCAT(UBI.NOMDEPARTAMENTO,' / ',UBI.NOMPROVINCIA,' / ',UBI.NOMDISTRITO) AS UBIGEODEST
+	FROM #tmpParcial parcial
+	LEFT JOIN #tmpProxavencer prox ON parcial.SERIE = prox.SERIE
+	LEFT JOIN #tmpMantPrev calc ON calc.ID_MANT = parcial.ID_MANT
+	LEFT JOIN [dbo].[TBD_DATOS_GENERALES] GARANT WITH(NOLOCK) ON parcial.CODGARANTIA = GARANT.COD_VALOR1 AND DOMINIO = 'GARANTIAS' AND GARANT.ESTADO = '1'
+	LEFT JOIN [dbo].[TBM_UBIGEO] UBI WITH(NOLOCK) ON UBI.CODUBIGEO = parcial.UBIGEODEST
+	WHERE prox.PROXFECHAMANT BETWEEN @FecHoy AND @FecFinal
+	ORDER BY ID_MANT ASC
+SET NOCOUNT OFF
+END

@@ -10,6 +10,8 @@ using Microsoft.Ajax.Utilities;
 using System.Threading.Tasks;
 using AHSECO.CCL.FRONTEND.Identity;
 using AHSECO.CCL.COMUN;
+using Microsoft.ReportingServices.RdlExpressions.ExpressionHostObjectModel;
+using AHSECO.CCL.BE.ServicioTecnico.BandejaPreventivos;
 
 
 namespace AHSECO.CCL.FRONTEND.Controllers.Alertas
@@ -28,8 +30,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Alertas
             {
                 EnvioAlertaGarantias(result);
             }
-
-
         }
 
         public string EnvioAlertaGarantias(List<GarantiaResultDTO> lista)
@@ -79,5 +79,65 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Alertas
             Log.TraceInfo("Envio de alerta de garantias:" + respuesta);
             return "ok";
         }
+
+
+        [Route("ObtenerPreventivosProxVencer")]
+        [HttpGet]
+        public void ObtenerPreventivosProxVencer()
+        {
+            var alertasBL = new AlertasBL();
+            var resultPrev = alertasBL.ObtenerPreventivosProxVencer().Result.ToList();
+            if (resultPrev.Count() > 0)
+            {
+                EnvioAlertaPreventivos(resultPrev);
+            }
+        }
+
+        public string EnvioAlertaPreventivos (List<ResultPreventivoDTO> lista)
+        {
+            var plantillasBL = new PlantillasBL();
+            //Envio de correo:
+            var filtros = new FiltroPlantillaDTO();
+            filtros.CodigoProceso = 6;
+            filtros.CodigoPlantilla = "PLANMANT";
+            filtros.Usuario = User.ObtenerUsuario();
+            filtros.Codigo = 0;
+
+            var datos_correo = plantillasBL.ConsultarPlantillaCorreo(filtros).Result;
+                
+            var tabla = "<table style='border:1px solid black;'>";
+            tabla += "<tr style='background:red;color:white;'>";
+            tabla += "<td> N° de Mantenimiento </td>";
+            tabla += "<td> Serie </td>";
+            tabla += "<td> Descripcion </td>";
+            tabla += "<td> Fecha de Instalacion </td>";
+            tabla += "<td> Preventivos Totales </td>";
+            tabla += "<td> Preventivos Realizados </td>";
+            tabla += "<td> Preventivos Pendientes </td>";
+            tabla += "<td> Ubigeo Destino </td>";
+            tabla += "</tr>";
+            foreach (var item in lista)
+            {
+                var num_mant = "000000" + item.Id_Mant.ToString();
+                tabla += "<tr>";
+                tabla += "<td>" + num_mant.Substring(num_mant.Length - 6) + "</td>";
+                tabla += "<td>" + item.Serie.ToString() + "</td>";
+                tabla += "<td>" + item.Descripcion.ToString() + "</td>";
+                tabla += "<td>" + item.FechaInstalacion.ToString("dd/MM/yyyy") + "</td>";
+                tabla += "<td>" + item.TotalPrevent.ToString() + "</td>";
+                tabla += "<td>" + item.PreventReal.ToString() + "</td>";
+                tabla += "<td>" + item.PreventPend.ToString() + "</td>";
+                tabla += "<td>" + item.UbigeoDest.ToString() + "</td>";
+                tabla += "</tr>";
+            }
+            tabla += "</table>";
+
+            datos_correo.Body = datos_correo.Body.Replace("{TABLA_DETALLE}", tabla);
+            var respuesta = Utilidades.Send(datos_correo.To, datos_correo.CC, "", datos_correo.Subject, datos_correo.Body, null, "");
+            CCLog Log = new CCLog();
+            Log.TraceInfo("Envio de alerta de preventivos:" + respuesta);
+            return "ok";
+        }
+
     }
 }

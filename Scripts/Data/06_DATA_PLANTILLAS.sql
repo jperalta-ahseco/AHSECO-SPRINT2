@@ -104,9 +104,6 @@ VALUES('PLANATEIMP',1,'Plantilla de Atencion de Importación','','','ATENCION DE 
 <p>Se realiza el ingreso de los datos de importación de la solicitud N°{NRO_SOL} para el cliente {CLIENTE}.</p>
 <p>Por favor ingrese al sistema para continuar con el flujo de venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
 
-
-
-
 --ALERTA DE GARANTIAS:
 INSERT INTO TBM_PLANTILLAS
 VALUES('PLANGARANT',7,'Plantilla de Alertas de garantias proximas a vencer','serviciotecnico@ahsecoperu.com','','GARANTIAS PROXIMAS A VENCER',
@@ -123,4 +120,11 @@ VALUES('PLANPREV',6,'Plantilla de Envío de Guía Manuscrita','pminetti@ahsecoperu
 <p>Se realizó el mantenimiento preventivo N°{NRO_PREV} del equipo: {NOM_EQUIPO} de la solicitud de venta N°{NRO_SOL} para el cliente {CLIENTE}.</p>
 <p>Por favor ingrese al sistema para visualizar la informaci&oacute;n a m&aacute;s detalle. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a>&nbsp;.</p>','SYSTEM',GETDATE(),NULL,NULL);
 
+--ALERTA DE PREVENTIVOS:
+INSERT INTO TBM_PLANTILLAS
+VALUES('PLANMANT',6,'Plantilla de Mantenimientos Preventivos proximos a vencer','serviciotecnico@ahsecoperu.com','','MANT. PREVENTIVOS PROXIMOS A REALIZAR',
+			   '<p>Estimada &Aacute;rea de Servicio T&eacute;cnico,</p>
+<p>Se encuentran pr&oacute;ximas a vencer, los mantenimientos preventivos de los siguientes equipos.</p>
+<p>{TABLA_DETALLE}</p>
+<p>Por favor ingrese al sistema para visualizar la informaci&oacute;n a m&aacute;s detalle. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a>&nbsp;.</p>','SYSTEM',GETDATE(),NULL,NULL);
 

@@ -6,6 +6,7 @@ using System.DirectoryServices;
 using static System.Net.Mime.MediaTypeNames;
 using System.Collections.Generic;
 using AHSECO.CCL.BE.ServicioTecnico.BandejaGarantias;
+using AHSECO.CCL.BE.ServicioTecnico.BandejaPreventivos;
 
 namespace AHSECO.CCL.BL
 {
@@ -38,5 +39,18 @@ namespace AHSECO.CCL.BL
             }  
         }
 
+        public ResponseDTO<IEnumerable<ResultPreventivoDTO>> ObtenerPreventivosProxVencer()
+        {
+            try
+            {
+                var result = Repository.ObtenerPreventivosProxVencer();
+                return new ResponseDTO<IEnumerable<ResultPreventivoDTO>>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<IEnumerable<ResultPreventivoDTO>>(ex);
+            }
+        }
     }
 }
