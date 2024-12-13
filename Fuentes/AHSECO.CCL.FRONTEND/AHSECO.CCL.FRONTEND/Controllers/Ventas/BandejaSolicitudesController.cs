@@ -587,7 +587,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnCotizacion)
                 {
 
-                    if(NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
+                    if(NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor ||
+                        NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ ||
+                        NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc)
                     {
                         if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Registrado)
                         { ViewBag.PermitirEditarCotizacion_Pri = true; }
@@ -638,7 +640,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion)
                 {
 
-                    if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
+                    if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor || 
+                        NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ ||
+                        NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc)
                     {
                         ViewBag.PermitirEditarCotizacion_Sec = true;
                     }
