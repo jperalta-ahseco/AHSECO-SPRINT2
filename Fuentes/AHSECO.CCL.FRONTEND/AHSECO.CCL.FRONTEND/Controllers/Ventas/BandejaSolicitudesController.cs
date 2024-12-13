@@ -273,10 +273,22 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ
                     || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc)
                 {
+                    if(soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnCotizacion)
+                    {
+                        if(NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc ||
+                            NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ)
+                        {
+                            ViewBag.PermitirImprimirCotizacion = true;
+                        }
+                    }
 
                     if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion)
                     {
-                        ViewBag.PermitirImprimirCotizacion = true;
+                        if(NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
+                        {
+                            ViewBag.PermitirImprimirCotizacion = true;
+                        }
+                        
                     }
 
                     if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.CotAprob)
@@ -807,7 +819,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         else if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaMateriales ||
                             soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.RepuestosoConsumibles)
                         {
-                            if (swEsCotizacionValorizada && NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
+                            if (swEsCotizacionValorizada && (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor
+                                                    || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc
+                                                    || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ))
                             {
                                 ViewBag.PermitirAprobarCotizacion = true;
                             }
@@ -831,7 +845,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 || soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
                             {
                                 if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnCotizacion &&
-                                    NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
+                                    (NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc ||
+                                     NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ))
                                 {
                                     ViewBag.PermitirAprobarCotizacion = true;
                                 }
