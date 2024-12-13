@@ -100,6 +100,7 @@
 
 
     /*Modal Adjuntos*/
+    var $tipoDocAdjuntos = $('#tipoDocAdjuntos');
     var $fileCargaDocumentoSustento = $('#fileCargaDocumentoSustento');
     var $btnAgregarDocumento = $('#btnAgregarDocumento');
     var $NoExisteRegDoc = $('#NoExisteRegDoc');
@@ -168,6 +169,7 @@
     let adjuntos = [];
     let rptaFinal = 0;
     function Initializer() {
+        $tipoDocAdjuntos.text("Archivos permitidos: .xls,.xlsx,.pdf,.doc,.docx,.zip,.rar");
         cargarTipoDoc();
         ObtenerFiltrosGarantias();
         garantias.contadorObservaciones = 0;    
@@ -1046,6 +1048,12 @@
         var file = fileInput.files[0];
         var req = new XMLHttpRequest();
         var ext = fileInput.files[0].name.split('.').pop();
+
+        if (file.size > 5000000) {
+            app.message.error("Validación", "El documento cargado no debe de superar los 4mb, por favor revisar");
+            return;
+        };
+
         req.open("POST", "UploadFiles?extension=" + ext, true);
         req.setRequestHeader("File-Name", file.name);
         req.setRequestHeader("X-Requested-With", "XMLHttpRequest");
@@ -1559,11 +1567,14 @@
 
         myfile = $(this).val();
         var ext = myfile.split('.').pop();
-        if (ext == "pdf" || ext == "PDF" ||
-            ext == "xls" || ext == "XLS" ||
-            ext == "xlsx" || ext == "XLSX" ||
-            ext == "doc" || ext == "DOC" ||
-            ext == "docx" || ext == "DOCX") {
+        if (ext == "pdf"    || ext == "PDF"     ||
+            ext == "xls"    || ext == "XLS"     ||
+            ext == "xlsx"   || ext == "XLSX"    ||
+            ext == "doc"    || ext == "DOC"     ||
+            ext == "docx"   || ext == "DOCX"    ||
+            ext == "zip"    || ext == "ZIP"     ||
+            ext == "rar"    || ext == "RAR"
+        ) {
             //beforeSendCargaDoc();
             var formdata = new FormData(); //FormData object
             //Appending each file to FormData object

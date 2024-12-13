@@ -12,6 +12,7 @@ namespace AHSECO.CCL.BE
         public long Id { get; set; }
         public long Id_Detalle { get; set; }
         public long Id_Despacho { get; set; }
+        public string CodDepartamento { get; set; }
         public List<string> Id_DespachoList { get; set; }
         public string CodProduct { get; set; }
         public int CodTecnico { get; set; }

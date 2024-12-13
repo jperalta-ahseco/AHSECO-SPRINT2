@@ -57,6 +57,7 @@
     var $btnFinalizarMant = $('#btnFinalizarMant ');
 
     /*Modal Adjuntos*/
+    var $tipoDocAdjuntos = $('#tipoDocAdjuntos');
     var $fileCargaDocumentoSustento = $('#fileCargaDocumentoSustento');
     var $btnAgregarDocumento = $('#btnAgregarDocumento');
     var $NoExisteRegDoc = $('#NoExisteRegDoc');
@@ -115,6 +116,7 @@
     var observaciones = [];
     var adjuntos = [];
     function Initializer() {
+        $tipoDocAdjuntos.text("Archivos permitidos: .xls,.xlsx,.pdf,.doc,.docx,.zip,.rar");
         cargarTipoDoc();
         cargarDatos();
         CargarTipoDocumento(6);
@@ -226,6 +228,12 @@
         var file = fileInput.files[0];
         var req = new XMLHttpRequest();
         var ext = fileInput.files[0].name.split('.').pop();
+
+        if (file.size > 5000000) {
+            app.message.error("Validación", "El documento cargado no debe de superar los 4mb, por favor revisar");
+            return;
+        };
+
         req.open("POST", "UploadFiles?extension=" + ext, true);
         req.setRequestHeader("File-Name", file.name);
         req.setRequestHeader("X-Requested-With", "XMLHttpRequest");
@@ -362,7 +370,11 @@
             ext == "xls" || ext == "XLS" ||
             ext == "xlsx" || ext == "XLSX" ||
             ext == "doc" || ext == "DOC" ||
-            ext == "docx" || ext == "DOCX") {
+            ext == "docx" || ext == "DOCX" ||
+            ext == "zip" || ext == "ZIP" ||
+            ext == "rar" || ext == "RAR"
+        )
+        {
             //beforeSendCargaDoc();
             var formdata = new FormData(); //FormData object
             //Appending each file to FormData object
@@ -584,7 +596,7 @@
         else {
             var btnRegresar = document.getElementById("btnRegresar");
             if (btnRegresar != null) {
-                if ($estadoMant.val() == "PROG" || detallePreventivo.tecnicosAsig.length == 0)
+                if ($estadoMant.val() == "PROG" && detallePreventivo.tecnicosAsig.length == 0)
                 {
                     app.message.error("Validación", "Debe de existir por lo menos un técnico registrado en estado 'Programado'");
                     $("#tabTecnicos").addClass("active");
@@ -830,6 +842,12 @@
                     detallePreventivo.MantPreventivo.FechaMantenimiento = $dateFechaMant.val();
                     detallePreventivo.MantPreventivo.MontoPrestAcce = $txtMontoAcce.val();
                     cancelarEditMant();
+                }
+
+                if ($estadoMant.val() == "PROG" && indPrest == 0 && indRepuesto == 0) {
+                    $btnFinalizarMant.html('<i class="fa fa-check" aria-hidden="true"></i>&nbsp;Completar');
+                } else {
+                    $btnFinalizarMant.html('<i class="fa fa-check" aria-hidden="true"></i>&nbsp;Finalizar');
                 }
             };
 
@@ -1351,9 +1369,10 @@
         var objParam = JSON.stringify(obj);
 
         var fnDoneCallBack = function (data) {
-            $estadoMant.val("PROG");
-            $spanEstadoSol.text("Programado");
-            $btnFinalizarMant.prop('disabled', false);
+            //$estadoMant.val("PROG");
+            //$spanEstadoSol.text("Programado");
+            //$btnFinalizarMant.prop('disabled', false);
+            ModificarVarInternas();
         };
 
         var fnFailCallBack = function () {
@@ -1362,6 +1381,34 @@
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
     };
+
+
+    function ModificarVarInternas() {
+        var method = "POST";
+        var url = "BandejaPreventivo/SetMantPrev";
+
+        var obj = {
+            Id: $numPreventivo.val(),
+            CodEstado: "PROG",
+            Id_WorkFlow: $codigoWorkflow.val(),
+            Id_Mant: $idMantPadre.val(),
+            TipoTarea: "U"
+        };
+
+        var objParam = JSON.stringify(obj);
+
+        var fnDoneCallBack = function () {
+            location.reload();
+        };
+
+        var fnFailCallBack = function () {
+            app.message.error("Error", "Se produjo un error al modificar las variables internas. ")
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null, null);
+    }
+
+
     function FinalizarMant() {
         if (indPrest == 0 && indRepuesto == 0) {
             var validador = 1;
@@ -1818,6 +1865,11 @@
                     }
                     $NoExisteRegSeg.hide();
                 }
+
+                if ($estadoMant.val() == "PROG" && indPrest == 0 && indRepuesto == 0) {
+                    $btnFinalizarMant.html('<i class="fa fa-check" aria-hidden="true"></i>&nbsp;Completar');
+                };
+
             };
             var fnFailCallBack = function () {
                 app.message.error("Validación", "Hubo un error en obtener el detalle del mant. preventivo.")
@@ -1825,6 +1877,8 @@
 
             app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
         }
+
+        
 
         if ($tipoAccion.val() == "V") {
             $btnAgregarObservacion.css('display', 'none');

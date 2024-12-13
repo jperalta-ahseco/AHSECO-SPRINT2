@@ -116,6 +116,7 @@
     var $tbodyObservaciones = $('#tbodyObservaciones');
 
     /*Modal Adjuntos*/
+    var $tipoDocAdjuntos = $('#tipoDocAdjuntos');
     var $btnAgregarDocumento = $('#btnAgregarDocumento');
     var $hdnDocumentoCargadoId = $('#hdnDocumentoCargadoId');
     var $cmbDocumentoCarga = $('#cmbDocumentoCarga');
@@ -195,6 +196,7 @@
     let adjuntos = [];
     const baseUrl = window.location.origin;
     function Initializer() {
+        $tipoDocAdjuntos.text("Archivos permitidos: .xls,.xlsx,.pdf,.doc,.docx,.zip,.rar");
         ObtenerFiltrosInstalacion();
         cargarTipoDoc();
         ObtenerDepartamentos();
@@ -905,8 +907,8 @@
 
             for (var i = 0; i < data.Result.ElementosDeProducto.length; i++) {
 
-                if (!arrayDep.includes(data.Result.ElementosDeProducto[i].CodUbigeoDestino)) {
-                    arrayDep.push(data.Result.ElementosDeProducto[i].CodUbigeoDestino);
+                if (!arrayDep.includes(data.Result.ElementosDeProducto[i].CodDepartamento)) {
+                    arrayDep.push(data.Result.ElementosDeProducto[i].CodDepartamento);
                 };
             };
 
@@ -939,6 +941,7 @@
             $modalSolicitud.modal('toggle');
             //$cmbDestino.prop('disabled', false);
             //$dateSolicitud.prop('disabled', false);
+            cargarBtnInfoAdicional();
         };
 
         var fnFailCallBack = function () {
@@ -947,7 +950,7 @@
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
 
-        cargarBtnInfoAdicional();
+        
     };
 
     function limpiarCabecera() {
@@ -1152,6 +1155,7 @@
             }
         ];
         app.llenarTabla($tblMainProducts, data, columns, columnDefs, "#tblMainProducts");
+        //cargarBtnInfoAdicional();
     };
     /*Control de fechas*/
     function activarFechaProgramacion(id) {
@@ -1557,10 +1561,14 @@
         var formdata = new FormData(); //FormData object
         //Appending each file to FormData object
         var file = fileInput.files[0];
-        var blob = new Blob([file], { type: file.type });
-        formdata.append('file', blob);
-        //formdata.append('name', name);
+        formdata.append(fileInput.files[0].name, fileInput.files[0]);
+        formdata.append('name', name);
 
+
+        if (file.size > 5000000) {
+            app.message.error("Validación", "El documento cargado no debe de superar los 4mb, por favor revisar");
+            return;
+        };
         var archivo = $fileCargaDocumentoSustento.val();
         var req = new XMLHttpRequest();
         var ext = fileInput.files[0].name.split('.').pop();
@@ -1569,17 +1577,6 @@
         //req.setRequestHeader("X-Requested-With", "XMLHttpRequest");
         req.setRequestHeader("X-File-Size", file.size);
         req.setRequestHeader("X-File-Type", file.type);
-        req.onload = function () {
-            if (req.status === 200) {
-                console.log('Archivo subido correctamente');
-            } else {
-                console.error('Error al subir el archivo:', req.status, req.responseText);
-            }
-        };
-
-        req.onerror = function () {
-            console.error('Error de red o de servidor al intentar enviar el archivo');
-        };
         req.send(formdata);
 
         req.onreadystatechange = function () {
@@ -2221,7 +2218,10 @@
             ext == "xls" || ext == "XLS" ||
             ext == "xlsx" || ext == "XLSX" ||
             ext == "doc" || ext == "DOC" ||
-            ext == "docx" || ext == "DOCX") {
+            ext == "docx" || ext == "DOCX" ||
+            ext == "zip" || ext == "ZIP" ||
+            ext == "rar" || ext == "RAR" 
+        ) {
             //beforeSendCargaDoc();
             var formdata = new FormData(); //FormData object
             //Appending each file to FormData object
@@ -2348,6 +2348,9 @@
     }
 
     function cargarBtnInfoAdicional() {
+
+        $('#tblElementosDeProducto tbody').off('click', 'td #btnInfoDetail');
+
         $('#tblElementosDeProducto tbody').on('click', 'td #btnInfoDetail', function () {
 
             limpiarDetalleInfoAdcional()
@@ -2515,7 +2518,7 @@
                 {
                     data: "id_Despacho",
                     render: function () {
-                        var detalleAdic = '<a id="btnInfoDetail" class="btn btn-primary btn-xs" title="Información Adicional" ><i class="fa fa-file-text" aria-hidden="true"></i></a>'
+                        var detalleAdic = '<a id="btnInfoDetail" class="btn btn-primary btn-xs" title="Información Adicional"><i class="fa fa-file-text" aria-hidden="true"></i></a>'
                         return '<center>' + detalleAdic + '</center>';
                     }
                 }
@@ -2777,6 +2780,7 @@
         desactivarFechaProgramacion: desactivarFechaProgramacion,
         activarFechaInstalacion: activarFechaInstalacion,
         desactivarFechaInstalacion: desactivarFechaInstalacion,
+        //cargarBtnInfoAdicional: cargarBtnInfoAdicional
        //añadirTecnico: añadirTecnico,
         //DesasignarTécnicoTmp: DesasignarTécnicoTmp
     }

@@ -44,7 +44,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
 
             return View();
         }
-        
+
+        [Permissions(Permissions = "BANDEJAPREVENTIVO")]
         public ActionResult RegistroPreventivo()
         {
             VariableSesion.setCadena("NumPreventivo", "");
@@ -55,6 +56,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
             return View();
         }
 
+        [Permissions(Permissions = "BANDEJAPREVENTIVO")]
         public ActionResult DetallePreventivo()
         {
             return View();
