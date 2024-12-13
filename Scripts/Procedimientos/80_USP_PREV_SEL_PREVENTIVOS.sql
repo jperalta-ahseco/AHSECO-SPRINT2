@@ -6,7 +6,7 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_PREV_SEL_PREVENTIVOS]
 /*=======================================================================================================
 	Nombre:				Fecha:			Descripcion:
 	Diego Bazalar		28.11.24		Realiza el select de los mantenimientod preventivos.
-	EXEC [USP_PREV_SEL_PREVENTIVOS] @IsIdMant='0', @IsNumSerie='0', @IsNumProc='0',@IsNumOrdCompra='0',@IsNumFianza='0',@IsEmpresa='0',@IsPeriodoInicio='',@IsPeriodoFinal=''
+	EXEC [USP_PREV_SEL_PREVENTIVOS] @IsIdMant='', @IsNumSerie='0', @IsNumProc='0',@IsNumOrdCompra='0',@IsNumFianza='0',@IsEmpresa='0',@IsPeriodoInicio='',@IsPeriodoFinal=''
 =======================================================================================================*/
 	 @IsIdMant			BIGINT
 	,@IsNumSerie		VARCHAR(100) 
@@ -187,7 +187,7 @@ SET NOCOUNT ON
 	LEFT JOIN #tmpMantPrev calc ON calc.ID_MANT = parcial.ID_MANT
 	LEFT JOIN [dbo].[TBD_DATOS_GENERALES] GARANT WITH(NOLOCK) ON parcial.CODGARANTIA = GARANT.COD_VALOR1 AND DOMINIO = 'GARANTIAS' AND GARANT.ESTADO = '1'
 	LEFT JOIN [dbo].[TBM_UBIGEO] UBI WITH(NOLOCK) ON UBI.CODUBIGEO = parcial.UBIGEODEST
-	WHERE CONVERT(VARCHAR(7),prox.PROXFECHAMANT,102) BETWEEN IIF(@IsPeriodoInicio = '',CONVERT(VARCHAR(7),prox.PROXFECHAMANT,102),CONVERT(VARCHAR(7),@IsPeriodoInicio,102)) AND IIF(@IsPeriodoFinal='', CONVERT(VARCHAR(7),prox.PROXFECHAMANT,102),CONVERT(VARCHAR(7),@IsPeriodoFinal,102))
+	WHERE CONVERT(VARCHAR(7),prox.PROXFECHAMANT,102) BETWEEN IIF(@IsPeriodoInicio IS NULL,CONVERT(VARCHAR(7),prox.PROXFECHAMANT,102),CONVERT(VARCHAR(7),@IsPeriodoInicio,102)) AND IIF(@IsPeriodoFinal IS NULL, CONVERT(VARCHAR(7),prox.PROXFECHAMANT,102),CONVERT(VARCHAR(7),@IsPeriodoFinal,102))
 	ORDER BY ID_MANT ASC
 
 SET NOCOUNT OFF
