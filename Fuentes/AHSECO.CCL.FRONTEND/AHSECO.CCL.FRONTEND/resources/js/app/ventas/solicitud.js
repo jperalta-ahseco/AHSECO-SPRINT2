@@ -2546,8 +2546,12 @@
                             Estado: data.Result.TecnicosDespacho[i].Estado
                         });
                     }
-                    
+
                     cargarTablaMainTecnicos(tecnicosAsig);
+                }
+                else {
+                    $btnBuscarTecnicos.show();
+                    $btnAñadirTecnico.show();
                 }
 
 
