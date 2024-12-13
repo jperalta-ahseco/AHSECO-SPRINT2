@@ -924,22 +924,22 @@ var cotvtadet = (function ($, win, doc) {
         var bFlete = null;
 
         if ($.trim($DI_txtCodigo.val()) == "") {
-            app.message.error("Validaci&oacute;n", "Campo C&oacute;digo no puede ser vac&iacute;o");
+            app.message.error("Validación", "Campo C&oacute;digo no puede ser vac&iacute;o");
             return false;
         }
 
         if ($DI_txtCantidad.val() == "") {
-            app.message.error("Validaci&oacute;n", "Campo Cantidad no puede ser vac&iacute;o");
+            app.message.error("Validación", "Campo Cantidad no puede ser vac&iacute;o");
             return false;
         }
         else {
             if (!app.validaNumeroEntero($DI_txtCantidad.val())) {
-                app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Cantidad");
+                app.message.error("Validación", "N&uacute;mero inv&aacute;lido en campo Cantidad");
                 return false;
             }
             else {
                 if (parseInt($DI_txtCantidad.val()) <= 0) {
-                    app.message.error("Validaci&oacute;n", "La cantidad debe ser mayor a 0.");
+                    app.message.error("Validación", "La cantidad debe ser mayor a 0.");
                     return false;
                 }
             }
@@ -948,12 +948,12 @@ var cotvtadet = (function ($, win, doc) {
         if ($DI_pnlCostos_CostoFOB.css("display") != "none") {
             if ($DI_txtCostoFOB.attr("readonly") != "readonly" && $DI_txtCostoFOB.attr("disabled") != "disabled") {
                 if (!app.validaNumeroDecimal($DI_txtCostoFOB.val())) {
-                    app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Costo FOB");
+                    app.message.error("Validación", "N&uacute;mero inv&aacute;lido en campo Costo FOB");
                     return false;
                 }
                 else {
                     if (parseFloat($DI_txtCostoFOB.val()) <= 0) {
-                        app.message.error("Validaci&oacute;n", "el costo FOB debe ser mayor a 0.");
+                        app.message.error("Validación", "el costo FOB debe ser mayor a 0.");
                         return false;
                     }
                 }
@@ -963,12 +963,12 @@ var cotvtadet = (function ($, win, doc) {
         if ($DI_pnlCostos_ValorUnitario.css("display") != "none") {
             if ($DI_txtValorUnitario.attr("readonly") != "readonly" && $DI_txtValorUnitario.attr("disabled") != "disabled") {
                 if (!app.validaNumeroDecimal($DI_txtValorUnitario.val())) {
-                    app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Valor Unitario");
+                    app.message.error("Validación", "N&uacute;mero inv&aacute;lido en campo Valor Unitario");
                     return false;
                 }
                 else {
                     if (parseFloat($DI_txtValorUnitario.val()) <= 0) {
-                        app.message.error("Validaci&oacute;n", "el valor unitario debe ser mayor a 0.");
+                        app.message.error("Validación", "el valor unitario debe ser mayor a 0.");
                         return false;
                     }
                 }
@@ -978,12 +978,12 @@ var cotvtadet = (function ($, win, doc) {
         if ($DI_pnlCostos_Ganancia.css("display") != "none") {
             if ($DI_txtGanancia.attr("readonly") != "readonly" && $DI_txtGanancia.attr("disabled") != "disabled") {
                 if (!app.validaNumeroDecimal($DI_txtGanancia.val())) {
-                    app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Ganancia");
+                    app.message.error("Validación", "N&uacute;mero inv&aacute;lido en campo Ganancia");
                     return false;
                 }
                 else {
                     if (parseFloat($DI_txtGanancia.val()) <= 0) {
-                        app.message.error("Validaci&oacute;n", "La ganancia no debe ser menor a 0.");
+                        app.message.error("Validación", "La ganancia no debe ser menor a 0.");
                         return false;
                     }
                 }
@@ -993,7 +993,7 @@ var cotvtadet = (function ($, win, doc) {
         if ($DI_pnlCostos_GarantAdic.css("display") != "none") {
             if ($DI_cmbGarantias.attr("readonly") != "readonly" && $DI_cmbGarantias.attr("disabled") != "disabled") {
                 if ($.trim($DI_cmbGarantias.val()) == "") {
-                    app.message.error("Validaci&oacute;n", "Se debe elegir el tipo de garant&iacute;a.");
+                    app.message.error("Validación", "Se debe elegir el tipo de garant&iacute;a.");
                     return false;
                 }
             }
@@ -1003,7 +1003,7 @@ var cotvtadet = (function ($, win, doc) {
             if ($DI_radTieneStock_Si.attr("readonly") != "readonly" && $DI_radTieneStock_Si.attr("disabled") != "disabled" &&
                 $DI_radTieneStock_No.attr("readonly") != "readonly" && $DI_radTieneStock_No.attr("disabled") != "disabled") {
                 if (!$DI_radTieneStock_Si.is(':checked') && !$DI_radTieneStock_No.is(':checked')) {
-                    app.message.error("Validaci&oacute;n", "Elija Si o No si el producto tiene STOCK");
+                    app.message.error("Validación", "Elija Si o No si el producto tiene STOCK");
                     return false;
                 }
             }
@@ -1013,7 +1013,7 @@ var cotvtadet = (function ($, win, doc) {
             if ($DI_radReqPlaca_Si.attr("readonly") != "readonly" && $DI_radReqPlaca_Si.attr("disabled") != "disabled" &&
                 $DI_radReqPlaca_No.attr("readonly") != "readonly" && $DI_radReqPlaca_No.attr("disabled") != "disabled") {
                 if (!$DI_radReqPlaca_Si.is(':checked') && !$DI_radReqPlaca_No.is(':checked')) {
-                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo de Requiere placa");
+                    app.message.error("Validación", "Elija Si o No en campo de Requiere placa");
                     return false;
                 }
             }
@@ -1023,7 +1023,7 @@ var cotvtadet = (function ($, win, doc) {
             if ($DI_radManuales_Si.attr("readonly") != "readonly" && $DI_radManuales_Si.attr("disabled") != "disabled" &&
                 $DI_radManuales_No.attr("readonly") != "readonly" && $DI_radManuales_No.attr("disabled") != "disabled") {
                 if (!$DI_radManuales_Si.is(':checked') && !$DI_radManuales_No.is(':checked')) {
-                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Manuales");
+                    app.message.error("Validación", "Elija Si o No en campo Manuales");
                     return false;
                 }
             }
@@ -1033,7 +1033,7 @@ var cotvtadet = (function ($, win, doc) {
             if ($DI_radVideos_Si.attr("readonly") != "readonly" && $DI_radVideos_Si.attr("disabled") != "disabled" &&
                 $DI_radVideos_No.attr("readonly") != "readonly" && $DI_radVideos_No.attr("disabled") != "disabled") {
                 if (!$DI_radVideos_Si.is(':checked') && !$DI_radVideos_No.is(':checked')) {
-                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Videos");
+                    app.message.error("Validación", "Elija Si o No en campo Videos");
                     return false;
                 }
             }
@@ -1043,7 +1043,7 @@ var cotvtadet = (function ($, win, doc) {
             if ($DI_radInstalacion_Si.attr("readonly") != "readonly" && $DI_radInstalacion_Si.attr("disabled") != "disabled" &&
                 $DI_radInstalacion_No.attr("readonly") != "readonly" && $DI_radInstalacion_No.attr("disabled") != "disabled") {
                 if (!$DI_radInstalacion_Si.is(':checked') && !$DI_radInstalacion_No.is(':checked')) {
-                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Instalaci&oacute;n");
+                    app.message.error("Validación", "Elija Si o No en campo Instalaci&oacute;n");
                     return false;
                 }
             }
@@ -1053,7 +1053,7 @@ var cotvtadet = (function ($, win, doc) {
             if ($DI_radCapacitacion_Si.attr("readonly") != "readonly" && $DI_radCapacitacion_Si.attr("disabled") != "disabled" &&
                 $DI_radCapacitacion_No.attr("readonly") != "readonly" && $DI_radCapacitacion_No.attr("disabled") != "disabled") {
                 if (!$DI_radCapacitacion_Si.is(':checked') && !$DI_radCapacitacion_No.is(':checked')) {
-                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Capacitaci&oacute;n");
+                    app.message.error("Validación", "Elija Si o No en campo Capacitaci&oacute;n");
                     return false;
                 }
             }
@@ -1063,7 +1063,7 @@ var cotvtadet = (function ($, win, doc) {
             if ($DI_radGarantAdic_Si.attr("readonly") != "readonly" && $DI_radGarantAdic_Si.attr("disabled") != "disabled" &&
                 $DI_radGarantAdic_No.attr("readonly") != "readonly" && $DI_radGarantAdic_No.attr("disabled") != "disabled") {
                 if (!$DI_radGarantAdic_Si.is(':checked') && !$DI_radGarantAdic_No.is(':checked')) {
-                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Garant&iacute;a adicional");
+                    app.message.error("Validación", "Elija Si o No en campo Garant&iacute;a adicional");
                     return false;
                 }
             }
@@ -1073,7 +1073,7 @@ var cotvtadet = (function ($, win, doc) {
             if ($DI_radMantPrevent_Si.attr("readonly") != "readonly" && $DI_radMantPrevent_Si.attr("disabled") != "disabled" &&
                 $DI_radMantPrevent_No.attr("readonly") != "readonly" && $DI_radMantPrevent_No.attr("disabled") != "disabled") {
                 if (!$DI_radMantPrevent_Si.is(':checked') && !$DI_radMantPrevent_No.is(':checked')) {
-                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Mantenimiento Preventivo");
+                    app.message.error("Validación", "Elija Si o No en campo Mantenimiento Preventivo");
                     return false;
                 }
             }
@@ -1083,7 +1083,7 @@ var cotvtadet = (function ($, win, doc) {
             if ($DI_radCalibracion_Si.attr("readonly") != "readonly" && $DI_radCalibracion_Si.attr("disabled") != "disabled" &&
                 $DI_radCalibracion_No.attr("readonly") != "readonly" && $DI_radCalibracion_No.attr("disabled") != "disabled") {
                 if (!$DI_radCalibracion_Si.is(':checked') && !$DI_radCalibracion_No.is(':checked')) {
-                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Calibraci&oacute;n");
+                    app.message.error("Validación", "Elija Si o No en campo Calibraci&oacute;n");
                     return false;
                 }
             }
@@ -1093,7 +1093,7 @@ var cotvtadet = (function ($, win, doc) {
             if ($DI_radFlete_Si.attr("readonly") != "readonly" && $DI_radFlete_Si.attr("disabled") != "disabled" &&
                 $DI_radFlete_No.attr("readonly") != "readonly" && $DI_radFlete_No.attr("disabled") != "disabled") {
                 if (!$DI_radFlete_Si.is(':checked') && !$DI_radFlete_No.is(':checked')) {
-                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Flete");
+                    app.message.error("Validación", "Elija Si o No en campo Flete");
                     return false;
                 }
             }

@@ -3170,49 +3170,52 @@
             vFecCotizacion = app.stringToDate($dateCotizacion.val());
         }
 
-        method = "POST";
-        url = "BandejaSolicitudesVentas/RegistraCotizacionVenta"
-        objCotizacion = {
-            IdCliente: $idCliente.val(),
-            IdCotizacion: $idCotizacion.val(),
-            IdSolicitud: $numeroSolicitud.val(),
-            IdWorkFlow: $idWorkFlow.val(),
-            IdContacto: $txtCodContacto.val(),
-            NombreContacto: $nombreContacto.val(),
-            AreaContacto: $txtAreaContacto.val(),
-            TelefonoContacto: $txtTelefono.val(),
-            EmailContacto: $txtCorreo.val(),
-            FecCotizacion: vFecCotizacion,
-            PlazoEntrega: $txtPlazoEntrega.val(),
-            FormaPago: $cmbTipoPago.val(),
-            Moneda: $cmbTipMoneda.val(),
-            Vigencia: $txtVigencia.val(),
-            Garantia: $cmbGarantia.val(),
-            Observacion: $txtObs.val(),
-            Estado: "A"
-        };
+        var fnSi = function () {
 
-        objParam = JSON.stringify(objCotizacion);
+            method = "POST";
+            url = "BandejaSolicitudesVentas/RegistraCotizacionVenta"
+            objCotizacion = {
+                IdCliente: $idCliente.val(),
+                IdCotizacion: $idCotizacion.val(),
+                IdSolicitud: $numeroSolicitud.val(),
+                IdWorkFlow: $idWorkFlow.val(),
+                IdContacto: $txtCodContacto.val(),
+                NombreContacto: $nombreContacto.val(),
+                AreaContacto: $txtAreaContacto.val(),
+                TelefonoContacto: $txtTelefono.val(),
+                EmailContacto: $txtCorreo.val(),
+                FecCotizacion: vFecCotizacion,
+                PlazoEntrega: $txtPlazoEntrega.val(),
+                FormaPago: $cmbTipoPago.val(),
+                Moneda: $cmbTipMoneda.val(),
+                Vigencia: $txtVigencia.val(),
+                Garantia: $cmbGarantia.val(),
+                Observacion: $txtObs.val(),
+                Estado: "A"
+            };
 
-        function redirect() {
-            app.redirectTo("BandejaSolicitudesVentas/SolicitudVenta");
-        };
+            objParam = JSON.stringify(objCotizacion);
 
-        var fnDoneCallBackSol = function (data) {
-            $idCotizacion.val(data.Cotizacion.IdCotizacion);
-            $btnRegistrarCotizacion.attr("style", "display:none");
-            app.message.success("Registro Realizado", "Se grabó satisfactoriamente el registro.", "Aceptar", redirect);
-        };
+            function redirect() {
+                app.redirectTo("BandejaSolicitudesVentas/SolicitudVenta");
+            };
 
-        var fnFailCallBackSol = function (Mensaje) {
-            app.message.error("Validación", Mensaje);
-            return;
-        };
+            var fnDoneCallBackSol = function (data) {
+                $idCotizacion.val(data.Cotizacion.IdCotizacion);
+                $btnRegistrarCotizacion.attr("style", "display:none");
+                app.message.success("Registro Realizado", "Se grabó satisfactoriamente el registro.", "Aceptar", redirect);
+            };
 
-        app.llamarAjax(method, url, objParam, fnDoneCallBackSol, fnFailCallBackSol, null, null);
+            var fnFailCallBackSol = function (Mensaje) {
+                app.message.error("Validación", Mensaje);
+                return;
+            };
 
-        return;
+            app.llamarAjax(method, url, objParam, fnDoneCallBackSol, fnFailCallBackSol, null, null);
+        }
 
+        return app.message.confirm("Confirmación", "Está seguro de registrar los datos de Liquidaci&oacute;n de Costos?", "Si", "No", fnSi, null);
+        
     };
     
     function eliminarObsTmp(idObs) {
