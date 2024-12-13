@@ -2107,7 +2107,7 @@
                 var fnCallback = function () {
                     //location.reload();
                     //Envio correo a servicio tecnico:
-                    if ($cmbTipo.val() == "TSOL05") {
+                    if ($cmbTipo.val() == "TSOL05" && data.Result.Codigo == 2) {
                         var m2 = "POST";
                         var url2 = "BandejaSolicitudesVentas/EnviarGestionServicioTecnico?codigoSolicitud=" + $numeroSolicitud.val();
                         var objParam2 = '';
@@ -2429,7 +2429,7 @@
                         if ($estadoSol.val() == "PRVT" && $idRolUsuario.val() == "SGI_VENTA_LOGISTICA" && data.Result.DespachoCabeceraSinStock.EstadoAprobacion == "IMP") {
 
                             html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleSinStock[i].Id + '" href="javascript:solicitud.editarSeries(' + data.Result.DespachoDetalleSinStock[i].Id + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';
-                            html += ' <a class="btn btn-default btn-xs" title="Guardar" id="Boton' + data.Result.DespachoDetalleSinStock[i].Id + '" style="display:none"  href="javascript:solicitud.guardarSeries(' + data.Result.DespachoDetalleSinStock[i].Id + ',N)"><i class="fa fa-save" aria-hidden="true"></i></a>&nbsp;';
+                            html += ' <a class="btn btn-default btn-xs" title="Guardar" id="Boton' + data.Result.DespachoDetalleSinStock[i].Id + '" style="display:none"  href="javascript:solicitud.guardarSeries(' + data.Result.DespachoDetalleSinStock[i].Id + ',\'N\')"><i class="fa fa-save" aria-hidden="true"></i></a>&nbsp;';
                         }
                         html += '</div>';
                         var nuevoTr = "<tr bgcolor='d0f2f7' id='fila" + data.Result.DespachoDetalleSinStock[i].Id + "'>" +
@@ -2481,7 +2481,7 @@
                         if ($estadoSol.val() == "PRVT" && $idRolUsuario.val() == "SGI_VENTA_LOGISTICA") {
 
                             html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleConStock[i].Id + '" href="javascript:solicitud.editarSeries(' + data.Result.DespachoDetalleConStock[i].Id + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';
-                            html += ' <a class="btn btn-default btn-xs" title="Guardar" id="Boton' + data.Result.DespachoDetalleConStock[i].Id + '" style="display:none"  href="javascript:solicitud.guardarSeries(' + data.Result.DespachoDetalleConStock[i].Id + ',S)"><i class="fa fa-save" aria-hidden="true"></i></a>&nbsp;';
+                            html += ' <a class="btn btn-default btn-xs" title="Guardar" id="Boton' + data.Result.DespachoDetalleConStock[i].Id + '" style="display:none"  href="javascript:solicitud.guardarSeries(' + data.Result.DespachoDetalleConStock[i].Id + ',\'S\')"><i class="fa fa-save" aria-hidden="true"></i></a>&nbsp;';
                         }
                         html += '</div>';
                         var nuevoTr = "<tr bgcolor='d0f2f7' id='fila" + data.Result.DespachoDetalleConStock[i].Id + "'>" +
