@@ -1932,7 +1932,18 @@
             return false;
         }
 
-        if ($TipoSolicitud.val() === "TSOL04") //Para ventas de materiales:
+        //Validación de numero de series agregadas:
+        if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03" || $TipoSolicitud.val() === "TSOL05") {
+
+            if ($TotalSeriesCS.val() != $ContadorSeriesCS.val()) {
+                app.message.error("Validación", "Debe ingresar la series completas.");
+                return false;
+            }
+
+        }
+
+        //Validación de documentación adjunta:
+        if ($TipoSolicitud.val() === "TSOL04" || $TipoSolicitud.val() === "TSOL05") //Para ventas de materiales y venta de equipos:
         {
             var documento_guiaRemision = 0;
             var documento_factura = 0;
@@ -3743,7 +3754,7 @@
                     $('#Boton' + codDetalleDespacho).css('display', 'none');
                     $('#Edi' + codDetalleDespacho).css('display', 'inline-block');
 
-                    if (stock == "S") {
+                    if (stock == 'S') {
                         var contador = $ContadorSeriesCS.val();
                         contador = parseInt(contador) + 1;
                         $ContadorSeriesCS.val(contador);
