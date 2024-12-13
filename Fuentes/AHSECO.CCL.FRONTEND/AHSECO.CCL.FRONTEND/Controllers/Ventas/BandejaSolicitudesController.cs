@@ -601,7 +601,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio
                             || soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
                         {
-                            if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
+                            if (NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc ||
+                                NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ)
                             {
                                 ViewBag.PermitirAgregarServicios = true;
                             }
