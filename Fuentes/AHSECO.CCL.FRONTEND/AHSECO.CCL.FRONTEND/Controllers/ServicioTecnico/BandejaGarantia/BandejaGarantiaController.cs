@@ -86,6 +86,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
             var result = garantiasBL.ObtenerMainReclamo(NumReclamo, IdWorkFlow);
             return Json(result);
         }
+
+        [Permissions(Permissions = "BANDEJAGARANTIA")]
         public ActionResult RegistroGarantia()
         {
             return View();

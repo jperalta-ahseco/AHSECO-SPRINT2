@@ -80,6 +80,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
             var result = instalacionTecnicaBL.ObtenerDetalleInstalacion(detalle);
             return Json(result);
         }
+
+        [Permissions(Permissions = "BANDEJAINSTALACIONTECNICA")]
         public ActionResult RegistroInstallTec()
         {
             return View();
