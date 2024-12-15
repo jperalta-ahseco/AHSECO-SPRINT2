@@ -9,6 +9,7 @@
 }
 
 <input type="hidden" id="idCliente" value="@cliente.ID" />
+<input type="hidden" id="nombreRol" value="@nombreRol"/>
 
 
 <div class="container-fluid" style="margin-right: 15px;">
@@ -26,10 +27,13 @@
                             <input placeholder="Ingresar Solicitud" type="text" class="form-control input-sm" id="txtSolicitud" value="">
                         </div>
                     </div>
-                    <div class="col-md-4 col-sm-12">
+
+                </div>
+                <div class="row container-fluid">
+                    <div class="col-md-12 col-sm-12">
                         <div class="form-group">
                             <label for="cmbEstado">Estado: </label>
-                            <select class="form-control select2 input-sm" style="width:100%;" id="cmbEstado" tabindex="6"></select>
+                            <select multiple class="form-control select2 input-sm" style="width:100%;" id="cmbEstado" tabindex="6"></select>
                         </div>
                     </div>
                 </div>

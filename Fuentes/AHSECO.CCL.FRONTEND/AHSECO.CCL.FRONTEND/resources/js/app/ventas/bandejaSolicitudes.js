@@ -7,6 +7,7 @@
     var $btnRegresar = $('#btnRegresar');
     var $tblSolicitudes = $('#tblSolicitudes');
     var $cmbEstado = $("#cmbEstado");
+    var $nombreRol = $("#nombreRol");
 
     var $RolVenta_Asesor = $("#RolVenta_Asesor");
     var $RolVenta_Gerente = $("#RolVenta_Gerente");
@@ -44,16 +45,26 @@
         var fnDoneCallback = function (data) {
 
             var filters = {};
-            filters.placeholder = "-- Todos --";
+            filters.placeholder = " -- Todos seleccionados -- ";
             filters.allowClear = false;
-            
-            app.llenarComboMultiResult($cmbEstado, data.EstadosSolicitud, null, " ", "-- Todos --", filters);
 
-            if (data.EstadoPorDefecto != null && data.EstadoPorDefecto != "") {
-                $cmbEstado.attr("data-selected", data.EstadoPorDefecto);
-                $cmbEstado.val(data.EstadoPorDefecto).trigger('change.select2');
-                $cmbEstado.trigger("change");
+            app.llenarComboMultiResult($cmbEstado, data.EstadosSolicitud, null, " ", null, filters);
+            var arrayEst = [];
+            if ($nombreRol.val() == "SGI_VENTA_GERENTE" || $nombreRol.val() == "SGI_VENTA_LOGISTICA") {
+                arrayEst.push("CVAL");
+                arrayEst.push("PRVT");
+                
             }
+            if ($nombreRol.val() == "SGI_VENTA_COSTOS" || $nombreRol.val() == "SGI_VENTA_SERVICIOTECNICO") {
+                arrayEst.push("CVAL");
+            }
+            if ($nombreRol.val() == "SGI_VENTA_FACTURA" || $nombreRol.val() == "SGI_VENTA_IMPORTACION") {
+                arrayEst.push("PRVT");
+            }
+
+            estados_select = arrayEst;
+            $cmbEstado.val(estados_select).trigger('change.select2');
+
 
             Buscar();
             setInterval(refrescar, 60000);
@@ -68,6 +79,11 @@
     };
 
     function refrescar() {
+        var array_estados = $cmbEstado.val();
+        var cadena_estado = "";
+        if (array_estados != null) {
+            cadena_estado = array_estados.join(", ");
+        }
         var baseUrl = baseSiteUrl;
         method = "POST";
         url = "BandejaSolicitudesVentas/ObtenerSolicitudes"
@@ -75,7 +91,7 @@
         objBuscar = {
             IdCliente: $idCliente.val(),
             Id_Solicitud: $txtSolicitud.val() == "" || $txtSolicitud.val() == "0" ? 0 : $txtSolicitud.val(),
-            Estado: $cmbEstado.val()
+            Estado: cadena_estado
         };
 
         objParam = JSON.stringify(objBuscar);
@@ -122,12 +138,17 @@
             return;
         };
 
+        var array_estados = $cmbEstado.val();
+        var cadena_estado = "";
+        if (array_estados != null) {
+            cadena_estado = array_estados.join(", ");
+        }
         method = "POST";
         url = "BandejaSolicitudesVentas/ObtenerSolicitudes"
         objBuscar = {
             IdCliente: $idCliente.val(),
             Id_Solicitud: $txtSolicitud.val() == "" || $txtSolicitud.val() == "0" ? 0 : $txtSolicitud.val(),
-            Estado: $cmbEstado.val()
+            Estado: cadena_estado
         };
 
         objParam = JSON.stringify(objBuscar);
