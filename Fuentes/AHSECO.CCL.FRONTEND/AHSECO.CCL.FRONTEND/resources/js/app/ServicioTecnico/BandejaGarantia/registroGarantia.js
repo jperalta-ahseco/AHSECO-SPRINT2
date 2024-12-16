@@ -1825,7 +1825,7 @@
         var objEmpleado = JSON.stringify(objParam);
 
         var fnDoneCallback = function (data) {
-            if (data.Result.Codigo > 0) {
+            if (data.Codigo > 0) {
                 app.message.success("Éxito", "Se realizó la creación del técnico satisfactoriamente.");
                 $añadirTecnico.modal('toggle');
             };
