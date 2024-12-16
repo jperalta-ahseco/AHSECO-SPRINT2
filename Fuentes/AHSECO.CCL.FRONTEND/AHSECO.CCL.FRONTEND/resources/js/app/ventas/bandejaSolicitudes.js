@@ -44,11 +44,8 @@
 
         var fnDoneCallback = function (data) {
 
-            var filters = {};
-            filters.placeholder = " -- Todos seleccionados -- ";
-            filters.allowClear = false;
-
-            app.llenarComboMultiResult($cmbEstado, data.EstadosSolicitud, null, " ", null, filters);
+            app.llenarComboMultiResult($cmbEstado, data.EstadosSolicitud, null, " ", null, null);
+            $cmbEstado.select2({ placeholder: " -- Todos seleccionados -- " });
             var arrayEst = [];
             if ($nombreRol.val() == "SGI_VENTA_GERENTE" || $nombreRol.val() == "SGI_VENTA_LOGISTICA") {
                 arrayEst.push("CVAL");
