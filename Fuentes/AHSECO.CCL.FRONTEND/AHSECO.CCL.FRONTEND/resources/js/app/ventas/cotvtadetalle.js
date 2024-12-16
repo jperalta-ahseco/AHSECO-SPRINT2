@@ -32,8 +32,16 @@ var cotvtadet = (function ($, win, doc) {
     var $txtPorcentajeDscto = $("#txtPorcentajeDscto");
 
     var $RolVenta_Asesor = $("#RolVenta_Asesor");
+    var $RolVenta_Jefe = $("#RolVenta_Jefe");
+    var $RolVenta_CoordVta = $("#RolVenta_CoordVta");
+    var $RolVenta_ServTecnico = $("#RolVenta_ServTecnico");
     var $RolVenta_Gerente = $("#RolVenta_Gerente");
+    var $RolVenta_Importacion = $("#RolVenta_Importacion");
     var $RolVenta_Costos = $("#RolVenta_Costos");
+    var $RolVenta_Logistica = $("#RolVenta_Logistica");
+    var $RolVenta_CoordServ = $("#RolVenta_CoordServ");
+    var $RolVenta_CoordAtc = $("#RolVenta_CoordAtc");
+    var $RolVenta_Facturador = $("#RolVenta_Facturador");
 
     var $PermitirEnvioCotizacion = $("#PermitirEnvioCotizacion");
     var $PermitirEditarCotDetItem = $("#PermitirEditarCotDetItem");
@@ -489,7 +497,9 @@ var cotvtadet = (function ($, win, doc) {
             $DI_txtCostoFOB.removeAttr("disabled");
         }
 
-        if ($DI_radTieneStock_No.attr("disabled") == "disabled" || $DI_radTieneStock_Si.attr("disabled") == "disabled") {
+        if ($PermitirEditarValorizacion.val() != "S" ||
+            $cmbTipo.val() == $TipoSol_RepOComes.val() ||
+            $cmbTipo.val() == $TipoSol_ServYRep.val()) {
             $DI_txtCostoFOB.attr("disabled", "disabled");
         }
 
@@ -695,12 +705,20 @@ var cotvtadet = (function ($, win, doc) {
             //Para flujo de valorizacion puede agregar el COSTO FOB y el VALOR UNITARIO
             if ($PermitirEditarValorizacion.val() == "S") {
                 if ($idRolUsuario.val() == $RolVenta_Gerente.val()) {
+                    var strCostoFOB = $DI_txtCostoFOB.val();
                     configurarTieneStock();
+                    $DI_txtCostoFOB.val(strCostoFOB);
                     $DI_txtCostoFOB.focus();
                 }
                 if ($idRolUsuario.val() == $RolVenta_Costos.val()) {
                     //Si tiene Costo FOB quiere decir que puede proseguir con el VALOR UNITARIO
                     if ($DI_txtCostoFOB.val() != "") {
+                        $DI_txtValorUnitario.removeAttr("disabled");
+                        $DI_txtValorUnitario.focus();
+                    }
+                    //Si es tipo REPUESTOS quiere decir que puede proseguir con el VALOR UNITARIO ya que no usan FOB
+                    if ($cmbTipo.val() == $TipoSol_RepOComes.val() ||
+                        $cmbTipo.val() == $TipoSol_ServYRep.val()) {
                         $DI_txtValorUnitario.removeAttr("disabled");
                         $DI_txtValorUnitario.focus();
                     }
@@ -1421,12 +1439,24 @@ var cotvtadet = (function ($, win, doc) {
                             var swVer = true;
                             //Se valida si la cotizacion va a ser valorizada
                             if ($DI_pnlCostos_PrecioVenta.css("display") != "none") {
-                                if ($PermitirEditarValorizacion.val() == "S") { swVer = false; }
+                                if ($PermitirEditarValorizacion.val() == "S") {
+                                    swVer = false;
+                                }
                             }
-                            //Se valida si para el tipo de solicitud su producto se agregará ganancia
-                            if ($cmbTipo.val() != $TipoSol_VentaMat.val() && $cmbTipo.val() != $TipoSol_RepOComes.val()) {
+                            //Se valida si para el tipo de solicitud su producto
+                            if ($cmbTipo.val() != $TipoSol_RepOComes.val() &&
+                                $cmbTipo.val() != $TipoSol_ServYRep.val() &&
+                                $cmbTipo.val() != $TipoSol_Servicio.val()) {
+                                //Se valida la GANANCIA
                                 if ($DI_pnlCostos_Ganancia.css("display") != "none") {
-                                    if ($PermitirEditarGanancia.val() == "S") { swVer = false; }
+                                    if ($PermitirEditarGanancia.val() != "S") { swVer = false; }
+                                }
+                            }
+                            //Se valida que el tipo REPUESTOS no modifique FOB
+                            if ($cmbTipo.val() == $TipoSol_RepOComes.val() &&
+                                $cmbTipo.val() == $TipoSol_ServYRep.val()) {
+                                if ($idRolUsuario.val() != $RolVenta_Gerente.val()) {
+                                    swVer = false;
                                 }
                             }
                             if (swVer) { editar = ver; }

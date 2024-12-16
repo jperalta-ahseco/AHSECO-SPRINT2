@@ -501,6 +501,10 @@ namespace AHSECO.CCL.BD.Ventas
                 { parameters.Add("pIndReqPlaca", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndRequierePlaca), DbType.String); }
                 else
                 { parameters.Add("pIndReqPlaca", DBNull.Value, DbType.String); }
+                if (detCotDespacho.IndFlete.HasValue)
+                { parameters.Add("pIndFlete", Utilidades.ParseStringSN<bool?>(detCotDespacho.IndFlete), DbType.String); }
+                else
+                { parameters.Add("pIndFlete", DBNull.Value, DbType.String); }
                 parameters.Add("pObsDespacho", detCotDespacho.ObsDespacho);
                 if (detCotDespacho.MontoTotalCosto.HasValue)
                 { parameters.Add("pMontoTotalCosto", detCotDespacho.MontoTotalCosto.Value,DbType.Decimal); }

@@ -276,12 +276,13 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                 if (rptaEst.Result.Any()) { VariableSesion.setCadena("estadoAbrev", rptaEst.Result.First().AbreviaturaEstado); }
 
-                //Validando CAMPOS y BOTONES según ROL
-                if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ
+                //Validando CABECERA DE COTIZACION según ROL de VENTA y SERVICIOS
+                if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor 
+                    || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ
                     || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc)
                 {
 
-                    if(soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Registrado)
+                    if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Registrado)
                     {
                         ViewBag.PermitirCancelarCot = true;
                         ViewBag.PermitirEditarCotizacion_Pri = true;
@@ -291,19 +292,17 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnCotizacion)
                     {
                         ViewBag.PermitirCancelarCot = true;
-                        ViewBag.PermitirEditarCotizacion_Sec = true;
-                        if (NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc ||
-                            NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ)
+                        if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
                         {
-                            ViewBag.PermitirImprimirCotizacion = true;
+                            ViewBag.PermitirEditarCotizacion_Sec = true;
                         }
                     }
 
                     if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion)
                     {
-                        if(NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
+                        if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
                         {
-                            ViewBag.PermitirImprimirCotizacion = true;
+                            ViewBag.PermitirEditarCotizacion_Sec = true;
                         }
                     }
 
@@ -344,7 +343,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                             }
 
-                            if(validarDespacho.Result.ContadorConStock > 0)
+                            if (validarDespacho.Result.ContadorConStock > 0)
                             {
                                 ViewBag.Btn_EnviarGuia = "inline-block";
                                 ViewBag.Btn_GuiaPedido = "inline-block";
@@ -357,7 +356,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 ViewBag.VerNavConStock = true;
                             }
 
-                            if(soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio ||
+                            if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio ||
                                 soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
                             {
                                 if (validarDespacho.Result.EnvioServicio == 0)
@@ -372,7 +371,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                     ViewBag.InActiveTecnico = "";
                                 }
                             }
-                         
+
                         }
 
                         if (validarSinStock.Result != null)
@@ -384,7 +383,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             }
                         }
 
-                        if(soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio)
+                        if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio)
                         {
                             ViewBag.Btn_EnviarGuiaBO = "none";
                             ViewBag.Btn_GuiaBO = "none";
@@ -444,7 +443,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 ViewBag.InActiveServicio = "in active";
                                 ViewBag.InActiveTecnico = "";
                             }
-                               
+
                         }
                     }
 
@@ -560,7 +559,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 }
                 else if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Facturador)
                 {
-                   
+
                     if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnProcVentas)
                     {
                         ViewBag.VerGestionLogistica = true;
@@ -571,7 +570,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             ViewBag.InActiveServicio = "in active";
                             ViewBag.FechaFactura = "";
                             ViewBag.TxtNumeroFacturaServ = "";
-                           
+
                             if (validarDespacho.Result != null)
                             {
                                 if (validarDespacho.Result.EnvioServicio > 0)
@@ -581,7 +580,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             }
                         }
                     }
-                    if(soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.VentaProg ||
+                    if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.VentaProg ||
                         soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Finalizado)
                     {
                         ViewBag.VerGestionLogistica = true;
@@ -594,7 +593,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     }
                 }
 
-                //Validando CAMPOS y BOTONES según TIPO DE SOLICITUD
+                //Validando BANDEJAS según TIPO DE SOLICITUD
                 if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio
                     || soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
                 {
@@ -611,7 +610,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     ViewBag.VerBandejaCotizacion = true;
                 }
 
-                //Validando CAMPOS y BOTONES según ESTADO DE SOLICITUD
+                //Validando NAVEGACION según ESTADO DE SOLICITUD
                 if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnCotizacion)
                 {
 
@@ -625,10 +624,15 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         //Solo se habilita el Detalle de Cotizacion SERVICIOS para los COORDINADORES
                         if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio)
                         {
-                            ViewBag.PermitirAgregarServicios = true;
+                            if (NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc ||
+                                NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ)
+                            {
+                                ViewBag.PermitirAgregarServicios = true;
+                                ViewBag.PermitirGuardarCotizacion = true;
+                            }
                         }
 
-                        //Solo se habilita el Detalle de Cotizacion PRODUCTOS para los ASESORES de VENTA
+                        //Solo se habilita el Detalle de Cotizacion PRODUCTOS para los ASESORES de VENTA y COORDINADORES
                         if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.RepuestosoConsumibles
                             || soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaMateriales
                             || soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaEquipos)
@@ -652,15 +656,25 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion)
                 {
 
-                    if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio
-                        || soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
+                    //Si es Asesor de Costos o Gerente General podrá modificar los PRECIOS DE VENTAS
+                    //pero el Asesor de Ventas solo modificará el porcentaje de GANANCIA
+                    //y los Coordinadores solo modificarán los servicios
+                    if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor || EsFlujoValorizacion() ||
+                        NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc ||
+                        NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ)
                     {
-                        if (NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc ||
-                            NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ)
-                        {
-                            ViewBag.PermitirAgregarServicios = true;
-                        }
+                        ViewBag.PermitirGuardarValorizacion = true;
                     }
+
+                    //if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio
+                    //    || soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
+                    //{
+                    //    if (NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc ||
+                    //        NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ)
+                    //    {
+                    //        ViewBag.PermitirAgregarServicios = true;
+                    //    }
+                    //}
 
                     if (NombreRol == ConstantesDTO.WorkflowRol.Venta.ServTecnico)
                     {
@@ -685,6 +699,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Finalizado)
                 {
                     ViewBag.VerGestionVenta = true;
+                    ViewBag.PermitirImprimirCotizacion = true;
                     //Se elimina el campo de acciones del detalle de la cotización porque ya fue aprobado
                     string[] arrCotDetCols = ViewBag.CabeceraCotDet;
                     int indexToRemove = arrCotDetCols.Length - 1;
@@ -751,16 +766,15 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         }
                     }
 
+                    //Validando BOTONES DE COTIZACION PRODUCTOS por ESTADO
+                    if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnCotizacion)
+                    {
+                        ViewBag.PermitirExportarLiquidacion = true;
+                    }
+
                     if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion)
                     {
-
-                        //Si es Asesor de Costos o Gerente General podrá modificar los PRECIOS DE VENTAS
-                        //pero el Asesor de Ventas solo modificará el porcentaje de GANANCIA
-                        if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor || EsFlujoValorizacion())
-                        {
-                            ViewBag.PermitirGuardarValorizacion = true;
-                        }
-
+                        
                         var swEsCotizacionValorizada = false;
                         var swEsCotizacionCosteada = false;
 
@@ -773,20 +787,53 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         ViewBag.EsCotizacionValorizada = swEsCotizacionValorizada;
                         ViewBag.EsCotizacionCosteada = swEsCotizacionCosteada;
 
-                        //Solo se puede recotizar la venta si se ingresó los PRECIOS y COSTOS de venta de cada item seleccionado para la cotización
-                        if (swEsCotizacionValorizada && swEsCotizacionCosteada)
+                        //Solo se puede RECOTIZAR, GANANCIA e IMPRIMIR la venta si se VALORIZO y COSTEO la cotización
+                        //para EQUIPOS, MATERIALES pero para lo que es REPUESTOS es solo VALORIZACION
+                        //pero SERVICIOS no se VALORIZA ni COSTEA
+                        if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio)
                         {
-                            if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
+                            if (NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ ||
+                                NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc)
                             {
                                 ViewBag.PermitirReCotizacion = true;
-                                ViewBag.PermitirEditarGanancia = true;
+                                ViewBag.PermitirCancelarCot = true;
                                 ViewBag.PermitirImprimirCotizacion = true;
                             }
-                            ViewBag.PermitirCancelarCot = true;
-                            ViewBag.PermitirExportarLiquidacion = true;
+                        }
+                        else
+                        {
+                            if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.RepuestosoConsumibles)
+                            {
+                                if (NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ ||
+                                    NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc)
+                                {
+                                    ViewBag.PermitirImprimirCotizacion = true;
+                                    if (swEsCotizacionValorizada)
+                                    {
+                                        ViewBag.PermitirReCotizacion = true;
+                                        ViewBag.PermitirEditarGanancia = true;
+                                        ViewBag.PermitirCancelarCot = true;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor ||
+                                    NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ ||
+                                    NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc)
+                                {
+                                    ViewBag.PermitirImprimirCotizacion = true;
+                                    if (swEsCotizacionValorizada && swEsCotizacionCosteada)
+                                    {
+                                        ViewBag.PermitirReCotizacion = true;
+                                        ViewBag.PermitirEditarGanancia = true;
+                                        ViewBag.PermitirCancelarCot = true;
+                                    }
+                                }
+                            }
                         }
 
-                        //Solo se validará COSTEO para venta de equipos
+                        //Solo se puede APROBACION y DESCUENTO si se VALORIZO y COSTEO la cotización
                         if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaEquipos)
                         {
                             if (swEsCotizacionValorizada && swEsCotizacionCosteada && NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
@@ -795,21 +842,33 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 ViewBag.PermitirEditarPorcentDscto = true;
                             }
                         }
-                        else if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaMateriales ||
+
+                        //Solo se puede APROBACION y DESCUENTO si se VALORIZO la cotización
+                        if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaMateriales ||
                             soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.RepuestosoConsumibles)
                         {
-
-                            if (swEsCotizacionValorizada && 
-                                (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor
-                                || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc
-                                || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ))
+                            if (swEsCotizacionValorizada && NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
                             {
                                 ViewBag.PermitirAprobarCotizacion = true;
                             }
                             //Solo se podrá editar el porcentaje de descuento si se termino el costeo
-                            if (swEsCotizacionValorizada && swEsCotizacionCosteada && NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
+                            if (swEsCotizacionValorizada && NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
                             {
                                 ViewBag.PermitirEditarPorcentDscto = true;
+                            }
+                        }
+
+                        //Solo para el tipo de "SERVICIOS y REPUESTOS" se habilita la aprobación por estar pendiente el costeo de REPUESTOS
+                        if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
+                        {
+                            if (swEsCotizacionValorizada)
+                            {
+                                if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor ||
+                                    NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc ||
+                                    NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ)
+                                {
+                                    ViewBag.PermitirAprobarCotizacion = true;
+                                }
                             }
                         }
 
@@ -821,37 +880,41 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         if (resCotDet.Result.Any())
                         {
 
-                            //Para las solicitudes de SERVICIOS y REPUESTOS se habilita la aprobación de solicitud por no tener COSTEO
-                            if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio
-                                || soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
+                            ViewBag.PermitirExportarLiquidacion = true;
+
+                            //Solo para el tipo de "SERVICIOS" se habilita la aprobación de solicitud por no tener COSTEO
+                            if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio)
                             {
-                                if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnCotizacion &&
-                                    (NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc ||
-                                     NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ))
+                                if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnCotizacion)
                                 {
-                                    ViewBag.PermitirAprobarCotizacion = true;
+                                    if (NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc ||
+                                     NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ)
+                                    {
+                                        ViewBag.PermitirAprobarCotizacion = true;
+                                    }
                                 }
                             }
 
                             //Se carga el detalle de la cotizacion
                             var lstItems = resCotDet.Result.ToList();
                             var resArticulos = ventasBL.ObtenerArticulosxFiltro(new FiltroArticuloDTO() { CodsArticulo = string.Join(";", lstItems.Select(o => o.CodItem).ToArray()) });
+
                             lstItems.ForEach(x =>
                             {
+
                                 if (x.TipoItem != ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio)
-                                {
-                                    x.EsItemPadre = true;
-                                }
+                                { x.EsItemPadre = true; }
+
                                 if (x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto ||
                                 x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio)
                                 {
                                     var oArticulo = resArticulos.Result.FirstOrDefault(o => o.CodArticulo.Trim() == x.CodItem.Trim());
                                     if (oArticulo != null)
-                                    {
-                                        x.DescUnidad = oArticulo.DescUnidad;
-                                    }
+                                    { x.DescUnidad = oArticulo.DescUnidad; }
                                 }
+
                                 x.IsUpdated = false;
+
                             });
 
                             lstItems = CompletarInfoCotDet(lstItems);
@@ -2584,15 +2647,19 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     }
                 }
 
-                if (lstItems.Where(x => x.IndStock.HasValue).Any(y => !y.IndStock.Value))
-                { NotificarValorizacion_CostoFOB(oCotizacion.IdSolicitud); }
-
-                if (lstItems.Where(x => x.IndStock.HasValue).Any(y => y.IndStock.Value))
-                { NotificarValorizacion_ValorUnitario(oCotizacion.IdSolicitud); }
-
                 var numSol = VariableSesion.getCadena("numSol");
                 var resSol = ventasBL.ObtenerSolicitudes(new SolicitudDTO { Id_Solicitud = int.Parse(numSol) });
                 var oSolicitud = resSol.Result.First();
+
+                if (oSolicitud.Tipo_Sol != ConstantesDTO.SolicitudVenta.TipoSolicitud.RepuestosoConsumibles &&
+                    oSolicitud.Tipo_Sol != ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
+                {
+                    if (lstItems.Where(x => x.IndStock.HasValue).Any(y => !y.IndStock.Value))
+                    { NotificarValorizacion_CostoFOB(oCotizacion.IdSolicitud); }
+                }
+
+                if (lstItems.Where(x => x.IndStock.HasValue).Any(y => y.IndStock.Value))
+                { NotificarValorizacion_ValorUnitario(oCotizacion.IdSolicitud); }
 
                 if(oSolicitud.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaEquipos)
                 {
@@ -4040,14 +4107,12 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             styleIII.DataFormat = dataFormatCustom.GetFormat("dd/MM/yyyy");
 
             //Impresion de cabecera:
-
             int rownum1 = 0;
             int cellnum1 = 0;
             IRow row1 = sh.CreateRow(rownum1++);
             NPOI.SS.UserModel.ICell cell1;
 
             cell1 = row1.CreateCell(cellnum1++);
-            //cell.CellStyle = style;
             cell1.SetCellValue("N° Cotización:");
 
             cell1 = row1.CreateCell(cellnum1++);
@@ -4066,8 +4131,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             cell1 = row1.CreateCell(7);
             cell1.SetCellValue(datosCabeceraCotizacion.AreaContacto);
-
-
 
             int rownum2 = 1;
             int cellnum2 = 0;
@@ -4097,7 +4160,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             int cellnum3 = 0;
             IRow row3 = sh.CreateRow(rownum3++);
             NPOI.SS.UserModel.ICell cell3;
-
 
             cell3 = row3.CreateCell(cellnum3++);
             //cell.CellStyle = style;
@@ -4130,7 +4192,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             NPOI.SS.UserModel.ICell cell4;
 
             cell4 = row4.CreateCell(cellnum4++);
-            //cell.CellStyle = style;
             cell4.SetCellValue("Garantía:");
 
             cell4 = row4.CreateCell(cellnum4++);
@@ -4147,7 +4208,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             cell4 = row4.CreateCell(7);
             cell4.SetCellValue(datosCabeceraCotizacion.Moneda);
-
 
             // Impresion de cabeceras de detalle:
             int rownum = 5;
@@ -4184,20 +4244,15 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             cell.CellStyle = style;
             cell.SetCellValue("Valor Venta Total Sin IGV");
 
-
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
             cell.SetCellValue("Ganancia(%)");
-
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
             cell.SetCellValue("Valor Venta Total Sin IGV (Con Ganancia)");
 
-          
-
             //// Impresión de la data
-
             foreach (var item in datosDetalleCotizacion)
             {
                 cellnum = 0;
@@ -4208,16 +4263,19 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
 
                 cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.CodItem.ToString());
+                cell.SetCellValue(item.CodItem);
 
                 cell = row.CreateCell(cellnum++);
                 cell.SetCellValue(item.Descripcion);
 
                 cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.Stock.ToString());
+                if (item.Stock.HasValue)
+                {
+                    cell.SetCellValue(item.Stock.ToString());
+                }
 
                 cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.CodUnidad.ToString());
+                cell.SetCellValue(item.CodUnidad);
 
                 cell = row.CreateCell(cellnum++);
                 cell.SetCellValue(item.Cantidad.ToString());
@@ -4256,7 +4314,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             IRow row5 = sh.CreateRow(rownum5++);
             NPOI.SS.UserModel.ICell cell5;
 
-
             cell5 = row5.CreateCell(cellnum5++);
             cell5.SetCellValue("");
 
@@ -4290,12 +4347,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             cell5 = row5.CreateCell(cellnum5++);
             cell5.SetCellValue(subTotal);
 
-
             int rownum6 = 7 + datosDetalleCotizacion.Count();
             int cellnum6 = 0;
             IRow row6 = sh.CreateRow(rownum6++);
             NPOI.SS.UserModel.ICell cell6;
-
 
             cell6 = row6.CreateCell(cellnum6++);
             cell6.SetCellValue("");
@@ -4335,7 +4390,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             IRow row7 = sh.CreateRow(rownum7++);
             NPOI.SS.UserModel.ICell cell7;
 
-
             cell7 = row7.CreateCell(cellnum7++);
             cell7.SetCellValue("");
 
@@ -4369,8 +4423,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             cell7 = row7.CreateCell(cellnum7++);
             cell7.SetCellValue(TotalVenta);
 
-
-
             string rutaInicial = ConfigurationManager.AppSettings.Get("RutaCotizacionVenta");
             string nombre = "LIQUIDACION_COSTOS_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + ".xls";
             var ruta_file = rutaInicial + nombre;
@@ -4387,7 +4439,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 Archivo = nombre
             });
 
-         
         }
 
         public JsonResult EditarItemCotDetServicio(string CodItem, string opcGrillaItems)

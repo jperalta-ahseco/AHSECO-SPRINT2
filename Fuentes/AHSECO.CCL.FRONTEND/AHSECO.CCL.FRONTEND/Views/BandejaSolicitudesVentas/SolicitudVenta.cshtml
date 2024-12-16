@@ -15,6 +15,9 @@
     var RolVenta_Importacion = ConstantesDTO.WorkflowRol.Venta.Importacion;
     var RolVenta_Costos = ConstantesDTO.WorkflowRol.Venta.Costos;
     var RolVenta_Logistica = ConstantesDTO.WorkflowRol.Venta.Logistica;
+    var RolVenta_CoordServ = ConstantesDTO.WorkflowRol.Venta.CoordServ;
+    var RolVenta_CoordAtc = ConstantesDTO.WorkflowRol.Venta.CoordAtc;
+    var RolVenta_Facturador = ConstantesDTO.WorkflowRol.Venta.Facturador;
     var cliente = VariableSesion.getObject("VENTA_CLIENTE") as ClienteDTO;
     var empleado = VariableSesion.getObject("VENTA_EMPLEADO") as EmpleadoDTO;
     var numSol = VariableSesion.getCadena("numSol");
@@ -71,14 +74,16 @@
 <input type="hidden" id="idCotizacion" value="@idCotizacion" />
 <input type="hidden" id="idRolUsuario" value="@NombreRol" />
 <input type="hidden" id="RolVenta_Asesor" value="@RolVenta_Asesor" />
-<input type="hidden" id="RolVenta_Gerente" value="@RolVenta_Gerente" />
 <input type="hidden" id="RolVenta_Jefe" value="@RolVenta_Jefe" />
 <input type="hidden" id="RolVenta_CoordVta" value="@RolVenta_CoordVta" />
-<input type="hidden" id="RolVenta_ServTecnio" value="@RolVenta_ServTecnico" />
+<input type="hidden" id="RolVenta_ServTecnico" value="@RolVenta_ServTecnico" />
 <input type="hidden" id="RolVenta_Gerente" value="@RolVenta_Gerente" />
 <input type="hidden" id="RolVenta_Importacion" value="@RolVenta_Importacion" />
 <input type="hidden" id="RolVenta_Costos" value="@RolVenta_Costos" />
 <input type="hidden" id="RolVenta_Logistica" value="@RolVenta_Logistica" />
+<input type="hidden" id="RolVenta_CoordServ" value="@RolVenta_CoordServ" />
+<input type="hidden" id="RolVenta_CoordAtc" value="@RolVenta_CoordAtc" />
+<input type="hidden" id="RolVenta_Facturador" value="@RolVenta_Facturador" />
 <input type="hidden" id="ContadorSeriesCS" value="@ViewBag.ContadorSeriesConStock" />
 <input type="hidden" id="TotalSeriesCS" value="@ViewBag.TotalSeriesConStock" />
 <input type="hidden" id="ContadorSeriesSS" value="@ViewBag.ContadorSeriesSinStock" />

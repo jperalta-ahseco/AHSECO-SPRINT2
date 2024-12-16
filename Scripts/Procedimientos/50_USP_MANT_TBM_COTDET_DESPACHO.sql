@@ -18,6 +18,7 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_MANT_TBM_COTDET_DESPACHO]
 @pIndCompraLocal CHAR(1),
 @pObsCliente VARCHAR(2000),
 @pIndReqPlaca CHAR(1),
+@pIndFlete CHAR(1),
 @pObsDespacho VARCHAR(2000),
 @pMontoTotalCosto DECIMAL(18,9),
 @pIndFianza CHAR(1),
@@ -43,7 +44,7 @@ BEGIN
 		[INDINFOVIDEO],[INDINFOMANUAL],[INDINSTALACION],[INDCAPACITACION],
 		[INDGARANADIC],[CODGARANADIC],[DIMENSIONES],
 		[INDCOMPRALOCAL],[OBSCLIENTE],[INDMANTPREVENT],
-		[INDCALIB],[INDREQPLACA],[OBSDESPACHO],
+		[INDCALIB],[INDREQPLACA],[INDFLETE],[OBSDESPACHO],
 		[MTOTOTALCOSTO],[INDFIANZA],[NUMFIANZA],
 		[MONTOPPRINC],[MONTOPACCE],[USR_REG],[FEC_REG])
 		VALUES
@@ -51,7 +52,7 @@ BEGIN
 		@pIndInfoVideo,@pIndInfoManual,@pIndInstalacion,@pIndCapacitacion,
 		@pIndGarantiaAdic,@pCodGarantiaAdic,@pDimensiones,
 		@pIndCompraLocal,@pObsCliente,@pIndMantPrevent,
-		@pIndCalib,@pIndReqPlaca,@pObsDespacho,
+		@pIndCalib,@pIndReqPlaca,@pIndFlete,@pObsDespacho,
 		@pMontoTotalCosto,@pIndFianza,@pNumFianza,
 		@pMontoPPrinc,@pMontoPAcce,
 		@pUsuarioRegistro,GETDATE())
@@ -68,7 +69,7 @@ BEGIN
 		INDINFOVIDEO = @pIndInfoVideo, INDINFOMANUAL = @pIndInfoManual, INDINSTALACION = @pIndInstalacion, INDCAPACITACION = @pIndCapacitacion, 
 		INDGARANADIC = @pIndGarantiaAdic, CODGARANADIC = @pCodGarantiaAdic, DIMENSIONES = @pDimensiones, 
 		INDCOMPRALOCAL = @pIndCompraLocal, OBSCLIENTE = @pObsCliente, INDMANTPREVENT = @pIndMantPrevent,
-		INDCALIB = @pIndCalib, INDREQPLACA = @pIndReqPlaca, OBSDESPACHO = @pObsDespacho, 
+		INDCALIB = @pIndCalib, INDREQPLACA = @pIndReqPlaca, INDFLETE = @pIndFlete, OBSDESPACHO = @pObsDespacho, 
 		MTOTOTALCOSTO = @pMontoTotalCosto, INDFIANZA = @pIndFianza, NUMFIANZA = @pNumFianza, 
 		MONTOPPRINC = @pMontoPPrinc, MONTOPACCE = @pMontoPAcce,
 		USR_MOD = @pUsuarioRegistro, FEC_MOD = GETDATE()

@@ -7,12 +7,15 @@
 
     var $RolVenta_Asesor = $("#RolVenta_Asesor");
     var $RolVenta_Jefe = $("#RolVenta_Jefe");
-    var $RolVenta_Coordinadora = $("#RolVenta_Coordinadora");
-    var $RolVenta_ServTecnio = $("#RolVenta_ServTecnio");
+    var $RolVenta_CoordVta = $("#RolVenta_CoordVta");
+    var $RolVenta_ServTecnico = $("#RolVenta_ServTecnico");
     var $RolVenta_Gerente = $("#RolVenta_Gerente");
     var $RolVenta_Importacion = $("#RolVenta_Importacion");
     var $RolVenta_Costos = $("#RolVenta_Costos");
     var $RolVenta_Logistica = $("#RolVenta_Logistica");
+    var $RolVenta_CoordServ = $("#RolVenta_CoordServ");
+    var $RolVenta_CoordAtc = $("#RolVenta_CoordAtc");
+    var $RolVenta_Facturador = $("#RolVenta_Facturador");
 
     var $PermitirEditarCotDetItem = $("#PermitirEditarCotDetItem");
     var $PermitirEditarValorizacion = $("#PermitirEditarValorizacion");
@@ -257,7 +260,9 @@
 
         //Se configura la pantalla por ROL
 
-        if ($idRolUsuario.val() == $RolVenta_Asesor.val()) {
+        if ($idRolUsuario.val() == $RolVenta_Asesor.val()
+            || $idRolUsuario.val() == $RolVenta_CoordServ.val()
+            || $idRolUsuario.val() == $RolVenta_CoordAtc.val()) {
 
             if ($CI_pnlInfoDestino.css("display") != "none") {
                 $CI_txtUbicacion.removeAttr("disabled");
