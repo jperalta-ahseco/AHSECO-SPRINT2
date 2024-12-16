@@ -619,42 +619,34 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc ||
                         NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ)
                     {
-                        ViewBag.PermitirEditarCotDetItem = true;
-                    }
 
-                    //Solo se habilita el Detalle de Cotizacion SERVICIOS para los COORDINADORES
-                    if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio
-                        || soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
-                    {
-                        if (NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc ||
-                            NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ)
+                        ViewBag.PermitirEditarCotDetItem = true;
+
+                        //Solo se habilita el Detalle de Cotizacion SERVICIOS para los COORDINADORES
+                        if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio)
                         {
                             ViewBag.PermitirAgregarServicios = true;
                         }
-                    }
 
-                    //Solo se habilita el Detalle de Cotizacion SERVICIOS para los ASESORES de VENTA
-                    if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.RepuestosoConsumibles
-                        || soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos
-                        || soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaMateriales
-                        || soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaEquipos)
-                    {
-                        if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
+                        //Solo se habilita el Detalle de Cotizacion PRODUCTOS para los ASESORES de VENTA
+                        if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.RepuestosoConsumibles
+                            || soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaMateriales
+                            || soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaEquipos)
                         {
                             ViewBag.PermitirAgregarProductos = true;
                             ViewBag.PermitirEnvioCotizacion = true;
                         }
+
+                        //Para los combinados de PRODUCTOS y SERVICIOS se habilitarán ambos botones
+                        if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
+                        {
+                            ViewBag.PermitirAgregarServicios = true;
+                            ViewBag.PermitirAgregarProductos = true;
+                            ViewBag.PermitirEnvioCotizacion = true;
+                        }
+
                     }
 
-                    //Para las solicitudes de Solo Servicios se podrá guardar la cotizacion unicamente
-                    if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio)
-                    {
-                        if (NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc ||
-                            NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ)
-                        {
-                            ViewBag.PermitirGuardarCotizacion = true;
-                        }
-                    }
                 }
 
                 if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion)
