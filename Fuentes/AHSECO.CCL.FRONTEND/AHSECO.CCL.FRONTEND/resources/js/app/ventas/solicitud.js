@@ -149,6 +149,7 @@
     var $DS_txtTotalVenta = $("#DS_txtTotalVenta");
     var $DS_btnCerrar = $("#DS_btnCerrar");
     var $DS_tblServiciosDetalle = $("#DS_tblServiciosDetalle");
+    var $dateProgramacionServ = $("#dateProgramacionServ");
     //var detalleServicios = [];
     var contadorDetalle = 0;
     var $modalDetalleServicio = $("#modalDetalleServicio");
@@ -374,12 +375,20 @@
             startDate: hoy()
         });
 
+        $dateProgramacionServ.datepicker({
+            viewMode: 0,
+            minViewMode: 0,
+            format: 'dd/mm/yyyy',
+            startDate: hoy()
+        });
+
         $dateSolicitud.val(hoy());
         $dateCotizacion.val(hoy());
         $dateOrdenCompra.val(hoy());
         $dateEntregaPedidoCE.val(hoy());
         $dateIngresoAlmacenSE.val(hoy());
         $dateEntregaPedidoSE.val(hoy());
+        $dateProgramacionServ.val(hoy());
         $dateFactura.val(hoy());
         $fileCargaDocumentoSustento.on("change", $fileCargaDocumentoSustento_change);
         $btnEliminarSol.click(btnEliminarSolClick);
