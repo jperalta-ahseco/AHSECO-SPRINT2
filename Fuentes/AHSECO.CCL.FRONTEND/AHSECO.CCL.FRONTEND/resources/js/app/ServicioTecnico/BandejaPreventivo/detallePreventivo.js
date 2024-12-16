@@ -6,6 +6,7 @@
     var $perfilnombre = $('#perfilnombre');
     var $nombreusuario = $('#nombreusuario');
     var $tipoAccion = $('#tipoAccion');
+    var $tipoAccionPadre = $('#tipoAccionPadre');
     var $contadordoc = $('#contadordoc');
     var $codigoWorkflow = $('#codigoWorkflow');
     var $tblMainTecnicos = $('#tblMainTecnicos');
@@ -36,6 +37,7 @@
     var $dateFechaFact = $('#dateFechaFact');
     var $openRegdateFact = $('#openRegdateFact');
     var $btnCerrar = $('#btnCerrar');
+    var $rowFactura = $('#rowFactura');
     /*Modales*/
     var $modalCargaDocumento = $('#modalCargaDocumento');
     var $modalObservacion = $('#modalObservacion');
@@ -750,7 +752,7 @@
         var url = "BandejaPreventivo/SetVariablesGenerales";
         var objEditar = {
             Id_Mant: $idMantPadre.val(),
-            TipoTarea: $tipoAccion.val(),
+            TipoTarea: $tipoAccionPadre.val(),
         };
 
         var objParam = JSON.stringify(objEditar);
@@ -1695,6 +1697,11 @@
         $txtMontoAcce.val(mantenimiento.MontoPrestAcce);
         $txtNumFactura.val(mantenimiento.NumFactura);
         $dateFechaFact.val(mantenimiento.FecFactura);
+
+        if ($txtNumFactura.val() != "" && $dateFechaFact.val() != "") {
+            $rowFactura.css('display', 'block');
+        };
+
 
         if (mantenimiento.CodEstado == "FIN") {
             $txtNumFactura.prop('disabled',false);

@@ -11,6 +11,7 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaPreventivos
         public long Id { get; set; }
         public long Id_Mant { get; set; }
         public string TipoTarea { get; set; }
+        public string TipoTareaPadre { get; set; }
         public long Id_WorkFlow { get; set; }
         public string Serie { get; set; }
         public DateTime FechaInstalacion { get; set; }
