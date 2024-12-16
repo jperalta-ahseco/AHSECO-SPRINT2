@@ -51,6 +51,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
             VariableSesion.setCadena("NumPreventivo", "");
             VariableSesion.setCadena("TipoAccion", "");
             VariableSesion.setCadena("EstadoPrev", "");
+            VariableSesion.setCadena("TipoAccionPadre", "");
             VariableSesion.setCadena("idWorkFlow", "");
             VariableSesion.setCadena("IdMant", "");
             return View();
@@ -406,6 +407,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
                 VariableSesion.setCadena("EstadoPrev", mantenimiento.CodEstado);
                 VariableSesion.setCadena("idWorkFlow", mantenimiento.Id_WorkFlow.ToString());
                 VariableSesion.setCadena("IdMant", mantenimiento.Id_Mant.ToString());
+                VariableSesion.setCadena("TipoAccionPadre", mantenimiento.TipoTareaPadre);
                 return Json(new
                 {
                     Status = 1

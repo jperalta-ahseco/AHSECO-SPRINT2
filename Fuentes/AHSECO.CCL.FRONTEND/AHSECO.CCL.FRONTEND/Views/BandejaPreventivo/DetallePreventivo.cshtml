@@ -4,7 +4,8 @@
     ViewBag.Title = "Registro de Mantenimientos Preventivos";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var numPreventivo = VariableSesion.getCadena("NumPreventivo");
-    var tipoAccion = VariableSesion.getCadena("tipoAccion");
+    var tipoAccion = VariableSesion.getCadena("TipoAccion");
+    var tipoAccionPadre = VariableSesion.getCadena("TipoAccionPadre");
     var idWorkFlow = VariableSesion.getCadena("idWorkFlow");
     var estadoMant = VariableSesion.getCadena("EstadoPrev");
     var idMant = VariableSesion.getCadena("IdMant");
@@ -19,6 +20,7 @@
 }
 <input hidden id="numPreventivo" value="@numPreventivo" />
 <input hidden id="tipoAccion" value="@tipoAccion" />
+<input hidden id="tipoAccionPadre" value="@tipoAccionPadre"/>
 <input hidden id="codigoWorkflow" value="@idWorkFlow" />
 <input hidden id="estadoMant" value="@estadoMant" />
 <input hidden id="idMantPadre" value="@idMant"/>
@@ -102,7 +104,7 @@
                             </div>
                             @if (estadoMant == "FIN" || tipoAccion == "V")
                             {
-                                <div class="row container-fluid">
+                                <div class="row container-fluid" id="rowFactura" style="display:none">
                                     <div class="col-md-4 col-sm-12">
                                         <label for="">Número de Factura</label>
                                         <div class="form-group">

@@ -471,8 +471,10 @@
 
         var fnSi = function () {
             var fnDoneCallBack = function () {
-                app.message.success("Éxito", "Se actualizaron los datos correctamente.");
-                location.reload();
+                var fnRedirectTo = function () {
+                    location.reload();
+                }
+                app.message.success("Éxito", "Se actualizaron los datos correctamente.", "Aceptar", fnRedirectTo);
             };
 
             var fnFailCallBack = function () {
@@ -727,31 +729,10 @@
                 app.message.error("Validación", "El técnico ya se encuentra asignado.");
                 return;
             };
-            
-            garantias.tecnicosAsig.push({
-                Cod_Tecnico: info.CodigoEmpleado,
-                TipoDoc: info.Documento.Descripcion,
-                Documento: info.NumeroDocumento,
-                Tipo_Documento: info.Documento.Parametro,
-                Nombres: info.NombresEmpleado,
-                ApePaterno: info.ApellidoPaternoEmpleado,
-                ApeMaterno: info.ApellidoMaternoEmpleado,
-                NombreCompleto: info.NombresCompletosEmpleado,
-                TipoTecnico: info.CodigoTipoEmpleado,
-                Telefono: info.TelefonoEmpleado,
-                Correo: info.EmailEmpleado,
-                Empresa: info.Empresa.Valor1,
-                Zona: info.LugarLaboral.UbigeoId,
-                DescZona: info.LugarLaboral.NombreDepartamento + info.LugarLaboral.NombreProvincia + info.LugarLaboral.NombreDistrito,
-                Estado: true
-            });
 
             if ($numReclamo.val() != "") {
                 crearTecnicos(info);
             };
-
-            cargarTablaMainTecnicos(garantias.tecnicosAsig);
-            $modalBusquedaTecnico.modal('toggle');
         });
 
 
@@ -781,8 +762,28 @@
 
         var objParam = JSON.stringify(objTecnico);
 
-        var fnDoneCallBack = function () {
+        var fnDoneCallBack = function (data) {
             app.message.success("Éxito", "Se realizó la inserción correctamente.");
+            garantias.tecnicosAsig.push({
+                Id: data.Result.Codigo,
+                TipoDoc: info.Documento.Descripcion,
+                Documento: info.NumeroDocumento,
+                Tipo_Documento: info.Documento.Parametro,
+                Nombres: info.NombresEmpleado,
+                ApePaterno: info.ApellidoPaternoEmpleado,
+                ApeMaterno: info.ApellidoMaternoEmpleado,
+                NombreCompleto: info.NombresCompletosEmpleado,
+                TipoTecnico: info.CodigoTipoEmpleado,
+                Telefono: info.TelefonoEmpleado,
+                Correo: info.EmailEmpleado,
+                Empresa: info.Empresa.Valor1,
+                Zona: info.LugarLaboral.UbigeoId,
+                DescZona: info.LugarLaboral.NombreDepartamento + info.LugarLaboral.NombreProvincia + info.LugarLaboral.NombreDistrito,
+                Estado: true
+            });
+
+            cargarTablaMainTecnicos(garantias.tecnicosAsig);
+            $modalBusquedaTecnico.modal('toggle');
         };
 
         var fnFailCallBack = function () {
@@ -1376,7 +1377,7 @@
 
         var columns = [
             {
-                data: "Cod_Tecnico",
+                data: "Id",
                 render: function (data, type, row) {
                     return '<center>' + data + '</center>';
                 }
@@ -1446,8 +1447,8 @@
                             if ($tipoproceso.val() == "U") {
                                 var html = '';
                                 html += '<div class="form-group">' + '<div class="input-group input-group-sm date">'
-                                    + '<input placeholder="--Empresa--" type="text" class="form-control input-sm" id="txtNomEmpresa' + row.Cod_Tecnico + '">';
-                                html += '<a class="input-group-addon input-sm" id="saveEmpresaTecnico' + row.Cod_Tecnico + '" href="javascript:garantias.saveEmpresaTecnico(' + row.Cod_Tecnico + ')"" >' +
+                                    + '<input placeholder="--Empresa--" type="text" class="form-control input-sm" id="txtNomEmpresa' + row.Id + '">';
+                                html += '<a class="input-group-addon input-sm" id="saveEmpresaTecnico' + row.Id + '" href="javascript:garantias.saveEmpresaTecnico(' + row.Id + ')"" >' +
                                     '<i class="fa fa-save" aria-hidden="true"></i>' +
                                     '</a>';
                                 return '<center>' + html + '</center>';
@@ -1463,7 +1464,7 @@
 
             },
             {
-                data: "Cod_Tecnico",
+                data: "Id",
                 render: function (data, type, row) {
                     if ($tipoproceso.val() == "") {
                         var retirar = '<a id="btnDesasignarTecnicoTmp" class="btn btn-danger btn-xs" title="Desasignar Tecnico" href="javascript:garantias.DesasignarTecnicoTmp(' + data + ')"><i class="fa fa-minus-square-o" aria-hidden="true"></i></a>'
@@ -1839,7 +1840,7 @@
 
     function DesasignarTecnicoTmp(codTecnico) {
         var fnSi = function () {
-            garantias.tecnicosAsig = garantias.tecnicosAsig.filter(tecnico => tecnico.Cod_Tecnico != codTecnico);
+            garantias.tecnicosAsig = garantias.tecnicosAsig.filter(tecnico => tecnico.Id != codTecnico);
             cargarTablaMainTecnicos(garantias.tecnicosAsig);
         };
         return app.message.confirm("Confirmación", "¿Desea desasignar al técnico de la atención", "Sí", "No", fnSi, null);
@@ -1862,7 +1863,7 @@
 
             for (var i = 0; i < data.Result.length; i++) {
                 garantias.tecnicosAsig.push({
-                    Cod_Tecnico: data.Result[i].Id_Asig,
+                    Id: data.Result[i].Id_Asig,
                     TipoDoc: data.Result[i].NomTipoDoc,
                     Documento: data.Result[i].Documento,
                     Tipo_Documento: data.Result[i].Tipo_Documento,
@@ -2014,7 +2015,7 @@
 
                 for (var i = 0; i < data.Result.Tecnicos.length; i++) {
                     garantias.tecnicosAsig.push({
-                        Cod_Tecnico: data.Result.Tecnicos[i].Id_Asig,
+                        Id: data.Result.Tecnicos[i].Id_Asig,
                         TipoDoc: data.Result.Tecnicos[i].NomTipoDoc,
                         Documento: data.Result.Tecnicos[i].Documento,
                         Tipo_Documento: data.Result.Tecnicos[i].Tipo_Documento,

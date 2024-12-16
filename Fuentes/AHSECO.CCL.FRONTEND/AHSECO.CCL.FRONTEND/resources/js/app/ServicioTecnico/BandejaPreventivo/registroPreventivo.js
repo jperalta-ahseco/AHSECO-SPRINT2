@@ -917,7 +917,8 @@
             CodEstado: codestado,
             Id_WorkFlow: idworkflow,
             Id_Mant: $numMant.val(),
-            TipoTarea: "U"
+            TipoTarea: "U",
+            TipoTareaPadre: $tipoproceso.val()
         };
 
         var objParam = JSON.stringify(obj);
@@ -942,7 +943,8 @@
             CodEstado: codestado,
             Id_WorkFlow: idworkflow,
             Id_Mant: $numMant.val(),
-            TipoTarea: "V"
+            TipoTarea: "V",
+            TipoTareaPadre: $tipoproceso.val()  
         };
 
         var objParam = JSON.stringify(obj);

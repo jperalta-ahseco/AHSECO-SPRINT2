@@ -505,7 +505,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
-            cell.SetCellValue("N° Contrato");
+            cell.SetCellValue("Tipo de Proceso");
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
@@ -545,14 +545,14 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
                 cell = row.CreateCell(cellnum++);
                 cell.SetCellValue(item.FechaMax.ToString("dd/MM/yyyy"));
 
-                cell = row.CreateCell(cellnum++);
+                cell = row.CreateCell(cellnum++);   
                 cell.SetCellValue(item.Destino);
 
                 cell = row.CreateCell(cellnum++);
                 cell.SetCellValue(item.NroProceso);
 
                 cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.Contrato);
+                cell.SetCellValue(item.TipoProcesoVenta);
 
                 cell = row.CreateCell(cellnum++);
                 cell.SetCellValue(item.OrdenCompra);
