@@ -326,7 +326,9 @@
             ext == "xls" || ext == "XLS" ||
             ext == "xlsx" || ext == "XLSX" ||
             ext == "doc" || ext == "DOC" ||
-            ext == "docx" || ext == "DOCX") {
+            ext == "docx" || ext == "DOCX" ||
+            ext == "zip" || ext == "ZIP" ||
+            ext == "rar" || ext == "RAR") {
             //beforeSendCargaDoc();
             var formdata = new FormData(); //FormData object
             //Appending each file to FormData object

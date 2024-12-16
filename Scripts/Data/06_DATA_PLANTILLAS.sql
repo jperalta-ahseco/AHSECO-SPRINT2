@@ -94,7 +94,7 @@ VALUES('PLANFACTUR',1,'Plantilla de Envio de Facturacion','facturacion@ahsecoper
 
 INSERT INTO TBM_PLANTILLAS
 VALUES('PLANATFACT',1,'Plantilla de Atencion de Facturacion','','','ATENCION DE FACTURACIÓN - N° SOLICITUD {NRO_SOL}',
-			   '<p>Sr(a). Vendedor(a), {NOM_VENDEDOR}</p>
+			   '<p>Sr. Coordinador de Servicios</p>
 <p>Se realiza el ingreso de la facturación de la solicitud N°{NRO_SOL} para el cliente {CLIENTE}.</p>
 <p>Por favor ingrese al sistema para continuar con el flujo de venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
 

@@ -150,6 +150,7 @@
     var $DS_txtTotalVenta = $("#DS_txtTotalVenta");
     var $DS_btnCerrar = $("#DS_btnCerrar");
     var $DS_tblServiciosDetalle = $("#DS_tblServiciosDetalle");
+    var $dateProgramacionServ = $("#dateProgramacionServ");
     //var detalleServicios = [];
     var contadorDetalle = 0;
     var $modalDetalleServicio = $("#modalDetalleServicio");
@@ -375,12 +376,20 @@
             startDate: hoy()
         });
 
+        $dateProgramacionServ.datepicker({
+            viewMode: 0,
+            minViewMode: 0,
+            format: 'dd/mm/yyyy',
+            startDate: hoy()
+        });
+
         $dateSolicitud.val(hoy());
         $dateCotizacion.val(hoy());
         $dateOrdenCompra.val(hoy());
         $dateEntregaPedidoCE.val(hoy());
         $dateIngresoAlmacenSE.val(hoy());
         $dateEntregaPedidoSE.val(hoy());
+        $dateProgramacionServ.val(hoy());
         $dateFactura.val(hoy());
         $fileCargaDocumentoSustento.on("change", $fileCargaDocumentoSustento_change);
         $btnEliminarSol.click(btnEliminarSolClick);
@@ -2369,6 +2378,16 @@
                 $cmbFlujo.val(codFlujo).trigger("change.select2");
             }
 
+            if (rol == "SGI_VENTA_COORDINASERV" || rol == "SGI_VENTA_COORDINAATC") {
+                if ($TipoSolicitud.val() === "TSOL01") {
+                    $('#cmbTipoDocumentoCarga option[value="DVT03"]').remove(); //Factura
+                    $('#cmbTipoDocumentoCarga option[value="DVT04"]').remove(); //Ficha Instalacion
+                    $('#cmbTipoDocumentoCarga option[value="DVT06"]').remove(); //Guia de BO
+                    $('#cmbTipoDocumentoCarga option[value="DVT07"]').remove(); //Guia de Pedidos
+                    $('#cmbTipoDocumentoCarga option[value="DVT08"]').remove(); //Guia de Remision
+                }         
+            }
+
 
             if ($numeroSolicitud.val() != "") {
 
@@ -2412,11 +2431,16 @@
                     $openRegdateOrdenCompra.prop('disabled', true);
                 }
 
+                if ($idRolUsuario.val() === "SGI_VENTA_FACTURA") {
+                    $btnAgregarDocumento.hide();
+                }
 
-                if ($estadoSol.val() == "SFIN" || $estadoSol.val() == "NOVT") {
+                if (($estadoSol.val() == "SFIN" || $estadoSol.val() == "NOVT" || $estadoSol.val() =="VTPG")) {
                     $btnCargarDocumento.hide();
                     $btnAgregarObservacion.hide();
                     $btnAgregarDocumento.hide();
+
+                    
                 }
 
                 if (data.Result.ContadorCabecera.ContadorSinStock > 0) {
@@ -2613,7 +2637,7 @@
                         var html = '<div class="text-center">';
                         //var d = "'" + data.Result.Adjuntos[i].CodigoDocumento + "','" + data.Result.Adjuntos[i].RutaDocumento + "'";
                         html += ' <a class="btn btn-default btn-xs" title="Descargar"  href="javascript:solicitud.download(' + data.Result.Adjuntos[i].CodigoDocumento + ')"><i class="fa fa-download" aria-hidden="true"></i></a>&nbsp;';
-                        if ($estadoSol.val() != "SFIN" && $estadoSol.val() != "NOVT") {
+                        if (($estadoSol.val() != "SFIN" && $estadoSol.val() != "NOVT" && $estadoSol.val() != "VTPG") && $idRolUsuario.val() != "SGI_VENTA_FACTURA") {
                             html += ' <a class="btn btn-default btn-xs" title="Eliminar"  href="javascript:solicitud.eliminarDocumento(' + data.Result.Adjuntos[i].CodigoDocumento + ')"><i class="fa fa-ban" aria-hidden="true"></i></a>&nbsp;';
                         }
                         html += '</div>';
@@ -2873,7 +2897,7 @@
                                 }                             
                             );
                             var html = '<div class="text-center">';
-                            if ($estadoSol.val() != "SFIN" && $estadoSol.val() != "NOVT") {
+                            if (($estadoSol.val() != "SFIN" && $estadoSol.val() != "NOVT" && $estadoSol.val() != "VTPG") && $idRolUsuario.val() != "SGI_VENTA_FACTURA") {
                                 html += ' <a class="btn btn-default btn-xs" title="Eliminar"  href="javascript:solicitud.eliminarDocumento(' + data.Result.Codigo + ')"><i class="fa fa-ban" aria-hidden="true"></i></a>';
                             }
                             html += ' <a class="btn btn-default btn-xs" title="Descargar"  href="javascript:solicitud.download(' + data.Result.Codigo + ')"><i class="fa fa-download" aria-hidden="true"></i></a>&nbsp;';
@@ -3564,7 +3588,9 @@
             ext == "xls" || ext == "XLS" ||
             ext == "xlsx" || ext == "XLSX" ||
             ext == "doc" || ext == "DOC" ||
-            ext == "docx" || ext == "DOCX") {
+            ext == "docx" || ext == "DOCX" ||
+            ext == "zip" || ext == "ZIP" ||
+            ext == "rar" || ext == "RAR") {
             //beforeSendCargaDoc();
             var formdata = new FormData(); //FormData object
             //Appending each file to FormData object

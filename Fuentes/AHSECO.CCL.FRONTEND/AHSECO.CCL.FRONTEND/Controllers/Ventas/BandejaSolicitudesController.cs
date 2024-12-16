@@ -1523,10 +1523,24 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     }
                 }
 
-                if(NombreRol != ConstantesDTO.WorkflowRol.Venta.Asesor && NombreRol != ConstantesDTO.WorkflowRol.Venta.CoordServ)
-                {
-                    strEstadoPorDefecto = ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion;
-                }
+                //if(NombreRol == ConstantesDTO.WorkflowRol.Venta.Gerente ||
+                //    NombreRol == ConstantesDTO.WorkflowRol.Venta.Logistica)
+                //{
+                //    strEstadoPorDefecto = ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion + "," +
+                //                          ConstantesDTO.EstadosProcesos.ProcesoVenta.EnProcVentas;
+                //}
+
+                //if(NombreRol == ConstantesDTO.WorkflowRol.Venta.Costos ||
+                //    NombreRol == ConstantesDTO.WorkflowRol.Venta.ServTecnico)
+                //{
+                //    strEstadoPorDefecto = ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion;
+                //}
+
+                //if(NombreRol == ConstantesDTO.WorkflowRol.Venta.Facturador || 
+                //    NombreRol == ConstantesDTO.WorkflowRol.Venta.Importacion)
+                //{
+                //    strEstadoPorDefecto = ConstantesDTO.EstadosProcesos.ProcesoVenta.EnProcVentas;
+                //}
 
                 return Json(new { Status = 1, EstadosSolicitud = lstEstados, EstadoPorDefecto = strEstadoPorDefecto });
             }
