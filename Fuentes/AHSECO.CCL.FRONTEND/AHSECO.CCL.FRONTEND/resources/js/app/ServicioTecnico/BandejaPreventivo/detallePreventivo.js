@@ -1209,7 +1209,7 @@
                 cargarTablaMainTecnicos(detallePreventivo.tecnicosAsig);
                 $modalBusquedaTecnico.modal('toggle');
 
-                if (detallePreventivo.tecnicosAsig.length == 1) {
+                if (detallePreventivo.tecnicosAsig.length == 1 && $estadoMant.val() == "PEND") {
                     CambiarEstado();
                 };
             };
@@ -1445,12 +1445,12 @@
                 };
 
                 var fnFailCallBack = function () {
-                    app.message.error("Validación", "Ocurrió un error al realizar el cambio de estado a Programado");
+                    app.message.error("Validación", "Ocurrió un error al realizar el cambio de estado a Completado");
                 };
 
                 app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
             };
-            return app.message.confirm("Confirmación", "Está seguro que desea finalizar el mantenimiento", "Sí", "No", fnSi, null);
+            return app.message.confirm("Confirmación", "Está seguro que desea completar el mantenimiento", "Sí", "No", fnSi, null);
         }
         else if (indPrest == 1) {
             ProcesoGuiaManuscrita();
