@@ -809,6 +809,7 @@
             $tbodyObservaciones.empty();
             $tbodyTecnicos.empty();
             $NoExisteTec.show();
+            $NoExisteRegObs.show();
         }
         return app.message.confirm("Confirmación", "¿Desea limpiar los campos del formulario? Se eliminará la información registrada.", "Sí", "No", fnSi, null);
     };
@@ -913,6 +914,9 @@
         $txtAsesor.val("");
         $txtUbiDestino.val("");
         $dateSolicitud.val(hoy());
+        $txtProceso.val("");
+        $txtTipProceso.val("");
+        $txtOrdCompra.val("");
     };
 
     function cargarInfoContactos(contacto) {
@@ -953,6 +957,7 @@
         $txtFinGarantia.val("");
         $txtEstadoGarantia.val("");
         $txtNumFianza.val("");
+        $txtDirecInstall.val("");
         $titleNomProducto.html('<p id="titleNomProducto"><i class="fa fa-cube" aria-hidden="true" style="color:brown"></i> Equipo</p>');
     }
 
@@ -962,7 +967,7 @@
         $cmbUrgencia.val("").trigger('change.select2');
         $dateProgramacion.val(hoy());
         $cmbUrgencia.prop('disabled', true);
-        //$txtReclamo.prop('disabled', true);
+        $txtReclamo.prop('disabled', true);
         $dateSolicitud.prop('disabled', true);
         $cmbMotivo.prop('disabled', true);
     };
