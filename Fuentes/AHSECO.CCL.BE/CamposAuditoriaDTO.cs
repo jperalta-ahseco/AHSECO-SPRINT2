@@ -17,6 +17,7 @@ namespace AHSECO.CCL.BE
         public string IpMaquinaModifica { get; set; }
         public bool IsTempRecord { get; set; }
         public bool IsUpdated { get; set; }
+        public string Features { get; set; }
 
         public void CopyProperties<Target>(ref Target target)
         {

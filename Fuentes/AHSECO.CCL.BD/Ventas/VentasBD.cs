@@ -252,14 +252,7 @@ namespace AHSECO.CCL.BD.Ventas
                 connection.Open();
                 var parameters = new DynamicParameters();
                 parameters.Add("pId", cotCostoDTO.Id, DbType.Int32, ParameterDirection.Input);
-                if(cotCostoDTO.CotizacionDetalle != null)
-                {
-                    parameters.Add("pId_Cotizacion", cotCostoDTO.CotizacionDetalle.IdCotizacion, DbType.Int32, ParameterDirection.Input);
-                }
-                else
-                {
-                    parameters.Add("pId_Cotizacion", DBNull.Value, DbType.Int32, ParameterDirection.Input);
-                }
+                parameters.Add("pId_Cotizacion", cotCostoDTO.IdCotizacion, DbType.Int32, ParameterDirection.Input);
                 parameters.Add("pId_CotDetalle", cotCostoDTO.IdCotizacionDetalle, DbType.Int32, ParameterDirection.Input);
                 parameters.Add("pNumSec", cotCostoDTO.NumSecuencia, DbType.Int32, ParameterDirection.Input);
                 parameters.Add("pCodCosto", cotCostoDTO.CodCosto, DbType.String, ParameterDirection.Input);

@@ -1,15 +1,9 @@
 ﻿@using AHSECO.CCL.FRONTEND.Core;
 @{
     ViewBag.Title = "Detalle de Item";
-    var strPermitirEditarValorizacion = "N";
-    if (ViewBag.PermitirEditarValorizacion == true) { strPermitirEditarValorizacion = "S"; }
-    var strPermitirEditarGanancia = "N";
-    if (ViewBag.PermitirEditarGanancia == true) { strPermitirEditarGanancia = "S"; }
 }
 <div style="display:none">
     <input type="hidden" id="DI_hdnIdCotDet" value="" />
-    <input type="hidden" id="PermitirEditarValorizacion" value="@strPermitirEditarValorizacion" />
-    <input type="hidden" id="PermitirEditarGanancia" value="@strPermitirEditarGanancia" />
 </div>
 <div style="width:80%" class="modal-dialog modal-lg container-fluid" role="document">
     <!-- Modal content -->
@@ -403,7 +397,7 @@
                     </div>
                     <div class="text-center">
                         <button class="btn btn-default btn-sm" type="button" id="DI_btnGuardar"><i class="fa fa-save" aria-hidden="true"></i> Guardar</button>
-                        <button class="btn btn-danger btn-sm" type="button" id="DI_btnCerrar"><i class="fa fa-plus" aria-hidden="true"></i> Cancelar</button>
+                        <button class="btn btn-danger btn-sm" type="button" id="DI_btnCerrar"><i class="fa fa-plus" aria-hidden="true"></i> Salir</button>
                     </div>
                 </div>
             </form>

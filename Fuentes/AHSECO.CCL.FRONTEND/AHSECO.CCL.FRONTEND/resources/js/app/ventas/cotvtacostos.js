@@ -4,6 +4,7 @@
     var $idCotizacion = $("#idCotizacion");
     var $idRolUsuario = $("#idRolUsuario");
     var $idWorkFlow = $("#idWorkFlow");
+
     var $RolVenta_Asesor = $("#RolVenta_Asesor");
     var $RolVenta_Jefe = $("#RolVenta_Jefe");
     var $RolVenta_Coordinadora = $("#RolVenta_Coordinadora");
@@ -12,6 +13,8 @@
     var $RolVenta_Importacion = $("#RolVenta_Importacion");
     var $RolVenta_Costos = $("#RolVenta_Costos");
     var $RolVenta_Logistica = $("#RolVenta_Logistica");
+
+    var $PermitirEditarCotDetItem = $("#PermitirEditarCotDetItem");
     var $PermitirEditarValorizacion = $("#PermitirEditarValorizacion");
     var $PermitirEditarGanancia = $("#PermitirEditarGanancia");
 
@@ -491,9 +494,7 @@
         method = "POST";
         url = "BandejaSolicitudesVentas/ListarCDCostosItems";
         var objDatos = {
-            CotizacionDetalle: {
-                IdCotizacion: $idCotizacion.val()
-            },
+            IdCotizacion: $idCotizacion.val(),
             CodCosto: strCodCosto
         };
         var objParam = JSON.stringify(objDatos);
@@ -513,21 +514,21 @@
 
         var columns = [
             {
-                data: "CotizacionDetalle.CodItem",
+                data: "CodItemCotizado",
                 render: function (data) {
                     if (data == null) { data = ""; }
                     return '<center>' + data + '</center>';
                 }
             },
             {
-                data: "CotizacionDetalle.Descripcion",
+                data: "DescripcionCotizado",
                 render: function (data) {
                     if (data == null) { data = ""; }
                     return '<center>' + data + '</center>';
                 }
             },
             {
-                data: "CotizacionDetalle.DescUnidad",
+                data: "DescUnidadCotizada",
                 render: function (data) {
                     if (data == null) { data = ""; }
                     return '<center>' + data + '</center>';
@@ -559,8 +560,6 @@
                 render: function (data) {
                     var hidden = '<input type="hidden" id="hdnCDCItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
                     var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtacostos.editarCostoItem(' + data + ',' + String.fromCharCode(39) + '2' + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                    //var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtacostos.quitarCostoItem(' + data + ',' + String.fromCharCode(39) + $CI_hdnCodCosto.val() + String.fromCharCode(39) + ',' + String.fromCharCode(39) + '2' + String.fromCharCode(39) + ')"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
-                    //return '<center>' + hidden + editar + ' ' + quitar + '</center>';
                     return '<center>' + hidden + editar + '</center>';
                 }
             }
@@ -621,19 +620,24 @@
                 render: function (data) {
                     var hidden = '<input type="hidden" id="hdnCDCItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
                     var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtacostos.editarCostoItem(' + data + ',' + String.fromCharCode(39) + '1' + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                    var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtacostos.quitarCostoItem(' + data + ',' + String.fromCharCode(39) + $CI_hdnCodCosto.val() + String.fromCharCode(39) + ',' + String.fromCharCode(39) + '1' + String.fromCharCode(39) + ')"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                    var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtacostos.quitarCostoItem(' + data + ',' + String.fromCharCode(39) + '1' + String.fromCharCode(39) + ')"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
                     return '<center>' + hidden + editar + ' ' + quitar + '</center>';
                 }
             }
         ];
 
-        //Se quita los botones de acción por esta en valorizacion
-        if ($PermitirEditarValorizacion.val() == "S") {
-            columns.pop();
-        }
+        ////Se quita los botones de acción por esta en valorizacion
+        //if ($PermitirEditarValorizacion.val() == "S") {
+        //    columns.pop();
+        //}
 
-        //Se quita los botones de acción para el Asesor que va a modificar su ganancia
-        if ($PermitirEditarGanancia.val() == "S") {
+        ////Se quita los botones de acción para el Asesor que va a modificar su ganancia
+        //if ($PermitirEditarGanancia.val() == "S") {
+        //    columns.pop();
+        //}
+
+        //Se quita los botones de acción por estar deshabilitado la edición de la Cotización Detalle
+        if ($PermitirEditarCotDetItem.val() == "N") {
             columns.pop();
         }
 
@@ -796,26 +800,28 @@
         method = "POST";
         url = "BandejaSolicitudesVentas/GrabarDatosCostoItem";
         var objDatos = {
-            cotdetCosto: {
-            Id: vId,
-            IdCotizacionDetalle: $CI_cmbCDItem.val(),
-            CotizacionDetalle: {
-                Id: $CI_cmbCDItem.val(),
+            CostoItem: {
+                Id: vId,
+                IdCotizacionDetalle: $CI_cmbCDItem.val(),
                 IdCotizacion: $idCotizacion.val(),
-                Descripcion: $DI_txtDescripcion.val(),
-                Cantidad: $DI_txtCantidad.val()
-                },
-            CodCosto: $CI_cmbTipoCosto.val(),
-            DescCosto: $("#select2-" + $CI_cmbTipoCosto.attr("id") + "-container").attr("title"),
-            CantidadCosto: $CI_txtCantCosteo.val(),
-            CantPreventivo: vCantidadPreventivo,
-            CodCicloPreventivo: vCodCicloPreventivo,
-            CodUbigeoDestino: vCodUbigeoDestino,
-            Direccion: vDireccion,
-            AmbienteDestino: $CI_txtAmbDestino.val(),
-            NroPiso: vNroPiso,
-            MontoUnitarioCosto: vMontoUnitarioCosto,
-            MontoTotalCosto: vMontoTotalCosto
+                CotizacionDetalle: {
+                    Id: $CI_cmbCDItem.val(),
+                    IdCotizacion: $idCotizacion.val(),
+                    Descripcion: $DI_txtDescripcion.val(),
+                    Cantidad: $DI_txtCantidad.val()
+                    },
+                CantidadCotizada: $DI_txtCantidad.val(),
+                CodCosto: $CI_cmbTipoCosto.val(),
+                DescCosto: $("#select2-" + $CI_cmbTipoCosto.attr("id") + "-container").attr("title"),
+                CantidadCosto: $CI_txtCantCosteo.val(),
+                CantPreventivo: vCantidadPreventivo,
+                CodCicloPreventivo: vCodCicloPreventivo,
+                CodUbigeoDestino: vCodUbigeoDestino,
+                Direccion: vDireccion,
+                AmbienteDestino: $CI_txtAmbDestino.val(),
+                NroPiso: vNroPiso,
+                MontoUnitarioCosto: vMontoUnitarioCosto,
+                MontoTotalCosto: vMontoTotalCosto
             },
             opcGrilla: $CI_opcGrilla.val()
         };
@@ -873,7 +879,12 @@
                 return app.message.confirm("Costos", "¿Des&eacute;a seguir agregando m&aacute;s costos?", "S&iacute;", "No", fnSi, fnNo);
             };
 
-            app.message.success("Costos", "Se guard&oacute; el costo correctamente.", "Aceptar", fnCallback);
+            if ($CI_opcGrilla.val() == "1") {
+                app.message.success("Costos", "Se guard&oacute; el costo correctamente.", "Aceptar", fnCallback);
+            }
+            else {
+                app.message.success("Costos", "Se guard&oacute; el costo correctamente.", "Aceptar", null);
+            }
         };
         
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
@@ -887,7 +898,8 @@
         method = "POST";
         url = "BandejaSolicitudesVentas/CargarDatosCostoItem";
         var objDatos = {
-            Id: strId
+            Id: strId,
+            opcGrilla: $CI_opcGrilla.val()
         };
         var objParam = JSON.stringify(objDatos);
 
@@ -954,31 +966,21 @@
         }
     }
 
-    function quitarCostoItem(strId, strCodCosto, opcGrilla) {
-
-        var bEsTemp = false;
-        if (opcGrilla == "1") { bEsTemp = true; }
-
+    function quitarCostoItem(strId, opcGrilla) {
+        
         method = "POST";
         url = "BandejaSolicitudesVentas/EliminarCostoItem";
         var objDatos = {
             Id: strId,
-            IsTempRecord: bEsTemp
+            opcGrilla: opcGrilla
         };
         var objParam = JSON.stringify(objDatos);
 
         var fnDoneCallBack = function (data) {
-
-            if (opcGrilla == "1") {
-                cargarGrillaCostosCotDet(data);
-            }
-            else {
-                loadGridbyCost(data, strCodCosto);
-            }
-
+            cargarGrillaCostosCotDet(data);
             app.message.success("Costos", "Se elimin&oacute; el costo correctamente.", "Aceptar", null);
         };
-        
+
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
     }
 

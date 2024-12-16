@@ -27,6 +27,8 @@ namespace AHSECO.CCL.BE.Ventas
         public CotizacionDetalleDTO CotizacionDetalle { get; set; }
 
         #region "Cotizacion Detalle"
+        public string CodItemCotizado { get; set; }
+        public string DescripcionCotizado { get; set; }
         public long IdCotizacion { get; set; }
         public int CantidadCotizada { get; set; }
         public string CodUnidadCotizada { get; set; }

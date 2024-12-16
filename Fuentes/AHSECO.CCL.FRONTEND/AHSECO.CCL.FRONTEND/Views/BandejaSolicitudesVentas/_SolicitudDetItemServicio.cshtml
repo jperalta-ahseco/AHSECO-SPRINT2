@@ -44,13 +44,13 @@
                                     <div class="col-md-4">
                                         <label for="DS_txtCantidad">Cantidad: </label>
                                         <div class="form-group">
-                                            <input placeholder="Cantidad" type="number" min="0" maxlength="8" style="text-align:left" class="form-control input-sm" id="DS_txtCantidad" onkeyup="multiplicar();" value="" onkeypress="if (isNaN(String.fromCharCode(event.keyCode))) return false;">
+                                            <input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") placeholder="Cantidad" type="number" min="0" maxlength="8" style="text-align:left" class="form-control input-sm" id="DS_txtCantidad" onkeyup="multiplicar();" value="" onkeypress="if (isNaN(String.fromCharCode(event.keyCode))) return false;">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <label for="DS_txtPrecio">Precio: </label>
                                         <div class="form-group">
-                                            <input placeholder="Precio" type="text" maxlength="10" style="text-align:left" class="form-control input-sm" id="DS_txtPrecio" onkeyup="multiplicar();" value="" onchange="(function(el){el.value=parseFloat(el.value).toFixed(2);})(this)" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');">
+                                            <input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") placeholder="Precio" type="text" maxlength="10" style="text-align:left" class="form-control input-sm" id="DS_txtPrecio" onkeyup="multiplicar();" value="" onchange="(function(el){el.value=parseFloat(el.value).toFixed(2);})(this)" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -69,7 +69,7 @@
                             <fieldset>
                                 <legend><b>Detalle del Servicio</b></legend>
                                 <div class="text-right" style="padding-top: 2px; padding-bottom: 2px">
-                                    <button class="btn btn-default btn-sm" type="button" data-toggle="modal"  tabindex="14" id="btnAgregarDetServ"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar Detalle</button>
+                                    <button style="@(ViewBag.PermitirEditarCotDetItem ? "" : "display:none")" class="btn btn-default btn-sm" type="button" data-toggle="modal"  tabindex="14" id="btnAgregarDetServ"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar Detalle</button>
                                 </div>
                                 <div class="row container-fluid">
                                     <table id="DS_tblServiciosDetalle" class="table table-hover table-condensed table-striped table-bordered" style="width:100%">
@@ -89,7 +89,7 @@
                     </div>
                     <div class="text-center">
                         <button class="btn btn-default btn-sm" type="button" id="DS_btnGuardar"><i class="fa fa-save" aria-hidden="true"></i> Guardar</button>
-                        <button class="btn btn-danger btn-sm" type="button" id="DS_btnCerrar"><i class="fa fa-plus" aria-hidden="true"></i> Cancelar</button>
+                        <button class="btn btn-danger btn-sm" type="button" id="DS_btnCerrar"><i class="fa fa-plus" aria-hidden="true"></i> Salir</button>
                     </div>
                 </div>
             </form>

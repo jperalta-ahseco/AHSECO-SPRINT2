@@ -107,6 +107,7 @@
     var $AD_txtComentarios = $("#AD_txtComentarios");
     var $btnVerComentarioDscto = $("#btnVerComentarioDscto");
     var $btnAprobarCotizacion = $("#btnAprobarCotizacion");
+    var $PermitirEditarCotDetItem = $("#PermitirEditarCotDetItem");
     
     /*Ver Historial de Cotizacion */
     var $modalVerHistorialCotizacion = $("#modalVerHistorialCotizacion");
@@ -1470,17 +1471,14 @@
                 render: function (data) {
                     var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
                     var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: solicitud.editarItemServ(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                    var ver = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: solicitud.editarItemServ(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
                     var quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: solicitud.quitarItemServ(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                    if ($estadoSol.val() != "SCOT") { quitar = ""; editar = ver; }
                     return '<center>' + hidden + editar + ' ' + quitar + '</center>';
                 }
             }
         ];
-
-        //Se quita los botones de acción al aprobar la cotización
-        if ($estadoSol.val() == "CAPR") {
-            columns.pop();
-        }
-
+        
         var columnDefs =
         {
             targets: [0],
@@ -1588,6 +1586,8 @@
     function $btnAgregarDetalle_click() {
         $('#BI_cmbFamilia').get(0).selectedIndex = 0;
         $('#BI_cmbFamilia').trigger("change.select2");
+        $BI_txtNomProducto.val("");
+        $BI_txtCodProducto.val("");
         $('#BI_cmbTipoMedida').get(0).selectedIndex = 0;
         $('#BI_cmbTipoMedida').trigger("change.select2");
         $('#BI_cmbMarca').get(0).selectedIndex = 0;
@@ -1599,6 +1599,11 @@
 
     function $btnAgregarServicios_click() {
         $DS_hdnOpcGrillaItems.val("1");
+        $cmbTipoServicio.get(0).selectedIndex = 0;
+        $cmbTipoServicio.trigger("change.select2");
+        $txtBusqEquipo.val("");
+        $txtBusqModelo.val("");
+        $txtBusqMarca.val("");
         CargarTipoServicio();
         cargarGrillaCotDetServicios("1");
     }
@@ -3890,7 +3895,7 @@
             opcGrillaItems = opc;
             $('#modalDetalleItemServicio').modal('show');
             $DS_hdnIdCotDetServ.val(CodigoItem);
-            var codigo = "000000"+data.Result.CodItem
+            var codigo = "000000" + data.Result.CodItem
             $DS_txtCodigo.val(codigo.substring(codigo.length - 6));
             $DS_txtDescripcion.val(data.Result.Descripcion);
             $DS_txtCantidad.val(data.Result.Cantidad);
@@ -3960,8 +3965,10 @@
                 html += '</div>';
                 var nuevoTr = '<tr id="rowDetalle" name="rowDetalle">' +
                     '<td><center>' + indice + '</center></td>' +
-                    '<td><center>' + detalle[i].DesMantenimiento + '</center></td>' +
-                    '<td><center>' + html + '</center></td>';
+                    '<td><center>' + detalle[i].DesMantenimiento + '</center></td>';
+                if ($PermitirEditarCotDetItem.val() == "S") {
+                    nuevoTr += '<td><center>' + html + '</center></td>';
+                }
 
                 nuevoTr += '</tr>';
                 $DS_tblServiciosDetalle.append(nuevoTr);
@@ -4000,14 +4007,26 @@
                 };
                 app.message.success("Grabar", "Registro eliminado con &eacute;xito.", "Aceptar", fnCallback);
             };
-            return app.llamarAjax(method, url, objParam, fnDoneCallBack, null);;
+            return app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
         }
         return app.message.confirm("Ventas", "&iquest;Esta seguro de quitar un producto de la cotizaci&oacute;n?", "S&iacute;", "No", fnSi, null);
     }
 
     function cerrarModalDetCotServ() {
         var fnSi = function () {
-            $('#modalDetalleCotizacionServicio').modal('hide');
+
+            method = "POST";
+            url = "BandejaSolicitudesVentas/DeshacerCambiosSERTemporales";
+            var objDatos = {};
+            var objParam = JSON.stringify(objDatos);
+
+            var fnDoneCallBack = function (data) {
+                cargarTablaServiciosAgregados(data);
+                $('#modalDetalleCotizacionServicio').modal('hide');
+            };
+
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+
         }
         return app.message.confirm("Ventas", " Al salir perder&aacute; todos los datos registrados. &iquest;Desea Salir?", "S&iacute;", "No", fnSi, null);
     }
@@ -4101,6 +4120,7 @@
         var objDatos = {
             IdCotizacion: $idCotizacion.val(),
             IdSolicitud: $numeroSolicitud.val(),
+            IdWorkFlow: $idWorkFlow.val()
         };
         var objParam = JSON.stringify(objDatos);
 

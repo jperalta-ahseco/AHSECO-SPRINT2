@@ -165,7 +165,7 @@ var app = (function ($, win, doc) {
             ocultarLoading();
             $modal.attr("class", defaultsOptions.style.defaultValue);
             $header.attr("class", defaultsOptions.styleHeader.defaultValue);
-            $title.text(defaultsOptions.title);
+            $title.html(defaultsOptions.title);
             $body.html(message || defaultsOptions.message);
             $btnAccept.show().html(defaultsOptions.textButtonAccept);
             $btnCancel.hide();
@@ -183,7 +183,7 @@ var app = (function ($, win, doc) {
             ocultarLoading();
             $modal.attr("class", defaultsOptions.style.info);
             $header.attr("class", defaultsOptions.styleHeader.info);
-            $title.text(title || defaultsOptions.title);
+            $title.html(title || defaultsOptions.title);
             $body.html(message || defaultsOptions.message);
             $btnAccept.show().html(textButtonAccept || defaultsOptions.textButtonAccept);
             $btnCancel.hide();
@@ -201,7 +201,7 @@ var app = (function ($, win, doc) {
             ocultarLoading();
             $modal.attr("class", defaultsOptions.style.success);
             $header.attr("class", defaultsOptions.styleHeader.success);
-            $title.text(title || defaultsOptions.title);
+            $title.html(title || defaultsOptions.title);
             $body.html(message || defaultsOptions.message);
             $btnAccept.show().html(textButtonAccept || defaultsOptions.textButtonAccept);
             $btnCancel.hide();
@@ -219,7 +219,7 @@ var app = (function ($, win, doc) {
             ocultarLoading();
             $modal.attr("class", defaultsOptions.style.confirm);
             $header.attr("class", defaultsOptions.styleHeader.confirm);
-            $title.text(title || defaultsOptions.title);
+            $title.html(title || defaultsOptions.title);
             $body.html(message || defaultsOptions.message);
             $btnAccept.show().html(textButtonAccept || defaultsOptions.textButtonAccept);
             $btnCancel.show().html(textButtonCancel || defaultsOptions.textButtonCancel);
@@ -237,7 +237,7 @@ var app = (function ($, win, doc) {
             ocultarLoading();
             $modal.attr("class", defaultsOptions.style.error);
             $header.attr("class", defaultsOptions.styleHeader.error);
-            $title.text(title || defaultsOptions.title);
+            $title.html(title || defaultsOptions.title);
             $body.html(message || defaultsOptions.message);
             $btnAccept.show().html(textButtonAccept || defaultsOptions.textButtonAccept);
             $btnCancel.hide();

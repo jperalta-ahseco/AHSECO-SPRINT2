@@ -36,7 +36,10 @@ var cotvtadet = (function ($, win, doc) {
     var $RolVenta_Costos = $("#RolVenta_Costos");
 
     var $PermitirEnvioCotizacion = $("#PermitirEnvioCotizacion");
+    var $PermitirEditarCotDetItem = $("#PermitirEditarCotDetItem");
     var $PermitirEditarValorizacion = $("#PermitirEditarValorizacion");
+    var $EsCotizacionValorizada = $("#EsCotizacionValorizada");
+    var $EsCotizacionCosteada = $("#EsCotizacionCosteada");
     var $PermitirEditarGanancia = $("#PermitirEditarGanancia");
 
     var $DI_pnlInfoGeneral_Dimensiones = $("#DI_pnlInfoGeneral_Dimensiones");
@@ -428,6 +431,9 @@ var cotvtadet = (function ($, win, doc) {
             var fnDoneCallBack = function (data) {
                 var fnCallback = function () {
                     cargarTablaCotDet(data);
+                    if (opc == "2") {
+                        cargarTablaDetCotCostos(data);
+                    }
                 };
                 app.message.success("Grabar", "Registro eliminado con &eacute;xito.", "Aceptar", fnCallback);
             };
@@ -617,7 +623,7 @@ var cotvtadet = (function ($, win, doc) {
         $DI_hdnCodigoPadre.val("");
 
         method = "POST";
-        url = "BandejaSolicitudesVentas/EditarItemCotDet";
+        url = "BandejaSolicitudesVentas/CargarCotDetItem";
         var objFiltros = {
             CotizacionDetalle: { CodItem: CodigoItem },
             opcGrillaItems: opc
@@ -673,14 +679,19 @@ var cotvtadet = (function ($, win, doc) {
                 $DI_pnlDestinos.css("display", "");
             }
 
-            if ($DI_pnlInfoGeneral_Dimensiones.css("display") != "none") {
-                $DI_txtDimensiones.removeAttr("disabled");
-            }
+            $DI_btnGuardar.css("display", "none");
 
-            if ($DI_pnlCostos_ObsInsta.css("display") != "none") {
-                $DI_txtObsInsta.removeAttr("disabled");
+            //Se valida los campos si el Cotizacion Detalle es editable
+            if ($PermitirEditarCotDetItem.val() == "S") {
+                if ($DI_pnlInfoGeneral_Dimensiones.css("display") != "none") {
+                    $DI_txtDimensiones.removeAttr("disabled");
+                }
+                if ($DI_pnlCostos_ObsInsta.css("display") != "none") {
+                    $DI_txtObsInsta.removeAttr("disabled");
+                }
+                $DI_btnGuardar.css("display", "");
             }
-
+            
             //Para flujo de valorizacion puede agregar el COSTO FOB y el VALOR UNITARIO
             if ($PermitirEditarValorizacion.val() == "S") {
                 if ($idRolUsuario.val() == $RolVenta_Gerente.val()) {
@@ -699,17 +710,21 @@ var cotvtadet = (function ($, win, doc) {
                         $DI_txtValorUnitario.focus();
                     }
                 }
+                $DI_btnGuardar.css("display", "");
             }
 
             //Cuando a la cotización detalle se le asignó el VALOR UNITARIO recien se puede agregar una ganancia
-            if ($PermitirEditarGanancia.val() == "S") {
-                if ($DI_txtValorUnitario.val() != "") {
-                    $DI_txtGanancia.removeAttr("disabled");
-                    $DI_txtGanancia.focus();
+            if ($DI_pnlCostos_Ganancia.css("display") != "none") {
+                if ($PermitirEditarGanancia.val() == "S") {
+                    if ($DI_txtValorUnitario.val() != "") {
+                        $DI_btnGuardar.css("display", "");
+                        $DI_txtGanancia.removeAttr("disabled");
+                        $DI_txtGanancia.focus();
+                    }
                 }
-            }
-            else {
-                $DI_txtGanancia.attr("disabled", "disabled");
+                else {
+                    $DI_txtGanancia.attr("disabled", "disabled");
+                }
             }
 
             $('#modalDetalleItem').modal('show');
@@ -824,8 +839,12 @@ var cotvtadet = (function ($, win, doc) {
                 data: "CodItem",
                 render: function (data) {
                     var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
-                    var editar = '<a id="btnEditarSubItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarSubItem(' + String.fromCharCode(39) + CodItemPadre + String.fromCharCode(39) + ',' + String.fromCharCode(39) + data + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                    var quitar = '<a id="btnQuitarSubItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarSubItem(' + String.fromCharCode(39) + CodItemPadre + String.fromCharCode(39) + ',' + String.fromCharCode(39) + data + String.fromCharCode(39) + ')"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                    var editar = "";
+                    var quitar = "";
+                    if ($PermitirEditarCotDetItem.val() == "S") {
+                        editar = '<a id="btnEditarSubItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarSubItem(' + String.fromCharCode(39) + CodItemPadre + String.fromCharCode(39) + ',' + String.fromCharCode(39) + data + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                        quitar = '<a id="btnQuitarSubItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarSubItem(' + String.fromCharCode(39) + CodItemPadre + String.fromCharCode(39) + ',' + String.fromCharCode(39) + data + String.fromCharCode(39) + ')"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                    }
                     return '<center>' + hidden + editar + ' ' + quitar + '</center>';
                 }
             }
@@ -871,7 +890,7 @@ var cotvtadet = (function ($, win, doc) {
         $DI_hdnCodigoPadre.val(CodigoItemPadre);
 
         method = "POST";
-        url = "BandejaSolicitudesVentas/EditarSubItemCotDet";
+        url = "BandejaSolicitudesVentas/CargarCotDetSubItem";
         var objFiltros = {
             CotizacionDetallePadre: { CodItem: CodigoItemPadre },
             CotizacionDetalle: { CodItem: CodigoItem }
@@ -882,7 +901,8 @@ var cotvtadet = (function ($, win, doc) {
             opcGrillaItems = 1;
             LimpiarModalDetItem();
             MostrarDatosItem(data);
-            $DI_pnlInfoGeneral_Dimensiones.css("display", "");
+            $DI_pnlInfoGeneral_Dimensiones.css("display", "none");
+            $DI_pnl
             $DI_pnlCostos_PrecioVenta.css("display", "");
             $DI_pnlCostos_CostoFOB.css("display", "none");
             $DI_pnlCostos_ValorUnitario.css("display", "");
@@ -924,52 +944,53 @@ var cotvtadet = (function ($, win, doc) {
         var bFlete = null;
 
         if ($.trim($DI_txtCodigo.val()) == "") {
-            app.message.error("Validación", "Campo C&oacute;digo no puede ser vac&iacute;o");
+            app.message.error("Validaci&oacute;n", "Campo C&oacute;digo no puede ser vac&iacute;o");
             return false;
         }
 
         if ($DI_txtCantidad.val() == "") {
-            app.message.error("Validación", "Campo Cantidad no puede ser vac&iacute;o");
+            app.message.error("Validaci&oacute;n", "Campo Cantidad no puede ser vac&iacute;o");
             return false;
         }
         else {
             if (!app.validaNumeroEntero($DI_txtCantidad.val())) {
-                app.message.error("Validación", "N&uacute;mero inv&aacute;lido en campo Cantidad");
+                app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Cantidad");
                 return false;
             }
             else {
                 if (parseInt($DI_txtCantidad.val()) <= 0) {
-                    app.message.error("Validación", "La cantidad debe ser mayor a 0.");
+                    app.message.error("Validaci&oacute;n", "La cantidad debe ser mayor a 0.");
                     return false;
                 }
             }
         }
 
-        if ($DI_pnlCostos_CostoFOB.css("display") != "none") {
-            if ($DI_txtCostoFOB.attr("readonly") != "readonly" && $DI_txtCostoFOB.attr("disabled") != "disabled") {
-                if (!app.validaNumeroDecimal($DI_txtCostoFOB.val())) {
-                    app.message.error("Validación", "N&uacute;mero inv&aacute;lido en campo Costo FOB");
-                    return false;
-                }
-                else {
-                    if (parseFloat($DI_txtCostoFOB.val()) <= 0) {
-                        app.message.error("Validación", "el costo FOB debe ser mayor a 0.");
+        if ($DI_pnlCostos_PrecioVenta.css("display") != "none") {
+            if ($DI_pnlCostos_CostoFOB.css("display") != "none") {
+                if ($DI_txtCostoFOB.attr("readonly") != "readonly" && $DI_txtCostoFOB.attr("disabled") != "disabled") {
+                    if (!app.validaNumeroDecimal($DI_txtCostoFOB.val())) {
+                        app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Costo FOB");
                         return false;
+                    }
+                    else {
+                        if (parseFloat($DI_txtCostoFOB.val()) <= 0) {
+                            app.message.error("Validaci&oacute;n", "el costo FOB debe ser mayor a 0.");
+                            return false;
+                        }
                     }
                 }
             }
-        }
-
-        if ($DI_pnlCostos_ValorUnitario.css("display") != "none") {
-            if ($DI_txtValorUnitario.attr("readonly") != "readonly" && $DI_txtValorUnitario.attr("disabled") != "disabled") {
-                if (!app.validaNumeroDecimal($DI_txtValorUnitario.val())) {
-                    app.message.error("Validación", "N&uacute;mero inv&aacute;lido en campo Valor Unitario");
-                    return false;
-                }
-                else {
-                    if (parseFloat($DI_txtValorUnitario.val()) <= 0) {
-                        app.message.error("Validación", "el valor unitario debe ser mayor a 0.");
+            if ($DI_pnlCostos_ValorUnitario.css("display") != "none") {
+                if ($DI_txtValorUnitario.attr("readonly") != "readonly" && $DI_txtValorUnitario.attr("disabled") != "disabled") {
+                    if (!app.validaNumeroDecimal($DI_txtValorUnitario.val())) {
+                        app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Valor Unitario");
                         return false;
+                    }
+                    else {
+                        if (parseFloat($DI_txtValorUnitario.val()) <= 0) {
+                            app.message.error("Validaci&oacute;n", "el valor unitario debe ser mayor a 0.");
+                            return false;
+                        }
                     }
                 }
             }
@@ -978,12 +999,12 @@ var cotvtadet = (function ($, win, doc) {
         if ($DI_pnlCostos_Ganancia.css("display") != "none") {
             if ($DI_txtGanancia.attr("readonly") != "readonly" && $DI_txtGanancia.attr("disabled") != "disabled") {
                 if (!app.validaNumeroDecimal($DI_txtGanancia.val())) {
-                    app.message.error("Validación", "N&uacute;mero inv&aacute;lido en campo Ganancia");
+                    app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Ganancia");
                     return false;
                 }
                 else {
                     if (parseFloat($DI_txtGanancia.val()) <= 0) {
-                        app.message.error("Validación", "La ganancia no debe ser menor a 0.");
+                        app.message.error("Validaci&oacute;n", "La ganancia no debe ser menor a 0.");
                         return false;
                     }
                 }
@@ -993,7 +1014,7 @@ var cotvtadet = (function ($, win, doc) {
         if ($DI_pnlCostos_GarantAdic.css("display") != "none") {
             if ($DI_cmbGarantias.attr("readonly") != "readonly" && $DI_cmbGarantias.attr("disabled") != "disabled") {
                 if ($.trim($DI_cmbGarantias.val()) == "") {
-                    app.message.error("Validación", "Se debe elegir el tipo de garant&iacute;a.");
+                    app.message.error("Validaci&oacute;n", "Se debe elegir el tipo de garant&iacute;a.");
                     return false;
                 }
             }
@@ -1003,7 +1024,17 @@ var cotvtadet = (function ($, win, doc) {
             if ($DI_radTieneStock_Si.attr("readonly") != "readonly" && $DI_radTieneStock_Si.attr("disabled") != "disabled" &&
                 $DI_radTieneStock_No.attr("readonly") != "readonly" && $DI_radTieneStock_No.attr("disabled") != "disabled") {
                 if (!$DI_radTieneStock_Si.is(':checked') && !$DI_radTieneStock_No.is(':checked')) {
-                    app.message.error("Validación", "Elija Si o No si el producto tiene STOCK");
+                    app.message.error("Validaci&oacute;n", "Elija Si o No si el producto tiene STOCK");
+                    return false;
+                }
+            }
+        }
+
+        if ($DI_pnlCostos_CompraLocal.css("display") != "none") {
+            if ($DI_radCompraLocal_Si.attr("readonly") != "readonly" && $DI_radCompraLocal_Si.attr("disabled") != "disabled" &&
+                $DI_radCompraLocal_No.attr("readonly") != "readonly" && $DI_radCompraLocal_No.attr("disabled") != "disabled") {
+                if (!$DI_radCompraLocal_Si.is(':checked') && !$DI_radCompraLocal_No.is(':checked')) {
+                    app.message.error("Validaci&oacute;n", "Elija Si o No si el producto es COMPRA LOCAL");
                     return false;
                 }
             }
@@ -1013,7 +1044,7 @@ var cotvtadet = (function ($, win, doc) {
             if ($DI_radReqPlaca_Si.attr("readonly") != "readonly" && $DI_radReqPlaca_Si.attr("disabled") != "disabled" &&
                 $DI_radReqPlaca_No.attr("readonly") != "readonly" && $DI_radReqPlaca_No.attr("disabled") != "disabled") {
                 if (!$DI_radReqPlaca_Si.is(':checked') && !$DI_radReqPlaca_No.is(':checked')) {
-                    app.message.error("Validación", "Elija Si o No en campo de Requiere placa");
+                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo de Requiere placa");
                     return false;
                 }
             }
@@ -1023,7 +1054,7 @@ var cotvtadet = (function ($, win, doc) {
             if ($DI_radManuales_Si.attr("readonly") != "readonly" && $DI_radManuales_Si.attr("disabled") != "disabled" &&
                 $DI_radManuales_No.attr("readonly") != "readonly" && $DI_radManuales_No.attr("disabled") != "disabled") {
                 if (!$DI_radManuales_Si.is(':checked') && !$DI_radManuales_No.is(':checked')) {
-                    app.message.error("Validación", "Elija Si o No en campo Manuales");
+                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Manuales");
                     return false;
                 }
             }
@@ -1033,7 +1064,7 @@ var cotvtadet = (function ($, win, doc) {
             if ($DI_radVideos_Si.attr("readonly") != "readonly" && $DI_radVideos_Si.attr("disabled") != "disabled" &&
                 $DI_radVideos_No.attr("readonly") != "readonly" && $DI_radVideos_No.attr("disabled") != "disabled") {
                 if (!$DI_radVideos_Si.is(':checked') && !$DI_radVideos_No.is(':checked')) {
-                    app.message.error("Validación", "Elija Si o No en campo Videos");
+                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Videos");
                     return false;
                 }
             }
@@ -1043,7 +1074,7 @@ var cotvtadet = (function ($, win, doc) {
             if ($DI_radInstalacion_Si.attr("readonly") != "readonly" && $DI_radInstalacion_Si.attr("disabled") != "disabled" &&
                 $DI_radInstalacion_No.attr("readonly") != "readonly" && $DI_radInstalacion_No.attr("disabled") != "disabled") {
                 if (!$DI_radInstalacion_Si.is(':checked') && !$DI_radInstalacion_No.is(':checked')) {
-                    app.message.error("Validación", "Elija Si o No en campo Instalaci&oacute;n");
+                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Instalaci&oacute;n");
                     return false;
                 }
             }
@@ -1053,7 +1084,7 @@ var cotvtadet = (function ($, win, doc) {
             if ($DI_radCapacitacion_Si.attr("readonly") != "readonly" && $DI_radCapacitacion_Si.attr("disabled") != "disabled" &&
                 $DI_radCapacitacion_No.attr("readonly") != "readonly" && $DI_radCapacitacion_No.attr("disabled") != "disabled") {
                 if (!$DI_radCapacitacion_Si.is(':checked') && !$DI_radCapacitacion_No.is(':checked')) {
-                    app.message.error("Validación", "Elija Si o No en campo Capacitaci&oacute;n");
+                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Capacitaci&oacute;n");
                     return false;
                 }
             }
@@ -1063,7 +1094,7 @@ var cotvtadet = (function ($, win, doc) {
             if ($DI_radGarantAdic_Si.attr("readonly") != "readonly" && $DI_radGarantAdic_Si.attr("disabled") != "disabled" &&
                 $DI_radGarantAdic_No.attr("readonly") != "readonly" && $DI_radGarantAdic_No.attr("disabled") != "disabled") {
                 if (!$DI_radGarantAdic_Si.is(':checked') && !$DI_radGarantAdic_No.is(':checked')) {
-                    app.message.error("Validación", "Elija Si o No en campo Garant&iacute;a adicional");
+                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Garant&iacute;a adicional");
                     return false;
                 }
             }
@@ -1073,7 +1104,7 @@ var cotvtadet = (function ($, win, doc) {
             if ($DI_radMantPrevent_Si.attr("readonly") != "readonly" && $DI_radMantPrevent_Si.attr("disabled") != "disabled" &&
                 $DI_radMantPrevent_No.attr("readonly") != "readonly" && $DI_radMantPrevent_No.attr("disabled") != "disabled") {
                 if (!$DI_radMantPrevent_Si.is(':checked') && !$DI_radMantPrevent_No.is(':checked')) {
-                    app.message.error("Validación", "Elija Si o No en campo Mantenimiento Preventivo");
+                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Mantenimiento Preventivo");
                     return false;
                 }
             }
@@ -1083,7 +1114,7 @@ var cotvtadet = (function ($, win, doc) {
             if ($DI_radCalibracion_Si.attr("readonly") != "readonly" && $DI_radCalibracion_Si.attr("disabled") != "disabled" &&
                 $DI_radCalibracion_No.attr("readonly") != "readonly" && $DI_radCalibracion_No.attr("disabled") != "disabled") {
                 if (!$DI_radCalibracion_Si.is(':checked') && !$DI_radCalibracion_No.is(':checked')) {
-                    app.message.error("Validación", "Elija Si o No en campo Calibraci&oacute;n");
+                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Calibraci&oacute;n");
                     return false;
                 }
             }
@@ -1093,7 +1124,7 @@ var cotvtadet = (function ($, win, doc) {
             if ($DI_radFlete_Si.attr("readonly") != "readonly" && $DI_radFlete_Si.attr("disabled") != "disabled" &&
                 $DI_radFlete_No.attr("readonly") != "readonly" && $DI_radFlete_No.attr("disabled") != "disabled") {
                 if (!$DI_radFlete_Si.is(':checked') && !$DI_radFlete_No.is(':checked')) {
-                    app.message.error("Validación", "Elija Si o No en campo Flete");
+                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Flete");
                     return false;
                 }
             }
@@ -1170,7 +1201,7 @@ var cotvtadet = (function ($, win, doc) {
         var fnDoneCallBack = function (data) {
             cerrarModalDetItem();
             cargarTablaCotDet(data);
-            if (opcGrillaItems == 2) {
+            if (opcGrillaItems == "2") {
                 cargarTablaDetCotCostos(data);
             }
         };
@@ -1383,8 +1414,26 @@ var cotvtadet = (function ($, win, doc) {
                     render: function (data) {
                         var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
                         var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                        var ver = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
                         var quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
-                        if ($estadoSol.val() == "CVAL") { quitar = ""; }
+                        if ($estadoSol.val() != "SCOT") { quitar = ""; }
+                        if ($estadoSol.val() == "CVAL") {
+                            var swVer = true;
+                            //Se valida si la cotizacion va a ser valorizada
+                            if ($DI_pnlCostos_PrecioVenta.css("display") != "none") {
+                                if ($PermitirEditarValorizacion.val() == "S") { swVer = false; }
+                            }
+                            //Se valida si para el tipo de solicitud su producto se agregará ganancia
+                            if ($cmbTipo.val() != $TipoSol_VentaMat.val() && $cmbTipo.val() != $TipoSol_RepOComes.val()) {
+                                if ($DI_pnlCostos_Ganancia.css("display") != "none") {
+                                    if ($PermitirEditarGanancia.val() == "S") { swVer = false; }
+                                }
+                            }
+                            if (swVer) { editar = ver; }
+                        }
+                        else {
+                            if ($estadoSol.val() != "SCOT") { editar = ver; }
+                        }
                         return '<center>' + hidden + editar + ' ' + quitar + '</center>';
                     }
                 }
@@ -1392,18 +1441,6 @@ var cotvtadet = (function ($, win, doc) {
 
         }
         
-        //Se quita los botones de acción para el asesor ya que se envio a valorizar la cotización
-        if ($estadoSol.val() == "CVAL" && $PermitirEditarValorizacion.val() == "N") {
-            if ($idRolUsuario.val() != $RolVenta_Asesor.val()) {
-                columns.pop();
-            }
-        }
-
-        //Se quita los botones de acción al aprobar la cotización
-        if ($estadoSol.val() == "CAPR") {
-            columns.pop();
-        }
-
         var columnDefs =
         {
             targets: [0],
@@ -1425,7 +1462,19 @@ var cotvtadet = (function ($, win, doc) {
     function cerrarModalDetCot() {
         
         var fnSi = function () {
-            $('#modalDetalleCotizacion').modal('hide');
+
+            method = "POST";
+            url = "BandejaSolicitudesVentas/DeshacerCambiosPROTemporales";
+            var objDatos = { };
+            var objParam = JSON.stringify(objDatos);
+
+            var fnDoneCallBack = function (data) {
+                cargarTablaCotDet(data);
+                $('#modalDetalleCotizacion').modal('hide');
+            };
+
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+
         }
         return app.message.confirm("Ventas", " Al salir perder&aacute; todos los datos registrados. &iquest;Desea Salir?", "S&iacute;", "No", fnSi, null);
     }
@@ -1434,27 +1483,27 @@ var cotvtadet = (function ($, win, doc) {
 
 
         if ($nombreContacto.val().trim() === "" || $nombreContacto.val().trim().length <= 0 || $nombreContacto.val().trim() == null) {
-            app.message.error("Validación", "Debe de seleccionar un contacto registrado o ingresar el nombre de un nuevo contacto.");
+            app.message.error("Validaci&oacute;n", "Debe de seleccionar un contacto registrado o ingresar el nombre de un nuevo contacto.");
             return;
         };
 
         if (!isNaN($nombreContacto.val())) {
-            app.message.error("Validación", "El nombre del contacto no puede contener números.")
+            app.message.error("Validaci&oacute;n", "El nombre del contacto no puede contener números.")
             return;
         };
 
         if ($txtAreaContacto.val().trim() === "" || $txtAreaContacto.val().trim().length <= 0 || $txtAreaContacto.val().trim() == null) {
-            app.message.error("Validación", "Debe de seleccionar un contacto registrado o ingresar el área de un nuevo contacto.");
+            app.message.error("Validaci&oacute;n", "Debe de seleccionar un contacto registrado o ingresar el área de un nuevo contacto.");
             return;
         };
 
         if (!isNaN($txtAreaContacto.val())) {
-            app.message.error("Validación", "El área del contacto no puede contener números.")
+            app.message.error("Validaci&oacute;n", "El área del contacto no puede contener números.")
             return;
         };
 
         if ($txtTelefono.val().trim() === "" || $txtTelefono.val().trim().length <= 0 || $txtTelefono.val().trim() == null) {
-            app.message.error("Validación", "Debe de seleccionar un contacto registrado o ingresar el teléfono de un nuevo contacto.");
+            app.message.error("Validaci&oacute;n", "Debe de seleccionar un contacto registrado o ingresar el teléfono de un nuevo contacto.");
             return;
         };
 
@@ -1463,56 +1512,56 @@ var cotvtadet = (function ($, win, doc) {
         telefono = telefono.replace(/\s+/g, ' ');
 
         if (isNaN($txtTelefono.val().trim()) || (telefono.length === 0 && telefono != "")) {
-            app.message.error("Validación", "El teléfono no está en el formato correcto.");
+            app.message.error("Validaci&oacute;n", "El teléfono no está en el formato correcto.");
             return
         };
 
         if ($txtCorreo.val().trim() === "" || $txtCorreo.val().trim().length <= 0 || $txtCorreo.val().trim() == null) {
-            app.message.error("Validación", "Debe de seleccionar un contacto registrado o ingresar el correo de un nuevo contacto.");
+            app.message.error("Validaci&oacute;n", "Debe de seleccionar un contacto registrado o ingresar el correo de un nuevo contacto.");
             return;
         };
 
         if (!app.validarEmail($txtCorreo.val().trim()) && $txtCorreo.val().trim() != "") {
-            app.message.error("Validación", "Debe de colocar un correo con el formato correcto.");
+            app.message.error("Validaci&oacute;n", "Debe de colocar un correo con el formato correcto.");
             return
         };
 
         if ($dateCotizacion.val().trim() === "" || $dateCotizacion.val().trim().length <= 0 || $dateCotizacion.val().trim() == null) {
-            app.message.error("Validación", "Debe ingresar la fecha de cotización.");
+            app.message.error("Validaci&oacute;n", "Debe ingresar la fecha de cotización.");
             return;
         };
 
         if ($txtVigencia.val().trim() === "" || $txtVigencia.val().trim().length <= 0 || $txtVigencia.val().trim() == null) {
-            app.message.error("Validación", "Debe de ingresar el plazo de vigencia de la cotización.");
+            app.message.error("Validaci&oacute;n", "Debe de ingresar el plazo de vigencia de la cotización.");
             return;
         };
 
         if ($.trim($txtPlazoEntrega.val()) == "") {
-            app.message.error("Validación", "Debe de ingresar el plazo de entrega de la cotización.");
+            app.message.error("Validaci&oacute;n", "Debe de ingresar el plazo de entrega de la cotización.");
             return;
         }
         else {
             if (!app.validaNumeroEntero($txtPlazoEntrega.val())) {
-                app.message.error("Validación", "Número inválido para el Plazo de Entrega.");
+                app.message.error("Validaci&oacute;n", "Número inválido para el Plazo de Entrega.");
                 return;
             }
         };
 
         if ($cmbGarantia.attr("disabled") != "disabled") {
             if ($.trim($cmbGarantia.val()) === "" || $cmbGarantia.val() == undefined || $cmbGarantia.val() == null) {
-                app.message.error("Validación", "Debe de ingresar el periodo de garantía.");
+                app.message.error("Validaci&oacute;n", "Debe de ingresar el periodo de garantía.");
                 return;
             };
         }
 
         if ($.trim($cmbTipoPago.val()) === "" || $cmbTipoPago.val() == undefined || $cmbTipoPago.val() == null) {
-            app.message.error("Validación", "Debe de seleccionar la forma de pago.");
+            app.message.error("Validaci&oacute;n", "Debe de seleccionar la forma de pago.");
             return;
         };
 
         if ($cmbTipMoneda.attr("disabled") != "disabled") {
             if ($.trim($cmbTipMoneda.val()) === "" || $cmbTipMoneda.val() == undefined || $cmbTipMoneda.val() == null) {
-                app.message.error("Validación", "Debe de seleccionar el tipo de moneda.");
+                app.message.error("Validaci&oacute;n", "Debe de seleccionar el tipo de moneda.");
                 return;
             };
         }
@@ -1526,7 +1575,7 @@ var cotvtadet = (function ($, win, doc) {
         if ($txtPorcentajeDscto.attr("disabled") != "disabled") {
             if ($txtPorcentajeDscto.val() != "") {
                 if (!app.validaNumeroDecimal($txtPorcentajeDscto.val())) {
-                    app.message.error("Validación", "N&uacute;mero inv&aacute;lido del campo Porcentaje de Descuento");
+                    app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido del campo Porcentaje de Descuento");
                     return;
                 }
                 else { vPorcDscto = parseFloat($txtPorcentajeDscto.val()); }
