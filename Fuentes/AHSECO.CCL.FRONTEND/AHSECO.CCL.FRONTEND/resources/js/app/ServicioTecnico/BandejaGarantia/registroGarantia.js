@@ -471,8 +471,10 @@
 
         var fnSi = function () {
             var fnDoneCallBack = function () {
-                app.message.success("Éxito", "Se actualizaron los datos correctamente.");
-                location.reload();
+                var fnRedirectTo = function () {
+                    location.reload();
+                }
+                app.message.success("Éxito", "Se actualizaron los datos correctamente.", "Aceptar", fnRedirectTo);
             };
 
             var fnFailCallBack = function () {
