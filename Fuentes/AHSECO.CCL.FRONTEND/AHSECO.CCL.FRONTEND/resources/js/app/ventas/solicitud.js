@@ -1414,6 +1414,7 @@
     }
     
     function grabarDatosCotDetServ() {
+
         method = "POST";
         url = "BandejaSolicitudesVentas/GrabarDatosCotDet";
         var objDatos = { TipoItem: "SER" };
@@ -3922,7 +3923,7 @@
 
     function editarItemServ(CodigoItem, opc) {
         method = "POST";
-        url = "BandejaSolicitudesVentas/EditarItemCotDetServicio";
+        url = "BandejaSolicitudesVentas/CargarCotDetItemServicio";
         var objFiltros = {
             CodItem: CodigoItem,
             opcGrillaItems: opc
@@ -3944,6 +3945,10 @@
             if (data.Result.DetallesServicio != null) { contadorDetalle = data.Result.DetallesServicio.length; }
             contadorDetalle = 0;
             cargarTablaDetalleServicios(data.Result.DetallesServicio);
+            if ($PermitirEditarCotDetItem.val() != "S") {
+                $btnAgregarDetServ.css("display", "none");
+                $DS_btnGuardar.css("display", "none");
+            }
         }
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
     }
@@ -4006,17 +4011,13 @@
                 if ($PermitirEditarCotDetItem.val() == "S") {
                     nuevoTr += '<td><center>' + html + '</center></td>';
                 }
-
                 nuevoTr += '</tr>';
                 $DS_tblServiciosDetalle.append(nuevoTr);
                 swDetalle = true;
             }
         }
-        if (swDetalle) {
-            var nuevoTr = '<tr id="rowDetalle" name="rowDetalle">' +
-                '<td colspan=3><center>No existen registros</center></td>'
-            '</tr>';
-
+        if (!swDetalle) {
+            var nuevoTr = '<tr id="rowDetalle" name="rowDetalle"><td colspan=3><center>No existen registros</center></td></tr>';
             $DS_tblServiciosDetalle.append(nuevoTr);
         };
     }

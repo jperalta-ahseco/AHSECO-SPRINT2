@@ -3188,9 +3188,16 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 }
 
                 //Solo se devuelve los costos de la grilla respectiva
-                var response = new ResponseDTO<IEnumerable<CotDetCostoDTO>>(lstCostos.Where(x => x.CodCosto == CostoItem.CodCosto));
-
-                return Json(response);
+                if (opcGrilla == opcTablaFinal)
+                {
+                    var response = new ResponseDTO<IEnumerable<CotDetCostoDTO>>(lstCostos.Where(x => x.CodCosto == CostoItem.CodCosto));
+                    return Json(response);
+                }
+                else
+                {
+                    var response = new ResponseDTO<IEnumerable<CotDetCostoDTO>>(lstCostos.Where(x => x.IdCotizacionDetalle == CostoItem.IdCotizacionDetalle));
+                    return Json(response);
+                }
             }
             catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
         }
@@ -3239,9 +3246,16 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 }
 
                 //Solo se devuelve los costos de la grilla respectiva
-                var response = new ResponseDTO<IEnumerable<CotDetCostoDTO>>(lstCostos.Where(x => x.CodCosto == oCosto.CodCosto));
-
-                return Json(response);
+                if(opcGrilla == opcTablaFinal)
+                {
+                    var response = new ResponseDTO<IEnumerable<CotDetCostoDTO>>(lstCostos.Where(x => x.CodCosto == oCosto.CodCosto));
+                    return Json(response);
+                }
+                else
+                {
+                    var response = new ResponseDTO<IEnumerable<CotDetCostoDTO>>(lstCostos.Where(x => x.IdCotizacionDetalle == oCosto.IdCotizacionDetalle));
+                    return Json(response);
+                }
             }
             catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
         }
@@ -4450,7 +4464,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
         }
 
-        public JsonResult EditarItemCotDetServicio(string CodItem, string opcGrillaItems)
+        [HttpPost]
+        public JsonResult CargarCotDetItemServicio(string CodItem, string opcGrillaItems)
         {
             try
             {

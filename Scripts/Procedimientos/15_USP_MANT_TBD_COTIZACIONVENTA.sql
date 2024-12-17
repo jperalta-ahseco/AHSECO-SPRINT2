@@ -27,10 +27,12 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_MANT_TBD_COTIZACIONVENTA]
   =======================================================================================================*/
 AS
 BEGIN
+
 	DECLARE @CANTREG INT
 	DECLARE @CANTREGVALORIZADOS INT
 	DECLARE @CODDETALLE INT, @MSG VARCHAR(20)
 	DECLARE @NUM INT
+	
 	SET NOCOUNT ON;
 
 	IF (@isTipoProceso = 'I')
@@ -97,7 +99,7 @@ BEGIN
 
 		EXEC USP_UPD_TOTALIZAR_COTDET @isID
 
-		SET  @CODDETALLE = @isID
+		SET @CODDETALLE = @isID
 		SET @MSG ='Registro Actualizado con éxito'
 
 	END
@@ -105,7 +107,7 @@ BEGIN
 	IF(@isTipoProceso = 'D')
 	BEGIN
 		DELETE FROM TBD_COTIZACIONVENTA WHERE ID = @isID
-		SET  @CODDETALLE = @isID
+		SET @CODDETALLE = @isID
 		SET @MSG ='Registro eliminado con éxito'
 	END
 
