@@ -19,6 +19,11 @@ var app = (function ($, win, doc) {
     var baseUrl = baseSiteUrl;
     var urlBase = baseUrl;
     $btnSalirPortal = $("#btnSalirPortal");
+
+    var tiempoInactividad = 0; // En minutos
+    var maxInactividad = 3; // 3 minutos de inactividad
+    var temporizador;
+
     
 
     var defaults = (function ($, w, d) {
@@ -343,6 +348,31 @@ var app = (function ($, win, doc) {
         $.fn.datepicker.defaults.language = "es";
 
         $btnSalirPortal.click($btnSalirPortal_click);
+
+        // Detectar eventos de actividad (movimiento del ratón, pulsación de tecla, etc.)
+        window.onload = resetInactividad;
+        document.onmousemove = resetInactividad;
+        document.onkeydown = resetInactividad;
+    }
+
+
+    // Función para reiniciar el contador de inactividad
+    function resetInactividad() {
+        tiempoInactividad = 0;
+        clearTimeout(temporizador);
+        temporizador = setTimeout(notificarInactividad, 60000); // Cada 60 segundos, verificar la inactividad
+    }
+
+    // Función que se llama cuando el usuario ha estado inactivo por más de 'maxInactividad' minutos
+    function notificarInactividad() {
+        tiempoInactividad++;
+        if (tiempoInactividad >= maxInactividad) {
+            alert('El usuario está inactivo desde hace más de 3 minutos.');
+            // Llamar a una acción en el servidor (ejemplo con AJAX)
+            $btnSalirPortal_click();
+        } else {
+            temporizador = setTimeout(notificarInactividad, 60000); // Verificar nuevamente en 1 minuto
+        }
     }
 
     function $btnSalirPortal_click() {

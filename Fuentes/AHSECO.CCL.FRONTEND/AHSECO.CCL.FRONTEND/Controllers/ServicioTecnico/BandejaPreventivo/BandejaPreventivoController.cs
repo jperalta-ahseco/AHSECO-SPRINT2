@@ -219,7 +219,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
 
                 var adjuntos = new List<string>();
                 var documentosBL = new DocumentosBL();
-                var documentos = documentosBL.ConsultaDocumentos(respuesta.Result.Codigo);
+                var documentos = documentosBL.ConsultaDocumentos(req.Id_WorkFlow);
                 foreach (var doc in documentos.Result)
                 {
                     if (doc.CodigoTipoDocumento == "DP04" && doc.Eliminado == 0) //Solo documentos de tipo Acta de Instalación:

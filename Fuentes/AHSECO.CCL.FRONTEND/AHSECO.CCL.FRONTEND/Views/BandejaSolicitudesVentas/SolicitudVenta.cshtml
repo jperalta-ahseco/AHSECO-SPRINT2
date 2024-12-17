@@ -909,20 +909,19 @@
                                                                 <div class="text-right">
                                                                     <button class="btn btn-default btn-sm" type="button" style="display:none;" id="btnBuscarTecnicos" data-target="#modalBusquedaTecnico" data-toggle="modal"><i class="fa fa-search"></i> Buscar Técnicos</button>
                                                                     <span id="hidden_fields"></span>
-                                                                    <button class="btn btn-primary btn-sm" type="button" style="display:none;" id="btnAñadirTecnico" data-toggle="modal" data-target="#añadirTecnico"><i class="fa fa-plus"></i> Crear Técnico Externo</button>
+                                                                    <button class="btn btn-primary btn-sm" type="button" style="display:none;" id="btnAñadirTecnico" data-toggle="modal" data-target="#añadirTecnico"><i class="fa fa-plus"></i> Crear Técnico Externo</button> &nbsp;
+                                                                    <button class="btn btn-primary btn-sm" type="button" style="display:none;" id="btnGuardarProg" data-toggle="modal" data-target="#añadirFecProg"><i class="fa fa-table"></i> Programar Fecha</button>
                                                                 </div>
                                                                 <br />
                                                                 <div class="row container-fluid">
-                                                                    <div class="col-md-4 col-sm-12">
+                                                                    <div class="col-md-6 col-sm-12">
                                                                         <label for="dateProgramacionServ">Fecha de Programaci&oacute;n: </label>
                                                                         <div class="input-group date">
-                                                                            <input type="text" class="form-control input-sm" id="dateProgramacionServ" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" readonly maxlength="10">
-                                                                            <span class="input-group-addon input-sm" id="opendateEntregaPedidoCE">
-                                                                                <i class="fa fa-calendar"></i>
-                                                                            </span>
+                                                                            <input type="text" class="form-control input-sm" id="dateProgramacionServ" aria-describedby="sizing-addon3"  disabled maxlength="10">
                                                                         </div>
                                                                     </div>
                                                                 </div>
+                                                                <br />
                                                                 <div class="table-responsive">
                                                                     <table id="tblMainTecnicos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                                                         <thead>
@@ -1151,6 +1150,45 @@
     @{
         Html.RenderPartial("_Ubigeo");
     }
+</div>
+
+
+<div class="modal fade" id="añadirFecProg" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-sm container-fluid" role="document">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <!-- Modal content header -->
+            <div class="modal-header box-header well well-large">
+                <h5 class="modal-title" id="tituloModal"><b>Fecha de Programaci&oacute;n:</b></h5>
+            </div>
+            <!-- Modal content body -->
+            <div class="modal-body d-flex justify-content-center" align-items-center>
+                <form id="formRegistroFecProg" class="d-flex flex-row">
+                    <div class="row container-fluid d-flex justify-content-center">
+
+
+                        <!--1ra fila:-->
+                        <div class="row container-fluid">
+                            <div class="col-md-12 col-sm-12">
+                                <div class="input-group date">
+                                    <input type="text" class="form-control input-sm" id="dateProg" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" readonly maxlength="10">
+                                    <span class="input-group-addon input-sm" id="opendateProg">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <!-- Modal content footer -->
+            <div class="modal-footer">
+                <button class="btn btn-default btn-sm pull-left" type="button" data-dismiss="modal" id="btnCerrarDetalle"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Cerrar</button>
+                <button class="btn btn-primary btn-sm" type="button" id="btnRegistrarFechaProg"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="modal fade" id="modalSeries" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
