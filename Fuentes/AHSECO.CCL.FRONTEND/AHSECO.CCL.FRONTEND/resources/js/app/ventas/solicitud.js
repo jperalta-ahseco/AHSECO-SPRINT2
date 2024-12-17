@@ -95,6 +95,12 @@
     var $openRegdateCotizacion = $('#openRegdateCotizacion');
     var $btnRegistrarCotizacion = $('#btnRegistrarCotizacion');
     var $btnAgregarDetalle = $('#btnAgregarDetalle');
+    var $BI_cmbFamilia = $('#BI_cmbFamilia');
+    var $BI_txtCodProducto = $('#BI_txtCodProducto');
+    var $BI_txtNomProducto = $('#BI_txtNomProducto');
+    var $BI_cmbTipoMedida = $('#BI_cmbTipoMedida');
+    var $BI_cmbMarca = $('#BI_cmbMarca');
+    var $BI_cmbAlmacen = $("#BI_cmbAlmacen");
     var $hdnPorcentajeDscto = $("#hdnPorcentajeDscto");
     var $txtPorcentajeDscto = $("#txtPorcentajeDscto");
     var $DsctoRequiereAprobacion = $("#DsctoRequiereAprobacion");
@@ -3988,7 +3994,7 @@
             //detalleServicios = data.Result.DetallesServicio;
             if (data.Result.DetallesServicio != null) { contadorDetalle = data.Result.DetallesServicio.length; }
             contadorDetalle = 0;
-            cargarTablaDetalleServicios(data.Result.DetallesServicio);
+            cargarTablaDetalleServicios(data.Result.Actividades);
             if ($PermitirEditarCotDetItem.val() != "S") {
                 $btnAgregarDetServ.css("display", "none");
                 $DS_btnGuardar.css("display", "none");
@@ -4046,12 +4052,12 @@
             for (i = 0; i < detalle.length; i++) {
                 var indice = i + 1;
                 var html = '<div class="text-center">';
-                html += '<a class="btn btn-primary btn-xs" title="Editar" href="javascript:solicitud.editarDetServ(' + detalle[i].Id + ',\'' + detalle[i].Codigo + '\')" btn-xs"><i class="fa fa-pencil-square-o"></i></a>&nbsp;';
-                html += '<a class="btn btn-primary btn-xs" title="Eliminar" href="javascript:solicitud.eliminarDetServ(' + detalle[i].Id + ',\'' + detalle[i].Codigo + '\')" btn-xs"><i class="fa fa-trash"></i></a>&nbsp;';
+                html += '<a class="btn btn-primary btn-xs" title="Editar" href="javascript:solicitud.editarDetServ(' + detalle[i].Id + ',\'' + detalle[i].CodigoActividad + '\')" btn-xs"><i class="fa fa-pencil-square-o"></i></a>&nbsp;';
+                html += '<a class="btn btn-primary btn-xs" title="Eliminar" href="javascript:solicitud.eliminarDetServ(' + detalle[i].Id + ',\'' + detalle[i].CodigoActividad + '\')" btn-xs"><i class="fa fa-trash"></i></a>&nbsp;';
                 html += '</div>';
                 var nuevoTr = '<tr id="rowDetalle" name="rowDetalle">' +
                     '<td><center>' + indice + '</center></td>' +
-                    '<td><center>' + detalle[i].DesMantenimiento + '</center></td>';
+                    '<td><center>' + detalle[i].DescripcionActividad + '</center></td>';
                 if ($PermitirEditarCotDetItem.val() == "S") {
                     nuevoTr += '<td><center>' + html + '</center></td>';
                 }

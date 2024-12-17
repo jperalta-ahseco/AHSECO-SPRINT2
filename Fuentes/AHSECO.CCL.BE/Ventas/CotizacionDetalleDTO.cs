@@ -46,7 +46,7 @@ namespace AHSECO.CCL.BE.Ventas
         #region Servicios
 
         public List<DetalleServicioDTO> DetallesServicio { get; set;}
-        public CotDetActividadDTO[] Actividades { get; set; }
+        public CotDetActividadDTO[] CotizacionActividades { get; set; }
 
         #endregion
 

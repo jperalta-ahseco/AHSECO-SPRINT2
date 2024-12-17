@@ -9,7 +9,6 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_MANT_TBD_COTDET_ACTIVIDAD]
 	,@pCODACTIVIDAD			VARCHAR(50)
 	,@pDESCACTIVIDAD		VARCHAR(200)
 	,@pUsrEjecuta			VARCHAR(50)
-	,@pFecEjecuta			DATETIME
 )
 /*=======================================================================================================
 	Nombre:				Fecha:			Descripcion:
@@ -28,7 +27,7 @@ BEGIN
 		INSERT INTO TBD_COTDET_ACTIVIDAD
 		(ID_COTDETALLE,CODACTIVIDAD,DESCACTIVIDAD,USR_REG,FEC_REG)
 		VALUES
-		(@pID_COTDETALLE,@pCODACTIVIDAD,@pDESCACTIVIDAD,@pUsrEjecuta,@pFecEjecuta)
+		(@pID_COTDETALLE,@pCODACTIVIDAD,@pDESCACTIVIDAD,@pUsrEjecuta,GETDATE())
 		
 		SET @ID = @@IDENTITY
 		SET @MSG ='Registro Insertado con éxito'
@@ -42,7 +41,7 @@ BEGIN
 		CODACTIVIDAD = @pCODACTIVIDAD, 
 		DESCACTIVIDAD = @pDESCACTIVIDAD,
 		USR_MOD = @pUsrEjecuta,
-		FEC_MOD = @pFecEjecuta
+		FEC_MOD = GETDATE()
 		WHERE ID = @pID;
 		
 		SET @ID = @pID
@@ -53,7 +52,9 @@ BEGIN
 	IF (@pTipoProceso = 'D')
 	BEGIN
 		
-		DELETE FROM TBD_COTDET_ACTIVIDAD WHERE ID = @pID;
+		DELETE FROM TBD_COTDET_ACTIVIDAD WHERE 
+		(ISNULL(@pID,0) = 0 OR ID = @pID)
+		OR ((ISNULL(@pID_COTDETALLE,0) = 0 OR ID_COTDETALLE = @pID_COTDETALLE));
 		
 		SET @ID = @pID
 		SET @MSG ='Registro eliminado con éxito'

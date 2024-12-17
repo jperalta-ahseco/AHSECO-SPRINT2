@@ -11,6 +11,7 @@ namespace AHSECO.CCL.BE.Ventas
         public string TipoProceso { get; set; }
         public long Id { get; set; }
         public long IdCotizacionDetalle { get; set; }
+        public long IdCotizacion { get; set; }
         public string CodigoActividad { get; set; }
         public string DescripcionActividad { get; set; }
     }

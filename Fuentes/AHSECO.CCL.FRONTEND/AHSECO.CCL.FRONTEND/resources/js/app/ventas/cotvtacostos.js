@@ -115,18 +115,18 @@
 
         $CI_cmbCDItem.on("change", cargarCotDetSeleccionada);
 
-        $DI_radInstalacion_Si.click(cargarTipoCostos);
-        $DI_radInstalacion_No.click(cargarTipoCostos);
-        $DI_radCapacitacion_Si.click(cargarTipoCostos);
-        $DI_radCapacitacion_No.click(cargarTipoCostos);
-        $DI_radManuales_Si.click(cargarTipoCostos);
-        $DI_radManuales_No.click(cargarTipoCostos);
-        $DI_radVideos_Si.click(cargarTipoCostos);
-        $DI_radVideos_No.click(cargarTipoCostos);
-        $DI_radMantPrevent_Si.click(cargarTipoCostos);
-        $DI_radMantPrevent_No.click(cargarTipoCostos);
-        $DI_radCalibracion_Si.click(cargarTipoCostos);
-        $DI_radCalibracion_No.click(cargarTipoCostos);
+        //$DI_radInstalacion_Si.click(cargarTipoCostos);
+        //$DI_radInstalacion_No.click(cargarTipoCostos);
+        //$DI_radCapacitacion_Si.click(cargarTipoCostos);
+        //$DI_radCapacitacion_No.click(cargarTipoCostos);
+        //$DI_radManuales_Si.click(cargarTipoCostos);
+        //$DI_radManuales_No.click(cargarTipoCostos);
+        //$DI_radVideos_Si.click(cargarTipoCostos);
+        //$DI_radVideos_No.click(cargarTipoCostos);
+        //$DI_radMantPrevent_Si.click(cargarTipoCostos);
+        //$DI_radMantPrevent_No.click(cargarTipoCostos);
+        //$DI_radCalibracion_Si.click(cargarTipoCostos);
+        //$DI_radCalibracion_No.click(cargarTipoCostos);
 
         $CI_cmbTipoCosto.on("change", configurarModalCosto);
 
@@ -226,11 +226,6 @@
             $CI_txtDireccion.attr("disabled", "disabled");
             $CI_txtAmbDestino.attr("disabled", "disabled");
             $CI_txtNroPiso.attr("disabled", "disabled");
-            //Los costos de manuales y videos solo agregan totales
-            $CI_pnlInfoCostos_MtoUnitario.css("display", "none");
-            $CI_txtMtoUnitarioCosto.attr("disabled", "disabled");
-            $CI_pnlInfoCostos_MtoTotal.css("display", "");
-            $CI_txtMtoTotalCosto.removeAttr("disabled");
         }
         else {
             $CI_pnlInfoDestino.css("display", "");
@@ -240,7 +235,17 @@
             $CI_txtDireccion.removeAttr("disabled");
             $CI_txtAmbDestino.removeAttr("disabled");
             $CI_txtNroPiso.removeAttr("disabled");
-            //Los demás costos agregan montos unitarios
+        }
+
+        //Se valida si el tipo de COSTO se agrega solo el MONTO TOTAL
+        if ($CI_cmbTipoCosto.val() == $CI_CodCosto_Manuales.val() || $CI_cmbTipoCosto.val() == $CI_CodCosto_Videos.val() ||
+            $CI_cmbTipoCosto.val() == $CI_CodCosto_Capacitacion.val()) {
+            $CI_pnlInfoCostos_MtoUnitario.css("display", "none");
+            $CI_txtMtoUnitarioCosto.attr("disabled", "disabled");
+            $CI_pnlInfoCostos_MtoTotal.css("display", "");
+            $CI_txtMtoTotalCosto.removeAttr("disabled");
+        }
+        else {
             $CI_pnlInfoCostos_MtoUnitario.css("display", "");
             $CI_txtMtoUnitarioCosto.removeAttr("disabled");
             $CI_pnlInfoCostos_MtoTotal.css("display", "none");
@@ -258,7 +263,7 @@
             $CI_cmbCicloPreventivo.attr("disabled", "disabled");
         }
 
-        //Se configura la pantalla por ROL
+        //Se habilita la pantalla por ROL
 
         if ($idRolUsuario.val() == $RolVenta_Asesor.val()
             || $idRolUsuario.val() == $RolVenta_CoordServ.val()
@@ -279,18 +284,21 @@
             }
 
             $CI_txtCantCosteo.removeAttr("disabled");
+
             if ($CI_pnlInfoCostos_MtoUnitario.css("display") != "none") {
                 //Solo el Asesor para Calibración puede agregar el MONTO UNITARIO
-                if ($CI_cmbTipoCosto.val() == $CI_CodCosto_Calibra.val()) {
+                if ($CI_cmbTipoCosto.val() == $CI_CodCosto_Calibra.val() && $idRolUsuario.val() == $RolVenta_Asesor.val()) {
                     $CI_txtMtoUnitarioCosto.removeAttr("disabled");
                 }
                 else {
                     $CI_txtMtoUnitarioCosto.attr("disabled", "disabled");
                 }
             }
+
             if ($CI_pnlInfoCostos_MtoTotal.css("display") != "none") {
                 $CI_txtMtoTotalCosto.attr("disabled", "disabled");
             }
+
         }
         else {
 
@@ -340,6 +348,7 @@
 
         cargarComboCotDetItems();
         LimpiarModalCostos();
+        cargarTipoCostos();
 
         //Para el buscador se selecciona por defecto la cotizacion detalle en pantalla
         if (opcGrilla == "1") {
@@ -565,6 +574,7 @@
                 render: function (data) {
                     var hidden = '<input type="hidden" id="hdnCDCItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
                     var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtacostos.editarCostoItem(' + data + ',' + String.fromCharCode(39) + '2' + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                    var ver = '<a id="btnVerItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtacostos.editarCostoItem(' + data + ',' + String.fromCharCode(39) + '2' + String.fromCharCode(39) + ')"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
                     return '<center>' + hidden + editar + '</center>';
                 }
             }
@@ -889,6 +899,7 @@
             }
             else {
                 app.message.success("Costos", "Se guard&oacute; el costo correctamente.", "Aceptar", null);
+                cerrarModalCostosItem();
             }
         };
         

@@ -257,6 +257,16 @@ namespace AHSECO.CCL.COMUN
             }
         }
 
+        public struct CotizacionDetalleActividad
+        {
+            public struct TipoProceso
+            {
+                public static string Insertar { get { return "I"; } }
+                public static string Modificar { get { return "U"; } }
+                public static string Eliminar { get { return "D"; } }
+            }
+        }
+
         public struct EstadosProcesos
         {
             public struct ProcesoVenta

@@ -206,7 +206,7 @@ namespace AHSECO.CCL.BD.Ventas
                 connection.Open();
                 var parameters = new DynamicParameters();
                 parameters.Add("pId", cotdetdespDTO.Id, DbType.Int32, ParameterDirection.Input);
-                parameters.Add("pId_CodDetalle", cotdetdespDTO.IdCotizacionDetalle, DbType.Int32, ParameterDirection.Input);
+                parameters.Add("pId_CotDetalle", cotdetdespDTO.IdCotizacionDetalle, DbType.Int32, ParameterDirection.Input);
 
                 var result = connection.Query(
                     sql: "USP_SEL_TBM_COTDET_DESPACHO",
@@ -278,6 +278,36 @@ namespace AHSECO.CCL.BD.Ventas
                         NroPiso = i.Single(d => d.Key.Equals("NROPISO")).Value.Parse<int?>(),
                         MontoUnitarioCosto = i.Single(d => d.Key.Equals("MONTOUNICOSTO")).Value.Parse<decimal?>(),
                         MontoTotalCosto = i.Single(d => d.Key.Equals("MONTOTOTCOSTO")).Value.Parse<decimal?>()
+                    });
+
+                connection.Close();
+                return result;
+            };
+        }
+
+        public IEnumerable<CotDetActividadDTO> ObtenerCotDetActividades(CotDetActividadDTO cotActividadDTO)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+
+            using (var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+                var parameters = new DynamicParameters();
+                parameters.Add("pId", cotActividadDTO.Id, DbType.Int32, ParameterDirection.Input);
+                parameters.Add("pId_CotDetalle", cotActividadDTO.IdCotizacionDetalle, DbType.Int32, ParameterDirection.Input);
+                parameters.Add("pId_Cotizacion", cotActividadDTO.IdCotizacion, DbType.Int32, ParameterDirection.Input);
+
+                var result = connection.Query(
+                    sql: "USP_SEL_TBD_COTDET_ACTIVIDAD",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new CotDetActividadDTO
+                    {
+                        Id = i.Single(d => d.Key.Equals("ID")).Value.Parse<int>(),
+                        IdCotizacionDetalle = i.Single(d => d.Key.Equals("ID_COTDETALLE")).Value.Parse<int>(),
+                        CodigoActividad = i.Single(d => d.Key.Equals("CODACTIVIDAD")).Value.Parse<string>(),
+                        DescripcionActividad = i.Single(d => d.Key.Equals("DESCACTIVIDAD")).Value.Parse<string>()
                     });
 
                 connection.Close();
@@ -595,6 +625,37 @@ namespace AHSECO.CCL.BD.Ventas
 
                 var result = connection.Query(
                     sql: "USP_MANT_TBD_COTIZACIONCOSTOS",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new RespuestaDTO
+                    {
+                        Codigo = i.Single(d => d.Key.Equals("COD")).Value.Parse<int>(),
+                        Mensaje = i.Single(d => d.Key.Equals("MSG")).Value.Parse<string>()
+                    }).FirstOrDefault();
+
+                connection.Close();
+                return result;
+            }
+        }
+
+        public RespuestaDTO MantenimientoCotDetActividad(CotDetActividadDTO cotActividadDTO)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using (var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+                var parameters = new DynamicParameters();
+
+                parameters.Add("pTipoProceso", cotActividadDTO.TipoProceso);
+                parameters.Add("pId", cotActividadDTO.Id);
+                parameters.Add("pId_CotDetalle", cotActividadDTO.IdCotizacionDetalle);
+                parameters.Add("pCODACTIVIDAD", cotActividadDTO.CodigoActividad);
+                parameters.Add("pDESCACTIVIDAD", cotActividadDTO.DescripcionActividad);
+                parameters.Add("pUsrEjecuta", cotActividadDTO.UsuarioRegistra);
+
+                var result = connection.Query(
+                    sql: "USP_MANT_TBD_COTDET_ACTIVIDAD",
                     param: parameters,
                     commandType: CommandType.StoredProcedure)
                     .Select(s => s as IDictionary<string, object>)

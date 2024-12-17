@@ -4,7 +4,7 @@ GO
 CREATE OR ALTER PROCEDURE [dbo].[USP_SEL_TBM_COTDET_DESPACHO]
 (
 @pId BIGINT,
-@pId_CodDetalle BIGINT
+@pId_CotDetalle BIGINT
 )
 /*=======================================================================================================
 	Nombre:				Fecha:			Descripcion:
@@ -36,6 +36,6 @@ BEGIN
     ,[MONTOPACCE]
 	FROM [DB_AHSECO].[dbo].[TBM_COTDET_DESPACHO]
 	WHERE (ISNULL(@pId,0) = 0 OR [ID] = @pId)
-	AND (ISNULL(@pId_CodDetalle,0) = 0 OR [ID_COTDETALLE] = @pId_CodDetalle)
+	AND (ISNULL(@pId_CotDetalle,0) = 0 OR [ID_COTDETALLE] = @pId_CotDetalle)
 
 END

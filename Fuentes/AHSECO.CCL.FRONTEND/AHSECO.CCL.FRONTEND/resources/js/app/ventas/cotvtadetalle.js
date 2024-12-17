@@ -51,6 +51,7 @@ var cotvtadet = (function ($, win, doc) {
     var $PermitirEditarGanancia = $("#PermitirEditarGanancia");
 
     var $DI_pnlInfoGeneral_Dimensiones = $("#DI_pnlInfoGeneral_Dimensiones");
+    var $DI_pnlInfoGeneral_DescripcionAdic = $("#DI_pnlInfoGeneral_DescripcionAdic");
     var $DI_pnlCostos_PrecioVenta = $("#DI_pnlCostos_PrecioVenta");
     var $DI_pnlCostos_CostoFOB = $("#DI_pnlCostos_CostoFOB");
     var $DI_pnlCostos_ValorUnitario = $("#DI_pnlCostos_ValorUnitario");
@@ -657,7 +658,9 @@ var cotvtadet = (function ($, win, doc) {
                     cotvtacostos.cargarGrillaCostosCotDet(resCostos);
                 }
             }
-            
+
+            $DI_pnlInfoGeneral_DescripcionAdic.css("display", "");
+
             if ($cmbTipo.val() == $TipoSol_VentaMat.val() || $cmbTipo.val() == $TipoSol_RepOComes.val()) {
                 $DI_pnlInfoGeneral_Dimensiones.css("display", "none");
                 $DI_txtDescripcionAdic.attr("rows", "4");
@@ -934,6 +937,7 @@ var cotvtadet = (function ($, win, doc) {
             LimpiarModalDetItem();
             MostrarDatosItem(data);
             $DI_pnlInfoGeneral_Dimensiones.css("display", "none");
+            $DI_pnlInfoGeneral_DescripcionAdic.css("display", "none");
             $DI_pnlCostos_PrecioVenta.css("display", "");
             $DI_pnlCostos_CostoFOB.css("display", "none");
             $DI_pnlCostos_ValorUnitario.css("display", "");
@@ -1482,12 +1486,15 @@ var cotvtadet = (function ($, win, doc) {
             ];
 
         }
-        
+
         var columnDefs =
         {
             targets: [0],
             visible: false
         }
+
+        //Cuando ya se avanza la SOLICITUD mas allá de la cotización se elimina los campos de ACCION
+        if ($estadoSol.val() != "SCOT" && $estadoSol.val() != "CVAL") { columns.pop(); }
 
         var rowCallback = function (row, data, index) {
             // Asignar un ID único basado en el índice de datos o algún identificador único
@@ -1761,35 +1768,35 @@ var cotvtadet = (function ($, win, doc) {
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
     }
     
-    function listarCotDetItemsTemp() {
-        method = "POST";
-        url = "BandejaSolicitudesVentas/ListarCotDetItems";
-        var objFiltros = {
-            opcGrillaItems: "1"
-        };
-        var objParam = JSON.stringify(objFiltros);
+    //function listarCotDetItemsTemp() {
+    //    method = "POST";
+    //    url = "BandejaSolicitudesVentas/ListarCotDetItems";
+    //    var objFiltros = {
+    //        opcGrillaItems: "1"
+    //    };
+    //    var objParam = JSON.stringify(objFiltros);
 
-        var fnDoneCallBack = function (data) {
-            cargarTablaDetCotCostos(data);
-        };
+    //    var fnDoneCallBack = function (data) {
+    //        cargarTablaCotDet(data);
+    //    };
 
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
-    }
+    //    app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+    //}
 
-    function listarCotDetItemsCostos() {
-        method = "POST";
-        url = "BandejaSolicitudesVentas/ListarCotDetItems";
-        var objFiltros = {
-            opcGrillaItems: "2"
-        };
-        var objParam = JSON.stringify(objFiltros);
+    //function listarCotDetItemsCostos() {
+    //    method = "POST";
+    //    url = "BandejaSolicitudesVentas/ListarCotDetItems";
+    //    var objFiltros = {
+    //        opcGrillaItems: "2"
+    //    };
+    //    var objParam = JSON.stringify(objFiltros);
 
-        var fnDoneCallBack = function (data) {
-            cargarTablaDetCotCostos(data);
-        };
+    //    var fnDoneCallBack = function (data) {
+    //        cargarTablaDetCotCostos(data);
+    //    };
 
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
-    }
+    //    app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+    //}
 
     function guardarValorizacion() {
 
@@ -1857,8 +1864,8 @@ var cotvtadet = (function ($, win, doc) {
         cerrarModalDetCot: cerrarModalDetCot,
         enviarCotizacion: enviarCotizacion,
         listarCotDetItems: listarCotDetItems,
-        listarCotDetItemsTemp: listarCotDetItemsTemp,
-        listarCotDetItemsCostos: listarCotDetItemsCostos,
+        //listarCotDetItemsTemp: listarCotDetItemsTemp,
+        //listarCotDetItemsCostos: listarCotDetItemsCostos,
         recotizarSolicitud: recotizarSolicitud
     }
 })(window.jQuery, window, document);
