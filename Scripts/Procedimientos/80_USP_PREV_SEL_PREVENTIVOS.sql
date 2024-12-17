@@ -6,7 +6,7 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_PREV_SEL_PREVENTIVOS]
 /*=======================================================================================================
 	Nombre:				Fecha:			Descripcion:
 	Diego Bazalar		28.11.24		Realiza el select de los mantenimientod preventivos.
-	EXEC [USP_PREV_SEL_PREVENTIVOS] @IsIdMant='', @IsNumSerie='0', @IsNumProc='0',@IsNumOrdCompra='0',@IsNumFianza='0',@IsEmpresa='0',@IsPeriodoInicio='',@IsPeriodoFinal=''
+	EXEC [USP_PREV_SEL_PREVENTIVOS] @IsIdMant='', @IsNumSerie='0', @IsNumProc='0',@IsNumOrdCompra='0',@IsNumFianza='0',@IsEmpresa='0',@IsPeriodoInicio=NULL,@IsPeriodoFinal=NULL
 =======================================================================================================*/
 	 @IsIdMant			BIGINT
 	,@IsNumSerie		VARCHAR(100) 
@@ -94,7 +94,7 @@ SET NOCOUNT ON
 			ROW_NUMBER() OVER(ORDER BY SERIE) AS CONTADOR
 			,SERIE
 			,FECHAINSTALACION
-			,MIN(FECHAMANTENIMIENTO) PROXFECHAMANT
+			,ISNULL(MIN(FECHAMANTENIMIENTO),'') PROXFECHAMANT
 	INTO #tmpProxavencer
 	FROM TBM_MANT_PREV MANT
 	LEFT JOIN [dbo].[TBD_MANT_PREV] MANTDET ON MANT.ID_MANT = MANTDET.ID_MANT AND ESTADO = 'PEND'
@@ -177,7 +177,11 @@ SET NOCOUNT ON
 		,parcial.SERIE
 		,parcial.DESCRIPCION
 		,parcial.FECHAINSTALACION
-		,ISNULL(CONVERT(VARCHAR(10),prox.PROXFECHAMANT,103),'') PROXFECHAMANT
+		,CASE 
+			WHEN ISNULL(CONVERT(VARCHAR(10),prox.PROXFECHAMANT,103),'') = '01/01/1900'
+			THEN ''
+		 ELSE 
+			ISNULL(CONVERT(VARCHAR(10),prox.PROXFECHAMANT,103),'') END PROXFECHAMANT
 		,calc.TOTALPREVE
 		,calc.COMPLETADOS
 		,calc.PENDIENTES
