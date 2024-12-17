@@ -905,7 +905,7 @@
 
         var fnSi = function () {
             var fnDoneCallback = function () {
-                app.message.success("Éxito", "Se realizó la des-asignación del técnico.");
+                app.message.success("Éxito", "Se realizó la desasignación del técnico.");
                 ObtenerTecnicosPreventivos();
             };
 
@@ -916,7 +916,7 @@
             app.llamarAjax(method, url, objParam, fnDoneCallback, fnFailCallBack, null, null);
         };
 
-        return app.message.confirm("Confirmación", "¿Desea des-asignar al técnico de la atención?", "Sí", "No", fnSi, null);
+        return app.message.confirm("Confirmación", "¿Desea desasignar al técnico de la atención?", "Sí", "No", fnSi, null);
     }
 
     /*Lógica Ubigeo*/
@@ -1126,7 +1126,7 @@
             garantias.tecnicosAsig = garantias.tecnicosAsig.filter(tecnico => tecnico.Cod_Tecnico != codTecnico);
             cargarTablaMainTecnicos(garantias.tecnicosAsig);
         };
-        return app.message.confirm("Confirmación", "¿Desea des-asignar al técnico de la atención", "Sí", "No", fnSi, null);
+        return app.message.confirm("Confirmación", "¿Desea desasignar al técnico de la atención", "Sí", "No", fnSi, null);
     };
     function IniciarBotonSeleccionarTecnico() {
         $('#tblTecnicos tbody').on('click', 'td #btnSeleccionarTecnico', function () {
