@@ -271,8 +271,6 @@ BEGIN
 		SET @MSG ='Se observo el pedido de importación'
 	END
 
-
-
 	IF(@TIPO = 'X')
 	BEGIN
 
@@ -331,6 +329,22 @@ BEGIN
 		SET  @CODIGO = 1
 		SET @MSG ='Se realizó la facturación del servicio'
 	END
+
+	IF(@TIPO = 'T')
+	BEGIN
+		--SE ACTUALIZA LA FECHA DE PROGRAMACION DEL TECNICO:
+		  UPDATE TBM_DESPACHO
+			SET FECHAPROGTEC =@FECHAENTREGA,
+					USR_MOD=@USRREG,
+					FEC_MOD=GETDATE()
+					WHERE ID_SOLICITUD=@CODSOLICITUD;
+
+		
+		SET  @CODIGO = 1
+		SET @MSG ='Se realizó la actualización de la fecha de programación'
+
+	END
+
 
 		SELECT @CODIGO COD ,@MSG MSG
 		SET NOCOUNT OFF;

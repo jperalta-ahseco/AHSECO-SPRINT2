@@ -151,6 +151,10 @@
     var $DS_btnCerrar = $("#DS_btnCerrar");
     var $DS_tblServiciosDetalle = $("#DS_tblServiciosDetalle");
     var $dateProgramacionServ = $("#dateProgramacionServ");
+    var $dateProg = $("#dateProg");
+    var $btnGuardarProg = $("#btnGuardarProg");
+    var $btnRegistrarFechaProg = $("#btnRegistrarFechaProg");
+
     //var detalleServicios = [];
     var contadorDetalle = 0;
     var $modalDetalleServicio = $("#modalDetalleServicio");
@@ -376,7 +380,7 @@
             startDate: hoy()
         });
 
-        $dateProgramacionServ.datepicker({
+        $dateProg.datepicker({
             viewMode: 0,
             minViewMode: 0,
             format: 'dd/mm/yyyy',
@@ -389,7 +393,7 @@
         $dateEntregaPedidoCE.val(hoy());
         $dateIngresoAlmacenSE.val(hoy());
         $dateEntregaPedidoSE.val(hoy());
-        $dateProgramacionServ.val(hoy());
+        
         $dateFactura.val(hoy());
         $fileCargaDocumentoSustento.on("change", $fileCargaDocumentoSustento_change);
         $btnEliminarSol.click(btnEliminarSolClick);
@@ -460,8 +464,46 @@
         $btnRegistrarTecnicoExterno.click(CrearTecnico3ro_a_Producto);
         $btnEnviarServicio.click(btnEnviarServicioClick);
         $btnGuardarFactura.click($btnGuardarFactura_click);
-
+        $btnGuardarProg.click($btnGuardarProg_click);
+        $btnRegistrarFechaProg.click($btnRegistrarFechaProg_click);
     };
+
+    function $btnRegistrarFechaProg_click() {
+        if ($dateProg.val() === "" || $dateProg.val() === null) {
+            app.message.error("Validación", "Debe ingresar una Fecha de Programación.");
+            return false;
+        }
+
+        var fnSi = function () {
+
+            var m = "POST";
+            var url = "BandejaSolicitudesVentas/MantenimientoDespacho";
+            var obj = {
+                Tipo: "T",
+                CodigoSolicitud: $numeroSolicitud.val(),
+                FechaEntrega: $dateProg.val()
+            }
+            var objParam = JSON.stringify(obj);
+            var fnDoneCallback = function (data) {
+                var fnCallback = function () {
+                    location.reload();
+                };
+                if (data.Result.Codigo > 0) {
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+                else {
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+
+            };
+            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.RegistrarGestionVenta);
+        }
+        return app.message.confirm("Ventas", "¿Está seguro que desea guardar la fecha de programación?", "Sí", "No", fnSi, null);
+
+    }
+    function $btnGuardarProg_click() {
+        $dateProg.val(hoy());
+    }
 
     function $btnGuardarFactura_click() {
         if ($dateFactura.val() === "" || $dateFactura.val() === null) {
@@ -507,6 +549,11 @@
         var documento_constanciaServicio = 0;
         var documento_guiaManuscrita = 0;
 
+        if ($dateProgramacionServ.val() === null || $dateProgramacionServ.val() === "") {
+            app.message.error("Validación", "Debe seleccionar una fecha de programación del técnico.");
+            return;
+        }
+
         if (tecnicosAsig.length == 0) {
             app.message.error("Validación", "Debe seleccionar un técnico para realizar el servicio.");
             return;
@@ -517,21 +564,11 @@
             }
         });
 
-        if (documento_actaConformidad === 0) {
-            app.message.error("Validación", "Debe adjuntar un documento con el acta de conformidad.");
-            return false;
-        }
-
         adjuntos.forEach(function (currentValue, index, arr) {
             if (adjuntos[index].CodigoTipoDocumento == "DVT02") {
                 documento_constanciaServicio = 1;
             }
         });
-
-        if (documento_constanciaServicio === 0) {
-            app.message.error("Validación", "Debe adjuntar un documento con la constancia del servicio técnico.");
-            return false;
-        }
 
         adjuntos.forEach(function (currentValue, index, arr) {
             if (adjuntos[index].CodigoTipoDocumento == "DVT05") {
@@ -539,8 +576,9 @@
             }
         });
 
-        if (documento_guiaManuscrita === 0) {
-            app.message.error("Validación", "Debe adjuntar un documento con la Guía Manuscrita.");
+        if (documento_guiaManuscrita === 0 && documento_constanciaServicio === 0 && 
+            documento_actaConformidad === 0) {
+            app.message.error("Validación", "Debe adjuntar por lo menos uno de estos documentos para enviar a Facturación: (Acta de Conformidad o Constancia de Servicio Técnico o Guía Manuscrita).");
             return false;
         }
 
@@ -2509,11 +2547,13 @@
                     if (data.Result.DespachoCabeceraConStock.CodigoSolicitud > 0) {
                         $dateFactura.val(data.Result.DespachoCabeceraConStock.FechaFacturaServicio);
                         $txtNumeroFacturaServ.val(data.Result.DespachoCabeceraConStock.NumeroFacturaServicio);
+                        $dateProgramacionServ.val(data.Result.DespachoCabeceraConStock.FechaProgramacionTecnico);
                     }
 
                     if (data.Result.DespachoCabeceraSinStock.CodigoSolicitud > 0) {
                         $dateFactura.val(data.Result.DespachoCabeceraSinStock.FechaFacturaServicio);
                         $txtNumeroFacturaServ.val(data.Result.DespachoCabeceraSinStock.NumeroFacturaServicio);
+                        $dateProgramacionServ.val(data.Result.DespachoCabeceraSinStock.FechaProgramacionTecnico);
                     }
 
                     if (data.Result.ContadorCabecera.GestionLogSinStock > 0) {
@@ -2592,6 +2632,10 @@
                 else {
                     $btnBuscarTecnicos.show();
                     $btnAñadirTecnico.show();
+                }
+
+                if (($idRolUsuario.val() === "SGI_VENTA_COORDINASERV" || $idRolUsuario.val() === "SGI_VENTA_COORDINAATC") && $estadoSol.val() === "PRVT") {
+                    $btnGuardarProg.show();
                 }
 
 

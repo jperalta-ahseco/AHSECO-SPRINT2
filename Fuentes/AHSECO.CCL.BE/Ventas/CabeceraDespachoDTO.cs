@@ -26,6 +26,7 @@ namespace AHSECO.CCL.BE.Ventas
 
         public string NumeroFacturaServicio { get; set; }
         public string FechaFacturaServicio { get; set; }
+        public string FechaProgramacionTecnico { get; set; }
     }
 
     public class ContadorCabeceraDespacho
