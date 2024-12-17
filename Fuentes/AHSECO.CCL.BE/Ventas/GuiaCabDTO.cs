@@ -19,6 +19,7 @@ namespace AHSECO.CCL.BE.Ventas
         public string Direccion     { get; set; }
         public string Ciudad        { get; set; }
         public string NumeroOrdenCompra         { get; set; } 
+        public string Moneda { get; set; }
         public string Subtotal { get; set; }
         public string Igv { get; set; }
         public string Total { get; set; }

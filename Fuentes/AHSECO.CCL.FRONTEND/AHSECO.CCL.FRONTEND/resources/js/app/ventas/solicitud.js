@@ -1423,7 +1423,7 @@
             $txtHistRUC.val(data.Result.DocumentoCabecera.Ruc);
             $txtHistRazonSocial.val(data.Result.DocumentoCabecera.RazonSocial);
 
-            for (i = 0; i < data.Result.DocumentoCabecera.NumeroItems; i++) {
+            for (i = 0; i < data.Result.DocumentoDetalle.length; i++) {
                 var nuevoTr = "<tr bgcolor='d0f2f7'>" +
                     "<th>" + data.Result.DocumentoDetalle[i].NumeroItem + "</th>" +
                     "<th>" + data.Result.DocumentoDetalle[i].Catalogo + "</th>" +
