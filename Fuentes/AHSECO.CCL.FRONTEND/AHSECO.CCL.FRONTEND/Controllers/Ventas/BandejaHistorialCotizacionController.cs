@@ -911,7 +911,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             //cell.SetCellValue("LOGO");
 
 
-
+            #region Cabecera:
 
             cell = row.CreateCell(6);
             row.Height = 20 * 20;
@@ -1106,9 +1106,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             cell = row.CreateCell(9);
             cell.CellStyle = style;
             cell.SetCellValue("REGISTRO N°");
-
+            #endregion
 
             //detalle:
+            #region Cabecera Detalle
             int rownum2 = 10;
             row = sh.CreateRow(rownum2++);
 
@@ -1182,260 +1183,86 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             cell.CellStyle = style5;
             cell.SetCellValue("Extensión Precio Costo");
 
+            #endregion
+
+            #region detalle de guia:
+            foreach (var det in datosGuia.GuiaDetalle)
+            {
+                row = sh.CreateRow(rownum2++);
+
+                cell = row.CreateCell(0);
+                cell.CellStyle = style5;
+
+                cell = row.CreateCell(1);
+                cell.CellStyle = style5;
+
+                cell = row.CreateCell(2);
+                cell.CellStyle = style5;
+                cell.SetCellValue(det.Cantidad);
+
+                cell = row.CreateCell(3);
+                cell.CellStyle = style5;
+                cell.SetCellValue(det.Unidad);
+
+                cell = row.CreateCell(4);
+                cell.CellStyle = style5;
+                cell.SetCellValue(det.Catalogo);
+
+                cell = row.CreateCell(5);
+                cell.CellStyle = style5;
+                cell.SetCellValue(det.Descripcion);
+
+                cell = row.CreateCell(6);
+                cell.CellStyle = style5;
+
+                cell = row.CreateCell(7);
+                cell.CellStyle = style5;
+
+                cell = row.CreateCell(8);
+                cell.CellStyle = style5;
+
+                cell = row.CreateCell(9);
+                cell.CellStyle = style5;
+
+                cell = row.CreateCell(10);
+                cell.CellStyle = style5;
+
+                cell = row.CreateCell(11);
+                cell.CellStyle = style5;
+
+                cell = row.CreateCell(12);
+                cell.CellStyle = style5;
+                cell.SetCellValue(det.PrecioUnitario);
+
+                cell = row.CreateCell(13);
+                cell.CellStyle = style5;
+                cell.SetCellValue(det.Total);
+
+                cell = row.CreateCell(14);
+                cell.CellStyle = style5;
+
+                cell = row.CreateCell(15);
+                cell.CellStyle = style5;
+
+                cell = row.CreateCell(16);
+                cell.CellStyle = style5;
+
+                cell = row.CreateCell(17);
+                cell.CellStyle = style5;
+
+                cell = row.CreateCell(18);
+                cell.CellStyle = style5;
+            }
+            #endregion
+
+            #region SubTotal:
             row = sh.CreateRow(rownum2++);
 
-            cell = row.CreateCell(0);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(1);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(2);
-            cell.CellStyle = style5;
-            cell.SetCellValue("4");
-
-            cell = row.CreateCell(3);
-            cell.CellStyle = style5;
-            cell.SetCellValue("UND");
-
-            cell = row.CreateCell(4);
-            cell.CellStyle = style5;
-            cell.SetCellValue("UN260");
-
-            cell = row.CreateCell(5);
-            cell.CellStyle = style5;
-            cell.SetCellValue("ESTUFA DE CONVECCIÓN NATURAL, 256L\r\nMARCA: MEMMERT");
-
-            cell = row.CreateCell(6);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(7);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(8);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(9);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(10);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(11);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(12);
-            cell.CellStyle = style5;
-            cell.SetCellValue("$. 4,364.41");
-
-            cell = row.CreateCell(13);
-            cell.CellStyle = style5;
-            cell.SetCellValue("$. 14,364.41");
-
-            cell = row.CreateCell(14);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(15);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(16);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(17);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(18);
-            cell.CellStyle = style5;
-
-            row = sh.CreateRow(rownum2++);
-
-            cell = row.CreateCell(0);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(1);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(2);
-            cell.CellStyle = style5;
-            cell.SetCellValue("3");
-
-            cell = row.CreateCell(3);
-            cell.CellStyle = style5;
-            cell.SetCellValue("UND");
-
-            cell = row.CreateCell(4);
-            cell.CellStyle = style5;
-            cell.SetCellValue("IN30");
-
-            cell = row.CreateCell(5);
-            cell.CellStyle = style5;
-            cell.SetCellValue("INCUBADORA DE 32L\r\nMARCA: MEMMERT");
-
-            cell = row.CreateCell(6);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(7);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(8);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(9);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(10);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(11);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(12);
-            cell.CellStyle = style5;
-            cell.SetCellValue("$. 4,364.41");
-
-            cell = row.CreateCell(13);
-            cell.CellStyle = style5;
-            cell.SetCellValue("$. 14,364.41");
-
-            cell = row.CreateCell(14);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(15);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(16);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(17);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(18);
-            cell.CellStyle = style5;
-
-            row = sh.CreateRow(rownum2++);
-
-            cell = row.CreateCell(0);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(1);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(2);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(3);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(4);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(5);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(6);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(7);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(8);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(9);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(10);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(11);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(12);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(13);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(14);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(15);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(16);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(17);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(18);
-            cell.CellStyle = style5;
-
-            row = sh.CreateRow(rownum2++);
-
-            cell = row.CreateCell(0);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(1);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(2);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(3);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(4);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(5);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(6);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(7);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(8);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(9);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(10);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(11);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(12);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(13);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(14);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(15);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(16);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(17);
-            cell.CellStyle = style5;
-
-            cell = row.CreateCell(18);
-            cell.CellStyle = style5;
-
-            row = sh.CreateRow(rownum2++);
-
+            var str_sub = datosGuia.GuiaCabecera.Moneda + " SUBTOTAL:";
 
             cell = row.CreateCell(5);
             cell.CellStyle = style6;
-            cell.SetCellValue("DÓLARES  SUB TOTAL");
+            cell.SetCellValue(str_sub);
 
             cell = row.CreateCell(6);
             cell.CellStyle = style5;
@@ -1460,7 +1287,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             cell = row.CreateCell(13);
             cell.CellStyle = style5;
-            cell.SetCellValue("$. 21,779.00");
+            cell.SetCellValue(datosGuia.GuiaCabecera.Subtotal);
 
             cell = row.CreateCell(14);
             cell.CellStyle = style5;
@@ -1477,12 +1304,16 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             cell = row.CreateCell(18);
             cell.CellStyle = style5;
 
+            #endregion
+
+            #region IGV:
             row = sh.CreateRow(rownum2++);
 
+            var str_igv = datosGuia.GuiaCabecera.Moneda + " IGV 18%:";
 
             cell = row.CreateCell(5);
             cell.CellStyle = style6;
-            cell.SetCellValue("DÓLARES  IGV 18%");
+            cell.SetCellValue(str_igv);
 
             cell = row.CreateCell(6);
             cell.CellStyle = style5;
@@ -1507,7 +1338,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             cell = row.CreateCell(13);
             cell.CellStyle = style5;
-            cell.SetCellValue("$. 21,779.00");
+            cell.SetCellValue(datosGuia.GuiaCabecera.Igv);
 
             cell = row.CreateCell(14);
             cell.CellStyle = style5;
@@ -1524,11 +1355,16 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             cell = row.CreateCell(18);
             cell.CellStyle = style5;
 
+            #endregion
+
+            #region Total:
             row = sh.CreateRow(rownum2++);
+
+            var str_total = datosGuia.GuiaCabecera.Moneda + " TOTAL:";
 
             cell = row.CreateCell(5);
             cell.CellStyle = style6;
-            cell.SetCellValue("DÓLARES TOTAL");
+            cell.SetCellValue(str_total);
 
             cell = row.CreateCell(6);
             cell.CellStyle = style5;
@@ -1553,7 +1389,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             cell = row.CreateCell(13);
             cell.CellStyle = style5;
-            cell.SetCellValue("$. 21,779.00");
+            cell.SetCellValue(datosGuia.GuiaCabecera.Total);
 
             cell = row.CreateCell(14);
             cell.CellStyle = style5;
@@ -1569,6 +1405,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             cell = row.CreateCell(18);
             cell.CellStyle = style5;
+
+            #endregion
 
             row = sh.CreateRow(rownum2++);
 

@@ -1188,7 +1188,6 @@
 
         var fnSi = function () {
             var fnDoneCallBack = function (data) {
-                app.message.success("Éxito", "Se realizó la inserción correctamente.");
 
                 detallePreventivo.tecnicosAsig.push({
                     Id: data.Result.Codigo,
@@ -1211,9 +1210,12 @@
                 cargarTablaMainTecnicos(detallePreventivo.tecnicosAsig);
                 $modalBusquedaTecnico.modal('toggle');
 
-                if (detallePreventivo.tecnicosAsig.length == 1 && $estadoMant.val() == "PEND") {
-                    CambiarEstado();
-                };
+                var aceptar = function () {
+                    if (detallePreventivo.tecnicosAsig.length == 1 && $estadoMant.val() == "PEND") {
+                        CambiarEstado();
+                    };
+                }
+                app.message.success("Éxito", "Se realizó la inserción correctamente.", "Aceptar", aceptar);
             };
 
             var fnFailCallBack = function () {

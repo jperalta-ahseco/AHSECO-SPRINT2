@@ -1687,6 +1687,7 @@ namespace AHSECO.CCL.BD.Ventas
                         Direccion = reader.IsDBNull(reader.GetOrdinal("DIRECCION")) ? "" : reader.GetString(reader.GetOrdinal("DIRECCION")),
                         Ciudad = reader.IsDBNull(reader.GetOrdinal("CIUDAD")) ? "" : reader.GetString(reader.GetOrdinal("CIUDAD")),         
                         NumeroOrdenCompra = reader.IsDBNull(reader.GetOrdinal("NUMOC")) ? "" : reader.GetString(reader.GetOrdinal("NUMOC")),
+                        Moneda = reader.IsDBNull(reader.GetOrdinal("MONEDA")) ? "" : reader.GetString(reader.GetOrdinal("MONEDA")),
                         Subtotal = reader.IsDBNull(reader.GetOrdinal("SUBTOTAL")) ? "" : reader.GetString(reader.GetOrdinal("SUBTOTAL")),
                         Igv = reader.IsDBNull(reader.GetOrdinal("IGV")) ? "" : reader.GetString(reader.GetOrdinal("IGV")),
                         Total = reader.IsDBNull(reader.GetOrdinal("TOTAL")) ? "" : reader.GetString(reader.GetOrdinal("TOTAL"))
