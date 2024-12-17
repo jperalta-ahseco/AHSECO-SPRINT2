@@ -1491,18 +1491,21 @@
 
         var objParam = JSON.stringify(obj);
 
-        var fnDoneCallBack = function (data) {
-            var redirect = function () {
-                setDatos();
+        var fnSi = function () {
+            var fnDoneCallBack = function (data) {
+                var redirect = function () {
+                    setDatos();
+                };
+                return app.message.success("Éxito", "Se realizó el cambio de estado a 'Finalizado' ", "Aceptar", redirect);
             };
-            return app.message.success("Éxito", "Se realizó el cambio de estado a 'Finalizado' ", "Aceptar", redirect);
-        };
 
-        var fnFailCallBack = function () {
-            app.message.error("Validación", "Ocurrió un error al realizar el cambio de estado a Finalizado");
-        };
+            var fnFailCallBack = function () {
+                app.message.error("Validación", "Ocurrió un error al realizar el cambio de estado a Finalizado");
+            };
 
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+        }
+        return app.message.confirm("Confirmación", "¿Desea finalizar el mantenimiento actual?", "Sí", "No", fnSi);
     };
     function CompletarMant() {
         if ($txtNumFactura.val() == "" || $txtNumFactura.val().trim().length == 0 || $txtNumFactura.val() == null) {
@@ -1541,19 +1544,21 @@
 
         var objParam = JSON.stringify(obj);
 
-        var fnDoneCallBack = function (data) {
-            var redirect = function () {
-                setDatos();
+        var fnSi = function () {
+            var fnDoneCallBack = function (data) {
+                var redirect = function () {
+                    setDatos();
+                };
+                return app.message.success("Éxito", "Se realizó el cambio de estado a 'Completado' ", "Aceptar", redirect);
             };
-            return app.message.success("Éxito", "Se realizó el cambio de estado a 'Completado' ", "Aceptar", redirect);
-        };
 
-        var fnFailCallBack = function () {
-            app.message.error("Validación", "Ocurrió un error al realizar el cambio de estado a Completado");
-        };
+            var fnFailCallBack = function () {
+                app.message.error("Validación", "Ocurrió un error al realizar el cambio de estado a Completado");
+            };
 
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
-
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+        }
+        return app.message.confirm("Confirmación", "¿Desea completar el mantenimiento actual?", "Sí", "No", fnSi);
     };
     function cargarTablaMainTecnicos(tecnicos) {
 
@@ -1706,6 +1711,7 @@
         if (mantenimiento.CodEstado == "FIN") {
             $txtNumFactura.prop('disabled',false);
             $dateFechaFact.prop('disabled', false);
+            $rowFactura.css('display', 'block');
         };
 
         if (mantenimiento.IndPrestacion == true) {
