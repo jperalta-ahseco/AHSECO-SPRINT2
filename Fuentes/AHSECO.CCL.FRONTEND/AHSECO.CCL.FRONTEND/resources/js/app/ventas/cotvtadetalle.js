@@ -497,10 +497,16 @@ var cotvtadet = (function ($, win, doc) {
             $DI_txtCostoFOB.removeAttr("disabled");
         }
 
-        if ($PermitirEditarValorizacion.val() != "S" ||
-            $cmbTipo.val() == $TipoSol_RepOComes.val() ||
-            $cmbTipo.val() == $TipoSol_ServYRep.val()) {
+        //Si no es para VALORIZACION se deshabilitará
+        if ($PermitirEditarValorizacion.val() != "S") {
             $DI_txtCostoFOB.attr("disabled", "disabled");
+        }
+
+        //Para las solicitudes de tipo REPUESTOS no usan FOB
+        if ($PermitirEditarValorizacion.val() == "S") {
+            if ($cmbTipo.val() == $TipoSol_RepOComes.val() || $cmbTipo.val() == $TipoSol_ServYRep.val()) {
+                $DI_txtCostoFOB.attr("disabled", "disabled");
+            }
         }
 
     }
@@ -709,6 +715,15 @@ var cotvtadet = (function ($, win, doc) {
                     configurarTieneStock();
                     $DI_txtCostoFOB.val(strCostoFOB);
                     $DI_txtCostoFOB.focus();
+                    //Para REPUESTOS no va a modificar el COSTO FOB se ocultará el campo
+                    if ($cmbTipo.val() == $TipoSol_RepOComes.val() || $cmbTipo.val() == $TipoSol_ServYRep.val()) {
+                        $DI_btnGuardar.css("display", "none");
+                        $DI_pnlCostos_CostoFOB.css("display", "none");
+                    }
+                    else {
+                        $DI_btnGuardar.css("display", "");
+                        $DI_pnlCostos_CostoFOB.css("display", "");
+                    }
                 }
                 if ($idRolUsuario.val() == $RolVenta_Costos.val()) {
                     //Si tiene Costo FOB quiere decir que puede proseguir con el VALOR UNITARIO
@@ -717,8 +732,7 @@ var cotvtadet = (function ($, win, doc) {
                         $DI_txtValorUnitario.focus();
                     }
                     //Si es tipo REPUESTOS quiere decir que puede proseguir con el VALOR UNITARIO ya que no usan FOB
-                    if ($cmbTipo.val() == $TipoSol_RepOComes.val() ||
-                        $cmbTipo.val() == $TipoSol_ServYRep.val()) {
+                    if ($cmbTipo.val() == $TipoSol_RepOComes.val() || $cmbTipo.val() == $TipoSol_ServYRep.val()) {
                         $DI_txtValorUnitario.removeAttr("disabled");
                         $DI_txtValorUnitario.focus();
                     }
@@ -727,8 +741,8 @@ var cotvtadet = (function ($, win, doc) {
                         $DI_txtValorUnitario.removeAttr("disabled");
                         $DI_txtValorUnitario.focus();
                     }
+                    $DI_btnGuardar.css("display", "");
                 }
-                $DI_btnGuardar.css("display", "");
             }
 
             //Cuando a la cotización detalle se le asignó el VALOR UNITARIO recien se puede agregar una ganancia
@@ -1345,6 +1359,17 @@ var cotvtadet = (function ($, win, doc) {
                     render: function (data) {
                         var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
                         var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                        var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.editarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
+                        if ($estadoSol.val() == "CVAL") {
+                            var swVer = false;
+                            //Se valida que el tipo REPUESTOS no modifique FOB
+                            if ($idRolUsuario.val() == $RolVenta_Gerente.val()) {
+                                if ($cmbTipo.val() == $TipoSol_RepOComes.val() || $cmbTipo.val() == $TipoSol_ServYRep.val()) {
+                                    swVer = true;
+                                }
+                            }
+                            if (swVer) { editar = ver; }
+                        }
                         return '<center>' + hidden + editar + '</center>';
                     }
                 }
@@ -1432,7 +1457,7 @@ var cotvtadet = (function ($, win, doc) {
                     render: function (data) {
                         var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
                         var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                        var ver = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
+                        var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.editarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
                         var quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
                         if ($estadoSol.val() != "SCOT") { quitar = ""; }
                         if ($estadoSol.val() == "CVAL") {
@@ -1443,21 +1468,9 @@ var cotvtadet = (function ($, win, doc) {
                                     swVer = false;
                                 }
                             }
-                            //Se valida si para el tipo de solicitud su producto
-                            if ($cmbTipo.val() != $TipoSol_RepOComes.val() &&
-                                $cmbTipo.val() != $TipoSol_ServYRep.val() &&
-                                $cmbTipo.val() != $TipoSol_Servicio.val()) {
-                                //Se valida la GANANCIA
-                                if ($DI_pnlCostos_Ganancia.css("display") != "none") {
-                                    if ($PermitirEditarGanancia.val() != "S") { swVer = false; }
-                                }
-                            }
-                            //Se valida que el tipo REPUESTOS no modifique FOB
-                            if ($cmbTipo.val() == $TipoSol_RepOComes.val() &&
-                                $cmbTipo.val() == $TipoSol_ServYRep.val()) {
-                                if ($idRolUsuario.val() != $RolVenta_Gerente.val()) {
-                                    swVer = false;
-                                }
+                            //Se valida la GANANCIA
+                            if ($DI_pnlCostos_Ganancia.css("display") != "none") {
+                                if ($PermitirEditarGanancia.val() == "S") { swVer = false; }
                             }
                             if (swVer) { editar = ver; }
                         }

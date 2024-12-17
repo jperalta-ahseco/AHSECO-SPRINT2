@@ -21,9 +21,12 @@ namespace AHSECO.CCL.BE.Ventas
         public string EmailContacto { get; set; }
         public int PlazoEntrega { get; set; }
         public string FormaPago { get; set; }
+        public string DescFormaPago { get; set; }
         public string Moneda { get; set; }
+        public string DescMoneda { get; set; }
         public string Vigencia { get; set; }
         public string Garantia { get; set; }
+        public string DescGarantia { get; set; }
         public string Observacion { get; set; }
         public decimal? PorcentajeDescuento { get; set; }
         public bool? IndDsctoRequiereAprob { get; set; }

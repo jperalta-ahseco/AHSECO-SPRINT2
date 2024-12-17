@@ -48,21 +48,19 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             return Json(result);
         }
 
-
-        public JsonResult GenerarCotizacion(int codCotizacion)
+        [HttpPost]
+        public JsonResult GenerarCotizacion(CotizacionDTO cotizacionDTO)
         {
 
             var ventasBL = new VentasBL();
-            var cotizacion = ventasBL.ConsultaCotizacionCliente(codCotizacion);
+            var cotizacion = ventasBL.ConsultaCotizacionCliente(cotizacionDTO.IdCotizacion);
 
             // Crear una nueva aplicación de Word
             Application wordApp = new Application();
             wordApp.Visible = false;
 
-
             // Crear un nuevo documento
             Document doc = wordApp.Documents.Add();
-
 
             int retries = 5;
             while (retries > 0)
@@ -201,7 +199,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     table.Cell(6, 4).Width = 100;
 
                     table.Cell(6, 5).Merge(table.Cell(6, 6));
-                    table.Cell(6, 5).Range.Text = cotizacion.Result.DocumentoCabecera.FormaPago;
+                    table.Cell(6, 5).Range.Text = cotizacionDTO.DescFormaPago; //cotizacion.Result.DocumentoCabecera.FormaPago;
                     table.Cell(6, 5).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
                     table.Cell(6, 5).Range.Font.Size = 8;
                     table.Cell(6, 5).Width = 120;
@@ -228,7 +226,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     table.Cell(7, 4).Width = 100;
 
                     table.Cell(7, 5).Merge(table.Cell(7, 6));
-                    table.Cell(7, 5).Range.Text = cotizacion.Result.DocumentoCabecera.Moneda;
+                    table.Cell(7, 5).Range.Text = cotizacionDTO.DescMoneda; //cotizacion.Result.DocumentoCabecera.Moneda;
                     table.Cell(7, 5).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
                     table.Cell(7, 5).Range.Font.Size = 8;
                     table.Cell(7, 5).Width = 120;
@@ -282,7 +280,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     table.Cell(9, 4).Width = 100;
 
                     table.Cell(9, 5).Merge(table.Cell(9, 6));
-                    table.Cell(9, 5).Range.Text = cotizacion.Result.DocumentoCabecera.Garantia;
+                    table.Cell(9, 5).Range.Text = cotizacionDTO.DescGarantia; //cotizacion.Result.DocumentoCabecera.Garantia;
                     table.Cell(9, 5).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
                     table.Cell(9, 5).Range.Font.Size = 8;
                     table.Cell(9, 5).Width = 120;
@@ -381,7 +379,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     Borders borders9 = table.Cell(12, 7).Borders;
                     borders9.Enable = 1; // Habilitar bordes
                     #endregion
-
 
                     var detalleCotizacion = cotizacion.Result.DocumentoDetalle;
 

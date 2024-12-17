@@ -1339,7 +1339,10 @@
         url = 'BandejaSolicitudesVentas/GenerarHojaLiquidacion';
         var objDatos = {
             IdCotizacion: $idCotizacion.val(),
-            IdSolicitud: $numeroSolicitud.val()
+            IdSolicitud: $numeroSolicitud.val(),
+            DescGarantia: $("#select2-" + $cmbGarantia.attr("id") + "-container").attr("title"),
+            DescFormaPago: $("#select2-" + $cmbTipoPago.attr("id") + "-container").attr("title"),
+            DescMoneda: $("#select2-" + $cmbTipMoneda.attr("id") + "-container").attr("title")
         };
         var objParam = JSON.stringify(objDatos);
 
@@ -2199,9 +2202,17 @@
 
         var codigo = $idCotizacion.val();
         method = 'POST';
-        url = 'BandejaHistorialCotizacion/GenerarCotizacion?codCotizacion=' + codigo;
+        //url = 'BandejaHistorialCotizacion/GenerarCotizacion?codCotizacion=' + codigo;
+        url = 'BandejaHistorialCotizacion/GenerarCotizacion';
 
-        objParam ='';
+        var objDatos = {
+            IdCotizacion: $idCotizacion.val(),
+            IdSolicitud: $numeroSolicitud.val(),
+            DescGarantia: $("#select2-" + $cmbGarantia.attr("id") + "-container").attr("title"),
+            DescFormaPago: $("#select2-" + $cmbTipoPago.attr("id") + "-container").attr("title"),
+            DescMoneda: $("#select2-" + $cmbTipMoneda.attr("id") + "-container").attr("title")
+        };
+        var objParam = JSON.stringify(objDatos);
 
         var fnDoneCallBack = function (data) {
             app.abrirVentana("BandejaHistorialCotizacion/ExportarFile?nombreDoc=" + data.Archivo);
