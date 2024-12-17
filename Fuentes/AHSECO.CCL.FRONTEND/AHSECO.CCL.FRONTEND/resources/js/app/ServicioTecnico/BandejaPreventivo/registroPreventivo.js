@@ -688,7 +688,10 @@
             {
                 data: "Id",
                 render: function (data, type, row) {
-                    return '<center>' + data + '</center>';
+                    var numReqFormateado = ("000000" + data.toString());
+                    numReqFormateado = numReqFormateado.substring((numReqFormateado.length) - 6, numReqFormateado.length);
+
+                    return '<center>' + numReqFormateado + '</center>';
                 }
             },
             {
@@ -723,7 +726,7 @@
         var columnDefs = [
             {
                 targets: [0],
-                visible: false
+                visible: true
             }
         ];
         app.llenarTabla($tblMantenimientos, data, columns, columnDefs, "#tblMantenimientos");
