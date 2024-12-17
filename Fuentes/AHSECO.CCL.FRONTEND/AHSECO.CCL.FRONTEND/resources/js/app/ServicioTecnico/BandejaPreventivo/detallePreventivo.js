@@ -1783,7 +1783,7 @@
                 var mantenimiento = {
                     Id: data.Result.MantPreventivo.Id,
                     FechaMantenimiento: app.obtenerFecha(data.Result.MantPreventivo.FechaMantenimiento),
-                    FechaFactura: data.Result.MantPreventivo.FecFactura,
+                    FecFactura: data.Result.MantPreventivo.FecFactura,
                     NumFactura: data.Result.MantPreventivo.NumFactura,
                     MontoPrestAcce: formatoMiles(data.Result.MantPreventivo.MontoPrestAcce.toFixed(2)),
                     IndPrestacion: data.Result.MantPreventivo.IndPrestacion,
