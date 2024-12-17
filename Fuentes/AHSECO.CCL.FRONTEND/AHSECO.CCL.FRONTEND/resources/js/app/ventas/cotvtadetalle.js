@@ -934,7 +934,6 @@ var cotvtadet = (function ($, win, doc) {
             LimpiarModalDetItem();
             MostrarDatosItem(data);
             $DI_pnlInfoGeneral_Dimensiones.css("display", "none");
-            $DI_pnl
             $DI_pnlCostos_PrecioVenta.css("display", "");
             $DI_pnlCostos_CostoFOB.css("display", "none");
             $DI_pnlCostos_ValorUnitario.css("display", "");

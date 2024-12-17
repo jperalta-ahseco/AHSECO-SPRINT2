@@ -99,6 +99,7 @@
     <Compile Include="ServicioTecnico\BandejaPreventivos\ReqPreventivoDTO.cs" />
     <Compile Include="ServicioTecnico\BandejaPreventivos\ResultPreventivoDTO.cs" />
     <Compile Include="ServicioTecnico\BandejaPreventivos\TecnicoMantPreventivoDTO.cs" />
+    <Compile Include="Ventas\CotDetActividadDTO.cs" />
     <Compile Include="Ventas\CotDetCostoDTO.cs" />
     <Compile Include="Ventas\DetalleDespachoDTO.cs" />
     <Compile Include="Ventas\CotDetDespachoDTO.cs" />
