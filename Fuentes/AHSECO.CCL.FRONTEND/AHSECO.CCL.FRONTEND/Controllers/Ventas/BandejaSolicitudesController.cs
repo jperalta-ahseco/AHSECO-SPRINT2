@@ -2943,6 +2943,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             var itemCDC = itemCD.CotizacionCostos[a];
                             itemCDC.TipoProceso = ConstantesDTO.CotizacionDetalleDespacho.TipoProceso.Insertar;
                             itemCDC.IdCotizacionDetalle = itemCD.Id;
+                            itemCDC.MontoTotalCosto = null;
+                            itemCDC.MontoUnitarioCosto = null;
                             itemCDC.UsuarioRegistra = User.ObtenerUsuario();
                             itemCDC.FechaRegistro = DateTime.Now;
                             var resCDC = ventasBL.MantenimientoCotDetCosto(itemCDC);
