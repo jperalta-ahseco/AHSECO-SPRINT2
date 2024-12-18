@@ -732,7 +732,29 @@
 
             if ($numReclamo.val() != "") {
                 crearTecnicos(info);
-            };
+            }
+            else {
+                garantias.tecnicosAsig.push({
+                    Id: info.CodigoEmpleado,
+                    TipoDoc: info.Documento.Descripcion,
+                    Documento: info.NumeroDocumento,
+                    Tipo_Documento: info.Documento.Parametro,
+                    Nombres: info.NombresEmpleado,
+                    ApePaterno: info.ApellidoPaternoEmpleado,
+                    ApeMaterno: info.ApellidoMaternoEmpleado,
+                    NombreCompleto: info.NombresCompletosEmpleado,
+                    TipoTecnico: info.CodigoTipoEmpleado,
+                    Telefono: info.TelefonoEmpleado,
+                    Correo: info.EmailEmpleado,
+                    Empresa: info.Empresa.Valor1,
+                    Zona: info.LugarLaboral.UbigeoId,
+                    DescZona: info.LugarLaboral.NombreDepartamento + info.LugarLaboral.NombreProvincia + info.LugarLaboral.NombreDistrito,
+                    Estado: true
+                });
+
+                cargarTablaMainTecnicos(garantias.tecnicosAsig);
+                $modalBusquedaTecnico.modal('toggle');
+            }
         });
 
 
