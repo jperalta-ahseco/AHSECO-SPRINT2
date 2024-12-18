@@ -1494,7 +1494,7 @@ var cotvtadet = (function ($, win, doc) {
         }
 
         //Cuando ya se avanza la SOLICITUD mas allá de la cotización se elimina los campos de ACCION
-        if ($estadoSol.val() != "SCOT" && $estadoSol.val() != "CVAL") { columns.pop(); }
+        //if ($estadoSol.val() != "SCOT" && $estadoSol.val() != "CVAL") { columns.pop(); }
 
         var rowCallback = function (row, data, index) {
             // Asignar un ID único basado en el índice de datos o algún identificador único

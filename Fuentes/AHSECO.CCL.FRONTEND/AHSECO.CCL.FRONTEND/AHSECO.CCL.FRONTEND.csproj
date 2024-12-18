@@ -356,6 +356,7 @@
     <Compile Include="Core\Identity\CustomUserManager.cs" />
     <Compile Include="Core\Identity\CustomUserStore.cs" />
     <Compile Include="Core\Identity\PrincipalExtension.cs" />
+    <Compile Include="Core\MultiFlujo.cs" />
     <Compile Include="Core\Utils.cs" />
     <Compile Include="Core\VariableSesion.cs" />
     <Compile Include="Global.asax.cs">
@@ -511,7 +512,7 @@
     <Content Include="resources\js\app\consultas\consultaStocks\consultaStocks.js" />
     <Content Include="resources\js\app\mantenimientos\bandejaEmpledos\bandejaEmpleados.js" />
     <Content Include="resources\js\app\mantenimientos\bandejaEmpledos\manipularEmpleado.js" />
-    <Content Include="resources\js\app\ServicioTecnico\BandejaPreventivo\detallePreventivo.js"/>
+    <Content Include="resources\js\app\ServicioTecnico\BandejaPreventivo\detallePreventivo.js" />
     <Content Include="resources\js\app\mantenimientos\cargos\bandejaCargo.js" />
     <Content Include="resources\js\app\mantenimientos\cliente\bandejaCliente.js" />
     <Content Include="resources\js\app\mantenimientos\cliente\manipularCliente.js" />

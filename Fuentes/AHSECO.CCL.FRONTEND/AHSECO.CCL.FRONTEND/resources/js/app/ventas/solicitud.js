@@ -1265,6 +1265,7 @@
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null, null, null);
     }
 
+    //ACTUALIZA los datos del SERVICIO agregado a la COTIZACION DETALLE
     function $DS_btnGuardar_click() {
 
         if ($DS_txtCantidad.val() === "0") {
@@ -1282,7 +1283,7 @@
 
         var objFiltros = {
             datos: {
-            CodItem: $DS_hdnIdCotDetServ.val(),
+            Id: $DS_hdnIdCotDetServ.val(),
             Cantidad: $DS_txtCantidad.val(),
             VentaUnitaria: $DS_txtPrecio.val(),
             VentaTotalSinIGV: $DS_txtTotalVenta.val()
@@ -1310,7 +1311,9 @@
         return app.message.confirm("Actualización", "¿Está seguro de actualizar los datos?", "Si", "No", fnSi, null);
     }
 
+    //REGISTRA la actividad (detalle de servicio) de la COTIZACION DETALLE (Servicio)
     function $btnGuardarDetalleServicio_click() {
+
         if ($txtDetalleServicio.val() === "") {
             app.message.error("Validación", "Debe ingresar una descripción del servicio.");
             return false;
@@ -1319,7 +1322,7 @@
         method = "POST";
         url = "BandejaSolicitudesVentas/RegistrarDetServ";
         objDetalle = {
-            CodItem: $DS_hdnIdCotDetServ.val(),
+            IdCotDetalle: $DS_hdnIdCotDetServ.val(),
             Descripcion: $txtDetalleServicio.val()
         }
         objParam = JSON.stringify(objDetalle);
@@ -1342,7 +1345,9 @@
         $modalDetalleServicio.modal('show');
     }
 
+    //ACTUALIZAR la actividad (detalle de servicio) de la COTIZACION DETALLE (Servicio)
     function $btnActualizarDetalleServicio_click() {
+
         if ($txtDetalleServicio.val() === "") {
             app.message.error("Validación", "Debe ingresar una descripción del servicio.");
             return false;
@@ -1351,7 +1356,7 @@
         method = "POST";
         url = "BandejaSolicitudesVentas/ActualizarDetServ";
         objDetalle = {
-            CodItem: $DS_hdnIdCotDetServ.val(),
+            IdCotDetalle: $DS_hdnIdCotDetServ.val(),
             CodServDet: $hdnIdDetalleServicio.val(),
             Descripcion: $txtDetalleServicio.val()
         }
@@ -3941,7 +3946,6 @@
                     return newData;
                 }
             },
-        
             {
                 data: "CodItem",
                 render: function (data) {
@@ -3971,6 +3975,7 @@
         app.llenarTabla($tblCotDetServiciosAgregados, data, columns, columnDefs, "#tblCotDetServiciosAgregados", rowCallback, null, filters);
     }
 
+    //CARGA los datos de la COTIZACION DETALLE (Servicio)
     function editarItemServ(CodigoItem, opc) {
         method = "POST";
         url = "BandejaSolicitudesVentas/CargarCotDetItemServicio";
@@ -3982,7 +3987,7 @@
         var fnDoneCallBack = function (data) {
             opcGrillaItems = opc;
             $('#modalDetalleItemServicio').modal('show');
-            $DS_hdnIdCotDetServ.val(CodigoItem);
+            $DS_hdnIdCotDetServ.val(data.Result.Id);
             var codigo = "000000" + data.Result.CodItem
             $DS_txtCodigo.val(codigo.substring(codigo.length - 6));
             $DS_txtDescripcion.val(data.Result.Descripcion);
@@ -3994,7 +3999,7 @@
             //detalleServicios = data.Result.DetallesServicio;
             if (data.Result.DetallesServicio != null) { contadorDetalle = data.Result.DetallesServicio.length; }
             contadorDetalle = 0;
-            cargarTablaDetalleServicios(data.Result.Actividades);
+            cargarTablaDetalleServicios(data.Result.CotizacionActividades);
             if ($PermitirEditarCotDetItem.val() != "S") {
                 $btnAgregarDetServ.css("display", "none");
                 $DS_btnGuardar.css("display", "none");
@@ -4003,19 +4008,18 @@
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
     }
 
-    function eliminarDetServ(Id, Codigo) {
+    function eliminarDetServ(IdCotDetalle, IdActividad) {
 
         console.log("entrado");
         method = "POST";
         url = "BandejaSolicitudesVentas/EliminarDetServicio";
         objDetalle = {
-            CodItem: Id,
-            Codigo: Codigo
+            IdCotDetalle: IdCotDetalle,
+            IdActividad: IdActividad
         }
         objParam = JSON.stringify(objDetalle);
         var fnSi = function () {
             var fnDoneCallback = function (data) {
-                console.log("borrado");
                 cargarTablaDetalleServicios(data.Result);
             }
             var fnFailCallback = function () {
@@ -4027,22 +4031,26 @@
 
     }
 
-    function editarDetServ(Id,Codigo) {
+    //CARGA los datos de la ACTIVIDAD (Detalle de Servicio) de la COTIZACION DETALLE (Servicio)
+    function editarDetServ(IdCotDetalle, IdActividad) {
         $modalDetalleServicio.modal('toggle');
         $btnGuardarDetalleServicio.css('display', 'none');
         $btnActualizarDetalleServicio.css('display', 'inline-block');
-
-        //var detalle = detalleServicios;
-        //console.log("detalle:" + detalle);
-        //if (Id > 0) {
-        //    detalle = detalle.find(detail => detail.Id == Id);
-        //}
-        //else {
-        //    detalle = detalle.find(detail => detail.Codigo == Codigo);
-        //}
         
-        $hdnIdDetalleServicio.val(Id);
-        $txtDetalleServicio.val(detalle.DesMantenimiento);
+        method = "POST";
+        url = "BandejaSolicitudesVentas/CargarDetServ";
+        var objFiltros = {
+            IdCotDetalle: IdCotDetalle,
+            IdActividad: IdActividad
+        };
+        var objParam = JSON.stringify(objFiltros);
+        var fnDoneCallBack = function (data) {
+            $DS_hdnIdCotDetServ.val(data.Result.IdCotizacionDetalle);
+            $hdnIdDetalleServicio.val(data.Result.Id);
+            $txtDetalleServicio.val(data.Result.DescripcionActividad);
+        }
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+
     }
 
     function cargarTablaDetalleServicios(detalle) {
@@ -4052,8 +4060,8 @@
             for (i = 0; i < detalle.length; i++) {
                 var indice = i + 1;
                 var html = '<div class="text-center">';
-                html += '<a class="btn btn-primary btn-xs" title="Editar" href="javascript:solicitud.editarDetServ(' + detalle[i].Id + ',\'' + detalle[i].CodigoActividad + '\')" btn-xs"><i class="fa fa-pencil-square-o"></i></a>&nbsp;';
-                html += '<a class="btn btn-primary btn-xs" title="Eliminar" href="javascript:solicitud.eliminarDetServ(' + detalle[i].Id + ',\'' + detalle[i].CodigoActividad + '\')" btn-xs"><i class="fa fa-trash"></i></a>&nbsp;';
+                html += '<a class="btn btn-primary btn-xs" title="Editar" href="javascript:solicitud.editarDetServ(' + detalle[i].IdCotizacionDetalle + ',\'' + detalle[i].Id + '\')" btn-xs"><i class="fa fa-pencil-square-o"></i></a>&nbsp;';
+                html += '<a class="btn btn-primary btn-xs" title="Eliminar" href="javascript:solicitud.eliminarDetServ(' + detalle[i].IdCotizacionDetalle + ',\'' + detalle[i].Id + '\')" btn-xs"><i class="fa fa-trash"></i></a>&nbsp;';
                 html += '</div>';
                 var nuevoTr = '<tr id="rowDetalle" name="rowDetalle">' +
                     '<td><center>' + indice + '</center></td>' +
