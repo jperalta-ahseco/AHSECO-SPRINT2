@@ -2471,32 +2471,43 @@
         var elementos = [];
         var detalle = productos.filter(producto => producto.Id == codigo);
         elementos = detalle[0].Elementos;
-        var series = elementos.filter(elemento => elemento.Serie != "");
-        if (series.length == 0) {
-            $rowElementos.css('display', 'none');
-            $btnAsignarTecnico.css('display', 'none');
-            var chekTOdos = document.querySelector('.form-check-input');
-            var padreBtnCheck = chekTOdos.parentElement;
-            padreBtnCheck.innerHTML = '<input class="form-check-input" hidden value="">';
-        } else {
-            var chekTOdos = document.querySelector('.form-check-input');
-            var padreBtnCheck = chekTOdos.parentElement;
-            padreBtnCheck.innerHTML = 'Todos: <input class="form-check-input" type="checkbox" value="" id="checkSeleccionarTodos">';
-            $rowElementos.css('display', 'block');
-            $btnAsignarTecnico.css('display', 'inline-block');
-        }
+
+        if ($numeroReq.val()) {
+            var series = elementos.filter(elemento => elemento.Serie != "");
+            if (series.length == 0) {
+                $rowElementos.css('display', 'none');
+                $btnAsignarTecnico.css('display', 'none');
+                var chekTOdos = document.querySelector('.form-check-input');
+                var padreBtnCheck = chekTOdos.parentElement;
+                padreBtnCheck.innerHTML = '<input class="form-check-input" hidden value="">';
+            } else {
+                var chekTOdos = document.querySelector('.form-check-input');
+                var padreBtnCheck = chekTOdos.parentElement;
+                padreBtnCheck.innerHTML = 'Todos: <input class="form-check-input" type="checkbox" value="" id="checkSeleccionarTodos">';
+                $rowElementos.css('display', 'block');
+                $btnAsignarTecnico.css('display', 'inline-block');
+            }
+        };
         cargarTablaElementosdDeProducto(elementos);
 
-        var smth = $('#tblElementosDeProducto tbody tr td #checkSeleccionar').html();
-        if (smth == undefined) {
-            var chekTOdos = document.querySelector('.form-check-input');
-            var padreBtnCheck = chekTOdos.parentElement;
-            padreBtnCheck.innerHTML = '<input class="form-check-input" hidden value="">'
-        } else {
-            padreBtnCheck.innerHTML = 'Todos: <input class="form-check-input" type="checkbox" value="" id="checkSeleccionarTodos">';
-            $rowElementos.css('display', 'block');
-            $btnAsignarTecnico.css('display', 'inline-block');
-        };
+        if ($numeroReq.val()) {
+            var smth = $('#tblElementosDeProducto tbody tr td #checkSeleccionar').html();
+            if (smth == undefined) {
+                var chekTOdos = document.querySelector('.form-check-input');
+                var padreBtnCheck = chekTOdos.parentElement;
+                padreBtnCheck.innerHTML = '<input class="form-check-input" hidden value="">'
+                $rowElementos.css('display', 'none');
+                $btnAsignarTecnico.css('display', 'none');
+
+            } else {
+                padreBtnCheck.innerHTML = 'Todos: <input class="form-check-input" type="checkbox" value="" id="checkSeleccionarTodos">';
+                $rowElementos.css('display', 'block');
+                $btnAsignarTecnico.css('display', 'inline-block');
+                $rowElementos.css('display', 'block');
+                $btnAsignarTecnico.css('display', 'inline-block');
+            };
+        }
+       
 
         $modalElementosDeProducto.modal('toggle');
         $hdnIdProduct.val(codigo);
