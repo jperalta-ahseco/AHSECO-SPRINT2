@@ -2595,7 +2595,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     if (!lstItems.Any()) { swCDItems = false; }
                     else
                     {
-                        if(lstItems.Any(x=>x.Cantidad == 0)) { swCDItems = false; }
+                        if (lstItems.Any(x => x.Cantidad == 0)) { swCDItems = false; }
                     }
                 }
 
@@ -2638,7 +2638,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     if (resCotDetAux.Result.Any())
                     {
                         var lstCotDetAux = resCotDetAux.Result.ToList();
-                        foreach(CotizacionDetalleDTO itemCD in lstCotDetAux)
+                        foreach (CotizacionDetalleDTO itemCD in lstCotDetAux)
                         {
                             if (itemCD.CotizacionDespacho != null)
                             {
@@ -2718,12 +2718,13 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 if (lstItems.Where(x => x.IndStock.HasValue).Any(y => y.IndStock.Value))
                 { NotificarValorizacion_ValorUnitario(oCotizacion.IdSolicitud); }
 
-                if(oSolicitud.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaEquipos)
-                {
-                    NotificarCosteoPendiente_ServicioTecnico(oCotizacion.IdSolicitud);
-                }
+                if (oSolicitud.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaEquipos)
+                { NotificarCosteoPendiente_ServicioTecnico(oCotizacion.IdSolicitud); }
 
-                NotificarCosteoPendiente_Logistica(oCotizacion.IdSolicitud);
+                if (oSolicitud.Tipo_Sol != ConstantesDTO.SolicitudVenta.TipoSolicitud.RepuestosoConsumibles &&
+                    oSolicitud.Tipo_Sol != ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos &&
+                    oSolicitud.Tipo_Sol != ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio)
+                { NotificarCosteoPendiente_Logistica(oCotizacion.IdSolicitud); }
 
                 return Json(new { Status = 1, Mensaje = "Cotización Enviada correctamente" });
             }
