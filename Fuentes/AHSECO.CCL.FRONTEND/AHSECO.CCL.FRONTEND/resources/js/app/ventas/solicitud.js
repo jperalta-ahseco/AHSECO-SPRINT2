@@ -3382,7 +3382,9 @@
             return;
         };
 
-        if ($cmbTipoVenta.val() === "2") { //Si es de licitación:
+        
+
+        if ($cmbTipoVenta.val() === "TVEN02") { //Si es de licitación:
             if ($txtNroProceso.val() === "" || $txtNroProceso.val() == null) {
                 app.message.error("Validación", "Debe ingresar el número de proceso.");
                 return;
