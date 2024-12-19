@@ -503,7 +503,7 @@
             return;
         };
         
-        if ($txtEmpresa.val() == "") {
+        if ($txtEmpresaTecnico.val() == "") {
             app.message.error("Validación", "Debe de ingresar el campo Empresa.");
             return;
         }
@@ -1118,13 +1118,23 @@
             {
                 data: "Dimensiones",
                 render: function (data, type, row) {
-                    return '<center>' + data + '</center>'
+                    if (data == "") {
+                        return '<center>No definido</center>'
+                    }
+                    else {
+                        return '<center>' + data + '</center>'
+                    }
                 }
             },
             {
                 data: "NumFianza",
                 render: function (data, type, row) {
-                    return '<center>' + data + '</center>'
+                    if (data == "") {
+                        return '<center>No definido</center>'
+                    }
+                    else {
+                        return '<center>' + data + '</center>'
+                    }
                 }
             },
             {
@@ -1424,6 +1434,9 @@
                 else {
                     obtenerDetalleInstalacion();
                 }
+                var smth = $('#tblElementosDeProducto tbody tr td #checkSeleccionar').val();
+                console.log(smth);
+                console.log($('#tblElementosDeProducto tbody tr td').children());
             };
 
             var fnFailCallBack = function () {
@@ -2456,10 +2469,35 @@
         LimpiarTecnicoExterno();
         registroInstalacionTec.xasignar = [];
         var elementos = [];
-        var detalle = productos.filter(producto => producto.Id == codigo)
+        var detalle = productos.filter(producto => producto.Id == codigo);
         elementos = detalle[0].Elementos;
-        
+        var series = elementos.filter(elemento => elemento.Serie != "");
+        if (series.length == 0) {
+            $rowElementos.css('display', 'none');
+            $btnAsignarTecnico.css('display', 'none');
+            var chekTOdos = document.querySelector('.form-check-input');
+            var padreBtnCheck = chekTOdos.parentElement;
+            padreBtnCheck.innerHTML = '<input class="form-check-input" hidden value="">';
+        } else {
+            var chekTOdos = document.querySelector('.form-check-input');
+            var padreBtnCheck = chekTOdos.parentElement;
+            padreBtnCheck.innerHTML = 'Todos: <input class="form-check-input" type="checkbox" value="" id="checkSeleccionarTodos">';
+            $rowElementos.css('display', 'block');
+            $btnAsignarTecnico.css('display', 'inline-block');
+        }
         cargarTablaElementosdDeProducto(elementos);
+
+        var smth = $('#tblElementosDeProducto tbody tr td #checkSeleccionar').html();
+        if (smth == undefined) {
+            var chekTOdos = document.querySelector('.form-check-input');
+            var padreBtnCheck = chekTOdos.parentElement;
+            padreBtnCheck.innerHTML = '<input class="form-check-input" hidden value="">'
+        } else {
+            padreBtnCheck.innerHTML = 'Todos: <input class="form-check-input" type="checkbox" value="" id="checkSeleccionarTodos">';
+            $rowElementos.css('display', 'block');
+            $btnAsignarTecnico.css('display', 'inline-block');
+        };
+
         $modalElementosDeProducto.modal('toggle');
         $hdnIdProduct.val(codigo);
     };
@@ -2537,12 +2575,16 @@
                 {
                     data:"Id_Despacho",
                     render: function (data, type, row) {
-                        if (row.FechaInstalacion != "" && row.FechaProgramacion != "") {
+                        if (row.Serie == "") {
                             return '<center></center>';
-                        }
-                        else{
-                            var seleccionar = '<input class="form-check-input cheks" name="checkSeleccionar" type="checkbox" value="' + data + '" id="checkSeleccionar">';
-                            return '<center>' + seleccionar + '</center>';
+                        } else {
+                            if (row.FechaInstalacion != "" && row.FechaProgramacion != "") {
+                                return '<center></center>';
+                            }
+                            else {
+                                var seleccionar = '<input class="form-check-input cheks" name="checkSeleccionar" type="checkbox" value="' + data + '" id="checkSeleccionar">';
+                                return '<center>' + seleccionar + '</center>';
+                            }
                         }
                     }
                 },
@@ -2567,7 +2609,12 @@
                 {
                     data: "Serie",
                     render: function (data, type, row) {
-                        return '<center>' + data + '</center>';
+                        if (data == "") {
+                            return '<center>No definido</center>';
+                        }
+                        else {
+                            return '<center>' + data + '</center>';
+                        }
                     }
                 },
                 {
@@ -2599,7 +2646,7 @@
                         html += '<div class="form-group">' +
                             '<div class="input-group input-group-sm date">' +
                             '<input disabled type="date" class="form-control input-sm" id="dateFechaProgramacion' + row.Id_Despacho + '" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" value="' + row.FechaProgramacion + '">';
-                        if ($tipoproceso.val() == "U" & ($estadoReq.val() != "STINS" & $estadoReq.val() != "STFIN")) {
+                        if ($tipoproceso.val() == "U" && ($estadoReq.val() != "STINS" && $estadoReq.val() != "STFIN") && row.Serie != "") {
                             if (row.FechaInstalacion != "") {
                                 html += '<a  style="pointer-events:none; background-color: gray;color: white;" class="input-group-addon input-sm" id="activeFechaProgramacion' + row.Id_Despacho + '" title="Ingresar Fecha Programación" href="javascript:registroInstalacionTec.activarFechaProgramacion(' + row.Id_Despacho + ')">' +
                                     '<i class="fa fa-pencil" aria-hidden="true"></i>' +
@@ -2635,7 +2682,7 @@
                             '<div class="input-group input-group-sm date">' +
                             '<input disabled type="date" class="form-control input-sm" id="dateFechaInstalacion' + row.Id_Despacho + '" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" value="' + row.FechaInstalacion + '">';
 
-                        if ($tipoproceso.val() == "U" & ($estadoReq.val() != "STINS" & $estadoReq.val() != "STFIN")) {
+                        if ($tipoproceso.val() == "U" & ($estadoReq.val() != "STINS" & $estadoReq.val() != "STFIN") && row.Serie != "") {
                             if (row.FechaProgramacion != "") {
                                 if (row.FechaInstalacion != "") {
                                     html += '<a style="pointer-events:none; background-color: gray;color: white;" class="input-group-addon input-sm" id="activeFechaInstalacion' + row.Id_Despacho + '" title="Ingresar Fecha Instalación" href="javascript:registroInstalacionTec.activarFechaInstalacion(' + row.Id_Despacho + ')">' +
@@ -2694,9 +2741,6 @@
             }
         ];
         app.llenarTabla($tblElementosDeProducto, data, columns, columnsDefs, "#tblElementosDeProducto", null);
-
-        
-
     };
 
     function crearMantPrevent() {
