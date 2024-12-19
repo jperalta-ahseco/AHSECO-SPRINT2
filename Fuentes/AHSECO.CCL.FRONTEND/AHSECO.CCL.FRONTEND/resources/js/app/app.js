@@ -849,7 +849,14 @@ var app = (function ($, win, doc) {
         if (val == null) { return false; }
         if (val == undefined) { return false; }
         if (val == "") { return false; }
-        if (isNaN(val)) { return false; }
+        var valAux = val;
+        var nIni = 1;
+        var nFin = valAux.length;
+        for (nIni = 1; nIni <= nFin; nIni++) {
+            valAux = valAux.replace(".", "");
+            valAux = valAux.replace(",", "");
+        }
+        if (isNaN(valAux)) { return false; }
         return true;
     }
 
@@ -859,15 +866,52 @@ var app = (function ($, win, doc) {
         if (val == "") { return false; }
         var valAux = val;
         var nIni = 1;
-        var nFin = val.length;
+        var nFin = valAux.length;
         for (nIni = 1; nIni <= nFin; nIni++) {
-            valAux = valAux.replace(".", "");
+            valAux = valAux.replace(".", "?");
             valAux = valAux.replace(",", "");
         }
-        if (isNaN(valAux)) {
-            return false;
-        }
+        if (isNaN(valAux)) { return false; }
         return true;
+    }
+
+    function convertirNumero(val) {
+        if (val == null) { return null; }
+        if (val == undefined) { return null; }
+        if (val == "") { return null; }
+        var valAux = val;
+        var nIni = 1;
+        var nFin = valAux.length;
+        for (nIni = 1; nIni <= nFin; nIni++) {
+            valAux = valAux.replace(",", "");
+        }
+        return valAux;
+    }
+
+    function formatearEnteroComa(val) {
+        if (val == null) { return null; }
+        if (val == undefined) { return ""; }
+        if (val == "") { return ""; }
+        val += '';
+        x = val.split('.');
+        x1 = x[0];
+        x2 = x.length > 1 ? '.' + x[1] : '';
+        var rgx = /(\d+)(\d{3})/;
+        while (rgx.test(x1)) { x1 = x1.replace(rgx, '$1' + ',' + '$2'); }
+        return x1 + x2;
+    }
+
+    function formatearEnteroSinComa(val) {
+        if (val == null) { return null; }
+        if (val == undefined) { return null; }
+        if (val == "") { return null; }
+        var valAux = val;
+        var nIni = 1;
+        var nFin = valAux.length;
+        for (nIni = 1; nIni <= nFin; nIni++) {
+            valAux = valAux.replace(",", "");
+        }
+        return valAux;
     }
 
     function obtenerCantidadDecimales(strMonto) {
@@ -914,6 +958,9 @@ var app = (function ($, win, doc) {
         validaNumeroDecimal: validaNumeroDecimal,
         validaNumeroEntero: validaNumeroEntero,
         obtenerCantidadDecimales: obtenerCantidadDecimales,
+        formatearEnteroComa: formatearEnteroComa,
+        formatearEnteroSinComa: formatearEnteroSinComa,
+        convertirNumero: convertirNumero,
         mostrarLoading: mostrarLoading,
         ocultarLoading: ocultarLoading
     }

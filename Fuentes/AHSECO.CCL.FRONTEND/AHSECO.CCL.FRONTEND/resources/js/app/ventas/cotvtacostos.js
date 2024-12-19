@@ -559,6 +559,7 @@
                 data: "MontoUnitarioCosto",
                 render: function (data) {
                     if (data == null) { data = ""; }
+                    else { data = app.formatearEnteroComa(parseFloat(data).toFixed(2)); }
                     return '<center>' + data + '</center>';
                 }
             },
@@ -566,6 +567,7 @@
                 data: "MontoTotalCosto",
                 render: function (data) {
                     if (data == null) { data = ""; }
+                    else { data = app.formatearEnteroComa(parseFloat(data).toFixed(2)); }
                     return '<center>' + data + '</center>';
                 }
             },
@@ -620,6 +622,7 @@
                 data: "MontoUnitarioCosto",
                 render: function (data) {
                     if (data == null) { data = ""; }
+                    else { data = app.formatearEnteroComa(parseFloat(data).toFixed(2)); }
                     return '<center>' + data + '</center>';
                 }
             },
@@ -627,6 +630,7 @@
                 data: "MontoTotalCosto",
                 render: function (data) {
                     if (data == null) { data = ""; }
+                    else { data = app.formatearEnteroComa(parseFloat(data).toFixed(2)); }
                     return '<center>' + data + '</center>';
                 }
             },
@@ -823,20 +827,20 @@
                     Id: $CI_cmbCDItem.val(),
                     IdCotizacion: $idCotizacion.val(),
                     Descripcion: $DI_txtDescripcion.val(),
-                    Cantidad: $DI_txtCantidad.val()
+                    Cantidad: app.convertirNumero($DI_txtCantidad.val())
                     },
-                CantidadCotizada: $DI_txtCantidad.val(),
+                CantidadCotizada: app.convertirNumero($DI_txtCantidad.val()),
                 CodCosto: $CI_cmbTipoCosto.val(),
                 DescCosto: $("#select2-" + $CI_cmbTipoCosto.attr("id") + "-container").attr("title"),
-                CantidadCosto: $CI_txtCantCosteo.val(),
-                CantPreventivo: vCantidadPreventivo,
+                CantidadCosto: app.convertirNumero($CI_txtCantCosteo.val()),
+                CantPreventivo: app.convertirNumero(vCantidadPreventivo),
                 CodCicloPreventivo: vCodCicloPreventivo,
                 CodUbigeoDestino: vCodUbigeoDestino,
                 Direccion: vDireccion,
                 AmbienteDestino: $CI_txtAmbDestino.val(),
                 NroPiso: vNroPiso,
-                MontoUnitarioCosto: vMontoUnitarioCosto,
-                MontoTotalCosto: vMontoTotalCosto
+                MontoUnitarioCosto: app.convertirNumero(vMontoUnitarioCosto),
+                MontoTotalCosto: app.convertirNumero(vMontoTotalCosto)
             },
             opcGrilla: $CI_opcGrilla.val()
         };

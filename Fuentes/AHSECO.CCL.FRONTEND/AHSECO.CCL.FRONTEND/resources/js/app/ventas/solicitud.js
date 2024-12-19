@@ -1517,17 +1517,17 @@
             {
                 data: "VentaUnitaria",
                 render: function (data) {
-                    var newData = '<center></center>';
-                    if (data != null) { newData = '<center>' + data.toFixed(2) + '</center>'; }
-                    return newData;
+                    if (data == null) { data = ""; }
+                    else { data = app.formatearEnteroComa(parseFloat(data).toFixed(2)); }
+                    return '<center>' + data + '</center>';
                 }
             },
             {
                 data: "VentaTotalSinIGV",
                 render: function (data) {
-                    var newData = '<center></center>';
-                    if (data != null) { newData = '<center>' + data.toFixed(2) + '</center>'; }
-                    return newData;
+                    if (data == null) { data = ""; }
+                    else { data = app.formatearEnteroComa(parseFloat(data).toFixed(2)); }
+                    return '<center>' + data + '</center>';
                 }
             },
             {
@@ -3927,18 +3927,16 @@
                 data: "VentaUnitaria",
                 render: function (data) {
                     if (data == null) { data = ""; }
-                    else {
-                        data = data.toFixed(2);
-                    }
+                    else { data = app.formatearEnteroComa(parseFloat(data).toFixed(2)); }
                     return '<center>' + data + '</center>';
                 }
             },
             {
                 data: "VentaTotalSinIGV",
                 render: function (data) {
-                    var newData = '<center></center>';
-                    if (data != null) { newData = '<center>' + data.toFixed(2) + '</center>'; }
-                    return newData;
+                    if (data == null) { data = ""; }
+                    else { data = app.formatearEnteroComa(parseFloat(data).toFixed(2)); }
+                    return '<center>' + data + '</center>';
                 }
             },
             {

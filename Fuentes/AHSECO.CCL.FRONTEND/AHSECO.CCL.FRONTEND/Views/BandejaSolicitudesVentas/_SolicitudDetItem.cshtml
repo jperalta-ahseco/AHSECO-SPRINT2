@@ -80,7 +80,7 @@
                                         <label for="DI_txtCostoFOB">Costo FOB: </label>
                                     </div>
                                     <div class="col-md-4">
-                                        <input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") placeholder="Ingresar Costo" type="text" maxlength="20" class="form-control input-sm" id="DI_txtCostoFOB" value="" onchange="(function(el){el.value=parseFloat(el.value).toFixed(2);})(this)" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');">
+                                        <input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") placeholder="Ingresar Costo" type="text" maxlength="20" class="form-control input-sm" id="DI_txtCostoFOB" value="" onchange="(function(el){el.value=app.formatearEnteroComa(parseFloat(el.value).toFixed(2));})(this)" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" onfocus="this.value = app.formatearEnteroSinComa(this.value);" onblur="this.value = app.formatearEnteroComa(parseFloat(el.value).toFixed(2));">
                                     </div>
                                 </div>
                                 <div id="DI_pnlCostos_ValorUnitario" class="col-md-6 col-content-middleleft">
@@ -88,7 +88,7 @@
                                         <label for="DI_txtValorUnitario">Val. Unitario: </label>
                                     </div>
                                     <div class="col-md-4">
-                                        <input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") placeholder="Ingresar Val. Unt." type="text" maxlength="20" class="form-control input-sm" id="DI_txtValorUnitario" value="" onchange="(function(el){el.value=parseFloat(el.value).toFixed(2);})(this)" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');">
+                                        <input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") placeholder="Ingresar Val. Unt." type="text" maxlength="20" class="form-control input-sm" id="DI_txtValorUnitario" value="" onchange="(function(el){el.value=app.formatearEnteroComa(parseFloat(el.value).toFixed(2));})(this)" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" onfocus="this.value = app.formatearEnteroSinComa(this.value);" onblur="this.value = app.formatearEnteroComa(parseFloat(el.value).toFixed(2));">
                                     </div>
                                 </div>
                             </div>
@@ -140,7 +140,7 @@
                                         <label for="DI_txtGanancia">Ganancia (%): </label>
                                     </div>
                                     <div class="col-md-5">
-                                        <input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") placeholder="Ingrese Ganancia" type="text" maxlength="15" class="form-control input-sm" id="DI_txtGanancia" value="">
+                                        <input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") placeholder="Ingrese Ganancia" type="text" maxlength="15" class="form-control input-sm" id="DI_txtGanancia" value="" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if (this.value.length > 3) {this.value = this.value.slice(0,3); }">
                                     </div>
                                 </div>
                             </div>

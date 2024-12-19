@@ -50,7 +50,7 @@
                                     <div class="col-md-4">
                                         <label for="DS_txtPrecio">Precio: </label>
                                         <div class="form-group">
-                                            <input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") placeholder="Precio" type="text" maxlength="10" style="text-align:left" class="form-control input-sm" id="DS_txtPrecio" onkeyup="multiplicar();" value="" onchange="(function(el){el.value=parseFloat(el.value).toFixed(2);})(this)" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');">
+                                            <input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") placeholder="Precio" type="text" maxlength="10" style="text-align:left" class="form-control input-sm" id="DS_txtPrecio" onkeyup="multiplicar();" value="" onchange="(function(el){el.value=parseFloat(el.value).toFixed(2);})(this)" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" onfocus="this.value = app.formatearEnteroSinComa(this.value);" onblur="this.value = app.formatearEnteroComa(parseFloat(el.value).toFixed(2));">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -100,7 +100,7 @@
     function multiplicar() {
         var total = 0;
         var cantidad = $("#DS_txtCantidad").val();
-        var precio = $("#DS_txtPrecio").val();
+        var precio = app.formatearEnteroSinComa($("#DS_txtPrecio").val());
         if (cantidad == "" || cantidad == 'NaN') {
             $("#DS_txtCantidad").val('0');
             cantidad = 0;

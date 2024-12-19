@@ -1224,10 +1224,10 @@ var cotvtadet = (function ($, win, doc) {
                 CodItem: $DI_hdnCodigo.val(),
                 CodItemTemp: $DI_txtCodigo.val(),
                 DescripcionAdicional: $DI_txtDescripcionAdic.val(),
-                Cantidad: $DI_txtCantidad.val(),
-                CostoFOB: $DI_txtCostoFOB.val(),
-                VentaUnitaria: $DI_txtValorUnitario.val(),
-                PorcentajeGanancia: $DI_txtGanancia.val(),
+                Cantidad: app.convertirNumero($DI_txtCantidad.val()),
+                CostoFOB: app.convertirNumero($DI_txtCostoFOB.val()),
+                VentaUnitaria: app.convertirNumero($DI_txtValorUnitario.val()),
+                PorcentajeGanancia: app.convertirNumero($DI_txtGanancia.val()),
                 IndStock: bTieneStock,
                 CotizacionDespacho: {
                     IndCompraLocal: bCompraLocal,
@@ -1340,7 +1340,7 @@ var cotvtadet = (function ($, win, doc) {
                     data: "CostoFOB",
                     render: function (data) {
                         if (data == null) { data = ""; }
-                        else { data = parseFloat(data).toFixed(2); }
+                        else { data = app.formatearEnteroComa(parseFloat(data).toFixed(2)); }
                         return '<center>' + data + '</center>';
                     }
                 },
@@ -1348,7 +1348,7 @@ var cotvtadet = (function ($, win, doc) {
                     data: "VentaUnitaria",
                     render: function (data) {
                         if (data == null) { data = ""; }
-                        else { data = parseFloat(data).toFixed(2); }
+                        else { data = app.formatearEnteroComa(parseFloat(data).toFixed(2)); }
                         return '<center>' + data + '</center>';
                     }
                 },
@@ -1356,7 +1356,7 @@ var cotvtadet = (function ($, win, doc) {
                     data: "VentaTotalSinIGV",
                     render: function (data) {
                         if (data == null) { data = ""; }
-                        else { data = parseFloat(data).toFixed(2); }
+                        else { data = app.formatearEnteroComa(parseFloat(data).toFixed(2)); }
                         return '<center>' + data + '</center>';
                     }
                 },
@@ -1371,7 +1371,7 @@ var cotvtadet = (function ($, win, doc) {
                     data: "VentaTotalSinIGVConGanacia",
                     render: function (data) {
                         if (data == null) { data = ""; }
-                        else { data = parseFloat(data).toFixed(2); }
+                        else { data = app.formatearEnteroComa(parseFloat(data).toFixed(2)); }
                         return '<center>' + data + '</center>';
                     }
                 },
@@ -1446,7 +1446,7 @@ var cotvtadet = (function ($, win, doc) {
                     data: "VentaUnitaria",
                     render: function (data) {
                         if (data == null) { data = ""; }
-                        else { data = parseFloat(data).toFixed(2); }
+                        else { data = app.formatearEnteroComa(parseFloat(data).toFixed(2)); }
                         return '<center>' + data + '</center>';
                     }
                 },
@@ -1454,7 +1454,7 @@ var cotvtadet = (function ($, win, doc) {
                     data: "VentaTotalSinIGV",
                     render: function (data) {
                         if (data == null) { data = ""; }
-                        else { data = parseFloat(data).toFixed(2); }
+                        else { data = app.formatearEnteroComa(parseFloat(data).toFixed(2)); }
                         return '<center>' + data + '</center>';
                     }
                 },
@@ -1469,7 +1469,7 @@ var cotvtadet = (function ($, win, doc) {
                     data: "VentaTotalSinIGVConGanacia",
                     render: function (data) {
                         if (data == null) { data = ""; }
-                        else { data = parseFloat(data).toFixed(2); }
+                        else { data = app.formatearEnteroComa(parseFloat(data).toFixed(2)); }
                         return '<center>' + data + '</center>';
                     }
                 },
