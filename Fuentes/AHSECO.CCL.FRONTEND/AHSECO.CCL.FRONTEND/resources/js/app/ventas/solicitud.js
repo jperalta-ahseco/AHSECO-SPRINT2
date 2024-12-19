@@ -507,6 +507,7 @@
         return app.message.confirm("Ventas", "¿Está seguro que desea guardar la fecha de programación?", "Sí", "No", fnSi, null);
 
     }
+
     function $btnGuardarProg_click() {
         $dateProg.val(hoy());
     }
@@ -1340,7 +1341,8 @@
     }
 
     function $btnAgregarDetServ_click() {
-        $btnActualizarDetalleServicio.hide();
+        $btnGuardarDetalleServicio.css('display', '');
+        $btnActualizarDetalleServicio.css('display', 'none');
         $txtDetalleServicio.val("");
         $modalDetalleServicio.modal('show');
     }
@@ -2448,8 +2450,7 @@
                     $('#cmbTipoDocumentoCarga option[value="DVT08"]').remove(); //Guia de Remision
                 }         
             }
-
-
+            
             if ($numeroSolicitud.val() != "") {
 
                 cotvtadet.ObtenerFiltrosPrecios();
@@ -2468,7 +2469,6 @@
                 {
                     $divDatosLicitacion.show();
                 }
-
                 $txtNroProceso.val(data.Result.Solicitud.NroProceso);
                 $txtTipoProceso.val(data.Result.Solicitud.TipoProceso);
                 //para habilitar el boton de historial de cotizaciones:
@@ -2476,12 +2476,10 @@
                     $btnHistorial.show();
                 }
 
-
                 if ($estadoSol.val() == "PRVT" || $estadoSol.val() == "CAPR") {
                     CalcularFechaEntregaMaxima();
                 }
-
-
+                
                 if ($estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG" || $estadoSol.val() == "SFIN" || $estadoSol.val() == "NOVT") {
                     //para despacho:
                     $txtNroOrdenCompra.val(data.Result.ContadorCabecera.NumeroOrden);
@@ -2500,8 +2498,6 @@
                     $btnCargarDocumento.hide();
                     $btnAgregarObservacion.hide();
                     $btnAgregarDocumento.hide();
-
-                    
                 }
 
                 if (data.Result.ContadorCabecera.ContadorSinStock > 0) {
@@ -3365,8 +3361,7 @@
             app.message.error("Validación", "Debe seleccionar el tipo de venta.");
             return;
         };
-
-
+        
         if ($cmbTipo.val() === "") {
             app.message.error("Validación", "Debe seleccionar el tipo de solicitud.");
             return;
@@ -3416,7 +3411,7 @@
                 AsesorVenta: $Asesor.val(),
                 Cod_Empresa: $cmbempresa.val(),
                 TipoProceso: $txtTipoProceso.val(),
-                NumProceso: $txtNroProceso.val(),
+                NroProceso: $txtNroProceso.val(),
                 Estado: "SREG"
             },
             Observaciones: solicitud.observaciones,
@@ -4035,7 +4030,7 @@
     function editarDetServ(IdCotDetalle, IdActividad) {
         $modalDetalleServicio.modal('toggle');
         $btnGuardarDetalleServicio.css('display', 'none');
-        $btnActualizarDetalleServicio.css('display', 'inline-block');
+        $btnActualizarDetalleServicio.css('display', '');
         
         method = "POST";
         url = "BandejaSolicitudesVentas/CargarDetServ";

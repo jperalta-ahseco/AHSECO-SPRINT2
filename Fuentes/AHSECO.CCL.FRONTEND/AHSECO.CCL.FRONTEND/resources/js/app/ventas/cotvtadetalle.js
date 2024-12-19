@@ -661,7 +661,25 @@ var cotvtadet = (function ($, win, doc) {
 
             $DI_pnlInfoGeneral_DescripcionAdic.css("display", "");
 
-            if ($cmbTipo.val() == $TipoSol_VentaMat.val() || $cmbTipo.val() == $TipoSol_RepOComes.val()) {
+            if ($cmbTipo.val() == $TipoSol_VentaMat.val()) {
+                $DI_pnlInfoGeneral_Dimensiones.css("display", "none");
+                $DI_txtDescripcionAdic.attr("rows", "4");
+                $DI_pnlCostos_Calibracion.css("display", "none");
+                $DI_pnlCostos_Ganancia.css("display", "none");
+                $DI_pnlCostos_CompraLocal.css("display", "none");
+                $DI_pnlCostos_ReqPlaca.css("display", "none");
+                $DI_pnlCostos_MantPrevent.css("display", "none");
+                $DI_pnlCostos_Manuales.css("display", "none");
+                $DI_pnlCostos_Videos.css("display", "none");
+                $DI_pnlCostos_Instalacion.css("display", "none");
+                $DI_pnlCostos_Capacitacion.css("display", "none");
+                $DI_pnlCostos_GarantAdic.css("display", "none");
+                $DI_pnlCostos_GarantAdic_Combo.css("display", "none");
+                $DI_pnlCostos_Flete.css("display", "");
+                $DI_pnlCostos_ObsInsta.css("display", "none");
+                $DI_pnlDestinos.css("display", "");
+            }
+            else if($cmbTipo.val() == $TipoSol_RepOComes.val()) {
                 $DI_pnlInfoGeneral_Dimensiones.css("display", "none");
                 $DI_txtDescripcionAdic.attr("rows", "4");
                 $DI_pnlCostos_Calibracion.css("display", "none");

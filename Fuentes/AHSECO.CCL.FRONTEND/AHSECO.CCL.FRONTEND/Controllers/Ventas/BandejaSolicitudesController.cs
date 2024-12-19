@@ -2141,15 +2141,16 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             try
             {
                 List<CotizacionDetalleDTO> lstItems = new List<CotizacionDetalleDTO>();
+                var oCotDetItem = new CotizacionDetalleDTO();
 
                 if (opcGrillaItems == opcTablaTemporal)
                 {
                     lstItems = GetCDIList(opcTablaTemporal);
                     var lstItems_2 = GetCDIList(opcTablaFinal);
 
-                    var itemArticulo = lstItems.FirstOrDefault(x => x.CodItem.Trim() == CotizacionDetalle.CodItem.Trim());
-                    if (itemArticulo.EsItemPadre)
-                    { lstItems = lstItems.Where(x => x.NroItem != itemArticulo.NroItem).ToList(); }
+                    oCotDetItem = lstItems.FirstOrDefault(x => x.CodItem.Trim() == CotizacionDetalle.CodItem.Trim());
+                    if (oCotDetItem.EsItemPadre)
+                    { lstItems = lstItems.Where(x => x.NroItem != oCotDetItem.NroItem).ToList(); }
                     else
                     { lstItems = lstItems.Where(x => x.CodItem.Trim() != CotizacionDetalle.CodItem.Trim()).ToList(); }
 
@@ -2164,9 +2165,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 {
                     lstItems = GetCDIList(opcTablaFinal);
 
-                    var itemArticulo = lstItems.FirstOrDefault(x => x.CodItem.Trim() == CotizacionDetalle.CodItem.Trim());
-                    if (itemArticulo.EsItemPadre)
-                    { lstItems = lstItems.Where(x => x.NroItem != itemArticulo.NroItem).ToList(); }
+                    oCotDetItem = lstItems.FirstOrDefault(x => x.CodItem.Trim() == CotizacionDetalle.CodItem.Trim());
+                    if (oCotDetItem.EsItemPadre)
+                    { lstItems = lstItems.Where(x => x.NroItem != oCotDetItem.NroItem).ToList(); }
                     else
                     { lstItems = lstItems.Where(x => x.CodItem.Trim() != CotizacionDetalle.CodItem.Trim()).ToList(); }
 
@@ -2186,8 +2187,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     lstItems = GetCDIList(opcTablaFinal);
                 }
 
-                var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems.Where(x =>
-                x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto));
+                var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems.Where(x => x.TipoItem == oCotDetItem.TipoItem &&
+                x.TipoItem != ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio));
 
                 return Json(response);
             }
@@ -4235,12 +4236,13 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             NPOI.SS.UserModel.ICell cell1;
 
             cell1 = row1.CreateCell(cellnum1++);
-            cell1.SetCellValue("N° Cotización:");
+            cell1.SetCellValue("N° Solicitud:");
 
             cell1 = row1.CreateCell(cellnum1++);
-            var num_cotizacion = "000000" + datosCabeceraCotizacion.IdCotizacion.ToString();
-            var num = num_cotizacion.Substring(num_cotizacion.Length - 6);
-            cell1.SetCellValue("PC-"+num);
+            var numero = "000000" + datosCabeceraCotizacion.IdSolicitud.ToString();
+            numero = numero.Substring(numero.Length - 6);
+            cell1.SetCellValue(numero);
+            //cell1.SetCellValue("PC-"+num);
 
             cell1 = row1.CreateCell(3);
             cell1.SetCellValue("Nombre Contacto:");
