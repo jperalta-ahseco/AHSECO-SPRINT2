@@ -321,6 +321,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         {
                             if (validarDespacho.Result.ContadorSinStock > 0)
                             {
+
+                               ViewBag.Btn_EditarDespacho = "inline-block";
+
+
                                 if (validarSinStock.Result.EstadoAprobacion == "" ||
                                     validarSinStock.Result.EstadoAprobacion == "OBS")
                                 {
