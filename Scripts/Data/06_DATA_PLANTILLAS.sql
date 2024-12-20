@@ -104,6 +104,21 @@ VALUES('PLANATEIMP',1,'Plantilla de Atencion de Importación','','','ATENCION DE 
 <p>Se realiza el ingreso de los datos de importación de la solicitud N°{NRO_SOL} para el cliente {CLIENTE}.</p>
 <p>Por favor ingrese al sistema para continuar con el flujo de venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
 
+
+INSERT INTO TBM_PLANTILLAS
+VALUES('PLANSSERSS',1,'Plantilla Series Serv Tecnico Sin Stock','serviciotecnico@ahsecoperu.com','','SERIES COMPLETAS SIN STOCK - N° SOLICITUD {NRO_SOL}',
+			   '<p>Estimada Área de Servicio Técnico</p>
+<p>Se completaron los registros de las series de los productos sin stock de la solicitud N°{NRO_SOL} para el cliente {CLIENTE}.</p>
+<p>Por favor ingrese al sistema para continuar con el flujo de instalación. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
+
+INSERT INTO TBM_PLANTILLAS
+VALUES('PLANSSERCS',1,'Plantilla Series Serv Tecnico Con Stock','serviciotecnico@ahsecoperu.com','','SERIES COMPLETAS CON STOCK - N° SOLICITUD {NRO_SOL}',
+			   '<p>Estimada Área de Servicio Técnico</p>
+<p>Se completaron los registros de las series de los productos con stock de la solicitud N°{NRO_SOL} para el cliente {CLIENTE}.</p>
+<p>Por favor ingrese al sistema para continuar con el flujo de instalación. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
+
+
+
 --ALERTA DE GARANTIAS:
 INSERT INTO TBM_PLANTILLAS
 VALUES('PLANGARANT',7,'Plantilla de Alertas de garantias proximas a vencer','serviciotecnico@ahsecoperu.com','','GARANTIAS PROXIMAS A VENCER',

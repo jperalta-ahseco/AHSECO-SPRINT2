@@ -265,7 +265,7 @@ BEGIN
 			SET ENVIOBO=0,
 				   USR_MOD = @USRREG,
 				   FEC_MOD = GETDATE()
-		WHERE ID_SOLICITUD=20 AND STOCK='N';
+		WHERE ID_SOLICITUD=@CODSOLICITUD AND STOCK='N';
 
 		SET  @CODIGO = 1
 		SET @MSG ='Se observo el pedido de importación'

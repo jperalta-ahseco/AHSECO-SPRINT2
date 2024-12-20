@@ -315,7 +315,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnProcVentas)
                     {
 
-                        ViewBag.Btn_EditarDespacho = "inline-block";
+                        
                         ViewBag.VerGestionLogistica = true;
                         if (validarDespacho.Result != null)
                         {
@@ -342,17 +342,21 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                             }
 
+
                             if (validarDespacho.Result.ContadorConStock > 0)
                             {
-                                ViewBag.Btn_EnviarGuia = "inline-block";
-                                ViewBag.Btn_GuiaPedido = "inline-block";
-                            }
-
-                            if (validarDespacho.Result.ContadorConStock > 0 && validarDespacho.Result.EnvioGPConStock > 0)
-                            {
-                                ViewBag.Btn_EnviarGuia = "inline-block";
-                                ViewBag.Btn_GuiaPedido = "inline-block";
-                                ViewBag.VerNavConStock = true;
+                                if(validarDespacho.Result.EnvioGPConStock > 0)
+                                {
+                                    ViewBag.VerNavConStock = true;
+                                }
+                                else
+                                {
+                                    ViewBag.Btn_EditarDespacho = "inline-block";
+                                    ViewBag.Btn_EnviarGuia = "inline-block";
+                                    ViewBag.Btn_GuiaPedido = "inline-block";
+                                }
+                               
+                                
                             }
 
                             if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio ||
@@ -3906,6 +3910,26 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     {
                         result.Codigo = 1;
                         result.Mensaje = "Se realizó el envio de la gestión de la solicitud N° " + codigoSolicitud.ToString();
+                        #region Envio Correo Servicio Tecnico
+                        //Envio de correo:
+                        var filtros2 = new FiltroPlantillaDTO();
+                        filtros2.CodigoProceso = 1;
+                        filtros2.CodigoPlantilla = "PLANSSERCS";
+                        filtros2.Usuario = User.ObtenerUsuario();
+                        filtros2.Codigo = Convert.ToInt32(codigoSolicitud);
+
+                        var datos_correo2 = plantillasBL.ConsultarPlantillaCorreo(filtros2).Result;
+                        var respuesta2 = Utilidades.Send(datos_correo2.To, datos_correo2.CC, "", datos_correo2.Subject, datos_correo2.Body, null, "");
+                        if(respuesta2 != "OK")
+                        {
+                            Log.TraceInfo("Solicitud N° " + codigoSolicitud.ToString() + ":" + respuesta2);
+                        }
+                        else
+                        {
+                            Log.TraceInfo("Envio exitoso de correo de series a servicio tecnico de la solicitud N° " + codigoSolicitud.ToString());
+                        }
+                        #endregion
+
                     }
                     else
                     {
@@ -3924,6 +3948,90 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             }
             return Json(new ResponseDTO<RespuestaDTO>(result));
         }
+
+
+        [HttpPost]
+        public JsonResult EnviarGestionVentaSinStock(long codigoSolicitud, long codigoWorkFlow)
+        {
+            var result = new RespuestaDTO();
+            var ventasBL = new VentasBL();
+            try
+            {
+                var plantillasBL = new PlantillasBL();
+                //Envio de correo:
+                var filtros = new FiltroPlantillaDTO();
+                filtros.CodigoProceso = 1;
+                filtros.CodigoPlantilla = "PLANATLOSS";
+                filtros.Usuario = User.ObtenerUsuario();
+                filtros.Codigo = Convert.ToInt32(codigoSolicitud);
+
+                var datos_correo = plantillasBL.ConsultarPlantillaCorreo(filtros).Result;
+
+                var respuesta = Utilidades.Send(datos_correo.To, datos_correo.CC, "", datos_correo.Subject, datos_correo.Body, null, "");
+                CCLog Log = new CCLog();
+                if (respuesta != "OK")
+                {
+                    Log.TraceInfo("Solicitud N° " + codigoSolicitud.ToString() + ":" + respuesta);
+
+                    result.Codigo = 0;
+                    result.Mensaje = "No se pudo enviar el correo de la solicitud N° " + codigoSolicitud.ToString();
+                }
+                else
+                {
+                    Log.TraceInfo("Envio exitoso de la guia de pedidos de la solicitud N° " + codigoSolicitud.ToString());
+
+                    var datosDespachoDTO = new DatosDespachoDTO();
+                    datosDespachoDTO.Tipo = "X";
+                    datosDespachoDTO.UsuarioRegistro = User.ObtenerUsuario();
+                    datosDespachoDTO.NombrePerfil = User.ObtenerPerfil();
+                    datosDespachoDTO.Stock = "N";
+                    datosDespachoDTO.CodigoSolicitud = codigoSolicitud;
+                    datosDespachoDTO.CodigoWorkFlow = codigoWorkFlow;
+                    var envio_log = ventasBL.MantenimientoDespacho(datosDespachoDTO);
+
+                    if (envio_log.Result.Codigo > 0)
+                    {
+                        result.Codigo = 1;
+                        result.Mensaje = "Se realizó el envio de la gestión de la solicitud N° " + codigoSolicitud.ToString();
+                        #region Envio Correo Servicio Tecnico
+                        //Envio de correo:
+                        var filtros2 = new FiltroPlantillaDTO();
+                        filtros2.CodigoProceso = 1;
+                        filtros2.CodigoPlantilla = "PLANSSERSS";
+                        filtros2.Usuario = User.ObtenerUsuario();
+                        filtros2.Codigo = Convert.ToInt32(codigoSolicitud);
+
+                        var datos_correo2 = plantillasBL.ConsultarPlantillaCorreo(filtros2).Result;
+                        var respuesta2 = Utilidades.Send(datos_correo2.To, datos_correo2.CC, "", datos_correo2.Subject, datos_correo2.Body, null, "");
+                        if (respuesta2 != "OK")
+                        {
+                            Log.TraceInfo("Solicitud N° " + codigoSolicitud.ToString() + ":" + respuesta2);
+                        }
+                        else
+                        {
+                            Log.TraceInfo("Envio exitoso de correo de series a servicio tecnico de la solicitud N° " + codigoSolicitud.ToString());
+                        }
+                        #endregion
+
+                    }
+                    else
+                    {
+                        Log.TraceInfo("Solicitud N° " + codigoSolicitud.ToString() + ":" + envio_log.Result.Mensaje);
+                        result.Codigo = 0;
+                        result.Mensaje = "No se pudo enviar el correo de la solicitud N° " + codigoSolicitud.ToString();
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                result.Codigo = 0;
+                result.Mensaje = ex.Message.ToString();
+            }
+            return Json(new ResponseDTO<RespuestaDTO>(result));
+        }
+
 
         [HttpPost]
         public JsonResult EnviarGestionServicioTecnico(long codigoSolicitud)

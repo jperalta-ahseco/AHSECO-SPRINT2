@@ -258,6 +258,7 @@
     var $txtNumeroFacturaServ = $("#txtNumeroFacturaServ");
     var $EnvioServicio = $("#EnvioServicio");
     var $btnGuardarFactura = $("#btnGuardarFactura");
+    var $btnEnviarGestionDespachoSE = $("#btnEnviarGestionDespachoSE");
 
     /*Tecnicos:*/
     var $btnBuscarTecnicos = $('#btnBuscarTecnicos');
@@ -472,6 +473,7 @@
         $btnGuardarFactura.click($btnGuardarFactura_click);
         $btnGuardarProg.click($btnGuardarProg_click);
         $btnRegistrarFechaProg.click($btnRegistrarFechaProg_click);
+        $btnEnviarGestionDespachoSE.click($btnEnviarGestionDespachoSE_click);
     };
 
     function $btnRegistrarFechaProg_click() {
@@ -1976,6 +1978,48 @@
         }
         return app.message.confirm("Ventas", "¿Está seguro que desea enviar a gestión?", "Sí", "No", fnSi, null);
 
+    }
+
+    function $btnEnviarGestionDespachoSE_click() {
+        if ($dateEntregaPedidoSE.val() === "" || $dateEntregaPedidoSE.val() == null) {
+            app.message.error("Validación", "Debe seleccionar la fecha de entrega de pedido de los productos sin stock");
+            return false;
+        }
+        if ($txtNumeroFacturaSE.val() === "" || $txtNumeroFacturaSE.val() == null) {
+            app.message.error("Validación", "Debe ingresar el N° de Factura de los productos sin stock");
+            return false;
+        }
+        if ($txtNumeroGuiaRemisionSE.val() === "" || $txtNumeroGuiaRemisionSE.val() == null) {
+            app.message.error("Validación", "Debe ingresar el N° de Guia de Remision de los productos sin stock");
+            return false;
+        }
+        if (parseInt($ContadorSeriesSS.val()) != parseInt($TotalSeriesSS.val())) {
+            app.message.error("Validación", "Debe ingresar todas las series de los productos sin stock antes de enviar a gestión.");
+            return false;
+        }
+
+        var fnSi = function () {
+
+            var m = "POST";
+            var url = "BandejaSolicitudesVentas/EnviarGestionVentaSinStock?codigoSolicitud=" + $numeroSolicitud.val() + "&codigoWorkFlow=" + $codigoWorkflow.val();
+            var objParam = '';
+            var fnDoneCallback = function (data) {
+                var fnCallback = function () {
+
+
+                    location.reload();
+                };
+                if (data.Result.Codigo > 0) {
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+                else {
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+
+            };
+            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.EnvioGestionLogistica);
+        }
+        return app.message.confirm("Ventas", "¿Está seguro que desea enviar a gestión?", "Sí", "No", fnSi, null);
     }
 
     function $btnEditarGestionLogistica_click() {
@@ -4005,7 +4049,6 @@
 
     function eliminarDetServ(IdCotDetalle, IdActividad) {
 
-        console.log("entrado");
         method = "POST";
         url = "BandejaSolicitudesVentas/EliminarDetServicio";
         objDetalle = {

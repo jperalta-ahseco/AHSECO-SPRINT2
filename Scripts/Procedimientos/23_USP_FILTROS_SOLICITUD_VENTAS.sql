@@ -5,7 +5,7 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_FILTROS_SOLICITUD_VENTAS]
 /*=================================================================================================
 	NOMBRE:					FECHA:		DESCRIPCIÓN:
 	Diego A. Bazalar		04/10/2024	Extrae los filtros para realizar la inserción, actualización de la solicitud de ventas. 
-	EXEC [USP_FILTROS_SOLICITUD_VENTAS]  0,20
+	EXEC [USP_FILTROS_SOLICITUD_VENTAS]  0,13
   =================================================================================================*/
 @CodFlujo INT,
 @CodSolicitud BIGINT
