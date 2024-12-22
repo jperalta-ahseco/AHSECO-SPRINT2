@@ -71,7 +71,16 @@ var cotvtadet = (function ($, win, doc) {
     var $DI_pnlCostos_ReqCliente = $("#DI_pnlCostos_ReqCliente");
     var $DI_pnlCostos_ObsInsta = $("#DI_pnlCostos_ObsInsta");
     var $DI_pnlDestinos = $("#DI_pnlDestinos");
-    
+
+    var $CI_CodCosto_LLaveMano = $("#CI_CodCosto_LLaveMano");
+    var $CI_CodCosto_Instalacion = $("#CI_CodCosto_Instalacion");
+    var $CI_CodCosto_Capacitacion = $("#CI_CodCosto_Capacitacion");
+    var $CI_CodCosto_Manuales = $("#CI_CodCosto_Manuales");
+    var $CI_CodCosto_Videos = $("#CI_CodCosto_Videos");
+    var $CI_CodCosto_MantPrevent = $("#CI_CodCosto_MantPrevent");
+    var $CI_CodCosto_Calibra = $("#CI_CodCosto_Calibra");
+    var $CI_CodCosto_Flete = $("#CI_CodCosto_Flete");
+
     var $BI_cmbFamilia = $('#BI_cmbFamilia');
     var $BI_txtCodProducto = $('#BI_txtCodProducto');
     var $BI_txtNomProducto = $('#BI_txtNomProducto');
@@ -139,7 +148,9 @@ var cotvtadet = (function ($, win, doc) {
     }
 
     var opcGrillaItems = 0;
-    
+
+    var $hdnCostosAgregados = $("#hdnCostosAgregados");
+
     $(Initialize);
 
     function Initialize() {
@@ -149,10 +160,19 @@ var cotvtadet = (function ($, win, doc) {
         $DC_btnGuardar.click(grabarDatosCotDet);
         $DI_btnCerrar.click(cerrarModalDetItem);
         $DC_btnCerrar.click(cerrarModalDetCot);
-        $btnEnviarCotizacion.click(enviarCotizacion);
-        $btnGuardarCotizacion.click(guardarCotizacion)
+        $btnEnviarCotizacion.click(enviarCotVenta);
+        $btnGuardarCotizacion.click(guardarCotVenta)
         $btnRecotizacion.click(recotizarSolicitud);
         $btnGuardarValorizacion.click(guardarValorizacion);
+
+        $DI_radInstalacion_No.click(validarIndicadorCosteo);
+        $DI_radCapacitacion_No.click(validarIndicadorCosteo);
+        $DI_radManuales_No.click(validarIndicadorCosteo);
+        $DI_radVideos_No.click(validarIndicadorCosteo);
+        $DI_radMantPrevent_No.click(validarIndicadorCosteo);
+        $DI_radCalibracion_No.click(validarIndicadorCosteo);
+        $DI_radFlete_No.click(validarIndicadorCosteo);
+
         $DI_radGarantAdic_Si.click(configurarGarantias);
         $DI_radGarantAdic_No.click(configurarGarantias);
         $DI_radTieneStock_Si.click(configurarTieneStock);
@@ -401,8 +421,8 @@ var cotvtadet = (function ($, win, doc) {
                 data: "CodItem",
                 render: function (data) {
                     var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
-                    var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',1)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                    var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',1)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                    var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',1)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                    var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarCotDetItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',1)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
                     return '<center>' + hidden + editar + ' ' + quitar + '</center>';
                 }
             }
@@ -426,7 +446,7 @@ var cotvtadet = (function ($, win, doc) {
         app.llenarTabla($tblCotDet, data, columns, columnDefs, "#tblCotDet", rowCallback, null, filters);
     }
     
-    function quitarItem(CodigoItem, opc) {
+    function quitarCotDetItem(CodigoItem, opc) {
 
         var fnSi = function () {
 
@@ -636,7 +656,193 @@ var cotvtadet = (function ($, win, doc) {
         }
     }
 
-    function editarItem(CodigoItem, opc) {
+    function configurarModalCotDet() {
+
+        $DI_pnlInfoGeneral_DescripcionAdic.css("display", "");
+
+        //Se muestra según TIPO de SOLICITUD
+        if ($cmbTipo.val() == $TipoSol_VentaMat.val()) {
+            $DI_pnlInfoGeneral_Dimensiones.css("display", "none");
+            $DI_txtDescripcionAdic.attr("rows", "4");
+            $DI_pnlCostos_Calibracion.css("display", "none");
+            $DI_pnlCostos_Ganancia.css("display", "none");
+            $DI_pnlCostos_CompraLocal.css("display", "none");
+            $DI_pnlCostos_ReqPlaca.css("display", "none");
+            $DI_pnlCostos_MantPrevent.css("display", "none");
+            $DI_pnlCostos_Manuales.css("display", "none");
+            $DI_pnlCostos_Videos.css("display", "none");
+            $DI_pnlCostos_Instalacion.css("display", "none");
+            $DI_pnlCostos_Capacitacion.css("display", "none");
+            $DI_pnlCostos_GarantAdic.css("display", "none");
+            $DI_pnlCostos_GarantAdic_Combo.css("display", "none");
+            $DI_pnlCostos_Flete.css("display", "");
+            $DI_pnlCostos_ObsInsta.css("display", "none");
+            $DI_pnlDestinos.css("display", "");
+        }
+        else if ($cmbTipo.val() == $TipoSol_RepOComes.val()) {
+            $DI_pnlInfoGeneral_Dimensiones.css("display", "none");
+            $DI_txtDescripcionAdic.attr("rows", "4");
+            $DI_pnlCostos_Calibracion.css("display", "none");
+            $DI_pnlCostos_Ganancia.css("display", "none");
+            $DI_pnlCostos_CompraLocal.css("display", "none");
+            $DI_pnlCostos_ReqPlaca.css("display", "none");
+            $DI_pnlCostos_MantPrevent.css("display", "none");
+            $DI_pnlCostos_Manuales.css("display", "none");
+            $DI_pnlCostos_Videos.css("display", "none");
+            $DI_pnlCostos_Instalacion.css("display", "none");
+            $DI_pnlCostos_Capacitacion.css("display", "none");
+            $DI_pnlCostos_GarantAdic.css("display", "none");
+            $DI_pnlCostos_GarantAdic_Combo.css("display", "none");
+            $DI_pnlCostos_Flete.css("display", "none");
+            $DI_pnlCostos_ObsInsta.css("display", "none");
+            $DI_pnlDestinos.css("display", "none");
+        }
+        else {
+            $DI_pnlInfoGeneral_Dimensiones.css("display", "");
+            $DI_txtDescripcionAdic.attr("rows", "6");
+            $DI_pnlCostos_Calibracion.css("display", "");
+            $DI_pnlCostos_Ganancia.css("display", "");
+            $DI_pnlCostos_CompraLocal.css("display", "");
+            $DI_pnlCostos_ReqPlaca.css("display", "");
+            $DI_pnlCostos_MantPrevent.css("display", "");
+            $DI_pnlCostos_Manuales.css("display", "");
+            $DI_pnlCostos_Videos.css("display", "");
+            $DI_pnlCostos_Instalacion.css("display", "");
+            $DI_pnlCostos_Capacitacion.css("display", "");
+            $DI_pnlCostos_GarantAdic.css("display", "");
+            $DI_pnlCostos_GarantAdic_Combo.css("display", "");
+            $DI_pnlCostos_Flete.css("display", "");
+            $DI_pnlCostos_ObsInsta.css("display", "");
+            $DI_pnlDestinos.css("display", "");
+        }
+
+        $DI_btnGuardar.css("display", "none");
+
+        //Se valida los campos si el Cotizacion Detalle es editable
+        if ($PermitirEditarCotDetItem.val() == "S") {
+            if ($DI_pnlInfoGeneral_Dimensiones.css("display") != "none") {
+                $DI_txtDimensiones.removeAttr("disabled");
+            }
+            if ($DI_pnlCostos_ObsInsta.css("display") != "none") {
+                $DI_txtObsInsta.removeAttr("disabled");
+            }
+            $DI_btnGuardar.css("display", "");
+        }
+
+        //Para flujo de valorizacion puede agregar el COSTO FOB y el VALOR UNITARIO
+        if ($PermitirEditarValorizacion.val() == "S") {
+            if ($idRolUsuario.val() == $RolVenta_Gerente.val()) {
+                var strCostoFOB = $DI_txtCostoFOB.val();
+                configurarTieneStock();
+                $DI_txtCostoFOB.val(strCostoFOB);
+                $DI_txtCostoFOB.focus();
+                //Para REPUESTOS no va a modificar el COSTO FOB se ocultará el campo
+                if ($cmbTipo.val() == $TipoSol_RepOComes.val() || $cmbTipo.val() == $TipoSol_ServYRep.val()) {
+                    $DI_btnGuardar.css("display", "none");
+                    $DI_pnlCostos_CostoFOB.css("display", "none");
+                }
+                else {
+                    $DI_btnGuardar.css("display", "");
+                    $DI_pnlCostos_CostoFOB.css("display", "");
+                }
+            }
+            if ($idRolUsuario.val() == $RolVenta_Costos.val()) {
+                //Si tiene Costo FOB quiere decir que puede proseguir con el VALOR UNITARIO
+                if ($DI_txtCostoFOB.val() != "") {
+                    $DI_txtValorUnitario.removeAttr("disabled");
+                    $DI_txtValorUnitario.focus();
+                }
+                //Si es tipo REPUESTOS quiere decir que puede proseguir con el VALOR UNITARIO ya que no usan FOB
+                if ($cmbTipo.val() == $TipoSol_RepOComes.val() || $cmbTipo.val() == $TipoSol_ServYRep.val()) {
+                    $DI_txtValorUnitario.removeAttr("disabled");
+                    $DI_txtValorUnitario.focus();
+                }
+                //Si tiene stock quiere decir que puede proseguir con el VALOR UNITARIO
+                if ($DI_radTieneStock_Si.is(':checked')) {
+                    $DI_txtValorUnitario.removeAttr("disabled");
+                    $DI_txtValorUnitario.focus();
+                }
+                $DI_btnGuardar.css("display", "");
+            }
+        }
+
+        //Cuando a la cotización detalle se le asignó el VALOR UNITARIO recien se puede agregar una ganancia
+        if ($DI_pnlCostos_Ganancia.css("display") != "none") {
+            if ($PermitirEditarGanancia.val() == "S") {
+                if ($DI_txtValorUnitario.val() != "") {
+                    $DI_btnGuardar.css("display", "");
+                    $DI_txtGanancia.removeAttr("disabled");
+                    $DI_txtGanancia.focus();
+                }
+            }
+            else {
+                $DI_txtGanancia.attr("disabled", "disabled");
+            }
+        }
+
+    }
+
+    function validarIndicadorCosteo() {
+
+        if ($DI_radInstalacion_No.is(':checked')) {
+            if ($hdnCostosAgregados.val().indexOf($CI_CodCosto_Instalacion.val()) >= 0) {
+                $DI_radInstalacion_No.prop("checked", false);
+                app.message.error("Validaci&oacute;n", "Para marcar como NO al indicador de INSTALACION, debe eliminar previamente sus costos");
+                return false;
+            }
+        }
+
+        if ($DI_radCapacitacion_No.is(':checked')) {
+            if ($hdnCostosAgregados.val().indexOf($CI_CodCosto_Capacitacion.val()) >= 0) {
+                $DI_radCapacitacion_No.prop("checked", false);
+                app.message.error("Validaci&oacute;n", "Para marcar como NO al indicador de CAPACITACION, debe eliminar previamente sus costos");
+                return false;
+            }
+        }
+
+        if ($DI_radManuales_No.is(':checked')) {
+            if ($hdnCostosAgregados.val().indexOf($CI_CodCosto_Manuales.val()) >= 0) {
+                $DI_radManuales_No.prop("checked", false);
+                app.message.error("Validaci&oacute;n", "Para marcar como NO al indicador de MANUALES, debe eliminar previamente sus costos");
+                return false;
+            }
+        }
+
+        if ($DI_radVideos_No.is(':checked')) {
+            if ($hdnCostosAgregados.val().indexOf($CI_CodCosto_Videos.val()) >= 0) {
+                $DI_radVideos_No.prop("checked", false);
+                app.message.error("Validaci&oacute;n", "Para marcar como NO al indicador de VIDEOS, debe eliminar previamente sus costos");
+                return false;
+            }
+        }
+
+        if ($DI_radMantPrevent_No.is(':checked')) {
+            if ($hdnCostosAgregados.val().indexOf($CI_CodCosto_MantPrevent.val()) >= 0) {
+                $DI_radMantPrevent_No.prop("checked", false);
+                app.message.error("Validaci&oacute;n", "Para marcar como NO al indicador de MANTENIMIENTO PREVENTIVO, debe eliminar previamente sus costos");
+                return false;
+            }
+        }
+
+        if ($DI_radCalibracion_No.is(':checked')) {
+            if ($hdnCostosAgregados.val().indexOf($CI_CodCosto_Calibra.val()) >= 0) {
+                $DI_radCalibracion_No.prop("checked", false);
+                app.message.error("Validaci&oacute;n", "Para marcar como NO al indicador de CALIBRACION, debe eliminar previamente sus costos");
+                return false;
+            }
+        }
+
+        if ($DI_radFlete_No.is(':checked')) {
+            if ($hdnCostosAgregados.val().indexOf($CI_CodCosto_Calibra.val()) >= 0) {
+                $DI_radFlete_No.prop("checked", false);
+                app.message.error("Validaci&oacute;n", "Para marcar como NO al indicador de FLETE, debe eliminar previamente sus costos");
+                return false;
+            }
+        }
+
+    }
+
+    function editarCotDetItem(CodigoItem, opc) {
         $DI_hdnCodigoPadre.val("");
 
         method = "POST";
@@ -652,133 +858,28 @@ var cotvtadet = (function ($, win, doc) {
             LimpiarModalDetItem();
             MostrarDatosItem(data);
 
+            $hdnCostosAgregados.val("");
+
             if (data.Result != null) {
                 if (data.Result.CotizacionCostos != null) {
                     var resCostos = { Status: 1, Result: data.Result.CotizacionCostos };
                     cotvtacostos.cargarGrillaCostosCotDet(resCostos);
+                    for (a = 0; a < data.Result.CotizacionCostos.length; a++) {
+                        $hdnCostosAgregados.val($hdnCostosAgregados.val() + ";" + data.Result.CotizacionCostos[a].CodCosto);
+                    }
+                }
+                //Se captura el CODIGO COSTO agregado a COTIZACION DETALLE
+                if (data.Result.CotizacionCostos != null) {
+                    for (a = 0; a < data.Result.CotizacionCostos.length; a++) {
+                        var strCodCostoRef = data.Result.CotizacionCostos[a].Id + "_" + data.Result.CotizacionCostos[a].CodCosto;
+                        $hdnCostosAgregados.val($hdnCostosAgregados.val().replace(";" + strCodCostoRef, ";"));
+                        $hdnCostosAgregados.val($hdnCostosAgregados.val().replace(strCodCostoRef + ";", ";"));
+                        $hdnCostosAgregados.val($hdnCostosAgregados.val().replace(";" + strCodCostoRef + ";", ";"));
+                    }
                 }
             }
 
-            $DI_pnlInfoGeneral_DescripcionAdic.css("display", "");
-
-            if ($cmbTipo.val() == $TipoSol_VentaMat.val()) {
-                $DI_pnlInfoGeneral_Dimensiones.css("display", "none");
-                $DI_txtDescripcionAdic.attr("rows", "4");
-                $DI_pnlCostos_Calibracion.css("display", "none");
-                $DI_pnlCostos_Ganancia.css("display", "none");
-                $DI_pnlCostos_CompraLocal.css("display", "none");
-                $DI_pnlCostos_ReqPlaca.css("display", "none");
-                $DI_pnlCostos_MantPrevent.css("display", "none");
-                $DI_pnlCostos_Manuales.css("display", "none");
-                $DI_pnlCostos_Videos.css("display", "none");
-                $DI_pnlCostos_Instalacion.css("display", "none");
-                $DI_pnlCostos_Capacitacion.css("display", "none");
-                $DI_pnlCostos_GarantAdic.css("display", "none");
-                $DI_pnlCostos_GarantAdic_Combo.css("display", "none");
-                $DI_pnlCostos_Flete.css("display", "");
-                $DI_pnlCostos_ObsInsta.css("display", "none");
-                $DI_pnlDestinos.css("display", "");
-            }
-            else if($cmbTipo.val() == $TipoSol_RepOComes.val()) {
-                $DI_pnlInfoGeneral_Dimensiones.css("display", "none");
-                $DI_txtDescripcionAdic.attr("rows", "4");
-                $DI_pnlCostos_Calibracion.css("display", "none");
-                $DI_pnlCostos_Ganancia.css("display", "none");
-                $DI_pnlCostos_CompraLocal.css("display", "none");
-                $DI_pnlCostos_ReqPlaca.css("display", "none");
-                $DI_pnlCostos_MantPrevent.css("display", "none");
-                $DI_pnlCostos_Manuales.css("display", "none");
-                $DI_pnlCostos_Videos.css("display", "none");
-                $DI_pnlCostos_Instalacion.css("display", "none");
-                $DI_pnlCostos_Capacitacion.css("display", "none");
-                $DI_pnlCostos_GarantAdic.css("display", "none");
-                $DI_pnlCostos_GarantAdic_Combo.css("display", "none");
-                $DI_pnlCostos_Flete.css("display", "none");
-                $DI_pnlCostos_ObsInsta.css("display", "none");
-                $DI_pnlDestinos.css("display", "none");
-            }
-            else {
-                $DI_pnlInfoGeneral_Dimensiones.css("display", "");
-                $DI_txtDescripcionAdic.attr("rows", "6");
-                $DI_pnlCostos_Calibracion.css("display", "");
-                $DI_pnlCostos_Ganancia.css("display", "");
-                $DI_pnlCostos_CompraLocal.css("display", "");
-                $DI_pnlCostos_ReqPlaca.css("display", "");
-                $DI_pnlCostos_MantPrevent.css("display", "");
-                $DI_pnlCostos_Manuales.css("display", "");
-                $DI_pnlCostos_Videos.css("display", "");
-                $DI_pnlCostos_Instalacion.css("display", "");
-                $DI_pnlCostos_Capacitacion.css("display", "");
-                $DI_pnlCostos_GarantAdic.css("display", "");
-                $DI_pnlCostos_GarantAdic_Combo.css("display", "");
-                $DI_pnlCostos_Flete.css("display", "");
-                $DI_pnlCostos_ObsInsta.css("display", "");
-                $DI_pnlDestinos.css("display", "");
-            }
-
-            $DI_btnGuardar.css("display", "none");
-
-            //Se valida los campos si el Cotizacion Detalle es editable
-            if ($PermitirEditarCotDetItem.val() == "S") {
-                if ($DI_pnlInfoGeneral_Dimensiones.css("display") != "none") {
-                    $DI_txtDimensiones.removeAttr("disabled");
-                }
-                if ($DI_pnlCostos_ObsInsta.css("display") != "none") {
-                    $DI_txtObsInsta.removeAttr("disabled");
-                }
-                $DI_btnGuardar.css("display", "");
-            }
-            
-            //Para flujo de valorizacion puede agregar el COSTO FOB y el VALOR UNITARIO
-            if ($PermitirEditarValorizacion.val() == "S") {
-                if ($idRolUsuario.val() == $RolVenta_Gerente.val()) {
-                    var strCostoFOB = $DI_txtCostoFOB.val();
-                    configurarTieneStock();
-                    $DI_txtCostoFOB.val(strCostoFOB);
-                    $DI_txtCostoFOB.focus();
-                    //Para REPUESTOS no va a modificar el COSTO FOB se ocultará el campo
-                    if ($cmbTipo.val() == $TipoSol_RepOComes.val() || $cmbTipo.val() == $TipoSol_ServYRep.val()) {
-                        $DI_btnGuardar.css("display", "none");
-                        $DI_pnlCostos_CostoFOB.css("display", "none");
-                    }
-                    else {
-                        $DI_btnGuardar.css("display", "");
-                        $DI_pnlCostos_CostoFOB.css("display", "");
-                    }
-                }
-                if ($idRolUsuario.val() == $RolVenta_Costos.val()) {
-                    //Si tiene Costo FOB quiere decir que puede proseguir con el VALOR UNITARIO
-                    if ($DI_txtCostoFOB.val() != "") {
-                        $DI_txtValorUnitario.removeAttr("disabled");
-                        $DI_txtValorUnitario.focus();
-                    }
-                    //Si es tipo REPUESTOS quiere decir que puede proseguir con el VALOR UNITARIO ya que no usan FOB
-                    if ($cmbTipo.val() == $TipoSol_RepOComes.val() || $cmbTipo.val() == $TipoSol_ServYRep.val()) {
-                        $DI_txtValorUnitario.removeAttr("disabled");
-                        $DI_txtValorUnitario.focus();
-                    }
-                    //Si tiene stock quiere decir que puede proseguir con el VALOR UNITARIO
-                    if ($DI_radTieneStock_Si.is(':checked')) {
-                        $DI_txtValorUnitario.removeAttr("disabled");
-                        $DI_txtValorUnitario.focus();
-                    }
-                    $DI_btnGuardar.css("display", "");
-                }
-            }
-
-            //Cuando a la cotización detalle se le asignó el VALOR UNITARIO recien se puede agregar una ganancia
-            if ($DI_pnlCostos_Ganancia.css("display") != "none") {
-                if ($PermitirEditarGanancia.val() == "S") {
-                    if ($DI_txtValorUnitario.val() != "") {
-                        $DI_btnGuardar.css("display", "");
-                        $DI_txtGanancia.removeAttr("disabled");
-                        $DI_txtGanancia.focus();
-                    }
-                }
-                else {
-                    $DI_txtGanancia.attr("disabled", "disabled");
-                }
-            }
+            configurarModalCotDet();
 
             $('#modalDetalleItem').modal('show');
         };
@@ -1379,8 +1480,8 @@ var cotvtadet = (function ($, win, doc) {
                     data: "CodItem",
                     render: function (data) {
                         var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
-                        var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                        var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.editarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
+                        var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                        var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
                         if ($estadoSol.val() == "CVAL") {
                             var swVer = false;
                             //Se valida que el tipo REPUESTOS no modifique FOB
@@ -1477,9 +1578,9 @@ var cotvtadet = (function ($, win, doc) {
                     data: "CodItem",
                     render: function (data) {
                         var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
-                        var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                        var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.editarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
-                        var quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                        var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                        var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
+                        var quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarCotDetItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
                         if ($estadoSol.val() != "SCOT") { quitar = ""; }
                         if ($estadoSol.val() == "CVAL") {
                             var swVer = true;
@@ -1653,7 +1754,7 @@ var cotvtadet = (function ($, win, doc) {
 
     }
 
-    function enviarCotizacion() {
+    function enviarCotVenta() {
 
         if (!validarCotizacion()) { return false; }
 
@@ -1695,7 +1796,7 @@ var cotvtadet = (function ($, win, doc) {
         };
         
         var fnDoneCallBack = function (data) {
-            app.message.success("Cotizacion", "Se envi&oacute; la cotizaci&oacute;n correctamente.", "Aceptar", redirect);
+            app.message.success("Cotizaci&oacute;n", "Se envi&oacute; la cotizaci&oacute;n correctamente.", "Aceptar", redirect);
         };
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
@@ -1716,13 +1817,13 @@ var cotvtadet = (function ($, win, doc) {
         };
 
         var fnDoneCallBack = function (data) {
-            app.message.success("Cotizacion", "Se gener&oacute; una nueva cotizaci&oacute;n correctamente.", "Aceptar", redirect);
+            app.message.success("Cotizaci&oacute;n", "Se gener&oacute; una nueva cotizaci&oacute;n correctamente.", "Aceptar", redirect);
         };
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
     }
 
-    function guardarCotizacion() {
+    function guardarCotVenta() {
 
         if (!validarCotizacion()) { return false; }
 
@@ -1764,7 +1865,7 @@ var cotvtadet = (function ($, win, doc) {
         };
 
         var fnDoneCallBack = function (data) {
-            app.message.success("Cotizacion", "Se envi&oacute; la cotizaci&oacute;n correctamente.", "Aceptar", redirect);
+            app.message.success("Cotizaci&oacute;n", "Se envi&oacute; la cotizaci&oacute;n correctamente.", "Aceptar", redirect);
         };
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
@@ -1858,7 +1959,7 @@ var cotvtadet = (function ($, win, doc) {
         };
 
         var fnDoneCallBack = function (data) {
-            app.message.success("Cotizacion", "Se guard&oacute; la cotizaci&oacute;n correctamente.", "Aceptar", redirect);
+            app.message.success("Cotizaci&oacute;n", "Se guard&oacute; la cotizaci&oacute;n correctamente.", "Aceptar", redirect);
         };
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
@@ -1869,8 +1970,8 @@ var cotvtadet = (function ($, win, doc) {
         ObtenerFiltrosPrecios: ObtenerFiltrosPrecios,
         RecargarFiltroFamilia: RecargarFiltroFamilia,
         agregarItem: agregarItem,
-        quitarItem: quitarItem,
-        editarItem: editarItem,
+        quitarCotDetItem: quitarCotDetItem,
+        editarCotDetItem: editarCotDetItem,
         quitarSubItem: quitarSubItem,
         editarSubItem: editarSubItem,
         SeleccionarRowCotDet: SeleccionarRowCotDet,
@@ -1880,7 +1981,7 @@ var cotvtadet = (function ($, win, doc) {
         grabarDatosCotDet: grabarDatosCotDet,
         cargarTablaDetCotCostos: cargarTablaDetCotCostos,
         cerrarModalDetCot: cerrarModalDetCot,
-        enviarCotizacion: enviarCotizacion,
+        enviarCotVenta: enviarCotVenta,
         listarCotDetItems: listarCotDetItems,
         //listarCotDetItemsTemp: listarCotDetItemsTemp,
         //listarCotDetItemsCostos: listarCotDetItemsCostos,

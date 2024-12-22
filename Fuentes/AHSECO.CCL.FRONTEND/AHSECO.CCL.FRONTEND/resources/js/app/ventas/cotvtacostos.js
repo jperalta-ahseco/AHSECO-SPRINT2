@@ -99,6 +99,8 @@
     var $tabCalib = $("#tabCalib");
     var $tabFlete = $("#tabFlete");
 
+    var $hdnCostosAgregados = $("#hdnCostosAgregados");
+
     $(Initialize);
 
     function Initialize() {
@@ -216,7 +218,6 @@
         $CI_cmbCDItem.attr("disabled", "disabled");
 
         //Se configura la pantalla por TIPO DE COSTO
-
         if ($CI_cmbTipoCosto.val() == $CI_CodCosto_Manuales.val() || $CI_cmbTipoCosto.val() == $CI_CodCosto_Videos.val() ||
             $CI_cmbTipoCosto.val() == $CI_CodCosto_Capacitacion.val() || $CI_cmbTipoCosto.val() == $CI_CodCosto_Calibra.val()) {
             $CI_pnlInfoDestino.css("display", "none");
@@ -252,6 +253,7 @@
             $CI_txtMtoTotalCosto.attr("disabled", "disabled");
         }
 
+        //Se valida si el tipo de COSTO se agregará CANTIDAD y CICLO PREVENCION
         if ($CI_cmbTipoCosto.val() == $CI_CodCosto_MantPrevent.val()) {
             $CI_pnlInfoPreventivos.css("display", "");
             $CI_txtCantPrevent.removeAttr("disabled");
@@ -264,7 +266,6 @@
         }
 
         //Se habilita la pantalla por ROL
-
         if ($idRolUsuario.val() == $RolVenta_Asesor.val()
             || $idRolUsuario.val() == $RolVenta_CoordServ.val()
             || $idRolUsuario.val() == $RolVenta_CoordAtc.val()) {
@@ -848,6 +849,15 @@
 
         var fnDoneCallBack = function (data) {
 
+            //Se graba el CODIGO COSTO agregado a COTIZACION DETALLE
+            var strCodCostoRef = $CI_hdnIdCotDetCosto.val() + "_" + $CI_cmbTipoCosto.val();
+            if ($hdnCostosAgregados.val() == "") { $hdnCostosAgregados.val(strCodCostoRef); }
+            else {
+                if ($hdnCostosAgregados.val().indexOf(strCodCostoRef) < 0) {
+                    $hdnCostosAgregados.val($hdnCostosAgregados.val() + ";" + strCodCostoRef);
+                }
+            }
+            
             if ($CI_opcGrilla.val() == "1") {
                 cargarGrillaCostosCotDet(data);
             }
@@ -909,7 +919,7 @@
         
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
     }
-
+    
     function editarCostoItem(strId, opcGrilla) {
 
         //Se define la opcion de grilla para saber que tipo de datos se guardan
@@ -997,7 +1007,24 @@
         var objParam = JSON.stringify(objDatos);
 
         var fnDoneCallBack = function (data) {
+
             cargarGrillaCostosCotDet(data);
+
+            $hdnCostosAgregados.val("");
+
+            //Se actualiza los CODIGO COSTO agregados a COTIZACION DETALLE
+            if (data.Result != null) {
+                for (a = 0; a < data.Result.length; a++) {
+                    var strCodCostoRef = data.Result[a].Id + "_" + data.Result[a].CodCosto;
+                    if ($hdnCostosAgregados.val() == "") { $hdnCostosAgregados.val(strCodCostoRef); }
+                    else {
+                        if ($hdnCostosAgregados.val().indexOf(strCodCostoRef) < 0) {
+                            $hdnCostosAgregados.val($hdnCostosAgregados.val() + ";" + strCodCostoRef);
+                        }
+                    }
+                }
+            }
+
             app.message.success("Costos", "Se elimin&oacute; el costo correctamente.", "Aceptar", null);
         };
 

@@ -1,6 +1,10 @@
-﻿using AHSECO.CCL.BE.Ventas;
+﻿using AHSECO.CCL.BE;
+using AHSECO.CCL.BE.Ventas;
+using AHSECO.CCL.COMUN;
+using NPOI.XSSF.Streaming.Values;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel;
 using System.Linq;
 using System.Web;
 
@@ -10,34 +14,45 @@ namespace AHSECO.CCL.FRONTEND.Core
     public class MultiFlujo
     {
 
-        private SolicitudDTO _Solicitud;
-        private CotizacionDTO _Cotizacion;
+        public SolicitudDTO Solicitud;
+        public CotizacionDTO Cotizacion;
+        public String NombreRol;
 
-        public MultiFlujo() { }
+        public MultiFlujo()
+        {
+            Solicitud = new SolicitudDTO();
+            Cotizacion = new CotizacionDTO();
+        }
 
         public MultiFlujo(long IdSolicitud)
-        { _Solicitud = new SolicitudDTO() { Id_Solicitud = IdSolicitud }; }
+        { Solicitud = new SolicitudDTO() { Id_Solicitud = IdSolicitud }; }
 
         public MultiFlujo(long IdSolicitud, long IdCotizacion)
         {
-            _Solicitud = new SolicitudDTO() { Id_Solicitud = IdSolicitud };
-            _Cotizacion = new CotizacionDTO() { IdCotizacion = IdCotizacion, IdSolicitud = IdSolicitud };
+            Solicitud = new SolicitudDTO() { Id_Solicitud = IdSolicitud };
+            Cotizacion = new CotizacionDTO() { IdCotizacion = IdCotizacion, IdSolicitud = IdSolicitud };
         }
 
-        public long IdSolicitud { 
-            set {
-                if (_Solicitud == null) { _Solicitud = new SolicitudDTO() { Id_Solicitud = value }; }
-                else { _Solicitud.Id_Solicitud = value; }
-            } 
+        public long IdSolicitud
+        {
+            get { return Solicitud.Id_Solicitud; }
+            set
+            {
+                if (Solicitud == null) { Solicitud = new SolicitudDTO() { Id_Solicitud = value }; }
+                else { Solicitud.Id_Solicitud = value; }
+            }
         }
 
-        public long IdCotizacion { 
-            set {
+        public long IdCotizacion
+        {
+            get { return Cotizacion.IdCotizacion; }
+            set
+            {
                 long IdSolicitud = 0;
-                if (_Solicitud != null) { IdSolicitud = _Solicitud.Id_Solicitud; }
-                if (_Cotizacion == null) { _Cotizacion = new CotizacionDTO() { IdCotizacion = value, IdSolicitud = IdSolicitud }; }
-                else { _Cotizacion.IdCotizacion = value; _Cotizacion.IdSolicitud = IdSolicitud; }
-            } 
+                if (Solicitud != null) { IdSolicitud = Solicitud.Id_Solicitud; }
+                if (Cotizacion == null) { Cotizacion = new CotizacionDTO() { IdCotizacion = value, IdSolicitud = IdSolicitud }; }
+                else { Cotizacion.IdCotizacion = value; Cotizacion.IdSolicitud = IdSolicitud; }
+            }
         }
 
         public struct Tag
@@ -64,6 +79,16 @@ namespace AHSECO.CCL.FRONTEND.Core
             {
                 public static string CamposGrilla_PRO = "CotDetFields_PRO";
                 public static string CamposGrilla_SER = "CotDetFields_SER";
+                public struct PrecioVenta
+                {
+                    public static string MostrarCostoFOB = "OP01";
+                    public static string MostrarValorUnitario = "OP02";
+                }
+                public struct Indicadores
+                {
+                    public static string MostrarTodos = "OP01";
+                    public static string MostrarTieneStock = "OP02";
+                }
             }
             public struct CotDetDespacho
             {
@@ -80,22 +105,86 @@ namespace AHSECO.CCL.FRONTEND.Core
             }
         }
 
-        public PropiedadesControl ObtenerEstadoControl(string strTag)
+        public PropiedadControl ObtenerPropiedadesControl(string strTag)
         {
-            var oPropCtrl = new PropiedadesControl();
+            var oPropCtrl = new PropiedadControl();
+            oPropCtrl.Tag = strTag;
+
+            if (strTag == Tag.Solicitud.RegistrarSolicitud)
+            {
+                if (this.Solicitud == null) { oPropCtrl.IsVisible = true; oPropCtrl.IsEnabled = true; }
+                else if (this.Solicitud.Id_Solicitud <= 0) { oPropCtrl.IsVisible = true; oPropCtrl.IsEnabled = true; }
+            }
+
+            if (strTag == Tag.Solicitud.CancelarSolicitud)
+            {
+                if (this.Solicitud != null)
+                {
+                    if (this.Solicitud.Id_Solicitud >= 0)
+                    {
+                        if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor &&
+                            NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc &&
+                            NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ)
+                        { oPropCtrl.IsVisible = true; oPropCtrl.IsEnabled = true; }
+                    }
+                }
+            }
+
+            if (strTag == Tag.Cotizacion.Campos_Primarios)
+            {
+                if (this.Solicitud != null)
+                {
+                    if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
+                    {
+                        if (this.Solicitud.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Registrado ||
+                            this.Solicitud.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnCotizacion)
+                        { oPropCtrl.IsVisible = true; oPropCtrl.IsEnabled = true; }
+                    }
+                }
+            }
+
+            if (strTag == Tag.Cotizacion.Campos_Secundarios)
+            {
+                if (this.Solicitud != null)
+                {
+                    if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
+                    {
+                        if (this.Solicitud.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Registrado ||
+                            this.Solicitud.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnCotizacion ||
+                            this.Solicitud.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion)
+                        { oPropCtrl.IsVisible = true; oPropCtrl.IsEnabled = true; }
+                    }
+                }
+            }
+
+            if (strTag == Tag.Cotizacion.HistorialCotizacion) {
+                oPropCtrl.IsVisible = true; oPropCtrl.IsEnabled = true;
+            }
+
             return oPropCtrl;
         }
 
     }
 
-    public class PropiedadesControl
+    public class PropiedadControl
     {
+
+        public PropiedadControl()
+        {
+            this.IsEnabled = false;
+            this.IsVisible = false;
+        }
+
+        public PropiedadControl(bool swVisible)
+        {
+            this.IsEnabled = false;
+            this.IsVisible = swVisible;
+        }
+
         public string Tag { get; set; }
-        public bool IsReadonly { get; set; }
-        public bool IsDisabled { get; set; }
+        public bool IsEnabled { get; set; }
         public bool IsVisible { get; set; }
         public object Value { get; set; }
-        public object[] Values { get; set; }
     }
 
 }
