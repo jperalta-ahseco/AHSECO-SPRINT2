@@ -781,7 +781,7 @@ var cotvtadet = (function ($, win, doc) {
         }
 
     }
-
+    
     function validarIndicadorCosteo() {
 
         if ($DI_radInstalacion_No.is(':checked')) {
@@ -879,11 +879,74 @@ var cotvtadet = (function ($, win, doc) {
                 }
             }
 
-            configurarModalCotDet();
+            //configurarModalCotDet();
+
+            var oFeatures = data.Result.Features;
+
+            if (oFeatures != null) {
+
+                if (oFeatures.IsEnabled) { $DI_btnGuardar.css("display", ""); }
+                else { $DI_btnGuardar.css("display", "none"); }
+
+                var arrSubProp = oFeatures.SubPropiedades
+
+                for (a = 0; a < arrSubProp.length; a++) {
+                    var oProp = arrSubProp[a];
+                    if (oProp.IdControl != null && oProp.IdControl != "") {
+                        var oCampo = document.getElementById(oProp.IdControl);
+                        if (oCampo != null && oCampo != undefined) {
+                            var $Campo = $("#" + oProp.IdControl);
+                            if (oProp.Nombre != null && oProp.Nombre != "" && oProp.Valor != null) {
+                                $Campo.removeAttr(oProp.Nombre);
+                                $Campo.attr(oProp.Nombre, oProp.Valor);
+                            }
+                            if (oProp.IsVisible) { $Campo.css("display", ""); }
+                            else { $Campo.css("display", "none"); }
+                            if (oProp.IsEnabled) {
+                                for (b = 0; b < $Campo.find("button").length; b++) {
+                                    var $button = $("#" + $Campo.find("button")[b].id);
+                                    $button.css("display", "");
+                                }
+                                for (b = 0; b < $Campo.find("input").length; b++) {
+                                    var $input = $("#" + $Campo.find("input")[b].id);
+                                    $input.removeAttr("disabled");
+                                }
+                                for (b = 0; b < $Campo.find("textarea").length; b++) {
+                                    var $textarea = $("#" + $Campo.find("textarea")[b].id);
+                                    $textarea.removeAttr("disabled");
+                                }
+                                for (b = 0; b < $Campo.find("select").length; b++) {
+                                    var $select = $("#" + $Campo.find("select")[b].id);
+                                    $select.removeAttr("disabled");
+                                }
+                            }
+                            else {
+                                for (b = 0; b < $Campo.find("button").length; b++) {
+                                    var $button = $("#" + $Campo.find("button")[b].id);
+                                    $button.css("display", "none");
+                                }
+                                for (b = 0; b < $Campo.find("input").length; b++) {
+                                    var $input = $("#" + $Campo.find("input")[b].id);
+                                    $input.attr("disabled", "disabled");
+                                }
+                                for (b = 0; b < $Campo.find("textarea").length; b++) {
+                                    var $textarea = $("#" + $Campo.find("textarea")[b].id);
+                                    $textarea.attr("disabled", "disabled");
+                                }
+                                for (b = 0; b < $Campo.find("select").length; b++) {
+                                    var $select = $("#" + $Campo.find("select")[b].id);
+                                    $select.attr("disabled", "disabled");
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
 
             $('#modalDetalleItem').modal('show');
         };
-        
+
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
     }
 

@@ -24,24 +24,26 @@
                             <legend><b>Informaci&oacute;n General</b></legend>
                             <div class="col-md-5">
                                 <div class="row container-fluid col-content-middleleft form-group">
-                                    <div class="col-md-3">
-                                        <label for="DI_txtCodigo">C&oacute;digo: </label>
-                                    </div>
-                                    <div class="col-md-9 col-content-middleleft">
+                                    <div id="DI_pnlInfoGeneral_Codigo" class="col-md-6">
+                                        <div class="col-md-6">
+                                            <label for="DI_txtCodigo">C&oacute;digo: </label>
+                                        </div>
                                         <div class="col-md-6">
                                             <input disabled placeholder="Ingresar código de producto" type="text" class="form-control input-sm" id="DI_txtCodigo" value="">
                                             <input type="hidden" id="DI_hdnCodigo" value="" />
                                             <input type="hidden" id="DI_hdnCodigoPadre" value="" />
                                         </div>
-                                        <div class="col-md-3 col-content-middleright">
+                                    </div>
+                                    <div id="DI_pnlInfoGeneral_Cantidad" class="col-md-6">
+                                        <div class="col-md-6 col-content-middlecenter">
                                             <label for="DI_txtCantidad">Cantidad: </label>
                                         </div>
-                                        <div class="col-md-3">
-                                            <input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") placeholder="Cantidad" type="number" min="0" maxlength="8" style="text-align:center" class="form-control input-sm" id="DI_txtCantidad" value="">
+                                        <div class="col-md-6">
+                                            <input placeholder="Cantidad" type="number" min="0" maxlength="8" style="text-align:center" class="form-control input-sm" id="DI_txtCantidad" value="">
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row container-fluid col-content-middleleft form-group">
+                                <div id="DI_pnlInfoGeneral_Descripcion" class="row container-fluid col-content-middleleft form-group">
                                     <div class="col-md-3">
                                         <label for="DI_txtDescripcion">Descripci&oacute;n: </label>
                                     </div>
@@ -54,7 +56,7 @@
                                         <label for="DI_txtDimensiones">Dimensiones: </label>
                                     </div>
                                     <div class="col-md-9">
-                                        <input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") placeholder="Ingresar Dimensiones" type="text" maxlength="50" class="form-control input-sm" id="DI_txtDimensiones" value="">
+                                        <input placeholder="Ingresar Dimensiones" type="text" maxlength="50" class="form-control input-sm" id="DI_txtDimensiones" value="">
                                     </div>
                                 </div>
                             </div>
@@ -64,7 +66,7 @@
                                     <div class="col-md-12">
                                         <div class="row container-fluid">
                                             <label for="DI_txtDescripcionAdic">Especificaciones / Caracteristicas: </label>
-                                            <textarea @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") placeholder="Ingresar Especificaciones <Opcional>" rows="6" class="form-control input-sm" id="DI_txtDescripcionAdic" value=""></textarea>
+                                            <textarea placeholder="Ingresar Especificaciones <Opcional>" rows="6" class="form-control input-sm" id="DI_txtDescripcionAdic" value=""></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -74,21 +76,21 @@
                     <div id="DI_pnlCostos" class="container-fluid">
                         <fieldset class="form-group">
                             <legend><b>Informaci&oacute;n de Costos</b></legend>
-                            <div id="DI_pnlCostos_PrecioVenta" class="row container-fluid form-group" style="@(ViewBag.PermitirEditarValorizacion ? "" : "display:none")">
-                                <div id="DI_pnlCostos_CostoFOB" class="col-md-6 col-content-middleleft">
+                            <div id="DI_pnlCostos_PrecioVenta" class="row container-fluid">
+                                <div id="DI_pnlCostos_CostoFOB" class="col-md-6 col-content-middleleft form-group">
                                     <div class="col-md-3">
                                         <label for="DI_txtCostoFOB">Costo FOB: </label>
                                     </div>
                                     <div class="col-md-4">
-                                        <input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") placeholder="Ingresar Costo" type="text" maxlength="20" class="form-control input-sm" id="DI_txtCostoFOB" value="" onchange="(function(el){el.value=app.formatearEnteroComa(parseFloat(el.value).toFixed(2));})(this)" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" onfocus="this.value = app.formatearEnteroSinComa(this.value);" onblur="this.value = app.formatearEnteroComa(parseFloat(el.value).toFixed(2));">
+                                        <input placeholder="Ingresar Costo" type="text" maxlength="20" class="form-control input-sm" id="DI_txtCostoFOB" value="" onchange="(function(el){el.value=app.formatearEnteroComa(parseFloat(el.value).toFixed(2));})(this)" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" onfocus="this.value = app.formatearEnteroSinComa(this.value);" onblur="this.value = app.formatearEnteroComa(parseFloat(el.value).toFixed(2));">
                                     </div>
                                 </div>
-                                <div id="DI_pnlCostos_ValorUnitario" class="col-md-6 col-content-middleleft">
+                                <div id="DI_pnlCostos_ValorUnitario" class="col-md-6 col-content-middleleft form-group">
                                     <div class="col-md-3">
                                         <label for="DI_txtValorUnitario">Val. Unitario: </label>
                                     </div>
                                     <div class="col-md-4">
-                                        <input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") placeholder="Ingresar Val. Unt." type="text" maxlength="20" class="form-control input-sm" id="DI_txtValorUnitario" value="" onchange="(function(el){el.value=app.formatearEnteroComa(parseFloat(el.value).toFixed(2));})(this)" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" onfocus="this.value = app.formatearEnteroSinComa(this.value);" onblur="this.value = app.formatearEnteroComa(parseFloat(el.value).toFixed(2));">
+                                        <input placeholder="Ingresar Val. Unt." type="text" maxlength="20" class="form-control input-sm" id="DI_txtValorUnitario" value="" onchange="(function(el){el.value=app.formatearEnteroComa(parseFloat(el.value).toFixed(2));})(this)" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" onfocus="this.value = app.formatearEnteroSinComa(this.value);" onblur="this.value = app.formatearEnteroComa(parseFloat(el.value).toFixed(2));">
                                     </div>
                                 </div>
                             </div>
@@ -100,7 +102,7 @@
                                     <div class="col-md-2">
                                         <table style="width:100%">
                                             <tr>
-                                                <td><input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") type="radio" name="DI_radTieneStock" class="input-sm" id="DI_radTieneStock_Si"></td>
+                                                <td><input type="radio" name="DI_radTieneStock" class="input-sm" id="DI_radTieneStock_Si"></td>
                                                 <td style="padding-top:5px"><label>SI</label></td>
                                             </tr>
                                         </table>
@@ -108,7 +110,7 @@
                                     <div class="col-md-2">
                                         <table style="width:100%">
                                             <tr>
-                                                <td><input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") type="radio" name="DI_radTieneStock" class="input-sm" id="DI_radTieneStock_No"></td>
+                                                <td><input type="radio" name="DI_radTieneStock" class="input-sm" id="DI_radTieneStock_No"></td>
                                                 <td style="padding-top:5px"><label>NO</label></td>
                                             </tr>
                                         </table>
@@ -121,7 +123,7 @@
                                     <div class="col-md-2">
                                         <table style="width:100%">
                                             <tr>
-                                                <td><input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") type="radio" name="DI_radCalibracion" class="input-sm" id="DI_radCalibracion_Si"></td>
+                                                <td><input type="radio" name="DI_radCalibracion" class="input-sm" id="DI_radCalibracion_Si"></td>
                                                 <td style="padding-top:5px"><label>SI</label></td>
                                             </tr>
                                         </table>
@@ -129,18 +131,18 @@
                                     <div class="col-md-2">
                                         <table style="width:100%">
                                             <tr>
-                                                <td><input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") type="radio" name="DI_radCalibracion" class="input-sm inp" id="DI_radCalibracion_No"></td>
+                                                <td><input type="radio" name="DI_radCalibracion" class="input-sm inp" id="DI_radCalibracion_No"></td>
                                                 <td style="padding-top:5px"><label>NO</label></td>
                                             </tr>
                                         </table>
                                     </div>
                                 </div>
-                                <div id="DI_pnlCostos_Ganancia" class="col-md-4 col-content-middleleft" style="@(ViewBag.PermitirEditarGanancia ? "" : "display:none")">
+                                <div id="DI_pnlCostos_Ganancia" class="col-md-4 col-content-middleleft">
                                     <div class="col-md-7">
                                         <label for="DI_txtGanancia">Ganancia (%): </label>
                                     </div>
                                     <div class="col-md-5">
-                                        <input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") placeholder="Ingrese Ganancia" type="text" maxlength="15" class="form-control input-sm" id="DI_txtGanancia" value="" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if (this.value.length > 3) {this.value = this.value.slice(0,3); }">
+                                        <input placeholder="Ingrese Ganancia" type="text" maxlength="15" min="0" max="100" class="form-control input-sm" id="DI_txtGanancia" value="" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if (this.value.length > 3) {this.value = this.value.slice(0,3); }">
                                     </div>
                                 </div>
                             </div>
@@ -152,7 +154,7 @@
                                     <div class="col-md-2">
                                         <table style="width:100%">
                                             <tr>
-                                                <td><input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") type="radio" name="DI_radCompraLocal" class="input-sm" id="DI_radCompraLocal_Si"></td>
+                                                <td><input type="radio" name="DI_radCompraLocal" class="input-sm" id="DI_radCompraLocal_Si"></td>
                                                 <td style="padding-top:5px"><label>SI</label></td>
                                             </tr>
                                         </table>
@@ -160,7 +162,7 @@
                                     <div class="col-md-2">
                                         <table style="width:100%">
                                             <tr>
-                                                <td><input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") type="radio" name="DI_radCompraLocal" class="input-sm" id="DI_radCompraLocal_No"></td>
+                                                <td><input type="radio" name="DI_radCompraLocal" class="input-sm" id="DI_radCompraLocal_No"></td>
                                                 <td style="padding-top:5px"><label>NO</label></td>
                                             </tr>
                                         </table>
@@ -173,7 +175,7 @@
                                     <div class="col-md-2">
                                         <table style="width:100%">
                                             <tr>
-                                                <td><input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") type="radio" name="DI_radReqPlaca" class="input-sm" id="DI_radReqPlaca_Si"></td>
+                                                <td><input type="radio" name="DI_radReqPlaca" class="input-sm" id="DI_radReqPlaca_Si"></td>
                                                 <td style="padding-top:5px"><label>SI</label></td>
                                             </tr>
                                         </table>
@@ -181,7 +183,7 @@
                                     <div class="col-md-2">
                                         <table style="width:100%">
                                             <tr>
-                                                <td><input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") type="radio" name="DI_radReqPlaca" class="input-sm inp" id="DI_radReqPlaca_No"></td>
+                                                <td><input type="radio" name="DI_radReqPlaca" class="input-sm inp" id="DI_radReqPlaca_No"></td>
                                                 <td style="padding-top:5px"><label>NO</label></td>
                                             </tr>
                                         </table>
@@ -194,7 +196,7 @@
                                     <div class="col-md-2">
                                         <table style="width:100%">
                                             <tr>
-                                                <td><input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") type="radio" name="DI_radMantPrevent" class="input-sm" id="DI_radMantPrevent_Si"></td>
+                                                <td><input type="radio" name="DI_radMantPrevent" class="input-sm" id="DI_radMantPrevent_Si"></td>
                                                 <td style="padding-top:5px"><label>SI</label></td>
                                             </tr>
                                         </table>
@@ -202,7 +204,7 @@
                                     <div class="col-md-2">
                                         <table style="width:100%">
                                             <tr>
-                                                <td><input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") type="radio" name="DI_radMantPrevent" class="input-sm inp" id="DI_radMantPrevent_No"></td>
+                                                <td><input type="radio" name="DI_radMantPrevent" class="input-sm inp" id="DI_radMantPrevent_No"></td>
                                                 <td style="padding-top:5px"><label>NO</label></td>
                                             </tr>
                                         </table>
@@ -217,7 +219,7 @@
                                     <div class="col-md-2">
                                         <table style="width:100%">
                                             <tr>
-                                                <td><input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") type="radio" name="DI_radManuales" class="input-sm" id="DI_radManuales_Si"></td>
+                                                <td><input type="radio" name="DI_radManuales" class="input-sm" id="DI_radManuales_Si"></td>
                                                 <td style="padding-top:5px"><label>SI</label></td>
                                             </tr>
                                         </table>
@@ -225,7 +227,7 @@
                                     <div class="col-md-2">
                                         <table style="width:100%">
                                             <tr>
-                                                <td><input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") type="radio" name="DI_radManuales" class="input-sm inp" id="DI_radManuales_No"></td>
+                                                <td><input type="radio" name="DI_radManuales" class="input-sm inp" id="DI_radManuales_No"></td>
                                                 <td style="padding-top:5px"><label>NO</label></td>
                                             </tr>
                                         </table>
@@ -238,7 +240,7 @@
                                     <div class="col-md-2">
                                         <table style="width:100%">
                                             <tr>
-                                                <td><input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") type="radio" name="DI_radVideos" class="input-sm" id="DI_radVideos_Si"></td>
+                                                <td><input type="radio" name="DI_radVideos" class="input-sm" id="DI_radVideos_Si"></td>
                                                 <td style="padding-top:5px"><label>SI</label></td>
                                             </tr>
                                         </table>
@@ -246,7 +248,7 @@
                                     <div class="col-md-2">
                                         <table style="width:100%">
                                             <tr>
-                                                <td><input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") type="radio" name="DI_radVideos" class="input-sm" id="DI_radVideos_No"></td>
+                                                <td><input type="radio" name="DI_radVideos" class="input-sm" id="DI_radVideos_No"></td>
                                                 <td style="padding-top:5px"><label>NO</label></td>
                                             </tr>
                                         </table>
@@ -259,7 +261,7 @@
                                     <div class="col-md-2">
                                         <table style="width:100%">
                                             <tr>
-                                                <td><input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") type="radio" name="DI_radInstalacion" class="input-sm" id="DI_radInstalacion_Si"></td>
+                                                <td><input type="radio" name="DI_radInstalacion" class="input-sm" id="DI_radInstalacion_Si"></td>
                                                 <td style="padding-top:5px"><label>SI</label></td>
                                             </tr>
                                         </table>
@@ -267,7 +269,7 @@
                                     <div class="col-md-2">
                                         <table style="width:100%">
                                             <tr>
-                                                <td><input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") type="radio" name="DI_radInstalacion" class="input-sm" id="DI_radInstalacion_No"></td>
+                                                <td><input type="radio" name="DI_radInstalacion" class="input-sm" id="DI_radInstalacion_No"></td>
                                                 <td style="padding-top:5px"><label>NO</label></td>
                                             </tr>
                                         </table>
@@ -282,7 +284,7 @@
                                     <div class="col-md-2">
                                         <table style="width:100%">
                                             <tr>
-                                                <td><input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") type="radio" name="DI_radGarantAdic" class="input-sm" id="DI_radGarantAdic_Si"></td>
+                                                <td><input type="radio" name="DI_radGarantAdic" class="input-sm" id="DI_radGarantAdic_Si"></td>
                                                 <td style="padding-top:5px"><label>SI</label></td>
                                             </tr>
                                         </table>
@@ -290,7 +292,7 @@
                                     <div class="col-md-2">
                                         <table style="width:100%">
                                             <tr>
-                                                <td><input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") type="radio" name="DI_radGarantAdic" class="input-sm inp" id="DI_radGarantAdic_No"></td>
+                                                <td><input type="radio" name="DI_radGarantAdic" class="input-sm inp" id="DI_radGarantAdic_No"></td>
                                                 <td style="padding-top:5px"><label>NO</label></td>
                                             </tr>
                                         </table>
@@ -312,7 +314,7 @@
                                     <div class="col-md-2">
                                         <table style="width:100%">
                                             <tr>
-                                                <td><input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") type="radio" name="DI_radCapacitacion" class="input-sm" id="DI_radCapacitacion_Si"></td>
+                                                <td><input type="radio" name="DI_radCapacitacion" class="input-sm" id="DI_radCapacitacion_Si"></td>
                                                 <td style="padding-top:5px"><label>SI</label></td>
                                             </tr>
                                         </table>
@@ -320,7 +322,7 @@
                                     <div class="col-md-2">
                                         <table style="width:100%">
                                             <tr>
-                                                <td><input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") type="radio" name="DI_radCapacitacion" class="input-sm" id="DI_radCapacitacion_No"></td>
+                                                <td><input type="radio" name="DI_radCapacitacion" class="input-sm" id="DI_radCapacitacion_No"></td>
                                                 <td style="padding-top:5px"><label>NO</label></td>
                                             </tr>
                                         </table>
@@ -335,7 +337,7 @@
                                     <div class="col-md-2">
                                         <table style="width:100%">
                                             <tr>
-                                                <td><input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") type="radio" name="DI_radFlete" class="input-sm" id="DI_radFlete_Si"></td>
+                                                <td><input type="radio" name="DI_radFlete" class="input-sm" id="DI_radFlete_Si"></td>
                                                 <td style="padding-top:5px"><label>SI</label></td>
                                             </tr>
                                         </table>
@@ -343,7 +345,7 @@
                                     <div class="col-md-2">
                                         <table style="width:100%">
                                             <tr>
-                                                <td><input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") type="radio" name="DI_radFlete" class="input-sm" id="DI_radFlete_No"></td>
+                                                <td><input type="radio" name="DI_radFlete" class="input-sm" id="DI_radFlete_No"></td>
                                                 <td style="padding-top:5px"><label>NO</label></td>
                                             </tr>
                                         </table>
@@ -355,7 +357,7 @@
                                     <div class="col-md-11">
                                         <div class="row container-fluid">
                                             <label for="DI_txtReqCliente">Requisitos del Cliente: </label>
-                                            <textarea @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") placeholder="Ingresar Requisitos <Opcional>" rows="3" maxlength="2000" class="form-control input-sm" id="DI_txtReqCliente" value=""></textarea>
+                                            <textarea placeholder="Ingresar Requisitos <Opcional>" rows="3" maxlength="2000" class="form-control input-sm" id="DI_txtReqCliente" value=""></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -363,7 +365,7 @@
                                     <div class="col-md-11">
                                         <div class="row container-fluid">
                                             <label for="DI_txtObsInsta">Observaciones de la Instalación: </label>
-                                            <textarea @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") placeholder="Ingresar Observaciones <Opcional>" rows="3" maxlength="2000" class="form-control input-sm" id="DI_txtObsInsta" value=""></textarea>
+                                            <textarea placeholder="Ingresar Observaciones <Opcional>" rows="3" maxlength="2000" class="form-control input-sm" id="DI_txtObsInsta" value=""></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -375,7 +377,7 @@
                             <fieldset>
                                 <legend><b>Detalle de Destinos</b></legend>
                                 <div class="text-right" style="padding-bottom: 2px">
-                                    <button style="@(ViewBag.PermitirEditarCotDetItem ? "" : "display:none")" class="btn btn-default btn-sm" type="button" data-toggle="modal" tabindex="14" onclick="javascript:cotvtacostos.agregarCostoItem('1')"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar Costo</button>
+                                    <button id="DI_btnAgregarCosto" class="btn btn-default btn-sm" type="button" data-toggle="modal" tabindex="14" onclick="javascript:cotvtacostos.agregarCostoItem('1')"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar Costo</button>
                                 </div>
                                 <div class="row container-fluid">
                                     <table id="DI_tblCostos" class="table table-hover table-condensed table-striped table-bordered" style="width:100%">

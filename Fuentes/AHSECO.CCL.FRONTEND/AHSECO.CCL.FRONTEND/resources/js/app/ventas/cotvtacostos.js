@@ -113,7 +113,7 @@
         $CI_btnCerrar.click(cerrarModalCostosItem);
         
         cargarCiclosPreventivos();
-        cargarTipoCostos();
+        //cargarTipoCostos();
 
         $CI_cmbCDItem.on("change", cargarCotDetSeleccionada);
 

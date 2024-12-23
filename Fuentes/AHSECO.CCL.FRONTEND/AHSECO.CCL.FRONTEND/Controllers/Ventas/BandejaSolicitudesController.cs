@@ -32,6 +32,7 @@ using AHSECO.CCL.BE.ServicioTecnico.BandejaGarantias;
 using static AHSECO.CCL.COMUN.ConstantesDTO.Mensajes;
 using static AHSECO.CCL.COMUN.ConstantesDTO.CotizacionVentaDetalle;
 using WebGrease.Css.Extensions;
+using static AHSECO.CCL.FRONTEND.Core.MultiFlujo.Tag;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 {
@@ -139,6 +140,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             VariableSesion.setObject(TAG_CDI, new List<CotizacionDetalleDTO>());
 
+            ViewBag.PermitirAdjuntarDocumento = false;
+
             ViewBag.MostrarCotizacionDetalle = false;
             ViewBag.PermitirCancelarCot = false;
             ViewBag.PermitirEditarCotizacion_Pri = false; //Se bloquea los campos principales de la cabecera de cotización
@@ -195,8 +198,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.VerBandejaServiciosCotizacion = false;
             ViewBag.VerBandejaCotizacion = false;
 
-            MultiFlujo oFlujoVenta = new MultiFlujo();
-
             if (EsFlujoValorizacion())
             { ViewBag.PermitirEditarValorizacion = true; }
 
@@ -247,8 +248,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 VariableSesion.setObject("SOLICITUD_VENTA", soli);
                 VariableSesion.setCadena("estadoSol", soli.Estado);
 
-                oFlujoVenta.Solicitud = soli;
-
                 //Para Gestion:
                 var validarDespacho = ventasBL.ValidarDespacho(int.Parse(numSol));
                 var validarSinStock = ventasBL.ValidarAprobacionSinStock(int.Parse(numSol));
@@ -279,6 +278,12 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 { IdProceso = ConstantesDTO.Procesos.Ventas.ID, CodigoEstado = soli.Estado });
 
                 if (rptaEst.Result.Any()) { VariableSesion.setCadena("estadoAbrev", rptaEst.Result.First().AbreviaturaEstado); }
+
+                //Validar si se puede adjuntar documento si eres ASESOR DE VENTA
+                if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
+                {
+                    ViewBag.PermitirAdjuntarDocumento = true;
+                }
 
                 //Validando CABECERA COTIZACION según ROL
                 if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor
@@ -651,9 +656,19 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         }
                     }
 
-                    //Solo se habilita el Detalle de Cotizacion PRODUCTOS para los ASESORES de VENTA y COORDINADORES
-                    if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.RepuestosoConsumibles
-                        || soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaMateriales
+                    //Solo se habilita el Detalle de Cotizacion REPUESTOS para los COORDINADORES
+                    if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.RepuestosoConsumibles)
+                    {
+                        if (NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc ||
+                            NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ)
+                        {
+                            ViewBag.PermitirAgregarProductos = true;
+                            ViewBag.PermitirEnvioCotizacion = true;
+                        }
+                    }
+
+                    //Solo se habilita el Detalle de Cotizacion PRODUCTOS para los ASESORES de VENTA
+                    if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaMateriales
                         || soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaEquipos)
                     {
                         if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
@@ -759,7 +774,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     ViewBag.Observacion = oCotizacion.Observacion;
                     ViewBag.PorcentajeDscto = Utilidades.parseDecimalToString(oCotizacion.PorcentajeDescuento);
 
-                    oFlujoVenta.Cotizacion = oCotizacion;
+                    VariableSesion.setObject("COTIZACION_VENTA", oCotizacion);
 
                     //Se muestra los COSTOS para la COTIZACION dependiendo si tiene REGISTROS
                     var resCostos = ventasBL.ObtenerCotDetCostos(new CotDetCostoDTO() { IdCotizacion = oCotizacion.IdCotizacion });
@@ -858,15 +873,18 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         //Para el tipo "REPUESTOS" se habilita lo siguiente
                         if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.RepuestosoConsumibles)
                         {
-                            if (swEsCotizacionValorizada && NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
+                            if (swEsCotizacionValorizada)
                             {
-                                ViewBag.PermitirExportarLiquidacion = true;
-                                ViewBag.PermitirImprimirCotizacion = true;
+                                if(NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ)
+                                {
+                                    ViewBag.PermitirExportarLiquidacion = true;
+                                    ViewBag.PermitirImprimirCotizacion = true;
 
-                                ViewBag.PermitirReCotizacion = true;
-                                ViewBag.PermitirCancelarCot = true;
+                                    ViewBag.PermitirReCotizacion = true;
+                                    ViewBag.PermitirCancelarCot = true;
 
-                                ViewBag.PermitirAprobarCotizacion = true;
+                                    ViewBag.PermitirAprobarCotizacion = true;
+                                }
                             }
                         }
 
@@ -972,60 +990,407 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             var oSolicitud = (SolicitudDTO)VariableSesion.getObject("SOLICITUD_VENTA");
             var resArticulos = ventasBL.ObtenerArticulosxFiltro(new FiltroArticuloDTO() { CodsArticulo = string.Join(";", lstItems.Select(o => o.CodItem).ToArray()) });
 
+            var lstItemsAux = new List<CotizacionDetalleDTO>();
+
             lstItems.ForEach(x =>
             {
-
-                if (x.TipoItem != ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio)
-                { x.EsItemPadre = true; }
 
                 if (x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto ||
                 x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio)
                 {
                     var oArticulo = resArticulos.Result.FirstOrDefault(o => o.CodArticulo.Trim() == x.CodItem.Trim());
-                    if (oArticulo != null)
-                    { x.DescUnidad = oArticulo.DescUnidad; }
+                    if (oArticulo != null) { x.DescUnidad = oArticulo.DescUnidad; }
                 }
 
-                var oProp = new PropiedadControl(true);
-                var swCotDet = false;
-
-                if (oSolicitud.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnCotizacion ||
-                oSolicitud.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion)
-                {
-                    if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc ||
-                        NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ || EsFlujoValorizacion())
-                    { swCotDet = true; }
-                }
-
-                oProp.IsEnabled = swCotDet;
-
-                if (x.CotizacionDespacho != null) { x.CotizacionDespacho.Features = oProp; }
-
-                if (x.CotizacionCostos != null)
-                {
-                    x.CotizacionCostos.ForEach(o =>
-                    {
-                        var oProp2 = new PropiedadControl(true);
-                        oProp2.IsEnabled = swCotDet;
-                        o.Features = oProp2;
-                    });
-                }
-
-                if (x.CotizacionActividades != null)
-                {
-                    x.CotizacionActividades.ForEach(o =>
-                    {
-                        var oProp2 = new PropiedadControl(true);
-                        oProp2.IsEnabled = swCotDet;
-                        o.Features = oProp2;
-                    });
-                }
-
-                x.Features = oProp;
+                var oItemAux = new CotizacionDetalleDTO();
+                x.CopyProperties(ref oItemAux);
+                oItemAux = configureCotDetItem(oItemAux);
+                lstItemsAux.Add(oItemAux);
 
             });
 
-            return lstItems;
+            return lstItemsAux;
+        }
+
+        private CotizacionDetalleDTO configureCotDetItem(CotizacionDetalleDTO oItem)
+        {
+            if (oItem == null) { return null; }
+
+            var ventasBL = new VentasBL();
+            var NombreRol = VariableSesion.getCadena("VENTA_NOMBRE_ROL");
+            var oSolicitud = (SolicitudDTO)VariableSesion.getObject("SOLICITUD_VENTA");
+            var oCotizacion = (CotizacionDTO)VariableSesion.getObject("COTIZACION_VENTA");
+
+            var swEsCotizacionValorizada = false;
+            var swEsCotizacionCosteada = false;
+
+            if (oCotizacion.IndValorizado.HasValue) { swEsCotizacionValorizada = oCotizacion.IndValorizado.Value; }
+            if (oCotizacion.IndCosteado.HasValue) { swEsCotizacionCosteada = oCotizacion.IndCosteado.Value; }
+
+            if (oItem.TipoItem != ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio) { oItem.EsItemPadre = true; }
+
+            var oPropCotDetItem = new PropertyControl();
+            oPropCotDetItem.IsVisible = true;
+            oPropCotDetItem.IsEnabled = true;
+
+            List<PropertyControl> lstProp = new List<PropertyControl>();
+
+            //Se configura los campos COTIZACION DETALLE
+            lstProp.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetalle.Campo.Codigo, IsVisible = true, IsEnabled = true, IdControl = "DI_pnlInfoGeneral_Codigo" });
+            lstProp.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetalle.Campo.Descrip, IsVisible = true, IsEnabled = true, IdControl = "DI_pnlInfoGeneral_Descripcion" });
+            lstProp.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetalle.Campo.DescripAdic, IsVisible = true, IsEnabled = true, IdControl = "DI_pnlInfoGeneral_DescripcionAdic" });
+            lstProp.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetalle.Campo.DescripAdic_Textarea, IsVisible = true, IsEnabled = true, IdControl = "DI_txtDescripcionAdic" });
+            lstProp.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetalle.Campo.IndStock, IsVisible = true, IsEnabled = true, IdControl = "DI_pnlCostos_TieneStock" });
+            lstProp.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetalle.Campo.Cantidad, IsVisible = true, IsEnabled = true, IdControl = "DI_pnlInfoGeneral_Cantidad" });
+
+            //Se deshabilita PRECIOS DE VENTA en VALORIZACION
+            lstProp.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetalle.Campo.CostoFOB, IsVisible = true, IsEnabled = true, IdControl = "DI_pnlCostos_CostoFOB" });
+            lstProp.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetalle.Campo.ValUni, IsVisible = true, IsEnabled = true, IdControl = "DI_pnlCostos_ValorUnitario" });
+
+            //Se configura DESPACHO
+            lstProp.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetDespacho.Campo.Dimensiones, IsEnabled = true, IsVisible = true, IdControl = "DI_pnlInfoGeneral_Dimensiones" });
+            lstProp.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetalle.Campo.PorcGanan, IsEnabled = true, IsVisible = true, IdControl = "DI_pnlCostos_Ganancia" });
+            lstProp.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetDespacho.Campo.CompraLocal, IsEnabled = true, IsVisible = true, IdControl = "DI_pnlCostos_CompraLocal" });
+            lstProp.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetDespacho.Campo.ReqPlaca, IsEnabled = true, IsVisible = true, IdControl = "DI_pnlCostos_ReqPlaca" });
+            lstProp.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetDespacho.Campo.GarantAdic, IsEnabled = true, IsVisible = true, IdControl = "DI_pnlCostos_GarantAdic" });
+            lstProp.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetDespacho.Campo.GarantAdic_Combo, IsEnabled = true, IsVisible = true, IdControl = "DI_pnlCostos_GarantAdic_Combo" });
+            lstProp.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetDespacho.Campo.ReqCliente, IsEnabled = true, IsVisible = true, IdControl = "DI_pnlCostos_ReqCliente" });
+            lstProp.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetDespacho.Campo.ObsInsta, IsEnabled = true, IsVisible = true, IdControl = "DI_pnlCostos_ObsInsta" });
+
+            //Se configura INDICADORES DE COSTO
+            //lstProp.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetDespacho.IndCosto.LLaveMano, IsEnabled = true, IsVisible = true, IdControl = "DI_pnlCostos_LlaveMano" });
+            lstProp.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetDespacho.IndCosto.Insta, IsEnabled = true, IsVisible = true, IdControl = "DI_pnlCostos_Instalacion" });
+            lstProp.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetDespacho.IndCosto.Capa, IsEnabled = true, IsVisible = true, IdControl = "DI_pnlCostos_Capacitacion" });
+            lstProp.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetDespacho.IndCosto.Manual, IsEnabled = true, IsVisible = true, IdControl = "DI_pnlCostos_Manuales" });
+            lstProp.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetDespacho.IndCosto.Video, IsEnabled = true, IsVisible = true, IdControl = "DI_pnlCostos_Videos" });
+            lstProp.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetDespacho.IndCosto.MantPrevent, IsEnabled = true, IsVisible = true, IdControl = "DI_pnlCostos_MantPrevent" });
+            lstProp.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetDespacho.IndCosto.Calibra, IsEnabled = true, IsVisible = true, IdControl = "DI_pnlCostos_Calibracion" });
+            lstProp.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetDespacho.IndCosto.Flete, IsEnabled = true, IsVisible = true, IdControl = "DI_pnlCostos_Flete" });
+
+            //Se configura BOTONES DE COSTO
+            //lstProp.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetCosto.Boton.Agregar, IsEnabled = true, IsVisible = true, IdControl = "DI_btnAgregarCosto" });
+            //lstProp.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetCosto.Boton.Editar, IsEnabled = true, IsVisible = true, IdControl = "DI_btnEditarCosto" });
+            //lstProp.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetCosto.Boton.EditarTAB, IsEnabled = true, IsVisible = true, IdControl = "CI_btnEditarCosto" });
+
+            //Se configura GRILLAS DE COSTO
+            lstProp.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetCosto.Panel.Destinos, IsEnabled = true, IsVisible = true, IdControl = "DI_pnlDestinos" });
+            //lstProp.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetCosto.Grilla.GrillaCostos, IsEnabled = true, IsVisible = true, IdControl = "DI_tblCostos" });
+            //lstProp.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetCosto.Grilla.GrillaCostosTAB, IsEnabled = true, IsVisible = true, IdControl = "" });
+
+            //El código de COTIZACION DETALLE se desahabilita algunos campos por defecto
+            lstProp.ForEach(pc =>
+            {
+                if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.Codigo) { pc.IsEnabled = false; }
+                if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.PorcGanan) { pc.IsEnabled = false; }
+                if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.Descrip) { pc.IsEnabled = false; }
+            });
+
+            //Deshabilitar campos por ESTADO DE SOLICITUD
+            if (oSolicitud.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnCotizacion)
+            {
+                lstProp.ForEach(pc =>
+                {
+                    if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc ||
+                        NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ)
+                    {
+                        //Solo se habilita si el código es modificable
+                        if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.Codigo)
+                        { if (oItem.CodItem_IsUpdatable) { pc.IsEnabled = true; } }
+
+                        //Se oculta los PRECIOS DE VENTA
+                        if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.CostoFOB) { pc.IsVisible = false; pc.IsEnabled = false; }
+                        if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = false; pc.IsEnabled = false; }
+                    }
+                });
+            }
+            else if (oSolicitud.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion)
+            {
+                lstProp.ForEach(pc =>
+                {
+                    //Se configura los campos COTIZACION DETALLE
+                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.Codigo) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.Descrip) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.DescripAdic) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.DescripAdic_Textarea) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.IndStock) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.Cantidad) { pc.IsEnabled = false; }
+
+                    //Se oculta los PRECIOS DE VENTA
+                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.CostoFOB) { pc.IsVisible = false; pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = false; pc.IsEnabled = false; }
+
+                    //Se oculta los campos DESPACHO
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.Dimensiones) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.PorcGanan) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.CompraLocal) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.ReqPlaca) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.GarantAdic) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.GarantAdic_Combo) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.ObsInsta) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.ReqCliente) { pc.IsEnabled = false; }
+
+                    //Se oculta los indicadores
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Calibra) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.MantPrevent) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Manual) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Video) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Insta) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Capa) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Flete) { pc.IsEnabled = false; }
+
+                    if (pc.Tag == MultiFlujo.Tag.CotDetCosto.Panel.Destinos) { pc.IsEnabled = false; }
+
+                });
+            }
+            else
+            {
+                lstProp.ForEach(pc =>
+                {
+                    //Se configura los campos COTIZACION DETALLE
+                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.Codigo) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.Descrip) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.DescripAdic) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.DescripAdic_Textarea) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.IndStock) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.Cantidad) { pc.IsEnabled = false; }
+
+                    //Se oculta los PRECIOS DE VENTA
+                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.CostoFOB) { pc.IsVisible = false; pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = false; pc.IsEnabled = false; }
+
+                    //Se oculta los campos DESPACHO
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.Dimensiones) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.PorcGanan) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.CompraLocal) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.ReqPlaca) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.GarantAdic) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.GarantAdic_Combo) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.ObsInsta) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.ReqCliente) { pc.IsEnabled = false; }
+
+                    //Se oculta los indicadores
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Calibra) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.MantPrevent) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Manual) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Video) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Insta) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Capa) { pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Flete) { pc.IsEnabled = false; }
+
+                    if (pc.Tag == MultiFlujo.Tag.CotDetCosto.Panel.Destinos) { pc.IsEnabled = false; }
+
+                });
+            }
+
+            //Ocultar CAMPOS por TIPO DE SOLICITUD
+            if (oSolicitud.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaEquipos)
+            {
+
+                //EQUIPOS muestra DIMENSIONES, ESPECIFICACIONES, INDICADORES, OBS INSTALACION, DESTINOS
+
+                //VALORIZACION de EQUIPOS
+                if (oSolicitud.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion && EsFlujoValorizacion())
+                {
+                    lstProp.ForEach(pc =>
+                    {
+                        if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Gerente)
+                        {
+                            if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.CostoFOB) { pc.IsVisible = true; pc.IsEnabled = true; }
+                        }
+                        if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Costos)
+                        {
+                            if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.CostoFOB) { pc.IsVisible = true; pc.IsEnabled = false; }
+                            if (oItem.CostoFOB.HasValue)
+                            {
+                                if (oItem.CostoFOB.Value > 0)
+                                {
+                                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = true; }
+                                }
+                            }
+                        }
+                    });
+                }
+
+                lstProp.ForEach(pc =>
+                {
+                    //Se devuelve a su tamaño actual
+                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.DescripAdic_Textarea) { pc.Nombre = "ROWS"; pc.Valor = "6"; }
+
+                    //Se habilita la GANANCIA cuando se haya VALORIZADO y COSTEADO
+                    if (swEsCotizacionValorizada && swEsCotizacionCosteada && NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
+                    {
+                        if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.PorcGanan) { pc.IsEnabled = true; }
+                    }
+                });
+            }
+            else if (oSolicitud.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaMateriales)
+            {
+                //VALORIZACION de MATERIALES
+                if (oSolicitud.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion && EsFlujoValorizacion())
+                {
+                    lstProp.ForEach(pc =>
+                    {
+                        if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Gerente)
+                        {
+                            if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.CostoFOB) { pc.IsVisible = true; pc.IsEnabled = true; }
+                        }
+                        if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Costos)
+                        {
+                            if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.CostoFOB) { pc.IsVisible = true; pc.IsEnabled = false; }
+                            if (oItem.CostoFOB.HasValue)
+                            {
+                                if (oItem.CostoFOB.Value > 0)
+                                {
+                                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = true; }
+                                }
+                            }
+                        }
+                    });
+                }
+
+                lstProp.ForEach(pc =>
+                {
+                    //Se disminuye su tamaño porque se oculto el campo DIMENSIONES que afecta el tamaño de la PANTALLA
+                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.DescripAdic_Textarea) { pc.Nombre = "ROWS"; pc.Valor = "4"; }
+
+                    //MATERIALES oculta DIMENSIONES, ESPECIFICACIONES, INDICADORES, OBS INSTALACION, DESTINOS pero tiene FLETE
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.Dimensiones) { pc.IsVisible = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.PorcGanan) { pc.IsVisible = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.CompraLocal) { pc.IsVisible = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.ReqPlaca) { pc.IsVisible = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.GarantAdic) { pc.IsVisible = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.GarantAdic_Combo) { pc.IsVisible = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.ObsInsta) { pc.IsVisible = false; }
+
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Calibra) { pc.IsVisible = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.MantPrevent) { pc.IsVisible = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Manual) { pc.IsVisible = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Video) { pc.IsVisible = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Insta) { pc.IsVisible = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Capa) { pc.IsVisible = false; }
+                    //if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Flete) { pc.IsVisible = true; }
+
+                    if (pc.Tag == MultiFlujo.Tag.CotDetCosto.Panel.Destinos) { pc.IsVisible = true; }
+
+                    //Se habilita la GANANCIA cuando se haya VALORIZADO
+                    if (swEsCotizacionValorizada && NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
+                    {
+                        if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.PorcGanan) { pc.IsEnabled = true; }
+                    }
+                });
+            }
+            else if (oSolicitud.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.RepuestosoConsumibles)
+            {
+                lstProp.ForEach(pc =>
+                {
+                    //Se disminuye su tamaño porque se oculto el campo DIMENSIONES que afecta el tamaño de la PANTALLA
+                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.DescripAdic_Textarea) { pc.Nombre = "ROWS"; pc.Valor = "4"; }
+
+                    //REPUESTOS oculta DIMENSIONES, ESPECIFICACIONES, INDICADORES, OBS INSTALACION, DESTINOS
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.Dimensiones) { pc.IsVisible = false; pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.PorcGanan) { pc.IsVisible = false; pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.CompraLocal) { pc.IsVisible = false; pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.ReqPlaca) { pc.IsVisible = false; pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.GarantAdic) { pc.IsVisible = false; pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.GarantAdic_Combo) { pc.IsVisible = false; pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.ObsInsta) { pc.IsVisible = false; pc.IsEnabled = false; }
+
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Calibra) { pc.IsVisible = false; pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.MantPrevent) { pc.IsVisible = false; pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Manual) { pc.IsVisible = false; pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Video) { pc.IsVisible = false; pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Insta) { pc.IsVisible = false; pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Capa) { pc.IsVisible = false; pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Flete) { pc.IsVisible = false; pc.IsEnabled = false; }
+
+                    if (pc.Tag == MultiFlujo.Tag.CotDetCosto.Panel.Destinos) { pc.IsVisible = false; }
+
+                    //Se oculta COSTO FOB para REPUESTOS
+                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.CostoFOB) { pc.IsVisible = false; pc.IsEnabled = false; }
+
+                    //Se valida si ya no se usa el COSTO FOB debe habilitarse el VALOR UNITARIO
+                    if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Costos)
+                    {
+                        if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = true; }
+                    }
+
+                });
+
+            }
+            else if (oSolicitud.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
+            {
+                lstProp.ForEach(pc =>
+                {
+                    //Se disminuye su tamaño porque se oculto el campo DIMENSIONES que afecta el tamaño de la PANTALLA
+                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.DescripAdic_Textarea) { pc.Nombre = "ROWS"; pc.Valor = "4"; }
+
+                    //REPUESTOS oculta DIMENSIONES, ESPECIFICACIONES, INDICADORES, OBS INSTALACION, DESTINOS
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.Dimensiones) { pc.IsVisible = false; pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.PorcGanan) { pc.IsVisible = false; pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.CompraLocal) { pc.IsVisible = false; pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.ReqPlaca) { pc.IsVisible = false; pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.GarantAdic) { pc.IsVisible = false; pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.GarantAdic_Combo) { pc.IsVisible = false; pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.ObsInsta) { pc.IsVisible = false; pc.IsEnabled = false; }
+
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Calibra) { pc.IsVisible = false; pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.MantPrevent) { pc.IsVisible = false; pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Manual) { pc.IsVisible = false; pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Video) { pc.IsVisible = false; pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Insta) { pc.IsVisible = false; pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Capa) { pc.IsVisible = false; pc.IsEnabled = false; }
+                    if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Flete) { pc.IsVisible = false; pc.IsEnabled = false; }
+
+                    if (pc.Tag == MultiFlujo.Tag.CotDetCosto.Panel.Destinos) { pc.IsVisible = false; }
+
+                    //Se oculta COSTO FOB para REPUESTOS
+                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.CostoFOB) { pc.IsVisible = false; pc.IsEnabled = false; }
+
+                    //Se valida si ya no se usa el COSTO FOB debe habilitarse el VALOR UNITARIO
+                    if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Costos)
+                    {
+                        if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = true; }
+                    }
+
+                });
+            }
+
+            if (oItem.CotizacionDespacho != null)
+            {
+                oItem.CotizacionDespacho.Features = new PropertyControl() { IsEnabled = oPropCotDetItem.IsEnabled, IsVisible = oPropCotDetItem.IsVisible };
+            }
+
+            if (oItem.CotizacionCostos != null)
+            {
+                oItem.CotizacionCostos.ForEach(o =>
+                {
+                    var oPropCostos = new PropertyControl();
+                    oPropCostos.IsEnabled = oPropCotDetItem.IsEnabled;
+                    oPropCostos.IsVisible = oPropCotDetItem.IsVisible;
+                    o.Features = oPropCostos;
+                });
+            }
+
+            if (oItem.CotizacionActividades != null)
+            {
+                oItem.CotizacionActividades.ForEach(o =>
+                {
+                    var oPropAct = new PropertyControl();
+                    oPropAct.IsEnabled = oPropCotDetItem.IsEnabled;
+                    oPropAct.IsVisible = oPropCotDetItem.IsVisible;
+                    o.Features = oPropAct;
+                });
+            }
+
+            //Se valida si hay 1 campo editable
+            var lstAux = lstProp.Where(pc => pc.IsVisible && pc.IsEnabled).ToList();
+            oPropCotDetItem.IsEnabled = lstAux.Any();
+
+            oPropCotDetItem.SubPropiedades = lstProp.ToArray();
+
+            oItem.Features = oPropCotDetItem;
+
+            return oItem;
         }
 
         private void AddModifyCDI(CotizacionDetalleDTO CotDet)
@@ -1099,7 +1464,16 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 lstItems.Add(CotDet_Aux);
             }
 
-            VariableSesion.setObject(TAG_CDI, lstItems);
+            var lstItemsAux = new List<CotizacionDetalleDTO>();
+            foreach(CotizacionDetalleDTO oItem in lstItems)
+            {
+                var oItemAux = new CotizacionDetalleDTO();
+                oItem.CopyProperties(ref oItemAux);
+                configureCotDetItem(oItemAux);
+                lstItemsAux.Add(oItemAux);
+            }
+
+            VariableSesion.setObject(TAG_CDI, lstItemsAux);
         }
 
         private List<CotizacionDetalleDTO> GetCotDetItems(string opcGrillaItems)
@@ -1882,36 +2256,43 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     if (!oCDesp.IndInstalacion.Value)
                     { lstDG = lstDG.Where(x => x.Parametro != ConstantesDTO.DatosGenerales.CostosEnvio.Instalacion); }
                 }
+                else { lstDG = lstDG.Where(x => x.Parametro != ConstantesDTO.DatosGenerales.CostosEnvio.Instalacion); }
                 if (oCDesp.IndCapacitacion.HasValue)
                 {
                     if (!oCDesp.IndCapacitacion.Value)
                     { lstDG = lstDG.Where(x => x.Parametro != ConstantesDTO.DatosGenerales.CostosEnvio.Capacitacion); }
                 }
+                else { lstDG = lstDG.Where(x => x.Parametro != ConstantesDTO.DatosGenerales.CostosEnvio.Capacitacion); }
                 if (oCDesp.IndInfoManual.HasValue)
                 {
                     if (!oCDesp.IndInfoManual.Value)
                     { lstDG = lstDG.Where(x => x.Parametro != ConstantesDTO.DatosGenerales.CostosEnvio.Manuales); }
                 }
+                else { lstDG = lstDG.Where(x => x.Parametro != ConstantesDTO.DatosGenerales.CostosEnvio.Manuales); }
                 if (oCDesp.IndInfoVideo.HasValue)
                 {
                     if (!oCDesp.IndInfoVideo.Value)
                     { lstDG = lstDG.Where(x => x.Parametro != ConstantesDTO.DatosGenerales.CostosEnvio.Videos); }
                 }
+                else { lstDG = lstDG.Where(x => x.Parametro != ConstantesDTO.DatosGenerales.CostosEnvio.Videos); }
                 if (oCDesp.IndMantPreventivo.HasValue)
                 {
                     if (!oCDesp.IndMantPreventivo.Value)
                     { lstDG = lstDG.Where(x => x.Parametro != ConstantesDTO.DatosGenerales.CostosEnvio.MantPrevent); }
                 }
+                else { lstDG = lstDG.Where(x => x.Parametro != ConstantesDTO.DatosGenerales.CostosEnvio.MantPrevent); }
                 if (oCDesp.IndCalibracion.HasValue)
                 {
                     if (!oCDesp.IndCalibracion.Value)
                     { lstDG = lstDG.Where(x => x.Parametro != ConstantesDTO.DatosGenerales.CostosEnvio.Calibracion); }
                 }
+                else { lstDG = lstDG.Where(x => x.Parametro != ConstantesDTO.DatosGenerales.CostosEnvio.Calibracion); }
                 if (oCDesp.IndFlete.HasValue)
                 {
                     if (!oCDesp.IndFlete.Value)
                     { lstDG = lstDG.Where(x => x.Parametro != ConstantesDTO.DatosGenerales.CostosEnvio.Flete); }
                 }
+                else { lstDG = lstDG.Where(x => x.Parametro != ConstantesDTO.DatosGenerales.CostosEnvio.Flete); }
             }
             var lst = new List<ComboDTO>();
             foreach (DatosGeneralesDetalleDTO item in lstDG)
@@ -2365,6 +2746,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     if (itemCotDet.CotizacionCostos != null) { lstCostos = itemCotDet.CotizacionCostos.ToList(); }
                 }
 
+                itemCotDet = configureCotDetItem(itemCotDet);
+
                 VariableSesion.setObject(TAG_CDCI_CotDetItem, lstCostos);
 
                 return Json(new ResponseDTO<CotizacionDetalleDTO>(itemCotDet));
@@ -2500,6 +2883,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     { swCompleto = false; }
                     if (indCalibracion && !oCotDetItem.CotizacionCostos.Any(x => x.CodCosto == ConstantesDTO.DatosGenerales.CostosEnvio.Calibracion))
                     { swCompleto = false; }
+                    if (indFlete && !oCotDetItem.CotizacionCostos.Any(x => x.CodCosto == ConstantesDTO.DatosGenerales.CostosEnvio.Flete))
+                    { swCompleto = false; }
 
                     if (oCotDetItem.CotizacionCostos.Any())
                     {
@@ -2509,7 +2894,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             if (tipocosto != ConstantesDTO.CotizacionDetalleCostos.Costos.LLaveMano)
                             {
                                 if (cantCotizada != cantTotalCosteada)
-                                { throw new Exception("No se ha completado los registros de Costos para " + oCotDetItem.Descripcion); }
+                                { throw new Exception("No se ha completado la cantidad de costeo para el producto '" + oCotDetItem.Descripcion + "'."); }
                             }
                         });
                     }
@@ -2585,6 +2970,43 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 }
 
                 if (!swCDItems) { throw new Exception("No se ha agregado ning&uacute;n producto o servicio"); }
+
+                foreach (CotizacionDetalleDTO oItem in lstItems.Where(o => o.TipoItem != ConstantesDTO.CotizacionVentaDetalle.TipoItem.Servicio).ToList())
+                {
+
+                    //Se validará los campos de Costo FOB o Valor Unitario si son EDITABLES no estén vacíos
+                    var swValidarCostoFOB = false;
+                    var swValidarValorUni = false;
+                    if (oItem.Features != null)
+                    {
+                        if (oItem.Features.SubPropiedades != null)
+                        {
+                            var oPropCostoFob = oItem.Features.SubPropiedades.FirstOrDefault(x => x.Tag == MultiFlujo.Tag.CotDetalle.Campo.CostoFOB);
+                            if (oPropCostoFob.IsVisible && oPropCostoFob.IsEnabled) { swValidarCostoFOB = true; }
+                            var oPropValUni = oItem.Features.SubPropiedades.FirstOrDefault(x => x.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni);
+                            if (oPropValUni.IsVisible && oPropValUni.IsEnabled) { swValidarValorUni = true; }
+                        }
+                    }
+
+                    if (swValidarCostoFOB)
+                    {
+                        var swDatos = false;
+                        if (oItem.CostoFOB.HasValue)
+                        { if (oItem.CostoFOB.Value > 0) { swDatos = true; } }
+
+                        if (!swDatos) { throw new Exception("No se ha ingresado el COSTO FOB de '" + oItem.Descripcion + "'"); }
+                    }
+
+                    if (swValidarValorUni)
+                    {
+                        var swDatos = false;
+                        if (oItem.VentaUnitaria.HasValue)
+                        { if (oItem.VentaUnitaria.Value > 0) { swDatos = true; } }
+
+                        if (!swDatos) { throw new Exception("No se ha ingresado el VALOR UNITARIO de '" + oItem.Descripcion + "'"); }
+                    }
+
+                }
 
                 //Se realiza lo siguiente:
                 //1. Se totaliza el precio por cada registro de cotizacion detalle (Monto del Producto o Servicio más sus accesorios)
@@ -2858,6 +3280,43 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 }
 
                 if (!swCDItems) { throw new Exception("La cotización no contiene servicios o productos para la venta."); }
+
+                foreach (CotizacionDetalleDTO oItem in lstItems.Where(o => o.TipoItem != ConstantesDTO.CotizacionVentaDetalle.TipoItem.Servicio).ToList())
+                {
+
+                    //Se validará los campos de Costo FOB o Valor Unitario si son EDITABLES no estén vacíos
+                    var swValidarCostoFOB = false;
+                    var swValidarValorUni = false;
+                    if (oItem.Features != null)
+                    {
+                        if (oItem.Features.SubPropiedades != null)
+                        {
+                            var oPropCostoFob = oItem.Features.SubPropiedades.FirstOrDefault(x => x.Tag == MultiFlujo.Tag.CotDetalle.Campo.CostoFOB);
+                            if (oPropCostoFob.IsVisible && oPropCostoFob.IsEnabled) { swValidarCostoFOB = true; }
+                            var oPropValUni = oItem.Features.SubPropiedades.FirstOrDefault(x => x.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni);
+                            if (oPropValUni.IsVisible && oPropValUni.IsEnabled) { swValidarValorUni = true; }
+                        }
+                    }
+
+                    if (swValidarCostoFOB)
+                    {
+                        var swDatos = false;
+                        if (oItem.CostoFOB.HasValue)
+                        { if (oItem.CostoFOB.Value > 0) { swDatos = true; } }
+
+                        if (!swDatos) { throw new Exception("No se ha ingresado el COSTO FOB de '" + oItem.Descripcion + "'"); }
+                    }
+
+                    if (swValidarValorUni)
+                    {
+                        var swDatos = false;
+                        if (oItem.VentaUnitaria.HasValue)
+                        { if (oItem.VentaUnitaria.Value > 0) { swDatos = true; } }
+
+                        if (!swDatos) { throw new Exception("No se ha ingresado el VALOR UNITARIO de '" + oItem.Descripcion + "'"); }
+                    }
+
+                }
 
                 var ventasBL = new VentasBL();
                 var procesoBL = new ProcesosBL();

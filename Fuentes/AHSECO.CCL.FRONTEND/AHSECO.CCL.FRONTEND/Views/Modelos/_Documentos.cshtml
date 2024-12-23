@@ -29,7 +29,7 @@
                 </tbody>
             </table>
                 <div class="pull-right">
-                    <button type="button" class="btn btn-danger btn-sm" id="btnAgregarDocumento" tabindex="20"><i class="fa fa-file" aria-hidden="true"></i>&nbsp;Agregar</button>
+                    <button style="@(ViewBag.PermitirAdjuntarDocumento ? "" : "display:none");" type="button" class="btn btn-danger btn-sm" id="btnAgregarDocumento" tabindex="20"><i class="fa fa-file" aria-hidden="true"></i>&nbsp;Agregar</button>
                 </div>
         </div>
     </div>

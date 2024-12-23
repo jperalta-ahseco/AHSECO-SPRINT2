@@ -77,37 +77,70 @@ namespace AHSECO.CCL.FRONTEND.Core
             }
             public struct CotDetalle
             {
-                public static string CamposGrilla_PRO = "CotDetFields_PRO";
-                public static string CamposGrilla_SER = "CotDetFields_SER";
-                public struct PrecioVenta
+                public struct Boton
                 {
-                    public static string MostrarCostoFOB = "OP01";
-                    public static string MostrarValorUnitario = "OP02";
+                    public static string Guardar = "CD_BTNGUARDAR";
                 }
-                public struct Indicadores
+                public struct Campo
                 {
-                    public static string MostrarTodos = "OP01";
-                    public static string MostrarTieneStock = "OP02";
+                    public static string Codigo = "CD01";
+                    public static string Descrip = "CD02";
+                    public static string DescripAdic = "CD03";
+                    public static string DescripAdic_Textarea = "CD03_TXT";
+                    public static string IndStock = "CD04";
+                    public static string Cantidad = "CD05";
+                    public static string CostoFOB = "CD06";
+                    public static string ValUni = "CD07";
+                    public static string PorcGanan = "CD08";
                 }
             }
             public struct CotDetDespacho
             {
-                public static string CamposGrilla = "Costo_GridFields";
+                public struct Campo
+                {
+                    public static string Dimensiones = "IND01";
+                    public static string CompraLocal = "IND02";
+                    public static string ReqPlaca = "IND03";
+                    public static string GarantAdic = "IND04";
+                    public static string GarantAdic_Combo = "IND05";
+                    public static string ReqCliente = "IND06";
+                    public static string ObsInsta = "IND07";
+                }
+                public struct IndCosto
+                {
+                    public static string LLaveMano = "INDC01";
+                    public static string Insta = "INDC02";
+                    public static string Capa = "INDC03";
+                    public static string Manual = "INDC04";
+                    public static string Video = "INDC05";
+                    public static string MantPrevent = "INDC06";
+                    public static string Calibra = "INDC07";
+                    public static string Flete = "INDC08";
+                }
             }
             public struct CotDetCosto
             {
-                public static string CamposGrilla = "Costo_GridFields";
-                public static string Tabs = "CotDetDesp_TABS";
-            }
-            public struct CotDetActividad
-            {
-                public static string CamposGrilla = "Actividad_GridFields";
+                public struct Boton
+                {
+                    public static string Agregar = "BTNAGREGARCOSTO";
+                    public static string Editar = "BTNEDITARCOSTO";
+                    public static string EditarTAB = "BTNEDITARCOSTOTAB";
+                }
+                public struct Grilla
+                {
+                    public static string GrillaCostos = "GRILLACOSTOS";
+                    public static string GrillaCostosTAB = "GRILLACOSTOSTAB";
+                }
+                public struct Panel
+                {
+                    public static string Destinos = "PNLDESTINOS";
+                }
             }
         }
 
-        public PropiedadControl ObtenerPropiedadesControl(string strTag)
+        public PropertyControl ObtenerPropiedadesControl(string strTag)
         {
-            var oPropCtrl = new PropiedadControl();
+            var oPropCtrl = new PropertyControl();
             oPropCtrl.Tag = strTag;
 
             if (strTag == Tag.Solicitud.RegistrarSolicitud)
@@ -166,25 +199,22 @@ namespace AHSECO.CCL.FRONTEND.Core
 
     }
 
-    public class PropiedadControl
-    {
+    //public class PropertyControl
+    //{
 
-        public PropiedadControl()
-        {
-            this.IsEnabled = false;
-            this.IsVisible = false;
-        }
+    //    public PropertyControl()
+    //    {
+    //        this.IsEnabled = false;
+    //        this.IsVisible = false;
+    //    }
 
-        public PropiedadControl(bool swVisible)
-        {
-            this.IsEnabled = false;
-            this.IsVisible = swVisible;
-        }
-
-        public string Tag { get; set; }
-        public bool IsEnabled { get; set; }
-        public bool IsVisible { get; set; }
-        public object Value { get; set; }
-    }
+    //    public string Tag { get; set; }
+    //    public bool IsEnabled { get; set; }
+    //    public bool IsVisible { get; set; }
+    //    public string IdControl { get; set; }
+    //    public string Nombre { get; set; }
+    //    public string Valor { get; set; }
+    //    public PropertyControl[] SubPropiedades { get; set; }
+    //}
 
 }

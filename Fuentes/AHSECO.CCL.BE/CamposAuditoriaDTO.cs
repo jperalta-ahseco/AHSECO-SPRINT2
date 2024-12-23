@@ -17,7 +17,7 @@ namespace AHSECO.CCL.BE
         public string IpMaquinaModifica { get; set; }
         public bool IsTempRecord { get; set; }
         public bool IsUpdated { get; set; }
-        public object Features { get; set; }
+        public PropertyControl Features { get; set; }
 
         public void CopyProperties<Target>(ref Target target)
         {
@@ -34,4 +34,23 @@ namespace AHSECO.CCL.BE
         }
 
     }
+
+    public class PropertyControl
+    {
+
+        public PropertyControl()
+        {
+            this.IsEnabled = false;
+            this.IsVisible = false;
+        }
+
+        public string Tag { get; set; }
+        public bool IsEnabled { get; set; }
+        public bool IsVisible { get; set; }
+        public string IdControl { get; set; }
+        public string Nombre { get; set; }
+        public string Valor { get; set; }
+        public PropertyControl[] SubPropiedades { get; set; }
+    }
+
 }
