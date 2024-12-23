@@ -583,8 +583,8 @@ var cotvtadet = (function ($, win, doc) {
             $DI_hdnIdCotDet.val(data.Result.Id);
             $DI_txtDescripcionAdic.val(data.Result.DescripcionAdicional);
             $DI_txtCantidad.val(data.Result.Cantidad);
-            $DI_txtCostoFOB.val(data.Result.CostoFOB);
-            $DI_txtValorUnitario.val(data.Result.VentaUnitaria);
+            $DI_txtCostoFOB.val(app.formatearEnteroComa(parseFloat(data.Result.CostoFOB).toFixed(2)));
+            $DI_txtValorUnitario.val(app.formatearEnteroComa(parseFloat(data.Result.VentaUnitaria).toFixed(2)));
             $DI_txtGanancia.val(data.Result.PorcentajeGanancia);
 
             $DI_radTieneStock_Si.prop("checked", false);
@@ -1540,21 +1540,28 @@ var cotvtadet = (function ($, win, doc) {
                     }
                 },
                 {
-                    data: "CodItem",
+                    data: "Features",
                     render: function (data) {
-                        var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
-                        var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                        var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
-                        if ($estadoSol.val() == "CVAL") {
-                            var swVer = false;
-                            //Se valida que el tipo REPUESTOS no modifique FOB
-                            if ($idRolUsuario.val() == $RolVenta_Gerente.val()) {
-                                if ($cmbTipo.val() == $TipoSol_RepOComes.val() || $cmbTipo.val() == $TipoSol_ServYRep.val()) {
-                                    swVer = true;
-                                }
-                            }
-                            if (swVer) { editar = ver; }
+                        var oFeatures = data;
+                        var strCodItem = "";
+                        var arrProp = oFeatures.SubPropiedades;
+                        for (a = 0; a < arrProp.length; a++) {
+                            if (arrProp[a].Nombre == "CodItem") { strCodItem = arrProp[a].Valor; }
                         }
+                        var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
+                        var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                        var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + ',2)"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
+                        //if ($estadoSol.val() == "CVAL") {
+                        //    var swVer = false;
+                        //    //Se valida que el tipo REPUESTOS no modifique FOB
+                        //    if ($idRolUsuario.val() == $RolVenta_Gerente.val()) {
+                        //        if ($cmbTipo.val() == $TipoSol_RepOComes.val() || $cmbTipo.val() == $TipoSol_ServYRep.val()) {
+                        //            swVer = true;
+                        //        }
+                        //    }
+                        //    if (swVer) { editar = ver; }
+                        //}
+                        if (!oFeatures.IsEnabled) { editar = ver; }
                         return '<center>' + hidden + editar + '</center>';
                     }
                 }
@@ -1638,30 +1645,37 @@ var cotvtadet = (function ($, win, doc) {
                     }
                 },
                 {
-                    data: "CodItem",
+                    data: "Features",
                     render: function (data) {
-                        var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
-                        var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                        var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
-                        var quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarCotDetItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',2)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
-                        if ($estadoSol.val() != "SCOT") { quitar = ""; }
-                        if ($estadoSol.val() == "CVAL") {
-                            var swVer = true;
-                            //Se valida si la cotizacion va a ser valorizada
-                            if ($DI_pnlCostos_PrecioVenta.css("display") != "none") {
-                                if ($PermitirEditarValorizacion.val() == "S") {
-                                    swVer = false;
-                                }
-                            }
-                            //Se valida la GANANCIA
-                            if ($DI_pnlCostos_Ganancia.css("display") != "none") {
-                                if ($PermitirEditarGanancia.val() == "S") { swVer = false; }
-                            }
-                            if (swVer) { editar = ver; }
+                        var oFeatures = data;
+                        var strCodItem = "";
+                        var arrProp = oFeatures.SubPropiedades;
+                        for (a = 0; a < arrProp.length; a++) {
+                            if (arrProp[a].Nombre == "CodItem") { strCodItem = arrProp[a].Valor; }
                         }
-                        else {
-                            if ($estadoSol.val() != "SCOT") { editar = ver; }
-                        }
+                        var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
+                        var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                        var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + ',2)"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
+                        var quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarCotDetItem(' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + ',2)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                        //if ($estadoSol.val() != "SCOT") { quitar = ""; }
+                        //if ($estadoSol.val() == "CVAL") {
+                        //    var swVer = true;
+                        //    //Se valida si la cotizacion va a ser valorizada
+                        //    if ($DI_pnlCostos_PrecioVenta.css("display") != "none") {
+                        //        if ($PermitirEditarValorizacion.val() == "S") {
+                        //            swVer = false;
+                        //        }
+                        //    }
+                        //    //Se valida la GANANCIA
+                        //    if ($DI_pnlCostos_Ganancia.css("display") != "none") {
+                        //        if ($PermitirEditarGanancia.val() == "S") { swVer = false; }
+                        //    }
+                        //    if (swVer) { editar = ver; }
+                        //}
+                        //else {
+                        //    if ($estadoSol.val() != "SCOT") { editar = ver; }
+                        //}
+                        if (!oFeatures.IsEnabled) { editar = ver; quitar = ""; }
                         return '<center>' + hidden + editar + ' ' + quitar + '</center>';
                     }
                 }

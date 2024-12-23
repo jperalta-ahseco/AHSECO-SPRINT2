@@ -83,15 +83,16 @@ namespace AHSECO.CCL.FRONTEND.Core
                 }
                 public struct Campo
                 {
-                    public static string Codigo = "CD01";
-                    public static string Descrip = "CD02";
-                    public static string DescripAdic = "CD03";
-                    public static string DescripAdic_Textarea = "CD03_TXT";
-                    public static string IndStock = "CD04";
-                    public static string Cantidad = "CD05";
-                    public static string CostoFOB = "CD06";
-                    public static string ValUni = "CD07";
-                    public static string PorcGanan = "CD08";
+                    public static string ID = "CD01";
+                    public static string Codigo = "CD02";
+                    public static string Descrip = "CD03";
+                    public static string DescripAdic = "CD04";
+                    public static string DescripAdic_Textarea = "CD04_TXT";
+                    public static string IndStock = "CD05";
+                    public static string Cantidad = "CD06";
+                    public static string CostoFOB = "CD07";
+                    public static string ValUni = "CD08";
+                    public static string PorcGanan = "CD09";
                 }
             }
             public struct CotDetDespacho

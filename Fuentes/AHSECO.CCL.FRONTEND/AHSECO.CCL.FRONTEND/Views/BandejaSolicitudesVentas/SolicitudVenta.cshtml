@@ -370,7 +370,7 @@
                                                                 <label for="txtObs">Porcentaje de Descuento (%): </label>
                                                                 <div class="col-md-12">
                                                                     <div class="form-group">
-                                                                        <input @(ViewBag.PermitirEditarPorcentDscto ? "" : "disabled") placeholder="<Optional>" type="number" min="0" max="100" class="form-control input-sm" id="txtPorcentajeDscto" maxlength="6" value="@ViewBag.PorcentajeDscto" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if (this.value.length > 3) {this.value = this.value.slice(0,3); }">
+                                                                        <input @(ViewBag.PermitirEditarPorcentDscto ? "" : "disabled") placeholder="<Optional>" type="number" min="0" max="100" class="form-control input-sm" id="txtPorcentajeDscto" maxlength="6" value="@ViewBag.PorcentajeDscto" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if (parseFloat(this.value) > 100) { this.value = this.value.slice(0, 2); }">
                                                                     </div>
                                                                 </div>
                                                             </div>

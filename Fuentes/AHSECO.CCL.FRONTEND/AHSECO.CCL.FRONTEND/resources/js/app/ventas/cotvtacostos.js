@@ -113,7 +113,7 @@
         $CI_btnCerrar.click(cerrarModalCostosItem);
         
         cargarCiclosPreventivos();
-        //cargarTipoCostos();
+        cargarTipoCostos();
 
         $CI_cmbCDItem.on("change", cargarCotDetSeleccionada);
 
@@ -401,6 +401,23 @@
             app.llenarComboMultiResult($CI_cmbCicloPreventivo, data.Result, null, " ", "-- Ninguno --", filters);
         }
         return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, null);
+    }
+
+    function cargarTodoTipoCostos() {
+        
+        var method = "POST";
+        var url = "BandejaSolicitudesVentas/ObtenerTipoCostos";
+        var oValores = {
+            CotizacionDespacho: {}
+        };
+        var objParam = JSON.stringify(oValores);
+        var fnDoneCallback = function (data) {
+            var filters = {};
+            filters.placeholder = "-- Seleccione --";
+            filters.allowClear = false;
+            app.llenarComboMultiResult($CI_cmbTipoCosto, data.Result, $("#modalCostoItem"), " ", "-- Seleccione --", filters);
+        }
+        return app.llamarAjaxNoLoading(method, url, objParam, fnDoneCallback, null, null, null);
     }
 
     function cargarTipoCostos() {
@@ -924,6 +941,9 @@
 
         //Se define la opcion de grilla para saber que tipo de datos se guardan
         $CI_opcGrilla.val(opcGrilla);
+
+        //Se carga todos los tipos de costos para los TABS
+        if (opcGrilla == "2") { cargarTodoTipoCostos(); }
 
         method = "POST";
         url = "BandejaSolicitudesVentas/CargarDatosCostoItem";
