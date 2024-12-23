@@ -307,11 +307,11 @@ namespace AHSECO.CCL.BL.Ventas
             }
         }
 
-        public ResponseDTO<GuiaDTO> ConsultaGuia(long codSolicitud, string tipo)
+        public ResponseDTO<GuiaDTO> ConsultaGuia(long codSolicitud, string tipo, string stock)
         {
             try
             {
-                var result = Repository.ConsultaGuia(codSolicitud,tipo);
+                var result = Repository.ConsultaGuia(codSolicitud,tipo, stock);
                 return new ResponseDTO<GuiaDTO>(result);
             }
             catch (Exception ex)

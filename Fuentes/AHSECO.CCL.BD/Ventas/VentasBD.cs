@@ -1655,7 +1655,7 @@ namespace AHSECO.CCL.BD.Ventas
             }
         }
 
-        public GuiaDTO ConsultaGuia(long codSolicitud, string tipo)
+        public GuiaDTO ConsultaGuia(long codSolicitud, string tipo, string stock)
         {
             Log.TraceInfo(Utilidades.GetCaller());
             using (var connection = Factory.ConnectionSingle())
@@ -1666,7 +1666,7 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("Tipo", tipo);
                 SqlCommand command;
                 var result = new GuiaDTO();
-                string query = "exec USP_CREAR_GUIA @CodigoSol=" + codSolicitud.ToString() + ",@Tipo='"+tipo+"'";
+                string query = "exec USP_CREAR_GUIA @CodigoSol=" + codSolicitud.ToString() + ",@Tipo='"+tipo+ "',@Stock='"+ stock + "'";
                 connection.Open();
                 command = new SqlCommand(query, connection);
 

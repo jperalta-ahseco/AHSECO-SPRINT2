@@ -685,10 +685,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         }
 
         [HttpPost]
-        public JsonResult ExportarDocumentosVentas(string tipo, long codSolicitud)
+        public JsonResult ExportarDocumentosVentas(string tipo, long codSolicitud, string stock)
         {
             var ventasBL = new VentasBL();
-            var datosGuia = ventasBL.ConsultaGuia(codSolicitud,tipo).Result;
+            var datosGuia = ventasBL.ConsultaGuia(codSolicitud,tipo, stock).Result;
 
             var hssfworkbook = new HSSFWorkbook();
 

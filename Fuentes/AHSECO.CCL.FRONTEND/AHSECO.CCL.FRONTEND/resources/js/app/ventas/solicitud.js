@@ -56,8 +56,9 @@
     var $tblHistorial = $("#tablaHistorial");
     var $txtCodCotizacion = $("#txtCodCotizacion");
     var $btnImprimirCotizacion = $("#btnImprimirCotizacion");
-    var $btnGuiaBO = $("#btnGuiaBO");
-    var $btnGuiaPedido = $("#btnGuiaPedido");
+    var $btnGuiaBOSS = $("#btnGuiaBOSS");
+    var $btnGuiaPedidoCS = $("#btnGuiaPedidoCS");
+    var $btnGuiaPedidoSS = $("#btnGuiaPedidoSS");
     var $divDatosLicitacion = $("#divDatosLicitacion");
     var $txtNroProceso = $("#txtNroProceso");
     var $txtTipoProceso = $("#txtTipoProceso");
@@ -227,7 +228,8 @@
     var $btnRegistrarSerie = $("#btnRegistrarSerie");
     var $btnActualizarGestion = $("#btnActualizarGestion");
     var $btnEditarGestion = $("#btnEditarGestion");
-    var $btnEnviarGuia = $("#btnEnviarGuia");
+    var $btnEnviarGuiaCS = $("#btnEnviarGuiaCS");
+    var $btnEnviarGuiaSS = $("#btnEnviarGuiaSS");
     var $btnGuardarGestionLogistica = $("#btnGuardarGestionLogistica");
     var $btnEnviarGestionDespacho = $("#btnEnviarGestionDespacho");
     var $btnEditarGestionLogistica = $("#btnEditarGestionLogistica");
@@ -236,9 +238,9 @@
     var $TotalSeriesCS = $("#TotalSeriesCS");
     var $TotalSeriesSS = $("#TotalSeriesSS");
     var $btnFinalizarVenta = $("#btnFinalizarVenta");
-    var $btnEnviarGuiaBO = $("#btnEnviarGuiaBO");
-    var $btnObservarGestion = $("#btnObservarGestion");
-    var $btnAprobarGestion = $("#btnAprobarGestion");
+    var $btnEnviarGuiaBOSS = $("#btnEnviarGuiaBOSS");
+    var $btnObservarGestion = $("#btnObservarGestionSS");
+    var $btnAprobarGestion = $("#btnAprobarGestionSS");
     var $dateIngresoAlmacenSE = $("#dateIngresoAlmacenSE");
     var $btnGuardarImportacion = $("#btnGuardarImportacion");
     var $txtCodigoPedidoSE = $("#txtCodigoPedidoSE");
@@ -259,6 +261,7 @@
     var $EnvioServicio = $("#EnvioServicio");
     var $btnGuardarFactura = $("#btnGuardarFactura");
     var $btnEnviarGestionDespachoSE = $("#btnEnviarGestionDespachoSE");
+
 
     /*Tecnicos:*/
     var $btnBuscarTecnicos = $('#btnBuscarTecnicos');
@@ -422,20 +425,22 @@
         $btnBuscarHistorial.click($btnHistorial_click);
         $btnImprimirCotizacion.click($btnImprimirCotizacion_click);
         $btnAgregarDetalle.click($btnAgregarDetalle_click);
-        $btnGuiaBO.click($btnGuiaBO_click);
-        $btnGuiaPedido.click($btnGuiaPedido_click);
+        $btnGuiaBOSS.click($btnGuiaBO_click);
+        $btnGuiaPedidoCS.click($btnGuiaPedidoCS_click);
+        $btnGuiaPedidoSS.click($btnGuiaPedidoSS_click);
         $btnGuardarGestion.click($btnGuardarGestion_click);
         $cmbTipoVenta.on("change", changeTipoVenta);
         $dateOrdenCompra.on("change", $dateOrdenCompra_change);
         $btnRegistrarSerie.click($btnRegistrarSerie_click);
         $btnEditarGestion.click($btnEditarGestion_click);
         $btnActualizarGestion.click($btnActualizarGestion_click);
-        $btnEnviarGuia.click($btnEnviarGuia_click);
+        $btnEnviarGuiaCS.click($btnEnviarGuiaCS_click);
+        $btnEnviarGuiaSS.click($btnEnviarGuiaSS_click)
         $btnGuardarGestionLogistica.click($btnGuardarGestionLogistica_click);
         $btnEnviarGestionDespacho.click($btnEnviarGestionDespacho_click);
         $btnEditarGestionLogistica.click($btnEditarGestionLogistica_click);
         $btnFinalizarVenta.click($btnFinalizarVenta_click);
-        $btnEnviarGuiaBO.click($btnEnviarGuiaBO_click);
+        $btnEnviarGuiaBOSS.click($btnEnviarGuiaBO_click);
         $btnObservarGestion.click($btnObservarGestion_click);
         $btnAprobarGestion.click($btnAprobarGestion_click);
         $btnGuardarImportacion.click($btnGuardarImportacion_click);
@@ -474,7 +479,6 @@
         $btnGuardarProg.click($btnGuardarProg_click);
         $btnRegistrarFechaProg.click($btnRegistrarFechaProg_click);
         $btnEnviarGestionDespachoSE.click($btnEnviarGestionDespachoSE_click);
-        
     };
 
     function $btnRegistrarFechaProg_click() {
@@ -715,13 +719,21 @@
 
         if (tecnicos.length > 0) {
             $NoExisteTec.hide();
-            $btnBuscarTecnicos.hide();
-            $btnAñadirTecnico.hide();
         }
-        else {
-            $btnBuscarTecnicos.show();
-            $btnAñadirTecnico.show();
+
+        if ($idRolUsuario.val() === "SGI_VENTA_COORDINASERV" || 
+            $idRolUsuario.val() === "SGI_VENTA_COORDINAATC") {
+            if (tecnicos.length > 0) {
+                $btnBuscarTecnicos.hide();
+                $btnAñadirTecnico.hide();
+            }
+            else {
+                $btnBuscarTecnicos.show();
+                $btnAñadirTecnico.show();
+            }
         }
+
+     
         
         var columns = [
             {
@@ -1951,10 +1963,13 @@
             app.message.error("Validación", "Debe ingresar el N° de Guia de Remision de los productos con stock");
             return false;
         }
-        if (parseInt($ContadorSeriesCS.val()) != parseInt($TotalSeriesCS.val())) {
-            app.message.error("Validación", "Debe ingresar todas las series de los productos con stock antes de enviar a gestión.");
-            return false;
+        if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03" || $TipoSolicitud.val() === "TSOL05") {
+            if (parseInt($ContadorSeriesCS.val()) != parseInt($TotalSeriesCS.val())) {
+                app.message.error("Validación", "Debe ingresar todas las series de los productos con stock antes de enviar a gestión.");
+                return false;
+            }
         }
+
 
         var fnSi = function () {
 
@@ -1994,10 +2009,13 @@
             app.message.error("Validación", "Debe ingresar el N° de Guia de Remision de los productos sin stock");
             return false;
         }
-        if (parseInt($ContadorSeriesSS.val()) != parseInt($TotalSeriesSS.val())) {
-            app.message.error("Validación", "Debe ingresar todas las series de los productos sin stock antes de enviar a gestión.");
-            return false;
+        if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03" || $TipoSolicitud.val() === "TSOL05") {
+            if (parseInt($ContadorSeriesSS.val()) != parseInt($TotalSeriesSS.val())) {
+                app.message.error("Validación", "Debe ingresar todas las series de los productos sin stock antes de enviar a gestión.");
+                return false;
+            }
         }
+
 
         var fnSi = function () {
 
@@ -2115,7 +2133,7 @@
 
     }
 
-    function $btnEnviarGuia_click() {
+    function $btnEnviarGuiaCS_click() {
         var documento_guiaPedido = 0;
         adjuntos.forEach(function (currentValue, index, arr) {
             if (adjuntos[index].CodigoTipoDocumento == "DVT07") {
@@ -2131,7 +2149,42 @@
         var fnSi = function () {
 
             var m = "POST";
-            var url = "BandejaSolicitudesVentas/EnviarGuiaPedidos?codigoSolicitud=" + $numeroSolicitud.val() + "&codigoWorkFlow=" + $codigoWorkflow.val() + "&stock=" + $CodStock.val();
+            var url = "BandejaSolicitudesVentas/EnviarGuiaPedidos?codigoSolicitud=" + $numeroSolicitud.val() + "&codigoWorkFlow=" + $codigoWorkflow.val() + "&stock=S";
+            var objParam = '';
+            var fnDoneCallback = function (data) {
+                var fnCallback = function () {
+                    location.reload();
+                };
+                if (data.Result.Codigo > 0) {
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+                else {
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+
+            };
+            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.EnvioGuiaPedido);
+        }
+        return app.message.confirm("Ventas", "¿Está seguro que desea enviar la Guia de Pedido?", "Sí", "No", fnSi, null);
+    }
+
+    function $btnEnviarGuiaSS_click() {
+        var documento_guiaPedido = 0;
+        adjuntos.forEach(function (currentValue, index, arr) {
+            if (adjuntos[index].CodigoTipoDocumento == "DVT07") {
+                documento_guiaPedido = 1;
+            }
+        });
+
+        if (documento_guiaPedido === 0) {
+            app.message.error("Validación", "Debe adjuntar un documento de guía de pedido.");
+            return false;
+        }
+
+        var fnSi = function () {
+
+            var m = "POST";
+            var url = "BandejaSolicitudesVentas/EnviarGuiaPedidos?codigoSolicitud=" + $numeroSolicitud.val() + "&codigoWorkFlow=" + $codigoWorkflow.val() + "&stock=N";
             var objParam = '';
             var fnDoneCallback = function (data) {
                 var fnCallback = function () {
@@ -2322,11 +2375,29 @@
         app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, mensajes.GenerarCotizacion);
     }
 
-    function $btnGuiaPedido_click() {
+    function $btnGuiaPedidoCS_click() {
         var num_solicitud = $numeroSolicitud.val();
         var tipo = "GP"
         method = 'POST';
-        url = 'BandejaHistorialCotizacion/ExportarDocumentosVentas?tipo=' + tipo + "&codSolicitud=" + num_solicitud;
+        url = 'BandejaHistorialCotizacion/ExportarDocumentosVentas?tipo=' + tipo + "&codSolicitud=" + num_solicitud + "&stock=S";
+
+        objParam = '';
+
+        var fnDoneCallBack = function (data) {
+            app.abrirVentana("BandejaHistorialCotizacion/ExportarFileGuiaPedido?nombreDoc=" + data.Archivo);
+            app.message.success("Ventas", "Se generó la guía de pedidos correctamente.")
+        }
+        var fnFailCallBack = function () {
+
+        }
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, mensajes.GenerarGuiaPedidos);
+    }
+
+    function $btnGuiaPedidoSS_click() {
+        var num_solicitud = $numeroSolicitud.val();
+        var tipo = "GP"
+        method = 'POST';
+        url = 'BandejaHistorialCotizacion/ExportarDocumentosVentas?tipo=' + tipo + "&codSolicitud=" + num_solicitud + "&stock=N";
 
         objParam = '';
 
@@ -2342,9 +2413,9 @@
 
     function $btnGuiaBO_click() {
         var num_solicitud = $numeroSolicitud.val();
-        var tipo = "BO"
+        var tipo = "BO";
         method = 'POST';
-        url = 'BandejaHistorialCotizacion/ExportarDocumentosVentas?tipo=' + tipo + "&codSolicitud=" + num_solicitud;
+        url = 'BandejaHistorialCotizacion/ExportarDocumentosVentas?tipo=' + tipo + "&codSolicitud=" + num_solicitud +"&stock=N";
         objParam = '';
 
         var fnDoneCallBack = function (data) {
@@ -2556,7 +2627,7 @@
                     else {
                         $txtCodigoPedidoSE.val(data.Result.DespachoCabeceraSinStock.NumeroPedido);
                         var fechaIngresoAlmacen = data.Result.DespachoCabeceraSinStock.FechaIngreso;
-                        if (fechaIngresoAlmacen == null && fechaIngresoAlmacen === "") {
+                        if (fechaIngresoAlmacen != null && fechaIngresoAlmacen != "") {
                             $dateIngresoAlmacenSE.val(data.Result.DespachoCabeceraSinStock.FechaIngreso);
                         }
                         
@@ -2588,7 +2659,7 @@
                     }
 
                     var fecha_entregapedidoSE = data.Result.DespachoCabeceraSinStock.FechaEntrega;
-                    if (fecha_entregapedidoSE == null && fecha_entregapedidoSE === "") {
+                    if (fecha_entregapedidoSE != null && fecha_entregapedidoSE != "") {
                         $dateEntregaPedidoSE.val(data.Result.DespachoCabeceraSinStock.FechaEntrega);
                     }
                     
@@ -2598,13 +2669,25 @@
                     $txtNumeroGuiaRemisionSE.val(data.Result.DespachoCabeceraSinStock.NumeroGuiaRemision);
 
                     if (data.Result.DespachoCabeceraConStock.CodigoSolicitud > 0) {
-                        $dateFactura.val(data.Result.DespachoCabeceraConStock.FechaFacturaServicio);
+                        if (data.Result.DespachoCabeceraConStock.FechaFacturaServicio != "") {
+                            $dateFactura.val(data.Result.DespachoCabeceraConStock.FechaFacturaServicio);
+                        }
+                        else {
+                            $dateFactura.val(hoy());
+                        }
+
                         $txtNumeroFacturaServ.val(data.Result.DespachoCabeceraConStock.NumeroFacturaServicio);
                         $dateProgramacionServ.val(data.Result.DespachoCabeceraConStock.FechaProgramacionTecnico);
                     }
 
                     if (data.Result.DespachoCabeceraSinStock.CodigoSolicitud > 0) {
-                        $dateFactura.val(data.Result.DespachoCabeceraSinStock.FechaFacturaServicio);
+                        if (data.Result.DespachoCabeceraSinStock.FechaFacturaServicio != "") {
+                            $dateFactura.val(data.Result.DespachoCabeceraSinStock.FechaFacturaServicio);
+                        }
+                        else {
+                            $dateFactura.val(hoy());
+                        }
+                        
                         $txtNumeroFacturaServ.val(data.Result.DespachoCabeceraSinStock.NumeroFacturaServicio);
                         $dateProgramacionServ.val(data.Result.DespachoCabeceraSinStock.FechaProgramacionTecnico);
                     }
@@ -2642,7 +2725,7 @@
                     }
 
                     var fecha_entrega = data.Result.DespachoCabeceraConStock.FechaEntrega;
-                    if (fecha_entrega == null && fecha_entrega === "") {
+                    if (fecha_entrega != null && fecha_entrega != "") {
                         $dateEntregaPedidoCE.val(data.Result.DespachoCabeceraConStock.FechaEntrega);
                     }
                    
@@ -2683,12 +2766,18 @@
                     cargarTablaMainTecnicos(tecnicosAsig);
                 }
                 else {
-                    $btnBuscarTecnicos.show();
-                    $btnAñadirTecnico.show();
+                    if (($idRolUsuario.val() === "SGI_VENTA_COORDINASERV" || $idRolUsuario.val() === "SGI_VENTA_COORDINAATC")) {
+                        $btnBuscarTecnicos.show();
+                        $btnAñadirTecnico.show();
+                    }
+                   
                 }
 
                 if (($idRolUsuario.val() === "SGI_VENTA_COORDINASERV" || $idRolUsuario.val() === "SGI_VENTA_COORDINAATC") && $estadoSol.val() === "PRVT") {
-                    $btnGuardarProg.show();
+                    if (data.Result.ContadorCabecera.EnvioServicio < 1) {
+                        $btnGuardarProg.show();
+                    }
+                   
                 }
 
 

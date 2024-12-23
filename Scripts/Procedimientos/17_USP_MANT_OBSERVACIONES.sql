@@ -10,7 +10,7 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_MANT_OBSERVACIONES]
 	,@isOBSERVACION				VARCHAR(8000)
 	,@isNOMBRE_USUARIO			VARCHAR(250)
 	,@isPERFIL_USUARIO			VARCHAR(100)
-	,@isCODREF					VARCHAR(50)
+	,@isCODREF					VARCHAR(50) = ''
 	,@isUSR_REG					VARCHAR(50)
 )
 /*=======================================================================================================
