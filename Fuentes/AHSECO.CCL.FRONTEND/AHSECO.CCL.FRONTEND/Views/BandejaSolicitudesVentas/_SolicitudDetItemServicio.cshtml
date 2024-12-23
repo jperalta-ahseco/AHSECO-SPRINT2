@@ -50,13 +50,13 @@
                                     <div class="col-md-4">
                                         <label for="DS_txtPrecio">Precio: </label>
                                         <div class="form-group">
-                                            <input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") placeholder="Precio" type="text" maxlength="10" style="text-align:left" class="form-control input-sm" id="DS_txtPrecio" onkeyup="multiplicar();" value="" onchange="(function(el){el.value=parseFloat(el.value).toFixed(2);})(this)" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" onfocus="this.value = app.formatearEnteroSinComa(this.value);" onblur="this.value = app.formatearEnteroComa(parseFloat(el.value).toFixed(2));">
+                                            <input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") placeholder="Precio" type="text" maxlength="10" style="text-align:left" class="form-control input-sm" id="DS_txtPrecio" onkeyup="multiplicar();" value="" onchange="(function(el){el.value=app.formatearEnteroComa(parseFloat(el.value).toFixed(2));})(this)" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" onfocus="this.value = app.formatearEnteroSinComa(this.value);" onblur="this.value = app.formatearEnteroComa(parseFloat(el.value).toFixed(2));">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <label for="DS_txtTotalVenta">Venta Total: </label>
                                         <div class="form-group">
-                                            <input disabled type="text" maxlength="15" style="text-align:left" class="form-control input-sm" id="DS_txtTotalVenta" value="">
+                                            <input disabled type="text" maxlength="15" style="text-align:left" class="form-control input-sm" id="DS_txtTotalVenta" value="" onchange="(function(el){el.value=app.formatearEnteroComa(parseFloat(el.value).toFixed(2));})(this)" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" onfocus="this.value = app.formatearEnteroSinComa(this.value);" onblur="this.value = app.formatearEnteroComa(parseFloat(el.value).toFixed(2));">
                                         </div>
                                     </div>
                                 </div>
@@ -112,6 +112,6 @@
         cantidad = parseInt($("#DS_txtCantidad").val())
         precio = parseFloat($("#DS_txtPrecio").val())
         total = cantidad * precio;
-        $("#DS_txtTotalVenta").val(total.toFixed(2));
+        $("#DS_txtTotalVenta").val(app.formatearEnteroComa(total.toFixed(2)));
     }
 </script>

@@ -474,6 +474,7 @@
         $btnGuardarProg.click($btnGuardarProg_click);
         $btnRegistrarFechaProg.click($btnRegistrarFechaProg_click);
         $btnEnviarGestionDespachoSE.click($btnEnviarGestionDespachoSE_click);
+        
     };
 
     function $btnRegistrarFechaProg_click() {
@@ -4031,9 +4032,9 @@
             $DS_txtCodigo.val(codigo.substring(codigo.length - 6));
             $DS_txtDescripcion.val(data.Result.Descripcion);
             $DS_txtCantidad.val(data.Result.Cantidad);
-            if (data.Result.VentaUnitaria != null) { $DS_txtPrecio.val(data.Result.VentaUnitaria.toFixed(2)); }
+            if (data.Result.VentaUnitaria != null) { $DS_txtPrecio.val(app.formatearEnteroComa(data.Result.VentaUnitaria.toFixed(2))); }
             else { $DS_txtPrecio.val(""); }
-            if (data.Result.VentaTotalSinIGV != null) { $DS_txtTotalVenta.val(data.Result.VentaTotalSinIGV.toFixed(2)); }
+            if (data.Result.VentaTotalSinIGV != null) { $DS_txtTotalVenta.val(app.formatearEnteroComa(data.Result.VentaTotalSinIGV.toFixed(2))); }
             else { $DS_txtTotalVenta.val(""); }
             //detalleServicios = data.Result.DetallesServicio;
             if (data.Result.DetallesServicio != null) { contadorDetalle = data.Result.DetallesServicio.length; }
