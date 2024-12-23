@@ -42,6 +42,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         const string TAG_ConceptosVenta = "ConceptosVenta";
         const string TAG_CDI = "CDItems";
         const string TAG_CDCI_CotDetItem = "CostoItemsCDI";
+        const string TAG_CDCI_CotDetItem_BKP = "CostoItemsCDI_BKP";
         const string TAG_CDCI_Tabs = "CostoItemsTab";
 
         const string opcTablaTemporal = "1";
@@ -1224,13 +1225,22 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             //lstProp.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetCosto.Grilla.GrillaCostos, IsEnabled = true, IsVisible = true, IdControl = "DI_tblCostos" });
             //lstProp.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetCosto.Grilla.GrillaCostosTAB, IsEnabled = true, IsVisible = true, IdControl = "" });
 
-            //El código de COTIZACION DETALLE se desahabilita algunos campos por defecto
+            //En COTIZACION DETALLE se inicializa algunos campos por defecto
             lstProp.ForEach(pc =>
             {
                 if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ID) { pc.IsEnabled = false; }
                 if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.Codigo) { pc.IsEnabled = false; }
                 if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.PorcGanan) { pc.IsEnabled = false; }
                 if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.Descrip) { pc.IsEnabled = false; }
+                if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.GarantAdic_Combo) { pc.IsEnabled = false; }
+                if (oItem.CotizacionDespacho != null)
+                {
+                    if (oItem.CotizacionDespacho.IndGarantiaAdicional.HasValue)
+                    {
+                        if (oItem.CotizacionDespacho.IndGarantiaAdicional.Value)
+                        { if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.GarantAdic_Combo) { pc.IsEnabled = true; } }
+                    }
+                }
             });
 
             //Deshabilitar campos por ESTADO DE SOLICITUD
@@ -1355,13 +1365,17 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 if (!swTieneStock)
                                 {
                                     if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.CostoFOB) { pc.IsVisible = true; pc.IsEnabled = false; }
-                                }
-                                if (oItem.CostoFOB.HasValue)
-                                {
-                                    if (oItem.CostoFOB.Value > 0)
+                                    if (oItem.CostoFOB.HasValue)
                                     {
-                                        if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = true; }
+                                        if (oItem.CostoFOB.Value > 0)
+                                        {
+                                            if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = true; }
+                                        }
                                     }
+                                }
+                                else
+                                {
+                                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = true; }
                                 }
                             }
                         });
@@ -1406,13 +1420,17 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 if (!swTieneStock)
                                 {
                                     if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.CostoFOB) { pc.IsVisible = true; pc.IsEnabled = false; }
-                                }
-                                if (oItem.CostoFOB.HasValue)
-                                {
-                                    if (oItem.CostoFOB.Value > 0)
+                                    if (oItem.CostoFOB.HasValue)
                                     {
-                                        if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = true; }
+                                        if (oItem.CostoFOB.Value > 0)
+                                        {
+                                            if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = true; }
+                                        }
                                     }
+                                }
+                                else
+                                {
+                                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = true; }
                                 }
                             }
                         });
@@ -2927,6 +2945,16 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                 VariableSesion.setObject(TAG_CDCI_CotDetItem, lstCostos);
 
+                List<CotDetCostoDTO> lstCostosBKP = new List<CotDetCostoDTO>();
+
+                lstCostos.ForEach(x => {
+                    var oItemBKP = new CotDetCostoDTO();
+                    x.CopyProperties(ref oItemBKP);
+                    lstCostosBKP.Add(oItemBKP);
+                });
+
+                VariableSesion.setObject(TAG_CDCI_CotDetItem_BKP, lstCostosBKP);
+
                 return Json(new ResponseDTO<CotizacionDetalleDTO>(itemCotDet));
             }
             catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
@@ -3218,6 +3246,30 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems_1);
 
                 return Json(response);
+            }
+            catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
+        }
+
+        [HttpPost]
+        public JsonResult CancelarCotDetItem(CotizacionDetalleDTO CotizacionDetalle)
+        {
+            try
+            {
+                List<CotizacionDetalleDTO> lstItems = GetCotDetItems(opcTablaTemporal);
+
+                CotizacionDetalleDTO CotDetItem = lstItems.FirstOrDefault(x => x.Id == CotizacionDetalle.Id);
+
+                if (CotDetItem != null)
+                {
+                    if (VariableSesion.getObject(TAG_CDCI_CotDetItem_BKP) != null)
+                    {
+                        List<CotDetCostoDTO> lstCostosBKP = (List<CotDetCostoDTO>)VariableSesion.getObject(TAG_CDCI_CotDetItem_BKP);
+                        CotDetItem.CotizacionCostos = lstCostosBKP.ToArray();
+                        AddModifyCDI(CotDetItem);
+                    }
+                }
+
+                return Json(new ResponseDTO<CotizacionDetalleDTO>(CotDetItem));
             }
             catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
         }

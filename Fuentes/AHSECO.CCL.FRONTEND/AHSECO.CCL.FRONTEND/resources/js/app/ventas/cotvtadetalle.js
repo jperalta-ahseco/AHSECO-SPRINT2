@@ -1416,7 +1416,7 @@ var cotvtadet = (function ($, win, doc) {
         var objParam = JSON.stringify(objDatos);
 
         var fnDoneCallBack = function (data) {
-            cerrarModalDetItem();
+            $('#modalDetalleItem').modal('hide');
             cargarTablaCotDet(data);
             if (opcGrillaItems == "2") {
                 cargarTablaDetCotCostos(data);
@@ -1431,7 +1431,20 @@ var cotvtadet = (function ($, win, doc) {
     }
 
     function cerrarModalDetItem() {
-        $('#modalDetalleItem').modal('hide');
+
+        method = "POST";
+        url = "BandejaSolicitudesVentas/CancelarCotDetItem";
+        var objFiltros = {
+            CotizacionDetalle: { Id: $DI_hdnIdCotDet.val() }
+        };
+        var objParam = JSON.stringify(objFiltros);
+
+        var fnDoneCallBack = function (data) {
+            $('#modalDetalleItem').modal('hide');
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+        
     }
 
     function grabarDatosCotDet() {

@@ -891,7 +891,7 @@ var app = (function ($, win, doc) {
     function formatearEnteroComa(val) {
         if (val == null) { return null; }
         if (val == undefined) { return ""; }
-        if (val == "") { return ""; }
+        if (val == "" || val == "NaN") { return ""; }
         val += '';
         x = val.split('.');
         x1 = x[0];
@@ -904,7 +904,7 @@ var app = (function ($, win, doc) {
     function formatearEnteroSinComa(val) {
         if (val == null) { return null; }
         if (val == undefined) { return null; }
-        if (val == "") { return null; }
+        if (val == "" || val == "NaN") { return null; }
         var valAux = val;
         var nIni = 1;
         var nFin = valAux.length;
