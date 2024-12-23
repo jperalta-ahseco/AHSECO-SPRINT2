@@ -4604,7 +4604,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         }
 
         [HttpPost]
-        public JsonResult EnviarGestionVentaConStock(long codigoSolicitud, long codigoWorkFlow)
+        public JsonResult EnviarGestionVentaConStock(long codigoSolicitud, long codigoWorkFlow, string tipoVenta)
         {
             var result = new RespuestaDTO();
             var ventasBL = new VentasBL();
@@ -4647,23 +4647,27 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         result.Codigo = 1;
                         result.Mensaje = "Se realizó el envio de la gestión de la solicitud N° " + codigoSolicitud.ToString();
                         #region Envio Correo Servicio Tecnico
-                        //Envio de correo:
-                        var filtros2 = new FiltroPlantillaDTO();
-                        filtros2.CodigoProceso = 1;
-                        filtros2.CodigoPlantilla = "PLANSSERCS";
-                        filtros2.Usuario = User.ObtenerUsuario();
-                        filtros2.Codigo = Convert.ToInt32(codigoSolicitud);
+                        if(tipoVenta == "TSOL05") //Solo para equipos:
+                        {
+                            //Envio de correo:
+                            var filtros2 = new FiltroPlantillaDTO();
+                            filtros2.CodigoProceso = 1;
+                            filtros2.CodigoPlantilla = "PLANSSERCS";
+                            filtros2.Usuario = User.ObtenerUsuario();
+                            filtros2.Codigo = Convert.ToInt32(codigoSolicitud);
 
-                        var datos_correo2 = plantillasBL.ConsultarPlantillaCorreo(filtros2).Result;
-                        var respuesta2 = Utilidades.Send(datos_correo2.To, datos_correo2.CC, "", datos_correo2.Subject, datos_correo2.Body, null, "");
-                        if(respuesta2 != "OK")
-                        {
-                            Log.TraceInfo("Solicitud N° " + codigoSolicitud.ToString() + ":" + respuesta2);
+                            var datos_correo2 = plantillasBL.ConsultarPlantillaCorreo(filtros2).Result;
+                            var respuesta2 = Utilidades.Send(datos_correo2.To, datos_correo2.CC, "", datos_correo2.Subject, datos_correo2.Body, null, "");
+                            if (respuesta2 != "OK")
+                            {
+                                Log.TraceInfo("Solicitud N° " + codigoSolicitud.ToString() + ":" + respuesta2);
+                            }
+                            else
+                            {
+                                Log.TraceInfo("Envio exitoso de correo de series a servicio tecnico de la solicitud N° " + codigoSolicitud.ToString());
+                            }
                         }
-                        else
-                        {
-                            Log.TraceInfo("Envio exitoso de correo de series a servicio tecnico de la solicitud N° " + codigoSolicitud.ToString());
-                        }
+                       
                         #endregion
 
                     }
@@ -4687,7 +4691,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
 
         [HttpPost]
-        public JsonResult EnviarGestionVentaSinStock(long codigoSolicitud, long codigoWorkFlow)
+        public JsonResult EnviarGestionVentaSinStock(long codigoSolicitud, long codigoWorkFlow, string tipoVenta)
         {
             var result = new RespuestaDTO();
             var ventasBL = new VentasBL();
@@ -4730,23 +4734,27 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         result.Codigo = 1;
                         result.Mensaje = "Se realizó el envio de la gestión de la solicitud N° " + codigoSolicitud.ToString();
                         #region Envio Correo Servicio Tecnico
-                        //Envio de correo:
-                        var filtros2 = new FiltroPlantillaDTO();
-                        filtros2.CodigoProceso = 1;
-                        filtros2.CodigoPlantilla = "PLANSSERSS";
-                        filtros2.Usuario = User.ObtenerUsuario();
-                        filtros2.Codigo = Convert.ToInt32(codigoSolicitud);
+                        if (tipoVenta == "TSOL05") //Solo para equipos:
+                        {
+                            //Envio de correo:
+                            var filtros2 = new FiltroPlantillaDTO();
+                            filtros2.CodigoProceso = 1;
+                            filtros2.CodigoPlantilla = "PLANSSERSS";
+                            filtros2.Usuario = User.ObtenerUsuario();
+                            filtros2.Codigo = Convert.ToInt32(codigoSolicitud);
 
-                        var datos_correo2 = plantillasBL.ConsultarPlantillaCorreo(filtros2).Result;
-                        var respuesta2 = Utilidades.Send(datos_correo2.To, datos_correo2.CC, "", datos_correo2.Subject, datos_correo2.Body, null, "");
-                        if (respuesta2 != "OK")
-                        {
-                            Log.TraceInfo("Solicitud N° " + codigoSolicitud.ToString() + ":" + respuesta2);
+                            var datos_correo2 = plantillasBL.ConsultarPlantillaCorreo(filtros2).Result;
+                            var respuesta2 = Utilidades.Send(datos_correo2.To, datos_correo2.CC, "", datos_correo2.Subject, datos_correo2.Body, null, "");
+                            if (respuesta2 != "OK")
+                            {
+                                Log.TraceInfo("Solicitud N° " + codigoSolicitud.ToString() + ":" + respuesta2);
+                            }
+                            else
+                            {
+                                Log.TraceInfo("Envio exitoso de correo de series a servicio tecnico de la solicitud N° " + codigoSolicitud.ToString());
+                            }
                         }
-                        else
-                        {
-                            Log.TraceInfo("Envio exitoso de correo de series a servicio tecnico de la solicitud N° " + codigoSolicitud.ToString());
-                        }
+                        
                         #endregion
 
                     }

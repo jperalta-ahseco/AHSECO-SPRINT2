@@ -54,13 +54,13 @@ VALUES('PLANGUIAPE',1,'Plantilla de Envio de Guia de Pedidos','logistica@ahsecop
 
 INSERT INTO TBM_PLANTILLAS
 VALUES('PLANATLOCS',1,'Plantilla de Atencion de Logistica Con Stock','','','ATENCION PRODUCTOS CON STOCK - N° SOLICITUD {NRO_SOL}',
-			   '<p>Sr(a). Vendedor(a), {NOM_VENDEDOR}</p>
+			   '<p>Estimado</p>
 <p>Se realiza la atención del despacho de la solicitud N°{NRO_SOL} para el cliente {CLIENTE}.</p>
 <p>Por favor ingrese al sistema para continuar con el flujo de venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
 
 INSERT INTO TBM_PLANTILLAS
 VALUES('PLANATLOSS',1,'Plantilla de Atencion de Logistica Sin Stock','','','ATENCION PRODUCTOS SIN STOCK - N° SOLICITUD {NRO_SOL}',
-			   '<p>Sr(a). Vendedor(a), {NOM_VENDEDOR}</p>
+			   '<p>Estimado</p>
 <p>Se realiza la atención del despacho de la solicitud N°{NRO_SOL} para el cliente {CLIENTE}.</p>
 <p>Por favor ingrese al sistema para continuar con el flujo de venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
 

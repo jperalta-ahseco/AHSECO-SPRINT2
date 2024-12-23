@@ -261,6 +261,7 @@
     var $EnvioServicio = $("#EnvioServicio");
     var $btnGuardarFactura = $("#btnGuardarFactura");
     var $btnEnviarGestionDespachoSE = $("#btnEnviarGestionDespachoSE");
+    var $hdnObservacionId = $("#hdnObservacionId");
 
 
     /*Tecnicos:*/
@@ -1974,7 +1975,7 @@
         var fnSi = function () {
 
             var m = "POST";
-            var url = "BandejaSolicitudesVentas/EnviarGestionVentaConStock?codigoSolicitud=" + $numeroSolicitud.val() + "&codigoWorkFlow=" + $codigoWorkflow.val();
+            var url = "BandejaSolicitudesVentas/EnviarGestionVentaConStock?codigoSolicitud=" + $numeroSolicitud.val() + "&codigoWorkFlow=" + $codigoWorkflow.val() + "&tipoVenta=" + $TipoSolicitud.val();
             var objParam = '';
             var fnDoneCallback = function (data) {
                 var fnCallback = function () {
@@ -2020,7 +2021,7 @@
         var fnSi = function () {
 
             var m = "POST";
-            var url = "BandejaSolicitudesVentas/EnviarGestionVentaSinStock?codigoSolicitud=" + $numeroSolicitud.val() + "&codigoWorkFlow=" + $codigoWorkflow.val();
+            var url = "BandejaSolicitudesVentas/EnviarGestionVentaSinStock?codigoSolicitud=" + $numeroSolicitud.val() + "&codigoWorkFlow=" + $codigoWorkflow.val()+"&tipoVenta="+$TipoSolicitud.val();
             var objParam = '';
             var fnDoneCallback = function (data) {
                 var fnCallback = function () {
