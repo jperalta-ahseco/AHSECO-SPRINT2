@@ -791,12 +791,12 @@
             return;
         };
 
-        var fechaHoy = hoy();
+        //var fechaHoy = hoy();
 
-        if ($dateSolicitud.val() < fechaHoy) {
-            app.message.error("Validación", "La fecha máxima no puede ser menor a la fecha de hoy");
-            return;
-        };
+        //if ($dateSolicitud.val() < fechaHoy) {
+        //    app.message.error("Validación", "La fecha máxima no puede ser menor a la fecha de hoy");
+        //    return;
+        //};
 
 
         var method = "POST";
