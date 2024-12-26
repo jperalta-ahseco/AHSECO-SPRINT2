@@ -1380,54 +1380,57 @@ var cotvtadet = (function ($, win, doc) {
         if ($DI_radFlete_Si.is(':checked')) { bFlete = true; }
         if ($DI_radFlete_No.is(':checked')) { bFlete = false; }
 
-        method = "POST";
-        url = "BandejaSolicitudesVentas/GrabarDatosCotDetItem";
-        var objDatos = {
-            CotizacionDetallePadre: { CodItem: $DI_hdnCodigoPadre.val() },
-            CotizacionDetalle: {
-                CodItem: $DI_hdnCodigo.val(),
-                CodItemTemp: $DI_txtCodigo.val(),
-                DescripcionAdicional: $DI_txtDescripcionAdic.val(),
-                Cantidad: app.convertirNumero($DI_txtCantidad.val()),
-                CostoFOB: app.convertirNumero($DI_txtCostoFOB.val()),
-                VentaUnitaria: app.convertirNumero($DI_txtValorUnitario.val()),
-                PorcentajeGanancia: app.convertirNumero($DI_txtGanancia.val()),
-                IndStock: bTieneStock,
-                CotizacionDespacho: {
-                    IndCompraLocal: bCompraLocal,
-                    IndRequierePlaca: bReqPlaca,
-                    Dimensiones: $DI_txtDimensiones.val(),
-                    IndInfoManual: bManuales,
-                    IndInfoVideo: bVideos,
-                    IndInfoVideo: bVideos,
-                    IndMantPreventivo: bMantPrevent,
-                    IndCalibracion: bCalib,
-                    IndGarantiaAdicional: bGarantiaAdic,
-                    CodGarantiaAdicional: $DI_cmbGarantias.val(),
-                    IndInstalacion: bInstalacion,
-                    IndCapacitacion: bCapacitacion,
-                    IndFlete: bFlete,
-                    ObsCliente: $DI_txtReqCliente.val(),
-                    ObsDespacho: $DI_txtObsInsta.val()
+        var fnSi = function () {
+            method = "POST";
+            url = "BandejaSolicitudesVentas/GrabarDatosCotDetItem";
+            var objDatos = {
+                CotizacionDetallePadre: { CodItem: $DI_hdnCodigoPadre.val() },
+                CotizacionDetalle: {
+                    CodItem: $DI_hdnCodigo.val(),
+                    CodItemTemp: $DI_txtCodigo.val(),
+                    DescripcionAdicional: $DI_txtDescripcionAdic.val(),
+                    Cantidad: app.convertirNumero($DI_txtCantidad.val()),
+                    CostoFOB: app.convertirNumero($DI_txtCostoFOB.val()),
+                    VentaUnitaria: app.convertirNumero($DI_txtValorUnitario.val()),
+                    PorcentajeGanancia: app.convertirNumero($DI_txtGanancia.val()),
+                    IndStock: bTieneStock,
+                    CotizacionDespacho: {
+                        IndCompraLocal: bCompraLocal,
+                        IndRequierePlaca: bReqPlaca,
+                        Dimensiones: $DI_txtDimensiones.val(),
+                        IndInfoManual: bManuales,
+                        IndInfoVideo: bVideos,
+                        IndInfoVideo: bVideos,
+                        IndMantPreventivo: bMantPrevent,
+                        IndCalibracion: bCalib,
+                        IndGarantiaAdicional: bGarantiaAdic,
+                        CodGarantiaAdicional: $DI_cmbGarantias.val(),
+                        IndInstalacion: bInstalacion,
+                        IndCapacitacion: bCapacitacion,
+                        IndFlete: bFlete,
+                        ObsCliente: $DI_txtReqCliente.val(),
+                        ObsDespacho: $DI_txtObsInsta.val()
+                    }
+                },
+                opcGrillaItems: opcGrillaItems
+            };
+            var objParam = JSON.stringify(objDatos);
+
+            var fnDoneCallBack = function (data) {
+                $('#modalDetalleItem').modal('hide');
+                cargarTablaCotDet(data);
+                if (opcGrillaItems == "2") {
+                    cargarTablaDetCotCostos(data);
                 }
-            },
-            opcGrillaItems: opcGrillaItems
-        };
-        var objParam = JSON.stringify(objDatos);
+            };
 
-        var fnDoneCallBack = function (data) {
-            $('#modalDetalleItem').modal('hide');
-            cargarTablaCotDet(data);
-            if (opcGrillaItems == "2") {
-                cargarTablaDetCotCostos(data);
-            }
-        };
+            var fnFailCallback = function () {
 
-        var fnFailCallback = function () {
+            };
 
-        };
-
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallback);
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallback);
+        }
+        return app.message.confirm("Confirmaci&oacute;nn", "Desea guardar el detalle de cotizaci&oacute;n?", "S&íacute;n", "No", fnSi);
     }
 
     function cerrarModalDetItem() {
@@ -1446,7 +1449,7 @@ var cotvtadet = (function ($, win, doc) {
 
             app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
         }
-        return app.message.confirm("Validación", "¿Desea retroceder sin guardar? Se guardarán los datos no guardados", "Sí", "No", fnSi);
+        return app.message.confirm("Validaci&oacute;n", "Desea retroceder sin guardar? Se guardar&aacute;n los datos no guardados", "S&iacute;", "No", fnSi);
     }
 
     function grabarDatosCotDet() {
@@ -1860,38 +1863,41 @@ var cotvtadet = (function ($, win, doc) {
             if (app.validaNumeroDecimal($txtPorcentajeDscto.val())) { vPorcDscto = parseFloat($txtPorcentajeDscto.val()); }
         }
 
-        method = "POST";
-        url = "BandejaSolicitudesVentas/EnviarCotizacion";
-        var objDatos = {
-            IdCliente: $idCliente.val(),
-            IdCotizacion: $idCotizacion.val(),
-            IdSolicitud: $numeroSolicitud.val(),
-            IdWorkFlow: $idWorkFlow.val(),
-            IdContacto: $txtCodContacto.val(),
-            NombreContacto: $nombreContacto.val(),
-            AreaContacto: $txtAreaContacto.val(),
-            TelefonoContacto: $txtTelefono.val(),
-            EmailContacto: $txtCorreo.val(),
-            FecCotizacion: vFecCotizacion,
-            PlazoEntrega: $txtPlazoEntrega.val(),
-            FormaPago: $cmbTipoPago.val(),
-            Moneda: $cmbTipMoneda.val(),
-            Vigencia: $txtVigencia.val(),
-            Garantia: $cmbGarantia.val(),
-            Observacion: $txtObs.val(),
-            PorcentajeDescuento: vPorcDscto
-        };
-        var objParam = JSON.stringify(objDatos);
+        var fnSi = function () {
+            method = "POST";
+            url = "BandejaSolicitudesVentas/EnviarCotizacion";
+            var objDatos = {
+                IdCliente: $idCliente.val(),
+                IdCotizacion: $idCotizacion.val(),
+                IdSolicitud: $numeroSolicitud.val(),
+                IdWorkFlow: $idWorkFlow.val(),
+                IdContacto: $txtCodContacto.val(),
+                NombreContacto: $nombreContacto.val(),
+                AreaContacto: $txtAreaContacto.val(),
+                TelefonoContacto: $txtTelefono.val(),
+                EmailContacto: $txtCorreo.val(),
+                FecCotizacion: vFecCotizacion,
+                PlazoEntrega: $txtPlazoEntrega.val(),
+                FormaPago: $cmbTipoPago.val(),
+                Moneda: $cmbTipMoneda.val(),
+                Vigencia: $txtVigencia.val(),
+                Garantia: $cmbGarantia.val(),
+                Observacion: $txtObs.val(),
+                PorcentajeDescuento: vPorcDscto
+            };
+            var objParam = JSON.stringify(objDatos);
 
-        function redirect() {
-            app.redirectTo("BandejaSolicitudesVentas/SolicitudVenta");
-        };
-        
-        var fnDoneCallBack = function (data) {
-            app.message.success("Cotizaci&oacute;n", "Se envi&oacute; la cotizaci&oacute;n correctamente.", "Aceptar", redirect);
-        };
+            function redirect() {
+                app.redirectTo("BandejaSolicitudesVentas/SolicitudVenta");
+            };
 
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+            var fnDoneCallBack = function (data) {
+                app.message.success("Cotizaci&oacute;n", "Se envi&oacute; la cotizaci&oacute;n correctamente.", "Aceptar", redirect);
+            };
+
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+        }
+        return app.message.confirm("Confirmaci&oacute;n", "Desea enviar la cotizaci&oacute;n?", "S&iacute;", "No", fnSi);        
     }
 
     function recotizarSolicitud() {
@@ -1904,15 +1910,18 @@ var cotvtadet = (function ($, win, doc) {
         };
         var objParam = JSON.stringify(objDatos);
 
-        function redirect() {
-            app.redirectTo("BandejaSolicitudesVentas/SolicitudVenta");
-        };
+        var fnSi = function () {
+            function redirect() {
+                app.redirectTo("BandejaSolicitudesVentas/SolicitudVenta");
+            };
 
-        var fnDoneCallBack = function (data) {
-            app.message.success("Cotizaci&oacute;n", "Se gener&oacute; una nueva cotizaci&oacute;n correctamente.", "Aceptar", redirect);
-        };
+            var fnDoneCallBack = function (data) {
+                app.message.success("Cotizaci&oacute;n", "Se gener&oacute; una nueva cotizaci&oacute;n correctamente.", "Aceptar", redirect);
+            };
 
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+        }
+        return app.message.confirm("Confirmaci&oacute;n", "¿Desea recotizar la solicitud?", "S&iacute;", "No", fnSi);
     }
 
     function guardarCotVenta() {
@@ -1929,38 +1938,42 @@ var cotvtadet = (function ($, win, doc) {
             if (app.validaNumeroDecimal($txtPorcentajeDscto.val())) { vPorcDscto = parseFloat($txtPorcentajeDscto.val()); }
         }
 
-        method = "POST";
-        url = "BandejaSolicitudesVentas/GuardarCotizacion";
-        var objDatos = {
-            IdCliente: $idCliente.val(),
-            IdCotizacion: $idCotizacion.val(),
-            IdSolicitud: $numeroSolicitud.val(),
-            IdWorkFlow: $idWorkFlow.val(),
-            IdContacto: $txtCodContacto.val(),
-            NombreContacto: $nombreContacto.val(),
-            AreaContacto: $txtAreaContacto.val(),
-            TelefonoContacto: $txtTelefono.val(),
-            EmailContacto: $txtCorreo.val(),
-            FecCotizacion: vFecCotizacion,
-            PlazoEntrega: $txtPlazoEntrega.val(),
-            FormaPago: $cmbTipoPago.val(),
-            Moneda: $cmbTipMoneda.val(),
-            Vigencia: $txtVigencia.val(),
-            Garantia: $cmbGarantia.val(),
-            Observacion: $txtObs.val(),
-            PorcentajeDescuento: vPorcDscto
-        };
-        var objParam = JSON.stringify(objDatos);
 
-        function redirect() {
-            app.redirectTo("BandejaSolicitudesVentas/SolicitudVenta");
-        };
+        var fnSi = function () {
+            method = "POST";
+            url = "BandejaSolicitudesVentas/GuardarCotizacion";
+            var objDatos = {
+                IdCliente: $idCliente.val(),
+                IdCotizacion: $idCotizacion.val(),
+                IdSolicitud: $numeroSolicitud.val(),
+                IdWorkFlow: $idWorkFlow.val(),
+                IdContacto: $txtCodContacto.val(),
+                NombreContacto: $nombreContacto.val(),
+                AreaContacto: $txtAreaContacto.val(),
+                TelefonoContacto: $txtTelefono.val(),
+                EmailContacto: $txtCorreo.val(),
+                FecCotizacion: vFecCotizacion,
+                PlazoEntrega: $txtPlazoEntrega.val(),
+                FormaPago: $cmbTipoPago.val(),
+                Moneda: $cmbTipMoneda.val(),
+                Vigencia: $txtVigencia.val(),
+                Garantia: $cmbGarantia.val(),
+                Observacion: $txtObs.val(),
+                PorcentajeDescuento: vPorcDscto
+            };
+            var objParam = JSON.stringify(objDatos);
 
-        var fnDoneCallBack = function (data) {
-            app.message.success("Cotizaci&oacute;n", "Se envi&oacute; la cotizaci&oacute;n correctamente.", "Aceptar", redirect);
-        };
+            function redirect() {
+                app.redirectTo("BandejaSolicitudesVentas/SolicitudVenta");
+            };
 
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+            var fnDoneCallBack = function (data) {
+                app.message.success("Cotizaci&oacute;n", "Se envi&oacute; la cotizaci&oacute;n correctamente.", "Aceptar", redirect);
+            };
+
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+        }
+        return app.message.confirm("Confirmaci&oacute;n", "Desea guardar la cotizaci&oacute;n?", "S&iacute;", "No", fnSi);
     }
 
     function listarCotDetItems() {
@@ -2046,15 +2059,18 @@ var cotvtadet = (function ($, win, doc) {
         };
         var objParam = JSON.stringify(objDatos);
 
-        function redirect() {
-            app.redirectTo("BandejaSolicitudesVentas/SolicitudVenta");
-        };
+        var fnSi = function () {
+            function redirect() {
+                app.redirectTo("BandejaSolicitudesVentas/SolicitudVenta");
+            };
 
-        var fnDoneCallBack = function (data) {
-            app.message.success("Cotizaci&oacute;n", "Se guard&oacute; la cotizaci&oacute;n correctamente.", "Aceptar", redirect);
-        };
+            var fnDoneCallBack = function (data) {
+                app.message.success("Cotizaci&oacute;n", "Se guard&oacute; la cotizaci&oacute;n correctamente.", "Aceptar", redirect);
+            };
 
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+        }
+        return app.message.confirm("Confirmaci&oacute;n", "¿Desea guardar la valoraci&oacute;n?", "S&iacute;", "No", fnSi);
     }
 
     return {

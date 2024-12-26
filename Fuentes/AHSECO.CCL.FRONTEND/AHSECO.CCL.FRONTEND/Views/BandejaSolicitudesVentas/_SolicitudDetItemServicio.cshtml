@@ -44,7 +44,7 @@
                                     <div class="col-md-4">
                                         <label for="DS_txtCantidad">Cantidad: </label>
                                         <div class="form-group">
-                                            <input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") placeholder="Cantidad" type="number" min="0" maxlength="8" style="text-align:left" class="form-control input-sm" id="DS_txtCantidad" onkeyup="multiplicar();" value="" onkeypress="if (isNaN(String.fromCharCode(event.keyCode))) return false;">
+                                            <input @(ViewBag.PermitirEditarCotDetItem ? "" : "disabled") placeholder="Cantidad" type="number" min="0" maxlength="8" style="text-align:left" class="form-control input-sm" id="DS_txtCantidad" onchange="multiplicar();" onkeyup="multiplicar();" value="" onkeypress="if (isNaN(String.fromCharCode(event.keyCode))) return false;">
                                         </div>
                                     </div>
                                     <div class="col-md-4">

@@ -1026,29 +1026,32 @@
         };
         var objParam = JSON.stringify(objDatos);
 
-        var fnDoneCallBack = function (data) {
+        var fnSi = function () {
+            var fnDoneCallBack = function (data) {
 
-            cargarGrillaCostosCotDet(data);
+                cargarGrillaCostosCotDet(data);
 
-            $hdnCostosAgregados.val("");
+                $hdnCostosAgregados.val("");
 
-            //Se actualiza los CODIGO COSTO agregados a COTIZACION DETALLE
-            if (data.Result != null) {
-                for (a = 0; a < data.Result.length; a++) {
-                    var strCodCostoRef = data.Result[a].Id + "_" + data.Result[a].CodCosto;
-                    if ($hdnCostosAgregados.val() == "") { $hdnCostosAgregados.val(strCodCostoRef); }
-                    else {
-                        if ($hdnCostosAgregados.val().indexOf(strCodCostoRef) < 0) {
-                            $hdnCostosAgregados.val($hdnCostosAgregados.val() + ";" + strCodCostoRef);
+                //Se actualiza los CODIGO COSTO agregados a COTIZACION DETALLE
+                if (data.Result != null) {
+                    for (a = 0; a < data.Result.length; a++) {
+                        var strCodCostoRef = data.Result[a].Id + "_" + data.Result[a].CodCosto;
+                        if ($hdnCostosAgregados.val() == "") { $hdnCostosAgregados.val(strCodCostoRef); }
+                        else {
+                            if ($hdnCostosAgregados.val().indexOf(strCodCostoRef) < 0) {
+                                $hdnCostosAgregados.val($hdnCostosAgregados.val() + ";" + strCodCostoRef);
+                            }
                         }
                     }
                 }
-            }
 
-            app.message.success("Costos", "Se elimin&oacute; el costo correctamente.", "Aceptar", null);
-        };
+                app.message.success("Costos", "Se elimin&oacute; el costo correctamente.", "Aceptar", null);
+            };
 
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+        }
+        return app.message.confirm("Confirmaci&oacute;", "Desea quitar el costo seleccionado?", "S&iacute;", "No", fnSi);
     }
 
     function cerrarModalCostosItem() {

@@ -513,7 +513,7 @@
             };
             return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.RegistrarGestionVenta);
         }
-        return app.message.confirm("Ventas", "¿Está seguro que desea guardar la fecha de programación?", "Sí", "No", fnSi, null);
+        return app.message.confirm("Ventas", "¿Está seguro que desea guardar la fecha de programación?", "S&iacute;", "No", fnSi, null);
 
     }
 
@@ -557,7 +557,7 @@
             };
             return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.RegistrarGestionVenta);
         }
-        return app.message.confirm("Ventas", "¿Está seguro que desea guardar los datos de la facturación?", "Sí", "No", fnSi, null);
+        return app.message.confirm("Ventas", "¿Está seguro que desea guardar los datos de la facturación?", "S&iacute;", "No", fnSi, null);
     }
 
     function btnEnviarServicioClick() {
@@ -617,7 +617,7 @@
             };
             return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.EnvioGuiaPedido);
         }
-        return app.message.confirm("Ventas", "¿Está seguro que desea enviar el servicio a Facturación?", "Sí", "No", fnSi, null);
+        return app.message.confirm("Ventas", "¿Está seguro que desea enviar el servicio a Facturaci&oacute;n?", "S&iacute;", "No", fnSi, null);
     }
 
     function DesasignarTecnico(CodAsignacion) {
@@ -648,7 +648,7 @@
             app.llamarAjax(method, url, objParam, fnDoneCallback, fnFailCallBack, null, null);
         };
 
-        return app.message.confirm("Confirmación", "¿Desea desasignar al técnico del despacho?", "Sí", "No", fnSi, null);
+        return app.message.confirm("Confirmación", "¿Desea desasignar al técnico del despacho?", "S&iacute;", "No", fnSi, null);
     }
 
     function asignarTecnico(data) {
@@ -715,7 +715,7 @@
 
             app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
         };
-        return app.message.confirm("Confirmación", "¿Desea asignar el técnico seleccionado al despacho de ventas?", "Sí", "No", fnSi, null);
+        return app.message.confirm("Confirmación", "¿Desea asignar el técnico seleccionado al despacho de ventas?", "S&iacute;", "No", fnSi, null);
     };
 
     function cargarTablaMainTecnicos(tecnicos) {
@@ -1806,7 +1806,7 @@
             };
             return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.RegistrarGestionVenta);
         }
-        return app.message.confirm("Ventas", "¿Está seguro que desea actualizar los datos de despacho?", "Sí", "No", fnSi, null);
+        return app.message.confirm("Ventas", "¿Está seguro que desea actualizar los datos de despacho?", "S&iacute;", "No", fnSi, null);
 
     }
 
@@ -1845,7 +1845,7 @@
             };
             return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.ActualizarImportacion);
         }
-        return app.message.confirm("Ventas", "¿Está seguro que desea actualizar los datos de importación?", "Sí", "No", fnSi, null);
+        return app.message.confirm("Ventas", "¿Está seguro que desea actualizar los datos de importación?", "S&iacute;", "No", fnSi, null);
 
     }
 
@@ -1870,7 +1870,7 @@
             };
             return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.AprobarImportacion);
         }
-        return app.message.confirm("Ventas", "¿Está seguro que desea aprobar la importación?", "Sí", "No", fnSi, null);
+        return app.message.confirm("Ventas", "¿Está seguro que desea aprobar la importación?", "S&iacute;", "No", fnSi, null);
     }
 
     function $btnObservarGestion_click() {
@@ -1916,7 +1916,7 @@
             };
             return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.EnvioGuiaPedidoBO);
         }
-        return app.message.confirm("Ventas", "¿Está seguro que desea enviar la Guia de BO?", "Sí", "No", fnSi, null);
+        return app.message.confirm("Ventas", "¿Está seguro que desea enviar la Guia de BO?", "S&iacute;", "No", fnSi, null);
 
     }
 
@@ -1945,7 +1945,7 @@
             };
             return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.FinalizandoVenta);
         }
-        return app.message.confirm("Ventas", "¿Está seguro que desea finalizar la venta?", "Sí", "No", fnSi, null);
+        return app.message.confirm("Ventas", "¿Está seguro que desea finalizar la venta?", "S&iacute;", "No", fnSi, null);
 
     }
 
@@ -1991,7 +1991,7 @@
             };
             return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.EnvioGestionLogistica);
         }
-        return app.message.confirm("Ventas", "¿Está seguro que desea enviar a gestión?", "Sí", "No", fnSi, null);
+        return app.message.confirm("Ventas", "¿Está seguro que desea enviar a gestión?", "S&iacute;", "No", fnSi, null);
 
     }
 
@@ -2037,7 +2037,7 @@
             };
             return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.EnvioGestionLogistica);
         }
-        return app.message.confirm("Ventas", "¿Está seguro que desea enviar a gestión?", "Sí", "No", fnSi, null);
+        return app.message.confirm("Ventas", "¿Está seguro que desea enviar a gestión?", "S&iacute;", "No", fnSi, null);
     }
 
     function $btnEditarGestionLogistica_click() {
@@ -2128,7 +2128,7 @@
             };
             return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.RegistrarGestionVenta);
         }
-        return app.message.confirm("Ventas", "¿Está seguro que desea actualizar los datos de despacho?", "Sí", "No", fnSi, null);
+        return app.message.confirm("Ventas", "¿Está seguro que desea actualizar los datos de despacho?", "S&iacute;", "No", fnSi, null);
 
     }
 
@@ -2164,7 +2164,7 @@
             };
             return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.EnvioGuiaPedido);
         }
-        return app.message.confirm("Ventas", "¿Está seguro que desea enviar la Guia de Pedido?", "Sí", "No", fnSi, null);
+        return app.message.confirm("Ventas", "¿Está seguro que desea enviar la Guia de Pedido?", "S&iacute;", "No", fnSi, null);
     }
 
     function $btnEnviarGuiaSS_click() {
@@ -2199,7 +2199,7 @@
             };
             return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.EnvioGuiaPedido);
         }
-        return app.message.confirm("Ventas", "¿Está seguro que desea enviar la Guia de Pedido?", "Sí", "No", fnSi, null);
+        return app.message.confirm("Ventas", "¿Está seguro que desea enviar la Guia de Pedido?", "S&iacute;", "No", fnSi, null);
     }
 
     function $btnEditarGestion_click() {
@@ -2252,7 +2252,7 @@
             };
             return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.RegistrarGestionVenta);
         }
-        return app.message.confirm("Ventas", "¿Está seguro que desea actualizar los datos de despacho?", "Sí", "No", fnSi, null);
+        return app.message.confirm("Ventas", "¿Está seguro que desea actualizar los datos de despacho?", "S&iacute;", "No", fnSi, null);
     }
 
     function $btnGuardarGestion_click() {
@@ -2316,7 +2316,7 @@
             };
             return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.RegistrarGestionVenta);
         }
-        return app.message.confirm("Ventas", "¿Está seguro que desea iniciar el proceso de ventas?", "Sí", "No", fnSi, null);
+        return app.message.confirm("Ventas", "¿Está seguro que desea iniciar el proceso de ventas?", "S&iacute;", "No", fnSi, null);
     }
 
     function CalcularFechaEntregaMaxima() {
@@ -2993,7 +2993,7 @@
                 };
                 return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, mensajes.guardarNuevoViatico);
             };
-            return app.message.confirm("Solicitud de Venta", "¿Está seguro que desea eliminar el documento adjunto?", "Sí", "No", fnSi, null);
+            return app.message.confirm("Solicitud de Venta", "¿Está seguro que desea eliminar el documento adjunto?", "S&iacute;", "No", fnSi, null);
         };
     };
 
@@ -3950,7 +3950,7 @@
             };
             return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.actualizarSerie);
         }
-        return app.message.confirm("Ventas", "¿Está seguro que registrar el número de serie?", "Sí", "No", fnSi, null);
+        return app.message.confirm("Ventas", "¿Está seguro que registrar el número de serie?", "S&iacute;", "No", fnSi, null);
 
     }
 
@@ -3999,7 +3999,7 @@
             };
             return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.actualizarSerie);
         }
-        return app.message.confirm("Ventas", "¿Está seguro que desea registrar el número de serie?", "Sí", "No", fnSi, null);
+        return app.message.confirm("Ventas", "¿Está seguro que desea registrar el número de serie?", "S&iacute;", "No", fnSi, null);
 
     }
 
@@ -4335,19 +4335,23 @@
         };
         var objParam = JSON.stringify(objDatos);
 
-        function redirect() {
-            app.redirectTo("BandejaSolicitudesVentas/SolicitudVenta");
-        };
 
-        var fnDoneCallBack = function (data) {
-            app.message.success("Validaci&oacute;n", "Se aprob&oacute; la cotizaci&oacute;n correctamente", "Aceptar", redirect);
-        };
+        var fnSi = function () {
+            function redirect() {
+                app.redirectTo("BandejaSolicitudesVentas/SolicitudVenta");
+            };
 
-        var fnFailCallback = function () {
-            app.message.error("Validaci&oacute;n", "Error al aprobar la cotizaci&oacute;n");
-        };
+            var fnDoneCallBack = function (data) {
+                app.message.success("Cotizaci&oacute;n Aprobada", "Se aprob&oacute; la cotizaci&oacute;n correctamente", "Aceptar", redirect);
+            };
 
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallback);
+            var fnFailCallback = function () {
+                app.message.error("Validaci&oacute;n", "Error al aprobar la cotizaci&oacute;n");
+            };
+
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallback);
+        }
+        return app.message.confirm("Confirmación", "¿Desea aprobar la cotización?", "S&iacute;", "No", fnSi);
     }
 
     return {
