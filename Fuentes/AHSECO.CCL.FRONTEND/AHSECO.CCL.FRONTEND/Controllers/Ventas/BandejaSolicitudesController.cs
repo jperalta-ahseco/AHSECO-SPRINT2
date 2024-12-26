@@ -357,7 +357,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                                 if (validarDespacho.Result.EnvioBOSinStock == 0)
                                 {
-                                    ViewBag.Btn_EnviarGuiaBO = "inline-block";
+                                    if(validarDespacho.Result.GenerarGuiaBOSinStock > 0)
+                                    {
+                                        ViewBag.Btn_EnviarGuiaBO = "inline-block";
+                                    }
+                                    
                                     ViewBag.Btn_GuiaBO = "inline-block";
                                 }
                                 else if (validarDespacho.Result.EnvioBOSinStock > 0)
@@ -374,7 +378,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 {
                                     if(validarDespacho.Result.EnvioGPSinStock == 0)
                                     {
-                                        ViewBag.Btn_EnviarGuiaSS = "inline-block";
+                                        if(validarDespacho.Result.GenerarGuiaPedidoSinStock > 0)
+                                        {
+                                            ViewBag.Btn_EnviarGuiaSS = "inline-block";
+                                        }
+                                        
                                         ViewBag.Btn_GuiaPedidoSS = "inline-block";
                                     }
                                 }
@@ -398,7 +406,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 if (validarDespacho.Result.EnvioGPConStock == 0)
                                 {
                                     ViewBag.Btn_EditarDespacho = "inline-block";
-                                    ViewBag.Btn_EnviarGuiaCS = "inline-block";
+                                    if(validarDespacho.Result.GenerarGuiaPedidoConStock > 0)
+                                    {
+                                        ViewBag.Btn_EnviarGuiaCS = "inline-block";
+                                    }
                                     ViewBag.Btn_GuiaPedidoCS = "inline-block";
                                 }
                                 else

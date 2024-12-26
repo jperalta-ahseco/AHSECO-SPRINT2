@@ -58,5 +58,9 @@ namespace AHSECO.CCL.BE.Ventas
         public string FechaProgramacionTecnico { get; set; }
         public string FechaFactura { get; set; }
         public string NumeroFactura { get; set; }
+
+        public int GenerarGuiaPedidoConStock { get; set; }
+        public int GenerarGuiaPedidoSinStock { get; set; }
+        public int GenerarGuiaBOSinStock { get; set; }
     }
 }

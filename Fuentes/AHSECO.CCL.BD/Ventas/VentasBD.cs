@@ -1814,7 +1814,10 @@ namespace AHSECO.CCL.BD.Ventas
                         EnvioServicio = i.Single(d => d.Key.Equals("ENVIOFC")).Value.Parse<int>(),
                         GestionLogServicio = i.Single(d => d.Key.Equals("GESFAC")).Value.Parse<int>(),
                         EnvioVentaConStock = i.Single(d => d.Key.Equals("ENVIOVT_CS")).Value.Parse<int>(),
-                        EnvioVentaSinStock = i.Single(d => d.Key.Equals("ENVIOVT_SS")).Value.Parse<int>()
+                        EnvioVentaSinStock = i.Single(d => d.Key.Equals("ENVIOVT_SS")).Value.Parse<int>(),
+                        GenerarGuiaPedidoConStock = i.Single(d => d.Key.Equals("GENGP_CS")).Value.Parse<int>(),
+                        GenerarGuiaPedidoSinStock = i.Single(d => d.Key.Equals("GENGP_SS")).Value.Parse<int>(),
+                        GenerarGuiaBOSinStock = i.Single(d => d.Key.Equals("GENBO_SS")).Value.Parse<int>(),
                     }).FirstOrDefault();
 
                 return result;

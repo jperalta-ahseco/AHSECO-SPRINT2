@@ -1664,6 +1664,23 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 {
                     hssfworkbook.Write(fs);
                 }
+
+                //Se actualiza el log de generación de guia:
+                DatosDespachoDTO datosDespachoDTO = new DatosDespachoDTO();
+                if(tipo == "GP")
+                {
+                    datosDespachoDTO.Tipo = "G";
+                }
+                else if(tipo == "BO")
+                {
+                    datosDespachoDTO.Tipo = "B";
+                }
+                datosDespachoDTO.CodigoSolicitud = codSolicitud;
+                datosDespachoDTO.Stock = stock;
+                datosDespachoDTO.UsuarioRegistro = User.ObtenerUsuario();
+                datosDespachoDTO.NombrePerfil = User.ObtenerPerfil();
+                var envio_log = ventasBL.MantenimientoDespacho(datosDespachoDTO);
+
                 return Json(new
                 {
                     Status = 1,

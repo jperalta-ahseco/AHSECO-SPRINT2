@@ -410,6 +410,33 @@ BEGIN
 
 	END
 
+	IF(@TIPO ='G')
+	BEGIN
+		--SE ACTUALIZA EL LOG DE GENERACION DE GUIAS:
+		  UPDATE TBM_DESPACHO
+			SET GENGP =1,
+					USR_MOD=@USRREG,
+					FEC_MOD=GETDATE()
+					WHERE ID_SOLICITUD=@CODSOLICITUD AND STOCK=@STOCK;
+
+		
+		SET  @CODIGO = 1
+		SET @MSG ='Se realizó la actualizacion de generacion de guia de pedidos'
+	END
+
+	IF(@TIPO ='B')
+	BEGIN
+		--SE ACTUALIZA EL LOG DE GENERACION DE GUIAS:
+		  UPDATE TBM_DESPACHO
+			SET GENBO =1,
+					USR_MOD=@USRREG,
+					FEC_MOD=GETDATE()
+					WHERE ID_SOLICITUD=@CODSOLICITUD AND STOCK=@STOCK;
+
+		
+		SET  @CODIGO = 1
+		SET @MSG ='Se realizó la actualizacion de generacion de guia de BO'
+	END
 
 		SELECT @CODIGO COD ,@MSG MSG
 		SET NOCOUNT OFF;

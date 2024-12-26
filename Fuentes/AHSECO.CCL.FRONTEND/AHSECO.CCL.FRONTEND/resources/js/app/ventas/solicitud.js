@@ -2414,7 +2414,8 @@
 
         var fnDoneCallBack = function (data) {
             app.abrirVentana("BandejaHistorialCotizacion/ExportarFileGuiaPedido?nombreDoc=" + data.Archivo);
-            app.message.success("Ventas", "Se generó la guía de pedidos correctamente.")
+            app.message.success("Ventas", "Se generó la guía de pedidos correctamente.");
+            $btnEnviarGuiaCS.show();
         }
         var fnFailCallBack = function () {
 
@@ -2432,7 +2433,8 @@
 
         var fnDoneCallBack = function (data) {
             app.abrirVentana("BandejaHistorialCotizacion/ExportarFileGuiaPedido?nombreDoc=" + data.Archivo);
-            app.message.success("Ventas", "Se generó la guía de pedidos correctamente.")
+            app.message.success("Ventas", "Se generó la guía de pedidos correctamente.");
+            $btnEnviarGuiaSS.show();
         }
         var fnFailCallBack = function () {
 
@@ -2449,7 +2451,8 @@
 
         var fnDoneCallBack = function (data) {
             app.abrirVentana("BandejaHistorialCotizacion/ExportarFileGuiaBO?nombreDoc=" + data.Archivo);
-            app.message.success("Ventas", "Se generó la guía de BO correctamente.")    
+            app.message.success("Ventas", "Se generó la guía de BO correctamente.");
+            $btnEnviarGuiaBOSS.show();
         }
         var fnFailCallBack = function () {
 
@@ -2718,6 +2721,24 @@
 
                 }
 
+                if (data.Result.ContadorCabecera.ContadorConStock > 0) {
+                    var fecha_entrega = data.Result.DespachoCabeceraConStock.FechaEntrega;
+                    if (fecha_entrega != null && fecha_entrega != "") {
+                        $dateEntregaPedidoCE.val(data.Result.DespachoCabeceraConStock.FechaEntrega);
+                    }
+
+                    $txtNumeroFacturaCE.val(data.Result.DespachoCabeceraConStock.NumeroFactura);
+                    $txtNumeroGuiaRemisionCE.val(data.Result.DespachoCabeceraConStock.NumeroGuiaRemision);
+
+
+                    if (data.Result.ContadorCabecera.GestionLogConStock > 0) {
+                        $dateEntregaPedidoCE.prop('disabled', true);
+                        $txtNumeroFacturaCE.prop('disabled', true);
+                        $txtNumeroGuiaRemisionCE.prop('disabled', true);
+                        $opendateEntregaPedidoCE.prop('disabled', true);
+                    }
+                }
+
                 if (data.Result.DespachoDetalleConStock.length > 0) {
 
                     for (i = 0; i < data.Result.DespachoDetalleConStock.length; i++) {
@@ -2739,22 +2760,6 @@
 
                         $NoRegSeries.hide();
                         $tblSeriesCS.append(nuevoTr);
-                    }
-
-                    var fecha_entrega = data.Result.DespachoCabeceraConStock.FechaEntrega;
-                    if (fecha_entrega != null && fecha_entrega != "") {
-                        $dateEntregaPedidoCE.val(data.Result.DespachoCabeceraConStock.FechaEntrega);
-                    }
-                   
-                    $txtNumeroFacturaCE.val(data.Result.DespachoCabeceraConStock.NumeroFactura);
-                    $txtNumeroGuiaRemisionCE.val(data.Result.DespachoCabeceraConStock.NumeroGuiaRemision);
-
-
-                    if (data.Result.ContadorCabecera.GestionLogConStock > 0) {
-                        $dateEntregaPedidoCE.prop('disabled', true);
-                        $txtNumeroFacturaCE.prop('disabled', true);
-                        $txtNumeroGuiaRemisionCE.prop('disabled', true);
-                        $opendateEntregaPedidoCE.prop('disabled', true);
                     }
                 }
 
@@ -3130,7 +3135,7 @@
 
                             $NoExisteRegDoc.hide();
                             $tblDocumentosCargados.append(nuevoTr);
-                            location.reload();
+                            //location.reload();
 
                         }
                         else {
