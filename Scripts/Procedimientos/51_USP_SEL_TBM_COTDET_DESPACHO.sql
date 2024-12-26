@@ -34,7 +34,7 @@ BEGIN
     ,[NUMFIANZA]
     ,[MONTOPPRINC]
     ,[MONTOPACCE]
-	FROM [DB_AHSECO].[dbo].[TBM_COTDET_DESPACHO]
+	FROM [dbo].[TBM_COTDET_DESPACHO]
 	WHERE (ISNULL(@pId,0) = 0 OR [ID] = @pId)
 	AND (ISNULL(@pId_CotDetalle,0) = 0 OR [ID_COTDETALLE] = @pId_CotDetalle)
 

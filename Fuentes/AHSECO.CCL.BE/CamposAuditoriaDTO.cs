@@ -41,11 +41,15 @@ namespace AHSECO.CCL.BE
         public PropertyControl()
         {
             this.IsEnabled = false;
+            this.IsEditable = false;
+            this.IsDeletable = false;
             this.IsVisible = false;
         }
 
         public string Tag { get; set; }
         public bool IsEnabled { get; set; }
+        public bool IsEditable { get; set; }
+        public bool IsDeletable { get; set; }
         public bool IsVisible { get; set; }
         public string IdControl { get; set; }
         public string Nombre { get; set; }

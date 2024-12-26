@@ -1694,6 +1694,10 @@ var cotvtadet = (function ($, win, doc) {
                         //    if ($estadoSol.val() != "SCOT") { editar = ver; }
                         //}
                         if (!oFeatures.IsEnabled) { editar = ver; quitar = ""; }
+                        else {
+                            if (!oFeatures.IsEditable) { editar = ver; }
+                            if (!oFeatures.IsDeletable) { quitar = ""; }
+                        }
                         return '<center>' + hidden + editar + ' ' + quitar + '</center>';
                     }
                 }
