@@ -676,31 +676,36 @@
         var objParam = JSON.stringify(objReclamo);
 
         var fnSi = function () {
-            var fnDoneCallBack = function () {
-                app.message.success("Éxito", "Se realizó la asignación de manera correcta");
+            var fnDoneCallBack = function (data2) {
 
-                tecnicosAsig.push({
-                    Cod_Tecnico: data.CodigoEmpleado,
-                    TipoDoc: data.Documento.Descripcion,
-                    Documento: data.NumeroDocumento,
-                    Tipo_Documento: data.Documento.Parametro,
-                    Nombres: data.NombresEmpleado,
-                    ApePaterno: data.ApellidoPaternoEmpleado,
-                    ApeMaterno: data.ApellidoMaternoEmpleado,
-                    NombreCompleto: data.NombresCompletosEmpleado,
-                    TipoTecnico: data.CodigoTipoEmpleado,
-                    Telefono: data.TelefonoEmpleado,
-                    Correo: data.EmailEmpleado,
-                    Empresa: data.Empresa.Valor1,
-                    Zona: data.LugarLaboral.UbigeoId,
-                    DescZona: data.LugarLaboral.NombreDepartamento + data.LugarLaboral.NombreProvincia + data.LugarLaboral.NombreDistrito,
-                    Estado: true
-                });
+                if (data2.Result.Codigo > 0) {
+                    app.message.success("Éxito", "Se realizó la asignación de manera correcta");
 
-                cargarTablaMainTecnicos(tecnicosAsig);
+                    tecnicosAsig.push({
+                        Cod_Tecnico: data.CodigoEmpleado,
+                        TipoDoc: data.Documento.Descripcion,
+                        Documento: data.NumeroDocumento,
+                        Tipo_Documento: data.Documento.Parametro,
+                        Nombres: data.NombresEmpleado,
+                        ApePaterno: data.ApellidoPaternoEmpleado,
+                        ApeMaterno: data.ApellidoMaternoEmpleado,
+                        NombreCompleto: data.NombresCompletosEmpleado,
+                        TipoTecnico: data.CodigoTipoEmpleado,
+                        Telefono: data.TelefonoEmpleado,
+                        Correo: data.EmailEmpleado,
+                        Empresa: data.Empresa.Valor1,
+                        Zona: data.LugarLaboral.UbigeoId,
+                        DescZona: data.LugarLaboral.NombreDepartamento + data.LugarLaboral.NombreProvincia + data.LugarLaboral.NombreDistrito,
+                        Estado: true
+                    });
 
-                $modalBusquedaTecnico.modal('toggle');
-                
+                    cargarTablaMainTecnicos(tecnicosAsig);
+
+                    $modalBusquedaTecnico.modal('toggle');
+                }
+                else {
+                    app.message.error("Validación", data2.Result.Mensaje);
+                }
             };
 
             var fnFailCallBack = function () {
@@ -1731,7 +1736,17 @@
             return false;
         }
 
-        if ($TipoSolicitud.val() === "TSOL04") //Para ventas de materiales:
+        //Validación de numero de series agregadas:
+        if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03" || $TipoSolicitud.val() === "TSOL05") {
+
+            if ($TotalSeriesSS.val() != $ContadorSeriesSS.val()) {
+                app.message.error("Validación", "Debe ingresar la series completas.");
+                return false;
+            }
+
+        }
+
+        if ($TipoSolicitud.val() === "TSOL04" || $TipoSolicitud.val() === "TSOL05") //Para ventas de materiales y venta de equipos:
         {
             var documento_guiaRemision = 0;
             var documento_factura = 0;
@@ -1833,34 +1848,11 @@
         var fnSi = function () {
 
             var m = "POST";
-            var url = "BandejaSolicitudesVentas/MantenimientoDespacho";
-            var obj = {
-                Tipo: "A",
-                CodigoSolicitud: $numeroSolicitud.val(),
-                CodigoWorkFlow: $codigoWorkflow.val()
-            }
-            var objParam = JSON.stringify(obj);
+            var url = "BandejaSolicitudesVentas/EnviarAprobacionImportacion?codigoSolicitud=" + $numeroSolicitud.val() + "&codigoWorkFlow=" + $codigoWorkflow.val();
+            var objParam = '';
             var fnDoneCallback = function (data) {
                 var fnCallback = function () {
-                    //location.reload();
-                    //Envio correo a servicio tecnico:
-                        var m2 = "POST";
-                        var url2 = "BandejaSolicitudesVentas/EnviarAprobacionImportacion?codigoSolicitud=" + $numeroSolicitud.val();
-                        var objParam2 = '';
-                        var fnDoneCallback2 = function (data2) {
-                            var fnCallback2 = function () {
-                                location.reload();
-                            }
-                            if (data2.Result.Codigo > 0) {
-                                app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback2);
-                            }
-                            else {
-                                app.message.error("Grabar", data.Result.Mensaje, "Aceptar", null);
-                            }
-                        };
-
-                    return app.llamarAjax(m2, url2, objParam2, fnDoneCallback2, null, null, mensajes.AprobarImportacion);
-                    
+                    location.reload();
                 };
                 if (data.Result.Codigo > 0) {
                     app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
@@ -2617,6 +2609,15 @@
                     $btnAgregarDocumento.hide();
                 }
 
+                if (data.Result.ContadorCabecera.FechaFactura != "") {
+                    $dateFactura.val(data.Result.ContadorCabecera.FechaFactura);
+                }
+                else {
+                    $dateFactura.val(hoy());
+                }
+                $txtNumeroFacturaServ.val(data.Result.ContadorCabecera.NumeroFactura);
+                $dateProgramacionServ.val(data.Result.ContadorCabecera.FechaProgramacionTecnico);
+
                 if (data.Result.ContadorCabecera.ContadorSinStock > 0) {
 
 
@@ -2638,7 +2639,7 @@
                     }
 
 
-                    for (i = 0; i < data.Result.ContadorCabecera.NumeroSinStock; i++) {
+                    for (i = 0; i < data.Result.DespachoDetalleSinStock.length; i++) {
                         var html = '<div class="text-center">';
                         if ($estadoSol.val() == "PRVT" && $idRolUsuario.val() == "SGI_VENTA_LOGISTICA" && data.Result.DespachoCabeceraSinStock.EstadoAprobacion == "IMP") {
 
@@ -2663,35 +2664,14 @@
                     if (fecha_entregapedidoSE != null && fecha_entregapedidoSE != "") {
                         $dateEntregaPedidoSE.val(data.Result.DespachoCabeceraSinStock.FechaEntrega);
                     }
-                    
+
+                   
 
 
                     $txtNumeroFacturaSE.val(data.Result.DespachoCabeceraSinStock.NumeroFactura);
                     $txtNumeroGuiaRemisionSE.val(data.Result.DespachoCabeceraSinStock.NumeroGuiaRemision);
 
-                    if (data.Result.DespachoCabeceraConStock.CodigoSolicitud > 0) {
-                        if (data.Result.DespachoCabeceraConStock.FechaFacturaServicio != "") {
-                            $dateFactura.val(data.Result.DespachoCabeceraConStock.FechaFacturaServicio);
-                        }
-                        else {
-                            $dateFactura.val(hoy());
-                        }
 
-                        $txtNumeroFacturaServ.val(data.Result.DespachoCabeceraConStock.NumeroFacturaServicio);
-                        $dateProgramacionServ.val(data.Result.DespachoCabeceraConStock.FechaProgramacionTecnico);
-                    }
-
-                    if (data.Result.DespachoCabeceraSinStock.CodigoSolicitud > 0) {
-                        if (data.Result.DespachoCabeceraSinStock.FechaFacturaServicio != "") {
-                            $dateFactura.val(data.Result.DespachoCabeceraSinStock.FechaFacturaServicio);
-                        }
-                        else {
-                            $dateFactura.val(hoy());
-                        }
-                        
-                        $txtNumeroFacturaServ.val(data.Result.DespachoCabeceraSinStock.NumeroFacturaServicio);
-                        $dateProgramacionServ.val(data.Result.DespachoCabeceraSinStock.FechaProgramacionTecnico);
-                    }
 
                     if (data.Result.ContadorCabecera.GestionLogSinStock > 0) {
                         $dateEntregaPedidoSE.prop('disabled', true);
@@ -2702,9 +2682,9 @@
 
                 }
 
-                if (data.Result.ContadorCabecera.ContadorConStock > 0) {
+                if (data.Result.DespachoDetalleConStock.length > 0) {
 
-                    for (i = 0; i < data.Result.ContadorCabecera.NumeroConStock; i++) {
+                    for (i = 0; i < data.Result.DespachoDetalleConStock.length; i++) {
                         var html = '<div class="text-center">';
                         if ($estadoSol.val() == "PRVT" && $idRolUsuario.val() == "SGI_VENTA_LOGISTICA") {
 
@@ -3186,7 +3166,7 @@
         if (valida_obs > 0) {
 
             var method = "POST";
-            var url = "BandejaSolicitudesVentas/MantenimientoDespacho";
+            var url = "BandejaSolicitudesVentas/ObservacionGerencia";
             var objObservacion = {
                 Tipo: "O",
                 CodigoSolicitud: $numeroSolicitud.val(),
@@ -4007,7 +3987,7 @@
                     app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
                 }
                 else {
-                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", null);
                 }
 
             };

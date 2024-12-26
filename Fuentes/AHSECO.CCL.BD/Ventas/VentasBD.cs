@@ -1217,7 +1217,10 @@ namespace AHSECO.CCL.BD.Ventas
                             ContadorSeriesConStock = reader.IsDBNull(reader.GetOrdinal("SERIE_CS")) ? 0 : reader.GetInt32(reader.GetOrdinal("SERIE_CS")),
                             ContadorSeriesSinStock = reader.IsDBNull(reader.GetOrdinal("SERIE_SS")) ? 0 : reader.GetInt32(reader.GetOrdinal("SERIE_SS")),
                             EnvioServicio = reader.IsDBNull(reader.GetOrdinal("ENVIOFC")) ? 0 : reader.GetInt32(reader.GetOrdinal("ENVIOFC")),
-                            GestionLogServicio = reader.IsDBNull(reader.GetOrdinal("GESFAC")) ? 0 : reader.GetInt32(reader.GetOrdinal("GESFAC"))
+                            GestionLogServicio = reader.IsDBNull(reader.GetOrdinal("GESFAC")) ? 0 : reader.GetInt32(reader.GetOrdinal("GESFAC")),
+                            FechaProgramacionTecnico = reader.IsDBNull(reader.GetOrdinal("FECHAPROGTEC")) ? "" : reader.GetString(reader.GetOrdinal("FECHAPROGTEC")),
+                            FechaFactura = reader.IsDBNull(reader.GetOrdinal("FECHAFACTURA")) ? "" : reader.GetString(reader.GetOrdinal("FECHAFACTURA")),
+                            NumeroFactura = reader.IsDBNull(reader.GetOrdinal("NUMFACTSERV")) ? "" : reader.GetString(reader.GetOrdinal("NUMFACTSERV"))
                         };
                     }
 
@@ -1809,7 +1812,9 @@ namespace AHSECO.CCL.BD.Ventas
                         ContadorSeriesConStock = i.Single(d => d.Key.Equals("SERIE_CS")).Value.Parse<int>(),
                         ContadorSeriesSinStock = i.Single(d => d.Key.Equals("SERIE_SS")).Value.Parse<int>(),
                         EnvioServicio = i.Single(d => d.Key.Equals("ENVIOFC")).Value.Parse<int>(),
-                        GestionLogServicio = i.Single(d => d.Key.Equals("GESFAC")).Value.Parse<int>()
+                        GestionLogServicio = i.Single(d => d.Key.Equals("GESFAC")).Value.Parse<int>(),
+                        EnvioVentaConStock = i.Single(d => d.Key.Equals("ENVIOVT_CS")).Value.Parse<int>(),
+                        EnvioVentaSinStock = i.Single(d => d.Key.Equals("ENVIOVT_SS")).Value.Parse<int>()
                     }).FirstOrDefault();
 
                 return result;

@@ -52,5 +52,11 @@ namespace AHSECO.CCL.BE.Ventas
         public int ContadorSeriesSinStock { get; set; }
         public int EnvioServicio { get; set; }
         public int GestionLogServicio { get; set; }
+        public int EnvioVentaConStock { get; set; }
+        public int EnvioVentaSinStock { get; set; }
+
+        public string FechaProgramacionTecnico { get; set; }
+        public string FechaFactura { get; set; }
+        public string NumeroFactura { get; set; }
     }
 }
