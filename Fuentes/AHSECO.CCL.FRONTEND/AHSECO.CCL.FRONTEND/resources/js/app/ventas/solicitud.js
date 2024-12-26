@@ -263,6 +263,8 @@
     var $btnGuardarFactura = $("#btnGuardarFactura");
     var $btnEnviarGestionDespachoSE = $("#btnEnviarGestionDespachoSE");
     var $hdnObservacionId = $("#hdnObservacionId");
+    var $btnCloseCargar = $("#btnCloseCargar");
+    var $btnModalClose = $("#btnModalClose");
 
 
     /*Tecnicos:*/
@@ -461,6 +463,8 @@
         $btnAgregarDetServ.click($btnAgregarDetServ_click);
         $btnGuardarDetalleServicio.click($btnGuardarDetalleServicio_click);
         $DS_btnGuardar.click($DS_btnGuardar_click);
+        $btnCloseCargar.click($btnCloseCargar_click);
+        $btnModalClose.click($btnModalClose_click);
         cargarGrillaCotDetServicios("2");
         IniciarBotonSeleccionarTecnico();
         cargaCombos();
@@ -484,6 +488,13 @@
         $btnEnviarGestionDespachoSE.click($btnEnviarGestionDespachoSE_click);
     };
 
+    function $btnCloseCargar_click() {
+        location.reload();
+    }
+
+    function $btnModalClose_click() {
+        location.reload();
+    }
     function $btnRegistrarFechaProg_click() {
         if ($dateProg.val() === "" || $dateProg.val() === null) {
             app.message.error("Validación", "Debe ingresar una Fecha de Programación.");
@@ -2309,10 +2320,10 @@
                                 location.reload();
                             }
                             if (data2.Result.Codigo > 0) {
-                                app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback2);
+                                app.message.success("Grabar", data2.Result.Mensaje, "Aceptar", fnCallback2);
                             }
                             else {
-                                app.message.error("Grabar", data.Result.Mensaje, "Aceptar", null);
+                                app.message.error("Grabar", data2.Result.Mensaje, "Aceptar", null);
                             }
                         };
 
@@ -3116,7 +3127,7 @@
 
                             $NoExisteRegDoc.hide();
                             $tblDocumentosCargados.append(nuevoTr);
-                            //location.reload();
+                            location.reload();
 
                         }
                         else {

@@ -340,15 +340,15 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnProcVentas)
                     {
 
-
+                        
                         ViewBag.VerGestionLogistica = true;
                         if (validarDespacho.Result != null)
                         {
                             if (validarDespacho.Result.ContadorSinStock > 0 && soli.Tipo_Sol != ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio)
                             {
 
-                                ViewBag.Btn_EditarDespacho = "inline-block";
-                                ViewBag.VerNavSinStock = true;
+                               ViewBag.Btn_EditarDespacho = "inline-block";
+                               ViewBag.VerNavSinStock = true;
 
                                 if (validarDespacho.Result.ContadorConStock == 0)
                                 {
@@ -364,7 +364,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 {
                                     ViewBag.SeccionImpSS = true;
                                 }
-
+                               
                                 if (validarSinStock.Result.EstadoAprobacion == "OBS")
                                 {
                                     ViewBag.Btn_EnviarGuiaBO = "inline-block";
@@ -372,7 +372,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 }
                                 else if (validarSinStock.Result.EstadoAprobacion == "IMP")
                                 {
-                                    if (validarDespacho.Result.EnvioGPSinStock == 0)
+                                    if(validarDespacho.Result.EnvioGPSinStock == 0)
                                     {
                                         ViewBag.Btn_EnviarGuiaSS = "inline-block";
                                         ViewBag.Btn_GuiaPedidoSS = "inline-block";
@@ -393,7 +393,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 {
 
                                 }
-                                ViewBag.VerNavConStock = true;
+                                    ViewBag.VerNavConStock = true;
 
                                 if (validarDespacho.Result.EnvioGPConStock == 0)
                                 {
@@ -405,8 +405,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 {
                                     ViewBag.SeccionLogCS = true;
                                 }
-
-
+                               
+                                
                             }
 
                             if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio ||
@@ -415,10 +415,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 if (validarDespacho.Result.EnvioServicio == 0)
                                 {
                                     ViewBag.Btn_EnviarServicio = "inline-block";
-                                    if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio)
+                                    if(soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio)
                                     {
                                         ViewBag.InActiveTecnico = "in active";
-                                    }
+                                    }         
                                 }
                                 else
                                 {
@@ -427,7 +427,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                     {
                                         ViewBag.InActiveServicio = "in active";
                                     }
-
+                                        
                                 }
                             }
 
@@ -457,11 +457,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             {
                                 ViewBag.VerNavSinStock = true;
 
-                                if (validarDespacho.Result.ContadorConStock == 0)
+                                if(validarDespacho.Result.ContadorConStock == 0)
                                 {
                                     ViewBag.InActiveSinStock = "in active";
                                 }
-
+                                
                                 ViewBag.SeccionImpSS = true;
                                 ViewBag.SeccionLogSS = true;
                             }
@@ -480,7 +480,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 {
                                     ViewBag.InActiveServicio = "in active";
                                 }
-
+                                   
                                 ViewBag.InActiveTecnico = "";
                             }
 
@@ -517,7 +517,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 {
                                     ViewBag.InActiveServicio = "in active";
                                 }
-
+                                   
                                 ViewBag.InActiveTecnico = "";
                             }
 
@@ -544,10 +544,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                                 if (validarDespacho.Result.EnvioBOSinStock > 0)
                                 {
-
-                                    if (validarSinStock.Result != null)
+                                    
+                                    if(validarSinStock.Result != null)
                                     {
-                                        if (validarSinStock.Result.EstadoAprobacion == "")
+                                        if(validarSinStock.Result.EstadoAprobacion == "")
                                         {
                                             ViewBag.Btn_Aprobar = "inline-block";
                                             ViewBag.Btn_Observar = "inline-block";
@@ -559,7 +559,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             if (validarDespacho.Result.ContadorConStock > 0)
                             {
                                 ViewBag.VerNavConStock = true;
-                                ViewBag.SeccionLogCS = true;
+                                ViewBag.SeccionLogCS = true;             
                             }
 
                             if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
@@ -646,16 +646,16 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 {
                                     ViewBag.InActiveSinStock = "in active";
                                 }
-
+                               
 
                                 if (validarDespacho.Result.GestionLogSinStock > 0)
                                 {
-                                    if (validarDespacho.Result.EnvioVentaSinStock == 0)
+                                    if(validarDespacho.Result.EnvioVentaSinStock == 0)
                                     {
                                         ViewBag.Btn_EnviarGestionDespachoSE = "inline-block";
                                         ViewBag.Btn_EditarGestionLogisticaSE = "inline-block";
                                     }
-
+                                    
                                 }
                                 else
                                 {
@@ -683,23 +683,23 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                     ViewBag.Btn_GuardarGestionLogistica = "inline-block";
                                 }
                             }
-
+                            
                             if (soli.Tipo_Sol != ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio &&
                                  soli.Tipo_Sol != ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
                             {
-                                if (validarDespacho.Result.ContadorSinStock == 1 &
+                                if(validarDespacho.Result.ContadorSinStock == 1 &
                                     validarDespacho.Result.ContadorConStock == 1)
                                 {
-                                    if (validarDespacho.Result.EnvioGPSinStock > 0 &&
+                                    if (validarDespacho.Result.EnvioGPSinStock > 0 && 
                                         validarDespacho.Result.EnvioGPConStock == 0)
                                     {
                                         ViewBag.InActiveSinStock = "in active";
                                     }
-
+                                  
                                 }
                             }
 
-                            if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
+                            if(soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
                             {
                                 if (validarDespacho.Result.EnvioServicio > 0)
                                 {
@@ -806,16 +806,16 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                             if (validarDespacho.Result != null)
                             {
-                                if (validarDespacho.Result.EnvioServicio > 0)
+                                if(validarDespacho.Result.EnvioServicio > 0)
                                 {
                                     ViewBag.VerNavServicio = true;
                                     ViewBag.InActiveServicio = "in active";
-                                    if (validarDespacho.Result.GestionLogServicio == 0)
+                                    if(validarDespacho.Result.GestionLogServicio == 0)
                                     {
                                         ViewBag.FechaFactura = "";
                                         ViewBag.TxtNumeroFacturaServ = "";
                                     }
-
+                                    
                                 }
                                 else
                                 {
@@ -977,8 +977,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     ViewBag.MostrarCotizacionDetalle = true;
 
                     //Validando PANELES por ESTADO DE SOLICITUD
-                    if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnCotizacion ||
-                        soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion ||
+                    if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnCotizacion || 
+                        soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion || 
                         soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.CotSinVenta)
                     {
                         ViewBag.AcordionCollapsedLiq = "";
@@ -986,9 +986,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     }
 
                     //Validando PANELES por ESTADO DE SOLICITUD
-                    if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnProcVentas ||
-                        soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.VentaProg ||
-                        soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.CotAprob ||
+                    if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnProcVentas || 
+                        soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.VentaProg || 
+                        soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.CotAprob || 
                         soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Finalizado)
                     {
                         ViewBag.AcordionCollapsedGest = "";
@@ -5180,18 +5180,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 {
                     Log.TraceInfo("Envio exitoso para servicio tecnico de la solicitud N° " + codigoSolicitud.ToString());
 
-                    var envio_log = ventasBL.ActualizarEnvioDespacho(codigoSolicitud, "", 1, 2,2, User.ObtenerUsuario());
-                    if (envio_log.Result.Codigo > 0)
-                    {
-                        result.Codigo = 1;
-                        result.Mensaje = "Se realizó correo al servicio tecnico de la solicitud N° " + codigoSolicitud.ToString();
-                    }
-                    else
-                    {
-                        Log.TraceInfo("Solicitud N° " + codigoSolicitud.ToString() + ":" + envio_log.Result.Mensaje);
-                        result.Codigo = 0;
-                        result.Mensaje = "No se pudo enviar el correo de la solicitud N° " + codigoSolicitud.ToString();
-                    }
+
+                    result.Codigo = 1;
+                    result.Mensaje = "Se realizó correo al servicio tecnico de la solicitud N° " + codigoSolicitud.ToString();
+
 
                 }
 

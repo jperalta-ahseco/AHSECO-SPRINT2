@@ -100,7 +100,7 @@ VALUES('PLANATFACT',1,'Plantilla de Atencion de Facturacion','','','ATENCION DE 
 
 INSERT INTO TBM_PLANTILLAS
 VALUES('PLANATEIMP',1,'Plantilla de Atencion de Importación','','','ATENCION DE IMPORTACIÓN - N° SOLICITUD {NRO_SOL}',
-			   '<p>Estimado(a). Vendedor(a), {NOM_VENDEDOR}</p>
+			   '<p>Estimado(a), {NOM_VENDEDOR}</p>
 <p>Se realiza el ingreso de los datos de importación de la solicitud N°{NRO_SOL} para el cliente {CLIENTE}.</p>
 <p>Por favor ingrese al sistema para continuar con el flujo de venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
 
@@ -120,7 +120,7 @@ VALUES('PLANSSERCS',1,'Plantilla Series Serv Tecnico Con Stock','serviciotecnico
 
 INSERT INTO TBM_PLANTILLAS
 VALUES('PLANOBSVTA',1,'Plantilla de Observacion de Gerencia','','','OBSERVACIÓN DE GERENCIA - N° SOLICITUD {NRO_SOL}',
-			   '<p>Estimado(a) Vendedor(a), {NOM_VENDEDOR}</p>
+			   '<p>Estimado(a), {NOM_VENDEDOR}</p>
 <p>La Guía de BO enviada para realizar la importación de los productos  de la solicitud N°{NRO_SOL} para el cliente {CLIENTE} ha sido rechazada debido a la siguiente observación: {OBS_SOLICITUD}.</p>
 <p>Por favor ingrese al sistema para continuar con el flujo de la venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
 
