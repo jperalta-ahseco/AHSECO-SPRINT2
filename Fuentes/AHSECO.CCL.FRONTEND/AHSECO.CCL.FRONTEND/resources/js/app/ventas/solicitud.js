@@ -1520,18 +1520,21 @@
     
     function grabarDatosCotDetServ() {
 
-        method = "POST";
-        url = "BandejaSolicitudesVentas/GrabarDatosCotDet";
-        var objDatos = { TipoItem: "SER" };
-        var objParam = JSON.stringify(objDatos);
+        var fnSi = function () {
+            method = "POST";
+            url = "BandejaSolicitudesVentas/GrabarDatosCotDet";
+            var objDatos = { TipoItem: "SER" };
+            var objParam = JSON.stringify(objDatos);
 
-        var fnDoneCallBack = function (data) {
-            $DS_hdnOpcGrillaItems.val("2");
-            $('#modalDetalleCotizacionServicio').modal('hide');
-            cargarTablaDetCotServicios(data);
-        };
+            var fnDoneCallBack = function (data) {
+                $DS_hdnOpcGrillaItems.val("2");
+                $('#modalDetalleCotizacionServicio').modal('hide');
+                cargarTablaDetCotServicios(data);
+            };
 
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+        }
+        return app.message.confirm("Confirmacion","¿Desea guardar el detalle de cotizacion?","Si","No",fnSi);
     }
 
     function cargarTablaDetCotServicios(data) {

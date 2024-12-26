@@ -1430,7 +1430,7 @@ var cotvtadet = (function ($, win, doc) {
 
             app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallback);
         }
-        return app.message.confirm("Confirmaci&oacute;nn", "Desea guardar el detalle de cotizaci&oacute;n?", "S&íacute;n", "No", fnSi);
+        return app.message.confirm("Confirmaci&oacute;n", "Desea guardar el detalle de cotizaci&oacute;n?", "S&iacute;", "No", fnSi);
     }
 
     function cerrarModalDetItem() {

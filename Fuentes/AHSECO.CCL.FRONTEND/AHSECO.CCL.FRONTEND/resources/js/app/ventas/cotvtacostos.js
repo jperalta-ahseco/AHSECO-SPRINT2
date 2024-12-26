@@ -1051,7 +1051,7 @@
 
             app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
         }
-        return app.message.confirm("Confirmaci&oacute;", "Desea quitar el costo seleccionado?", "S&iacute;", "No", fnSi);
+        return app.message.confirm("Confirmaci&oacute;n", "Desea quitar el costo seleccionado?", "S&iacute;", "No", fnSi);
     }
 
     function cerrarModalCostosItem() {
