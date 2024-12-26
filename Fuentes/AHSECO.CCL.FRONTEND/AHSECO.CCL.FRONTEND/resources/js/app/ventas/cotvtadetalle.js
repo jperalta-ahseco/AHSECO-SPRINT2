@@ -1449,7 +1449,7 @@ var cotvtadet = (function ($, win, doc) {
 
             app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
         }
-        return app.message.confirm("Validaci&oacute;n", "Desea retroceder sin guardar? Se guardar&aacute;n los datos no guardados", "S&iacute;", "No", fnSi);
+        return app.message.confirm("Validaci&oacute;n", "Desea retroceder sin guardar? Se perder&aacute;n los datos no guardados", "S&iacute;", "No", fnSi);
     }
 
     function grabarDatosCotDet() {
@@ -1497,13 +1497,13 @@ var cotvtadet = (function ($, win, doc) {
                         return '<center>' + data + '</center>';
                     }
                 },
-                {
-                    data: "Stock",
-                    render: function (data) {
-                        if (data == null) { data = ""; }
-                        return '<center>' + data + '</center>';
-                    }
-                },
+                //{
+                //    data: "Stock",
+                //    render: function (data) {
+                //        if (data == null) { data = ""; }
+                //        return '<center>' + data + '</center>';
+                //    }
+                //},
                 {
                     data: "DescUnidad",
                     render: function (data) {
@@ -1610,13 +1610,13 @@ var cotvtadet = (function ($, win, doc) {
                         return '<center>' + data + '</center>';
                     }
                 },
-                {
-                    data: "Stock",
-                    render: function (data) {
-                        if (data == null) { data = ""; }
-                        return '<center>' + data + '</center>';
-                    }
-                },
+                //{
+                //    data: "Stock",
+                //    render: function (data) {
+                //        if (data == null) { data = ""; }
+                //        return '<center>' + data + '</center>';
+                //    }
+                //},
                 {
                     data: "DescUnidad",
                     render: function (data) {
