@@ -2254,10 +2254,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             }
         }
 
-        public JsonResult GrupoSolicitudVentaFiltro(int codFlujo, long codSolicitud)
+        public JsonResult GrupoSolicitudVentaFiltro(int codFlujo, long codSolicitud, string rolUsuario)
         {
             var ventasBL = new VentasBL();
-            var result = ventasBL.GrupoSolicitudVentaFiltro(codFlujo, codSolicitud);
+            var result = ventasBL.GrupoSolicitudVentaFiltro(codFlujo, codSolicitud, rolUsuario);
             return Json(result);
         }
 

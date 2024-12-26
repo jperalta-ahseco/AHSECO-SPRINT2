@@ -955,14 +955,14 @@ namespace AHSECO.CCL.BD.Ventas
             };
         }
 
-        public FiltroGrupoSolicitudVentaDTO GrupoSolicitudVentaFiltro(int codFlujo, long codSolicitud)
+        public FiltroGrupoSolicitudVentaDTO GrupoSolicitudVentaFiltro(int codFlujo, long codSolicitud, string rolUsuario)
         {
             Log.TraceInfo(Utilidades.GetCaller());
             using (var connection = Factory.ConnectionSingle())
             {
                 SqlCommand sqlcommand;
                 var result = new FiltroGrupoSolicitudVentaDTO();
-                string query = "exec USP_FILTROS_SOLICITUD_VENTAS @CodFlujo="+codFlujo.ToString()+ ", @CodSolicitud="+codSolicitud.ToString();
+                string query = "exec USP_FILTROS_SOLICITUD_VENTAS @CodFlujo="+codFlujo.ToString()+ ", @CodSolicitud="+codSolicitud.ToString()+ ", @RolUsuario="+ rolUsuario;
                 connection.Open();
                 sqlcommand = new SqlCommand(query, connection);
                 using (var reader = sqlcommand.ExecuteReader())

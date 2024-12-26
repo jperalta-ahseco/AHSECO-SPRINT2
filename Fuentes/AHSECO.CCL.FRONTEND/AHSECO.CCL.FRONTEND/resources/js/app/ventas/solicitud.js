@@ -323,7 +323,8 @@
         AprobarImportacion: "Aprobando Importación, por favor espere...",
         ActualizarImportacion: "Actualizando Importación, por favor espere...",
         ObteniendoTipoServicio: "Obteniendo tipo de servicios, por favor espere...",
-        obteniendoServicio: "Obteniendo resultados de la busqueda, por favor espere..."
+        obteniendoServicio: "Obteniendo resultados de la busqueda, por favor espere...",
+        procesandoUbigeo: "Procesando Ubigeo, por favor espere..."
     };
 
     $(Initialize);
@@ -893,8 +894,20 @@
             return;
         };
 
+
         if (isNaN($txtNumDocumento.val())) {
             app.message.error("Validación", "El número de documento debe de ser un número");
+            return;
+        };
+
+
+        if ($cmbTipoCredencial.val() == "GETD0001" && $txtNumDocumento.val().trim().length != 8) {
+            app.message.error("Validación", "El número de documento no es un DNI");
+            return;
+        };
+
+        if ($cmbTipoCredencial.val() == "GETD0002" && $txtNumDocumento.val().trim().length != 12) {
+            app.message.error("Validación", "El número de documento no es un RUC");
             return;
         };
 
@@ -971,21 +984,23 @@
     };
     
     function logicUbigeo() {
+        getDepartamentos();
         $cmbProvincia.val('').trigger("change");
         $cmbDistrito.val('').trigger("change");
         $cmbProvincia.prop("disabled", true);
         $cmbDistrito.prop("disabled", true);
-        getDepartamentos();
+        
     }
 
     function getDepartamentos() {
+
         var method = "POST";
         var url = "Ubigeo/ObtenerUbigeo";
         var ubigeoObj = {}
 
         var objParam = JSON.stringify(ubigeoObj);
         var fnDoneCallback = function (data) {
-
+            console.log(data.Result.length);
             var resultado = { Result: [] };
 
             var distritos = { Result: [] };
@@ -1021,10 +1036,10 @@
             var filters = {};
             filters.placeholder = "-- Seleccione --";
             filters.allowClear = false;
-            app.llenarCombo($cmbDepartamento, resultado, $modalZona, "", "<--Seleccione-->", filters);
+            app.llenarCombo($cmbDepartamento, data, $modalZona, "", "<--Seleccione-->", filters);
         }
         var fnFailCallback = function () {
-            app.mensajes.error("Error", "No se ejecutó correctamente la carga de departamentos")
+            app.mensajes.error("Error", "No se ejecutó correctamente la carga de departamentos");
         }
         return app.llamarAjax(method, url, objParam, fnDoneCallback, fnFailCallback, null, mensajes.procesandoUbigeo)
 
@@ -1118,9 +1133,10 @@
         $txtCorreo.val("");
         $txtZona.val("");
         $hdnIdTecnico.val("");
+        //getDepartamentos();
        // $cmbDepartamento.val("").trigger('change.select2');
-        $cmbProvincia.val("").trigger('change.select2');
-        $cmbDistrito.val("").trigger('change.select2');
+       // $cmbProvincia.val("").trigger('change.select2');
+       // $cmbDistrito.val("").trigger('change.select2');
     };
 
     function BuscarTecnicosClick() {
@@ -2529,7 +2545,7 @@
         }
 
         method = "POST";
-        url = "BandejaSolicitudesVentas/GrupoSolicitudVentaFiltro?codFlujo=" + codFlujo + "&codSolicitud=" + numsol;
+        url = "BandejaSolicitudesVentas/GrupoSolicitudVentaFiltro?codFlujo=" + codFlujo + "&codSolicitud=" + numsol + "&rolUsuario=" + rol;
         var objComb = "";
         objComb = JSON.stringify(objComb);
 
