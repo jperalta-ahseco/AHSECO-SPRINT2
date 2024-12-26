@@ -1921,7 +1921,7 @@ var cotvtadet = (function ($, win, doc) {
 
             app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
         }
-        return app.message.confirm("Confirmaci&oacute;n", "¿Desea recotizar la solicitud?", "S&iacute;", "No", fnSi);
+        return app.message.confirm("Confirmaci&oacute;n", "Desea recotizar la solicitud?", "S&iacute;", "No", fnSi);
     }
 
     function guardarCotVenta() {
@@ -2070,7 +2070,7 @@ var cotvtadet = (function ($, win, doc) {
 
             app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
         }
-        return app.message.confirm("Confirmaci&oacute;n", "¿Desea guardar la valoraci&oacute;n?", "S&iacute;", "No", fnSi);
+        return app.message.confirm("Confirmaci&oacute;n", "Desea guardar la valoraci&oacute;n?", "S&iacute;", "No", fnSi);
     }
 
     return {
