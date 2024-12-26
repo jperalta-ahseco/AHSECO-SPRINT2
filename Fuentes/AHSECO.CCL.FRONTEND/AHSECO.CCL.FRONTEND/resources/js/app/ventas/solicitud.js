@@ -33,6 +33,7 @@
     var $modalContactos = $('#modalContactos');
     var $tituloModalObservacion = $('#tituloModalObservacion');
     var $btnExportarLiquidacion = $("#btnExportarLiquidacion");
+    var $modalDetalleCotizacionServicio = $('#modalDetalleCotizacionServicio');
 
     /*variables de los modales*/
     var $NoExisteRegObs = $('#NoExisteRegObs');
@@ -1293,12 +1294,17 @@
         if ($DS_txtCantidad.val() === "0") {
             app.message.error("Validación", "Debe ingresar un número mayor a cero en cantidad del servicio.");
             return false;
-        }
+        };
 
         if ($DS_txtPrecio.val() === "0.00" || $DS_txtPrecio.val() === "") {
             app.message.error("Validación", "Debe ingresar un número mayor a cero en el precio del servicio.");
             return false;
-        }
+        };
+
+        if ($DS_txtTotalVenta.val() === "0.00" || $DS_txtTotalVenta.val() === "") {
+            app.message.error("Validación", "Debe ingresar un número mayor a cero en el precio de venta total.");
+            return false;
+        };
 
         method = "POST";
         url = "BandejaSolicitudesVentas/ActualizarServ";
@@ -1307,8 +1313,8 @@
             datos: {
             Id: $DS_hdnIdCotDetServ.val(),
             Cantidad: $DS_txtCantidad.val(),
-            VentaUnitaria: $DS_txtPrecio.val(),
-            VentaTotalSinIGV: $DS_txtTotalVenta.val()
+            VentaUnitaria: parseFloat(($DS_txtPrecio.val()).replaceAll(",", "")),
+            VentaTotalSinIGV:parseFloat(($DS_txtTotalVenta.val()).replaceAll(",", "")),
             },
             opcGrillaItems: $DS_hdnOpcGrillaItems.val()
         };
@@ -1703,7 +1709,7 @@
             var filters = {};
             filters.placeholder = "--Seleccionar--";
             filters.allowClear = false;
-            app.llenarComboMultiResult($cmbTipoServicio, data.Result.TipServicio, null, 0, "--Seleccionar--", filters);
+            app.llenarComboMultiResult($cmbTipoServicio, data.Result.TipServicio, $modalDetalleCotizacionServicio, 0, "--Seleccionar--", filters);
             $btnBuscarItemsServicio_click();
         };
         var fnFailCallBack = function () {

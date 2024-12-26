@@ -1432,19 +1432,21 @@ var cotvtadet = (function ($, win, doc) {
 
     function cerrarModalDetItem() {
 
-        method = "POST";
-        url = "BandejaSolicitudesVentas/CancelarCotDetItem";
-        var objFiltros = {
-            CotizacionDetalle: { Id: $DI_hdnIdCotDet.val() }
-        };
-        var objParam = JSON.stringify(objFiltros);
+        var fnSi = function () {
+            method = "POST";
+            url = "BandejaSolicitudesVentas/CancelarCotDetItem";
+            var objFiltros = {
+                CotizacionDetalle: { Id: $DI_hdnIdCotDet.val() }
+            };
+            var objParam = JSON.stringify(objFiltros);
 
-        var fnDoneCallBack = function (data) {
-            $('#modalDetalleItem').modal('hide');
-        };
+            var fnDoneCallBack = function (data) {
+                $('#modalDetalleItem').modal('hide');
+            };
 
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
-        
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+        }
+        return app.message.confirm("Validación", "¿Desea retroceder sin guardar? Se guardarán los datos no guardados", "Sí", "No", fnSi);
     }
 
     function grabarDatosCotDet() {
