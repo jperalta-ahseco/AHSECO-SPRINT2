@@ -371,7 +371,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                
                                 if (validarSinStock.Result.EstadoAprobacion == "OBS")
                                 {
-                                    ViewBag.Btn_EnviarGuiaBO = "inline-block";
+                                    if (validarDespacho.Result.GenerarGuiaBOSinStock > 0)
+                                    {
+                                        ViewBag.Btn_EnviarGuiaBO = "inline-block";
+                                    }
+                                      
                                     ViewBag.Btn_GuiaBO = "inline-block";
                                 }
                                 else if (validarSinStock.Result.EstadoAprobacion == "IMP")
@@ -397,10 +401,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                             if (validarDespacho.Result.ContadorConStock > 0)
                             {
-                                if (soli.Tipo_Sol != ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
-                                {
-
-                                }
                                     ViewBag.VerNavConStock = true;
 
                                 if (validarDespacho.Result.EnvioGPConStock == 0)
