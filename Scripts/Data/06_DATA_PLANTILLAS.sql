@@ -47,7 +47,7 @@ VALUES('PLANINSTEC',3,'Plantilla de instalación técnica para vendedor','','pmine
 -- para despacho:
 INSERT INTO TBM_PLANTILLAS
 VALUES('PLANGUIAPE',1,'Plantilla de Envio de Guia de Pedidos','logistica@ahsecoperu.com','','GUIA DE PEDIDOS - N° SOLICITUD {NRO_SOL}',
-			   '<p>Estimado Logistica,</p>
+			   '<p>Estimada Área de Logistica,</p>
 <p>Se realiza el envio de la guía de pedidos de la solicitud N°{NRO_SOL} para el cliente {CLIENTE}.</p>
 <p>Su apoyo con la atención de lo solicitado.</p>
 <p>Por favor ingrese al sistema para continuar con el flujo de venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);

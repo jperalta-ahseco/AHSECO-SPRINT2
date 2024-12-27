@@ -4620,6 +4620,101 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             return Json(response);
         }
 
+        public JsonResult GestionLogistica(DatosDespachoDTO datosDespachoDTO)
+        {
+            var result = new RespuestaDTO();
+            var ventasBL = new VentasBL();
+            try
+            {
+                var plantillasBL = new PlantillasBL();
+                CCLog Log = new CCLog();
+                datosDespachoDTO.Tipo = "P";
+                datosDespachoDTO.UsuarioRegistro = User.ObtenerUsuario();
+                datosDespachoDTO.NombrePerfil = User.ObtenerPerfil();
+                var envio_log = ventasBL.MantenimientoDespacho(datosDespachoDTO);
+                if (envio_log.Result.Codigo > 0)
+                {
+
+                    if(envio_log.Result.Codigo > 1) //Si la atención de logistica cambia a venta programada:
+                    {
+                        //Envio de correo:
+                        var filtros = new FiltroPlantillaDTO();
+                        filtros.CodigoProceso = 1;
+                        if(datosDespachoDTO.Stock == "S")
+                        {
+                            filtros.CodigoPlantilla = "PLANATLOCS";
+                        }
+                        else if(datosDespachoDTO.Stock == "N")
+                        {
+                            filtros.CodigoPlantilla = "PLANATLOSS";
+                        }
+                        
+                        filtros.Usuario = User.ObtenerUsuario();
+                        filtros.Codigo = Convert.ToInt32(datosDespachoDTO.CodigoSolicitud);
+
+                        var datos_correo = plantillasBL.ConsultarPlantillaCorreo(filtros).Result;
+                        var respuesta = Utilidades.Send(datos_correo.To, datos_correo.CC, "", datos_correo.Subject, datos_correo.Body, null, "");
+                        if (respuesta != "OK")
+                        {
+                            Log.TraceInfo("Solicitud N° " + datosDespachoDTO.CodigoSolicitud.ToString() + ":" + respuesta);
+
+                            result.Codigo = 0;
+                            result.Mensaje = "No se pudo enviar el correo de la solicitud N° " + datosDespachoDTO.CodigoSolicitud.ToString();
+                        }
+                        else
+                        {
+                            #region Envio Correo Servicio Tecnico
+                            if (datosDespachoDTO.EstadoAprobacion == "TSOL05" && envio_log.Result.Codigo == 3) //Solo para equipos y con instalacion:
+                            {
+                                //Envio de correo:
+                                var filtros2 = new FiltroPlantillaDTO();
+                                filtros2.CodigoProceso = 1;
+                                if (datosDespachoDTO.Stock == "S")
+                                {
+                                    filtros2.CodigoPlantilla = "PLANSSERCS";
+                                }
+                                else if(datosDespachoDTO.Stock == "N")
+                                {
+                                    filtros2.CodigoPlantilla = "PLANSSERSS";
+                                }
+                                   
+                                filtros2.Usuario = User.ObtenerUsuario();
+                                filtros2.Codigo = Convert.ToInt32(datosDespachoDTO.CodigoSolicitud);
+
+                                var datos_correo2 = plantillasBL.ConsultarPlantillaCorreo(filtros2).Result;
+                                var respuesta2 = Utilidades.Send(datos_correo2.To, datos_correo2.CC, "", datos_correo2.Subject, datos_correo2.Body, null, "");
+                                if (respuesta2 != "OK")
+                                {
+                                    Log.TraceInfo("Solicitud N° " + datosDespachoDTO.CodigoSolicitud.ToString() + ":" + respuesta2);
+                                }
+                                else
+                                {
+                                    Log.TraceInfo("Envio exitoso de correo de series a servicio tecnico de la solicitud N° " + datosDespachoDTO.CodigoSolicitud.ToString());
+                                }
+                            }
+                            #endregion
+                        }
+                    }
+
+                    result.Codigo = 1;
+                    result.Mensaje = "Se realizó el envio de la Gestión de Logística de la solicitud N° " + datosDespachoDTO.CodigoSolicitud.ToString();
+
+                }
+                else
+                {
+                    Log.TraceInfo("Solicitud N° " + datosDespachoDTO.CodigoSolicitud.ToString() + ":" + envio_log.Result.Mensaje);
+                    result.Codigo = 0;
+                    result.Mensaje = "No se pudo realizar la atención de logistica de la solicitud N° " + datosDespachoDTO.CodigoSolicitud.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Codigo = 0;
+                result.Mensaje = ex.Message.ToString();
+            }
+            return Json(new ResponseDTO<RespuestaDTO>(result));
+        }
+
         public JsonResult ObservacionGerencia(DatosDespachoDTO datosDespachoDTO)
         {
             var result = new RespuestaDTO();
@@ -4774,7 +4869,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 var docs = documentos.Result.OrderByDescending(e => e.CodigoDocumento);
                 foreach (var doc in docs)
                 {
-                    if (doc.CodigoTipoDocumento == "DVT04" && doc.Eliminado == 0) //Solo documentos de tipo Guia de pedidos:
+                    if (doc.CodigoTipoDocumento == "DVT07" && doc.Eliminado == 0) //Solo documentos de tipo Guia de pedidos:
                     {
                         string pao_files = ConfigurationManager.AppSettings.Get("tempFiles");
                         string ruta = pao_files + doc.RutaDocumento;
@@ -4939,7 +5034,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 var docs = documentos.Result.OrderByDescending(e => e.CodigoDocumento);
                 foreach (var doc in docs)
                 {
-                    if (doc.CodigoTipoDocumento == "DVT03" && doc.Eliminado == 0) //Solo documentos de tipo Guia de BO:
+                    if (doc.CodigoTipoDocumento == "DVT06" && doc.Eliminado == 0) //Solo documentos de tipo Guia de BO:
                     {
                         string pao_files = ConfigurationManager.AppSettings.Get("tempFiles");
                         string ruta = pao_files + doc.RutaDocumento;
@@ -5051,6 +5146,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         }
                        
                         #endregion
+
+
 
                     }
                     else

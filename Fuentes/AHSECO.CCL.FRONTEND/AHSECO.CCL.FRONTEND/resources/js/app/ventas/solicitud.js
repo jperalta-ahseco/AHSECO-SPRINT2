@@ -411,6 +411,7 @@
         
         $dateFactura.val(hoy());
         $fileCargaDocumentoSustento.on("change", $fileCargaDocumentoSustento_change);
+        $fileCargaDocumentoSustento.click($fileCargaDocumentoSustento_change);
         $btnEliminarSol.click(btnEliminarSolClick);
         $btnGuardarObservacionReq.click(GuardarObservacionReqClick);
         $btnRegistrarCotizacion.click(registrarCotizacion);
@@ -489,11 +490,11 @@
     };
 
     function $btnCloseCargar_click() {
-        location.reload();
+        
     }
 
     function $btnModalClose_click() {
-        location.reload();
+        
     }
     function $btnRegistrarFechaProg_click() {
         if ($dateProg.val() === "" || $dateProg.val() === null) {
@@ -1812,11 +1813,11 @@
         var fnSi = function () {
 
             var m = "POST";
-            var url = "BandejaSolicitudesVentas/MantenimientoDespacho";
+            var url = "BandejaSolicitudesVentas/GestionLogistica";
             var obj = {
-                Tipo: "P",
                 CodigoSolicitud: $numeroSolicitud.val(),
                 Stock: "N",
+                EstadoAprobacion: $TipoSolicitud.val() ,
                 NumeroGuiaRemision: $txtNumeroGuiaRemisionSE.val(),
                 NumeroFactura: $txtNumeroFacturaSE.val(),
                 FechaEntrega: $dateEntregaPedidoSE.val()
@@ -1836,7 +1837,7 @@
             };
             return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.RegistrarGestionVenta);
         }
-        return app.message.confirm("Ventas", "¿Está seguro que desea actualizar los datos de despacho?", "S&iacute;", "No", fnSi, null);
+        return app.message.confirm("Ventas", "¿Está seguro que desea actualizar los datos de despacho?", "Si", "No", fnSi, null);
 
     }
 
@@ -2129,15 +2130,13 @@
                 return false;
             }
         }
-
         var fnSi = function () {
-
             var m = "POST";
-            var url = "BandejaSolicitudesVentas/MantenimientoDespacho";
+            var url = "BandejaSolicitudesVentas/GestionLogistica";
             var obj = {
-                Tipo: "P",
                 CodigoSolicitud: $numeroSolicitud.val(),
                 Stock: "S",
+                EstadoAprobacion: $TipoSolicitud.val(),
                 CodigoWorkFlow: $codigoWorkflow.val(),
                 NumeroGuiaRemision: $txtNumeroGuiaRemisionCE.val(),
                 NumeroFactura: $txtNumeroFacturaCE.val(),
@@ -2158,8 +2157,7 @@
             };
             return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.RegistrarGestionVenta);
         }
-        return app.message.confirm("Ventas", "¿Está seguro que desea actualizar los datos de despacho?", "S&iacute;", "No", fnSi, null);
-
+        return app.message.confirm("Ventas", "¿Está seguro que desea actualizar los datos de despacho?", "Si", "No", fnSi, null);
     }
 
     function $btnEnviarGuiaCS_click() {
@@ -3041,6 +3039,7 @@
     }
 
     function $btnCargarDocumento_click() {
+
         if ($cmbTipoDocumentoCarga.val() == 0 || $cmbTipoDocumentoCarga.val() == "" || $cmbTipoDocumentoCarga.val() == null) {
             app.message.error('Validación', 'Debe seleccionar el tipo de documento', 'Aceptar', null);
             return false;
@@ -3794,8 +3793,7 @@
     }
 
     function $fileCargaDocumentoSustento_change() {
-
-
+        $lblNombreArchivo.text("");
         var fileInput = document.getElementById("fileCargaDocumentoSustento");
 
         if (myfile.length > 0) {

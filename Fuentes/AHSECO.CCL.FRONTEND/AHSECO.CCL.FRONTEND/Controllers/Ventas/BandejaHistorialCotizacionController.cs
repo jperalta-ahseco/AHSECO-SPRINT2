@@ -757,6 +757,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             var style2 = hssfworkbook.CreateCellStyle();
             style2.SetFont(fontbold2);
             style2.Alignment = HorizontalAlignment.Center;
+            style2.VerticalAlignment = VerticalAlignment.Center;
 
             var style3 = hssfworkbook.CreateCellStyle();
             style3.SetFont(fontbold3);
@@ -802,7 +803,15 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             style9.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
             style9.Alignment = HorizontalAlignment.Center;
 
-
+            var style10 = hssfworkbook.CreateCellStyle();
+            style10.SetFont(fontbold5);
+            style10.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+            style10.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+            style10.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+            style10.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+            style10.Alignment = HorizontalAlignment.Center;
+            style10.VerticalAlignment = VerticalAlignment.Center;
+            style10.WrapText = true;
 
             sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(0, 3, 0, 5)); //1ra fila, ult fila, 1ra col, ult col
             sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(0, 0, 7, 9));
@@ -844,41 +853,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             //detalle: cabecera
             sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(10, 10, 5, 11));
 
-            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(11, 11, 5, 11));
-            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(12, 12, 5, 11));
-            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(13, 13, 5, 11));
-            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(14, 14, 5, 11));
-
-            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(15, 15, 5, 11));
-            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(16, 16, 5, 11));
-            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(17, 17, 5, 11));
-
-            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(18, 18, 0, 2));
-            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(18, 18, 3, 12));
-            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(18, 18, 16, 17));
-
-            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(19, 19, 0, 2));
-            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(19, 19, 3, 4));
-            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(19, 19, 5, 6));
-            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(19, 19, 7, 10));
-            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(19, 19, 11, 12));
-            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(19, 19, 13, 14));
-            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(19, 19, 15, 18));
-
-            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(20, 20, 0, 3));
-            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(20, 20, 4, 6));
-            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(20, 20, 7, 9));
-            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(20, 20, 10, 12));
-            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(20, 20, 13, 14));
-            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(20, 21, 15, 18));
-
-            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(21, 21, 0, 3));
-            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(21, 21, 4, 6));
-            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(21, 21, 7, 9));
-            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(21, 21, 10, 12));
-            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(21, 21, 13, 14));
-
-
             int rownum = 0;
             int cellnum = 0;
             IRow row = sh.CreateRow(rownum++);
@@ -901,7 +875,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             IDrawing drawing = sh.CreateDrawingPatriarch();
 
             // Crear un ancla para la imagen
-            IClientAnchor anchor = drawing.CreateAnchor(0, 0, 0, 0, 0, 0, 6, 4); // (col1, row1, col2, row2)
+            IClientAnchor anchor = drawing.CreateAnchor(0, 0, 0, 0, 0, 0, 5, 3); // (col1, row1, col2, row2)
 
             // Insertar la imagen en la celda
             drawing.CreatePicture(anchor, pictureIndex);
@@ -1114,73 +1088,74 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             row = sh.CreateRow(rownum2++);
 
             cell = row.CreateCell(0);
-            cell.CellStyle = style5;
+            cell.CellStyle = style10;
             cell.SetCellValue("Descargado");
 
+
             cell = row.CreateCell(1);
-            cell.CellStyle = style5;
+            cell.CellStyle = style10;
             cell.SetCellValue("Pendiente");
 
             cell = row.CreateCell(2);
-            cell.CellStyle = style5;
+            cell.CellStyle = style10;
             cell.SetCellValue("Cantidad");
 
             cell = row.CreateCell(3);
-            cell.CellStyle = style5;
+            cell.CellStyle = style10;
             cell.SetCellValue("Unidad");
 
             cell = row.CreateCell(4);
-            cell.CellStyle = style5;
+            cell.CellStyle = style10;
             cell.SetCellValue("N° de Catálogo");
 
             cell = row.CreateCell(5);
-            cell.CellStyle = style5;
+            cell.CellStyle = style10;
             cell.SetCellValue("DESCRIPCION");
 
             cell = row.CreateCell(6);
-            cell.CellStyle = style5;
+            cell.CellStyle = style10;
 
             cell = row.CreateCell(7);
-            cell.CellStyle = style5;
+            cell.CellStyle = style10;
 
             cell = row.CreateCell(8);
-            cell.CellStyle = style5;
+            cell.CellStyle = style10;
 
             cell = row.CreateCell(9);
-            cell.CellStyle = style5;
+            cell.CellStyle = style10;
 
             cell = row.CreateCell(10);
-            cell.CellStyle = style5;
+            cell.CellStyle = style10;
 
             cell = row.CreateCell(11);
-            cell.CellStyle = style5;
+            cell.CellStyle = style10;
 
             cell = row.CreateCell(12);
-            cell.CellStyle = style5;
+            cell.CellStyle = style10;
             cell.SetCellValue("Valor Unit. De Venta");
 
             cell = row.CreateCell(13);
-            cell.CellStyle = style5;
+            cell.CellStyle = style10;
             cell.SetCellValue("Total Valor de Venta");
 
             cell = row.CreateCell(14);
-            cell.CellStyle = style5;
+            cell.CellStyle = style10;
             cell.SetCellValue("Precio Kardex");
 
             cell = row.CreateCell(15);
-            cell.CellStyle = style5;
+            cell.CellStyle = style10;
             cell.SetCellValue("Total Kardex");
 
             cell = row.CreateCell(16);
-            cell.CellStyle = style5;
+            cell.CellStyle = style10;
             cell.SetCellValue("Unidades Entregadas");
 
             cell = row.CreateCell(17);
-            cell.CellStyle = style5;
+            cell.CellStyle = style10;
             cell.SetCellValue("Unidad Precio Costo");
 
             cell = row.CreateCell(18);
-            cell.CellStyle = style5;
+            cell.CellStyle = style10;
             cell.SetCellValue("Extensión Precio Costo");
 
             #endregion
@@ -1188,7 +1163,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             #region detalle de guia:
             foreach (var det in datosGuia.GuiaDetalle)
             {
-                row = sh.CreateRow(rownum2++);
+                var fila = rownum2++;
+                row = sh.CreateRow(fila);
+
+                sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(fila, fila, 5, 11));
 
                 cell = row.CreateCell(0);
                 cell.CellStyle = style5;
@@ -1256,7 +1234,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             #endregion
 
             #region SubTotal:
-            row = sh.CreateRow(rownum2++);
+            var fila1 = rownum2++;
+            row = sh.CreateRow(fila1);
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(fila1, fila1, 5, 11));
 
             var str_sub = datosGuia.GuiaCabecera.Moneda + " SUBTOTAL:";
 
@@ -1307,7 +1287,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             #endregion
 
             #region IGV:
-            row = sh.CreateRow(rownum2++);
+            var fila2 = rownum2++;
+            row = sh.CreateRow(fila2);
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(fila2, fila2, 5, 11));
 
             var str_igv = datosGuia.GuiaCabecera.Moneda + " IGV 18%:";
 
@@ -1358,7 +1340,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             #endregion
 
             #region Total:
-            row = sh.CreateRow(rownum2++);
+            var fila3 = rownum2++;
+            row = sh.CreateRow(fila3);
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(fila3, fila3, 5, 11));
 
             var str_total = datosGuia.GuiaCabecera.Moneda + " TOTAL:";
 
@@ -1408,7 +1392,13 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             #endregion
 
-            row = sh.CreateRow(rownum2++);
+            #region Observacion:
+            var fila4 = rownum2++;
+            row = sh.CreateRow(fila4);
+
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(fila4, fila4, 0, 2));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(fila4, fila4, 3, 12));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(fila4, fila4, 16, 17));
 
             cell = row.CreateCell(0);
             cell.CellStyle = style9;
@@ -1455,7 +1445,19 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             cell.CellStyle = style5;
             cell.SetCellValue("TOTAL");
 
-            row = sh.CreateRow(rownum2++);
+            #endregion
+
+            #region Empaquetado_x
+            var fila5 = rownum2++;
+            row = sh.CreateRow(fila5);
+
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(fila5, fila5, 0, 2));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(fila5, fila5, 3, 4));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(fila5, fila5, 5, 6));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(fila5, fila5, 7, 10));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(fila5, fila5, 11, 12));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(fila5, fila5, 13, 14));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(fila5, fila5, 15, 18));
 
             cell = row.CreateCell(0);
             row.Height = 30 * 20;
@@ -1517,7 +1519,18 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             cell = row.CreateCell(18);
             cell.CellStyle = style8;
 
-            row = sh.CreateRow(rownum2++);
+            #endregion
+
+            #region EsConforme
+            var fila6 = rownum2++;
+            row = sh.CreateRow(fila6);
+
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(fila6, fila6, 0, 3));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(fila6, fila6, 4, 6));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(fila6, fila6, 7, 9));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(fila6, fila6, 10, 12));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(fila6, fila6, 13, 14));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(fila6, fila6+1, 15, 18));
 
             cell = row.CreateCell(0);
             cell.CellStyle = style9;
@@ -1580,7 +1593,17 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             cell = row.CreateCell(18);
             cell.CellStyle = style5;
 
-            row = sh.CreateRow(rownum2++);
+            #endregion
+
+            #region Firma
+            var fila7 = rownum2++;
+            row = sh.CreateRow(fila7);
+
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(fila7, fila7, 0, 3));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(fila7, fila7, 4, 6));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(fila7, fila7, 7, 9));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(fila7, fila7, 10, 12));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(fila7, fila7, 13, 14));
 
             cell = row.CreateCell(0);
             row.Height = 40 * 20;
@@ -1641,6 +1664,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             cell = row.CreateCell(18);
             cell.CellStyle = style5;
 
+            #endregion
 
             string rutaInicial;
             string nombre;
