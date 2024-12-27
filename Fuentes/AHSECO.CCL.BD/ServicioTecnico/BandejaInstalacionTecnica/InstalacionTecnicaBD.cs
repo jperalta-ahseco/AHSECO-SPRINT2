@@ -724,7 +724,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                             DescProduct = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION")),
                             Marca = reader.IsDBNull(reader.GetOrdinal("DESMARCA")) ? "" : reader.GetString(reader.GetOrdinal("DESMARCA")),
                             Serie = reader.IsDBNull(reader.GetOrdinal("NUMSERIE")) ? "" : reader.GetString(reader.GetOrdinal("NUMSERIE")),
-                            NumSec = reader.IsDBNull(reader.GetOrdinal("NUMSEC")) ? 0 : reader.GetInt32(reader.GetOrdinal("NUMSEC")),
+                            //NumSec = reader.IsDBNull(reader.GetOrdinal("NUMSEC")) ? 0 : reader.GetInt32(reader.GetOrdinal("NUMSEC")),
                             CantPreventivo = reader.IsDBNull(reader.GetOrdinal("CANTPREVENTIVO")) ? 0 : reader.GetInt32(reader.GetOrdinal("CANTPREVENTIVO")),
                             CodCicloPreventivo = reader.IsDBNull(reader.GetOrdinal("CODCICLOPREVENT")) ? "" : reader.GetString(reader.GetOrdinal("CODCICLOPREVENT")),
                             CodDepartamento = reader.IsDBNull(reader.GetOrdinal("CODDEPARTAMENTO")) ? "" : reader.GetString(reader.GetOrdinal("CODDEPARTAMENTO")),

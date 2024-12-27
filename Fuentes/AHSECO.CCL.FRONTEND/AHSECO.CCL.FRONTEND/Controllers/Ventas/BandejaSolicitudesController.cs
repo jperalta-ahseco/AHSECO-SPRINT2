@@ -2552,10 +2552,29 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             {
                                 CodArticulo = string.Format(FORMAT_IdNewTempRecord, numCantNewRecord + 1),
                                 DescArticulo = filtro.DescArticulo,
-                                CodFamilia = ConstantesDTO.Articulos.Familia.SinRegistrar,
-                                DescFamilia = ConstantesDTO.Articulos.Text.Text_1,
+                                DescAlmacen = ConstantesDTO.Articulos.Text.Text_1,
                                 IsTempRecord = true
                             };
+
+                            if (filtro.CodsFamilia.Trim() == ConstantesDTO.Articulos.Familia.Equipos){newRecord.CodFamilia = ConstantesDTO.Articulos.Familia.Equipos; newRecord.DescFamilia = ConstantesDTO.Articulos.Text.Text_2; }
+                            else if (filtro.CodsFamilia.Trim() == ConstantesDTO.Articulos.Familia.ReactivosLaboratorio){ newRecord.CodFamilia = ConstantesDTO.Articulos.Familia.ReactivosLaboratorio; newRecord.DescFamilia = ConstantesDTO.Articulos.Text.Text_5; }
+                            else if (filtro.CodsFamilia.Trim() == ConstantesDTO.Articulos.Familia.ArticulosLaboratorio){newRecord.CodFamilia = ConstantesDTO.Articulos.Familia.ArticulosLaboratorio; newRecord.DescFamilia = ConstantesDTO.Articulos.Text.Text_6; }
+                            else if (filtro.CodsFamilia.Trim() == ConstantesDTO.Articulos.Familia.InstApaMedicina){newRecord.CodFamilia = ConstantesDTO.Articulos.Familia.InstApaMedicina; newRecord.DescFamilia = ConstantesDTO.Articulos.Text.Text_4; }
+                            else if (filtro.CodsFamilia.Trim() == ConstantesDTO.Articulos.Familia.Medicon){newRecord.CodFamilia = ConstantesDTO.Articulos.Familia.Medicon; newRecord.DescFamilia = ConstantesDTO.Articulos.Text.Text_7; }
+                            else if (filtro.CodsFamilia.Trim() == ConstantesDTO.Articulos.Familia.Repuestos){newRecord.CodFamilia = ConstantesDTO.Articulos.Familia.Repuestos; newRecord.DescFamilia = ConstantesDTO.Articulos.Text.Text_8; }
+                            else if (filtro.CodsFamilia.Trim() == ConstantesDTO.Articulos.Familia.Locales){newRecord.CodFamilia = ConstantesDTO.Articulos.Familia.Locales; newRecord.DescFamilia = ConstantesDTO.Articulos.Text.Text_9; }
+                            else if (filtro.CodsFamilia.Trim() == ConstantesDTO.Articulos.Familia.Accesorios){newRecord.CodFamilia = ConstantesDTO.Articulos.Familia.Accesorios; newRecord.DescFamilia = ConstantesDTO.Articulos.Text.Text_3; }
+                            else
+                            {
+                                if (filtro.CodsFamilia.IndexOf(ConstantesDTO.Articulos.Familia.Equipos.ToString()) != -1)
+                                {
+                                    newRecord.CodFamilia = ConstantesDTO.Articulos.Familia.Equipos; newRecord.DescFamilia = ConstantesDTO.Articulos.Text.Text_2;
+                                }
+                                else if (filtro.CodsFamilia.IndexOf(ConstantesDTO.Articulos.Familia.ArticulosLaboratorio.ToString()) != -1)
+                                {
+                                    newRecord.CodFamilia = ConstantesDTO.Articulos.Familia.ArticulosLaboratorio; newRecord.DescFamilia = ConstantesDTO.Articulos.Text.Text_6;
+                                }
+                            }
 
                             resArticulos.Result = new List<ArticuloDTO>();
                             ((List<ArticuloDTO>)resArticulos.Result).Add(newRecord);
