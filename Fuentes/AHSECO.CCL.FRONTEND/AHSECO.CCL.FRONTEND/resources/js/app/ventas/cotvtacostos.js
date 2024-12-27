@@ -716,7 +716,7 @@
             }
         }
 
-        if ($CI_cmbTipoCosto.val() == "") {
+        if ($CI_cmbTipoCosto.val() == "" || $CI_cmbTipoCosto.val() == " " || $CI_cmbTipoCosto.val() == null) {
             app.message.error("Validación", "Se debe seleccionar un tipo de costo");
             return false;
         }

@@ -16,6 +16,8 @@ var ubigeo = (function ($, win, doc) {
         guardarUsuario: "Los datos del usuario se guardaron satisfactoriamente."
     };
 
+    let origenClickSeleccionar = false;
+
     $(Initialize);
 
     function Initialize() {
@@ -139,15 +141,56 @@ var ubigeo = (function ($, win, doc) {
     }
 
     function seleccionar() {
+        var origen = origenClickSeleccionar
         var codDistrito = sessionStorage.getItem('codDistrito')
-        if ($UbigeoId != null && $UbigeoId != undefined) {
-            $UbigeoId.val("");
-            var vUbigeoText = "";
 
+        if (origenClickSeleccionar) {
+            if ($UbigeoId != null && $UbigeoId != undefined) {
+                $UbigeoId.val("");
+                var vUbigeoText = "";
+
+                if (app.validaNumeroEntero($cmbDepartamento.val())) {
+                    if (parseInt($cmbDepartamento.val()) > 0) {
+                        $UbigeoId.val($cmbDepartamento.val());
+                        vUbigeoText = $("#select2-cmbDepartamento-container").attr("title");
+                    }
+                }
+
+                if (app.validaNumeroEntero($cmbProvincia.val())) {
+                    if (parseInt($cmbProvincia.val()) > 0) {
+                        $UbigeoId.val($cmbProvincia.val());
+                        vUbigeoText = $("#select2-cmbDepartamento-container").attr("title") + ' / ' +
+                            $("#select2-cmbProvincia-container").attr("title");
+                    }
+                }
+
+                if (app.validaNumeroEntero($cmbDistrito.val())) {
+                    if (parseInt($cmbDistrito.val()) > 0) {
+                        $UbigeoId.val($cmbDistrito.val());
+                        vUbigeoText = $("#select2-cmbDepartamento-container").attr("title") + ' / ' +
+                            $("#select2-cmbProvincia-container").attr("title") + ' / ' + $("#select2-cmbDistrito-container").attr("title");
+                    }
+                }
+
+                if ($UbigeoText != null && $UbigeoText != undefined) {
+                    $UbigeoText.val("");
+                    if (vUbigeoText != "" && vUbigeoText != null) { $UbigeoText.val(vUbigeoText); }
+                }
+            }
+            else {
+                $txtUbigeo.val(codDistrito);
+            }
+            $modalUbigeo.modal('hide');
+            origenClickSeleccionar = false;
+        }
+        else {
             if (app.validaNumeroEntero($cmbDepartamento.val())) {
                 if (parseInt($cmbDepartamento.val()) > 0) {
                     $UbigeoId.val($cmbDepartamento.val());
                     vUbigeoText = $("#select2-cmbDepartamento-container").attr("title");
+                } else {
+                    app.message.error("Validacion", "Debe seleccionar un departamento");
+                    return;
                 }
             }
 
@@ -156,6 +199,9 @@ var ubigeo = (function ($, win, doc) {
                     $UbigeoId.val($cmbProvincia.val());
                     vUbigeoText = $("#select2-cmbDepartamento-container").attr("title") + ' / ' +
                         $("#select2-cmbProvincia-container").attr("title");
+                } else {
+                    app.message.error("Validacion", "Debe seleccionar una provincia");
+                    return;
                 }
             }
 
@@ -164,18 +210,18 @@ var ubigeo = (function ($, win, doc) {
                     $UbigeoId.val($cmbDistrito.val());
                     vUbigeoText = $("#select2-cmbDepartamento-container").attr("title") + ' / ' +
                         $("#select2-cmbProvincia-container").attr("title") + ' / ' + $("#select2-cmbDistrito-container").attr("title");
+                } else {
+                    app.message.error("Validacion", "Debe seleccionar un distrito");
+                    return;
                 }
             }
-            
+
             if ($UbigeoText != null && $UbigeoText != undefined) {
                 $UbigeoText.val("");
                 if (vUbigeoText != "" && vUbigeoText != null) { $UbigeoText.val(vUbigeoText); }
             }
+            $modalUbigeo.modal('hide');
         }
-        else {
-            $txtUbigeo.val(codDistrito);
-        }
-        $modalUbigeo.modal('hide');
     }
 
     function setUbigeoById(strId) {
@@ -203,6 +249,7 @@ var ubigeo = (function ($, win, doc) {
             $cmbDepartamento.val(" ").trigger("change");
             sessionStorage.setItem('codDepartamento', "");
         }
+        origenClickSeleccionar = true;
         seleccionar();
     }
 
