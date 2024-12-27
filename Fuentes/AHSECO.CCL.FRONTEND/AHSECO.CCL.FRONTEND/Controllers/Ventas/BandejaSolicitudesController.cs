@@ -3855,28 +3855,37 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         }
                     }
 
-                    //Se consulta para saber el estado actual del proceso de venta
-                    var resCotizacionActual = ventasBL.ObtenerCotizacionVenta(new CotizacionDTO() { IdCotizacion = oCotizacion.IdCotizacion });
-                    CotizacionDTO cotActualDTO = resCotizacionActual.Result.ToList().First();
+                }
 
-                    var swValorizado = false;
-                    if (cotActualDTO.IndValorizado.HasValue)
-                    { if (cotActualDTO.IndValorizado.Value) { swValorizado = true; } }
+                //Se consulta para saber el estado actual del proceso de venta
+                var resCotizacionActual = ventasBL.ObtenerCotizacionVenta(new CotizacionDTO() { IdCotizacion = oCotizacion.IdCotizacion });
+                CotizacionDTO cotActualDTO = resCotizacionActual.Result.ToList().First();
 
-                    var swCosteado = false;
-                    if (cotActualDTO.IndCosteado.HasValue)
-                    { if (cotActualDTO.IndCosteado.Value) { swCosteado = true; } }
+                var swValorizado = false;
+                if (cotActualDTO.IndValorizado.HasValue)
+                { if (cotActualDTO.IndValorizado.Value) { swValorizado = true; } }
 
-                    //Se valida si se necesita que este COSTEADO para enviar CORREO
-                    var swReqCosteo = false;
-                    foreach (CotizacionDetalleDTO itemCD in lstItems)
+                var swCosteado = false;
+                if (cotActualDTO.IndCosteado.HasValue)
+                { if (cotActualDTO.IndCosteado.Value) { swCosteado = true; } }
+
+                //Se valida si se necesita que este COSTEADO para enviar CORREO
+                var swReqCosteo = false;
+                foreach (CotizacionDetalleDTO itemCD in lstItems)
+                {
+                    if (EsCosteoRequerido(itemCD)) { swReqCosteo = true; }
+                }
+
+                if (NombreRol != ConstantesDTO.WorkflowRol.Venta.Asesor
+                    && NombreRol != ConstantesDTO.WorkflowRol.Venta.CoordServ
+                    && NombreRol != ConstantesDTO.WorkflowRol.Venta.CoordAtc)
+                {
+                    //Cuando se valoriza el COSTO FOB se notificará al ASESOR DE COSTOS
+                    if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Gerente)
                     {
-                        if (EsCosteoRequerido(itemCD)) { swReqCosteo = true; }
+                        NotificarValorizacion_ValorUnitario(cotActualDTO.IdSolicitud);
                     }
-
-                    if (NombreRol != ConstantesDTO.WorkflowRol.Venta.Asesor
-                        && NombreRol != ConstantesDTO.WorkflowRol.Venta.CoordServ
-                        && NombreRol != ConstantesDTO.WorkflowRol.Venta.CoordAtc)
+                    else
                     {
                         if (swReqCosteo)
                         {
@@ -3889,7 +3898,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             { NotificarCotizacionValorizada(cotActualDTO.IdSolicitud); }
                         }
                     }
-
                 }
 
                 return Json(new { Status = 1, Mensaje = "Cotización guardada correctamente" });

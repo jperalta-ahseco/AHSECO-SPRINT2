@@ -833,7 +833,7 @@ var cotvtadet = (function ($, win, doc) {
         }
 
         if ($DI_radFlete_No.is(':checked')) {
-            if ($hdnCostosAgregados.val().indexOf($CI_CodCosto_Calibra.val()) >= 0) {
+            if ($hdnCostosAgregados.val().indexOf($CI_CodCosto_Flete.val()) >= 0) {
                 $DI_radFlete_No.prop("checked", false);
                 app.message.error("Validaci&oacute;n", "Para marcar como NO al indicador de FLETE, debe eliminar previamente sus costos");
                 return false;

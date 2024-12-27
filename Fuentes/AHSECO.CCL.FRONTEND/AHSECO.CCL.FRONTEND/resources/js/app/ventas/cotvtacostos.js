@@ -751,7 +751,7 @@
 
         }
 
-        if ($CI_txtCantCosteo.attr("readonly") != "readonly" || $CI_txtCantCosteo.attr("disabled") != "disabled") {
+        if ($CI_txtCantCosteo.attr("readonly") != "readonly" && $CI_txtCantCosteo.attr("disabled") != "disabled") {
             if ($CI_txtCantCosteo.val() == "") {
                 app.message.error("Validación", "Se debe ingresar la cantidad a costear");
                 return false;
@@ -785,13 +785,14 @@
                         app.message.error("Validación", "el monto unitario debe ser mayor a 0.");
                         return false;
                     }
-                    else {
-                        vMontoUnitarioCosto = parseFloat($CI_txtMtoUnitarioCosto.val());
-                    }
                 }
             }
         }
-        
+
+        if (app.validaNumeroDecimal($CI_txtMtoUnitarioCosto.val())) {
+            vMontoUnitarioCosto = parseFloat(app.convertirNumero($CI_txtMtoUnitarioCosto.val()));
+        }
+
         if ($CI_txtMtoTotalCosto.attr("readonly") != "readonly" && $CI_txtMtoTotalCosto.attr("disabled") != "disabled") {
             if ($CI_txtMtoTotalCosto.val() == "") {
                 app.message.error("Validación", "Se debe ingresar el monto unitario");
@@ -807,15 +808,15 @@
                         app.message.error("Validación", "el monto total debe ser mayor a 0.");
                         return false;
                     }
-                    else {
-                        vMontoTotalCosto = parseFloat($CI_txtMtoTotalCosto.val());
-                    }
                 }
             }
         }
 
-        if ($CI_txtCantPrevent.attr("readonly") != "readonly" && $CI_txtCantPrevent.attr("disabled") != "disabled") {
+        if (app.validaNumeroDecimal($CI_txtMtoTotalCosto.val())) {
+            vMontoTotalCosto = parseFloat(app.convertirNumero($CI_txtMtoTotalCosto.val()));
+        }
 
+        if ($CI_pnlInfoPreventivos.css("display") != "none") {
             if (!app.validaNumeroEntero($CI_txtCantPrevent.val())) {
                 app.message.error("Validación", "N&uacute;mero inv&aacute;lido en cantidad de Mantenimientos Preventivos")
                 return false;
@@ -823,16 +824,18 @@
             else {
                 if (parseInt($CI_txtCantPrevent.val()) <= 0) {
                     app.message.error("Validación", "La cantidad de Mantenimientos Preventivos debe ser mayor a 0.")
-                }
-                else {
-                    vCantidadPreventivo = parseInt($CI_txtCantPrevent.val());
-                    if ($CI_cmbCicloPreventivo.attr("readonly") != "readonly" || $CI_cmbCicloPreventivo.attr("disabled") != "disabled") {
-                        if ($CI_cmbCicloPreventivo.val() != "") { vCodCicloPreventivo = $CI_cmbCicloPreventivo.val(); }
-                    }
+                    return false;
                 }
             }
-
+            if ($.trim($CI_cmbCicloPreventivo.val()) == "") {
+                app.message.error("Validación", "No ha seleccionado el ciclo de mantenimiento preventivo.")
+                return false;
+            }
         }
+
+        if ($.trim($CI_cmbCicloPreventivo.val()) != "") { vCodCicloPreventivo = $CI_cmbCicloPreventivo.val(); }
+        
+        if (app.validaNumeroEntero($CI_txtCantPrevent.val())) { vCantidadPreventivo = parseInt($CI_txtCantPrevent.val()); }
         
         method = "POST";
         url = "BandejaSolicitudesVentas/GrabarDatosCostoItem";
@@ -925,7 +928,7 @@
                 return app.message.confirm("Costos", "¿Des&eacute;a seguir agregando m&aacute;s costos?", "S&iacute;", "No", fnSi, fnNo);
             };
 
-            if ($CI_opcGrilla.val() == "1") {
+            if ($CI_cmbTipoCosto.attr("disabled") != "disabled") {
                 app.message.success("Costos", "Se guard&oacute; el costo correctamente.", "Aceptar", fnCallback);
             }
             else {
@@ -984,8 +987,12 @@
             $CI_txtAmbDestino.val(data.Result.AmbienteDestino);
             $CI_txtNroPiso.val(data.Result.NroPiso);
             $CI_txtCantCosteo.val(data.Result.CantidadCosto);
-            $CI_txtMtoUnitarioCosto.val(data.Result.MontoUnitarioCosto);
-            $CI_txtMtoTotalCosto.val(data.Result.MontoTotalCosto);
+            if (data.Result.MontoUnitarioCosto != null) {
+                $CI_txtMtoUnitarioCosto.val(app.formatearEnteroComa(parseFloat(data.Result.MontoUnitarioCosto).toFixed(2)));
+            }
+            if (data.Result.MontoTotalCosto != null) {
+                $CI_txtMtoTotalCosto.val(app.formatearEnteroComa(parseFloat(data.Result.MontoTotalCosto).toFixed(2)));
+            }
             $CI_txtCantPrevent.val(data.Result.CantPreventivo);
             $CI_cmbCicloPreventivo.val(data.Result.CodCicloPreventivo).trigger("change.select2");
 
