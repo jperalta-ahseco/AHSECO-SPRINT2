@@ -1086,20 +1086,35 @@ var cotvtadet = (function ($, win, doc) {
     }
 
     function quitarSubItem(CodigoItemPadre, CodigoItem) {
-        method = "POST";
-        url = "BandejaSolicitudesVentas/QuitarSubItemCotDet";
-        var objFiltros = {
-            CotizacionDetallePadre: { CodItem: CodigoItemPadre },
-            CotizacionDetalle: { CodItem: CodigoItem }
-        };
-        var objParam = JSON.stringify(objFiltros);
-        var CodItemPadre = CodigoItemPadre;
 
-        var fnDoneCallBack = function (data) {
-            cargarTablaSubItems(CodItemPadre, data);
-        };
+        var fnSi = function () {
+            method = "POST";
+            url = "BandejaSolicitudesVentas/QuitarSubItemCotDet";
+            var objFiltros = {
+                CotizacionDetallePadre: { CodItem: CodigoItemPadre },
+                CotizacionDetalle: { CodItem: CodigoItem }
+            };
+            var objParam = JSON.stringify(objFiltros);
+            var CodItemPadre = CodigoItemPadre;
 
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+            var fnDoneCallBack = function (data) {
+                if (data.Result.length == 0) {
+                    $('#tblAcc_' + $.trim(CodItemPadre)).remove();
+                    var hdn = $('#hdnCodItem_' + $.trim(CodItemPadre)) //referenciamos al padre
+                    var parent = hdn[0].parentElement; //recorremos hacia el row padre
+                    parent = parent.parentElement; 
+                    parent = parent.parentElement;
+                    var childVerAdic = parent.children[1]; //localizamos el td con la flecha "Ver Accesorios"
+                    childVerAdic.innerHTML = ""; //Inicializamos
+                }
+                else {
+                    cargarTablaSubItems(CodItemPadre, data);
+                }
+            };
+
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+        }
+        return app.message.confirm("Confirmaci&oacute;n", "Desea eliminar el accesorio seleccionado?", "Si", "No", fnSi);
     }
 
     function editarSubItem(CodigoItemPadre, CodigoItem) {

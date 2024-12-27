@@ -3184,6 +3184,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     lstItems.AddRange(lstItems_2);
                     lstItems = TotalizarCotDet(lstItems);
                     VariableSesion.setObject(TAG_CDI, lstItems);
+                    itemPadre.NroItem = lstItems.FirstOrDefault(x => x.CodItem.Trim() == CotizacionDetallePadre.CodItem.Trim()).NroItem; // se reasigna el número de Item
                 }
                 lstItems = GetCotDetItems(opcTablaTemporal);
                 var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems.Where(x =>
