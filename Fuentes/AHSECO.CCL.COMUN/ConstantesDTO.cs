@@ -303,6 +303,15 @@ namespace AHSECO.CCL.COMUN
             public struct Text
             {
                 public static string Text_1 { get { return "No Registrado en Almacén"; } }
+                public static string Text_2 { get { return "EQUIPOS"; } }
+                public static string Text_3 { get { return "ACCESORIOS"; } }
+                public static string Text_4 { get { return "INSTRUMENTOS Y APARATOS DE MEDICINA"; } }
+                public static string Text_5 { get { return "REACTIVOS DE LABORATORIO"; } }
+                public static string Text_6 { get { return "ARTICULOS DE LABORATORIO"; } }
+                public static string Text_7 { get { return "MEDICON"; } }
+                public static string Text_8 { get { return "REPUESTOS"; } }
+                public static string Text_9 { get { return "LOCALES"; } }
+
             }
         }
 
