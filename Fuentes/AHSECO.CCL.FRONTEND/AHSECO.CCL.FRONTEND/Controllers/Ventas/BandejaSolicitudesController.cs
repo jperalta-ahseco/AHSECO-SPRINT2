@@ -945,12 +945,15 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     //Si es Asesor de Costos o Gerente General podrá modificar los PRECIOS DE VENTAS
                     //pero el Asesor de Ventas solo modificará el porcentaje de GANANCIA
                     //y los Coordinadores solo modificarán los servicios
-                    if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor || EsFlujoValorizacion() ||
+                    if (
+                        //NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor ||  Probando
+                        EsFlujoValorizacion() ||
                         NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc ||
                         NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ)
                     {
                         ViewBag.PermitirGuardarValorizacion = true;
-                    }
+                    };
+
 
                     if (NombreRol == ConstantesDTO.WorkflowRol.Venta.ServTecnico)
                     {
@@ -1108,6 +1111,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 else
                                 { ViewBag.PermitirGuardarValorizacion = false; }
 
+                                if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor) //para asesor solo debe de activarse cuando se haya registrado todos los costos.
+                                {
+                                    ViewBag.PermitirGuardarValorizacion = false;
+                                }
+
                                 //Para el tipo "EQUIPOS" se habilita lo siguiente
                                 if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaEquipos)
                                 {
@@ -1123,6 +1131,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                         ViewBag.PermitirAprobarCotizacion = true;
                                         ViewBag.PermitirEditarGanancia = true;
                                         ViewBag.PermitirEditarPorcentDscto = true;
+                                        ViewBag.PermitirGuardarValorizacion = true;
                                     }
                                 }
 
@@ -1195,7 +1204,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                         ViewBag.PermitirExportarLiquidacion = true;
                                         ViewBag.PermitirImprimirCotizacion = true;
 
-                                        ViewBag.PermitirReCotizacion = true;
+                                        ViewBag.PermitirReCotizacion = false;
                                         ViewBag.PermitirCancelarCot = true;
 
                                         ViewBag.PermitirAprobarCotizacion = true;

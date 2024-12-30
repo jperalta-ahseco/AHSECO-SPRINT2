@@ -184,15 +184,23 @@ var ubigeo = (function ($, win, doc) {
             origenClickSeleccionar = false;
         }
         else {
+            var validacion = 0;
             if (app.validaNumeroEntero($cmbDepartamento.val())) {
                 if (parseInt($cmbDepartamento.val()) > 0) {
                     $UbigeoId.val($cmbDepartamento.val());
                     vUbigeoText = $("#select2-cmbDepartamento-container").attr("title");
                 } else {
-                    app.message.error("Validacion", "Debe seleccionar un departamento");
-                    return;
+                    validacion = 1;
+                    //
+                    //
                 }
             }
+
+            if (validacion == 1) {
+                app.message.error("Validacion", "Debe seleccionar un departamento");
+                return;
+            }
+
 
             if (app.validaNumeroEntero($cmbProvincia.val())) {
                 if (parseInt($cmbProvincia.val()) > 0) {
@@ -200,10 +208,17 @@ var ubigeo = (function ($, win, doc) {
                     vUbigeoText = $("#select2-cmbDepartamento-container").attr("title") + ' / ' +
                         $("#select2-cmbProvincia-container").attr("title");
                 } else {
-                    app.message.error("Validacion", "Debe seleccionar una provincia");
-                    return;
+                    validacion = 2;
+                    //app.message.error("Validacion", "Debe seleccionar una provincia");
+                    //return;
                 }
             }
+
+            if (validacion == 2) {
+                app.message.error("Validacion", "Debe seleccionar una provincia");
+                return;
+            };
+
 
             if (app.validaNumeroEntero($cmbDistrito.val())) {
                 if (parseInt($cmbDistrito.val()) > 0) {
@@ -211,10 +226,16 @@ var ubigeo = (function ($, win, doc) {
                     vUbigeoText = $("#select2-cmbDepartamento-container").attr("title") + ' / ' +
                         $("#select2-cmbProvincia-container").attr("title") + ' / ' + $("#select2-cmbDistrito-container").attr("title");
                 } else {
-                    app.message.error("Validacion", "Debe seleccionar un distrito");
-                    return;
+                    validacion = 3;
+                    //app.message.error("Validacion", "Debe seleccionar un distrito");
+                    //return;
                 }
             }
+
+            if (validacion == 3) {
+                app.message.error("Validacion", "Debe seleccionar un distrito");
+                return;
+            };
 
             if ($UbigeoText != null && $UbigeoText != undefined) {
                 $UbigeoText.val("");
