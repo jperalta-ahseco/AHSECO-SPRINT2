@@ -494,7 +494,6 @@
         $AD_btnGuardarAprobDscto.click(guardarAprobDscto);
         $btnVerComentarioDscto.click(verComentarioDscto);
         $btnAprobarCotizacion.click(aprobarCotizacion);
-        $DS_hdnOpcGrillaItems.val("2");
         $btnGuardarUbigeoSel.click(seleccionarUbi);
         $btnBuscarTecnicos.click(BuscarTecnicosClick);
         $btnBuscarTecnico.click(BuscarTecnicos);
@@ -1462,7 +1461,8 @@
         objDetalle = {
             IdCotDetalle: $DS_hdnIdCotDetServ.val(),
             CodServDet: $hdnIdDetalleServicio.val(),
-            Descripcion: $txtDetalleServicio.val()
+            Descripcion: $txtDetalleServicio.val(),
+            opcGrillaItems: $DS_hdnOpcGrillaItems.val()
         }
         objParam = JSON.stringify(objDetalle);
         var fnSi = function () {
@@ -1575,7 +1575,6 @@
             var objParam = JSON.stringify(objDatos);
 
             var fnDoneCallBack = function (data) {
-                $DS_hdnOpcGrillaItems.val("2");
                 $('#modalDetalleCotizacionServicio').modal('hide');
                 cargarTablaDetCotServicios(data);
             };
@@ -4315,6 +4314,7 @@
 
     //CARGA los datos de la COTIZACION DETALLE (Servicio)
     function editarItemServ(CodigoItem, opc) {
+        $DS_hdnOpcGrillaItems.val(opc);
         method = "POST";
         url = "BandejaSolicitudesVentas/CargarCotDetItemServicio";
         var objFiltros = {
@@ -4323,7 +4323,6 @@
         };
         var objParam = JSON.stringify(objFiltros);
         var fnDoneCallBack = function (data) {
-            opcGrillaItems = opc;
             $('#modalDetalleItemServicio').modal('show');
             $DS_hdnIdCotDetServ.val(data.Result.Id);
             var codigo = "000000" + data.Result.CodItem
@@ -4346,13 +4345,14 @@
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
     }
 
-    function eliminarDetServ(IdCotDetalle, IdActividad) {
-
+    function eliminarDetServ(IdCotDetalle, IdActividad, opc) {
+        $DS_hdnOpcGrillaItems.val(opc)
         method = "POST";
         url = "BandejaSolicitudesVentas/EliminarDetServicio";
         objDetalle = {
             IdCotDetalle: IdCotDetalle,
-            IdActividad: IdActividad
+            IdActividad: IdActividad,
+            opcGrillaItems: opc
         }
         objParam = JSON.stringify(objDetalle);
         var fnSi = function () {
@@ -4369,16 +4369,18 @@
     }
 
     //CARGA los datos de la ACTIVIDAD (Detalle de Servicio) de la COTIZACION DETALLE (Servicio)
-    function editarDetServ(IdCotDetalle, IdActividad) {
+    function editarDetServ(IdCotDetalle, IdActividad, opc) {
         $modalDetalleServicio.modal('toggle');
         $btnGuardarDetalleServicio.css('display', 'none');
         $btnActualizarDetalleServicio.css('display', '');
+        $DS_hdnOpcGrillaItems.val(opc);
         
         method = "POST";
         url = "BandejaSolicitudesVentas/CargarDetServ";
         var objFiltros = {
             IdCotDetalle: IdCotDetalle,
-            IdActividad: IdActividad
+            IdActividad: IdActividad,
+            opcGrillaItems: $DS_hdnOpcGrillaItems.val()
         };
         var objParam = JSON.stringify(objFiltros);
         var fnDoneCallBack = function (data) {
@@ -4397,8 +4399,8 @@
             for (i = 0; i < detalle.length; i++) {
                 var indice = i + 1;
                 var html = '<div class="text-center">';
-                html += '<a class="btn btn-primary btn-xs" title="Editar" href="javascript:solicitud.editarDetServ(' + detalle[i].IdCotizacionDetalle + ',\'' + detalle[i].Id + '\')" btn-xs"><i class="fa fa-pencil-square-o"></i></a>&nbsp;';
-                html += '<a class="btn btn-primary btn-xs" title="Eliminar" href="javascript:solicitud.eliminarDetServ(' + detalle[i].IdCotizacionDetalle + ',\'' + detalle[i].Id + '\')" btn-xs"><i class="fa fa-trash"></i></a>&nbsp;';
+                html += '<a class="btn btn-primary btn-xs" title="Editar" href="javascript:solicitud.editarDetServ(' + detalle[i].IdCotizacionDetalle + ',\'' + detalle[i].Id + '\',\'' + $DS_hdnOpcGrillaItems.val() + '\')" btn-xs"><i class="fa fa-pencil-square-o"></i></a>&nbsp;';
+                html += '<a class="btn btn-primary btn-xs" title="Eliminar" href="javascript:solicitud.eliminarDetServ(' + detalle[i].IdCotizacionDetalle + ',\'' + detalle[i].Id + '\',\'' + $DS_hdnOpcGrillaItems.val() + '\')" btn-xs"><i class="fa fa-trash"></i></a>&nbsp;';
                 html += '</div>';
                 var nuevoTr = '<tr id="rowDetalle" name="rowDetalle">' +
                     '<td><center>' + indice + '</center></td>' +
