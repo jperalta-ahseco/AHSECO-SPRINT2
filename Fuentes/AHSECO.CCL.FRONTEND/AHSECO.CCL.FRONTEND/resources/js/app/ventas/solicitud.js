@@ -49,11 +49,13 @@
     var $txtDescripcionDocumentoCarga = $('#txtDescripcionDocumentoCarga');
     var $lblNombreArchivo = $('#lblNombreArchivo');
     var $fileCargaDocumentoSustento = $('#fileCargaDocumentoSustento');
+    var $fileCargaDocumentoSustentoGuia = $('#fileCargaDocumentoSustentoGuia');
     var $txtObservacion = $('#txtObservacion');
     var $lblUsuarioCreacionObservacion = $('#lblUsuarioCreacionObservacion');
     var $lblFechaCreacionObservacion = $('#lblFechaCreacionObservacion');
     var $btnGuardarObservacionReq = $('#btnGuardarObservacionReq');
     var $btnAdjuntarDocumento = $("#btnAdjuntarDocumento");
+    var $btnAdjuntarDocumentoGuia = $("#btnAdjuntarDocumentoGuia");
     var $tblHistorial = $("#tablaHistorial");
     var $txtCodCotizacion = $("#txtCodCotizacion");
     var $btnImprimirCotizacion = $("#btnImprimirCotizacion");
@@ -66,6 +68,13 @@
     var $idRolUsuario = $("#idRolUsuario");
     var $grpAuditoriaObservacion = $("#grpAuditoriaObservacion");
     var $btnAgregarServicios = $("#btnAgregarServicios");
+    var $hdnDocumentoCargadoIdGuia = $("#hdnDocumentoCargadoIdGuia");
+    var $cmbDocumentoCargaGuia = $("#cmbDocumentoCargaGuia");
+    var $txtDescripcionDocumentoCargaGuia = $("#txtDescripcionDocumentoCargaGuia");
+    var $cmbTipoDocumentoCargaGuia = $("#cmbTipoDocumentoCargaGuia");
+    var $lblNombreArchivoGuia = $("#lblNombreArchivoGuia");
+    var $modalCargaDocumentoGuia = $("#modalCargaDocumentoGuia");
+    var $btnCargarDocumentoGuia = $("#btnCargarDocumentoGuia");
 
     /*Sección Solicitud*/
     var $btnEliminarSol = $('#btnEliminarSol');
@@ -140,6 +149,7 @@
     var $txtHistRazonSocial = $("#txtHistRazonSocial");
     var $tituloModalHistorial = $("#tituloModalHistorial");
     var $btnCerrarHistorial = $("#btnCerrarHistorial");
+    var $FlagStock = $("#FlagStock");
 
     /*Servicios*/
     var $DS_hdnOpcGrillaItems = $("#DS_hdnOpcGrillaItems");
@@ -412,6 +422,8 @@
         $dateFactura.val(hoy());
         $fileCargaDocumentoSustento.on("change", $fileCargaDocumentoSustento_change);
         $fileCargaDocumentoSustento.click($fileCargaDocumentoSustento_change);
+        $fileCargaDocumentoSustentoGuia.on("change", $fileCargaDocumentoSustentoGuia_change);
+        $fileCargaDocumentoSustentoGuia.click($fileCargaDocumentoSustentoGuia_change);
         $btnEliminarSol.click(btnEliminarSolClick);
         $btnGuardarObservacionReq.click(GuardarObservacionReqClick);
         $btnRegistrarCotizacion.click(registrarCotizacion);
@@ -426,7 +438,9 @@
         $agregarContacto.click($agregarContactoClick);
         $btnRegistrar.click($btnRegistrarClick);
         $btnCargarDocumento.click($btnCargarDocumento_click);
+        $btnCargarDocumentoGuia.click($btnCargarDocumentoGuia_click);
         $btnAdjuntarDocumento.click($adjuntarDocumento_click);
+        $btnAdjuntarDocumentoGuia.click($adjuntarDocumentoGuia_click)
         $btnHistorial.click($btnHistorial_click);
         $btnBuscarHistorial.click($btnHistorial_click);
         $btnImprimirCotizacion.click($btnImprimirCotizacion_click);
@@ -1012,7 +1026,7 @@
 
         var objParam = JSON.stringify(ubigeoObj);
         var fnDoneCallback = function (data) {
-            console.log(data.Result.length);
+       
             var resultado = { Result: [] };
 
             var distritos = { Result: [] };
@@ -1916,40 +1930,37 @@
     }
 
     function $btnEnviarGuiaBO_click() {
-        var documento_guiaBO = 0;
-        adjuntos.forEach(function (currentValue, index, arr) {
-            if (adjuntos[index].CodigoTipoDocumento == "DVT06") { //Guia de BO
-                documento_guiaBO = 1;
-            }
-        });
+        //var documento_guiaBO = 0;
+        //adjuntos.forEach(function (currentValue, index, arr) {
+        //    if (adjuntos[index].CodigoTipoDocumento == "DVT06") { //Guia de BO
+        //        documento_guiaBO = 1;
+        //    }
+        //});
 
-        if (documento_guiaBO === 0) {
-            app.message.error("Validación", "Debe adjuntar un documento de guía de BO.");
-            return false;
-        }
+        //if (documento_guiaBO === 0) {
+        //    app.message.error("Validación", "Debe adjuntar un documento de guía de BO.");
+        //    return false;
+        //}
 
         var fnSi = function () {
 
-            var m = "POST";
-            var url = "BandejaSolicitudesVentas/EnviarGuiaBO?codigoSolicitud=" + $numeroSolicitud.val() + "&codigoWorkFlow=" + $codigoWorkflow.val();
-            var objParam = '';
-            var fnDoneCallback = function (data) {
-                var fnCallback = function () {
-                    location.reload();
-                };
-                if (data.Result.Codigo > 0) {
-                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
-                }
-                else {
-                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
-                }
-
-            };
-            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.EnvioGuiaPedidoBO);
+            $modalCargaDocumentoGuiaBOClick();
+           
         }
         return app.message.confirm("Ventas", "¿Está seguro que desea enviar la Guia de BO?", "S&iacute;", "No", fnSi, null);
 
     }
+
+    function $modalCargaDocumentoGuiaBOClick() {
+        $hdnDocumentoCargadoIdGuia.val("BO");
+        //$cmbTipoDocumentoCarga.empty();
+        $cmbDocumentoCargaGuia.empty();
+        $txtDescripcionDocumentoCargaGuia.val("");
+        $cmbTipoDocumentoCargaGuia.val("DVT06").trigger("change.select2");
+        $cmbTipoDocumentoCargaGuia.prop('disabled', true);
+        $lblNombreArchivoGuia.text("");
+        $modalCargaDocumentoGuia.modal("show");
+    };
 
     function $btnFinalizarVenta_click() {
         var fnSi = function () {
@@ -2161,74 +2172,44 @@
     }
 
     function $btnEnviarGuiaCS_click() {
-        var documento_guiaPedido = 0;
-        adjuntos.forEach(function (currentValue, index, arr) {
-            if (adjuntos[index].CodigoTipoDocumento == "DVT07") {
-                documento_guiaPedido = 1;
-            }
-        });
+       // var documento_guiaPedido = 0;
+        //adjuntos.forEach(function (currentValue, index, arr) {
+        //    if (adjuntos[index].CodigoTipoDocumento == "DVT07") {
+        //        documento_guiaPedido = 1;
+        //    }
+        //});
 
-        if (documento_guiaPedido === 0) {
-            app.message.error("Validación", "Debe adjuntar un documento de guía de pedido.");
-            return false;
-        }
+        //if (documento_guiaPedido === 0) {
+        //    app.message.error("Validación", "Debe adjuntar un documento de guía de pedido.");
+        //    return false;
+        //}
 
         var fnSi = function () {
-
-            var m = "POST";
-            var url = "BandejaSolicitudesVentas/EnviarGuiaPedidos?codigoSolicitud=" + $numeroSolicitud.val() + "&codigoWorkFlow=" + $codigoWorkflow.val() + "&stock=S";
-            var objParam = '';
-            var fnDoneCallback = function (data) {
-                var fnCallback = function () {
-                    location.reload();
-                };
-                if (data.Result.Codigo > 0) {
-                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
-                }
-                else {
-                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
-                }
-
-            };
-            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.EnvioGuiaPedido);
+            $FlagStock.val("S");
+            $modalCargaDocumentoGuiaClick();
         }
         return app.message.confirm("Ventas", "¿Está seguro que desea enviar la Guia de Pedido?", "S&iacute;", "No", fnSi, null);
     }
 
     function $btnEnviarGuiaSS_click() {
-        var documento_guiaPedido = 0;
-        adjuntos.forEach(function (currentValue, index, arr) {
-            if (adjuntos[index].CodigoTipoDocumento == "DVT07") {
-                documento_guiaPedido = 1;
-            }
-        });
+        //var documento_guiaPedido = 0;
+        //adjuntos.forEach(function (currentValue, index, arr) {
+        //    if (adjuntos[index].CodigoTipoDocumento == "DVT07") {
+        //        documento_guiaPedido = 1;
+        //    }
+        //});
 
-        if (documento_guiaPedido === 0) {
-            app.message.error("Validación", "Debe adjuntar un documento de guía de pedido.");
-            return false;
-        }
-
+        //if (documento_guiaPedido === 0) {
+        //    app.message.error("Validación", "Debe adjuntar un documento de guía de pedido.");
+        //    return false;
+        //}
         var fnSi = function () {
-
-            var m = "POST";
-            var url = "BandejaSolicitudesVentas/EnviarGuiaPedidos?codigoSolicitud=" + $numeroSolicitud.val() + "&codigoWorkFlow=" + $codigoWorkflow.val() + "&stock=N";
-            var objParam = '';
-            var fnDoneCallback = function (data) {
-                var fnCallback = function () {
-                    location.reload();
-                };
-                if (data.Result.Codigo > 0) {
-                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
-                }
-                else {
-                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
-                }
-
-            };
-            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.EnvioGuiaPedido);
+            $FlagStock.val("N");
+            $modalCargaDocumentoGuiaClick();
         }
         return app.message.confirm("Ventas", "¿Está seguro que desea enviar la Guia de Pedido?", "S&iacute;", "No", fnSi, null);
     }
+
 
     function $btnEditarGestion_click() {
         $txtNroOrdenCompra.prop('disabled', false);
@@ -2579,6 +2560,7 @@
             app.llenarComboMultiResult($cmbempresa, data.Result.Empresas, null, "", "", filters);
             app.llenarComboMultiResult($cmbTipoVenta, data.Result.TipoVenta, null, "", "", filters);
             app.llenarComboMultiResult($cmbTipoDocumentoCarga, data.Result.TipoDocumento, null, 0, "-- Seleccione --", filters);
+            app.llenarComboMultiResult($cmbTipoDocumentoCargaGuia, data.Result.TipoDocumento, null, 0, "-- Seleccione --", filters);
             app.llenarComboMultiResult($cmbTipDocTecnico, data.Result.TipoDocumentoTecnico, null, 0, "-- Seleccione --", filters);
             app.llenarComboMultiResult($cmbTipoEmpleado, data.Result.TipoEmpleado, null, 0, "-- Seleccione --", filters);
             app.llenarComboMultiResult($cmbTipoCredencial, data.Result.TipoDocumentoTecnico, "", 0, "", false);
@@ -3035,6 +3017,14 @@
         $lblNombreArchivo.text("");
         myfile = "";
         document.getElementById('fileCargaDocumentoSustento').click();
+
+    }
+
+    function $adjuntarDocumentoGuia_click() {
+        //$fileCargaDocumentoSustento.click();
+        $lblNombreArchivoGuia.text("");
+        myfile = "";
+        document.getElementById('fileCargaDocumentoSustentoGuia').click();
 
     }
 
@@ -3497,6 +3487,132 @@
         $modalCargaDocumento.modal("show");
     };
 
+    function $modalCargaDocumentoGuiaClick() {
+        $hdnDocumentoCargadoIdGuia.val("GP");
+        //$cmbTipoDocumentoCarga.empty();
+        $cmbDocumentoCargaGuia.empty();
+        $txtDescripcionDocumentoCargaGuia.val("");
+        $cmbTipoDocumentoCargaGuia.val("DVT07").trigger("change.select2");
+        $cmbTipoDocumentoCargaGuia.prop('disabled', true);
+        $lblNombreArchivoGuia.text("");
+        $modalCargaDocumentoGuia.modal("show");
+    };
+
+    function $btnCargarDocumentoGuia_click() {
+        if ($cmbTipoDocumentoCargaGuia.val() == 0 || $cmbTipoDocumentoCargaGuia.val() == "" || $cmbTipoDocumentoCargaGuia.val() == null) {
+            app.message.error('Validación', 'Debe seleccionar el tipo de documento', 'Aceptar', null);
+            return false;
+        }
+        if ($lblNombreArchivoGuia.text() === "") {
+            app.message.error('Validación', 'Debe cargar un archivo', 'Aceptar', null);
+            return false;
+        }
+        var fileInput = document.getElementById("fileCargaDocumentoSustentoGuia");
+
+        var formdata = new FormData(); //FormData object
+        //Appending each file to FormData object
+        formdata.append(fileInput.files[0].name, fileInput.files[0]);
+        formdata.append('name', name);
+
+        var fileInput = document.getElementById("fileCargaDocumentoSustentoGuia");
+        var file = fileInput.files[0];
+        var req = new XMLHttpRequest();
+        var ext = fileInput.files[0].name.split('.').pop();
+        req.open("POST", "UploadFiles?extension=" + ext, true);
+        req.setRequestHeader("File-Name", file.name);
+        req.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+        req.send(formdata);
+
+        req.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+
+                if (req.responseText == "error" || req.responseText == "false") {
+                    app.message.error('Validación', 'Hubo un error al cargar el archivo', 'Aceptar', null);
+                    return false;
+                }
+
+                var ruta_guardada = req.responseText;
+
+                ruta_guardada = ruta_guardada.replace("\\", "");
+                ruta_guardada = ruta_guardada.replace('"', '');
+                ruta_guardada = ruta_guardada.replace('"', '');
+                //console.log("ruta_guardada:" + ruta_guardada);
+
+
+                if ($numeroSolicitud.val() != "") {
+
+                    var method = "POST";
+                    var url = "BandejaSolicitudesVentas/GuardarAdjunto";
+                    var obj = {
+                        Accion: "I",
+                        CodigoDocumento: 0,
+                        CodigoWorkFlow: $codigoWorkflow.val(),
+                        CodigoTipoDocumento: $cmbTipoDocumentoCargaGuia.val(),
+                        NombreDocumento: $lblNombreArchivoGuia.text(),
+                        VerDocumento: true,
+                        RutaDocumento: ruta_guardada,
+                        Eliminado: 0
+                    }
+                    var objParam = JSON.stringify(obj);
+                    var fnDoneCallback = function (data) {
+
+                        if (data.Result.Codigo > 0) {
+
+                            if ($hdnDocumentoCargadoIdGuia.val() === "GP") {
+                                //Se realiza el envio a logistica:
+                                var m = "POST";
+                                var url = "BandejaSolicitudesVentas/EnviarGuiaPedidos?codigoSolicitud=" + $numeroSolicitud.val() + "&codigoWorkFlow=" + $codigoWorkflow.val() + "&stock=" + $FlagStock.val();
+                                var objParam = '';
+                                var fnDoneCallback = function (data) {
+                                    var fnCallback = function () {
+                                        location.reload();
+                                    };
+                                    if (data.Result.Codigo > 0) {
+                                        app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                                    }
+                                    else {
+                                        app.message.error("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                                    }
+
+                                };
+                                return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.EnvioGuiaPedido);
+
+                            }
+                            else if ($hdnDocumentoCargadoIdGuia.val() === "BO") {
+                                var m = "POST";
+                                var url = "BandejaSolicitudesVentas/EnviarGuiaBO?codigoSolicitud=" + $numeroSolicitud.val() + "&codigoWorkFlow=" + $codigoWorkflow.val();
+                                var objParam = '';
+                                var fnDoneCallback = function (data) {
+                                    var fnCallback = function () {
+                                        location.reload();
+                                    };
+                                    if (data.Result.Codigo > 0) {
+                                        app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                                    }
+                                    else {
+                                        app.message.error("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                                    }
+
+                                };
+                                return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.EnvioGuiaPedidoBO);
+                            }
+                            
+                        }
+                        else {
+                            app.message.error("Error en la Actualización", data.Result.Mensaje);
+
+                        }
+
+                    };
+                    return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, mensajes.guardandoObservacion);
+
+                }
+
+            };
+        };
+        $modalCargaDocumentoGuia.modal("hide");
+    }
+
     function $modalObservacionClick() {
         $tituloModalObservacion.html("Nueva observación"); 
         $grpAuditoriaObservacion.hide();
@@ -3790,6 +3906,46 @@
         var mes = mesActual < 10 ? '0' + mesActual : mesActual;
         var year = date.getFullYear();
         return `${dia}/${mes}/${year}`;
+    }
+
+    function $fileCargaDocumentoSustentoGuia_change() {
+
+        $lblNombreArchivoGuia.text("");
+        var fileInput = document.getElementById("fileCargaDocumentoSustentoGuia");
+
+        if (myfile.length > 0) {
+            myfile = "";
+        }
+
+        myfile = $(this).val();
+        var ext = myfile.split('.').pop();
+        if (ext == "pdf" || ext == "PDF" ||
+            ext == "xls" || ext == "XLS" ||
+            ext == "xlsx" || ext == "XLSX" ||
+            ext == "doc" || ext == "DOC" ||
+            ext == "docx" || ext == "DOCX" ||
+            ext == "zip" || ext == "ZIP" ||
+            ext == "rar" || ext == "RAR") {
+            //beforeSendCargaDoc();
+            var formdata = new FormData(); //FormData object
+            //Appending each file to FormData object
+            formdata.append(fileInput.files[0].name, fileInput.files[0]);
+            formdata.append('name', name);
+
+            $lblNombreArchivoGuia.text(fileInput.files[0].name);
+
+        }
+        else if (myfile !== "") {
+
+            app.message.error('Validación', 'El formato no es el permitido', 'Aceptar', null)
+            this.value = "";
+            $lblNombreArchivoGuia.text("");
+
+        } else {
+            this.value = "";
+            $lblNombreArchivoGuia.text("");
+
+        }
     }
 
     function $fileCargaDocumentoSustento_change() {
