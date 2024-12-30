@@ -40,7 +40,9 @@
     var $DI_radFlete_Si = $("#DI_radFlete_Si");
     var $DI_radFlete_No = $("#DI_radFlete_No");
     
+    var $DI_btnAgregarCosto = $("#DI_btnAgregarCosto");
     var $DI_tblCostos = $("#DI_tblCostos");
+    var $DI_opcGrilla = $("#DI_opcGrilla");
 
     var $CI_CodCosto_LLaveMano = $("#CI_CodCosto_LLaveMano");
     var $CI_CodCosto_Instalacion = $("#CI_CodCosto_Instalacion");
@@ -52,7 +54,7 @@
     var $CI_CodCosto_Flete = $("#CI_CodCosto_Flete");
 
     var $CI_opcGrilla = $("#CI_opcGrilla");
-    
+
     var $CI_pnlInfoGeneral = $("#CI_pnlInfoGeneral");
     var $CI_pnlInfoDestino = $("#CI_pnlInfoDestino");
     var $CI_pnlInfoCostos = $("#CI_pnlInfoCostos");
@@ -109,6 +111,8 @@
 
         ubigeo.setTxtUbigeo_Id("CI_hdnUbicacion");
         ubigeo.setTxtUbigeo_Text("CI_txtUbicacion");
+
+        $DI_btnAgregarCosto.click(agregarCostoItem);
 
         $CI_btnCerrar.click(cerrarModalCostosItem);
         
@@ -328,7 +332,7 @@
 
     }
 
-    function agregarCostoItem(opcGrilla) {
+    function agregarCostoItem() {
 
         if ($DI_txtCantidad.val() == "") {
             app.message.error("Validaci&oacute;n", "La Cantidad no puede ser vac&iacute;o");
@@ -351,8 +355,10 @@
         LimpiarModalCostos();
         cargarTipoCostos();
 
+        configurarModalCosto();
+
         //Para el buscador se selecciona por defecto la cotizacion detalle en pantalla
-        if (opcGrilla == "1") {
+        if ($DI_opcGrilla.val() == "1") {
             $CI_opcGrilla.val("1");
             $CI_cmbCDItem.attr("data-selected", $DI_hdnIdCotDet.val());
             $CI_cmbCDItem.val($DI_hdnIdCotDet.val()).trigger("change.select2");
@@ -360,12 +366,13 @@
         }
         else {
             $CI_opcGrilla.val("2");
-            $CI_cmbCDItem.removeAttr("data-selected");
-            $CI_cmbCDItem.val("").trigger("change.select2");
-            $CI_cmbTipoCosto.attr("disabled", "disabled");
+            $CI_cmbCDItem.attr("data-selected", $DI_hdnIdCotDet.val());
+            $CI_cmbCDItem.val($DI_hdnIdCotDet.val()).trigger("change.select2");
+            $CI_cmbTipoCosto.removeAttr("disabled");
+            //$CI_cmbCDItem.removeAttr("data-selected");
+            //$CI_cmbCDItem.val("").trigger("change.select2");
+            //$CI_cmbTipoCosto.attr("disabled", "disabled");
         }
-
-        configurarModalCosto();
 
         $("#modalCostoItem").modal('show');
     }
@@ -593,8 +600,8 @@
                 data: "Id",
                 render: function (data) {
                     var hidden = '<input type="hidden" id="hdnCDCItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
-                    var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtacostos.editarCostoItem(' + data + ',' + String.fromCharCode(39) + '2' + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                    var ver = '<a id="btnVerItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtacostos.editarCostoItem(' + data + ',' + String.fromCharCode(39) + '2' + String.fromCharCode(39) + ')"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
+                    var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtacostos.editarCostoItem(' + data + ',' + String.fromCharCode(39) + '3' + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                    var ver = '<a id="btnVerItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtacostos.editarCostoItem(' + data + ',' + String.fromCharCode(39) + '3' + String.fromCharCode(39) + ')"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
                     return '<center>' + hidden + editar + '</center>';
                 }
             }
@@ -656,8 +663,8 @@
                 data: "Id",
                 render: function (data) {
                     var hidden = '<input type="hidden" id="hdnCDCItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
-                    var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtacostos.editarCostoItem(' + data + ',' + String.fromCharCode(39) + '1' + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                    var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtacostos.quitarCostoItem(' + data + ',' + String.fromCharCode(39) + '1' + String.fromCharCode(39) + ')"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                    var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtacostos.editarCostoItem(' + data + ',' + String.fromCharCode(39) + $CI_opcGrilla.val() + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                    var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtacostos.quitarCostoItem(' + data + ',' + String.fromCharCode(39) + $CI_opcGrilla.val() + String.fromCharCode(39) + ')"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
                     return '<center>' + hidden + editar + ' ' + quitar + '</center>';
                 }
             }
@@ -878,7 +885,7 @@
                 }
             }
             
-            if ($CI_opcGrilla.val() == "1") {
+            if ($CI_opcGrilla.val() == "1" || $CI_opcGrilla.val() == "2") {
                 cargarGrillaCostosCotDet(data);
             }
             else {
@@ -887,7 +894,6 @@
 
             var fnCallback = function () {
                 var fnSi = function () {
-
                     $CI_hdnIdCotDetCosto.val("");
                     if ($CI_cmbCDItem.attr("disabled") != "disabled" && $CI_cmbCDItem.attr("readonly") != "readonly") {
                         $CI_cmbCDItem.get(0).selectedIndex = 0;
@@ -945,8 +951,11 @@
         //Se define la opcion de grilla para saber que tipo de datos se guardan
         $CI_opcGrilla.val(opcGrilla);
 
-        //Se carga todos los tipos de costos para los TABS
-        if (opcGrilla == "2") { cargarTodoTipoCostos(); }
+        //Se carga todos los tipos de costos para los TABS y para los que se editan desde la COTIZACION DETALLE
+        if (opcGrilla == "3") { cargarTodoTipoCostos(); }
+        else { cargarTipoCostos(); }
+
+        cargarComboCotDetItems();
 
         method = "POST";
         url = "BandejaSolicitudesVentas/CargarDatosCostoItem";
@@ -963,10 +972,10 @@
             $CI_pnlInfoGeneral.css("display", "");
             $CI_hdnIdCotDetCosto.val(data.Result.Id);
             $CI_cmbCDItem.val(data.Result.IdCotizacionDetalle).trigger("change.select2");
-            if ($CI_opcGrilla.val() == "1") {
+            if ($CI_opcGrilla.val() == "1" || $CI_opcGrilla.val() == "2") {
                 $CI_cmbTipoCosto.val(data.Result.CodCosto).trigger("change.select2");
             }
-            if ($CI_opcGrilla.val() == "2") {
+            if ($CI_opcGrilla.val() == "3") {
                 $CI_cmbTipoCosto.val($CI_hdnCodCosto.val()).trigger("change.select2");
             }
             $CI_cmbTipoCosto.attr("disabled", "disabled");

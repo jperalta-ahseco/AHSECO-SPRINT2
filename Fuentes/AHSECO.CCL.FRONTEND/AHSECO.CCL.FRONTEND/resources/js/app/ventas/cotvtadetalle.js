@@ -147,9 +147,11 @@ var cotvtadet = (function ($, win, doc) {
         obteniendoFiltros: "Obteniendo filtros de lista de precios..."
     }
 
-    var opcGrillaItems = 0;
+    var $DI_opcGrilla = $("#DI_opcGrilla");
+    var $CI_opcGrilla = $("#CI_opcGrilla");
 
     var $hdnCostosAgregados = $("#hdnCostosAgregados");
+    var $DI_hdnHabilitado = $("#DI_hdnHabilitado");
 
     $(Initialize);
 
@@ -569,6 +571,10 @@ var cotvtadet = (function ($, win, doc) {
     function MostrarDatosItem(data) {
         $DI_hdnIdCotDet.val("");
         $DI_hdnCodigo.val(data.Result.CodItem);
+        $DI_hdnHabilitado.val("N");
+        if (data.Result.Features != null) {
+            if (data.Result.Features.IsEnabled) { $DI_hdnHabilitado.val("S"); }
+        }
         if (data.Result.CodItem_IsUpdatable == true) {
             $DI_txtCodigo.removeAttr("disabled");
             $DI_txtCodigo.val(data.Result.CodItemTemp);
@@ -844,6 +850,8 @@ var cotvtadet = (function ($, win, doc) {
 
     function editarCotDetItem(CodigoItem, opc) {
         $DI_hdnCodigoPadre.val("");
+        $DI_opcGrilla.val(opc);
+        $CI_opcGrilla.val(opc);
 
         method = "POST";
         url = "BandejaSolicitudesVentas/CargarCotDetItem";
@@ -854,7 +862,6 @@ var cotvtadet = (function ($, win, doc) {
         var objParam = JSON.stringify(objFiltros);
 
         var fnDoneCallBack = function (data) {
-            opcGrillaItems = opc;
             LimpiarModalDetItem();
             MostrarDatosItem(data);
 
@@ -864,23 +871,18 @@ var cotvtadet = (function ($, win, doc) {
                 if (data.Result.CotizacionCostos != null) {
                     var resCostos = { Status: 1, Result: data.Result.CotizacionCostos };
                     cotvtacostos.cargarGrillaCostosCotDet(resCostos);
-                    for (a = 0; a < data.Result.CotizacionCostos.length; a++) {
-                        $hdnCostosAgregados.val($hdnCostosAgregados.val() + ";" + data.Result.CotizacionCostos[a].CodCosto);
-                    }
-                }
-                //Se captura el CODIGO COSTO agregado a COTIZACION DETALLE
-                if (data.Result.CotizacionCostos != null) {
+                    //Se captura el CODIGO COSTO agregado a COTIZACION DETALLE
                     for (a = 0; a < data.Result.CotizacionCostos.length; a++) {
                         var strCodCostoRef = data.Result.CotizacionCostos[a].Id + "_" + data.Result.CotizacionCostos[a].CodCosto;
-                        $hdnCostosAgregados.val($hdnCostosAgregados.val().replace(";" + strCodCostoRef, ";"));
-                        $hdnCostosAgregados.val($hdnCostosAgregados.val().replace(strCodCostoRef + ";", ";"));
-                        $hdnCostosAgregados.val($hdnCostosAgregados.val().replace(";" + strCodCostoRef + ";", ";"));
+                        if ($hdnCostosAgregados.val() == "") { $hdnCostosAgregados.val(strCodCostoRef); }
+                        else { $hdnCostosAgregados.val(";" + strCodCostoRef); }
                     }
                 }
             }
 
             //configurarModalCotDet();
 
+            //Se habilita el MODAL según la configuración del PRODUCTO (Equipo, Material, Repuesto)
             var oFeatures = data.Result.Features;
 
             if (oFeatures != null) {
@@ -1130,7 +1132,7 @@ var cotvtadet = (function ($, win, doc) {
         var objParam = JSON.stringify(objFiltros);
 
         var fnDoneCallBack = function (data) {
-            opcGrillaItems = 1;
+            $DI_opcGrilla.val("1");
             LimpiarModalDetItem();
             MostrarDatosItem(data);
             $DI_pnlInfoGeneral_Dimensiones.css("display", "none");
@@ -1427,14 +1429,14 @@ var cotvtadet = (function ($, win, doc) {
                         ObsDespacho: $DI_txtObsInsta.val()
                     }
                 },
-                opcGrillaItems: opcGrillaItems
+                opcGrillaItems: $DI_opcGrilla.val()
             };
             var objParam = JSON.stringify(objDatos);
 
             var fnDoneCallBack = function (data) {
                 $('#modalDetalleItem').modal('hide');
                 cargarTablaCotDet(data);
-                if (opcGrillaItems == "2") {
+                if ($DI_opcGrilla.val() == "2") {
                     cargarTablaDetCotCostos(data);
                 }
             };
@@ -1464,7 +1466,12 @@ var cotvtadet = (function ($, win, doc) {
 
             app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
         }
-        return app.message.confirm("Validaci&oacute;n", "Desea retroceder sin guardar? Se perder&aacute;n los datos no guardados", "S&iacute;", "No", fnSi);
+        if ($DI_hdnHabilitado.val() != "S") {
+            $('#modalDetalleItem').modal('hide');
+        }
+        else {
+            return app.message.confirm("Validaci&oacute;n", "Desea retroceder sin guardar? Se perder&aacute;n los datos no guardados", "S&iacute;", "No", fnSi);
+        }
     }
 
     function grabarDatosCotDet() {
