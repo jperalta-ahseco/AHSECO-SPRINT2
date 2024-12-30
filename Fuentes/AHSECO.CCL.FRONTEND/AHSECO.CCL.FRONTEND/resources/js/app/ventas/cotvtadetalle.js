@@ -12,6 +12,7 @@ var cotvtadet = (function ($, win, doc) {
     var $TipoSol_ServYRep = $("#TipoSol_ServYRep");
     var $TipoSol_VentaMat = $("#TipoSol_VentaMat");
     var $TipoSol_VentaEqu = $("#TipoSol_VentaEqu");
+    var $TipoSolicitud = $("#TipoSolicitud");
 
     var $idCliente = $("#idCliente");
     var $numeroSolicitud = $("#numeroSolicitud");
@@ -429,6 +430,12 @@ var cotvtadet = (function ($, win, doc) {
                 }
             }
         ];
+
+
+        if ($TipoSolicitud.val() == "TSOL04") // Para las solicitudes de tipo "Venta de Materiales" se prescinde de las columnas: seleccionar, ver accesorios. 
+        {
+            columns.splice(0, 2);
+        };
 
         var columnDefs =
         {
@@ -1601,8 +1608,14 @@ var cotvtadet = (function ($, win, doc) {
                         //    }
                         //    if (swVer) { editar = ver; }
                         //}
-                        if (!oFeatures.IsEnabled) { editar = ver; }
-                        return '<center>' + hidden + editar + '</center>';
+
+                        if ($estadoSol.val() == "CAPR" || $estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG") {
+                            return '<center>' + ver + '</center>';
+                        }
+                        else {
+                            if (!oFeatures.IsEnabled) { editar = ver; }
+                            return '<center>' + hidden + editar + '</center>';
+                        }
                     }
                 }
             ];
@@ -1715,12 +1728,18 @@ var cotvtadet = (function ($, win, doc) {
                         //else {
                         //    if ($estadoSol.val() != "SCOT") { editar = ver; }
                         //}
-                        if (!oFeatures.IsEnabled) { editar = ver; quitar = ""; }
-                        else {
-                            if (!oFeatures.IsEditable) { editar = ver; }
-                            if (!oFeatures.IsDeletable) { quitar = ""; }
+                        if ($estadoSol.val() == "CAPR" || $estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG" ) {
+                            return '<center>' + ver + '</center>';
                         }
-                        return '<center>' + hidden + editar + ' ' + quitar + '</center>';
+                        else {
+
+                            if (!oFeatures.IsEnabled) { editar = ver; quitar = ""; }
+                            else {
+                                if (!oFeatures.IsEditable) { editar = ver; }
+                                if (!oFeatures.IsDeletable) { quitar = ""; }
+                            }
+                            return '<center>' + hidden + editar + ' ' + quitar + '</center>';
+                        }
                     }
                 }
             ];

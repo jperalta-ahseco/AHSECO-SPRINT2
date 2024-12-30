@@ -1,5 +1,8 @@
-﻿@{
+﻿@using AHSECO.CCL.FRONTEND.Core;
+
+@{
     ViewBag.Title = "Detalle de Cotización";
+    var tipoSol = VariableSesion.getCadena("tipoSol");
 }
 <input type="hidden" id="hdnCostosAgregados" />
 <div style="width:100%" class="modal-dialog modal-lg container-fluid" role="document">
@@ -94,8 +97,11 @@
                         <table id="tblCotDet" class="table table-hover table-condensed table-striped table-bordered" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th style="text-align:center; width:5%">Sel.</th>
-                                    <th style="text-align:center; width:5%">Ver Accesorios</th>
+                                    @if (tipoSol != "TSOL04")
+                                    {
+                                        <th style="text-align:center; width:5%">Sel.</th>
+                                        <th style="text-align:center; width:5%">Ver Accesorios</th>
+                                    }
                                     <th style="text-align:center; width:10%">Cod. Producto</th>
                                     <th style="text-align:center; width:20%">Descripción</th>
                                     <th style="text-align:center; width:5%">Cant.</th>

@@ -931,7 +931,7 @@
                 var fnNo = function () {
                     cerrarModalCostosItem();
                 }
-                return app.message.confirm("Costos", "¿Des&eacute;a seguir agregando m&aacute;s costos?", "S&iacute;", "No", fnSi, fnNo);
+                return app.message.confirm("Costos", "¿Desea seguir agregando m&aacute;s costos?", "S&iacute;", "No", fnSi, fnNo);
             };
 
             if ($CI_cmbTipoCosto.attr("disabled") != "disabled") {
