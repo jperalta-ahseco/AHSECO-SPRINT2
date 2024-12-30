@@ -84,7 +84,7 @@
                                         <label for="DI_txtCostoFOB">Costo FOB: </label>
                                     </div>
                                     <div class="col-md-4">
-                                        <input placeholder="Ingresar Costo" type="text" maxlength="20" class="form-control input-sm" id="DI_txtCostoFOB" value="" onchange="(function(el){el.value=app.formatearEnteroComa(parseFloat(el.value).toFixed(2));})(this)" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" onfocus="this.value = app.formatearEnteroSinComa(this.value);" onblur="this.value = app.formatearEnteroComa(parseFloat(el.value).toFixed(2));">
+                                        <input placeholder="Ingresar Costo" type="text" maxlength="20" class="form-control input-sm" id="DI_txtCostoFOB" value="" oninput="javascript:app.soloNumeroDecimal_onInput(this)" onfocus="this.value = app.formatearEnteroSinComa(this.value);" onblur="this.value = app.formatearEnteroComa(parseFloat(this.value).toFixed(2));">
                                     </div>
                                 </div>
                                 <div id="DI_pnlCostos_ValorUnitario" class="col-md-6 col-content-middleleft form-group">
@@ -92,7 +92,7 @@
                                         <label for="DI_txtValorUnitario">Val. Unitario: </label>
                                     </div>
                                     <div class="col-md-4">
-                                        <input placeholder="Ingresar Val. Unt." type="text" maxlength="20" class="form-control input-sm" id="DI_txtValorUnitario" value="" onchange="(function(el){el.value=app.formatearEnteroComa(parseFloat(el.value).toFixed(2));})(this)" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');" onfocus="this.value = app.formatearEnteroSinComa(this.value);" onblur="this.value = app.formatearEnteroComa(parseFloat(el.value).toFixed(2));">
+                                        <input placeholder="Ingresar Val. Unt." type="text" maxlength="20" class="form-control input-sm" id="DI_txtValorUnitario" value="" oninput="javascript:app.soloNumeroDecimal_onInput(this)" onfocus="this.value = app.formatearEnteroSinComa(this.value);" onblur="this.value = app.formatearEnteroComa(parseFloat(this.value).toFixed(2));">
                                     </div>
                                 </div>
                             </div>

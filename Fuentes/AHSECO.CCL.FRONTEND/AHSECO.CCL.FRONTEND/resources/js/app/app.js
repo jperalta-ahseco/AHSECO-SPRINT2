@@ -926,6 +926,14 @@ var app = (function ($, win, doc) {
         return redondeo;
     }
 
+    function soloNumeroEntero_onInput(obj) {
+        obj.value = obj.value.replace(/[^0-9]/g, ''); obj.value = obj.value.replace(/(\..*)\./g, '$1');
+    }
+
+    function soloNumeroDecimal_onInput(obj) {
+        obj.value = obj.value.replace(/[^0-9.]/g, ''); obj.value = obj.value.replace(/(\..*)\./g, '$1');
+    }
+
     return {
         baseUrl: baseUrl,
         defaults: defaults,
@@ -961,6 +969,8 @@ var app = (function ($, win, doc) {
         formatearEnteroComa: formatearEnteroComa,
         formatearEnteroSinComa: formatearEnteroSinComa,
         convertirNumero: convertirNumero,
+        soloNumeroEntero_onInput: soloNumeroEntero_onInput,
+        soloNumeroDecimal_onInput: soloNumeroDecimal_onInput,
         mostrarLoading: mostrarLoading,
         ocultarLoading: ocultarLoading
     }

@@ -746,14 +746,18 @@
                 vDireccion = $CI_txtDireccion.val();
             }
 
-            if (!app.validaNumeroEntero($CI_txtNroPiso.val())) {
-                app.message.error("Validación", "Número inválido para el campo Piso");
-            }
-            else {
-                if (parseInt($CI_txtNroPiso.val()) <= 0) {
-                    app.message.error("Validación", "El Nro de Piso debe ser mayor a 0.")
+            if ($.trim($CI_txtNroPiso.val()) != "") {
+                if (!app.validaNumeroEntero($CI_txtNroPiso.val())) {
+                    app.message.error("Validación", "Número inválido para el campo Piso");
+                    return false;
                 }
-                else { vNroPiso = parseInt($CI_txtNroPiso.val()); }
+                else {
+                    if (parseInt($CI_txtNroPiso.val()) <= 0) {
+                        app.message.error("Validación", "El Nro de Piso debe ser mayor a 0.")
+                        return false;
+                    }
+                    else { vNroPiso = parseInt($CI_txtNroPiso.val()); }
+                }
             }
 
         }
@@ -931,7 +935,7 @@
                 var fnNo = function () {
                     cerrarModalCostosItem();
                 }
-                return app.message.confirm("Costos", "¿Desea seguir agregando m&aacute;s costos?", "S&iacute;", "No", fnSi, fnNo);
+                return app.message.confirm("Costos", "¿Des&eacute;a seguir agregando m&aacute;s costos?", "S&iacute;", "No", fnSi, fnNo);
             };
 
             if ($CI_cmbTipoCosto.attr("disabled") != "disabled") {
