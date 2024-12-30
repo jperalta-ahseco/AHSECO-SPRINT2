@@ -2970,11 +2970,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         }
 
         [HttpPost]
-        public JsonResult RegistrarDetServ(int IdCotDetalle, string Descripcion)
+        public JsonResult RegistrarDetServ(int IdCotDetalle, string Descripcion, string opcGrillaItems)
         {
             try
             {
-                List<CotizacionDetalleDTO> lstItems = GetCotDetItems(opcTablaTemporal);
+                List<CotizacionDetalleDTO> lstItems = GetCotDetItems(opcGrillaItems);
                 var oCotDet = lstItems.FirstOrDefault(p => p.Id == IdCotDetalle);
 
                 var lstActividades = new List<CotDetActividadDTO>();

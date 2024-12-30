@@ -1425,7 +1425,8 @@
         url = "BandejaSolicitudesVentas/RegistrarDetServ";
         objDetalle = {
             IdCotDetalle: $DS_hdnIdCotDetServ.val(),
-            Descripcion: $txtDetalleServicio.val()
+            Descripcion: $txtDetalleServicio.val(),
+            opcGrillaItems: $DS_hdnOpcGrillaItems.val()
         }
         objParam = JSON.stringify(objDetalle);
         var fnSi = function () {
