@@ -275,6 +275,10 @@
     var $hdnObservacionId = $("#hdnObservacionId");
     var $btnCloseCargar = $("#btnCloseCargar");
     var $btnModalClose = $("#btnModalClose");
+    var $txtCodUbicacionServ = $("#txtCodUbicacionServ");
+    var $btnGuardarUbigeoSel = $("#btnGuardarUbigeoSel");
+    var $txtTelefonoServ = $("#txtTelefonoServ");
+    var $txtCorreoServ = $("#txtCorreoServ");
 
 
     /*Tecnicos:*/
@@ -300,14 +304,15 @@
     var $hdnIdZona = $("#hdnIdZona");
     var $searchZona = $("#searchZona");
     var $hdnIdTecnico = $("#hdnIdTecnico");
-    var $cmbDepartamento = $('#cmbDepartamento');
-    var $cmbProvincia = $('#cmbProvincia');
-    var $cmbDistrito = $('#cmbDistrito');
-    var $modalZona = $('#modalZona');
+    var $cmbDepartamentoServ = $('#cmbDepartamentoServ');
+    var $cmbProvinciaServ = $('#cmbProvinciaServ');
+    var $cmbDistritoServ = $('#cmbDistritoServ');
+    var $modalZonaTecSol = $('#modalZonaTecSol');
     var $btnRegistrarTecnicoExterno = $('#btnRegistrarTecnicoExterno');
     var $tblMainTecnicos = $("#tblMainTecnicos");
     var $modalBusquedaTecnico = $("#modalBusquedaTecnico");
     var $NoExisteTec = $("#NoExisteTec");
+    var $añadirTecnico = $("#añadirTecnico");
     var tecnicosAsig = [];
 
     var mensajes = {
@@ -490,11 +495,11 @@
         $btnVerComentarioDscto.click(verComentarioDscto);
         $btnAprobarCotizacion.click(aprobarCotizacion);
         $DS_hdnOpcGrillaItems.val("2");
-
+        $btnGuardarUbigeoSel.click(seleccionarUbi);
         $btnBuscarTecnicos.click(BuscarTecnicosClick);
         $btnBuscarTecnico.click(BuscarTecnicos);
         $btnAñadirTecnico.click(AgregarTecnicoExterno);
-        $searchZona.click(logicUbigeo);
+        $searchZona.click(logicUbigeoTecnico);
         $btnRegistrarTecnicoExterno.click(CrearTecnico3ro_a_Producto);
         $btnEnviarServicio.click(btnEnviarServicioClick);
         $btnGuardarFactura.click($btnGuardarFactura_click);
@@ -503,6 +508,33 @@
         $btnEnviarGestionDespachoSE.click($btnEnviarGestionDespachoSE_click);
     };
 
+
+    function seleccionarUbi() {
+
+        var codDistrito = sessionStorage.getItem('codDistritoServ');
+
+        var nomDepartamentoServ = sessionStorage.getItem('nomDepartamentoServ')
+        var nomProvinciaServ = sessionStorage.getItem('nomProvinciaServ');
+        var nomDistritoServ = sessionStorage.getItem('nombreDistritoServ');
+
+        if ($cmbDepartamentoServ.val().trim() === "" || $cmbDepartamentoServ.val().trim() === null || $cmbDepartamentoServ.val().trim() === undefined) {
+            app.message.error("Validacion", "Debe seleccionar un departamento");
+            return;
+        }
+
+        if ($cmbProvinciaServ.val().trim() === "" || $cmbProvinciaServ.val().trim() === null || $cmbProvinciaServ.val().trim() === undefined) {
+            app.message.error("Validacion", "Debe seleccionar una provincia");
+            return;
+        }
+
+        if ($cmbDistritoServ.val().trim() === "" || $cmbDistritoServ.val().trim() === null || $cmbDistritoServ.val().trim() === undefined) {
+            app.message.error("Validacion", "Debe seleccionar un distrito");
+            return;
+        }
+
+        $txtZona.val(nomDepartamentoServ + ' / ' + nomProvinciaServ + ' / ' + nomDistritoServ);
+        $modalZonaTecSol.modal('toggle');
+    };
     function $btnCloseCargar_click() {
         
     }
@@ -937,12 +969,12 @@
             return;
         };
 
-        if ($txtTelefono.val() == "" && $txtCorreo.val() == "") {
+        if ($txtTelefonoServ.val() == "" && $txtCorreoServ.val() == "") {
             app.message.error("Validación", "Debe de tener por lo menos un medio de contacto, ingresar teléfono o email.");
             return;
         };
 
-        if (!app.validarEmail($txtCorreo.val().trim()) && $txtCorreo.val() != "") {
+        if (!app.validarEmail($txtCorreoServ.val().trim()) && $txtCorreoServ.val() != "") {
             app.message.error("Validación", "El formato del correo es inválido");
             return;
         };
@@ -970,10 +1002,10 @@
             },
             FechaNacimiento: null,
             LugarLaboral: {
-                UbigeoId: $txtCodUbicacion.val(),
+                UbigeoId: $txtCodUbicacionServ.val(),
             },
-            TelefonoEmpleado: $txtTelefono.val(),
-            EmailEmpleado: $txtCorreo.val(),
+            TelefonoEmpleado: $txtTelefonoServ.val(),
+            EmailEmpleado: $txtCorreoServ.val(),
             DireccionEmpleado: "",
             SexoEmpleado: "",
             Documento: {
@@ -993,12 +1025,12 @@
         var objEmpleado = JSON.stringify(objParam);
 
         var fnDoneCallback = function (data) {
-            if (data.Result.Codigo > 0) {
+            if (data.Codigo > 0) {
                 app.message.success("Éxito", "Se realizó la creación del técnico satisfactoriamente.");
                 $añadirTecnico.modal('toggle');
             }
             else {
-                app.message.error("Validación", data.Result.Mensaje);
+                app.message.error("Validación", data.Mensaje);
             }
 
         };
@@ -1009,17 +1041,16 @@
         app.llamarAjax(method, url, objEmpleado, fnDoneCallback, fnFailCallback, null, null);
     };
     
-    function logicUbigeo() {
-        getDepartamentos();
-        $cmbProvincia.val('').trigger("change");
-        $cmbDistrito.val('').trigger("change");
-        $cmbProvincia.prop("disabled", true);
-        $cmbDistrito.prop("disabled", true);
+    function logicUbigeoTecnico() {
+        getDepartamentosServ();
+        $cmbProvinciaServ.val('').trigger("change");
+        $cmbDistritoServ.val('').trigger("change");
+        $cmbProvinciaServ.prop("disabled", true);
+        $cmbDistritoServ.prop("disabled", true);
         
     }
 
-    function getDepartamentos() {
-
+    function getDepartamentosServ() {
         var method = "POST";
         var url = "Ubigeo/ObtenerUbigeo";
         var ubigeoObj = {}
@@ -1045,24 +1076,24 @@
                 }
                 return acumulador;
             }, []);
-            $cmbDepartamento.on('change', function () {
+            $cmbDepartamentoServ.on('change', function () {
                 const codDepartamento = $(this).val();
-                const nomDepartamento = $('select[id="cmbDepartamento"] option:selected').text();
-                sessionStorage.setItem('nomDepartamento', `${nomDepartamento}`);
+                const nomDepartamento = $('select[id="cmbDepartamentoServ"] option:selected').text();
+                sessionStorage.setItem('nomDepartamentoServ', `${nomDepartamento}`);
                 if (!codDepartamento === null || !codDepartamento === '') {
                     $(this).prop('disabled', false);
 
                 } else {
-                    $cmbProvincia.prop('disabled', false);
-                    obtenerProvincia(codDepartamento, data); $cmbDepartamento
-                    $cmbDistrito.prop("disabled", true);
+                    $cmbProvinciaServ.prop('disabled', false);
+                    obtenerProvincia(codDepartamento, data);
+                    $cmbDistritoServ.prop("disabled", true);
                 }
-                $cmbDistrito.val("").trigger("change");
+                $cmbDistritoServ.val("").trigger("change");
             });
             var filters = {};
             filters.placeholder = "-- Seleccione --";
             filters.allowClear = false;
-            app.llenarCombo($cmbDepartamento, data, $modalZona, "", "<--Seleccione-->", filters);
+            app.llenarCombo($cmbDepartamentoServ, resultado, $modalZonaTecSol, "", "<--Seleccione-->", filters);
         }
         var fnFailCallback = function () {
             app.mensajes.error("Error", "No se ejecutó correctamente la carga de departamentos");
@@ -1089,17 +1120,17 @@
             }
             return acumulador;
         }, []);
-        $cmbProvincia.on('change', function () {
+        $cmbProvinciaServ.on('change', function () {
             const codProvincia = $(this).val();
-            const nomProvincia = $('select[id="cmbProvincia"] option:selected').text();
-            sessionStorage.setItem('nomProvincia', `${nomProvincia}`);
+            const nomProvincia = $('select[id="cmbProvinciaServ"] option:selected').text();
+            sessionStorage.setItem('nomProvinciaServ', `${nomProvincia}`);
 
             if (!codProvincia === null || !codProvincia === '') {
                 $(this).prop('disabled', false);
 
             } else {
-                $cmbProvincia.prop('disabled', false);
-                $cmbDistrito.prop('disabled', false)
+                $cmbProvinciaServ.prop('disabled', false);
+                $cmbDistritoServ.prop('disabled', false)
                 obtenerDistrito(codProvincia, data);
             }
         });
@@ -1107,7 +1138,7 @@
         var filters = {};
         filters.placeholder = "-- Seleccione --";
         filters.allowClear = false;
-        app.llenarCombo($cmbProvincia, provincias, $modalZona, "", "<--Seleccione-->", filters)
+        app.llenarCombo($cmbProvinciaServ, provincias, $modalZonaTecSol, "", "<--Seleccione-->", filters)
     }
 
     function obtenerDistrito(codProvincia, data) {
@@ -1129,19 +1160,19 @@
             return acumulador;
         }, []);
 
-        $cmbDistrito.on('change', function () {
+        $cmbDistritoServ.on('change', function () {
             const codDistrito = $(this).val();
-            const nombreDistrito = $('select[id="cmbDistrito"] option:selected').text();
-            sessionStorage.setItem('codDistrito', `${codDistrito}`);
-            sessionStorage.setItem('nombreDistrito', `${nombreDistrito}`);
-            $txtCodUbicacion.val(codDistrito);
+            const nombreDistrito = $('select[id="cmbDistritoServ"] option:selected').text();
+            sessionStorage.setItem('codDistritoServ', `${codDistrito}`);
+            sessionStorage.setItem('nombreDistritoServ', `${nombreDistrito}`);
+            $txtCodUbicacionServ.val(codDistrito);
         });
 
 
         var filters = {};
         filters.placeholder = "-- Seleccione --";
         filters.allowClear = false;
-        app.llenarCombo($cmbDistrito, distritos, $modalZona, "", "<--Seleccione-->", filters)
+        app.llenarCombo($cmbDistritoServ, distritos, $modalZonaTecSol, "", "<--Seleccione-->", filters)
     }
 
     function AgregarTecnicoExterno() {
@@ -1155,10 +1186,12 @@
         $txtApellidoPaternoTec.val("");
         $txtApellidoMaternoTec.val("");
         $txtNumDocumento.val("");
-        $txtTelefono.val("");
-        $txtCorreo.val("");
+        $txtTelefonoServ.val("");
+        $txtCorreoServ.val("");
         $txtZona.val("");
         $hdnIdTecnico.val("");
+        $cmbTipoCredencial.val('0').trigger("change.select2");
+
         //getDepartamentos();
        // $cmbDepartamento.val("").trigger('change.select2');
        // $cmbProvincia.val("").trigger('change.select2');
