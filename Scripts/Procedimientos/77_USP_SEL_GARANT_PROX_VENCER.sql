@@ -52,7 +52,7 @@ SET NOCOUNT ON
 		,FECHAINSTALACION
 		,VALORGARANTIA
 		,NMESGARANADIC
-		,DATEADD(MONTH,ISNULL(NMESGARANADIC,0),FECHAVENCIMIENTO) AS FECHAVENCIMIENTO
+		,DATEADD(MONTH,CAST(ISNULL(NMESGARANADIC,0) AS INT),FECHAVENCIMIENTO) AS FECHAVENCIMIENTO
 	INTO #tmpDetalle
 	FROM #tmpDetalleParcial
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
