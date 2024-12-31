@@ -1111,11 +1111,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 else
                                 { ViewBag.PermitirGuardarValorizacion = false; }
 
-                                if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor) //para asesor solo debe de activarse cuando se haya registrado todos los costos.
-                                {
-                                    ViewBag.PermitirGuardarValorizacion = false;
-                                }
-
                                 //Para el tipo "EQUIPOS" se habilita lo siguiente
                                 if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaEquipos)
                                 {
@@ -3716,8 +3711,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             itemCDC.FechaRegistro = DateTime.Now;
                             var resCDC = ventasBL.MantenimientoCotDetCosto(itemCDC);
                         }
-                        swServicioTecnico = itemCD.CotizacionCostos.Any(x => x.CodCosto != ConstantesDTO.CotizacionDetalleCostos.Costos.Flete);
-                        swCostoLogistica = itemCD.CotizacionCostos.Any(x => x.CodCosto == ConstantesDTO.CotizacionDetalleCostos.Costos.Flete);
+                        if (swServicioTecnico == false) { swServicioTecnico = itemCD.CotizacionCostos.Any(x => x.CodCosto != ConstantesDTO.CotizacionDetalleCostos.Costos.Flete); }
+                        if (swCostoLogistica == false) { swCostoLogistica = itemCD.CotizacionCostos.Any(x => x.CodCosto == ConstantesDTO.CotizacionDetalleCostos.Costos.Flete); }
                     }
                     if (itemCD.CotizacionActividades != null)
                     {
