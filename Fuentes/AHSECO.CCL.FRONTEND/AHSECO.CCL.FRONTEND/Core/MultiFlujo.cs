@@ -99,13 +99,13 @@ namespace AHSECO.CCL.FRONTEND.Core
             {
                 public struct Campo
                 {
-                    public static string Dimensiones = "IND01";
-                    public static string CompraLocal = "IND02";
-                    public static string ReqPlaca = "IND03";
-                    public static string GarantAdic = "IND04";
-                    public static string GarantAdic_Combo = "IND05";
-                    public static string ReqCliente = "IND06";
-                    public static string ObsInsta = "IND07";
+                    public static string Dimensiones = "CDD01";
+                    public static string CompraLocal = "CDD02";
+                    public static string ReqPlaca = "CDD03";
+                    public static string GarantAdic = "CDD04";
+                    public static string GarantAdic_Combo = "CDD05";
+                    public static string ReqCliente = "CDD06";
+                    public static string ObsInsta = "CDD07";
                 }
                 public struct IndCosto
                 {
@@ -121,11 +121,27 @@ namespace AHSECO.CCL.FRONTEND.Core
             }
             public struct CotDetCosto
             {
+                public struct Campo
+                {
+                    public static string ID = "CDC01";
+                    public static string NumeroSecuencia = "CDC02";
+                    public static string TipoCosto = "CDC03";
+                    public static string CantidadCosto = "CDC04";
+                    public static string CantidadPreventivo = "CDC05";
+                    public static string CicloPreventivo = "CDC06";
+                    public static string UbigeoDestino = "CDC07";
+                    public static string Direccion = "CDC08";
+                    public static string AmbienteDestino = "CDC09";
+                    public static string NroPiso = "CDC10";
+                    public static string MontoUnitario = "CDC11";
+                    public static string MontoTotal = "CDC12";
+                }
                 public struct Boton
                 {
                     public static string Agregar = "BTNAGREGARCOSTO";
                     public static string Editar = "BTNEDITARCOSTO";
                     public static string EditarTAB = "BTNEDITARCOSTOTAB";
+                    public static string GuardarCosto = "CI_btnGuardar";
                 }
                 public struct Grilla
                 {
@@ -135,6 +151,15 @@ namespace AHSECO.CCL.FRONTEND.Core
                 public struct Panel
                 {
                     public static string Destinos = "PNLDESTINOS";
+                }
+            }
+            public struct CotDetActividad
+            {
+                public struct Campo
+                {
+                    public static string ID = "CDA01";
+                    public static string CodigoActividad = "CDA02";
+                    public static string DescActividad = "CDA03";
                 }
             }
         }

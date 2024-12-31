@@ -660,12 +660,30 @@
                 }
             },
             {
-                data: "Id",
+                data: "Features",
                 render: function (data) {
-                    var hidden = '<input type="hidden" id="hdnCDCItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
-                    var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtacostos.editarCostoItem(' + data + ',' + String.fromCharCode(39) + $CI_opcGrilla.val() + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                    var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtacostos.quitarCostoItem(' + data + ',' + String.fromCharCode(39) + $CI_opcGrilla.val() + String.fromCharCode(39) + ')"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
-                    return '<center>' + hidden + editar + ' ' + quitar + '</center>';
+                    var oFeatures = data;
+                    var strID = "";
+                    var arrProp = oFeatures.SubPropiedades;
+                    for (a = 0; a < arrProp.length; a++) {
+                        if (arrProp[a].Nombre == "ID") { strID = arrProp[a].Valor; }
+                    }
+                    var hidden = '<input type="hidden" id="hdnCDCItem_' + $.trim(strID) + '" value=' + String.fromCharCode(39) + strID + String.fromCharCode(39) + '>';
+                    var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtacostos.editarCostoItem(' + strID + ',' + String.fromCharCode(39) + $CI_opcGrilla.val() + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                    var ver = '<a id="btnVerItem" class="btn btn-info btn-xs" title="Ver" href="javascript: cotvtacostos.editarCostoItem(' + strID + ',' + String.fromCharCode(39) + $CI_opcGrilla.val() + String.fromCharCode(39) + ')"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
+                    var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtacostos.quitarCostoItem(' + strID + ',' + String.fromCharCode(39) + $CI_opcGrilla.val() + String.fromCharCode(39) + ')"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+
+                    if ($estadoSol.val() == "CAPR" || $estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG") {
+                        return '<center>' + ver + '</center>';
+                    }
+                    else {
+                        if (!oFeatures.IsEnabled) { editar = ver; quitar = ""; }
+                        else {
+                            if (!oFeatures.IsEditable) { editar = ver; }
+                            if (!oFeatures.IsDeletable) { quitar = ""; }
+                        }
+                        return '<center>' + hidden + editar + ' ' + quitar + '</center>';
+                    }
                 }
             }
         ];
@@ -681,9 +699,9 @@
         //}
 
         //Se quita los botones de acción por estar deshabilitado la edición de la Cotización Detalle
-        if ($PermitirEditarCotDetItem.val() == "N") {
-            columns.pop();
-        }
+        //if ($PermitirEditarCotDetItem.val() == "N") {
+        //    columns.pop();
+        //}
 
         var columnDefs =
         {
@@ -959,7 +977,7 @@
         if (opcGrilla == "3") { cargarTodoTipoCostos(); }
         else { cargarTipoCostos(); }
 
-        cargarComboCotDetItems();
+        //cargarComboCotDetItems(); //Ya se llama desde el MODAL de COTIZACION DETALLE y tambien cuando se inicializa el JQUERY de COSTOS
 
         method = "POST";
         url = "BandejaSolicitudesVentas/CargarDatosCostoItem";
@@ -1010,6 +1028,34 @@
             $CI_cmbCicloPreventivo.val(data.Result.CodCicloPreventivo).trigger("change.select2");
 
             configurarModalCosto();
+
+            //Si el Registro de COSTO está deshabilitado será de SOLO LECTURA
+            if (data.Result.Features != null) {
+                if (data.Result.Features.IsEnabled == false) {
+                    $CI_cmbCDItem.attr("disabled", "disabled");
+                    $CI_cmbTipoCosto.attr("disabled", "disabled");
+                    $CI_txtCantCotDet.attr("disabled", "disabled");
+                    $CI_txtUnidadMedida.attr("disabled", "disabled");
+
+                    $CI_txtUbicacion.attr("disabled", "disabled");
+                    $("#searchUbigeo").attr("data-target", "");
+                    $("#searchUbigeo").css("cursor", "not-allowed");
+                    $CI_txtDireccion.attr("disabled", "disabled");
+                    $CI_txtAmbDestino.attr("disabled", "disabled");
+                    $CI_txtNroPiso.attr("disabled", "disabled");
+
+                    $CI_txtDireccion.attr("disabled", "disabled");
+                    $CI_txtAmbDestino.attr("disabled", "disabled");
+                    $CI_txtNroPiso.attr("disabled", "disabled");
+                    $CI_txtCantCosteo.attr("disabled", "disabled");
+                    $CI_txtMtoUnitarioCosto.attr("disabled", "disabled");
+                    $CI_txtMtoTotalCosto.attr("disabled", "disabled");
+                    $CI_txtCantPrevent.attr("disabled", "disabled");
+                    $CI_cmbCicloPreventivo.attr("disabled", "disabled");
+
+                    $CI_btnGuardar.css("display", "none");
+                }
+            }
 
             $('#modalCostoItem').modal('show');
         };

@@ -953,6 +953,8 @@ var cotvtadet = (function ($, win, doc) {
 
             }
 
+            cotvtacostos.cargarComboCotDetItems();
+
             $('#modalDetalleItem').modal('show');
         };
 
@@ -1598,17 +1600,7 @@ var cotvtadet = (function ($, win, doc) {
                         var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
                         var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
                         var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + ',2)"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
-                        //if ($estadoSol.val() == "CVAL") {
-                        //    var swVer = false;
-                        //    //Se valida que el tipo REPUESTOS no modifique FOB
-                        //    if ($idRolUsuario.val() == $RolVenta_Gerente.val()) {
-                        //        if ($cmbTipo.val() == $TipoSol_RepOComes.val() || $cmbTipo.val() == $TipoSol_ServYRep.val()) {
-                        //            swVer = true;
-                        //        }
-                        //    }
-                        //    if (swVer) { editar = ver; }
-                        //}
-
+                        
                         if ($estadoSol.val() == "CAPR" || $estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG") {
                             return '<center>' + ver + '</center>';
                         }
@@ -1710,29 +1702,11 @@ var cotvtadet = (function ($, win, doc) {
                         var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
                         var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + ',2)"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
                         var quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarCotDetItem(' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + ',2)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
-                        //if ($estadoSol.val() != "SCOT") { quitar = ""; }
-                        //if ($estadoSol.val() == "CVAL") {
-                        //    var swVer = true;
-                        //    //Se valida si la cotizacion va a ser valorizada
-                        //    if ($DI_pnlCostos_PrecioVenta.css("display") != "none") {
-                        //        if ($PermitirEditarValorizacion.val() == "S") {
-                        //            swVer = false;
-                        //        }
-                        //    }
-                        //    //Se valida la GANANCIA
-                        //    if ($DI_pnlCostos_Ganancia.css("display") != "none") {
-                        //        if ($PermitirEditarGanancia.val() == "S") { swVer = false; }
-                        //    }
-                        //    if (swVer) { editar = ver; }
-                        //}
-                        //else {
-                        //    if ($estadoSol.val() != "SCOT") { editar = ver; }
-                        //}
+
                         if ($estadoSol.val() == "CAPR" || $estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG" ) {
                             return '<center>' + ver + '</center>';
                         }
                         else {
-
                             if (!oFeatures.IsEnabled) { editar = ver; quitar = ""; }
                             else {
                                 if (!oFeatures.IsEditable) { editar = ver; }

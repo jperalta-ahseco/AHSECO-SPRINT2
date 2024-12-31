@@ -1265,6 +1265,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             //Obteniendo datos faltantes de los ARTICULOS
                             lstItems = CompletarInfoCotDet(lstItems);
 
+                            //Se vuelve a configurar la COTIZACION DETALLE por motivo del enlazado de los COSTOS y ACTIVIDADES
+                            lstItems = configureCotDet(lstItems);
+
                             //Se separa los detalles para la tabla final y para el buscador de productos
                             //mediante el campo "IsTempRecord"
                             var lstItems_Tmp = new List<CotizacionDetalleDTO>();
@@ -1822,6 +1825,86 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             oPropCotDetItem.SubPropiedades = lstProp.ToArray();
 
             oItem.Features = oPropCotDetItem;
+
+            //Se configura los registros de COSTOS del registro de COTIZACION DETALLE (No incluye los TABS)
+            if (oItem.CotizacionCostos != null)
+            {
+                foreach (var oCosto in oItem.CotizacionCostos)
+                {
+                    var oPropCosto = new PropertyControl();
+                    oPropCosto.IsEnabled = oItem.Features.IsEnabled;
+                    oPropCosto.IsVisible = oItem.Features.IsVisible;
+                    oPropCosto.IsDeletable = oItem.Features.IsDeletable;
+                    oPropCosto.IsEditable = oItem.Features.IsEditable;
+                    var lstPropCost = new List<PropertyControl>();
+                    lstPropCost.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetCosto.Campo.ID, IsEnabled = false, IsVisible = false, Nombre = "ID", Valor = oCosto.Id.ToString() });
+                    lstPropCost.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetCosto.Campo.CantidadCosto, IsEnabled = true, IsVisible = true });
+
+                    lstPropCost.ForEach(pc =>
+                    {
+                        if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc ||
+                        NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ)
+                        {
+                            if(oSolicitud.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnCotizacion)
+                            {
+                                if (pc.Tag == MultiFlujo.Tag.CotDetCosto.Campo.CantidadCosto) { pc.IsEnabled = oItem.Features.IsEnabled; }
+                            }
+                            else
+                            {
+                                if (pc.Tag == MultiFlujo.Tag.CotDetCosto.Campo.CantidadCosto) { pc.IsEnabled = false; }
+                            }
+                        }
+                        else
+                        {
+                            if (pc.Tag == MultiFlujo.Tag.CotDetCosto.Campo.CantidadCosto) { pc.IsEnabled = false; }
+                        }
+                    });
+
+                    oPropCosto.IsEnabled = lstPropCost.Any(pc => pc.IsVisible && pc.IsEnabled);
+                    oPropCosto.SubPropiedades = lstPropCost.ToArray();
+                    oCosto.Features = oPropCosto;
+                }
+            }
+
+            //Se configura los registros de ACTIVIDADES del registro de COTIZACION DETALLE (No incluye los TABS)
+            if (oItem.CotizacionActividades != null)
+            {
+                foreach (var oAct in oItem.CotizacionActividades)
+                {
+                    var oPropAct = new PropertyControl();
+                    oPropAct.IsEnabled = oItem.Features.IsEnabled;
+                    oPropAct.IsVisible = oItem.Features.IsVisible;
+                    oPropAct.IsDeletable = oItem.Features.IsDeletable;
+                    oPropAct.IsEditable = oItem.Features.IsEditable;
+                    var lstPropAct = new List<PropertyControl>();
+                    lstPropAct.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetActividad.Campo.ID, IsEnabled = false, IsVisible = false, Nombre = "ID", Valor = oAct.Id.ToString() });
+                    lstPropAct.Add(new PropertyControl() { Tag = MultiFlujo.Tag.CotDetActividad.Campo.DescActividad, IsEnabled = true, IsVisible = true });
+
+                    lstPropAct.ForEach(pc =>
+                    {
+                        if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc ||
+                        NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ)
+                        {
+                            if(oSolicitud.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnCotizacion)
+                            {
+                                if (pc.Tag == MultiFlujo.Tag.CotDetActividad.Campo.DescActividad) { pc.IsEnabled = oItem.Features.IsEnabled; }
+                            }
+                            else
+                            {
+                                if (pc.Tag == MultiFlujo.Tag.CotDetActividad.Campo.DescActividad) { pc.IsEnabled = false; }
+                            }
+                        }
+                        else
+                        {
+                            if (pc.Tag == MultiFlujo.Tag.CotDetActividad.Campo.DescActividad) { pc.IsEnabled = false; }
+                        }
+                    });
+
+                    oPropAct.IsEnabled = lstPropAct.Any(pc => pc.IsVisible && pc.IsEnabled);
+                    oPropAct.SubPropiedades = lstPropAct.ToArray();
+                    oAct.Features = oPropAct;
+                }
+            }
 
             return oItem;
         }
@@ -2879,15 +2962,14 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 if (lstItems.Any()) { select.NroItem = lstItems.Max(x => x.NroItem) + 1; }
                 else { select.NroItem = 1; }
 
-                if (select.Id <= 0) { if(lstItems.Count() == 0)
-                    {
+                if (select.Id <= 0) { 
+					if (lstItems.Count() == 0) {
                         select.Id = select.NroItem * -1;
                     }
                     else
                     {
                         select.Id = lstItems.Min(x => x.Id) - 1; 
                     }
-                    
                 }
 
                 //Detalle del servicio:
@@ -3758,8 +3840,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             itemCDC.FechaRegistro = DateTime.Now;
                             var resCDC = ventasBL.MantenimientoCotDetCosto(itemCDC);
                         }
-                        swServicioTecnico = itemCD.CotizacionCostos.Any(x => x.CodCosto != ConstantesDTO.CotizacionDetalleCostos.Costos.Flete);
-                        swCostoLogistica = itemCD.CotizacionCostos.Any(x => x.CodCosto == ConstantesDTO.CotizacionDetalleCostos.Costos.Flete);
+                        if (swServicioTecnico == false) { swServicioTecnico = itemCD.CotizacionCostos.Any(x => x.CodCosto != ConstantesDTO.CotizacionDetalleCostos.Costos.Flete); }
+                        if (swCostoLogistica == false) { swCostoLogistica = itemCD.CotizacionCostos.Any(x => x.CodCosto == ConstantesDTO.CotizacionDetalleCostos.Costos.Flete); }
                     }
                     if (itemCD.CotizacionActividades != null)
                     {
