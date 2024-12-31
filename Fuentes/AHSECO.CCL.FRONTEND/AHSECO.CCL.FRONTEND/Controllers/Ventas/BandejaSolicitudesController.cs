@@ -2841,7 +2841,16 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 if (lstItems.Any()) { select.NroItem = lstItems.Max(x => x.NroItem) + 1; }
                 else { select.NroItem = 1; }
 
-                if (select.Id <= 0) { select.Id = select.NroItem * -1; }
+                if (select.Id <= 0) { if(lstItems.Count() == 0)
+                    {
+                        select.Id = select.NroItem * -1;
+                    }
+                    else
+                    {
+                        select.Id = lstItems.Min(x => x.Id) - 1; 
+                    }
+                    
+                }
 
                 //Detalle del servicio:
                 if (servicio.servicios != null)
@@ -3711,8 +3720,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             itemCDC.FechaRegistro = DateTime.Now;
                             var resCDC = ventasBL.MantenimientoCotDetCosto(itemCDC);
                         }
-                        if (swServicioTecnico == false) { swServicioTecnico = itemCD.CotizacionCostos.Any(x => x.CodCosto != ConstantesDTO.CotizacionDetalleCostos.Costos.Flete); }
-                        if (swCostoLogistica == false) { swCostoLogistica = itemCD.CotizacionCostos.Any(x => x.CodCosto == ConstantesDTO.CotizacionDetalleCostos.Costos.Flete); }
+                        swServicioTecnico = itemCD.CotizacionCostos.Any(x => x.CodCosto != ConstantesDTO.CotizacionDetalleCostos.Costos.Flete);
+                        swCostoLogistica = itemCD.CotizacionCostos.Any(x => x.CodCosto == ConstantesDTO.CotizacionDetalleCostos.Costos.Flete);
                     }
                     if (itemCD.CotizacionActividades != null)
                     {

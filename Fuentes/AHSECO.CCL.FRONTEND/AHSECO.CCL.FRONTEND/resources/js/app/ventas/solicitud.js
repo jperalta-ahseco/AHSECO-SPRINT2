@@ -1566,7 +1566,26 @@
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, mensajes.GenerarCotizacion);
     }
-    
+
+    function grabarDatosCotDetServV2() {
+        method = "POST";
+        url = "BandejaSolicitudesVentas/GrabarDatosCotDet";
+        var objDatos = { TipoItem: "SER" };
+        var objParam = JSON.stringify(objDatos);
+
+        var fnDoneCallBack = function (data) {
+            cargarTablaDetCotServicios(data);
+            cargarTablaServiciosAgregados(data);
+        };
+
+        var fnFailCallBack = function () {
+            cargarTablaDetCotServicios();
+            cargarTablaServiciosAgregados();
+        };
+
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack);
+    }
     function grabarDatosCotDetServ() {
 
         var fnSi = function () {
@@ -4434,12 +4453,11 @@
             var fnDoneCallBack = function (data) {
                 var fnCallback = function () {
                     if (opc > 1) {
-                        grabarDatosCotDetServ();
+                        grabarDatosCotDetServV2();
                     }
                     else {
                         cargarTablaServiciosAgregados(data);
                     }
-                    
                 };
                 app.message.success("Grabar", "Registro eliminado con &eacute;xito.", "Aceptar", fnCallback);
             };
