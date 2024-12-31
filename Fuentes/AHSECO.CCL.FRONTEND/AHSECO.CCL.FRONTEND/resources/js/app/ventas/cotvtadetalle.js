@@ -1746,6 +1746,10 @@ var cotvtadet = (function ($, win, doc) {
 
         }
 
+        if ($TipoSolicitud.val() === "TSOL02") {
+            columns.splice(6, 2);
+        };
+
         var columnDefs =
         {
             targets: [0],

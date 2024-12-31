@@ -217,40 +217,78 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             if (ViewBag.PermitirEditarValorizacion == true)
             {
-                string[] CD_Columns =
+                if (VariableSesion.getCadena("tipoSol") == "TSOL02")
                 {
-                    "Nro. Item",
-                    "Codigo Producto",
-                    "Descripción",
-                    //"Stock Disponible",
-                    "Unidad Medida",
-                    "Cantidad",
-                    "Costo FOB",
-                    "Valor Venta Unitario",
-                    "Valor. Venta Total Sin IGV (Sin Ganancia)",
-                    "Ganancia(%)",
-                    "Valor. Venta Total Sin IGV Con Ganancia)",
-                    "Acción"
-                };
-                ViewBag.CabeceraCotDet = CD_Columns;
+                    string[] CD_Columns =
+                    {
+                        "Nro. Item",
+                        "Codigo Producto",
+                        "Descripción",
+                        //"Stock Disponible",
+                        "Unidad Medida",
+                        "Cantidad",
+                        "Valor Venta Unitario",
+                        "Valor. Venta Total Sin IGV",
+                        "Acción"
+                    };
+                    ViewBag.CabeceraCotDet = CD_Columns;
+                }
+                else
+                {
+                    string[] CD_Columns =
+                    {
+                        "Nro. Item",
+                        "Codigo Producto",
+                        "Descripción",
+                        //"Stock Disponible",
+                        "Unidad Medida",
+                        "Cantidad",
+                        "Costo FOB",
+                        "Valor Venta Unitario",
+                        "Valor. Venta Total Sin IGV (Sin Ganancia)",
+                        "Ganancia(%)",
+                        "Valor. Venta Total Sin IGV Con Ganancia)",
+                        "Acción"
+                    };
+                    ViewBag.CabeceraCotDet = CD_Columns;
+                }
             }
             else
             {
-                string[] CD_Columns =
+                if(VariableSesion.getCadena("tipoSol") == "TSOL02")
                 {
-                    "Nro. Item",
-                    "Codigo Producto",
-                    "Descripción",
-                    //"Stock Disponible",
-                    "Unidad Medida",
-                    "Cantidad",
-                    "Valor Venta Unitario",
-                    "Valor. Venta Total Sin IGV (Sin Ganancia)",
-                    "Ganancia(%)",
-                    "Valor. Venta Total Sin IGV Con Ganancia)",
-                    "Acción"
-                };
-                ViewBag.CabeceraCotDet = CD_Columns;
+                    string[] CD_Columns =
+                        {
+                        "Nro. Item",
+                        "Codigo Producto",
+                        "Descripción",
+                        //"Stock Disponible",
+                        "Unidad Medida",
+                        "Cantidad",
+                        "Valor Venta Unitario",
+                        "Valor. Venta Total Sin IGV",
+                        "Acción"
+                        };
+                    ViewBag.CabeceraCotDet = CD_Columns;
+                }
+                else
+                {
+                    string[] CD_Columns =
+                        {
+                        "Nro. Item",
+                        "Codigo Producto",
+                        "Descripción",
+                        //"Stock Disponible",
+                        "Unidad Medida",
+                        "Cantidad",
+                        "Valor Venta Unitario",
+                        "Valor. Venta Total Sin IGV (Sin Ganancia)",
+                        "Ganancia(%)",
+                        "Valor. Venta Total Sin IGV Con Ganancia)",
+                        "Acción"
+                        };
+                    ViewBag.CabeceraCotDet = CD_Columns;
+                }
             }
 
             if (numSol != null)
