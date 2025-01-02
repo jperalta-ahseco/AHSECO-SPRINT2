@@ -4,6 +4,7 @@
     var $idCotizacion = $("#idCotizacion");
     var $idRolUsuario = $("#idRolUsuario");
     var $idWorkFlow = $("#idWorkFlow");
+    var $tipoSolicitud = $('#TipoSolicitud');
 
     var $RolVenta_Asesor = $("#RolVenta_Asesor");
     var $RolVenta_Jefe = $("#RolVenta_Jefe");
@@ -473,6 +474,13 @@
         };
         var objParam = JSON.stringify(oValores);
         var fnDoneCallback = function (data) {
+
+            var tipoSol = $tipoSolicitud.val();
+
+            if (tipoSol != "TSOL05") {
+                data.Result = data.Result.filter(tipCosto => tipCosto.Id != "CXCD0001");
+            };
+
             var filters = {};
             filters.placeholder = "-- Seleccione --";
             filters.allowClear = false;
