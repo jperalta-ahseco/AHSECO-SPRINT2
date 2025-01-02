@@ -1414,6 +1414,22 @@
 
 
     function FinalizarMant() {
+
+        if ($estadoMant.val() == "PROG" && detallePreventivo.tecnicosAsig.length == 0) {
+            app.message.error("Validación", "Debe de existir por lo menos un técnico registrado en estado 'Programado'");
+            $("#tabTecnicos").addClass("active");
+            $("#navTecnicos").addClass("active in");
+            $("#tabReclamo").removeClass("active");
+            $("#tabSeguimiento").removeClass("active");
+            $("#tabObservaciones").removeClass("active");
+            $("#tabAdjuntos").removeClass("active in");
+            $("#navObservaciones").removeClass("active in");
+            $("#navReclamo").removeClass("active in");
+            $("#navDocumentos").removeClass("active in");
+            $("#navSeguimiento").removeClass("active in");
+            return;
+        };
+
         if (indPrest == 0 && indRepuesto == 0) {
             var validador = 1;
             for (var i = 0; i < adjuntos.length; i++) {
