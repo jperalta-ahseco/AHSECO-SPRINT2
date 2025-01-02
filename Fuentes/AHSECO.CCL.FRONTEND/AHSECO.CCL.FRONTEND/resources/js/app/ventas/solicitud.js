@@ -964,7 +964,7 @@
         };
 
         if ($cmbTipoCredencial.val() == "GETD0002" && $txtNumDocumento.val().trim().length != 12) {
-            app.message.error("Validación", "El número de documento no es un RUC");
+            app.message.error("Validación", "El número de documento no es un Carnet de Extranjería");
             return;
         };
 
