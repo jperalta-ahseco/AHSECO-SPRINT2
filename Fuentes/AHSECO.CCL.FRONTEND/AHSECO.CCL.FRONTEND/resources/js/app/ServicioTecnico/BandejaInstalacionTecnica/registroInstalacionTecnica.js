@@ -2469,7 +2469,7 @@
         var detalle = productos.filter(producto => producto.Id == codigo);
         elementos = detalle[0].Elementos;
 
-        if ($numeroReq.val()) {
+        if ($numeroReq.val() != "" && $estadoReq.val() != "STINS" && $estadoReq.val() != "STFIN") {
             var series = elementos.filter(elemento => elemento.Serie != "");
             if (series.length == 0) {
                 $rowElementos.css('display', 'none');
@@ -2487,7 +2487,7 @@
         };
         cargarTablaElementosdDeProducto(elementos);
 
-        if ($numeroReq.val()) {
+        if ($numeroReq.val() != "" && $estadoReq.val() != "STINS" && $estadoReq.val() != "STFIN") {
             var smth = $('#tblElementosDeProducto tbody tr td #checkSeleccionar').html();
             if (smth == undefined) {
                 var chekTOdos = document.querySelector('.form-check-input');
@@ -2789,7 +2789,7 @@
         };
 
         if (validador == 1) {
-            app.message.error("Validación", 'Debe de adjuntar el tipo de documento: "Ficha de Instalación", para continuar.');
+            app.message.error("Validación", 'Debe de adjuntar el tipo de documento: "Acta de Instalación", para continuar.');
             return;
         };
 
