@@ -1528,13 +1528,6 @@ var cotvtadet = (function ($, win, doc) {
                         return '<center>' + data + '</center>';
                     }
                 },
-                //{
-                //    data: "Stock",
-                //    render: function (data) {
-                //        if (data == null) { data = ""; }
-                //        return '<center>' + data + '</center>';
-                //    }
-                //},
                 {
                     data: "DescUnidad",
                     render: function (data) {
@@ -1612,6 +1605,11 @@ var cotvtadet = (function ($, win, doc) {
                 }
             ];
 
+            //El tipo de Solicitud REPUESTOS no muestra PORCENTAJE DE GANANCIA
+            if ($TipoSolicitud.val() == $TipoSol_RepOComes.val() || $TipoSolicitud.val() == $TipoSol_ServYRep.val()) {
+                columns.splice(8, 2);
+            };
+
         }
         else {
 
@@ -1637,13 +1635,6 @@ var cotvtadet = (function ($, win, doc) {
                         return '<center>' + data + '</center>';
                     }
                 },
-                //{
-                //    data: "Stock",
-                //    render: function (data) {
-                //        if (data == null) { data = ""; }
-                //        return '<center>' + data + '</center>';
-                //    }
-                //},
                 {
                     data: "DescUnidad",
                     render: function (data) {
@@ -1718,11 +1709,12 @@ var cotvtadet = (function ($, win, doc) {
                 }
             ];
 
-        }
+            //El tipo de Solicitud REPUESTOS no muestra PORCENTAJE DE GANANCIA
+            if ($TipoSolicitud.val() == $TipoSol_RepOComes.val() || $TipoSolicitud.val() == $TipoSol_ServYRep.val()) {
+                columns.splice(7, 2);
+            };
 
-        if ($TipoSolicitud.val() === "TSOL02") {
-            columns.splice(6, 2);
-        };
+        }
 
         var columnDefs =
         {

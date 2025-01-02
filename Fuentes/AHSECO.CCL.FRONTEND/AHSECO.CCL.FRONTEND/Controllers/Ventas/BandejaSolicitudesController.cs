@@ -210,84 +210,49 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.SeccionLogSS = false;
             ViewBag.SeccionImpSS = false;
 
-
-
             if (EsFlujoValorizacion())
             { ViewBag.PermitirEditarValorizacion = true; }
 
             if (ViewBag.PermitirEditarValorizacion == true)
             {
-                if (VariableSesion.getCadena("tipoSol") == "TSOL02")
+                string[] CD_Columns =
                 {
-                    string[] CD_Columns =
-                    {
-                        "Nro. Item",
-                        "Codigo Producto",
-                        "Descripción",
-                        //"Stock Disponible",
-                        "Unidad Medida",
-                        "Cantidad",
-                        "Valor Venta Unitario",
-                        "Valor. Venta Total Sin IGV",
-                        "Acción"
-                    };
-                    ViewBag.CabeceraCotDet = CD_Columns;
-                }
-                else
+                    "Nro. Item", "Codigo Producto", "Descripción", "Unidad Medida", "Cantidad", "Costo FOB", "Valor Venta Unitario",
+                    "Valor. Venta Total Sin IGV (Sin Ganancia)", "Ganancia(%)", "Valor. Venta Total Sin IGV Con Ganancia)", "Acción"
+                };
+                ViewBag.CabeceraCotDet = CD_Columns;
+
+                //El tipo de solicitud REPUESTOS no muestra PORCENTAJE DE GANANCIA
+                if (VariableSesion.getCadena("tipoSol") == ConstantesDTO.SolicitudVenta.TipoSolicitud.RepuestosoConsumibles ||
+                    VariableSesion.getCadena("tipoSol") == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
                 {
-                    string[] CD_Columns =
+                    string[] CD_ColumnsRepuestos =
                     {
-                        "Nro. Item",
-                        "Codigo Producto",
-                        "Descripción",
-                        //"Stock Disponible",
-                        "Unidad Medida",
-                        "Cantidad",
-                        "Costo FOB",
-                        "Valor Venta Unitario",
-                        "Valor. Venta Total Sin IGV (Sin Ganancia)",
-                        "Ganancia(%)",
-                        "Valor. Venta Total Sin IGV Con Ganancia)",
-                        "Acción"
+                        "Nro. Item", "Codigo Producto", "Descripción", "Unidad Medida", "Cantidad", "Costo FOB", "Valor Venta Unitario", 
+                        "Valor. Venta Total Sin IGV", "Acción"
                     };
-                    ViewBag.CabeceraCotDet = CD_Columns;
+                    ViewBag.CabeceraCotDet = CD_ColumnsRepuestos;
                 }
             }
             else
             {
-                if(VariableSesion.getCadena("tipoSol") == "TSOL02")
+                string[] CD_Columns =
                 {
-                    string[] CD_Columns =
-                        {
-                        "Nro. Item",
-                        "Codigo Producto",
-                        "Descripción",
-                        //"Stock Disponible",
-                        "Unidad Medida",
-                        "Cantidad",
-                        "Valor Venta Unitario",
-                        "Valor. Venta Total Sin IGV",
-                        "Acción"
-                        };
-                    ViewBag.CabeceraCotDet = CD_Columns;
-                }
-                else
+                    "Nro. Item", "Codigo Producto", "Descripción", "Unidad Medida", "Cantidad", "Valor Venta Unitario",
+                    "Valor. Venta Total Sin IGV (Sin Ganancia)", "Ganancia(%)", "Valor. Venta Total Sin IGV Con Ganancia)", "Acción"
+                };
+                ViewBag.CabeceraCotDet = CD_Columns;
+
+                //El tipo de solicitud REPUESTOS no muestra PORCENTAJE DE GANANCIA
+                if (VariableSesion.getCadena("tipoSol") == ConstantesDTO.SolicitudVenta.TipoSolicitud.RepuestosoConsumibles ||
+                    VariableSesion.getCadena("tipoSol") == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
                 {
-                    string[] CD_Columns =
-                        {
-                        "Nro. Item",
-                        "Codigo Producto",
-                        "Descripción",
-                        //"Stock Disponible",
-                        "Unidad Medida",
-                        "Cantidad",
-                        "Valor Venta Unitario",
-                        "Valor. Venta Total Sin IGV (Sin Ganancia)",
-                        "Ganancia(%)",
-                        "Valor. Venta Total Sin IGV Con Ganancia)",
-                        "Acción"
-                        };
-                    ViewBag.CabeceraCotDet = CD_Columns;
+                    string[] CD_ColumnsRepuestos =
+                    {
+                        "Nro. Item", "Codigo Producto", "Descripción", "Unidad Medida", "Cantidad", "Valor Venta Unitario", 
+                        "Valor. Venta Total Sin IGV", "Acción"
+                    };
+                    ViewBag.CabeceraCotDet = CD_ColumnsRepuestos;
                 }
             }
 
@@ -3863,12 +3828,20 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 if (oSolicitud.Tipo_Sol != ConstantesDTO.SolicitudVenta.TipoSolicitud.RepuestosoConsumibles &&
                     oSolicitud.Tipo_Sol != ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
                 {
+                    //Si NO TIENE STOCK se deberá solicitar su COSTO FOB
                     if (lstItems.Where(x => x.IndStock.HasValue).Any(y => !y.IndStock.Value))
                     { NotificarValorizacion_CostoFOB(oCotizacion.IdSolicitud); }
-                }
 
-                if (lstItems.Where(x => x.IndStock.HasValue).Any(y => y.IndStock.Value))
-                { NotificarValorizacion_ValorUnitario(oCotizacion.IdSolicitud); }
+                    //Si TIENE STOCK se deberá solicitar el VALOR UNITARIO
+                    if (lstItems.Where(x => x.IndStock.HasValue).Any(y => y.IndStock.Value))
+                    { NotificarValorizacion_ValorUnitario(oCotizacion.IdSolicitud); }
+                }
+                else
+                {
+                    //Para los demás tipos de solicitud que no manejen COSTO FOB
+                    //se deberá saltear al siguiente paso que es el VALOR UNITARIO
+                    NotificarValorizacion_ValorUnitario(oCotizacion.IdSolicitud);
+                }
 
                 if (oSolicitud.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaEquipos)
                 {
@@ -4156,6 +4129,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 cotizacionDTO.TipoProceso = ConstantesDTO.CotizacionVenta.TipoProceso.Insertar;
                 cotizacionDTO.FecCotizacion = DateTime.Now;
                 cotizacionDTO.Estado = ConstantesDTO.CotizacionVenta.Estados.Activo;
+                cotizacionDTO.PorcentajeDescuento = null;
+                cotizacionDTO.IndDsctoRequiereAprob = null;
+                cotizacionDTO.IndDsctoAprob = null;
                 cotizacionDTO.UsuarioRegistra = User.ObtenerUsuario();
                 cotizacionDTO.FechaRegistro = DateTime.Now;
                 resultCV = ventasBL.MantenimientoCotizacion(cotizacionDTO);
@@ -4196,6 +4172,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     itemCD.UsuarioRegistra = User.ObtenerUsuario();
                     itemCD.FechaRegistro = DateTime.Now;
                     itemCD.VentaUnitaria = null;
+                    itemCD.PorcentajeGanancia = null;
                     itemCD.CostoFOB = null;
                     var resCD = ventasBL.MantenimientoCotizacionDetalle(itemCD);
                     if (itemCD.CotizacionDespacho != null)
