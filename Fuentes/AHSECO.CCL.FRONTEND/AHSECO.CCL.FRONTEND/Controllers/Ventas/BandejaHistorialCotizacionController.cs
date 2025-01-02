@@ -1530,51 +1530,51 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             cell = row.CreateCell(0);
             row.Height = 30 * 20;
-            cell.CellStyle = style9;
+            cell.CellStyle = style11;
             cell.SetCellValue("EMPAQUETADO X");
 
             cell = row.CreateCell(1);
-            cell.CellStyle = style9;
+            cell.CellStyle = style11;
 
             cell = row.CreateCell(2);
-            cell.CellStyle = style9;
+            cell.CellStyle = style11;
 
             cell = row.CreateCell(3);
-            cell.CellStyle = style9;
+            cell.CellStyle = style11;
             cell.SetCellValue("FACTURADO X");
 
             cell = row.CreateCell(4);
-            cell.CellStyle = style9;
+            cell.CellStyle = style11;
 
             cell = row.CreateCell(5);
-            cell.CellStyle = style9;
+            cell.CellStyle = style11;
             cell.SetCellValue("N° DE FACTURA");
             cell = row.CreateCell(6);
-            cell.CellStyle = style9;
+            cell.CellStyle = style11;
 
             cell = row.CreateCell(7);
-            cell.CellStyle = style9;
+            cell.CellStyle = style11;
             cell.SetCellValue("ENTREGADO POR");
 
             cell = row.CreateCell(8);
-            cell.CellStyle = style9;
+            cell.CellStyle = style11;
             cell = row.CreateCell(9);
-            cell.CellStyle = style9;
+            cell.CellStyle = style11;
             cell = row.CreateCell(10);
-            cell.CellStyle = style9;
+            cell.CellStyle = style11;
 
             cell = row.CreateCell(11);
-            cell.CellStyle = style9;
+            cell.CellStyle = style11;
             cell.SetCellValue("N° DE CAJAS");
             cell = row.CreateCell(12);
             cell.CellStyle = style9;
 
             cell = row.CreateCell(13);
-            cell.CellStyle = style9;
+            cell.CellStyle = style11;
             cell.SetCellValue("GUIA FLETADOR");
 
             cell = row.CreateCell(14);
-            cell.CellStyle = style9;
+            cell.CellStyle = style11;
 
             cell = row.CreateCell(15);
             cell.CellStyle = style8;
