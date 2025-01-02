@@ -7,7 +7,6 @@ using System.Web.Mvc;
 using AHSECO.CCL.BE.Ventas;
 using AHSECO.CCL.BL.Ventas;
 using AHSECO.CCL.FRONTEND.Security;
-using Microsoft.Office.Interop.Word;
 using NPOI.Util;
 using System.Runtime.InteropServices;
 using System.Configuration;
@@ -20,6 +19,12 @@ using NPOI.HSSF.Util;
 using NPOI.SS.UserModel;
 using System.Web.UI.WebControls;
 using Microsoft.SqlServer.Server;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Drawing.Charts;
+using System.Security.Cryptography;
 
 
 namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
@@ -55,590 +60,494 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             var ventasBL = new VentasBL();
             var cotizacion = ventasBL.ConsultaCotizacionCliente(cotizacionDTO.IdCotizacion);
 
-            // Crear una nueva aplicación de Word
-            Application wordApp = new Application();
-            wordApp.Visible = false;
+            string nombre = cotizacion.Result.DocumentoCabecera.NumeroCotizacion + DateTime.Now.ToString("yyyyMMddHHmmss") + ".docx";
 
-            // Crear un nuevo documento
-            Document doc = wordApp.Documents.Add();
-
-            int retries = 5;
-            while (retries > 0)
+            // Crea un MemoryStream para almacenar el archivo Word en memoria
+            using (MemoryStream memoryStream = new MemoryStream())
             {
-                try
+                // Crea el documento Word (.docx)
+                using (WordprocessingDocument wordDoc = WordprocessingDocument.Create(memoryStream, DocumentFormat.OpenXml.WordprocessingDocumentType.Document))
                 {
-                    // Establecer márgenes (en puntos)
-                    float marginInPoints = 36; // 1 pulgada = 72 puntos
+                    // Agrega el contenido principal al documento
+                    MainDocumentPart mainPart = wordDoc.AddMainDocumentPart();
+                    mainPart.Document = new Document();
+                    DocumentFormat.OpenXml.Wordprocessing.Body body = new DocumentFormat.OpenXml.Wordprocessing.Body();
+                    mainPart.Document.Append(body);
 
-                    // Establecer márgenes izquierdo, derecho, superior e inferior
-                    doc.PageSetup.LeftMargin = marginInPoints;   // Margen izquierdo
-                    doc.PageSetup.RightMargin = marginInPoints;  // Margen derecho
-                    doc.PageSetup.TopMargin = marginInPoints;    // Margen superior
-                    doc.PageSetup.BottomMargin = marginInPoints; // Margen inferior
+                    // Crear la sección del documento(con márgenes personalizados)
+                    SectionProperties sectionProperties = new SectionProperties();
 
-                    // Usar Range para insertar HTML
-                    Range range = doc.Content;
-                    range.InsertParagraphAfter();
-                    // Definir el número de filas y columnas
-                    int numRows = 22 + cotizacion.Result.NroItems; 
-                    int numCols = 7;
-
-                    // Agregar una tabla al documento
-                    Microsoft.Office.Interop.Word.Table table = doc.Tables.Add(doc.Range(0, 0), numRows, numCols);
-                    table.Borders.Enable = 0; // Habilitar bordes
-
-                    #region Encabezado
-                    // Combinando celdas en la primera fila
-                    table.Cell(1, 1).Merge(table.Cell(2, 2));
-
-                    var url1 = new Uri(HttpContext.Request.Url, Url.Content(cotizacion.Result.DocumentoCabecera.RutaImagen));
-                    var imageLogo = url1.AbsoluteUri;
-                    // Insertar la imagen
-                    InlineShape inlineShape = table.Cell(1, 1).Range.InlineShapes.AddPicture(imageLogo, LinkToFile: false, SaveWithDocument: true);
-
-                    // Opcional: Ajustar el tamaño de la imagen
-                    inlineShape.Width = 150; // Ajustar el ancho
-                    inlineShape.Height = 80; // Ajustar el alto
-
-                    // Opcional: Centrar la imagen en la celda
-                    inlineShape.Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
-
-                    table.Cell(1, 1).Width = 150;
-
-                    table.Cell(1, 2).Merge(table.Cell(2, 4));
-                    table.Cell(1, 2).Range.Text = cotizacion.Result.DocumentoCabecera.Encabezado;
-                    table.Cell(1, 2).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
-                    table.Cell(1, 2).Range.Font.Size = 8;
-                    table.Cell(1, 2).Width = 250;
-
-                    table.Cell(1, 3).Merge(table.Cell(1, 4));
-                    table.Cell(1, 3).Range.Text = "COTIZACIÓN";
-                    table.Cell(1, 3).Width = 120;
-                    // Establecer bordes para la celda
-                    Borders borders = table.Cell(1, 3).Borders;
-                    borders.Enable = 1; // Habilitar bordes
-                    table.Cell(1, 3).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
-
-                    table.Cell(2, 3).Merge(table.Cell(2, 4));
-                    table.Cell(2, 3).Range.Text = cotizacion.Result.DocumentoCabecera.NumeroCotizacion;
-                    table.Cell(2, 3).Width = 120;
-                    Borders borders2 = table.Cell(2, 3).Borders;
-                    borders2.Enable = 1; // Habilitar bordes
-                    table.Cell(2, 3).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
-
-                    #endregion
-
-                    table.Cell(3, 1).Merge(table.Cell(3, 7));
-
-                    #region Cabecera Cotizacion
-
-
-                    table.Cell(4, 1).Range.Text = "";
-                    table.Cell(4, 1).Width = 30;
-
-                    table.Cell(4, 2).Range.Text = "RUC:";
-                    table.Cell(4, 2).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                    table.Cell(4, 2).Range.Font.Size = 8;
-                    table.Cell(4, 2).Range.Bold = 1;
-                    table.Cell(4, 2).Width = 70;
-
-                    table.Cell(4, 3).Range.Text = cotizacion.Result.DocumentoCabecera.Ruc;
-                    table.Cell(4, 3).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                    table.Cell(4, 3).Range.Font.Size = 8;
-                    table.Cell(4, 3).Width = 200;
-
-                    table.Cell(4, 4).Merge(table.Cell(4, 5));
-                    table.Cell(4, 4).Range.Text = "Fecha:";
-                    table.Cell(4, 4).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                    table.Cell(4, 4).Range.Font.Size = 8;
-                    table.Cell(4, 4).Range.Bold = 1;
-                    table.Cell(4, 4).Width = 100;
-
-                    table.Cell(4, 5).Merge(table.Cell(4, 6));
-                    table.Cell(4, 5).Range.Text = cotizacion.Result.DocumentoCabecera.Fecha;
-                    table.Cell(4, 5).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                    table.Cell(4, 5).Range.Font.Size = 8;
-                    table.Cell(4, 5).Width = 120;
-
-                    table.Cell(5, 1).Merge(table.Cell(6, 1));
-                    table.Cell(5, 1).Range.Text = "";
-                    table.Cell(5, 1).Width = 30;
-
-                    table.Cell(5, 2).Merge(table.Cell(6, 2));
-                    table.Cell(5, 2).Range.Text = "Señor:";
-                    table.Cell(5, 2).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                    table.Cell(5, 2).Range.Font.Size = 8;
-                    table.Cell(5, 2).Range.Bold = 1;
-                    table.Cell(5, 2).Width = 70;
-
-                    table.Cell(5, 3).Merge(table.Cell(6, 3));
-                    table.Cell(5, 3).Range.Text = cotizacion.Result.DocumentoCabecera.RazonSocial;
-                    table.Cell(5, 3).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                    table.Cell(5, 3).Range.Font.Size = 8;
-                    table.Cell(5, 3).Width = 200;
-
-
-                    table.Cell(5, 4).Merge(table.Cell(5, 5));
-                    table.Cell(5, 4).Range.Text = "Plazo de entrega:";
-                    table.Cell(5, 4).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                    table.Cell(5, 4).Range.Font.Size = 8;
-                    table.Cell(5, 4).Range.Bold = 1;
-                    table.Cell(5, 4).Width = 100;
-
-                    table.Cell(5, 5).Merge(table.Cell(5, 6));
-                    table.Cell(5, 5).Range.Text = cotizacion.Result.DocumentoCabecera.PlazoEntrega;
-                    table.Cell(5, 5).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                    table.Cell(5, 5).Range.Font.Size = 8;
-                    table.Cell(5, 5).Width = 120;
-
-                    table.Cell(6, 4).Merge(table.Cell(6, 5));
-                    table.Cell(6, 4).Range.Text = "Forma de pago:";
-                    table.Cell(6, 4).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                    table.Cell(6, 4).Range.Font.Size = 8;
-                    table.Cell(6, 4).Range.Bold = 1;
-                    table.Cell(6, 4).Width = 100;
-
-                    table.Cell(6, 5).Merge(table.Cell(6, 6));
-                    table.Cell(6, 5).Range.Text = cotizacionDTO.DescFormaPago; //cotizacion.Result.DocumentoCabecera.FormaPago;
-                    table.Cell(6, 5).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                    table.Cell(6, 5).Range.Font.Size = 8;
-                    table.Cell(6, 5).Width = 120;
-
-                    table.Cell(7, 1).Range.Text = "";
-                    table.Cell(7, 1).Width = 30;
-
-                    table.Cell(7, 2).Range.Text = "Atención:";
-                    table.Cell(7, 2).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                    table.Cell(7, 2).Range.Font.Size = 8;
-                    table.Cell(7, 2).Range.Bold = 1;
-                    table.Cell(7, 2).Width = 70;
-
-                    table.Cell(7, 3).Range.Text = cotizacion.Result.DocumentoCabecera.NombreContacto;
-                    table.Cell(7, 3).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                    table.Cell(7, 3).Range.Font.Size = 8;
-                    table.Cell(7, 3).Width = 200;
-
-                    table.Cell(7, 4).Merge(table.Cell(7, 5));
-                    table.Cell(7, 4).Range.Text = "Moneda:";
-                    table.Cell(7, 4).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                    table.Cell(7, 4).Range.Font.Size = 8;
-                    table.Cell(7, 4).Range.Bold = 1;
-                    table.Cell(7, 4).Width = 100;
-
-                    table.Cell(7, 5).Merge(table.Cell(7, 6));
-                    table.Cell(7, 5).Range.Text = cotizacionDTO.DescMoneda; //cotizacion.Result.DocumentoCabecera.Moneda;
-                    table.Cell(7, 5).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                    table.Cell(7, 5).Range.Font.Size = 8;
-                    table.Cell(7, 5).Width = 120;
-
-                    table.Cell(8, 1).Range.Text = "";
-                    table.Cell(8, 1).Width = 30;
-
-                    table.Cell(8, 2).Range.Text = "Área:";
-                    table.Cell(8, 2).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                    table.Cell(8, 2).Range.Font.Size = 8;
-                    table.Cell(8, 2).Range.Bold = 1;
-                    table.Cell(8, 2).Width = 70;
-
-                    table.Cell(8, 3).Range.Text = cotizacion.Result.DocumentoCabecera.AreaContacto;
-                    table.Cell(8, 3).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                    table.Cell(8, 3).Range.Font.Size = 8;
-                    table.Cell(8, 3).Width = 200;
-
-                    table.Cell(8, 4).Merge(table.Cell(8, 5));
-                    table.Cell(8, 4).Range.Text = "Vigencia cotización:";
-                    table.Cell(8, 4).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                    table.Cell(8, 4).Range.Font.Size = 8;
-                    table.Cell(8, 4).Range.Bold = 1;
-                    table.Cell(8, 4).Width = 100;
-
-                    table.Cell(8, 5).Merge(table.Cell(8, 6));
-                    table.Cell(8, 5).Range.Text = cotizacion.Result.DocumentoCabecera.Vigencia;
-                    table.Cell(8, 5).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                    table.Cell(8, 5).Range.Font.Size = 8;
-                    table.Cell(8, 5).Width = 120;
-
-                    table.Cell(9, 1).Range.Text = "";
-                    table.Cell(9, 1).Width = 30;
-
-                    table.Cell(9, 2).Range.Text = "Teléfono:";
-                    table.Cell(9, 2).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                    table.Cell(9, 2).Range.Font.Size = 8;
-                    table.Cell(9, 2).Range.Bold = 1;
-                    table.Cell(9, 2).Width = 70;
-
-                    table.Cell(9, 3).Range.Text = cotizacion.Result.DocumentoCabecera.TelefonoContacto;
-                    table.Cell(9, 3).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                    table.Cell(9, 3).Range.Font.Size = 8;
-                    table.Cell(9, 3).Width = 200;
-
-                    table.Cell(9, 4).Merge(table.Cell(9, 5));
-                    table.Cell(9, 4).Range.Text = "Garantía:";
-                    table.Cell(9, 4).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                    table.Cell(9, 4).Range.Font.Size = 8;
-                    table.Cell(9, 4).Range.Bold = 1;
-                    table.Cell(9, 4).Width = 100;
-
-                    table.Cell(9, 5).Merge(table.Cell(9, 6));
-                    table.Cell(9, 5).Range.Text = cotizacionDTO.DescGarantia; //cotizacion.Result.DocumentoCabecera.Garantia;
-                    table.Cell(9, 5).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                    table.Cell(9, 5).Range.Font.Size = 8;
-                    table.Cell(9, 5).Width = 120;
-
-                    table.Cell(10, 1).Range.Text = "";
-                    table.Cell(10, 1).Width = 30;
-
-                    table.Cell(10, 2).Range.Text = "Correo:";
-                    table.Cell(10, 2).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                    table.Cell(10, 2).Range.Font.Size = 8;
-                    table.Cell(10, 2).Range.Bold = 1;
-                    table.Cell(10, 2).Width = 70;
-
-                    table.Cell(10, 3).Range.Text = cotizacion.Result.DocumentoCabecera.EmailContacto;
-                    table.Cell(10, 3).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                    table.Cell(10, 3).Range.Font.Size = 8;
-                    table.Cell(10, 3).Width = 200;
-
-                    table.Cell(10, 4).Merge(table.Cell(10, 5));
-                    table.Cell(10, 4).Range.Text = "Observación:";
-                    table.Cell(10, 4).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                    table.Cell(10, 4).Range.Font.Size = 8;
-                    table.Cell(10, 4).Range.Bold = 1;
-                    table.Cell(10, 4).Width = 100;
-
-                    table.Cell(10, 5).Merge(table.Cell(10, 6));
-                    table.Cell(10, 5).Range.Text = cotizacion.Result.DocumentoCabecera.Observacion;
-                    table.Cell(10, 5).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphLeft;
-                    table.Cell(10, 5).Range.Font.Size = 8;
-                    table.Cell(10, 5).Width = 120;
-                    #endregion
-
-                    table.Cell(11, 1).Merge(table.Cell(11, 7));
-
-                    #region Cabecera Tabla
-                    table.Cell(12, 1).Range.Text = "ITEM";
-                    table.Cell(12, 1).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
-                    table.Cell(12, 1).Range.Font.Size = 8;
-                    table.Cell(12, 1).Shading.BackgroundPatternColor = WdColor.wdColorBlueGray;
-                    table.Cell(12, 1).Range.Bold = 1;
-                    table.Cell(12, 1).Width = 30;
-                    Borders borders3 = table.Cell(12, 1).Borders;
-                    borders3.Enable = 1; // Habilitar bordes
-
-                    table.Cell(12, 2).Range.Text = "CATÁLOGO";
-                    table.Cell(12, 2).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
-                    table.Cell(12, 2).Range.Font.Size = 8;
-                    table.Cell(12, 2).Shading.BackgroundPatternColor = WdColor.wdColorBlueGray;
-                    table.Cell(12, 2).Range.Bold = 1;
-                    table.Cell(12, 2).Width = 70;
-                    Borders borders4 = table.Cell(12, 2).Borders;
-                    borders4.Enable = 1; // Habilitar bordes
-
-                    table.Cell(12, 3).Range.Text = "DESCRIPCIÓN";
-                    table.Cell(12, 3).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
-                    table.Cell(12, 3).Range.Font.Size = 8;
-                    table.Cell(12, 3).Shading.BackgroundPatternColor = WdColor.wdColorBlueGray;
-                    table.Cell(12, 3).Range.Bold = 1;
-                    table.Cell(12, 3).Width = 200;
-                    Borders borders5 = table.Cell(12, 3).Borders;
-                    borders5.Enable = 1; // Habilitar bordes
-
-                    table.Cell(12, 4).Range.Text = "UND";
-                    table.Cell(12, 4).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
-                    table.Cell(12, 4).Range.Font.Size = 8;
-                    table.Cell(12, 4).Shading.BackgroundPatternColor = WdColor.wdColorBlueGray;
-                    table.Cell(12, 4).Range.Bold = 1;
-                    table.Cell(12, 4).Width = 50;
-                    Borders borders6 = table.Cell(12, 4).Borders;
-                    borders6.Enable = 1; // Habilitar bordes
-
-                    table.Cell(12, 5).Range.Text = "CANT.";
-                    table.Cell(12, 5).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
-                    table.Cell(12, 5).Range.Font.Size = 8;
-                    table.Cell(12, 5).Shading.BackgroundPatternColor = WdColor.wdColorBlueGray;
-                    table.Cell(12, 5).Range.Bold = 1;
-                    table.Cell(12, 5).Width = 50;
-                    Borders borders7 = table.Cell(12, 5).Borders;
-                    borders7.Enable = 1; // Habilitar bordes
-
-                    table.Cell(12, 6).Range.Text = "PRECIO UNITARIO";
-                    table.Cell(12, 6).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
-                    table.Cell(12, 6).Range.Font.Size = 8;
-                    table.Cell(12, 6).Shading.BackgroundPatternColor = WdColor.wdColorBlueGray;
-                    table.Cell(12, 6).Range.Bold = 1;
-                    table.Cell(12, 6).Width = 60;
-                    Borders borders8 = table.Cell(12, 6).Borders;
-                    borders8.Enable = 1; // Habilitar bordes
-
-                    table.Cell(12, 7).Range.Text = "TOTAL";
-                    table.Cell(12, 7).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
-                    table.Cell(12, 7).Range.Font.Size = 8;
-                    table.Cell(12, 7).Shading.BackgroundPatternColor = WdColor.wdColorBlueGray;
-                    table.Cell(12, 7).Range.Bold = 1;
-                    table.Cell(12, 7).Width = 60;
-                    Borders borders9 = table.Cell(12, 7).Borders;
-                    borders9.Enable = 1; // Habilitar bordes
-                    #endregion
-
-                    var detalleCotizacion = cotizacion.Result.DocumentoDetalle;
-
-                    foreach(var detalle in detalleCotizacion)
+                    // Establecer los márgenes (en puntos, 1 pulgada = 72 puntos)
+                    int marginInPoints = 720;
+                    UInt32 marginInPointsU = 720;
+                    PageMargin pageMargin = new PageMargin
                     {
-                        var i = 12 + Convert.ToInt32(detalle.NumeroItem);
+                        Top = marginInPoints,   // 10 pulgadas
+                        Bottom = marginInPoints, // 10 pulgadas
+                        Left = marginInPointsU,  // 20 pulgadas
+                        Right = marginInPointsU  // 20 pulgadas
+                    };
+                    sectionProperties.Append(pageMargin);
 
-                        table.Cell(i, 1).Range.Text = detalle.NumeroItem;
-                        table.Cell(i, 1).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
-                        table.Cell(i, 1).Range.Font.Size = 8;
-                        table.Cell(i, 1).Width = 30;
-                        Borders borders10 = table.Cell(i, 1).Borders;
-                        borders10.Enable = 1; // Habilitar bordes
+                    // Agregar la sección al documento
+                    mainPart.Document.Body.Append(sectionProperties);
 
-                        table.Cell(i, 2).Range.Text = detalle.Catalogo;
-                        table.Cell(i, 2).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
-                        table.Cell(i, 2).Range.Font.Size = 8;
-                        table.Cell(i, 2).Width = 70;
-                        Borders borders11 = table.Cell(i, 2).Borders;
-                        borders11.Enable = 1; // Habilitar bordes
 
-                        table.Cell(i, 3).Range.Text = detalle.Descripcion;
-                        table.Cell(i, 3).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
-                        table.Cell(i, 3).Range.Font.Size = 8;
-                        table.Cell(i, 3).Width = 200;
-                        Borders borders12 = table.Cell(i, 3).Borders;
-                        borders12.Enable = 1; // Habilitar bordes
 
-                        table.Cell(i, 4).Range.Text = detalle.Unidad;
-                        table.Cell(i, 4).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
-                        table.Cell(i, 4).Range.Font.Size = 8;
-                        table.Cell(i, 4).Width = 50;
-                        Borders borders13 = table.Cell(i, 4).Borders;
-                        borders13.Enable = 1; // Habilitar bordes
+                    #region Cabecera:
+                    DocumentFormat.OpenXml.Wordprocessing.Table table = new DocumentFormat.OpenXml.Wordprocessing.Table();
+                    // Establecer las propiedades de la tabla (opcional)
+                    TableProperties tblProperties = new TableProperties(
+                        new TableWidth() { Type = TableWidthUnitValues.Auto }
+                    );
+                    table.AppendChild(tblProperties);
 
-                        table.Cell(i, 5).Range.Text = detalle.Cantidad;
-                        table.Cell(i, 5).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
-                        table.Cell(i, 5).Range.Font.Size = 8;
-                        table.Cell(i, 5).Width = 50;
-                        Borders borders14 = table.Cell(i, 5).Borders;
-                        borders14.Enable = 1; // Habilitar bordes
-
-                        table.Cell(i, 6).Range.Text = detalle.PrecioUnitario;
-                        table.Cell(i, 6).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
-                        table.Cell(i, 6).Range.Font.Size = 8;
-                        table.Cell(i, 6).Width = 60;
-                        Borders borders15 = table.Cell(i, 6).Borders;
-                        borders15.Enable = 1; // Habilitar bordes
-
-                        table.Cell(i, 7).Range.Text = detalle.Total;
-                        table.Cell(i, 7).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
-                        table.Cell(i, 7).Range.Font.Size = 8;
-                        table.Cell(i, 7).Width = 60;
-                        Borders borders16 = table.Cell(i, 7).Borders;
-                        borders16.Enable = 1; // Habilitar bordes
-
-                    }
-
-                    var j = 13 + Convert.ToInt32(cotizacion.Result.NroItems);
-
-                    table.Cell(j, 1).Range.Text = "";
-                    table.Cell(j, 1).Range.Font.Size = 8;
-                    table.Cell(j, 1).Width = 30;
-
-                    table.Cell(j, 2).Range.Text = "";
-                    table.Cell(j, 2).Range.Font.Size = 8;
-                    table.Cell(j, 2).Width = 70;
-
-                    table.Cell(j, 3).Range.Text = "";
-                    table.Cell(j, 3).Range.Font.Size = 8;
-                    table.Cell(j, 3).Width = 200;
-
-                    table.Cell(j, 4).Range.Text = "";
-                    table.Cell(j, 4).Range.Font.Size = 8;
-                    table.Cell(j, 4).Width = 50;
-
-                    table.Cell(j, 5).Range.Text = "";
-                    table.Cell(j, 5).Range.Font.Size = 8;
-                    table.Cell(j, 5).Width = 50;
-
-                    table.Cell(j, 6).Range.Text = "SUBTOTAL:";
-                    table.Cell(j, 6).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
-                    table.Cell(j, 6).Range.Font.Size = 8;
-                    table.Cell(j, 6).Width = 60;
-                    table.Cell(j, 6).Range.Bold = 1;
-                    Borders borders24 = table.Cell(j, 6).Borders;
-                    borders24.Enable = 1; // Habilitar bordes
-
-                    table.Cell(j, 7).Range.Text = cotizacion.Result.DocumentoCabecera.Subtotal;
-                    table.Cell(j, 7).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
-                    table.Cell(j, 7).Range.Font.Size = 8;
-                    table.Cell(j, 7).Width = 60;
-                    Borders borders25 = table.Cell(j, 7).Borders;
-                    borders25.Enable = 1; // Habilitar bordes
-
-                    j++;
-
-                    table.Cell(j, 1).Range.Text = "";
-                    table.Cell(j, 1).Range.Font.Size = 8;
-                    table.Cell(j, 1).Width = 30;
-
-                    table.Cell(j, 2).Range.Text = "";
-                    table.Cell(j, 2).Range.Font.Size = 8;
-                    table.Cell(j, 2).Width = 70;
-
-                    table.Cell(j, 3).Range.Text = "";
-                    table.Cell(j, 3).Range.Font.Size = 8;
-                    table.Cell(j, 3).Width = 200;
-
-                    table.Cell(j, 4).Range.Text = "";
-                    table.Cell(j, 4).Range.Font.Size = 8;
-                    table.Cell(j, 4).Width = 50;
-
-                    table.Cell(j, 5).Range.Text = "";
-                    table.Cell(j, 5).Range.Font.Size = 8;
-                    table.Cell(j, 5).Width = 50;
-
-                    table.Cell(j, 6).Range.Text = "IGV (18%):";
-                    table.Cell(j, 6).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
-                    table.Cell(j, 6).Range.Font.Size = 8;
-                    table.Cell(j, 6).Width = 60;
-                    table.Cell(j, 6).Range.Bold = 1;
-                    Borders borders26 = table.Cell(j, 6).Borders;
-                    borders26.Enable = 1; // Habilitar bordes
-
-                    table.Cell(j, 7).Range.Text = cotizacion.Result.DocumentoCabecera.Igv;
-                    table.Cell(j, 7).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
-                    table.Cell(j, 7).Range.Font.Size = 8;
-                    table.Cell(j, 7).Width = 60;
-                    Borders borders27 = table.Cell(j, 7).Borders;
-                    borders27.Enable = 1; // Habilitar bordes
-
-                    j ++;
-
-                    table.Cell(j, 1).Range.Text = "";
-                    table.Cell(j, 1).Range.Font.Size = 8;
-                    table.Cell(j, 1).Width = 30;
-
-                    table.Cell(j, 2).Range.Text = "";
-                    table.Cell(j, 2).Range.Font.Size = 8;
-                    table.Cell(j, 2).Width = 70;
-
-                    table.Cell(j, 3).Range.Text = "";
-                    table.Cell(j, 3).Range.Font.Size = 8;
-                    table.Cell(j, 3).Width = 200;
-
-                    table.Cell(j, 4).Range.Text = "";
-                    table.Cell(j, 4).Range.Font.Size = 8;
-                    table.Cell(j, 4).Width = 50;
-
-                    table.Cell(j, 5).Range.Text = "";
-                    table.Cell(j, 5).Range.Font.Size = 8;
-                    table.Cell(j, 5).Width = 50;
-
-                    table.Cell(j, 6).Range.Text = "TOTAL";
-                    table.Cell(j, 6).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
-                    table.Cell(j, 6).Range.Font.Size = 8;
-                    table.Cell(j, 6).Width = 60;
-                    table.Cell(j, 6).Range.Bold = 1;
-                    Borders borders28 = table.Cell(j, 6).Borders;
-                    borders28.Enable = 1; // Habilitar bordes
-
-                    table.Cell(j, 7).Range.Text = cotizacion.Result.DocumentoCabecera.Total;
-                    table.Cell(j, 7).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
-                    table.Cell(j, 7).Range.Font.Size = 8;
-                    table.Cell(j, 7).Width = 60;
-                    table.Cell(j, 7).Range.Bold = 1;
-                    Borders borders29 = table.Cell(j, 7).Borders;
-                    borders29.Enable = 1; // Habilitar bordes
-
-                    j++; 
-                    table.Cell(j, 1).Merge(table.Cell(j, 7));
-                    j++;
-
-                    table.Cell(j, 1).Merge(table.Cell(j, 7));
-                    table.Cell(j, 1).Range.Text = cotizacion.Result.DocumentoCabecera.Contrato;
-                    table.Cell(j, 1).Range.Font.Size = 8;
-                    table.Cell(j, 1).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphJustify;
-                    j++;
-                    table.Cell(j, 1).Merge(table.Cell(j, 7));
-                    j++;
-                    table.Cell(j, 1).Range.Text = "Vendedor:";
-                    table.Cell(j, 1).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphJustify;
-                    table.Cell(j, 1).Range.Font.Size = 8;
-                    table.Cell(j, 1).Range.Bold = 1;
-                    table.Cell(j, 1).Width = 80;
-
-                    table.Cell(j, 2).Range.Text = cotizacion.Result.DocumentoCabecera.NombreVendedor;
-                    table.Cell(j, 2).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphJustify;
-                    table.Cell(j, 2).Range.Font.Size = 8;
-                    table.Cell(j, 2).Range.Bold = 1;
-                    table.Cell(j, 2).Width = 140;
-
-                    j++;
-
-                    table.Cell(j, 1).Range.Text = "Teléfono:";
-                    table.Cell(j, 1).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphJustify;
-                    table.Cell(j, 1).Range.Font.Size = 8;
-                    table.Cell(j, 1).Range.Bold = 1;
-                    table.Cell(j, 1).Width = 80;
-
-                    table.Cell(j, 2).Range.Text = cotizacion.Result.DocumentoCabecera.TelefonoVendedor;
-                    table.Cell(j, 2).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphJustify;
-                    table.Cell(j, 2).Range.Font.Size = 8;
-                    table.Cell(j, 2).Range.Bold = 1;
-                    table.Cell(j, 2).Width = 140;
-                    j++;
-                    table.Cell(j, 1).Range.Text = "E-mail:";
-                    table.Cell(j, 1).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphJustify;
-                    table.Cell(j, 1).Range.Font.Size = 8;
-                    table.Cell(j, 1).Range.Bold = 1;
-                    table.Cell(j, 1).Width = 80;
-
-                    table.Cell(j, 2).Range.Text = cotizacion.Result.DocumentoCabecera.EmailVendedor;
-                    table.Cell(j, 2).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphJustify;
-                    table.Cell(j, 2).Range.Font.Size = 8;
-                    table.Cell(j, 2).Range.Bold = 1;
-                    table.Cell(j, 2).Width = 140;
-
-                    table.Cell(j-2, 3).Merge(table.Cell(j, 3));
-                    table.Cell(j-2, 3).Range.Text = cotizacion.Result.DocumentoCabecera.Pie;
-                    table.Cell(j-2, 3).Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphJustify;
-                    table.Cell(j-2, 3).Range.Font.Size = 8;
-                    table.Cell(j-2, 3).Range.Bold = 1;
-                    table.Cell(j-2, 3).Width = 300;
-
-                    j++;
-
-                    table.Cell(j, 1).Merge(table.Cell(j, 7));
-
-                    // Establecer el espaciado después de cada párrafo a 0
-                    foreach (Paragraph paragraph in doc.Paragraphs)
-                    {
-                        paragraph.SpaceAfter = 0; // Quitar espacio después del párrafo
-                    }
                    
+                    // Crear la primera fila
+                    DocumentFormat.OpenXml.Wordprocessing.TableRow row1 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+                    TableCellProperties cellProperties1 = new TableCellProperties();
 
-                    break; // Salir del bucle si tiene éxito
+                    // Agregar las propiedades y contenido a la celda
+                    var cell1 = CreateCell("Logo", "25");
+                    cell1.TableCellProperties = new TableCellProperties(new VerticalMerge() { Val = MergedCellValues.Restart },
+                                                                        new GridSpan() { Val = 4 });
+
+                    var cell2 = CreateCell(cotizacion.Result.DocumentoCabecera.Encabezado, "40");
+                    cell2.TableCellProperties = new TableCellProperties(new VerticalMerge() { Val = MergedCellValues.Restart },
+                                                                        new GridSpan() { Val = 4 });
+                    var cell3 = CreateCell("COTIZACIÓN", "35");
+                    cell3.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    row1.Append(cell1, cell2, cell3);
+
+                    // Crear la segunda fila
+                    DocumentFormat.OpenXml.Wordprocessing.TableRow row2 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+
+                    var cell4 = CreateCell("", "25");
+                    cell4.TableCellProperties = new TableCellProperties(new VerticalMerge() { Val = MergedCellValues.Continue },
+                                                                        new GridSpan() { Val = 4 });
+                    var cell5 = CreateCell("", "40");
+                    cell5.TableCellProperties = new TableCellProperties(new VerticalMerge() { Val = MergedCellValues.Continue },
+                                                                        new GridSpan() { Val = 4 });
+                    var cell6 = CreateCell(cotizacion.Result.DocumentoCabecera.NumeroCotizacion, "35");
+                    cell6.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    row2.Append(cell4, cell5, cell6);
+
+                    // Crear la 3ra fila:
+                    DocumentFormat.OpenXml.Wordprocessing.TableRow row3 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+
+                    var cell7 = CreateCell("", "100");
+                    cell7.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 10 });
+                    row3.Append(cell7);
+
+                    // Agregar todas las filas a la tabla
+                    table.Append(row1, row2, row3);
+
+                    // Añadir la tabla al cuerpo del documento
+                    mainPart.Document.Body.AppendChild(table);
+                    #endregion
+
+                    #region Datos Clientes:
+                    DocumentFormat.OpenXml.Wordprocessing.Table table2 = new DocumentFormat.OpenXml.Wordprocessing.Table();
+                    // Establecer las propiedades de la tabla (opcional)
+                    TableProperties tblProperties2 = new TableProperties(
+                        new TableWidth() { Type = TableWidthUnitValues.Auto }
+                    );
+                    table2.AppendChild(tblProperties2);
+
+                    // Crear la primera fila
+                    DocumentFormat.OpenXml.Wordprocessing.TableRow row8 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+                    var cell8 = CreateCell("", "5");
+                    var cell9 = CreateCell("RUC:", "10");
+                    cell9.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    var cell10 = CreateCell(cotizacion.Result.DocumentoCabecera.Ruc, "35");
+                    cell10.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 3 });
+                    var cell11 = CreateCell("Fecha:", "15");
+                    cell11.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    var cell12 = CreateCell(cotizacion.Result.DocumentoCabecera.Fecha, "35");
+                    cell12.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    row8.Append(cell8, cell9, cell10, cell11, cell12);
+
+                    // Crear la 2da fila
+                    DocumentFormat.OpenXml.Wordprocessing.TableRow row9 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+                    var cell13 = CreateCell("", "5");
+                    var cell14 = CreateCell("Señor:", "10");
+                    cell4.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    var cell15 = CreateCell(cotizacion.Result.DocumentoCabecera.RazonSocial, "35");
+                    cell15.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 3 });
+                    var cell16 = CreateCell("Plazo de Entrega:", "15");
+                    cell16.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    var cell17 = CreateCell(cotizacion.Result.DocumentoCabecera.PlazoEntrega, "35");
+                    cell17.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    row9.Append(cell13, cell14, cell15, cell16, cell17);
+
+                    // Crear la 3ra fila
+                    DocumentFormat.OpenXml.Wordprocessing.TableRow row10 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+                    var cell18 = CreateCell("", "5");
+                    var cell19 = CreateCell("", "10");
+                    cell19.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    var cell20 = CreateCell("", "35");
+                    cell20.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 3 });
+                    var cell21 = CreateCell("Forma de Pago:", "15");
+                    cell21.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    var cell22 = CreateCell(cotizacionDTO.DescFormaPago, "35");
+                    cell22.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    row10.Append(cell18, cell19, cell20, cell21, cell22);
+
+                    // Crear la 4ta fila
+                    DocumentFormat.OpenXml.Wordprocessing.TableRow row11 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+                    var cell23 = CreateCell("", "5");
+                    var cell24 = CreateCell("Atención:", "10");
+                    cell24.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    var cell25 = CreateCell(cotizacion.Result.DocumentoCabecera.NombreContacto, "35");
+                    cell25.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 3 });
+                    var cell26 = CreateCell("Moneda:", "15");
+                    cell26.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    var cell27 = CreateCell(cotizacionDTO.DescMoneda, "35");
+                    cell27.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    row11.Append(cell23, cell24, cell25, cell26, cell27);
+
+                    // Crear la 5ta fila
+                    DocumentFormat.OpenXml.Wordprocessing.TableRow row12 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+                    var cell28 = CreateCell("", "5");
+                    var cell29 = CreateCell("Área:", "10");
+                    cell29.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    var cell30 = CreateCell(cotizacion.Result.DocumentoCabecera.AreaContacto, "35");
+                    cell30.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 3 });
+                    var cell31 = CreateCell("Vigencia cotización:", "15");
+                    cell31.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    var cell32 = CreateCell(cotizacion.Result.DocumentoCabecera.Vigencia, "35");
+                    cell32.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    row12.Append(cell28, cell29, cell30, cell31, cell32);
+
+                    // Crear la 6ta fila
+                    DocumentFormat.OpenXml.Wordprocessing.TableRow row13 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+                    var cell33 = CreateCell("", "5");
+                    var cell34 = CreateCell("Teléfono:", "10");
+                    cell34.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    var cell35 = CreateCell(cotizacion.Result.DocumentoCabecera.TelefonoContacto, "35");
+                    cell35.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 3 });
+                    var cell36 = CreateCell("Garantía:", "15");
+                    cell36.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    var cell37 = CreateCell(cotizacionDTO.DescGarantia, "35");
+                    cell37.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    row13.Append(cell33, cell34, cell35, cell36, cell37);
+
+                    // Crear la 7ma fila
+                    DocumentFormat.OpenXml.Wordprocessing.TableRow row14 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+                    var cell38 = CreateCell("", "5");
+                    var cell39 = CreateCell("Correo:", "10");
+                    cell39.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    var cell40 = CreateCell(cotizacion.Result.DocumentoCabecera.EmailContacto, "35");
+                    cell40.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 3 });
+                    var cell41 = CreateCell("Observación:", "15");
+                    cell41.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    var cell42 = CreateCell(cotizacion.Result.DocumentoCabecera.Observacion, "35");
+                    cell42.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    row14.Append(cell38, cell39, cell40, cell41, cell42);
+
+                    // Crear la 8va fila:
+                    DocumentFormat.OpenXml.Wordprocessing.TableRow row15 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+
+                    var cell43 = CreateCell("", "100");
+                    cell43.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 10 });
+                    row15.Append(cell43);
+
+                    // Agregar todas las filas a la tabla
+                    table2.Append(row8);
+                    table2.Append(row9);
+                    table2.Append(row10);
+                    table2.Append(row11);
+                    table2.Append(row12);
+                    table2.Append(row13);
+                    table2.Append(row14);
+                    table2.Append(row15);
+
+                    // Añadir la tabla al cuerpo del documento
+                    mainPart.Document.Body.AppendChild(table2);
+
+                    #endregion
+
+                    #region Detalle Cotizacion:
+                    DocumentFormat.OpenXml.Wordprocessing.Table table3 = new DocumentFormat.OpenXml.Wordprocessing.Table();
+                    // Establecer las propiedades de la tabla (opcional)
+                    TableProperties tblProperties3 = new TableProperties(
+                        new TableWidth() { Type = TableWidthUnitValues.Auto }
+                    );
+                    table3.AppendChild(tblProperties3);
+
+                    // Crear la primera fila
+                    DocumentFormat.OpenXml.Wordprocessing.TableRow row16 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+                    var cell44 = CreateCell("ITEM", "10");
+                    var cell45 = CreateCell("CATÁLOGO", "15");
+                    cell45.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    var cell46 = CreateCell("DESCRIPCIÓN", "20");
+                    cell46.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 3 });
+                    var cell47 = CreateCell("UND", "10");
+                    var cell48 = CreateCell("CANT.", "15");
+                    var cell49 = CreateCell("PRECIO UNITARIO", "15");
+                    var cell50 = CreateCell("TOTAL", "15");
+                    row16.Append(cell44, cell45, cell46, cell47, cell48, cell49, cell50);
+                    table3.Append(row16);
+
+                    //Crea detalle de la tabla:
+                    foreach (var item in cotizacion.Result.DocumentoDetalle)
+                    {
+                        var row17 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+                        var cell51 = CreateCell(item.NumeroItem, "10");
+                        var cell52 = CreateCell(item.Catalogo, "15");
+                        cell52.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                        var cell53 = CreateCell(item.Descripcion, "20");
+                        cell53.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 3 });
+                        var cell54 = CreateCell(item.Unidad, "10");
+                        var cell55 = CreateCell(item.Cantidad, "15");
+                        var cell56 = CreateCell(item.PrecioUnitario, "15");
+                        var cell57 = CreateCell(item.Total, "15");
+                        row17.AppendChild(cell51);
+                        row17.AppendChild(cell52);
+                        row17.AppendChild(cell53);
+                        row17.AppendChild(cell54);
+                        row17.AppendChild(cell55);
+                        row17.AppendChild(cell56);
+                        row17.AppendChild(cell57);
+
+                        table3.AppendChild(row17);
+                    }
+
+                    // Crear sub total:
+                    DocumentFormat.OpenXml.Wordprocessing.TableRow row18 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+                    var cell58 = CreateCell("", "10");
+                    var cell59 = CreateCell("", "15");
+                    cell59.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    var cell60 = CreateCell("", "20");
+                    cell60.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 3 });
+                    var cell61 = CreateCell("", "10");
+                    var cell62 = CreateCell("", "15");
+                    var cell63 = CreateCell("SUBTOTAL:", "15");
+                    var cell64 = CreateCell(cotizacion.Result.DocumentoCabecera.Subtotal, "15");
+                    row18.Append(cell58, cell59, cell60, cell61, cell62, cell63, cell64);
+                    table3.Append(row18);
+
+                    // Crear IGV:
+                    DocumentFormat.OpenXml.Wordprocessing.TableRow row19 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+                    var cell65 = CreateCell("", "10");
+                    var cell66 = CreateCell("", "15");
+                    cell66.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    var cell67 = CreateCell("", "20");
+                    cell67.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 3 });
+                    var cell68 = CreateCell("", "10");
+                    var cell69 = CreateCell("", "15");
+                    var cell70 = CreateCell("IGV (18%):", "15");
+                    var cell71 = CreateCell(cotizacion.Result.DocumentoCabecera.Igv, "15");
+                    row19.Append(cell65, cell66, cell67, cell68, cell69, cell70, cell71);
+                    table3.Append(row19);
+
+                    // Crear Total:
+                    DocumentFormat.OpenXml.Wordprocessing.TableRow row20 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+                    var cell72 = CreateCell("", "10");
+                    var cell73 = CreateCell("", "15");
+                    cell73.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    var cell74 = CreateCell("", "20");
+                    cell74.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 3 });
+                    var cell75 = CreateCell("", "10");
+                    var cell76 = CreateCell("", "15");
+                    var cell77 = CreateCell("TOTAL:", "15");
+                    var cell78 = CreateCell(cotizacion.Result.DocumentoCabecera.Total, "15");
+                    row20.Append(cell72, cell73, cell74, cell75, cell76, cell77, cell78);
+                    table3.Append(row20);
+
+                    // Crear linea:
+                    DocumentFormat.OpenXml.Wordprocessing.TableRow row21 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+
+                    var cell79 = CreateCell("", "100");
+                    cell79.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 10 });
+                    row21.Append(cell79);
+                    table3.Append(row21);
+
+
+                    // Añadir la tabla al cuerpo del documento
+                    mainPart.Document.Body.AppendChild(table3);
+
+                    #endregion
+
+                    #region Contrato:
+                    DocumentFormat.OpenXml.Wordprocessing.Table table4 = new DocumentFormat.OpenXml.Wordprocessing.Table();
+                    // Establecer las propiedades de la tabla (opcional)
+                    TableProperties tblProperties4 = new TableProperties(
+                        new TableWidth() { Type = TableWidthUnitValues.Auto }
+                    );
+                    table4.AppendChild(tblProperties4);
+
+                    // Crear la primera fila
+                    DocumentFormat.OpenXml.Wordprocessing.TableRow row22= new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+                    var cell80 = CreateCell(cotizacion.Result.DocumentoCabecera.Contrato, "100");
+                    cell80.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 10 });
+                    row22.Append(cell80);
+                    table4.Append(row22);
+
+                    // Crear la 2da fila
+                    DocumentFormat.OpenXml.Wordprocessing.TableRow row23 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+                    var cell81 = CreateCell("", "100");
+                    cell81.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 10 });
+                    row23.Append(cell81);
+                    table4.Append(row23);
+
+                    // Añadir la tabla al cuerpo del documento
+                    mainPart.Document.Body.AppendChild(table4);
+
+                    #endregion
+
+                    #region Pie:
+                    DocumentFormat.OpenXml.Wordprocessing.Table table5 = new DocumentFormat.OpenXml.Wordprocessing.Table();
+                    // Establecer las propiedades de la tabla (opcional)
+                    TableProperties tblProperties5 = new TableProperties(
+                        new TableWidth() { Type = TableWidthUnitValues.Auto }
+                    );
+                    table5.AppendChild(tblProperties5);
+
+                    // Crear la primera fila
+                    DocumentFormat.OpenXml.Wordprocessing.TableRow row24 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+                    var cell82 = CreateCell("Vendedor:", "20");
+                    cell82.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    var cell83 = CreateCell(cotizacion.Result.DocumentoCabecera.NombreVendedor, "30");
+                    cell83.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 3 });
+                    var cell84 = CreateCell(cotizacion.Result.DocumentoCabecera.Pie, "30");
+                    cell84.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 5 });
+
+                    row24.Append(cell82, cell83, cell84);
+                    table5.Append(row24);
+
+                    // Crear la 2da fila
+                    DocumentFormat.OpenXml.Wordprocessing.TableRow row25 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+                    var cell85 = CreateCell("Teléfono:", "20");
+                    cell85.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    var cell86 = CreateCell(cotizacion.Result.DocumentoCabecera.TelefonoVendedor, "30");
+                    cell86.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 3 });
+                    var cell87 = CreateCell("", "30");
+                    cell87.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 5 });
+
+                    row25.Append(cell85, cell86, cell87);
+                    table5.Append(row25);
+
+                    // Crear la 3ra fila
+                    DocumentFormat.OpenXml.Wordprocessing.TableRow row26 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+                    var cell88 = CreateCell("E-mail:", "20");
+                    cell88.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 2 });
+                    var cell89 = CreateCell(cotizacion.Result.DocumentoCabecera.EmailVendedor, "30");
+                    cell89.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 3 });
+                    var cell90 = CreateCell("", "30");
+                    cell90.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 5 });
+
+                    row26.Append(cell88, cell89, cell90);
+                    table5.Append(row26);
+
+                    // Crear linea:
+                    DocumentFormat.OpenXml.Wordprocessing.TableRow row27 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+                    var cell91 = CreateCell("", "100");
+                    cell91.TableCellProperties = new TableCellProperties(new GridSpan() { Val = 10 });
+                    row27.Append(cell91);
+                    table5.Append(row27);
+
+                    // Añadir la tabla al cuerpo del documento
+                    mainPart.Document.Body.AppendChild(table5);
+
+                    #endregion
+
+                    // Guarda los cambios en el documento
+                    mainPart.Document.Save();
                 }
-                catch (COMException ex) when (ex.HResult == unchecked((int)0x8001010A))
+
+                // Convertir el contenido del MemoryStream a un array de bytes
+                byte[] byteArray = memoryStream.ToArray();
+
+                // Codificar los bytes en base64 para poder enviarlos en el JSON
+                string base64File = Convert.ToBase64String(byteArray);
+
+                // Devolvemos un JsonResult con el archivo en base64
+                return Json(new
                 {
-                    System.Threading.Thread.Sleep(1000); // Esperar 1 segundo
-                    retries--;
-                }
+                    Status = 1,
+                    Archivo = base64File,
+                    Nombre = nombre
+                });
             }
 
-            string rutaInicial = ConfigurationManager.AppSettings.Get("RutaCotizacionVenta");
-            string nombre = cotizacion.Result.DocumentoCabecera.NumeroCotizacion + DateTime.Now.ToString("yyyyMMddHHmmss") + ".docx";
-            var ruta_file = rutaInicial + nombre;
 
-            // Guardar el documento
-            doc.SaveAs2(ruta_file);
-            doc.Close();
-            wordApp.Quit();
 
-            return Json(new
-            {
-                Status = 1,
-                Archivo = nombre
-            });
+        }
+
+
+
+
+
+
+
+
+        // Función para crear una celda con contenido de texto
+        static DocumentFormat.OpenXml.Wordprocessing.TableCell CreateCell(string text, string ancho)
+        {
+            //TableCell cell = new TableCell();
+            //Paragraph para = new Paragraph(new Run(new Text(text)));
+            //cell.AppendChild(para);
+            //return cell;
+            int with = Convert.ToInt32(ancho) * 100;
+
+            //DocumentFormat.OpenXml.Wordprocessing.TableCell cell = new DocumentFormat.OpenXml.Wordprocessing.TableCell(
+            //    new TableCellProperties(
+            //        new TableCellWidth() { Type = TableWidthUnitValues.Pct, Width = with.ToString() } // Establece el ancho de la celda
+            //    ),
+            //    new Paragraph(new Run(new Text(text)))
+            //);
+
+            //Tamaño de texto:
+            var cell = new DocumentFormat.OpenXml.Wordprocessing.TableCell();
+            
+            var para = new Paragraph();
+            var run = new Run();
+            var textCell = new Text(text);
+            var withCell = new TableCellWidth();
+
+            // Establecer las propiedades de estilo (fuente, tamaño, negrita)
+            var runProperties = new RunProperties(
+                new RunFonts() { Ascii = "Calibri" }, // Fuente Calibri
+                new DocumentFormat.OpenXml.Wordprocessing.FontSize() { Val = "16" }, // 8 puntos (16 unidades de medio punto)
+                new Bold() // Texto en negrita
+            );
+
+
+            // Establecer los bordes de la celda
+            var cellProperties = new TableCellProperties();
+            TableCellBorders cellBorders = new TableCellBorders(
+                new TopBorder() { Val = BorderValues.Single, Size = 4, Space = 0, Color = "000000" }, // Borde superior
+                new BottomBorder() { Val = BorderValues.Single, Size = 4, Space = 0, Color = "000000" }, // Borde inferior
+                new LeftBorder() { Val = BorderValues.Single, Size = 4, Space = 0, Color = "000000" },  // Borde izquierdo
+                new RightBorder() { Val = BorderValues.Single, Size = 4, Space = 0, Color = "000000" }   // Borde derecho
+            );
+
+            // Agregar los bordes a las propiedades de la celda
+            cellProperties.Append(cellBorders);
+
+            // Establecer el fondo de la celda como verde
+            var cellProperties2 = new TableCellProperties(
+                new Shading() { Fill = "00FF00" } // Color de fondo verde (hexadecimal)
+            );
+
+            var paraProperties = new ParagraphProperties(
+                    new Justification() { Val = JustificationValues.Center } // Alineación al centro
+                );
+            
+
+            run.Append(runProperties);
+            run.Append(textCell);
+            para.Append(run);
+            para.Append(paraProperties);
+            cell.Append(para);
+
+            // Aplicar las propiedades de la celda a la celda
+            cell.Append(cellProperties);
+
+            cell.Append(cellProperties2);
+
+            return cell;
         }
 
         public FileResult ExportarFile(string nombreDoc)

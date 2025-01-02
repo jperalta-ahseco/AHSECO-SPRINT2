@@ -2424,9 +2424,32 @@
         };
         var objParam = JSON.stringify(objDatos);
 
-        var fnDoneCallBack = function (data) {
-            app.abrirVentana("BandejaHistorialCotizacion/ExportarFile?nombreDoc=" + data.Archivo);
-            app.message.success("Ventas", "Se generó la cotización correctamente.")
+        var fnDoneCallBack = function (response) {
+
+            if (response.Status > 0) {
+
+                // Convertir el contenido base64 en un archivo y descargarlo
+                var byteCharacters = atob(response.Archivo); // Decodificar el base64
+                var byteArrays = [];
+
+                for (var offset = 0; offset < byteCharacters.length; offset++) {
+                    var byteArray = byteCharacters.charCodeAt(offset);
+                    byteArrays.push(byteArray);
+                }
+
+                // Crear un Blob a partir del array de bytes
+                var blob = new Blob([new Uint8Array(byteArrays)], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+
+                // Crear un enlace para descargar el archivo
+                var link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = response.Nombre;
+                link.click();
+            } else {
+                alert("Hubo un problema al generar el documento.");
+            }
+            //app.abrirVentana("BandejaHistorialCotizacion/ExportarFile?nombreDoc=" + data.Archivo);
+           // app.message.success("Ventas", "Se generó la cotización correctamente.")
         }
         var fnFailCallBack = function () {
 
