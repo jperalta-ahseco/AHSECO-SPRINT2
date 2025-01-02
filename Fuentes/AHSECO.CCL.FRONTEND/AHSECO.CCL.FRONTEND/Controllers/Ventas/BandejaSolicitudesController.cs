@@ -1080,6 +1080,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             //Se carga el detalle de la cotizacion
                             var lstItems = resCotDet.Result.ToList();
 
+                            //Se inicializa el CODIGO ITEM como TEMPORAL para no afectar el FLUJO del BUSCADOR
+                            lstItems.ForEach(x => { x.CodItemTemp = x.CodItem; });
+
                             //Se configura los DETALLES de la COTIZACION
                             lstItems = configureCotDet(lstItems);
 
@@ -1479,6 +1482,44 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             //Ocultar CAMPOS por TIPO DE SOLICITUD
             if (oSolicitud.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaEquipos)
             {
+                //Se reconfigura MODAL para ACCESORIOS de equipos
+                if(oItem.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio)
+                {
+                    lstProp.ForEach(pc =>
+                    {
+                        //Se configura los campos COTIZACION DETALLE
+                        if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.DescripAdic) { pc.IsVisible = false; pc.IsEnabled = false; }
+                        if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.DescripAdic_Textarea) { pc.IsVisible = false; pc.IsEnabled = false; }
+
+                        //Se oculta los PRECIOS DE VENTA
+                        if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.CostoFOB) { pc.IsVisible = false; pc.IsEnabled = false; }
+
+                        // Para ACCESORIOS está habilitado en VALOR UNITARIO solo si no es COMPRA LOCAL
+                        if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = true; }
+
+                        //Se oculta los campos DESPACHO
+                        if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.Dimensiones) { pc.IsVisible = false; pc.IsEnabled = false; }
+                        if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.PorcGanan) { pc.IsVisible = false; pc.IsEnabled = false; }
+                        if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.ReqPlaca) { pc.IsVisible = false; pc.IsEnabled = false; }
+                        if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.GarantAdic) { pc.IsVisible = false; pc.IsEnabled = false; }
+                        if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.GarantAdic_Combo) { pc.IsVisible = false; pc.IsEnabled = false; }
+                        if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.ObsInsta) { pc.IsVisible = false; pc.IsEnabled = false; }
+                        if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.Campo.ReqCliente) { pc.IsVisible = false; pc.IsEnabled = false; }
+
+                        //Se oculta los indicadores
+                        if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Calibra) { pc.IsVisible = false; pc.IsEnabled = false; }
+                        if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.MantPrevent) { pc.IsVisible = false; pc.IsEnabled = false; }
+                        if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Manual) { pc.IsVisible = false; pc.IsEnabled = false; }
+                        if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Video) { pc.IsVisible = false; pc.IsEnabled = false; }
+                        if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Insta) { pc.IsVisible = false; pc.IsEnabled = false; }
+                        if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Capa) { pc.IsVisible = false; pc.IsEnabled = false; }
+                        if (pc.Tag == MultiFlujo.Tag.CotDetDespacho.IndCosto.Flete) { pc.IsVisible = false; pc.IsEnabled = false; }
+
+                        if (pc.Tag == MultiFlujo.Tag.CotDetCosto.Panel.Destinos) { pc.IsVisible = false; pc.IsEnabled = false; }
+
+                    });
+                }
+
                 //VALORIZACION de EQUIPOS
                 if (oSolicitud.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion)
                 {
@@ -1486,24 +1527,68 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     {
                         lstProp.ForEach(pc =>
                         {
-                            var swTieneStock = false;
-                            if (oItem.IndStock.HasValue)
-                            { if (oItem.IndStock.Value) { swTieneStock = true; } }
-                            if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Gerente)
+                            //Solo cuando se tiene INDICADOR STOCK se aplica esta lógica
+                            //debido a que ACCESORIOS no tiene obligado a DEFINIR si tiene stock
+                            if (oItem.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto)
                             {
-                                if (!swTieneStock)
+                                var swTieneStock = false;
+                                if (oItem.IndStock.HasValue)
+                                { if (oItem.IndStock.Value) { swTieneStock = true; } }
+                                if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Gerente)
                                 {
-                                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.CostoFOB) { pc.IsVisible = true; pc.IsEnabled = true; }
+                                    if (!swTieneStock)
+                                    {
+                                        if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.CostoFOB) { pc.IsVisible = true; pc.IsEnabled = true; }
+                                    }
+                                }
+                                if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Costos)
+                                {
+                                    if (!swTieneStock)
+                                    {
+                                        if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.CostoFOB) { pc.IsVisible = true; pc.IsEnabled = false; }
+                                        if (oItem.CostoFOB.HasValue)
+                                        {
+                                            if (oItem.CostoFOB.Value > 0)
+                                            {
+                                                if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = true; }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = true; }
+                                    }
                                 }
                             }
-                            if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Costos)
+                            else
                             {
-                                if (!swTieneStock)
+                                var swTieneStock = false;
+                                if (oItem.IndStock.HasValue)
                                 {
-                                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.CostoFOB) { pc.IsVisible = true; pc.IsEnabled = false; }
-                                    if (oItem.CostoFOB.HasValue)
+                                    if (oItem.IndStock.Value) { swTieneStock = true; }
+                                    if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Gerente)
                                     {
-                                        if (oItem.CostoFOB.Value > 0)
+                                        if (!swTieneStock)
+                                        {
+                                            //Se muestra el campo VALOR UNITARIO ya que los ASESORES lo utilizan en los ACCESORIOS
+                                            if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.CostoFOB) { pc.IsVisible = true; pc.IsEnabled = true; }
+                                            if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = false; }
+                                        }
+                                    }
+                                    if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Costos)
+                                    {
+                                        if (!swTieneStock)
+                                        {
+                                            if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.CostoFOB) { pc.IsVisible = true; pc.IsEnabled = false; }
+                                            if (oItem.CostoFOB.HasValue)
+                                            {
+                                                if (oItem.CostoFOB.Value > 0)
+                                                {
+                                                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = true; }
+                                                }
+                                            }
+                                        }
+                                        else
                                         {
                                             if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = true; }
                                         }
@@ -1511,8 +1596,23 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 }
                                 else
                                 {
-                                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = true; }
+                                    //Como no tiene INDICADOR STOCK quiere decir que es COMPRA LOCAL
+                                    //Lo que el VALOR UNITARIO es ingresado por el ASESOR de VENTA
+                                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.CostoFOB) { pc.IsVisible = false; pc.IsEnabled = false; }
+                                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = false; }
                                 }
+                            }
+                        });
+                    }
+                    else
+                    {
+                        lstProp.ForEach(pc =>
+                        {
+                            if (oItem.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio)
+                            {
+                                //Solo se muestra el VALOR UNITARIO del ACCESORIO
+                                if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.CostoFOB) { pc.IsVisible = false; pc.IsEnabled = false; }
+                                if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = false; }
                             }
                         });
                     }
@@ -1521,6 +1621,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 lstProp.ForEach(pc =>
                 {
                     //EQUIPOS muestra DIMENSIONES, ESPECIFICACIONES, INDICADORES, OBS INSTALACION, DESTINOS
+                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.PorcGanan) { pc.IsVisible = false; }
 
                     //Se devuelve a su tamaño actual
                     if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.DescripAdic_Textarea) { pc.Nombre = "ROWS"; pc.Valor = "6"; }
@@ -1534,22 +1635,41 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     var oItemTMP = new CotizacionDetalleDTO();
                     oItem.CopyProperties(ref oItemTMP);
                     oItemTMP.Features = new PropertyControl { SubPropiedades = lstProp.ToArray() };
-                    if (EsCosteoRequerido(oItemTMP))
+                    if (oItem.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto)
                     {
-                        if (swEsCotizacionValorizada && swEsCotizacionCosteada)
+                        if (EsCosteoRequerido(oItemTMP))
                         {
-                            lstProp.ForEach(pc => {
-                                if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.PorcGanan) { pc.IsEnabled = true; pc.IsVisible = true; }
-                            });
+                            if (swEsCotizacionValorizada && swEsCotizacionCosteada)
+                            {
+                                lstProp.ForEach(pc =>
+                                {
+                                    if (oSolicitud.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion)
+                                    {
+                                        if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.PorcGanan) { pc.IsEnabled = true; pc.IsVisible = true; }
+                                    }
+                                    else
+                                    {
+                                        if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.PorcGanan) { pc.IsEnabled = false; pc.IsVisible = true; }
+                                    }
+                                });
+                            }
                         }
-                    }
-                    else
-                    {
-                        if (swEsCotizacionValorizada)
+                        else
                         {
-                            lstProp.ForEach(pc => {
-                                if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.PorcGanan) { pc.IsEnabled = true; pc.IsVisible = true; }
-                            });
+                            if (swEsCotizacionValorizada)
+                            {
+                                lstProp.ForEach(pc =>
+                                {
+                                    if (oSolicitud.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion)
+                                    {
+                                        if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.PorcGanan) { pc.IsEnabled = true; pc.IsVisible = true; }
+                                    }
+                                    else
+                                    {
+                                        if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.PorcGanan) { pc.IsEnabled = false; pc.IsVisible = true; }
+                                    }
+                                });
+                            }
                         }
                     }
                 }
@@ -1632,8 +1752,16 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     {
                         if (swEsCotizacionValorizada && swEsCotizacionCosteada)
                         {
-                            lstProp.ForEach(pc => {
-                                if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.PorcGanan) { pc.IsEnabled = true; pc.IsVisible = true; }
+                            lstProp.ForEach(pc =>
+                            {
+                                if (oSolicitud.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion)
+                                {
+                                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.PorcGanan) { pc.IsEnabled = true; pc.IsVisible = true; }
+                                }
+                                else
+                                {
+                                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.PorcGanan) { pc.IsEnabled = false; pc.IsVisible = true; }
+                                }
                             });
                         }
                     }
@@ -1641,8 +1769,16 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     {
                         if (swEsCotizacionValorizada)
                         {
-                            lstProp.ForEach(pc => {
-                                if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.PorcGanan) { pc.IsEnabled = true; pc.IsVisible = true; }
+                            lstProp.ForEach(pc =>
+                            {
+                                if (oSolicitud.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion)
+                                {
+                                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.PorcGanan) { pc.IsEnabled = true; pc.IsVisible = true; }
+                                }
+                                else
+                                {
+                                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.PorcGanan) { pc.IsEnabled = false; pc.IsVisible = true; }
+                                }
                             });
                         }
                     }
@@ -2874,8 +3010,12 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 });
 
                 //Solo cargar los productos en pantalla
+                //var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems.Where(x =>
+                //x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto));
+
+                //Solo cargar los productos en pantalla incluyendo ACCESORIOS
                 var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems.Where(x => 
-                x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto));
+                x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto || x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio));
 
                 return Json(response);
             }
@@ -3113,8 +3253,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 select.CodItemTemp = oArticulo.CodArticuloTemp;
                 select.Descripcion = oArticulo.DescRealArticulo;
                 select.Stock = oArticulo.StockDisponible;
-                if (oArticulo.StockDisponible > 0) { select.IndStock = true; }
-                else { select.IndStock = false; }
                 select.TipoItem = ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto;
                 select.EsItemPadre = true;
                 select.IsTempRecord = true;
@@ -3163,13 +3301,23 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     AddModifyCDI(select);
                 }
 
+                if (select.TipoItem != ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio)
+                {
+                    if (oArticulo.StockDisponible > 0) { select.IndStock = true; }
+                    else { select.IndStock = false; }
+                }
+
                 lstItems = GetCotDetItems(opcTablaTemporal);
                 lstItems = CompletarInfoCotDet(lstItems);
                 lstItems = TotalizarCotDet(lstItems);
 
                 //Solo cargar los productos en pantalla
+                //var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems.Where(x =>
+                //x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto));
+
+                //Solo cargar los productos en pantalla incluyendo los ACCESORIOS
                 var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems.Where(x => 
-                x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto));
+                x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto || x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio));
 
                 return Json(response);
             }
@@ -3251,8 +3399,12 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     lstItems = GetCotDetItems(opcTablaFinal);
                 }
 
-                var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems.Where(x => x.TipoItem == oCotDetItem.TipoItem &&
-                x.TipoItem != ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio));
+                //var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems.Where(x => x.TipoItem == oCotDetItem.TipoItem &&
+                //x.TipoItem != ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio));
+
+                //Se mostrará los PRODUCTOS incluyendo los ACCESORIOS
+                var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems.Where(x => x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto ||
+                x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio));
 
                 return Json(response);
             }
@@ -3379,7 +3531,14 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                 CotizacionDetalleDTO oCotDetItem = null;
                 if (string.IsNullOrEmpty(CotizacionDetallePadre.CodItem))
-                { oCotDetItem = lstItems.FirstOrDefault(x => x.CodItem.Trim() == CotizacionDetalle.CodItem.Trim() && x.EsItemPadre == true); }
+                { 
+                    oCotDetItem = lstItems.FirstOrDefault(x => x.CodItem.Trim() == CotizacionDetalle.CodItem.Trim() && x.EsItemPadre == true);
+                    //Al no encontrarlo como ITEM PADRE lo buscamos como HIJO ya que este metodo lo usa los ACCESORIOS desde la grilla principal
+                    if (oCotDetItem == null)
+                    {
+                        oCotDetItem = lstItems.FirstOrDefault(x => x.Id == CotizacionDetalle.Id);
+                    }
+                }
                 else
                 {
                     var oCotDetItemPadre = lstItems.FirstOrDefault(x => x.CodItem.Trim() == CotizacionDetallePadre.CodItem.Trim() && x.EsItemPadre == true);
@@ -3487,8 +3646,12 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 lstItems = CompletarInfoCotDet(lstItems);
 
                 //Solo cargar los productos en pantalla
+                //var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems.Where(x =>
+                //x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto));
+
+                //Solo cargar los productos en pantalla incluyendo los ACCESORIOS
                 var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems.Where(x =>
-                x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto));
+                x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto || x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio));
 
                 return Json(response);
             }
@@ -3544,13 +3707,38 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         if (!swDatos) { throw new Exception("No se ha ingresado el COSTO FOB de '" + oItem.Descripcion + "'"); }
                     }
 
-                    if (swValidarValorUni)
+                    if(oItem.TipoItem != ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio)
                     {
-                        var swDatos = false;
-                        if (oItem.VentaUnitaria.HasValue)
-                        { if (oItem.VentaUnitaria.Value > 0) { swDatos = true; } }
+                        //Para los PRODUCTOS se valida su VALOR UNITARIO
+                        if (swValidarValorUni)
+                        {
+                            var swDatos = false;
+                            if (oItem.VentaUnitaria.HasValue)
+                            { if (oItem.VentaUnitaria.Value > 0) { swDatos = true; } }
 
-                        if (!swDatos) { throw new Exception("No se ha ingresado el VALOR UNITARIO de '" + oItem.Descripcion + "'"); }
+                            if (!swDatos) { throw new Exception("No se ha ingresado el VALOR UNITARIO de '" + oItem.Descripcion + "'"); }
+                        }
+                    }
+                    else
+                    {
+                        //Para los ACCESORIOS se valida su VALOR UNITARIO solo si son COMPRA LOCAL
+                        if (oItem.CotizacionDespacho != null)
+                        {
+                            if (oItem.CotizacionDespacho.IndCompraLocal.HasValue)
+                            {
+                                if (oItem.CotizacionDespacho.IndCompraLocal.Value == true)
+                                {
+                                    if (swValidarValorUni)
+                                    {
+                                        var swDatos = false;
+                                        if (oItem.VentaUnitaria.HasValue)
+                                        { if (oItem.VentaUnitaria.Value > 0) { swDatos = true; } }
+
+                                        if (!swDatos) { throw new Exception("No se ha ingresado el VALOR UNITARIO de '" + oItem.Descripcion + "'"); }
+                                    }
+                                }
+                            }
+                        }
                     }
 
                 }
@@ -3575,14 +3763,19 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                 VariableSesion.setObject(TAG_CDI, lstItems_1.ToList());
 
+                //if (cotizacionDetalle != null)
+                //{ lstItems_1 = lstItems_1.Where(x => !x.IsTempRecord && x.TipoItem == cotizacionDetalle.TipoItem).ToList(); }
+                //else
+                //{ lstItems_1 = lstItems_1.Where(x => !x.IsTempRecord && x.TipoItem != ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio).ToList(); }
+
+                //Se mostrará los PRODUCTOS incluyendo los ACCESORIOS
                 if (cotizacionDetalle != null)
                 {
-                    lstItems_1 = lstItems_1.Where(x => !x.IsTempRecord && x.TipoItem == cotizacionDetalle.TipoItem).ToList();
+                    lstItems_1 = lstItems_1.Where(x => !x.IsTempRecord &&
+                  (x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto || x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio)).ToList();
                 }
                 else
-                {
-                    lstItems_1 = lstItems_1.Where(x => !x.IsTempRecord && x.TipoItem != ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio).ToList();
-                }
+                { lstItems_1 = lstItems_1.Where(x => !x.IsTempRecord).ToList(); }
 
                 //Solo cargar los productos en pantalla
                 var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems_1);
@@ -4692,7 +4885,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             //Solo cargar los productos en pantalla
             var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems.Where(x => x.IsTempRecord &&
-            x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto));
+            (x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto || x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio)));
 
             return Json(response);
         }

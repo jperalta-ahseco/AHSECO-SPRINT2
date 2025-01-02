@@ -14,6 +14,10 @@ var cotvtadet = (function ($, win, doc) {
     var $TipoSol_VentaEqu = $("#TipoSol_VentaEqu");
     var $TipoSolicitud = $("#TipoSolicitud");
 
+    var $DI_hdnTipoItem_PRO = $("#DI_hdnTipoItem_PRO");
+    var $DI_hdnTipoItem_ACC = $("#DI_hdnTipoItem_ACC");
+    var $DI_hdnTipoItem_SER = $("#DI_hdnTipoItem_SER");
+
     var $idCliente = $("#idCliente");
     var $numeroSolicitud = $("#numeroSolicitud");
     var $idWorkFlow = $("#idWorkFlow");
@@ -51,11 +55,16 @@ var cotvtadet = (function ($, win, doc) {
     var $EsCotizacionCosteada = $("#EsCotizacionCosteada");
     var $PermitirEditarGanancia = $("#PermitirEditarGanancia");
 
+    var $modalCotDetItem = $("#modalCotDetItem");
+    var $DI_pnlInfoGeneral_COL01 = $("#DI_pnlInfoGeneral_COL01");
+    var $DI_pnlInfoGeneral_Codigo = $("#DI_pnlInfoGeneral_Codigo");
     var $DI_pnlInfoGeneral_Dimensiones = $("#DI_pnlInfoGeneral_Dimensiones");
     var $DI_pnlInfoGeneral_DescripcionAdic = $("#DI_pnlInfoGeneral_DescripcionAdic");
     var $DI_pnlCostos_PrecioVenta = $("#DI_pnlCostos_PrecioVenta");
     var $DI_pnlCostos_CostoFOB = $("#DI_pnlCostos_CostoFOB");
+    var $DI_pnlCostos_CostoFOB_Etiqueta = $("#DI_pnlCostos_CostoFOB_Etiqueta");
     var $DI_pnlCostos_ValorUnitario = $("#DI_pnlCostos_ValorUnitario");
+    var $DI_pnlCostos_ValorUnitario_Etiqueta = $("#DI_pnlCostos_ValorUnitario_Etiqueta");
     var $DI_pnlCostos_TieneStock = $("#DI_pnlCostos_TieneStock");
     var $DI_pnlCostos_Calibracion = $("#DI_pnlCostos_Calibracion");
     var $DI_pnlCostos_Ganancia = $("#DI_pnlCostos_Ganancia");
@@ -92,7 +101,7 @@ var cotvtadet = (function ($, win, doc) {
     var $btnBuscarItems = $('#btnBuscarItems');
     var $tblItems = $('#tblItems');
     var $tblCotDet = $('#tblCotDet');
-    
+
     var $DI_hdnIdCotDet = $("#DI_hdnIdCotDet");
     var $DI_hdnCodigoPadre = $("#DI_hdnCodigoPadre");
     var $DI_hdnCodigo = $("#DI_hdnCodigo");
@@ -178,8 +187,8 @@ var cotvtadet = (function ($, win, doc) {
 
         $DI_radGarantAdic_Si.click(configurarGarantias);
         $DI_radGarantAdic_No.click(configurarGarantias);
-        $DI_radTieneStock_Si.click(configurarTieneStock);
-        $DI_radTieneStock_No.click(configurarTieneStock);
+        //$DI_radTieneStock_Si.click(configurarTieneStock);
+        //$DI_radTieneStock_No.click(configurarTieneStock);
         
         listarCotDetItems();
         cargarGarantias();
@@ -452,7 +461,20 @@ var cotvtadet = (function ($, win, doc) {
         filters.dataTableInfo = true;
         filters.dataTablePageLength = 3;
 
-        app.llenarTabla($tblCotDet, data, columns, columnDefs, "#tblCotDet", rowCallback, null, filters);
+        //En el BUSCADOR DE PRODUCTOS solo se mostrarán los que no son ACCESORIOS
+        var arrPRO = [];
+        if (data.Result != null) {
+            for (a = 0; a < data.Result.length; a++) {
+                var oItem = data.Result[a];
+                if (oItem.TipoItem != $DI_hdnTipoItem_ACC.val()) {
+                    arrPRO.push(oItem);
+                }
+            }
+        }
+
+        var dataNueva = { Status: 1, Result: arrPRO };
+        
+        app.llenarTabla($tblCotDet, dataNueva, columns, columnDefs, "#tblCotDet", rowCallback, null, filters);
     }
     
     function quitarCotDetItem(CodigoItem, opc) {
@@ -617,8 +639,15 @@ var cotvtadet = (function ($, win, doc) {
                 else {
                     $DI_radTieneStock_Si.prop("checked", true);
                 }
+                //Para los ACCESORIOS no se cargará por defecto el INDICADOR de TIENE STOCK
+                if (data.Result.TipoItem != null) {
+                    if (data.Result.TipoItem == $DI_hdnTipoItem_ACC.val()) {
+                        $DI_radTieneStock_Si.prop("checked", false);
+                        $DI_radTieneStock_No.prop("checked", false);
+                    }
+                }
             }
-            
+
             if (data.Result.CotizacionDespacho != null) {
                 $DI_txtDimensiones.val(data.Result.CotizacionDespacho.Dimensiones);
                 if (data.Result.CotizacionDespacho.IndRequierePlaca != null) {
@@ -855,6 +884,160 @@ var cotvtadet = (function ($, win, doc) {
 
     }
 
+    function cargarPropiedadesPorCotDetItem(oFeatures) {
+
+        if (oFeatures != null) {
+
+            if (oFeatures.IsEnabled) { $DI_btnGuardar.css("display", ""); }
+            else { $DI_btnGuardar.css("display", "none"); }
+
+            var arrSubProp = oFeatures.SubPropiedades
+
+            for (a = 0; a < arrSubProp.length; a++) {
+                var oProp = arrSubProp[a];
+                if (oProp.IdControl != null && oProp.IdControl != "") {
+                    var oCampo = document.getElementById(oProp.IdControl);
+                    if (oCampo != null && oCampo != undefined) {
+                        var $Campo = $("#" + oProp.IdControl);
+                        if (oProp.Nombre != null && oProp.Nombre != "" && oProp.Valor != null) {
+                            $Campo.removeAttr(oProp.Nombre);
+                            $Campo.attr(oProp.Nombre, oProp.Valor);
+                        }
+                        if (oProp.IsVisible) { $Campo.css("display", ""); }
+                        else { $Campo.css("display", "none"); }
+                        if (oProp.IsEnabled) {
+                            for (b = 0; b < $Campo.find("button").length; b++) {
+                                var $button = $("#" + $Campo.find("button")[b].id);
+                                $button.css("display", "");
+                            }
+                            for (b = 0; b < $Campo.find("input").length; b++) {
+                                var $input = $("#" + $Campo.find("input")[b].id);
+                                $input.removeAttr("disabled");
+                            }
+                            for (b = 0; b < $Campo.find("textarea").length; b++) {
+                                var $textarea = $("#" + $Campo.find("textarea")[b].id);
+                                $textarea.removeAttr("disabled");
+                            }
+                            for (b = 0; b < $Campo.find("select").length; b++) {
+                                var $select = $("#" + $Campo.find("select")[b].id);
+                                $select.removeAttr("disabled");
+                            }
+                        }
+                        else {
+                            for (b = 0; b < $Campo.find("button").length; b++) {
+                                var $button = $("#" + $Campo.find("button")[b].id);
+                                $button.css("display", "none");
+                            }
+                            for (b = 0; b < $Campo.find("input").length; b++) {
+                                var $input = $("#" + $Campo.find("input")[b].id);
+                                $input.attr("disabled", "disabled");
+                            }
+                            for (b = 0; b < $Campo.find("textarea").length; b++) {
+                                var $textarea = $("#" + $Campo.find("textarea")[b].id);
+                                $textarea.attr("disabled", "disabled");
+                            }
+                            for (b = 0; b < $Campo.find("select").length; b++) {
+                                var $select = $("#" + $Campo.find("select")[b].id);
+                                $select.attr("disabled", "disabled");
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+
+    }
+
+    function cargarLogicaAccesorios_Stock() {
+
+        if ($DI_radTieneStock_Si.attr("disabled") != "disabled" && $DI_radTieneStock_Si.attr("readonly") != "disabled" &&
+            $DI_radTieneStock_No.attr("disabled") != "disabled" && $DI_radTieneStock_No.attr("readonly") != "disabled") {
+            if ($DI_radTieneStock_Si.is(':checked') || $DI_radTieneStock_No.is(':checked')) {
+                $DI_radCompraLocal_Si.prop("checked", false);
+                $DI_radCompraLocal_No.prop("checked", true);
+                $DI_txtValorUnitario.attr("disabled", "disabled");
+                $DI_txtValorUnitario.val("");
+            }
+        }
+
+    }
+
+    function cargarLogicaAccesorios_CompraLocal() {
+
+        if ($DI_radCompraLocal_Si.attr("disabled") != "disabled" && $DI_radCompraLocal_Si.attr("readonly") != "disabled") {
+            if ($DI_radCompraLocal_Si.is(':checked')) {
+                $DI_txtValorUnitario.removeAttr("disabled");
+                $DI_radTieneStock_Si.attr("disabled", "disabled");
+                $DI_radTieneStock_No.attr("disabled", "disabled");
+                $DI_radTieneStock_Si.prop("checked", false);
+                $DI_radTieneStock_No.prop("checked", false);
+            }
+        }
+
+        if ($DI_radCompraLocal_No.attr("disabled") != "disabled" && $DI_radCompraLocal_No.attr("readonly") != "disabled") {
+            if ($DI_radCompraLocal_No.is(':checked')) {
+                $DI_txtValorUnitario.attr("disabled", "disabled");
+                $DI_txtValorUnitario.val("");
+                $DI_radTieneStock_Si.removeAttr("disabled");
+                $DI_radTieneStock_No.removeAttr("disabled");
+            }
+        }
+
+    }
+
+    function configurarModalPorTipoItem(strTipoItem) {
+
+        //Para Accesorios se ajusta su MODAL de la siguiente manera
+        if (strTipoItem != null) {
+            if (strTipoItem == $DI_hdnTipoItem_ACC.val()) {
+                $modalCotDetItem.css("width", "40%");
+                $DI_pnlInfoGeneral_COL01.removeClass("col-md-5");
+                $DI_pnlCostos_CostoFOB_Etiqueta.removeClass("col-md-3");
+                $DI_pnlCostos_ValorUnitario_Etiqueta.removeClass("col-md-3");
+                $DI_pnlCostos_TieneStock.removeClass("col-md-4");
+                $DI_pnlCostos_CompraLocal.removeClass("col-md-4");
+
+                $DI_pnlInfoGeneral_COL01.addClass("col-md-12");
+                $DI_pnlCostos_CostoFOB_Etiqueta.addClass("col-md-6");
+                $DI_pnlCostos_ValorUnitario_Etiqueta.addClass("col-md-6");
+                $DI_pnlCostos_TieneStock.addClass("col-md-8");
+                $DI_pnlCostos_CompraLocal.addClass("col-md-8");
+            }
+            else {
+                $modalCotDetItem.css("width", "80%");
+                $DI_pnlInfoGeneral_COL01.removeClass("col-md-12");
+                $DI_pnlCostos_CostoFOB_Etiqueta.removeClass("col-md-6");
+                $DI_pnlCostos_ValorUnitario_Etiqueta.removeClass("col-md-6");
+                $DI_pnlCostos_TieneStock.removeClass("col-md-8");
+                $DI_pnlCostos_CompraLocal.removeClass("col-md-8");
+
+                $DI_pnlInfoGeneral_COL01.addClass("col-md-5");
+                $DI_pnlCostos_CostoFOB_Etiqueta.addClass("col-md-3");
+                $DI_pnlCostos_ValorUnitario_Etiqueta.addClass("col-md-3");
+                $DI_pnlCostos_TieneStock.addClass("col-md-4");
+                $DI_pnlCostos_CompraLocal.addClass("col-md-4");
+            }
+        }
+
+        //Para Accesorios se modificarán los siguientes comportamientos
+        if (strTipoItem != null) {
+            if (strTipoItem == $DI_hdnTipoItem_ACC.val()) {
+                $DI_radTieneStock_Si.click(cargarLogicaAccesorios_Stock);
+                $DI_radTieneStock_No.click(cargarLogicaAccesorios_Stock);
+                $DI_radCompraLocal_Si.click(cargarLogicaAccesorios_CompraLocal);
+                $DI_radCompraLocal_No.click(cargarLogicaAccesorios_CompraLocal);
+            }
+            else {
+                $DI_radTieneStock_Si.click(null);
+                $DI_radTieneStock_No.click(null);
+                $DI_radCompraLocal_Si.click(null);
+                $DI_radCompraLocal_No.click(null);
+            }
+        }
+
+    }
+
     function editarCotDetItem(CodigoItem, opc) {
         $DI_hdnCodigoPadre.val("");
         $DI_opcGrilla.val(opc);
@@ -869,6 +1052,9 @@ var cotvtadet = (function ($, win, doc) {
         var objParam = JSON.stringify(objFiltros);
 
         var fnDoneCallBack = function (data) {
+
+            configurarModalPorTipoItem(data.Result.TipoItem);
+
             LimpiarModalDetItem();
             MostrarDatosItem(data);
 
@@ -891,66 +1077,12 @@ var cotvtadet = (function ($, win, doc) {
 
             //Se habilita el MODAL según la configuración del PRODUCTO (Equipo, Material, Repuesto)
             var oFeatures = data.Result.Features;
+            cargarPropiedadesPorCotDetItem(oFeatures);
 
-            if (oFeatures != null) {
-
-                if (oFeatures.IsEnabled) { $DI_btnGuardar.css("display", ""); }
-                else { $DI_btnGuardar.css("display", "none"); }
-
-                var arrSubProp = oFeatures.SubPropiedades
-
-                for (a = 0; a < arrSubProp.length; a++) {
-                    var oProp = arrSubProp[a];
-                    if (oProp.IdControl != null && oProp.IdControl != "") {
-                        var oCampo = document.getElementById(oProp.IdControl);
-                        if (oCampo != null && oCampo != undefined) {
-                            var $Campo = $("#" + oProp.IdControl);
-                            if (oProp.Nombre != null && oProp.Nombre != "" && oProp.Valor != null) {
-                                $Campo.removeAttr(oProp.Nombre);
-                                $Campo.attr(oProp.Nombre, oProp.Valor);
-                            }
-                            if (oProp.IsVisible) { $Campo.css("display", ""); }
-                            else { $Campo.css("display", "none"); }
-                            if (oProp.IsEnabled) {
-                                for (b = 0; b < $Campo.find("button").length; b++) {
-                                    var $button = $("#" + $Campo.find("button")[b].id);
-                                    $button.css("display", "");
-                                }
-                                for (b = 0; b < $Campo.find("input").length; b++) {
-                                    var $input = $("#" + $Campo.find("input")[b].id);
-                                    $input.removeAttr("disabled");
-                                }
-                                for (b = 0; b < $Campo.find("textarea").length; b++) {
-                                    var $textarea = $("#" + $Campo.find("textarea")[b].id);
-                                    $textarea.removeAttr("disabled");
-                                }
-                                for (b = 0; b < $Campo.find("select").length; b++) {
-                                    var $select = $("#" + $Campo.find("select")[b].id);
-                                    $select.removeAttr("disabled");
-                                }
-                            }
-                            else {
-                                for (b = 0; b < $Campo.find("button").length; b++) {
-                                    var $button = $("#" + $Campo.find("button")[b].id);
-                                    $button.css("display", "none");
-                                }
-                                for (b = 0; b < $Campo.find("input").length; b++) {
-                                    var $input = $("#" + $Campo.find("input")[b].id);
-                                    $input.attr("disabled", "disabled");
-                                }
-                                for (b = 0; b < $Campo.find("textarea").length; b++) {
-                                    var $textarea = $("#" + $Campo.find("textarea")[b].id);
-                                    $textarea.attr("disabled", "disabled");
-                                }
-                                for (b = 0; b < $Campo.find("select").length; b++) {
-                                    var $select = $("#" + $Campo.find("select")[b].id);
-                                    $select.attr("disabled", "disabled");
-                                }
-                            }
-                        }
-                    }
-                }
-
+            //Se carga la configuración de la lógica de STOCK para ACCESORIOS
+            if (data.Result.TipoItem == $DI_hdnTipoItem_ACC.val()) {
+                cargarLogicaAccesorios_Stock();
+                cargarLogicaAccesorios_CompraLocal();
             }
 
             cotvtacostos.cargarComboCotDetItems();
@@ -1141,31 +1273,43 @@ var cotvtadet = (function ($, win, doc) {
         var objParam = JSON.stringify(objFiltros);
 
         var fnDoneCallBack = function (data) {
+
             $DI_opcGrilla.val("1");
             LimpiarModalDetItem();
             MostrarDatosItem(data);
-            $DI_pnlInfoGeneral_Dimensiones.css("display", "none");
-            $DI_pnlInfoGeneral_DescripcionAdic.css("display", "none");
-            $DI_pnlCostos_PrecioVenta.css("display", "");
-            $DI_pnlCostos_CostoFOB.css("display", "none");
-            $DI_pnlCostos_ValorUnitario.css("display", "");
-            $DI_txtValorUnitario.removeAttr("disabled");
-            $DI_pnlCostos_TieneStock.css("display", "none");
-            $DI_pnlCostos_Calibracion.css("display", "none");
-            $DI_pnlCostos_Ganancia.css("display", "none");
-            $DI_pnlCostos_CompraLocal.css("display", "");
-            $DI_pnlCostos_ReqPlaca.css("display", "none");
-            $DI_pnlCostos_MantPrevent.css("display", "none");
-            $DI_pnlCostos_Manuales.css("display", "none");
-            $DI_pnlCostos_Videos.css("display", "none");
-            $DI_pnlCostos_Instalacion.css("display", "none");
-            $DI_pnlCostos_Capacitacion.css("display", "none");
-            $DI_pnlCostos_GarantAdic.css("display", "none");
-            $DI_pnlCostos_GarantAdic_Combo.css("display", "none");
-            $DI_pnlCostos_Flete.css("display", "none");
-            $DI_pnlCostos_ReqCliente.css("display", "none");
-            $DI_pnlCostos_ObsInsta.css("display", "none");
-            $DI_pnlDestinos.css("display", "none");
+
+            //$DI_pnlInfoGeneral_Dimensiones.css("display", "none");
+            //$DI_pnlInfoGeneral_DescripcionAdic.css("display", "none");
+            //$DI_pnlCostos_PrecioVenta.css("display", "");
+            //$DI_pnlCostos_CostoFOB.css("display", "none");
+            //$DI_pnlCostos_ValorUnitario.css("display", "");
+            //$DI_txtValorUnitario.removeAttr("disabled");
+            //$DI_pnlCostos_TieneStock.css("display", "");
+            //$DI_pnlCostos_Calibracion.css("display", "none");
+            //$DI_pnlCostos_Ganancia.css("display", "none");
+            //$DI_pnlCostos_CompraLocal.css("display", "");
+            //$DI_pnlCostos_ReqPlaca.css("display", "none");
+            //$DI_pnlCostos_MantPrevent.css("display", "none");
+            //$DI_pnlCostos_Manuales.css("display", "none");
+            //$DI_pnlCostos_Videos.css("display", "none");
+            //$DI_pnlCostos_Instalacion.css("display", "none");
+            //$DI_pnlCostos_Capacitacion.css("display", "none");
+            //$DI_pnlCostos_GarantAdic.css("display", "none");
+            //$DI_pnlCostos_GarantAdic_Combo.css("display", "none");
+            //$DI_pnlCostos_Flete.css("display", "none");
+            //$DI_pnlCostos_ReqCliente.css("display", "none");
+            //$DI_pnlCostos_ObsInsta.css("display", "none");
+            //$DI_pnlDestinos.css("display", "none");
+
+            //Se habilita el MODAL según la configuración del PRODUCTO (Equipo, Material, Repuesto)
+            var oFeatures = data.Result.Features;
+            cargarPropiedadesPorCotDetItem(oFeatures);
+
+            //Se configura la lógica de STOCK para ACCESORIOS
+            configurarModalPorTipoItem(data.Result.TipoItem);
+            cargarLogicaAccesorios_Stock();
+            cargarLogicaAccesorios_CompraLocal();
+
             $('#modalDetalleItem').modal('show');
         };
 
@@ -1412,6 +1556,7 @@ var cotvtadet = (function ($, win, doc) {
             var objDatos = {
                 CotizacionDetallePadre: { CodItem: $DI_hdnCodigoPadre.val() },
                 CotizacionDetalle: {
+                    Id: $DI_hdnIdCotDet.val(),
                     CodItem: $DI_hdnCodigo.val(),
                     CodItemTemp: $DI_txtCodigo.val(),
                     DescripcionAdicional: $DI_txtDescripcionAdic.val(),
