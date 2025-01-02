@@ -966,7 +966,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         ViewBag.PermitirTabLLaveMano = true;
                         ViewBag.PermitirTabManuales = true;
                         ViewBag.PermitirTabVideos = true;
-                        ViewBag.PermitirTabCalib = true;
+                        ViewBag.PermitirTabCalib = false;
                     }
 
                     if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Logistica)
