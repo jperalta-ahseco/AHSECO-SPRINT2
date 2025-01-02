@@ -5697,6 +5697,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         [HttpPost]
         public JsonResult GenerarHojaLiquidacion(CotizacionDTO cotizacionDTO)
         {
+            var tipoSol = VariableSesion.getCadena("tipoSol");
+
+
             var ventasBL = new VentasBL();
             var datosCabeceraCotizacion = ventasBL.ObtenerCotizacionVenta(cotizacionDTO).Result.First();
 
@@ -5891,10 +5894,14 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             //cell.CellStyle = style;
             //cell.SetCellValue("Stock Disponible");
 
-            cell = row.CreateCell(cellnum++);
-            cell.CellStyle = style;
-            cell.SetCellValue("Unidad de Medida");
-
+            //Se controla para solicitudes de tipo servicio
+            if (tipoSol != ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.Servicio)
+            {
+                cell = row.CreateCell(cellnum++);
+                cell.CellStyle = style;
+                cell.SetCellValue("Unidad de Medida");
+            }
+            
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
             cell.SetCellValue("Cantidad");
@@ -5903,13 +5910,17 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             cell.CellStyle = style;
             cell.SetCellValue("Valor Venta Total Sin IGV");
 
-            cell = row.CreateCell(cellnum++);
-            cell.CellStyle = style;
-            cell.SetCellValue("Ganancia(%)");
+            //Se controla para solicitudes de tipo servicio/repuesto/comestibles
+            if (tipoSol != ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.Servicio && tipoSol != ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.ServiciosYRepuestos && tipoSol != ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.RepuestosOComestibles)
+            {
+                cell = row.CreateCell(cellnum++);
+                cell.CellStyle = style;
+                cell.SetCellValue("Ganancia(%)");
 
-            cell = row.CreateCell(cellnum++);
-            cell.CellStyle = style;
-            cell.SetCellValue("Valor Venta Total Sin IGV (Con Ganancia)");
+                cell = row.CreateCell(cellnum++);
+                cell.CellStyle = style;
+                cell.SetCellValue("Valor Venta Total Sin IGV (Con Ganancia)");
+            }
 
             //// Impresión de la data
             foreach (var item in datosDetalleCotizacion)
@@ -5933,8 +5944,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 //    cell.SetCellValue(item.Stock.ToString());
                 //}
 
-                cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(item.CodUnidad);
+                if (tipoSol != ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.Servicio)
+                {
+                    cell = row.CreateCell(cellnum++);
+                    cell.SetCellValue(item.CodUnidad);
+                }
 
                 cell = row.CreateCell(cellnum++);
                 cell.SetCellValue(item.Cantidad.ToString());
@@ -5948,24 +5962,26 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 cell = row.CreateCell(cellnum++);
                 cell.SetCellValue(ventaTotalSinIgv);
 
-                var porcentajeGanancia = "";
-                if (item.PorcentajeGanancia.HasValue)
+                if (tipoSol != ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.Servicio && tipoSol != ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.ServiciosYRepuestos && tipoSol != ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.RepuestosOComestibles)
                 {
-                    porcentajeGanancia = item.PorcentajeGanancia.Value.ToString("0.00");
+
+                    var porcentajeGanancia = "";
+                    if (item.PorcentajeGanancia.HasValue)
+                    {
+                        porcentajeGanancia = item.PorcentajeGanancia.Value.ToString("0.00");
+                    }
+
+                    cell = row.CreateCell(cellnum++);
+                    cell.SetCellValue(porcentajeGanancia);
+
+                    var ventaTotalSinIgvConGanancia = "";
+                    if (item.VentaTotalSinIGVConGanacia.HasValue)
+                    {
+                        ventaTotalSinIgvConGanancia = item.VentaTotalSinIGVConGanacia.Value.ToString("0.00");
+                    }
+                    cell = row.CreateCell(cellnum++);
+                    cell.SetCellValue(ventaTotalSinIgvConGanancia);
                 }
-
-                cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(porcentajeGanancia);
-
-                var ventaTotalSinIgvConGanancia = "";
-                if (item.VentaTotalSinIGVConGanacia.HasValue)
-                {
-                    ventaTotalSinIgvConGanancia = item.VentaTotalSinIGVConGanacia.Value.ToString("0.00");
-                }
-                cell = row.CreateCell(cellnum++);
-                cell.SetCellValue(ventaTotalSinIgvConGanancia);
-
-
             }
 
             int rownum5 = 6 + datosDetalleCotizacion.Count();
@@ -5984,15 +6000,20 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             //cell5 = row5.CreateCell(cellnum5++);
             //cell5.SetCellValue("");
+            if (tipoSol != ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.Servicio)
+            {
+                cell5 = row5.CreateCell(cellnum5++);
+                cell5.SetCellValue("");
+            }
 
-            cell5 = row5.CreateCell(cellnum5++);
-            cell5.SetCellValue("");
+            if (tipoSol != ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.Servicio && tipoSol != ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.ServiciosYRepuestos && tipoSol != ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.RepuestosOComestibles)
+            {
+                cell5 = row5.CreateCell(cellnum5++);
+                cell5.SetCellValue("");
 
-            cell5 = row5.CreateCell(cellnum5++);
-            cell5.SetCellValue("");
-
-            cell5 = row5.CreateCell(cellnum5++);
-            cell5.SetCellValue("");
+                cell5 = row5.CreateCell(cellnum5++);
+                cell5.SetCellValue("");
+            }
 
             cell5 = row5.CreateCell(cellnum5++);
             cell5.CellStyle = style;
@@ -6023,14 +6044,21 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             //cell6 = row6.CreateCell(cellnum6++);
             //cell6.SetCellValue("");
 
-            cell6 = row6.CreateCell(cellnum6++);
-            cell6.SetCellValue("");
 
-            cell6 = row6.CreateCell(cellnum6++);
-            cell6.SetCellValue("");
+            if (tipoSol != ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.Servicio)
+            {
+                cell6 = row6.CreateCell(cellnum6++);
+                cell6.SetCellValue("");
+            }
 
-            cell6 = row6.CreateCell(cellnum6++);
-            cell6.SetCellValue("");
+            if (tipoSol != ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.Servicio && tipoSol != ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.ServiciosYRepuestos && tipoSol != ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.RepuestosOComestibles)
+            {
+                cell6 = row6.CreateCell(cellnum6++);
+                cell6.SetCellValue("");
+
+                cell6 = row6.CreateCell(cellnum6++);
+                cell6.SetCellValue("");
+            }
 
             cell6 = row6.CreateCell(cellnum6++);
             cell6.CellStyle = style;
@@ -6061,14 +6089,21 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             //cell7 = row7.CreateCell(cellnum7++);
             //cell7.SetCellValue("");
 
-            cell7 = row7.CreateCell(cellnum7++);
-            cell7.SetCellValue("");
 
-            cell7 = row7.CreateCell(cellnum7++);
-            cell7.SetCellValue("");
+            if (tipoSol != ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.Servicio)
+            {
+                cell7 = row7.CreateCell(cellnum7++);
+                cell7.SetCellValue("");
+            }
 
-            cell7 = row7.CreateCell(cellnum7++);
-            cell7.SetCellValue("");
+            if (tipoSol != ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.Servicio && tipoSol != ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.ServiciosYRepuestos && tipoSol != ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.RepuestosOComestibles)
+            {
+                cell7 = row7.CreateCell(cellnum7++);
+                cell7.SetCellValue("");
+
+                cell7 = row7.CreateCell(cellnum7++);
+                cell7.SetCellValue("");
+            }
 
             cell7 = row7.CreateCell(cellnum7++);
             cell7.CellStyle = style;
