@@ -1305,7 +1305,7 @@
 
         if (fechaProgramacion > fechaInstalacion && fechaInstalacion != '') {
             app.message.error("Validación", "La Fecha de Programación no puede ser mayor a la Fecha de Instalación");
-            return
+            return;
         };
 
         var idDespacho = id;
@@ -1434,9 +1434,6 @@
                 else {
                     obtenerDetalleInstalacion();
                 }
-                var smth = $('#tblElementosDeProducto tbody tr td #checkSeleccionar').val();
-                console.log(smth);
-                console.log($('#tblElementosDeProducto tbody tr td').children());
             };
 
             var fnFailCallBack = function () {
@@ -2694,7 +2691,7 @@
                             '<input disabled type="date" class="form-control input-sm" id="dateFechaInstalacion' + row.Id_Despacho + '" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" value="' + row.FechaInstalacion + '">';
 
                         if ($tipoproceso.val() == "U" & ($estadoReq.val() != "STINS" & $estadoReq.val() != "STFIN") && row.Serie != "") {
-                            if (row.FechaProgramacion != "") {
+                            if (row.FechaProgramacion != "" && row.NombreCompletoTecnico != "  ") {
                                 if (row.FechaInstalacion != "") {
                                     html += '<a style="pointer-events:none; background-color: gray;color: white;" class="input-group-addon input-sm" id="activeFechaInstalacion' + row.Id_Despacho + '" title="Ingresar Fecha Instalación" href="javascript:registroInstalacionTec.activarFechaInstalacion(' + row.Id_Despacho + ')">' +
                                         '<i class="fa fa-pencil" aria-hidden="true"></i>' +
