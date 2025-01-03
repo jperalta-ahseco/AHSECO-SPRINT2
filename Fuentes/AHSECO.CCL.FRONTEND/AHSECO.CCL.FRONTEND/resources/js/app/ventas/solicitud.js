@@ -118,6 +118,7 @@
     var $DsctoRequiereAprobacion = $("#DsctoRequiereAprobacion");
     var $DsctoAprobado = $("#DsctoAprobado");
     var $DsctoRespondido = $("#DsctoRespondido");
+    var $PermitirAprobarDscto = $("#PermitirAprobarDscto");
     var $modalAprobDscto = $("#modalAprobDscto");
     var $AD_btnGuardarAprobDscto = $("#AD_btnGuardarAprobDscto");
     var $AD_radRpta_Si = $("#AD_radRpta_Si");
@@ -489,7 +490,7 @@
         cargarGrillaCotDetServicios("2");
         IniciarBotonSeleccionarTecnico();
         cargaCombos();
-        if ($DsctoRequiereAprobacion.val() == "S" && $DsctoRespondido.val() == "N") {
+        if ($DsctoRequiereAprobacion.val() == "S" && $DsctoRespondido.val() == "N" && $PermitirAprobarDscto.val() == "S") {
             $modalAprobDscto.modal('show');
         }
         $AD_btnGuardarAprobDscto.click(guardarAprobDscto);

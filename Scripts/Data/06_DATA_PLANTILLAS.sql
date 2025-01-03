@@ -36,6 +36,24 @@ VALUES('PLANCOTVEN',1,'Plantilla de cotización para vendedor','','','FINALIZACIÓ
 <p>Por favor ingrese al sistema para continuar con el flujo de venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
 
 INSERT INTO TBM_PLANTILLAS
+VALUES('PENAPDSCTO',1,'Plantilla de Descuento Pendiente','pminetti@ahsecoperu.pe','','ATENCION DE DESCUENTO - N° SOLICITUD {NRO_SOL}',
+			   '<p>Sr. Pedro Minetti,</p>
+<p>Se solicita la aprobaci&oacute;n del descuento de la cotizaci&oacute;n perteneciente en la solicitud N&deg; {NRO_SOL} para la empresa {NOM_EMPRESA}.</p>
+<p>Por favor ingrese al sistema para continuar con el flujo de venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
+
+INSERT INTO TBM_PLANTILLAS
+VALUES('DSCTOAPROB',1,'Plantilla de Descuento Aprobado','','','DESCUENTO APROBADO - N° SOLICITUD {NRO_SOL}',
+			   '<p>Sr(a). Vendedor(a), {NOM_VENDEDOR}</p>
+<p>Se aprueba del descuento de la cotizaci&oacute;n perteneciente en la solicitud N&deg; {NRO_SOL} para la empresa {NOM_EMPRESA}.</p>
+<p>Por favor ingrese al sistema para continuar con el flujo de venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
+
+INSERT INTO TBM_PLANTILLAS
+VALUES('DSCTODESAP',1,'Plantilla de Descuento Desaprobado','','','DESCUENTO DESAPROBADO - N° SOLICITUD {NRO_SOL}',
+			   '<p>Sr(a). Vendedor(a), {NOM_VENDEDOR}</p>
+<p>Se desaprueba del descuento de la cotizaci&oacute;n perteneciente en la solicitud N&deg; {NRO_SOL} para la empresa {NOM_EMPRESA}.</p>
+<p>Por favor ingrese al sistema para continuar con el flujo de venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
+
+INSERT INTO TBM_PLANTILLAS
 VALUES('PLANINSTEC',3,'Plantilla de instalación técnica para vendedor','','pminetti@ahsecoperu.com;facturacion@ahsecoperu.com;ahseco@ahsecoperu.com;cobranzas@ahsecoperu.com','FINALIZACIÓN DE INSTALACIÓN DE EQUIPOS - N° SOLICITUD {NRO_SOL}',
 			   '<p>Estimado(a)s,</p>
 <p>Se finalizó la instalación de los equipos pertenecientes a la solicitud de venta N°{NRO_SOL} para el cliente {CLIENTE} con el requerimiento N°{NRO_REQ}.</p>

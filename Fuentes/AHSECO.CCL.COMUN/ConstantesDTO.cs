@@ -330,6 +330,9 @@ namespace AHSECO.CCL.COMUN
                 public static string EnvioGuiaBO { get { return "PLANGUIABO"; } }
                 public static string EnvioGuiaPedidos { get { return "PLANGUIAPE"; } }
                 public static string EnvioServTecnico { get { return "PLANSTECV"; } }
+                public static string DsctoPendienteAprob { get { return "PENAPDSCTO"; } }
+                public static string DsctoAprobado { get { return "DSCTOAPROB"; } }
+                public static string DsctoDesaprobado { get { return "DSCTODESAP"; } }
             }
             public struct Viaticos
             {

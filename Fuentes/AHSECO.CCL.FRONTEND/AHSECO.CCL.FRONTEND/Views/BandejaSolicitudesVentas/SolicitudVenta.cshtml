@@ -59,6 +59,8 @@
     if (ViewBag.DsctoAprobado != null) { if (ViewBag.DsctoAprobado == true) { strDsctoAprobado = "S"; } else { strDsctoAprobado = "N"; } }
     var strDsctoRespondido = "N";
     if (ViewBag.DsctoRespondido == true) { strDsctoRespondido = "S"; }
+    var strPermitirAprobarDscto = "N";
+    if (ViewBag.PermitirAprobarDscto == true) { strPermitirAprobarDscto = "S"; }
     var strPermitirEnvioCotizacion = "N";
     if (ViewBag.PermitirEnvioCotizacion != null) { if (ViewBag.PermitirEnvioCotizacion == true) { strPermitirEnvioCotizacion = "S"; } }
 }
@@ -94,6 +96,7 @@
 <input type="hidden" id="DsctoRequiereAprobacion" value="@strDsctoRequiereAprobacion" />
 <input type="hidden" id="DsctoAprobado" value="@strDsctoAprobado" />
 <input type="hidden" id="DsctoRespondido" value="@strDsctoRespondido" />
+<input type="hidden" id="PermitirAprobarDscto" value="@strPermitirAprobarDscto" />
 <input type="hidden" id="TipoSol_Servicio" value="@TipoSol_Servicio" />
 <input type="hidden" id="TipoSol_RepOComes" value="@TipoSol_RepOComes" />
 <input type="hidden" id="TipoSol_ServYRep" value="@TipoSol_ServYRep" />
@@ -387,8 +390,8 @@
                                                         {
                                                             <button style="@(ViewBag.PermitirExportarLiquidacion ? "" : "display:none")" class="btn btn-info btn-sm" type="button" id="btnExportarLiquidacion"><i class="fa fa-table" aria-hidden="true"></i>&nbsp;Exportar Liquidaci&oacute;n</button>
                                                             <button style="@(ViewBag.PermitirImprimirCotizacion ? "" : "display:none")" class="btn btn-primary btn-sm" type="button" id="btnImprimirCotizacion"><i class="fa fa-print" aria-hidden="true"></i>&nbsp;Imprimir Cotizaci&oacute;n</button>
-                                                            <button style="@(ViewBag.DsctoRequiereAprobacion && ViewBag.DsctoRespondido == false ? "" : "display:none")" data-target="#modalAprobDscto" data-toggle="modal" class="btn btn-warning btn-sm" type="button" data-dismiss="modal" id="btnAprobarDscto" tabindex="14"><i class="fa fa-percent" aria-hidden="true"></i>&nbsp;Aprobar Descuento</button>
-                                                            <button style="@(ViewBag.DsctoRequiereAprobacion && ViewBag.DsctoRespondido == true ? "" : "display:none")" class="btn btn-warning btn-sm" type="button" data-dismiss="modal" id="btnVerComentarioDscto" tabindex="14"><i class="fa fa-percent" aria-hidden="true"></i>&nbsp;Aprobación de Descuento</button>
+                                                            <button style="@(ViewBag.DsctoRequiereAprobacion && ViewBag.DsctoRespondido == false && ViewBag.PermitirAprobarDscto == true ? "" : "display:none")" data-target="#modalAprobDscto" data-toggle="modal" class="btn btn-warning btn-sm" type="button" data-dismiss="modal" id="btnAprobarDscto" tabindex="14"><i class="fa fa-percent" aria-hidden="true"></i>&nbsp;Aprobar Descuento</button>
+                                                            <button style="display:none" class="btn btn-warning btn-sm" type="button" data-dismiss="modal" id="btnVerComentarioDscto" tabindex="14"><i class="fa fa-percent" aria-hidden="true"></i>&nbsp;Aprobación de Descuento</button>
                                                         }
                                                         else
                                                         {

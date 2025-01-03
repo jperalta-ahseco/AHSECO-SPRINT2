@@ -173,6 +173,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.DsctoRequiereAprobacion = false;
             ViewBag.DsctoAprobado = false;
             ViewBag.DsctoRespondido = false;
+            ViewBag.PermitirAprobarDscto = false;
 
             ViewBag.PermitirTabDetCot = true;
             ViewBag.PermitirTabInsta = false;
@@ -212,6 +213,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             if (EsFlujoValorizacion())
             { ViewBag.PermitirEditarValorizacion = true; }
+
+            if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Gerente) { ViewBag.PermitirAprobarDscto = true; }
 
             if (ViewBag.PermitirEditarValorizacion == true)
             {
@@ -4275,6 +4278,17 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     }
                 }
 
+                if (cotActualDTO.IndDsctoRequiereAprob.HasValue)
+                {
+                    if (cotActualDTO.IndDsctoRequiereAprob.Value)
+                    {
+                        if (cotActualDTO.IndDsctoAprob.HasValue == false)
+                        {
+                            NotificarDescuentoPendienteAprobacion(cotActualDTO.IdSolicitud);
+                        }
+                    }
+                }
+
                 return Json(new { Status = 1, Mensaje = "Cotización guardada correctamente" });
             }
             catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
@@ -4946,7 +4960,14 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             oCotizacion.IndDsctoAprob = cot.IndDsctoAprob;
             if (cot.IndDsctoAprob.HasValue)
             {
-                if (!cot.IndDsctoAprob.Value) { oCotizacion.PorcentajeDescuento = null; }
+                if (!cot.IndDsctoAprob.Value) { 
+                    oCotizacion.PorcentajeDescuento = null;
+                    NotificarDescuentoDesaprobado(oCotizacion.IdSolicitud);
+                }
+                else
+                {
+                    NotificarDescuentoAprobado(oCotizacion.IdSolicitud);
+                }
             }
             oCotizacion.TipoProceso = ConstantesDTO.CotizacionVenta.TipoProceso.Modificar;
             oCotizacion.UsuarioRegistra = User.ObtenerUsuario();
@@ -5882,6 +5903,93 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 Log.TraceInfo("Solicitud N° " + codigoSolicitud.ToString() + ":" + respuesta);
                 result.Codigo = 0;
                 result.Mensaje = "No se pudo enviar el correo para logistica de la solicitud N° " + codigoSolicitud.ToString();
+                //throw new Exception(respuesta);
+            }
+
+        }
+
+        private void NotificarDescuentoPendienteAprobacion(long codigoSolicitud)
+        {
+            var result = new RespuestaDTO();
+            var ventasBL = new VentasBL();
+
+            var plantillasBL = new PlantillasBL();
+            var filtros = new FiltroPlantillaDTO();
+            PlantillaCorreoDTO datos_correo = null;
+            string respuesta = null;
+
+            //Envio de correo a Gerente
+            filtros.CodigoProceso = ConstantesDTO.Procesos.Ventas.ID;
+            filtros.CodigoPlantilla = ConstantesDTO.Plantillas.Ventas.DsctoPendienteAprob;
+            filtros.Usuario = User.ObtenerUsuario();
+            filtros.Codigo = Convert.ToInt32(codigoSolicitud);
+            datos_correo = plantillasBL.ConsultarPlantillaCorreo(filtros).Result;
+
+            respuesta = Utilidades.Send(datos_correo.To, datos_correo.CC, "", datos_correo.Subject, datos_correo.Body, null, "");
+            if (respuesta != "OK")
+            {
+                CCLog Log = new CCLog();
+                Log.TraceInfo("Solicitud N° " + codigoSolicitud.ToString() + ":" + respuesta);
+                result.Codigo = 0;
+                result.Mensaje = "No se pudo enviar el correo para Gerente de la solicitud N° " + codigoSolicitud.ToString();
+                //throw new Exception(respuesta);
+            }
+
+        }
+
+        private void NotificarDescuentoAprobado(long codigoSolicitud)
+        {
+            var result = new RespuestaDTO();
+            var ventasBL = new VentasBL();
+
+            var plantillasBL = new PlantillasBL();
+            var filtros = new FiltroPlantillaDTO();
+            PlantillaCorreoDTO datos_correo = null;
+            string respuesta = null;
+
+            //Envio de correo a Usuario
+            filtros.CodigoProceso = ConstantesDTO.Procesos.Ventas.ID;
+            filtros.CodigoPlantilla = ConstantesDTO.Plantillas.Ventas.DsctoAprobado;
+            filtros.Usuario = User.ObtenerUsuario();
+            filtros.Codigo = Convert.ToInt32(codigoSolicitud);
+            datos_correo = plantillasBL.ConsultarPlantillaCorreo(filtros).Result;
+
+            respuesta = Utilidades.Send(datos_correo.To, datos_correo.CC, "", datos_correo.Subject, datos_correo.Body, null, "");
+            if (respuesta != "OK")
+            {
+                CCLog Log = new CCLog();
+                Log.TraceInfo("Solicitud N° " + codigoSolicitud.ToString() + ":" + respuesta);
+                result.Codigo = 0;
+                result.Mensaje = "No se pudo enviar el correo para Gerente de la solicitud N° " + codigoSolicitud.ToString();
+                //throw new Exception(respuesta);
+            }
+
+        }
+
+        private void NotificarDescuentoDesaprobado(long codigoSolicitud)
+        {
+            var result = new RespuestaDTO();
+            var ventasBL = new VentasBL();
+
+            var plantillasBL = new PlantillasBL();
+            var filtros = new FiltroPlantillaDTO();
+            PlantillaCorreoDTO datos_correo = null;
+            string respuesta = null;
+
+            //Envio de correo a Usuario
+            filtros.CodigoProceso = ConstantesDTO.Procesos.Ventas.ID;
+            filtros.CodigoPlantilla = ConstantesDTO.Plantillas.Ventas.DsctoDesaprobado;
+            filtros.Usuario = User.ObtenerUsuario();
+            filtros.Codigo = Convert.ToInt32(codigoSolicitud);
+            datos_correo = plantillasBL.ConsultarPlantillaCorreo(filtros).Result;
+
+            respuesta = Utilidades.Send(datos_correo.To, datos_correo.CC, "", datos_correo.Subject, datos_correo.Body, null, "");
+            if (respuesta != "OK")
+            {
+                CCLog Log = new CCLog();
+                Log.TraceInfo("Solicitud N° " + codigoSolicitud.ToString() + ":" + respuesta);
+                result.Codigo = 0;
+                result.Mensaje = "No se pudo enviar el correo para Gerente de la solicitud N° " + codigoSolicitud.ToString();
                 //throw new Exception(respuesta);
             }
 
