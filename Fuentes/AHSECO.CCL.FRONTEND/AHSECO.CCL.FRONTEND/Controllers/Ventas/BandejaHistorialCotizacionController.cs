@@ -116,22 +116,19 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     // Agregar las propiedades y contenido a la celda
                     var cell1 = CreateCell("Logo","S","16","LEFT");
                     cell1.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new VerticalMerge() { Val = MergedCellValues.Restart },
-                                                                                                              new GridSpan() { Val = 3 },
-                                                                                                              new TableCellWidth() { Type = TableWidthUnitValues.Pct, Width = "450" } // Establecer ancho de celda (en porcentajes)
+                                                                                                              new GridSpan() { Val = 4 }
                                                                                                              );
                     CellWith(cell1, "5");
 
 
                     var cell2 = CreateCell(cotizacion.Result.DocumentoCabecera.Encabezado,"N","16","CENTER");
                     cell2.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new VerticalMerge() { Val = MergedCellValues.Restart },
-                                                                                                              new GridSpan() { Val = 4 },
-                                                                                                              new TableCellWidth() { Type = TableWidthUnitValues.Pct, Width = "350" }
+                                                                                                              new GridSpan() { Val = 4 }
                                                                                                               );
 
                     CellWith(cell2, "9");
                     var cell3 = CreateCell("COTIZACIÓN","N","22","CENTER");
-                    cell3.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 3 },
-                                                                                                              new TableCellWidth() { Type = TableWidthUnitValues.Pct, Width = "200" });
+                    cell3.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 2 });
                     CellWith(cell3, "4");
                     row1.Append(cell1, cell2, cell3);
 
@@ -140,17 +137,15 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                     var cell4 = CreateCell("","S","16","LEFT");
                     cell4.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new VerticalMerge() { Val = MergedCellValues.Continue },
-                                                                                                              new GridSpan() { Val = 3 },
-                                                                                                              new TableCellWidth() { Type = TableWidthUnitValues.Pct, Width = "450" });
+                                                                                                              new GridSpan() { Val = 4 });
 
                     var cell5 = CreateCell("","N","16", "CENTER");
                     cell5.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new VerticalMerge() { Val = MergedCellValues.Continue },
-                                                                                                              new GridSpan() { Val = 4 },
-                                                                                                              new TableCellWidth() { Type = TableWidthUnitValues.Pct, Width = "350" });
+                                                                                                              new GridSpan() { Val = 4 });
 
                     var cell6 = CreateCell(cotizacion.Result.DocumentoCabecera.NumeroCotizacion,"N","22", "CENTER");
-                    cell6.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 3 },
-                                                                                                              new TableCellWidth() { Type = TableWidthUnitValues.Pct, Width = "200" });
+                    cell6.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 2 });
+
 
                     row2.Append(cell4, cell5, cell6);
 
@@ -234,7 +229,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     var cell21 = CreateCell("Forma de Pago:","S","16", "LEFT");
                     cell21.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 2 });
 
-                    var cell22 = CreateCell(cotizacionDTO.DescFormaPago,"N","16","LEFT");
+                    var cell22 = CreateCell(cotizacion.Result.DocumentoCabecera.FormaPago, "N","16","LEFT");
                     cell22.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 2 });
 
                     row10.Append(cell18, cell19, cell20, cell21, cell22);
@@ -343,42 +338,49 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                     // Crear la primera fila
                     DocumentFormat.OpenXml.Wordprocessing.TableRow row16 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
-                    var cell44 = CreateCell("ITEM","S","16", "LEFT");
+                    var cell44 = CreateCell("ITEM","S","16", "CENTER");
+                    cell44.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new TableCellWidth() { Type = TableWidthUnitValues.Pct, Width = "60" });
                     CellBackground(cell44, "22d9f4");
                     CellBorder(cell44, 4, 4, 4, 4, "000000");
-                    CellWith(cell44, "4");
+                   
 
-                    var cell45 = CreateCell("CATÁLOGO","S","16", "LEFT");
-                    cell45.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 2 });
+                    var cell45 = CreateCell("CATÁLOGO","S","16", "CENTER");
+                    cell45.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 2 },
+                                                        new TableCellWidth() { Type = TableWidthUnitValues.Pct, Width = "100" });
                     CellBackground(cell45, "22d9f4");
                     CellBorder(cell45, 4, 4, 4, 4, "000000");
-                    CellWith(cell45, "4");
+                    
 
-                    var cell46 = CreateCell("DESCRIPCIÓN","S","16", "LEFT");
-                    cell46.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 3 });
+                    var cell46 = CreateCell("DESCRIPCIÓN","S","16", "CENTER");
+                    cell46.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 3 },
+                                                                                                new TableCellWidth() { Type = TableWidthUnitValues.Pct, Width = "400" });
                     CellBackground(cell46, "22d9f4");
                     CellBorder(cell46, 4, 4, 4, 4, "000000");
-                    CellWith(cell46, "9");
+                    
 
-                    var cell47 = CreateCell("UND","S","16", "LEFT");
+                    var cell47 = CreateCell("UND","S","16", "CENTER");
+                    cell47.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new TableCellWidth() { Type = TableWidthUnitValues.Pct, Width = "100" });
                     CellBackground(cell47, "22d9f4");
                     CellBorder(cell47, 4, 4, 4, 4, "000000");
-                    CellWith(cell47, "2");
+               
 
-                    var cell48 = CreateCell("CANT.", "S", "16", "LEFT");
+                    var cell48 = CreateCell("CANT.", "S", "16", "CENTER");
+                    cell48.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new TableCellWidth() { Type = TableWidthUnitValues.Pct, Width = "100" });
                     CellBackground(cell48, "22d9f4");
                     CellBorder(cell48, 4, 4, 4, 4, "000000");
-                    CellWith(cell48, "3");
+                  
 
-                    var cell49 = CreateCell("PRECIO UNITARIO","S","16", "LEFT");
+                    var cell49 = CreateCell("PRECIO UNITARIO","S","16", "CENTER");
+                    cell49.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new TableCellWidth() { Type = TableWidthUnitValues.Pct, Width = "120" });
                     CellBackground(cell49, "22d9f4");
                     CellBorder(cell49, 4, 4, 4, 4, "000000");
-                    CellWith(cell49, "4");
+                  
 
-                    var cell50 = CreateCell("TOTAL","S","16", "LEFT");
+                    var cell50 = CreateCell("TOTAL","S","16", "CENTER");
+                    cell50.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new TableCellWidth() { Type = TableWidthUnitValues.Pct, Width = "120" });
                     CellBackground(cell50, "22d9f4");
                     CellBorder(cell50, 4, 4, 4, 4, "000000");
-                    CellWith(cell50, "4");
+                   
 
                     row16.Append(cell44, cell45, cell46, cell47, cell48, cell49, cell50);
                     table3.Append(row16);
@@ -435,7 +437,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                     var cell62 = CreateCell("", "N", "16","CENTER");
 
-                    var cell63 = CreateCell("SUBTOTAL:", "S", "16","LEFT");
+                    var cell63 = CreateCell("SUBTOTAL:", "S", "16", "CENTER");
                     CellBorder(cell63, 4, 4, 4, 4, "000000");
 
                     var cell64 = CreateCell(cotizacion.Result.DocumentoCabecera.Subtotal, "N", "16","LEFT");
@@ -458,7 +460,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                     var cell69 = CreateCell("", "N", "16","CENTER");
 
-                    var cell70 = CreateCell("IGV (18%):", "S", "16","LEFT");
+                    var cell70 = CreateCell("IGV (18%):", "S", "16", "CENTER");
                     CellBorder(cell70, 4, 4, 4, 4, "000000");
 
                     var cell71 = CreateCell(cotizacion.Result.DocumentoCabecera.Igv, "N", "16","LEFT");
@@ -481,7 +483,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                     var cell76 = CreateCell("", "N", "16","CENTER");
 
-                    var cell77 = CreateCell("TOTAL:", "S", "16","LEFT");
+                    var cell77 = CreateCell("TOTAL:", "S", "16", "CENTER");
                     CellBorder(cell77, 4, 4, 4, 4, "000000");
 
                     var cell78 = CreateCell(cotizacion.Result.DocumentoCabecera.Total, "N", "16","LEFT");
