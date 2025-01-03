@@ -109,8 +109,8 @@
             $("#DS_txtPrecio").val('0.00');
             precio = 0;
         }
-        cantidad = parseInt($("#DS_txtCantidad").val())
-        precio = parseFloat($("#DS_txtPrecio").val())
+        cantidad = parseInt($("#DS_txtCantidad").val().replace(",", ""))
+        precio = parseFloat($("#DS_txtPrecio").val().replace(",", ""))
         total = cantidad * precio;
         $("#DS_txtTotalVenta").val(app.formatearEnteroComa(total.toFixed(2)));
     }
