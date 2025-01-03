@@ -3406,8 +3406,19 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 //x.TipoItem != ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio));
 
                 //Se mostrará los PRODUCTOS incluyendo los ACCESORIOS
-                var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems.Where(x => x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto ||
-                x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio));
+                var lstCotDetItems = new List<CotizacionDetalleDTO>();
+                if(oCotDetItem.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto ||
+                    oCotDetItem.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio)
+                {
+                    lstCotDetItems = lstItems.Where(x => x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto ||
+                    x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio).ToList();
+                }
+                else
+                {
+                    lstCotDetItems = lstItems.Where(x => x.TipoItem == oCotDetItem.TipoItem).ToList();
+                }
+
+                var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstCotDetItems);
 
                 return Json(response);
             }
@@ -3710,7 +3721,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         if (!swDatos) { throw new Exception("No se ha ingresado el COSTO FOB de '" + oItem.Descripcion + "'"); }
                     }
 
-                    if(oItem.TipoItem != ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio)
+                    if (oItem.TipoItem != ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio)
                     {
                         //Para los PRODUCTOS se valida su VALOR UNITARIO
                         if (swValidarValorUni)
@@ -3774,8 +3785,17 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 //Se mostrará los PRODUCTOS incluyendo los ACCESORIOS
                 if (cotizacionDetalle != null)
                 {
-                    lstItems_1 = lstItems_1.Where(x => !x.IsTempRecord &&
-                  (x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto || x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio)).ToList();
+                    if (cotizacionDetalle.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto ||
+                        cotizacionDetalle.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio)
+                    {
+                        lstItems_1 = lstItems_1.Where(x => !x.IsTempRecord &&
+                        (x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto || x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio)).ToList();
+                    }
+                    else
+                    {
+                        lstItems_1 = lstItems_1.Where(x => !x.IsTempRecord &&
+                        (x.TipoItem == cotizacionDetalle.TipoItem)).ToList();
+                    }
                 }
                 else
                 { lstItems_1 = lstItems_1.Where(x => !x.IsTempRecord).ToList(); }
