@@ -2018,18 +2018,18 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             List<CotizacionDetalleDTO> lstItems = new List<CotizacionDetalleDTO>();
             if (VariableSesion.getObject(TAG_CDI) != null) { lstItems = (List<CotizacionDetalleDTO>)VariableSesion.getObject(TAG_CDI); }
 
-            if (lstItems.Any(x => x.NroItem == CotDet.NroItem && x.CodItem.Trim() == CotDet.CodItem.Trim()))
+            if (lstItems.Any(x => x.NroItem == CotDet.NroItem && x.Id == CotDet.Id))
             {
                 lstItems.ForEach(x =>
                 {
                     var swEdit = false;
 
                     //Verifica si se modifica desde el buscador
-                    if (x.NroItem == CotDet.NroItem && x.CodItem.Trim() == CotDet.CodItem.Trim() && CotDet.IsTempRecord && x.IsTempRecord)
+                    if (x.NroItem == CotDet.NroItem && x.Id == CotDet.Id && CotDet.IsTempRecord && x.IsTempRecord)
                     { swEdit = true; }
 
                     //Verifica si se busca desde la grilla principal
-                    if (x.NroItem == CotDet.NroItem && x.CodItem.Trim() == CotDet.CodItem.Trim() && !CotDet.IsTempRecord)
+                    if (x.NroItem == CotDet.NroItem && x.Id == CotDet.Id && !CotDet.IsTempRecord)
                     { swEdit = true; }
 
                     if (swEdit)
@@ -3251,7 +3251,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                 //Registro Detalle
                 var select = new CotizacionDetalleDTO();
-                select.Id = (lstItems.Count() + 1) * -1;
+                select.Id = lstItems.Count() == 0 ? -1 : lstItems.Min(x => x.Id) - 1;     //(lstItems.Min(x => x) + 1) * -1;
                 select.CodItem = oArticulo.CodArticulo;
                 select.CodItemTemp = oArticulo.CodArticuloTemp;
                 select.Descripcion = oArticulo.DescRealArticulo;
@@ -3545,8 +3545,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                 CotizacionDetalleDTO oCotDetItem = null;
                 if (string.IsNullOrEmpty(CotizacionDetallePadre.CodItem))
-                { 
-                    oCotDetItem = lstItems.FirstOrDefault(x => x.CodItem.Trim() == CotizacionDetalle.CodItem.Trim() && x.EsItemPadre == true);
+                {
+                    //Se utiliza el código CodItemTemp porque el código del producto viene desde la caja de texto
+                    oCotDetItem = lstItems.FirstOrDefault(x => x.CodItem.Trim() == CotizacionDetalle.CodItemTemp.Trim() && x.EsItemPadre == true);
                     //Al no encontrarlo como ITEM PADRE lo buscamos como HIJO ya que este metodo lo usa los ACCESORIOS desde la grilla principal
                     if (oCotDetItem == null)
                     {
@@ -3556,7 +3557,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 else
                 {
                     var oCotDetItemPadre = lstItems.FirstOrDefault(x => x.CodItem.Trim() == CotizacionDetallePadre.CodItem.Trim() && x.EsItemPadre == true);
-                    oCotDetItem = lstItems.FirstOrDefault(x => x.NroItem == oCotDetItemPadre.NroItem && x.CodItem == CotizacionDetalle.CodItem);
+                    oCotDetItem = lstItems.FirstOrDefault(x => x.NroItem == oCotDetItemPadre.NroItem && x.CodItem.Trim() == CotizacionDetalle.CodItemTemp.Trim());
+                    if(oCotDetItem == null)
+                    {
+                        oCotDetItem = lstItems.FirstOrDefault(x => x.NroItem == oCotDetItemPadre.NroItem && x.CodItem.Trim() == CotizacionDetalle.CodItem.Trim());
+                    };
                 }
 
                 var oCotDesp = CotizacionDetalle.CotizacionDespacho;
@@ -3721,7 +3726,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         if (!swDatos) { throw new Exception("No se ha ingresado el COSTO FOB de '" + oItem.Descripcion + "'"); }
                     }
 
-                    if (oItem.TipoItem != ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio)
+                    if(oItem.TipoItem != ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio)
                     {
                         //Para los PRODUCTOS se valida su VALOR UNITARIO
                         if (swValidarValorUni)
