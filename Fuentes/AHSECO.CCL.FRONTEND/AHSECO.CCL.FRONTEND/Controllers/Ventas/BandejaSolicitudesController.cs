@@ -1573,10 +1573,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                     {
                                         if (!swTieneStock)
                                         {
-                                            //Se muestra el campo VALOR UNITARIO ya que los ASESORES lo utilizan en los ACCESORIOS
                                             if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.CostoFOB) { pc.IsVisible = true; pc.IsEnabled = true; }
-                                            if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = false; }
                                         }
+                                        //Se muestra el campo VALOR UNITARIO ya que los ASESORES lo utilizan en los ACCESORIOS
+                                        if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = false; }
                                     }
                                     if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Costos)
                                     {
@@ -3544,25 +3544,26 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 { throw new Exception("El código '" + CotizacionDetalle.CodItemTemp.Trim() + "' ya está siendo usado en la cotización"); }
 
                 CotizacionDetalleDTO oCotDetItem = null;
-                if (string.IsNullOrEmpty(CotizacionDetallePadre.CodItem))
-                {
-                    //Se utiliza el código CodItemTemp porque el código del producto viene desde la caja de texto
-                    oCotDetItem = lstItems.FirstOrDefault(x => x.CodItem.Trim() == CotizacionDetalle.CodItemTemp.Trim() && x.EsItemPadre == true);
-                    //Al no encontrarlo como ITEM PADRE lo buscamos como HIJO ya que este metodo lo usa los ACCESORIOS desde la grilla principal
-                    if (oCotDetItem == null)
-                    {
-                        oCotDetItem = lstItems.FirstOrDefault(x => x.Id == CotizacionDetalle.Id);
-                    }
-                }
-                else
-                {
-                    var oCotDetItemPadre = lstItems.FirstOrDefault(x => x.CodItem.Trim() == CotizacionDetallePadre.CodItem.Trim() && x.EsItemPadre == true);
-                    oCotDetItem = lstItems.FirstOrDefault(x => x.NroItem == oCotDetItemPadre.NroItem && x.CodItem.Trim() == CotizacionDetalle.CodItemTemp.Trim());
-                    if(oCotDetItem == null)
-                    {
-                        oCotDetItem = lstItems.FirstOrDefault(x => x.NroItem == oCotDetItemPadre.NroItem && x.CodItem.Trim() == CotizacionDetalle.CodItem.Trim());
-                    };
-                }
+                oCotDetItem = lstItems.FirstOrDefault(x => x.Id == CotizacionDetalle.Id);
+                //if (string.IsNullOrEmpty(CotizacionDetallePadre.CodItem))
+                //{
+                //    //Se utiliza el código CodItemTemp porque el código del producto viene desde la caja de texto
+                //    oCotDetItem = lstItems.FirstOrDefault(x => x.CodItem.Trim() == CotizacionDetalle.CodItemTemp.Trim() && x.EsItemPadre == true);
+                //    //Al no encontrarlo como ITEM PADRE lo buscamos como HIJO ya que este metodo lo usa los ACCESORIOS desde la grilla principal
+                //    if (oCotDetItem == null)
+                //    {
+                //        oCotDetItem = lstItems.FirstOrDefault(x => x.Id == CotizacionDetalle.Id);
+                //    }
+                //}
+                //else
+                //{
+                //    var oCotDetItemPadre = lstItems.FirstOrDefault(x => x.CodItem.Trim() == CotizacionDetallePadre.CodItem.Trim() && x.EsItemPadre == true);
+                //    oCotDetItem = lstItems.FirstOrDefault(x => x.NroItem == oCotDetItemPadre.NroItem && x.CodItem.Trim() == CotizacionDetalle.CodItemTemp.Trim());
+                //    if(oCotDetItem == null)
+                //    {
+                //        oCotDetItem = lstItems.FirstOrDefault(x => x.NroItem == oCotDetItemPadre.NroItem && x.CodItem.Trim() == CotizacionDetalle.CodItem.Trim());
+                //    };
+                //}
 
                 var oCotDesp = CotizacionDetalle.CotizacionDespacho;
                 var indInstalacion = false;

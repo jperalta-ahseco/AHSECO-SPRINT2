@@ -984,10 +984,6 @@ var cotvtadet = (function ($, win, doc) {
             }
         }
 
-        if (($estadoSol.val() == "CVAL" && $idRolUsuario.val() == $RolVenta_Gerente.val()) || ($PermitirEditarValorizacion.val() == "N" && $idRolUsuario.val() == $RolVenta_Costos.val())) { // Se adiciona control para casuística Gerente General en Valorización.
-            $DI_txtValorUnitario.attr("disabled", "disabled");
-        };
-
     }
 
     function configurarModalPorTipoItem(strTipoItem) {
