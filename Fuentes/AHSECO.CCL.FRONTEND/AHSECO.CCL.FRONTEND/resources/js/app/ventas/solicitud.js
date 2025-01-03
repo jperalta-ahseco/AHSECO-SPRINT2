@@ -75,6 +75,7 @@
     var $lblNombreArchivoGuia = $("#lblNombreArchivoGuia");
     var $modalCargaDocumentoGuia = $("#modalCargaDocumentoGuia");
     var $btnCargarDocumentoGuia = $("#btnCargarDocumentoGuia");
+    var $ContadorDetalleHistorial = $("ContadorDetalleHistorial");
 
     /*Sección Solicitud*/
     var $btnEliminarSol = $('#btnEliminarSol');
@@ -1538,19 +1539,32 @@
             $txtHistVendedor.val(data.Result.DocumentoCabecera.NombreVendedor);
             $txtHistRUC.val(data.Result.DocumentoCabecera.Ruc);
             $txtHistRazonSocial.val(data.Result.DocumentoCabecera.RazonSocial);
+            $ContadorDetalleHistorial.val(data.Result.DocumentoDetalle.length);
+
+            //Si tiene registros se elimina la primera fila
+            if (data.Result.DocumentoDetalle.length > 0) {
+                $NoRegHistDetalle.hide();
+            } else {
+                $NoRegHistDetalle.show();
+            }
+
+            //Eliminamos los registros del detalle:
+            $("#tablaHistorialDetalle .trHist").remove();
+
 
             for (i = 0; i < data.Result.DocumentoDetalle.length; i++) {
-                var nuevoTr = "<tr bgcolor='d0f2f7'>" +
+
+                var descripcion = data.Result.DocumentoDetalle[i].Descripcion.replace("\\r\\n", "<br>");
+
+                var nuevoTr = "<tr bgcolor='d0f2f7' class='trHist'>" +
                     "<th>" + data.Result.DocumentoDetalle[i].NumeroItem + "</th>" +
                     "<th>" + data.Result.DocumentoDetalle[i].Catalogo + "</th>" +
-                    "<th>" + data.Result.DocumentoDetalle[i].Descripcion + "</th>" +
+                    "<th>" + descripcion + "</th>" +
                     "<th>" + data.Result.DocumentoDetalle[i].Unidad + "</th>" +
                     "<th>" + data.Result.DocumentoDetalle[i].Cantidad + "</th>" +
                     "<th>" + data.Result.DocumentoDetalle[i].PrecioUnitario + "</th>" +
                     "<th>" + data.Result.DocumentoDetalle[i].Total + "</th>" +
                     "</tr>";
-
-                $NoRegHistDetalle.hide();
                 $tablaHistorialDetalle.append(nuevoTr);
             }
 
