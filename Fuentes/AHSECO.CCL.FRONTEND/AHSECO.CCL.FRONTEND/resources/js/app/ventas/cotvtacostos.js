@@ -152,6 +152,10 @@
         $CI_txtMtoUnitarioCosto.on("keyup", totalizarCostItem);
         $CI_txtMtoTotalCosto.on("keyup", totalizarCostItem);
 
+        $CI_txtCantCosteo.click(totalizarCostItem);
+        $CI_txtMtoUnitarioCosto.click(totalizarCostItem);
+        $CI_txtMtoTotalCosto.click(totalizarCostItem);
+
         if ($estadoSol.val() == "CVAL") {
             cargarComboCotDetItems();
         }
@@ -946,10 +950,8 @@
                         $CI_txtNroPiso.val("");
                     }
                     $CI_txtCantCosteo.val("");
-                    if ($CI_pnlInfoCostos_MtoUnitario.css("display") != "none") {
+                    if ($CI_pnlInfoCostos_MtoUnitario.css("display") != "none" || $CI_pnlInfoCostos_MtoTotal.css("display") != "none") {
                         $CI_txtMtoUnitarioCosto.val("");
-                    }
-                    if ($CI_pnlInfoCostos_MtoTotal.css("display") != "none") {
                         $CI_txtMtoTotalCosto.val("");
                     }
                     if ($CI_pnlInfoPreventivos.css("display") != "none") {
