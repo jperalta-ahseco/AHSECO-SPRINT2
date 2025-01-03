@@ -3251,7 +3251,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                 //Registro Detalle
                 var select = new CotizacionDetalleDTO();
-                select.Id = lstItems.Count() == 0 ? -1 : lstItems.Min(x => x.Id) - 1;     //(lstItems.Min(x => x) + 1) * -1;
+                if (lstItems.Any(x => x.Id < 0)) { select.Id = lstItems.Select(x => x.Id).Min() - 1; }
+                else { select.Id = -1; }
                 select.CodItem = oArticulo.CodArticulo;
                 select.CodItemTemp = oArticulo.CodArticuloTemp;
                 select.Descripcion = oArticulo.DescRealArticulo;
@@ -3290,6 +3291,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     {
                         if (lstItems.Any(x => x.NroItem == itemPadre.NroItem && x.CodItem.TrimEnd() == CotizacionDetalle.CodItem.TrimEnd()))
                         { throw new Exception("Accesorio ya fue selecionado"); }
+                        lstItems = GetCotDetItems(opcTablaTemporal);
+                        if (lstItems.Any(x => x.Id < 0)) { select.Id = lstItems.Select(x => x.Id).Min() - 1; }
+                        else { select.Id = -1; }
                         CotizacionDetalleDTO item = select;
                         item.NroItem = itemPadre.NroItem;
                         item.IsUpdated = true;
@@ -3508,11 +3512,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     lstItems.AddRange(lstItems_2);
                     lstItems = TotalizarCotDet(lstItems);
                     VariableSesion.setObject(TAG_CDI, lstItems);
-                    itemPadre.NroItem = lstItems.FirstOrDefault(x => x.CodItem.Trim() == CotizacionDetallePadre.CodItem.Trim()).NroItem; // se reasigna el número de Item
+
+                    //itemPadre.NroItem = lstItems.FirstOrDefault(x => x.CodItem.Trim() == CotizacionDetallePadre.CodItem.Trim()).NroItem; // se reasigna el número de Item
                 }
                 lstItems = GetCotDetItems(opcTablaTemporal);
-                var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems.Where(x =>
-                x.CodItem.Trim() != CotizacionDetallePadre.CodItem.Trim() && x.NroItem == itemPadre.NroItem));
+                var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems.Where(x => x.Id != CotizacionDetallePadre.Id && x.NroItem == itemPadre.NroItem));
 
                 return Json(response);
             }
