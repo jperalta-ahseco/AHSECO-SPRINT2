@@ -1555,6 +1555,14 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                             {
                                                 if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = true; }
                                             }
+                                            else
+                                            {
+                                                if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = false; }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = false; }
                                         }
                                     }
                                     else
@@ -1589,6 +1597,14 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                                 {
                                                     if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = true; }
                                                 }
+                                                else
+                                                {
+                                                    if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = false; }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = false; }
                                             }
                                         }
                                         else
@@ -1707,6 +1723,14 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                         {
                                             if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = true; }
                                         }
+                                        else
+                                        {
+                                            if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = false; }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = false; }
                                     }
                                 }
                                 else
