@@ -508,10 +508,10 @@
             return;
         }
         var fnSi = function () {
-            asignar(registroInstalacionTec.xasignar);
-            app.message.success("Instalación Técnica", "Se realizo la asignacion correctamente.");
-            registroInstalacionTec.xasignar = [];
-            $checkSeleccionarTodos.prop("checked", false);
+            var Aceptar = function () {
+                asignar(registroInstalacionTec.xasignar);
+            }
+            app.message.success("Instalación Técnica", "Se realizo la asignacion correctamente.", "Aceptar", Aceptar);
         };
         return app.message.confirm("Confirmación", "Esta seguro que desea asignar el(los) productos(s) al técnico?", "Si", "No", fnSi, null);
     }
@@ -535,8 +535,12 @@
             $txtEmpresaTecnico.val("");
             $txtEmpresaTecnico.prop('disabled', true);
             $txtTecnico.val("");
+            
 
             var fnSi = function () {
+                registroInstalacionTec.xasignar = [];
+                $checkSeleccionarTodos.checked == false;
+
                 $modalObservacionClick();
                 if (data.Result.Codigo == 1) {
                     cambiarEstadoInstalado();
@@ -548,6 +552,9 @@
             }
 
             var fnNo = function () {
+                registroInstalacionTec.xasignar = [];
+                $checkSeleccionarTodos.checked == false;
+
                 app.message.success("Éxito", "Se realizó la modificación con éxito.");
                 if (data.Result.Codigo == 1) {
                     cambiarEstadoInstalado();
@@ -556,8 +563,8 @@
                 }
                 obtenerDetalleInstalacion();
             }
-
-            app.message.confirm("Éxito", "Asignación completada, ¿Desea agregar un comentario adicional?","Sí","No",fnSi,fnNo);
+            return app.message.confirm("Éxito", "Asignación completada, ¿Desea agregar un comentario adicional?", "Sí", "No", fnSi, fnNo);
+            
         }
         var fnFailCallBack = function () {
             app.message.error("Validación", "Se produjo un error en la asignación.");
@@ -565,6 +572,10 @@
         }
 
         app.llamarAjax(method, url, objParams, fnDoneCallback, fnFailCallBack, null, null);
+    }
+
+    function agregarComentAdicional(data) {
+        
     }
 
     function obtenerDetalleInstalacion() {

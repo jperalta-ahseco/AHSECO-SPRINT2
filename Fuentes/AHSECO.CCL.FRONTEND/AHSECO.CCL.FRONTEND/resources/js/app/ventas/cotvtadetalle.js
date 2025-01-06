@@ -430,11 +430,19 @@ var cotvtadet = (function ($, win, doc) {
                 }
             },
             {
-                data: "CodItem",
+                data: "Features",
                 render: function (data) {
-                    var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(data) + '" value=' + String.fromCharCode(39) + data + String.fromCharCode(39) + '>';
-                    var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',1)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                    var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarCotDetItem(' + String.fromCharCode(39) + data + String.fromCharCode(39) + ',1)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                    var oFeatures = data;
+                    var strID = "";
+                    var strCodItem = "";
+                    var arrProp = oFeatures.SubPropiedades;
+                    for (a = 0; a < arrProp.length; a++) {
+                        if (arrProp[a].Nombre == "ID") { strID = arrProp[a].Valor; }
+                        if (arrProp[a].Nombre == "CodItem") { strCodItem = arrProp[a].Valor; }
+                    }
+                    var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
+                    var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',1)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                    var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarCotDetItem(' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + ',1)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
                     return '<center>' + hidden + editar + ' ' + quitar + '</center>';
                 }
             }
@@ -1038,7 +1046,7 @@ var cotvtadet = (function ($, win, doc) {
 
     }
 
-    function editarCotDetItem(CodigoItem, opc) {
+    function editarCotDetItem(ID, opc) {
         $DI_hdnCodigoPadre.val("");
         $DI_opcGrilla.val(opc);
         $CI_opcGrilla.val(opc);
@@ -1046,7 +1054,7 @@ var cotvtadet = (function ($, win, doc) {
         method = "POST";
         url = "BandejaSolicitudesVentas/CargarCotDetItem";
         var objFiltros = {
-            CotizacionDetalle: { CodItem: CodigoItem },
+            CotizacionDetalle: { Id: ID },
             opcGrillaItems: opc
         };
         var objParam = JSON.stringify(objFiltros);
@@ -1733,14 +1741,16 @@ var cotvtadet = (function ($, win, doc) {
                     data: "Features",
                     render: function (data) {
                         var oFeatures = data;
+                        var strID = "";
                         var strCodItem = "";
                         var arrProp = oFeatures.SubPropiedades;
                         for (a = 0; a < arrProp.length; a++) {
+                            if (arrProp[a].Nombre == "ID") { strID = arrProp[a].Valor; }
                             if (arrProp[a].Nombre == "CodItem") { strCodItem = arrProp[a].Valor; }
                         }
                         var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
-                        var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                        var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + ',2)"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
+                        var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                        var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',2)"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
                         
                         if ($estadoSol.val() == "CAPR" || $estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG") {
                             return '<center>' + ver + '</center>';
@@ -1832,14 +1842,16 @@ var cotvtadet = (function ($, win, doc) {
                     data: "Features",
                     render: function (data) {
                         var oFeatures = data;
+                        var strID = "";
                         var strCodItem = "";
                         var arrProp = oFeatures.SubPropiedades;
                         for (a = 0; a < arrProp.length; a++) {
+                            if (arrProp[a].Nombre == "ID") { strID = arrProp[a].Valor; }
                             if (arrProp[a].Nombre == "CodItem") { strCodItem = arrProp[a].Valor; }
                         }
                         var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
-                        var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                        var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + ',2)"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
+                        var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                        var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',2)"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
                         var quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarCotDetItem(' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + ',2)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
 
                         if ($estadoSol.val() == "CAPR" || $estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG" ) {

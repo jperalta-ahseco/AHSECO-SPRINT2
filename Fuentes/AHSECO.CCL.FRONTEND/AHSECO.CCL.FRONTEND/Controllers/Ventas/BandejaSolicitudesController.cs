@@ -3436,7 +3436,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             {
                 var ventasBL = new VentasBL();
 
-                CotizacionDetalleDTO itemCotDet = findCotDetRecord(CotizacionDetalle.CodItem, opcGrillaItems);
+                var lstItems = GetCotDetItems(opcTablaTemporal);
+
+                //CotizacionDetalleDTO itemCotDet = findCotDetRecord(CotizacionDetalle.CodItem, opcGrillaItems);
+
+                CotizacionDetalleDTO itemCotDet = lstItems.FirstOrDefault(x => x.Id == CotizacionDetalle.Id);
 
                 List<CotDetCostoDTO> lstCostos = new List<CotDetCostoDTO>();
 
