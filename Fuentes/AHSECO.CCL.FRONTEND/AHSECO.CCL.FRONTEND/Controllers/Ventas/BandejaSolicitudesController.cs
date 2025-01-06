@@ -1109,7 +1109,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 var swReqCosteo = false;
                                 foreach (CotizacionDetalleDTO itemCD in lstItems)
                                 {
-                                    if (EsCosteoRequerido(itemCD)) { swReqCosteo = true; }
+                                    if (EsCosteoRequerido(itemCD) == true && swReqCosteo == false) { swReqCosteo = true; }
                                 }
 
                                 //Se valida que tenga campos HABILITADOS para EDITAR
@@ -4281,7 +4281,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 var swReqCosteo = false;
                 foreach (CotizacionDetalleDTO itemCD in lstItems)
                 {
-                    if (EsCosteoRequerido(itemCD)) { swReqCosteo = true; }
+                    if (EsCosteoRequerido(itemCD) == true && swReqCosteo == false) { swReqCosteo = true; }
                 }
 
                 if (NombreRol != ConstantesDTO.WorkflowRol.Venta.Asesor
