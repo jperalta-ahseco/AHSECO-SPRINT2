@@ -1266,8 +1266,8 @@
 
         for (var i = 0; i < productos.length; i++) {
             for (var j = 0; j < productos[i].Elementos.length; j++) {
-                if (productos[i].Elementos[j].Id == id) {
-                    $('#dateFechaInstalacion' + productos[i].Elementos[j].Id).val(productos[i].Elementos[j].FechaInstalacion);
+                if (productos[i].Elementos[j].Id_Despacho == id) {
+                    $('#dateFechaInstalacion' + productos[i].Elementos[j].Id_Despacho).val(productos[i].Elementos[j].FechaInstalacion);
                 };
             };
         };
@@ -1369,8 +1369,8 @@
 
         for (var i = 0; i < productos.length; i++) {
             for (var j = 0; j < productos[i].Elementos.length; j++) {
-                if (productos[i].Elementos[j].Id == id) {
-                    $('#dateFechaProgramacion' + productos[i].Elementos[j].Id).val(productos[i].Elementos[j].FechaProgramacion);
+                if (productos[i].Elementos[j].Id_Despacho == id) {
+                    $('#dateFechaProgramacion' + productos[i].Elementos[j].Id_Despacho).val(productos[i].Elementos[j].FechaProgramacion);
                 };
             };
         };
@@ -2562,7 +2562,7 @@
                     }
                 },
                 {
-                    data: "id_Despacho",
+                    data: "Id_Despacho",
                     render: function () {
                         var detalleAdic = '<a id="btnInfoDetail" class="btn btn-primary btn-xs" title="Información Adicional"><i class="fa fa-file-text" aria-hidden="true"></i></a>'
                         return '<center>' + detalleAdic + '</center>';
