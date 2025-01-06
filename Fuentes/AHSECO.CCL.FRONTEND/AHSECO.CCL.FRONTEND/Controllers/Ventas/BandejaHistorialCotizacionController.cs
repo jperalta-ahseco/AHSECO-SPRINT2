@@ -26,11 +26,13 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Drawing.Charts;
 using System.Security.Cryptography;
 using DocumentFormat.OpenXml.Spreadsheet;
-using DocumentFormat.OpenXml.Drawing;
+using A=DocumentFormat.OpenXml.Drawing;
 using static AHSECO.CCL.FRONTEND.Core.MultiFlujo.Tag;
 using DocumentFormat.OpenXml.Math;
 using System.Web.UI.WebControls.WebParts;
 using NPOI.XWPF.UserModel;
+using DocumentFormat.OpenXml.Vml;
+using DocumentFormat.OpenXml.Drawing;
 
 
 namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
@@ -115,10 +117,14 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                     // Agregar las propiedades y contenido a la celda
                     var cell1 = CreateCell("Logo","S","16","LEFT");
-                    cell1.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new VerticalMerge() { Val = MergedCellValues.Restart },
-                                                                                                              new GridSpan() { Val = 4 }
-                                                                                                             );
-                    CellWith(cell1, "5");
+                    string url = ConfigurationManager.AppSettings.Get("RutaImagenGuia");
+                    string imageLogo = url + cotizacion.Result.DocumentoCabecera.RutaImagen;
+
+                    //var cell1 = AddImageToCell(imageLogo, wordDoc);
+                   // cell1.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new VerticalMerge() { Val = MergedCellValues.Restart },
+                                                                                                             // new GridSpan() { Val = 4 }
+                                                                                                             //);
+
 
 
                     var cell2 = CreateCell(cotizacion.Result.DocumentoCabecera.Encabezado,"N","16","CENTER");
@@ -601,6 +607,34 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                     #endregion
 
+
+                    // Recorrer todos los párrafos en el cuerpo del documento
+                    foreach (var paragraph in body.Elements<DocumentFormat.OpenXml.Math.Paragraph>())
+                    {
+                        // Obtener las propiedades del párrafo (si no existen, crear nuevas)
+                        var paragraphProperties = paragraph.Elements<DocumentFormat.OpenXml.Math.ParagraphProperties>().FirstOrDefault();
+                        if (paragraphProperties == null)
+                        {
+                            paragraphProperties = new DocumentFormat.OpenXml.Math.ParagraphProperties();
+                            paragraph.InsertAt(paragraphProperties, 0);
+                        }
+
+                        var spacing = new SpacingBetweenLines() { After = "0" };
+                        paragraphProperties.Append(spacing);
+                        //var spacing = paragraphProperties.Elements<Spacing>().FirstOrDefault();
+                        //if (spacing == null)
+                        //{
+                        //    spacing = new Spacing();
+                        //    paragraphProperties.Append(spacing);  // Añadir Spacing si no existe
+                        //}
+
+                        // Establecer el espaciado después del párrafo a 0
+                        // spacing.After = 0;  // Eliminar el espaciado después del párrafo
+
+                        // También puedes asegurarte de que el espaciado antes del párrafo sea 0 (opcional)
+                        // spacing.Before = 0;
+                    }
+
                     // Guarda los cambios en el documento
                     mainPart.Document.Save();
                 }
@@ -624,6 +658,46 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
         }
 
+
+        static DocumentFormat.OpenXml.Wordprocessing.TableCell AddImageToCell(string imagePath, WordprocessingDocument wordDoc)
+        {
+
+            var cell = new DocumentFormat.OpenXml.Wordprocessing.TableCell();
+
+
+
+            // Crear la parte de la imagen en el documento
+            var imagePart = wordDoc.MainDocumentPart.AddNewPart<ImagePart>( contentType:"image/png");
+
+            // Leer la imagen desde el archivo y agregarla a la parte de imagen
+            using (FileStream fs = new FileStream(imagePath, FileMode.OpenOrCreate))
+            {
+                imagePart.FeedData(fs);
+            }
+
+            // Obtener el ID de la imagen
+            string imagePartId = wordDoc.MainDocumentPart.GetIdOfPart(imagePart);
+
+            // Crear el objeto Drawing que contiene la imagen
+            var drawing = new DocumentFormat.OpenXml.Wordprocessing.Drawing(
+                new A.Picture(
+                    new A.NonVisualPictureProperties(
+                        new A.NonVisualDrawingProperties() { Id = (UInt32Value)1U, Name = "Logo" },
+                        new A.NonVisualPictureDrawingProperties()),
+                    new A.BlipFill(
+                        new A.Blip() { Embed = imagePartId },
+                        new A.Stretch()),
+                    new A.ShapeProperties())
+            );
+
+            // Crear un párrafo y un run con el dibujo (imagen) y agregarlo a la celda
+            var run = new DocumentFormat.OpenXml.Wordprocessing.Run(drawing);
+            var paragraph = new DocumentFormat.OpenXml.Wordprocessing.Paragraph();
+            paragraph.Append(run);
+            cell.Append(paragraph);
+
+            return cell;
+        }
 
 
 
@@ -663,7 +737,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                 // Crea un run para cada línea de texto
                 var run = new DocumentFormat.OpenXml.Wordprocessing.Run(runProperties);
-                run.Append(new DocumentFormat.OpenXml.Wordprocessing.Text(linea)); // Añade la línea de texto
+                run.Append(new DocumentFormat.OpenXml.Wordprocessing.Text(linea) { Space = SpaceProcessingModeValues.Default} ); // Añade la línea de texto
 
                 if(alineacion == "CENTER")
                 {
