@@ -1242,12 +1242,15 @@ var cotvtadet = (function ($, win, doc) {
 
             var fnDoneCallBack = function (data) {
                 if (data.Result.length == 0) {
-                    $('#tblAcc_' + $.trim(CodItemPadre)).remove();
+                    //$('#tblAcc_' + $.trim(CodItemPadre)).remove();
+                    var tblAcc = $('#tblAcc_' + $.trim(CodItemPadre));
+                    var p1 = tblAcc.parent().parent().parent().parent().parent(); //Row de Grilla de Accesorios
+                    p1.remove();
                     var hdn = $('#hdnCodItem_' + $.trim(CodItemPadre)) //referenciamos al padre
-                    var parent = hdn[0].parentElement; //recorremos hacia el row padre
-                    parent = parent.parentElement; 
-                    parent = parent.parentElement;
-                    var childVerAdic = parent.children[1]; //localizamos el td con la flecha "Ver Accesorios"
+                    var p2 = hdn[0].parentElement; //recorremos hacia el row padre
+                    p2 = p2.parentElement; 
+                    p2 = p2.parentElement;
+                    var childVerAdic = p2.children[1]; //localizamos el td con la flecha "Ver Accesorios"
                     childVerAdic.innerHTML = ""; //Inicializamos
                 }
                 else {

@@ -3508,7 +3508,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 var itemPadre = lstItems.FirstOrDefault(x => x.CodItem.Trim() == CotizacionDetallePadre.CodItem.Trim());
                 if (itemPadre != null)
                 {
-                    lstItems = lstItems.Where(x => x.NroItem == itemPadre.NroItem && x.CodItem.Trim() != CotizacionDetalle.CodItem.Trim()).ToList();
+                    lstItems = lstItems.Where(x => x.NroItem != itemPadre.NroItem || (x.NroItem == itemPadre.NroItem && x.CodItem.Trim() != CotizacionDetalle.CodItem.Trim())).ToList();
                     lstItems.AddRange(lstItems_2);
                     lstItems = TotalizarCotDet(lstItems);
                     VariableSesion.setObject(TAG_CDI, lstItems);
@@ -3516,7 +3516,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     //itemPadre.NroItem = lstItems.FirstOrDefault(x => x.CodItem.Trim() == CotizacionDetallePadre.CodItem.Trim()).NroItem; // se reasigna el número de Item
                 }
                 lstItems = GetCotDetItems(opcTablaTemporal);
-                var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems.Where(x => x.Id != CotizacionDetallePadre.Id && x.NroItem == itemPadre.NroItem));
+                var response = new ResponseDTO<IEnumerable<CotizacionDetalleDTO>>(lstItems.Where(x => x.Id != itemPadre.Id && x.NroItem == itemPadre.NroItem));
 
                 return Json(response);
             }
