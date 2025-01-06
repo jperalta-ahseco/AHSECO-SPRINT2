@@ -21,6 +21,17 @@ SET NOCOUNT ON;
 				   @TELEFONOVENDEDOR VARCHAR(75),@CORREOVENDEDOR VARCHAR(75),@PIE VARCHAR(MAX),@SUBTOTAL VARCHAR(25),
 				   @SIMBOLO_MONEDA VARCHAR(3),@MONTOIGV VARCHAR(25),@TOTALVENTA VARCHAR(25)
 
+	IF OBJECT_ID('tempdb..#TMP_LISTAPREV') IS NOT NULL
+		DROP TABLE #TMP_LISTAPREV
+
+	CREATE TABLE #TMP_LISTAPREV(
+		ID INT IDENTITY(1,1),
+		CANT INT,
+		NOMPRODUCTO VARCHAR(250),
+		CICLO VARCHAR(50)
+	)
+
+
 	SELECT @COD_SOLICITUD=A.ID_SOLICITUD,
 	@NOMBRECONTACTO =A.NOMBRECONTACTO,
 	@AREACONTACTO = A.AREACONTACTO,
@@ -72,13 +83,36 @@ SET NOCOUNT ON;
 	SET @ENCABEZADO=@ENCABEZADO+'Teléfono: (511) 433 7227 / 433 6372'+  '\r\n' 
 	SET @ENCABEZADO=@ENCABEZADO+'Email: ventas@ahsecoperu.com / www.ahsecoperu.com.pe';
 
+	INSERT INTO #TMP_LISTAPREV
+	SELECT  B.DESCRIPCION,A.CANTPREVENTIVO,ISNULL(C.DESCRIPCION,'') from TBD_COTIZACIONCOSTOS A
+	INNER JOIN TBD_COTIZACIONVENTA B ON A.ID_COTDETALLE=B.ID
+	LEFT JOIN TBD_DATOS_GENERALES C  ON  C.DOMINIO='CICLOPREV' AND A.CODCICLOPREVENT=C.PARAMETRO
+	WHERE B.ID_COTIZACION = @COD_COTIZACION AND A.CANTPREVENTIVO > 0
+
+
+	DECLARE @TOTAL INT,@X INT,@CANT INT,@DESC VARCHAR(250),@CICLO VARCHAR(50)
+
+	SELECT @TOTAL =COUNT(1),@X=1 FROM #TMP_LISTAPREV
+
 	SET @CONTRATO='*INSTALACION Y VERIFICACIÓN OPERACIONAL:'+  '\r\n' 
 	SET @CONTRATO= @CONTRATO+'La empresa se responsabiliza por la instalación y puesta en marcha del equipo ofertado.'+  '\r\n' +  '\r\n' 
 	SET @CONTRATO= @CONTRATO+'**ASESORÍA, CAPACITACIÓN Y POST VENTA:'+  '\r\n' 
-	SET @CONTRATO= @CONTRATO+'Brindar la respectiva capacitación al personal usuario designado que se encargará de la operación del equipo ofrecido.'+  '\r\n' +  '\r\n' 
-	SET @CONTRATO= @CONTRATO+'***GARANTÍA Y SOPORTE TÉCNICO:'+  '\r\n' 
-	SET @CONTRATO= @CONTRATO+'La empresa ofrece una Garantía Comercial de 12 meses'+  '\r\n' 
-	SET @CONTRATO= @CONTRATO+'Mantenimiento Preventivo dentro de la Garantía Comercial: 1 mantenimiento anual'+  '\r\n' +  '\r\n' 
+	IF(LEN(RTRIM(@GARANTIA))> 0)
+	BEGIN
+		SET @CONTRATO= @CONTRATO+'***GARANTÍA Y SOPORTE TÉCNICO:'+  '\r\n' 
+		SET @CONTRATO= @CONTRATO+'La empresa ofrece una Garantía Comercial de '+RTRIM(@GARANTIA)+  '\r\n' 
+	END
+	IF(@TOTAL > 0)
+	BEGIN
+		SET @CONTRATO= @CONTRATO+'Mantenimiento Preventivo dentro de la Garantía Comercial: '+  '\r\n' +  '\r\n' 
+		WHILE(@X <=@TOTAL)
+		BEGIN
+			SELECT @CANT=CANT,@DESC=NOMPRODUCTO,@CICLO=CICLO FROM  #TMP_LISTAPREV WHERE ID = @X;
+					SET @CONTRATO= @CONTRATO+' '+RTRIM(@DESC) + ' '+CAST(@CANT AS VARCHAR)+' mantenimiento(s) '  + RTRIM(@CICLO) + '\r\n' +  '\r\n' 
+			SET @X = @X+1
+		END
+	END
+	
 	SET @CONTRATO= @CONTRATO+'“AHSECO PERÚ SA Garantiza el stock de Repuestos Originales, así como Servicio Técnico y de Mantenimiento”'
 
 	SET @PIE='El envío de los productos es de manera gratuita a partir de Facturas de US$ 200.00, solo en ciudad de Lima y para clientes finales.'+  '\r\n' 
@@ -115,17 +149,17 @@ SET NOCOUNT ON;
 
 				SELECT CAST(A.NROITEM AS VARCHAR) NROITEM,
 							CASE WHEN A.TIPOITEM = 'SER' THEN
-							RIGHT('0000000'+CAST(A.CODITEM AS VARCHAR),7)
+							RIGHT('000000'+CAST(A.CODITEM AS VARCHAR),6)
 							ELSE
 							ISNULL(A.CODITEM,'') 
 							END CATALOGO,
 							CASE WHEN  A.TIPOITEM = 'SER' THEN
-									'SERVICIO: '+UPPER(RTRIM(ISNULL(SV.VALOR1,'')))+  '\r\n' +
+									''+UPPER(RTRIM(ISNULL(SV.VALOR1,'')))+  '\r\n' +
 									'EQUIPO: '+RTRIM(ISNULL(SERV.DESCRIPCIONEQUIPO,'')) +  '\r\n' +
 									'MARCA: '+RTRIM(ISNULL(SERV.NOMBREMARCA,'')) 
 									 +  '\r\n' +'MODELO: '+RTRIM(ISNULL(SERV.NOMBREMODELO,'')) 
 							ELSE 
-							'EQUIPO: '+ RTRIM(ISNULL(A.DESCRIPCION,''))+  '\r\n' +
+							''+ RTRIM(ISNULL(A.DESCRIPCION,''))+  '\r\n' +
 							'MARCA: '+RTRIM(ISNULL(E.TG_CDESCRI,'')) END  DESCRIPCION,
 							ISNULL(A.UNDMED,'')  UNIDAD,
 							CAST(A.CANTIDAD AS VARCHAR) CANTIDAD,

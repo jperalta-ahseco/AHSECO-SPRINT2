@@ -121,9 +121,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     string imageLogo = url + cotizacion.Result.DocumentoCabecera.RutaImagen;
 
                     //var cell1 = AddImageToCell(imageLogo, wordDoc);
-                   // cell1.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new VerticalMerge() { Val = MergedCellValues.Restart },
-                                                                                                             // new GridSpan() { Val = 4 }
-                                                                                                             //);
+                    cell1.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new VerticalMerge() { Val = MergedCellValues.Restart },
+                                                                                                              new GridSpan() { Val = 4 }
+                                                                                                             );
 
 
 
