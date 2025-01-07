@@ -49,6 +49,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Alertas
             tabla += "<td> N° de Solicitud </td>";
             tabla += "<td> Equipo </td>";
             tabla += "<td> Marca </td>";
+            tabla += "<td> Modelo </td>";
             tabla += "<td> Código de Producto </td>";
             tabla += "<td> N° de Serie </td>";
             tabla += "<td> Fecha Instalación </td>";
@@ -63,6 +64,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Alertas
                 tabla += "<td>"+ num_sol.Substring(num_sol.Length - 6) + "</td>";
                 tabla += "<td>"+item.Descripcion.ToString() + "</td>";
                 tabla += "<td>" + item.Marca.ToString() + "</td>";
+                tabla += "<td>" + item.Modelo.ToString() + "</td>";
                 tabla += "<td>" + item.CodProducto.ToString() + "</td>";
                 tabla += "<td>" + item.NumSerie.ToString() + "</td>";
                 tabla += "<td>" + item.FechaInstalacion.ToString("dd/MM/yyyy") + "</td>";
