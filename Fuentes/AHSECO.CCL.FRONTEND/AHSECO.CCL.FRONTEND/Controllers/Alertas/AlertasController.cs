@@ -111,7 +111,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Alertas
             tabla += "<td> Serie </td>";
             tabla += "<td> Descripcion </td>";
             tabla += "<td> Fecha de Instalacion </td>";
-            tabla += "<td> Fecha Prox. Mantenimiento </td>";
+            tabla += "<td> Fecha Prox. a Vencer </td>";
             tabla += "<td> Preventivos Totales </td>";
             tabla += "<td> Preventivos Realizados </td>";
             tabla += "<td> Preventivos Pendientes </td>";
@@ -125,7 +125,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Alertas
                 tabla += "<td>" + item.Serie.ToString() + "</td>";
                 tabla += "<td>" + item.Descripcion.ToString() + "</td>";
                 tabla += "<td>" + item.FechaInstalacion.ToString("dd/MM/yyyy") + "</td>";
-                tabla += "<td>" + item.ProxFechaMant.ToString("dd/MM/yyyy") + "</td>";
+                tabla += "<td>" + item.ProxFechaMant + "</td>";
                 tabla += "<td>" + item.TotalPrevent.ToString() + "</td>";
                 tabla += "<td>" + item.PreventReal.ToString() + "</td>";
                 tabla += "<td>" + item.PreventPend.ToString() + "</td>";
