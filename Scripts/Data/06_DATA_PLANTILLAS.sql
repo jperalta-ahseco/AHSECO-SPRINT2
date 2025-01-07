@@ -147,8 +147,8 @@ VALUES('PLANOBSVTA',1,'Plantilla de Observacion de Gerencia','','','OBSERVACIÓN 
 
 --ALERTA DE GARANTIAS:
 INSERT INTO TBM_PLANTILLAS
-VALUES('PLANGARANT',7,'Plantilla de Alertas de garantias proximas a vencer','serviciotecnico@ahsecoperu.com','','GARANTIAS PROXIMAS A VENCER',
-			   '<p>Estimada &Aacute;rea de Servicio T&eacute;cnico,</p>
+VALUES('PLANGARANT',7,'Plantilla de Alertas de garantias proximas a vencer','','','GARANTIAS PROXIMAS A VENCER',
+			   '<p>Estimad@</p>
 <p>Se encuentran pr&oacute;ximas a vencer las garant&iacute;as de los siguientes equipos.</p>
 <p>{TABLA_DETALLE}</p>
 <p>Por favor ingrese al sistema para visualizar la informaci&oacute;n a m&aacute;s detalle. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a>&nbsp;.</p>','SYSTEM',GETDATE(),NULL,NULL);

@@ -17,6 +17,7 @@ namespace AHSECO.CCL.BE
         public DateTime FechaInstalacion { get; set; }
         public string ValorGarantia{ get; set; }
         public DateTime FechaVencimiento { get; set; }
-      
+        public int NmesAdicional { get; set; }
+
     }
 }

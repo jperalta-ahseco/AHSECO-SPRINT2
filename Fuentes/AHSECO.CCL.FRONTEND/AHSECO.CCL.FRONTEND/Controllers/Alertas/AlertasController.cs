@@ -49,11 +49,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Alertas
             tabla += "<td> N° de Solicitud </td>";
             tabla += "<td> Equipo </td>";
             tabla += "<td> Marca </td>";
-            tabla += "<td> Modelo </td>";
             tabla += "<td> Código de Producto </td>";
             tabla += "<td> N° de Serie </td>";
             tabla += "<td> Fecha Instalación </td>";
             tabla += "<td> Valor Garantía </td>";
+            tabla += "<td> Garantía Adicional </td>";
             tabla += "<td> Fecha Vencimiento </td>";
             tabla += "</tr>";
             foreach (var item in lista)
@@ -63,11 +63,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Alertas
                 tabla += "<td>"+ num_sol.Substring(num_sol.Length - 6) + "</td>";
                 tabla += "<td>"+item.Descripcion.ToString() + "</td>";
                 tabla += "<td>" + item.Marca.ToString() + "</td>";
-                tabla += "<td>" + item.Modelo.ToString() + "</td>";
                 tabla += "<td>" + item.CodProducto.ToString() + "</td>";
                 tabla += "<td>" + item.NumSerie.ToString() + "</td>";
                 tabla += "<td>" + item.FechaInstalacion.ToString("dd/MM/yyyy") + "</td>";
                 tabla += "<td>" + item.ValorGarantia.ToString() + "</td>";
+                tabla += "<td>" + item.NmesAdicional.ToString() + "</td>";
                 tabla += "<td>" + item.FechaVencimiento.ToString("dd/MM/yyyy") + "</td>";
                 tabla += "</tr>";
             }

@@ -42,15 +42,16 @@ namespace AHSECO.CCL.BD
                     .Select(s => s as IDictionary<string, object>)
                     .Select(i => new GarantiaResultDTO()
                     {
-                        Id_Solicitud = i.Single(d => d.Key.Equals("SOLICITUD")).Parse<long>(),
-                        Descripcion = i.Single(d => d.Key.Equals("DESCRIPCION")).Parse<string>(),
-                        Marca = i.Single(d => d.Key.Equals("DESCMARCA")).Parse<string>(),
-                        Modelo = i.Single(d => d.Key.Equals("MODELO")).Parse<string>(),
-                        CodProducto = i.Single(d => d.Key.Equals("CODIGOPRODUCTO")).Parse<string>(),
-                        NumSerie = i.Single(d => d.Key.Equals("NUMSERIE")).Parse<string>(),
-                        FechaInstalacion = i.Single(d => d.Key.Equals("FECHAINSTALACION")).Parse<DateTime>(),
-                        ValorGarantia = i.Single(d => d.Key.Equals("VALORGARANTIA")).Parse<string>(),
-                        FechaVencimiento = i.Single(d => d.Key.Equals("FECHAVENCIMIENTO")).Parse<DateTime>()
+                        Id_Solicitud = i.Single(d => d.Key.Equals("SOLICITUD")).Value.Parse<long>(),
+                        Descripcion = i.Single(d => d.Key.Equals("DESCRIPCION")).Value.Parse<string>(),
+                        Marca = i.Single(d => d.Key.Equals("DESCMARCA")).Value.Parse<string>(),
+                        Modelo = i.Single(d => d.Key.Equals("MODELO")).Value.Parse<string>(),
+                        CodProducto = i.Single(d => d.Key.Equals("CODIGOPRODUCTO")).Value.Parse<string>(),
+                        NumSerie = i.Single(d => d.Key.Equals("NUMSERIE")).Value.Parse<string>(),
+                        FechaInstalacion = i.Single(d => d.Key.Equals("FECHAINSTALACION")).Value.Parse<DateTime>(),
+                        ValorGarantia = i.Single(d => d.Key.Equals("VALORGARANTIA")).Value.Parse<string>(),
+                        NmesAdicional = i.Single(d => d.Key.Equals("MESESADICIONAL")).Value.Parse<int>(),
+                        FechaVencimiento = i.Single(d => d.Key.Equals("FECHAVENCIMIENTO")).Value.Parse<DateTime>()
                     });
                 return result;
             }
