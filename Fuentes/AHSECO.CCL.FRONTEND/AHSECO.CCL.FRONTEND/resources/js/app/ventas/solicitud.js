@@ -889,7 +889,9 @@
                 data: "Cod_Tecnico",
                 render: function (data, type, row) {
                     var retirar = "";
-                    if ($EnvioServicio.val() == 0) {
+                    if ($EnvioServicio.val() == 0 && ($idRolUsuario.val() === "SGI_VENTA_ASESOR" || 
+                        $idRolUsuario.val() === "SGI_VENTA_COORDINASERV" ||
+                        $idRolUsuario.val() === "SGI_VENTA_COORDINAATC")) {
                         retirar = '<a id="btnDesasignarTecnico" class="btn btn-danger btn-xs" title="Desasignar Tecnico" href="javascript:solicitud.DesasignarTecnico(' + data + ')"><i class="fa fa-minus-square-o" aria-hidden="true"></i></a>';
                     }
                     return '<center>' + retirar + '</center>';
