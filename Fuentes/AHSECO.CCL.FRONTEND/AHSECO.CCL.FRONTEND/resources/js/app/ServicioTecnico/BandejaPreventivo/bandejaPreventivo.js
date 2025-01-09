@@ -10,7 +10,7 @@
     var $periodoFin = $('#periodoFin');
     var $openPeriodoIni = $('#openPeriodoIni');
     var $openPeriodoFin = $('#openPeriodoFin');
-    var $txtIdMant = $('#txtIdMant');
+    var $txtIdRegIns = $('#txtIdRegIns');
     var $formPreventivo = $('#formPreventivo');
 
 
@@ -96,7 +96,7 @@
         var url = "BandejaPreventivo/ObtenerPreventivos";
 
         var objConsulta = {
-            Id_Mant : $txtIdMant.val() == "" ? "0" : $txtIdMant.val(),
+            Id_Mant : $txtIdRegIns.val() == "" ? "0" : $txtIdRegIns.val(),
             NumSerie: $txtSerie.val() == "" ? "0" : $txtSerie.val(),
             NumProc: $txtNumProc.val() == "" ? "0" : $txtNumProc.val(),
             NumOrdCompra: $txtNumOrdCompra.val() == "" ? "0" : $txtNumOrdCompra.val(),
@@ -131,7 +131,7 @@
             return false;
         }
         $("#hidden_fields").empty();
-        $("<input>", { type: "hidden", name: "Id_Mant", value: $txtIdMant.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "Id_Mant", value: $txtIdRegIns.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "NumSerie", value: $txtSerie.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "NumProc", value: $txtNumProc.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "NumOrdCompra", value: $txtNumOrdCompra.val() }).appendTo("#hidden_fields");

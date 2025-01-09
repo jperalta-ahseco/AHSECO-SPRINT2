@@ -138,7 +138,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaPreventivos
                 connection.Open();
                 var parameters = new DynamicParameters();
 
-                parameters.Add("IsIdMant", req.Id_Mant);
+                parameters.Add("IsNumReq", req.NumReq);
                 parameters.Add("IsNumSerie", req.NumSerie);
                 parameters.Add("IsNumProc", req.NumProc);
                 parameters.Add("IsNumOrdCompra", req.NumOrdCompra);

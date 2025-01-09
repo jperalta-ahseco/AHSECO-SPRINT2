@@ -4,6 +4,7 @@ var cotvtadet = (function ($, win, doc) {
     var $idCotizacion = $("#idCotizacion");
     var $idRolUsuario = $("#idRolUsuario");
     var $idWorkFlow = $("#idWorkFlow");
+    var $modalCotDetItem = $('#modalCotDetItem');
 
     var $cmbTipo = $('#cmbTipo');
 
@@ -519,7 +520,7 @@ var cotvtadet = (function ($, win, doc) {
             var filters = {};
             filters.placeholder = "-- Seleccione --";
             filters.allowClear = false;
-            app.llenarComboMultiResult($DI_cmbGarantias, data.Result, null, " ", "-- Seleccione --", filters);
+            app.llenarComboMultiResult($DI_cmbGarantias, data.Result, $modalCotDetItem, " ", "-- Seleccione --", filters);
         }
         return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, null);
     }
@@ -1367,7 +1368,7 @@ var cotvtadet = (function ($, win, doc) {
             if ($DI_pnlCostos_CostoFOB.css("display") != "none") {
                 if ($DI_txtCostoFOB.attr("readonly") != "readonly" && $DI_txtCostoFOB.attr("disabled") != "disabled") {
                     if ($DI_txtCostoFOB.val() == null || $DI_txtCostoFOB.val() === "") {
-                            app.message.error("Validaci&oacute;n", "El campo Ex-Work no debe estar vacío.");
+                        app.message.error("Validaci&oacute;n", "El campo Ex-Work no debe estar vac&iacute;o.");
                             return false;
                     }
                     

@@ -4,12 +4,12 @@ GO
 CREATE OR ALTER PROCEDURE [dbo].[USP_PREV_SEL_PREVENTIVOS]
 (
 /*=======================================================================================================
-	Nombre:				Fecha:			Descripcion:
+	Nombre:				Fecha:				Descripcion:
 	Diego Bazalar		28.11.24		Realiza el select de los mantenimientod preventivos.
 	EXEC [USP_PREV_SEL_PREVENTIVOS] @IsIdMant='', @IsNumSerie='0', @IsNumProc='0',@IsNumOrdCompra='0',@IsNumFianza='0',@IsEmpresa='0',@IsPeriodoInicio=NULL,@IsPeriodoFinal=NULL
 =======================================================================================================*/
-	 @IsIdMant			BIGINT
-	,@IsNumSerie		VARCHAR(100) 
+	 @IsNumReq			BIGINT
+	,@IsNumSerie		VARCHAR(100)
 	,@IsNumProc			VARCHAR(15)
 	,@IsNumOrdCompra	VARCHAR(200)
 	,@IsNumFianza		VARCHAR(15)
@@ -31,6 +31,7 @@ SET NOCOUNT ON
 
 	CREATE TABLE #tmpParcial(
 		ID_MANT BIGINT
+		,NUMREQ BIGINT
 		,SERIE VARCHAR(200)
 		,FECHAINSTALACION DATETIME
 		,COD_EMPRESA VARCHAR(10)
@@ -103,7 +104,8 @@ SET NOCOUNT ON
 
 	SET @Sql = '
 				SELECT 																				
-					MANT.ID_MANT				   AS ID_MANT										
+					MANT.ID_MANT				   AS ID_MANT
+					,INSTAL.NUMREQ				   AS NUMREQ
 					,SERIE						   AS SERIE											
 					,MANT.FECHAINSTALACION		   AS FECHAINSTALACION								
 					,SOL.COD_EMPRESA			   AS COD_EMPRESA									
@@ -123,11 +125,14 @@ SET NOCOUNT ON
 				LEFT JOIN [dbo].[TBD_COTIZACIONVENTA] COTDET WITH(NOLOCK) ON COTDET.ID = COTCOST.ID_COTDETALLE
 				LEFT JOIN [dbo].[TBM_COTIZACIONVENTA] COTIZ WITH(NOLOCK) ON COTIZ.ID_COTIZACION = COTDET.ID_COTIZACION AND COTIZ.ESTADO = ''A''
 				LEFT JOIN [dbo].[TBM_SOLICITUDVENTA] SOL WITH(NOLOCK) ON SOL.ID_SOLICITUD = COTIZ.ID_SOLICITUD
-				WHERE 1 = 1
+				LEFT JOIN [dbo].[TBM_INSTALACION] INSTAL WITH(NOLOCK) ON SOL.ID_SOLICITUD = INSTAL.ID_SOLICITUD
 				'
-	IF (@IsIdMant != '0')
+
+	SET @sql = @sql +'WHERE 1 = 1'
+
+	IF (@IsNumReq != '0')
 	BEGIN
-		SET @sql = @sql +' AND MANT.ID_MANT = '''+CAST(@IsIdMant AS VARCHAR)+''' '
+		SET @sql = @sql +' AND INSTAL.NUMREQ = '''+CAST(@IsNumReq AS VARCHAR)+''' '
 	END
 	IF (@IsNumSerie != '0')
 	BEGIN
@@ -167,7 +172,8 @@ SET NOCOUNT ON
 					,MANT.NUMPROCESO
 					,MANT.TIPOPROCESO
 					,MANT.ORDENCOMPRA
-					,MANT.NUMFIANZA'
+					,MANT.NUMFIANZA
+					,INSTAL.NUMREQ'
 	--print(@sql)
 
 	INSERT INTO #tmpParcial
@@ -175,6 +181,7 @@ SET NOCOUNT ON
 
 	SELECT
 		parcial.ID_MANT
+		,NUMREQ
 		,parcial.SERIE
 		,parcial.DESCRIPCION
 		,parcial.FECHAINSTALACION
