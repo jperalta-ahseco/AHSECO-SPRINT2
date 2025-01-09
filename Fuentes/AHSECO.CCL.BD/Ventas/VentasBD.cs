@@ -160,7 +160,7 @@ namespace AHSECO.CCL.BD.Ventas
                         IndStock = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDSTOCK")).Value.Parse<string>()),
                         CodUnidad = i.Single(d => d.Key.Equals("UNDMED")).Value.Parse<string>(),
                         Cantidad = i.Single(d => d.Key.Equals("CANTIDAD")).Value.Parse<int>(),
-                        CostoFOB = i.Single(d => d.Key.Equals("COSTOFOB")).Value.Parse<decimal?>(),
+                        CostoFOB = i.Single(d => d.Key.Equals("COSTOFOB")).Value.Parse<string>(),
                         VentaUnitaria = i.Single(d => d.Key.Equals("VVENTAUNI")).Value.Parse<decimal?>(),
                         VentaTotalSinIGV = i.Single(d => d.Key.Equals("VVTOTALSIGV")).Value.Parse<decimal?>(),
                         PorcentajeGanancia = i.Single(d => d.Key.Equals("PORCGANANCIA")).Value.Parse<decimal?>(),
@@ -446,10 +446,7 @@ namespace AHSECO.CCL.BD.Ventas
                 { parameters.Add("isINDSTOCK", DBNull.Value, DbType.String); }
                 parameters.Add("isUNDMED", detalleCotizacion.CodUnidad);
                 parameters.Add("isCANTIDAD", detalleCotizacion.Cantidad);
-                if (detalleCotizacion.CostoFOB.HasValue)
-                { parameters.Add("isCOSTOFOB", detalleCotizacion.CostoFOB.Value); }
-                else
-                { parameters.Add("isCOSTOFOB", DBNull.Value, DbType.Decimal); }
+                parameters.Add("isCOSTOFOB", detalleCotizacion.CostoFOB); 
                 if (detalleCotizacion.VentaUnitaria.HasValue)
                 { parameters.Add("isVVENTAUNI", detalleCotizacion.VentaUnitaria.Value); }
                 else

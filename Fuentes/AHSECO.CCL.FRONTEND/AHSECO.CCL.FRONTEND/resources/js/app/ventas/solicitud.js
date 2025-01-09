@@ -4017,7 +4017,9 @@
             ext == "doc" || ext == "DOC" ||
             ext == "docx" || ext == "DOCX" ||
             ext == "zip" || ext == "ZIP" ||
-            ext == "rar" || ext == "RAR") {
+            ext == "rar" || ext == "RAR" ||
+            ext == "ppt" || ext == "PPT" ||
+            ext == "pptx" || ext == "PPTX") {
             //beforeSendCargaDoc();
             var formdata = new FormData(); //FormData object
             //Appending each file to FormData object
@@ -4056,7 +4058,9 @@
             ext == "doc" || ext == "DOC" ||
             ext == "docx" || ext == "DOCX" ||
             ext == "zip" || ext == "ZIP" ||
-            ext == "rar" || ext == "RAR") {
+            ext == "rar" || ext == "RAR" ||
+            ext == "ppt" || ext == "PPT" ||
+            ext == "pptx" || ext == "PPTX") {
             //beforeSendCargaDoc();
             var formdata = new FormData(); //FormData object
             //Appending each file to FormData object

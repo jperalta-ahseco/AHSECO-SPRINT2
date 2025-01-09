@@ -220,7 +220,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             {
                 string[] CD_Columns =
                 {
-                    "Nro. Item", "Codigo Producto", "Descripción", "Unidad Medida", "Cantidad", "Costo FOB", "Valor Venta Unitario",
+                    "Nro. Item", "Codigo Producto", "Descripción", "Unidad Medida", "Cantidad", "Ex-Work", "Valor Venta Unitario",
                     "Valor. Venta Total Sin IGV (Sin Ganancia)", "Ganancia(%)", "Valor. Venta Total Sin IGV Con Ganancia)", "Acción"
                 };
                 ViewBag.CabeceraCotDet = CD_Columns;
@@ -231,7 +231,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 {
                     string[] CD_ColumnsRepuestos =
                     {
-                        "Nro. Item", "Codigo Producto", "Descripción", "Unidad Medida", "Cantidad", "Costo FOB", "Valor Venta Unitario", 
+                        "Nro. Item", "Codigo Producto", "Descripción", "Unidad Medida", "Cantidad", "Ex-Work", "Valor Venta Unitario", 
                         "Valor. Venta Total Sin IGV", "Acción"
                     };
                     ViewBag.CabeceraCotDet = CD_ColumnsRepuestos;
@@ -1549,9 +1549,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                     if (!swTieneStock)
                                     {
                                         if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.CostoFOB) { pc.IsVisible = true; pc.IsEnabled = false; }
-                                        if (oItem.CostoFOB.HasValue)
-                                        {
-                                            if (oItem.CostoFOB.Value > 0)
+                                        if (oItem.CostoFOB!= "")
                                             {
                                                 if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = true; }
                                             }
@@ -1559,11 +1557,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                             {
                                                 if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = false; }
                                             }
-                                        }
-                                        else
-                                        {
-                                            if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = false; }
-                                        }
+
+
                                     }
                                     else
                                     {
@@ -1591,9 +1586,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                         if (!swTieneStock)
                                         {
                                             if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.CostoFOB) { pc.IsVisible = true; pc.IsEnabled = false; }
-                                            if (oItem.CostoFOB.HasValue)
-                                            {
-                                                if (oItem.CostoFOB.Value > 0)
+                                            if (oItem.CostoFOB != "")
                                                 {
                                                     if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = true; }
                                                 }
@@ -1601,11 +1594,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                                 {
                                                     if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = false; }
                                                 }
-                                            }
-                                            else
-                                            {
-                                                if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = false; }
-                                            }
+
                                         }
                                         else
                                         {
@@ -1717,21 +1706,15 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 if (!swTieneStock)
                                 {
                                     if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.CostoFOB) { pc.IsVisible = true; pc.IsEnabled = false; }
-                                    if (oItem.CostoFOB.HasValue)
+                                    if (oItem.CostoFOB != "")
                                     {
-                                        if (oItem.CostoFOB.Value > 0)
-                                        {
                                             if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = true; }
-                                        }
-                                        else
-                                        {
+                                     }
+                                     else
+                                     {
                                             if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = false; }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = false; }
-                                    }
+                                     }
+
                                 }
                                 else
                                 {
@@ -3753,8 +3736,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     if (swValidarCostoFOB)
                     {
                         var swDatos = false;
-                        if (oItem.CostoFOB.HasValue)
-                        { if (oItem.CostoFOB.Value > 0) { swDatos = true; } }
+                        if (oItem.CostoFOB != "") { swDatos = true; } 
 
                         if (!swDatos) { throw new Exception("No se ha ingresado el COSTO FOB de '" + oItem.Descripcion + "'"); }
                     }
@@ -4209,8 +4191,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     if (swValidarCostoFOB)
                     {
                         var swDatos = false;
-                        if (oItem.CostoFOB.HasValue)
-                        { if (oItem.CostoFOB.Value > 0) { swDatos = true; } }
+                         if (oItem.CostoFOB != "") { swDatos = true; } 
 
                         if (!swDatos) { throw new Exception("No se ha ingresado el COSTO FOB de '" + oItem.Descripcion + "'"); }
                     }

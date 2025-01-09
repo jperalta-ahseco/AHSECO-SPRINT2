@@ -22,7 +22,7 @@ namespace AHSECO.CCL.BE.Ventas
         public string CodUnidad { get; set; }
         public string DescUnidad { get; set; }
         public int Cantidad { get; set; }
-        public decimal? CostoFOB { get; set; }
+        public string CostoFOB { get; set; }
         public decimal? VentaUnitaria { get; set; }
         public decimal? VentaTotalSinIGV { get; set; }
         public decimal? PorcentajeGanancia { get; set; }

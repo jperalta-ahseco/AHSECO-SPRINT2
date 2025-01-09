@@ -626,7 +626,7 @@ var cotvtadet = (function ($, win, doc) {
             $DI_hdnIdCotDet.val(data.Result.Id);
             $DI_txtDescripcionAdic.val(data.Result.DescripcionAdicional);
             $DI_txtCantidad.val(data.Result.Cantidad);
-            $DI_txtCostoFOB.val(app.formatearEnteroComa(parseFloat(data.Result.CostoFOB).toFixed(2)));
+            $DI_txtCostoFOB.val(data.Result.CostoFOB);
             $DI_txtValorUnitario.val(app.formatearEnteroComa(parseFloat(data.Result.VentaUnitaria).toFixed(2)));
             $DI_txtGanancia.val(data.Result.PorcentajeGanancia);
 
@@ -1366,16 +1366,11 @@ var cotvtadet = (function ($, win, doc) {
         if ($DI_pnlCostos_PrecioVenta.css("display") != "none") {
             if ($DI_pnlCostos_CostoFOB.css("display") != "none") {
                 if ($DI_txtCostoFOB.attr("readonly") != "readonly" && $DI_txtCostoFOB.attr("disabled") != "disabled") {
-                    if (!app.validaNumeroDecimal($DI_txtCostoFOB.val())) {
-                        app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Costo FOB");
-                        return false;
-                    }
-                    else {
-                        if (parseFloat($DI_txtCostoFOB.val()) <= 0) {
-                            app.message.error("Validaci&oacute;n", "el costo FOB debe ser mayor a 0.");
+                    if ($DI_txtCostoFOB.val() == null || $DI_txtCostoFOB.val() === "") {
+                            app.message.error("Validaci&oacute;n", "El campo Ex-Work no debe estar vacío.");
                             return false;
-                        }
                     }
+                    
                 }
             }
             if ($DI_pnlCostos_ValorUnitario.css("display") != "none") {
@@ -1572,7 +1567,7 @@ var cotvtadet = (function ($, win, doc) {
                     CodItemTemp: $DI_txtCodigo.val(),
                     DescripcionAdicional: $DI_txtDescripcionAdic.val(),
                     Cantidad: app.convertirNumero($DI_txtCantidad.val()),
-                    CostoFOB: app.convertirNumero($DI_txtCostoFOB.val()),
+                    CostoFOB: $DI_txtCostoFOB.val(),
                     VentaUnitaria: app.convertirNumero($DI_txtValorUnitario.val()),
                     PorcentajeGanancia: app.convertirNumero($DI_txtGanancia.val()),
                     IndStock: bTieneStock,

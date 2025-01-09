@@ -21,7 +21,7 @@ var app = (function ($, win, doc) {
     $btnSalirPortal = $("#btnSalirPortal");
 
     var tiempoInactividad = 0; // En minutos
-    var maxInactividad = 5; // 5 minutos de inactividad
+    var maxInactividad = 10; // 10 minutos de inactividad
     var temporizador;
 
     

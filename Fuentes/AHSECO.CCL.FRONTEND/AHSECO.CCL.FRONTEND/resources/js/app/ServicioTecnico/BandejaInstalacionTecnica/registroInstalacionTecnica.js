@@ -196,7 +196,7 @@
     let adjuntos = [];
     const baseUrl = window.location.origin;
     function Initializer() {
-        $tipoDocAdjuntos.text("Archivos permitidos: .xls,.xlsx,.pdf,.doc,.docx,.zip,.rar");
+        $tipoDocAdjuntos.text("Archivos permitidos: .xls,.xlsx,.pdf,.doc,.docx,.zip,.rar,.ppt,.pptx");
         ObtenerFiltrosInstalacion();
         cargarTipoDoc();
         ObtenerDepartamentos();
@@ -2241,7 +2241,9 @@
             ext == "doc" || ext == "DOC" ||
             ext == "docx" || ext == "DOCX" ||
             ext == "zip" || ext == "ZIP" ||
-            ext == "rar" || ext == "RAR" 
+            ext == "rar" || ext == "RAR" ||
+            ext == "ppt" || ext == "PPT" ||
+            ext == "pptx" || ext == "PPTX"
         ) {
             //beforeSendCargaDoc();
             var formdata = new FormData(); //FormData object
