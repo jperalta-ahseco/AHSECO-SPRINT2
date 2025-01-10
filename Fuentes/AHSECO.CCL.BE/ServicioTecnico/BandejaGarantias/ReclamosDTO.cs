@@ -13,11 +13,12 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaGarantias
         public string NombreContacto   {get;set;}
         public string TelefonoContacto {get;set;}
         public string CargoContacto    {get;set;}
+        public string Correo { get; set; }
         public string Establecimiento  {get;set;}
         public string TipoVenta        {get;set;}
         public string CodTipoVenta     { get; set; }
         public string OrdenCompra      {get;set;}
-        public string    NumProceso       {get;set;}
+        public string NumProceso       {get;set;}
         public string TipoProcesoSol    {get;set;}
         public string Contrato         {get;set;}
         public string RazonSocial      { get; set; }

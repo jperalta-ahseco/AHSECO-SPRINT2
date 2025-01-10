@@ -38,6 +38,13 @@
     var $openRegdateFact = $('#openRegdateFact');
     var $btnCerrar = $('#btnCerrar');
     var $rowFactura = $('#rowFactura');
+    var $txtNumOTM = $('#txtNumOTM');
+    var $txtNumGuia = $('#txtNumGuia');
+    var $dateFechaGuia = $('#dateFechaGuia');
+    var $openRegdateGuia = $('#openRegdateGuia');
+    var $colNumGuia = $('#colNumGuia');
+    var $colFechaGuia = $('#colFechaGuia');
+
     /*Modales*/
     var $modalCargaDocumento = $('#modalCargaDocumento');
     var $modalObservacion = $('#modalObservacion');
@@ -127,7 +134,16 @@
 
         $openRegdateFact.click($openRegdateFactClick);
 
+        $openRegdateGuia.click($openRegdateGuiaClick);
+
         $dateFechaFact.datepicker({
+            viewMode: 0,
+            minViewMode: 0,
+            format: 'dd/mm/yyyy',
+            startDate: hoy()
+        });
+
+        $dateFechaGuia.datepicker({
             viewMode: 0,
             minViewMode: 0,
             format: 'dd/mm/yyyy',
@@ -461,6 +477,10 @@
         $dateFechaFact.focus();
     }
 
+    function $openRegdateGuiaClick() {
+        $dateFechaGuia.focus();
+    }
+
     function botonNo() {
         indPrest = 0;
         $spanSi.css('background-color', 'gray')
@@ -639,6 +659,7 @@
         $dateFechaMant.val(detallePreventivo.MantPreventivo.FechaMantenimiento);
         //var monto = formatoMiles(detallePreventivo.MantPreventivo.MontoPrestAcce.toFixed(2));
         $txtMontoAcce.val(detallePreventivo.MantPreventivo.MontoPrestAcce);
+        $txtNumOTM.val(detallePreventivo.MantPreventivo.Val_OTM);
         if (detallePreventivo.MantPreventivo.IndPrestacion == true) {
             botonSi();
         }
@@ -647,6 +668,7 @@
         };
 
         $dateFechaMant.prop("disabled", true);
+        $txtNumOTM.prop('disabled', true);
         $txtMontoAcce.prop('disabled', true);
         $spanSi.css('pointer-events', 'none');
         $spanNo.css('pointer-events', 'none');
@@ -775,6 +797,7 @@
         var btnRegresar = document.getElementById("btnRegresar");
         if (btnEditr != null) {
             $dateFechaMant.prop('disabled', false);
+            $txtNumOTM.prop('disabled', false);
             $spanSi.css('pointer-events', 'auto')
             $spanNo.css('pointer-events', 'auto')
             $spanCon.css('pointer-events', 'auto')
@@ -805,6 +828,11 @@
             return;
         };
 
+        if ($txtNumOTM.val().trim() == "" || $txtNumOTM.val().trim().length == 0 || $txtNumOTM.val() == null) {
+            app.message.error("Validación", "Debe de ingresar el OTM");
+            return;
+        };
+
         //var fecHoy = hoy()
 
         //if ($dateFechaMant.val() < fecHoy) {
@@ -829,6 +857,7 @@
             MontoPrestAcce: ($txtMontoAcce.val()).replaceAll(",", ""),
             IndPrestAcce: indPrest,
             IndRepuesto: indRepuesto,
+            valOTM: $txtNumOTM.val(),
             Estado: $estadoMant.val()
         };
 
@@ -845,6 +874,7 @@
                     detallePreventivo.MantPreventivo.IndPrestacion = indPrest;
                     detallePreventivo.MantPreventivo.FechaMantenimiento = $dateFechaMant.val();
                     detallePreventivo.MantPreventivo.MontoPrestAcce = $txtMontoAcce.val();
+                    detallePreventivo.MantPreventivo.Val_OTM = $txtNumOTM.val();
                     cancelarEditMant();
                 }
 
@@ -1538,6 +1568,30 @@
             return;
         };
         var validador = 1;
+
+        if (indRepuesto == true) {
+            if ($txtNumGuia.val() == "" || $txtNumGuia.val().trim().length == 0 || $txtNumGuia.val() == null) {
+                validador = 0;
+            };
+        };
+
+        if (validador == 0) {
+            app.message.error("Validación", "Debe de ingresar el Número de Guía.");
+            return;
+        };
+
+        if (indRepuesto == true) {
+            if ($dateFechaGuia.val() == "" || $dateFechaGuia.val().trim().length == 0 || $dateFechaGuia.val() == null) {
+                validador = 0;
+            };
+        };
+
+
+        if (validador == 0) {
+            app.message.error("Validación", "Debe de ingresar la Fecha de Guía.");
+            return;
+        };
+
         for (var i = 0; i < adjuntos.length; i++) {
             if (adjuntos[i].CodigoTipoDocumento == "DP01" || adjuntos[i].CodigoTipoDocumento == "DP02" || adjuntos[i].CodigoTipoDocumento == "DP03") {
                 validador = 0;
@@ -1559,6 +1613,8 @@
             FechaMantenimiento: $dateFechaMant.val(),
             NumFactura: $txtNumFactura.val(),
             FecFactura: $dateFechaFact.val(),
+            valGuia: $txtNumGuia.val(),
+            FecGuia: $dateFechaGuia.val(),
             Id_WorkFlow: $codigoWorkflow.val()
         };
 
@@ -1721,17 +1777,31 @@
         $dateFechaMant.val(mantenimiento.FechaMantenimiento);
         $txtMontoAcce.val(mantenimiento.MontoPrestAcce);
         $txtNumFactura.val(mantenimiento.NumFactura);
+        $txtNumOTM.val(mantenimiento.Val_OTM);
         $dateFechaFact.val(mantenimiento.FecFactura);
+        $dateFechaGuia.val(mantenimiento.FecGuia);
+        $txtNumGuia.val(mantenimiento.Val_GUIA);
+
 
         if ($txtNumFactura.val() != "" && $dateFechaFact.val() != "") {
             $rowFactura.css('display', 'block');
         };
 
+        if ($txtNumGuia.val() != "" && $dateFechaGuia.val() != "") {
+            $colNumGuia.css('display', 'block');
+            $colFechaGuia.css('display', 'block');
+        };
 
         if (mantenimiento.CodEstado == "FIN") {
             $txtNumFactura.prop('disabled',false);
             $dateFechaFact.prop('disabled', false);
             $rowFactura.css('display', 'block');
+            if (mantenimiento.IndRepuesto == true) {
+                $colNumGuia.css('display', 'block');
+                $colFechaGuia.css('display', 'block');
+                $txtNumGuia.prop('disabled', false);
+                $dateFechaGuia.prop('disabled', false);
+            };
         };
 
         if (mantenimiento.IndPrestacion == true) {
@@ -1805,6 +1875,9 @@
                     FechaMantenimiento: app.obtenerFecha(data.Result.MantPreventivo.FechaMantenimiento),
                     FecFactura: data.Result.MantPreventivo.FecFactura,
                     NumFactura: data.Result.MantPreventivo.NumFactura,
+                    FecGuia: data.Result.MantPreventivo.FecGuia,
+                    Val_OTM: data.Result.MantPreventivo.Val_OTM,
+                    Val_GUIA: data.Result.MantPreventivo.Val_GUIA,
                     MontoPrestAcce: formatoMiles(data.Result.MantPreventivo.MontoPrestAcce.toFixed(2)),
                     IndPrestacion: data.Result.MantPreventivo.IndPrestacion,
                     IndRepuesto: data.Result.MantPreventivo.IndRepuesto,

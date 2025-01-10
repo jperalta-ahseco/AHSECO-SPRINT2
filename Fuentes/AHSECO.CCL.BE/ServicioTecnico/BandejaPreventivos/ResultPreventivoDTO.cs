@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,6 +11,7 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaPreventivos
     {
         public long Id_Mant {get; set;}
         public string Serie {get; set;}
+        public long NumInst { get; set; }
         public DateTime FechaInstalacion   {get; set;}
         public string ProxFechaMant { get; set; }
         public DateTime FechaMantenimiento {get; set;}

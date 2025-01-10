@@ -154,6 +154,7 @@
     var $txtTelefContacto = $('#txtTelefContacto');
     var $txtEstablecimientoCont = $('#txtEstablecimientoCont');
     var $txtCargoContacto = $('#txtCargoContacto');
+    var $txtEmailContacto = $('#txtEmailContacto');
 
     /*Modal Buscar Tecnicos*/
 
@@ -947,6 +948,7 @@
         $txtTelefContacto.val(contacto.Telefono);
         $txtEstablecimientoCont.val(contacto.Establecimiento);
         $txtCargoContacto.val(contacto.Cargo);
+        $txtEmailContacto.val(contacto.Correo);
     }
 
     function cargarCuerpoEquipo(detalle) {
@@ -1709,6 +1711,7 @@
                 , NombreContacto: $txtNomContacto.val()
                 , TelefonoContacto: $txtTelefContacto.val()
                 , CargoContacto: $txtCargoContacto.val()
+                , Correo : $txtEmailContacto.val()
                 , Establecimiento: $txtEstablecimientoCont.val()
                 , TipoVenta: $cmbTipVenta.val()
                 , OrdenCompra: $txtOrdCompra.val()
@@ -2018,7 +2021,8 @@
                     NomCont: data.Result.Reclamo.NombreContacto,
                     Telefono: data.Result.Reclamo.TelefonoContacto,
                     Establecimiento: data.Result.Reclamo.Establecimiento,
-                    Cargo: data.Result.Reclamo.CargoContacto
+                    Cargo: data.Result.Reclamo.CargoContacto,
+                    Correo: data.Result.Reclamo.Correo
                 };
 
                 var reclamo = {

@@ -156,6 +156,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaPreventivos
                     .Select(i => new ResultPreventivoDTO()
                     {
                         Id_Mant = i.Single( d => d.Key.Equals("ID_MANT")).Value.Parse<long>(),
+                        NumInst = i.Single(d => d.Key.Equals("NUMREQ")).Value.Parse<long>(),
                         Serie = i.Single(d => d.Key.Equals("SERIE")).Value.Parse<string>(),
                         Descripcion = i.Single(d => d.Key.Equals("DESCRIPCION")).Value.Parse<string>(),
                         FechaInstalacion = i.Single(d => d.Key.Equals("FECHAINSTALACION")).Value.Parse<DateTime>(),
@@ -226,8 +227,11 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaPreventivos
                 parameters.Add("IsMONTOPRESTACCE", req.MontoPrestAcce);
                 parameters.Add("IsINDPRESTACION", req.IndPrestAcce == true ? "S" : "N");
                 parameters.Add("IsINDREPUESTO", req.IndRepuesto == true ? "S" : "N");
+                parameters.Add("IsVAL_OTM", req.valOTM);
                 parameters.Add("IsNUMFACTURA", req.NumFactura);
                 parameters.Add("IsFECHAFACTURA", req.FecFactura);
+                parameters.Add("IsVAL_GUIA", req.valGuia);
+                parameters.Add("IsFECGUIA", req.FecGuia);
                 parameters.Add("IsESTADO", req.Estado);
                 parameters.Add("IsUsrEjecuta", req.UsuarioRegistra);
 
@@ -269,6 +273,9 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaPreventivos
                         IndRepuesto = reader.IsDBNull(reader.GetOrdinal("INDREPUESTO")) ? false : (reader.GetString(reader.GetOrdinal("INDREPUESTO")) == "S" ? true : false),
                         NumFactura = reader.IsDBNull(reader.GetOrdinal("NUMFACTURA")) ? "" : reader.GetString(reader.GetOrdinal("NUMFACTURA")),
                         FecFactura = reader.IsDBNull(reader.GetOrdinal("FECHAFACTURA")) ? "" : reader.GetString(reader.GetOrdinal("FECHAFACTURA")),
+                        FecGuia = reader.IsDBNull(reader.GetOrdinal("FECGUIA")) ? "" : reader.GetString(reader.GetOrdinal("FECGUIA")),
+                        Val_OTM = reader.IsDBNull(reader.GetOrdinal("VAL_OTM")) ? "" : reader.GetString(reader.GetOrdinal("VAL_OTM")),
+                        Val_GUIA = reader.IsDBNull(reader.GetOrdinal("VAL_GUIA")) ? "" : reader.GetString(reader.GetOrdinal("VAL_GUIA")),
                         Estado = reader.IsDBNull(reader.GetOrdinal("ESTADO")) ? "" : reader.GetString(reader.GetOrdinal("ESTADO")),
                         CodEstado = reader.IsDBNull(reader.GetOrdinal("CODESTADO")) ? "" : reader.GetString(reader.GetOrdinal("CODESTADO"))
                     };

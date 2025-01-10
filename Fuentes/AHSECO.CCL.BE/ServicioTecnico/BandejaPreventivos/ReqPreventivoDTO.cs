@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,6 +27,9 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaPreventivos
         public bool IndPrestAcce { get; set; }
         public bool IndRepuesto{ get; set; }
         public decimal MontoPrestAcce { get; set; }
+        public string valOTM { get; set; }
+        public string valGuia { get; set; }
+        public DateTime? FecGuia { get; set; }
         public DateTime FechaMantenimiento { get; set; }
         public string NumFactura { get; set; }
         public DateTime? FecFactura { get; set; }

@@ -26,5 +26,8 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaPreventivos
         public bool IndRepuesto { get; set; }
         public string NumFactura { get; set; }
         public string FecFactura { get; set; }
+        public string Val_OTM { get; set; }
+        public string Val_GUIA { get; set; }
+        public string FecGuia { get; set; }
     }
 }

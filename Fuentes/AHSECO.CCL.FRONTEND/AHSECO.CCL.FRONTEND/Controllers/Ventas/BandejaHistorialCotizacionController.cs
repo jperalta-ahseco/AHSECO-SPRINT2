@@ -940,6 +940,14 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             var style4 = hssfworkbook.CreateCellStyle();
             style4.SetFont(fontbold4);
 
+            var styleWrap = hssfworkbook.CreateCellStyle();
+            styleWrap.SetFont(fontbold5);
+            styleWrap.WrapText = true;
+            styleWrap.VerticalAlignment = VerticalAlignment.Top;
+            styleWrap.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+            styleWrap.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+            styleWrap.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+            styleWrap.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
 
             var style5 = hssfworkbook.CreateCellStyle();
             style5.SetFont(fontbold5);
@@ -1371,7 +1379,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 cell.SetCellValue(det.Catalogo);
 
                 cell = row.CreateCell(5);
-                cell.CellStyle = style5;
+                cell.CellStyle = styleWrap;
                 cell.SetCellValue(det.Descripcion);
 
                 cell = row.CreateCell(6);

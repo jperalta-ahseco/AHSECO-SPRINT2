@@ -131,7 +131,7 @@
             return false;
         }
         $("#hidden_fields").empty();
-        $("<input>", { type: "hidden", name: "Id_Mant", value: $txtIdRegIns.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "NumReq", value: $txtIdRegIns.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "NumSerie", value: $txtSerie.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "NumProc", value: $txtNumProc.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "NumOrdCompra", value: $txtNumOrdCompra.val() }).appendTo("#hidden_fields");
@@ -146,7 +146,7 @@
     function cargarTablaPreventivos(data) {
         var columns = [
             {
-                data: "Id_Mant",
+                data: "NumInst",
                 render: function (data, type, row) {
                     var numReqFormateado = ("000000" + data.toString());
                     numReqFormateado = numReqFormateado.substring((numReqFormateado.length) - 6, numReqFormateado.length);

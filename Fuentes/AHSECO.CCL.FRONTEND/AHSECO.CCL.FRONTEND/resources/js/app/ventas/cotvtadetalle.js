@@ -450,7 +450,7 @@ var cotvtadet = (function ($, win, doc) {
         ];
 
 
-        if ($TipoSolicitud.val() == "TSOL04") // Para las solicitudes de tipo "Venta de Materiales" se prescinde de las columnas: seleccionar, ver accesorios. 
+        if ($TipoSolicitud.val() != "TSOL05") // Para las solicitudes de tipo "Venta de Materiales" se prescinde de las columnas: seleccionar, ver accesorios. 
         {
             columns.splice(0, 2);
         };
@@ -1698,7 +1698,7 @@ var cotvtadet = (function ($, win, doc) {
                     data: "CostoFOB",
                     render: function (data) {
                         if (data == null) { data = ""; }
-                        else { data = app.formatearEnteroComa(parseFloat(data).toFixed(2)); }
+                        else { data }
                         return '<center>' + data + '</center>';
                     }
                 },

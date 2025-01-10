@@ -65,7 +65,7 @@
                     <div class="box-content" style="background-color: #f5f5dc30;">
                         <form id="formMant">
                             <div class="row container-fluid">
-                                <div class="col-md-4 col-sm-12">
+                                <div class="col-md-3 col-sm-12">
                                     <label for="dateFechaMant">Fecha de Mantenimiento</label>
                                     <div class="input-group date">
                                         <input disabled type="text" class="form-control input-sm" id="dateFechaMant" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
@@ -74,7 +74,7 @@
                                         </span>
                                     </div>
                                 </div>
-                                <div class="col-md-4 col-sm-12">
+                                <div class="col-md-3 col-sm-12">
                                     <label for="txtMontoAcce">Prestación Accesoria</label>
                                     <div class="form-group">
                                         <div class="input-group input-group-sm">
@@ -88,7 +88,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4 col-sm-12">
+                                <div class="col-md-3 col-sm-12">
                                     <label for="txtMontoAcce">Repuestos:</label>
                                     <div class="form-group">
                                         <div class="input-group input-group-sm">
@@ -101,21 +101,42 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-md-3 col-sm-12">
+                                    <label for="txtNumOTM">OTM</label>
+                                        <input disabled placeholder="-- OTM --" type="text" class="form-control input-sm" id="txtNumOTM" value="">
+                                    <div class="form-group">
+                                    </div>
+                                </div>
                             </div>
                             @if (estadoMant == "FIN" || tipoAccion == "V")
                             {
                                 <div class="row container-fluid" id="rowFactura" style="display:none">
-                                    <div class="col-md-4 col-sm-12">
+                                    <div class="col-md-3 col-sm-12">
                                         <label for="">Número de Factura</label>
                                         <div class="form-group">
                                             <input disabled placeholder="--N° de Factura--" type="text" class="form-control input-sm" id="txtNumFactura" value="">
                                         </div>
                                     </div>
-                                    <div class="col-md-4 col-sm-12">
-                                        <label for="dateFechaMant">Fecha de Factura</label>
+                                    <div class="col-md-3 col-sm-12">
+                                        <label for="dateFechaFact">Fecha de Factura</label>
                                         <div class="input-group date">
                                             <input disabled type="text" class="form-control input-sm" id="dateFechaFact" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
                                             <span class="input-group-addon input-sm" id="openRegdateFact">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-12" id="colNumGuia" style="display:none">
+                                        <label for="">Número de Guía</label>
+                                        <div class="form-group">
+                                            <input hidden disabled placeholder="--N° de Factura--" type="text" class="form-control input-sm" id="txtNumGuia" value="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-12" id="colFechaGuia" style="display:none">
+                                        <label for="dateFechaGuia">Fecha de Guía</label>
+                                        <div class="input-group date">
+                                            <input hidden disabled type="text" class="form-control input-sm" id="dateFechaGuia" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
+                                            <span class="input-group-addon input-sm" id="openRegdateGuia">
                                                 <i class="fa fa-calendar"></i>
                                             </span>
                                         </div>

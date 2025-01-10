@@ -185,6 +185,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
                         NombreContacto    = i.Single(d => d.Key.Equals("NOMBRECONTACTO")).Value.Parse<string>(),
                         TelefonoContacto      = i.Single(d => d.Key.Equals("TELEFONOCONTACTO")).Value.Parse<string>(),
                         CargoContacto = i.Single(d => d.Key.Equals("CARGOCONTACTO")).Value.Parse<string>(),
+                        Correo = i.Single(d => d.Key.Equals("EMAILCONTACTO")).Value.Parse<string>(),
                         Establecimiento = i.Single(d => d.Key.Equals("ESTABLECIMIENTO")).Value.Parse<string>(),
                         OrdenCompra = i.Single(d => d.Key.Equals("ORDENCOMPRA")).Value.Parse<string>(),
                         NumProceso = i.Single(d => d.Key.Equals("NUMPROCESO")).Value.Parse<string>(),
@@ -247,6 +248,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
                         NombreContacto = reader.IsDBNull(reader.GetOrdinal("NOMBRECONTACTO")) ? "" : reader.GetString(reader.GetOrdinal("NOMBRECONTACTO")),
                         TelefonoContacto = reader.IsDBNull(reader.GetOrdinal("TELEFONOCONTACTO")) ? "" : reader.GetString(reader.GetOrdinal("TELEFONOCONTACTO")),
                         CargoContacto = reader.IsDBNull(reader.GetOrdinal("CARGOCONTACTO")) ? "" : reader.GetString(reader.GetOrdinal("CARGOCONTACTO")),
+                        Correo = reader.IsDBNull(reader.GetOrdinal("EMAILCONTACTO")) ? "" : reader.GetString(reader.GetOrdinal("EMAILCONTACTO")),
                         Establecimiento = reader.IsDBNull(reader.GetOrdinal("ESTABLECIMIENTO")) ? "" : reader.GetString(reader.GetOrdinal("ESTABLECIMIENTO")),
                         OrdenCompra = reader.IsDBNull(reader.GetOrdinal("ORDENCOMPRA")) ? "" : reader.GetString(reader.GetOrdinal("ORDENCOMPRA")),
                         NumProceso = reader.IsDBNull(reader.GetOrdinal("NUMPROCESO")) ? "" : reader.GetString(reader.GetOrdinal("NUMPROCESO")),
@@ -437,6 +439,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
                 parameters.Add("IsNOMBRECONTACTO", reclamo.NombreContacto);
                 parameters.Add("IsTELEFONOCONTACTO", reclamo.TelefonoContacto);
                 parameters.Add("IsCARGOCONTACTO", reclamo.CargoContacto);
+                parameters.Add("IsCORREOCONTACTO", reclamo.Correo);
                 parameters.Add("IsESTABLECIMIENTO", reclamo.Establecimiento);
                 parameters.Add("IsTIPOVENTA",reclamo.TipoVenta);
                 parameters.Add("IsORDENCOMPRA", reclamo.OrdenCompra);
@@ -613,6 +616,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
                             NomCont = reader.IsDBNull(reader.GetOrdinal("NOMBRECONTACTO")) ? "" : reader.GetString(reader.GetOrdinal("NOMBRECONTACTO")),
                             Telefono = reader.IsDBNull(reader.GetOrdinal("TELEFONOCONTACTO")) ? "" : reader.GetString(reader.GetOrdinal("TELEFONOCONTACTO")),
                             Establecimiento = reader.IsDBNull(reader.GetOrdinal("ESTABLECIMIENTO")) ? "" : reader.GetString(reader.GetOrdinal("ESTABLECIMIENTO")),
+                            Correo = reader.IsDBNull(reader.GetOrdinal("CORREOCONTACTO")) ? "" : reader.GetString(reader.GetOrdinal("CORREOCONTACTO")),
                             Cargo = reader.IsDBNull(reader.GetOrdinal("CARGOCONTACTO")) ? "" : reader.GetString(reader.GetOrdinal("CARGOCONTACTO"))
                         };
                         result.Contacto = contacto;

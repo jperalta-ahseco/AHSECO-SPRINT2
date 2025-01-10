@@ -21,6 +21,7 @@
     var $txtNomContacto = $('#txtNomContacto');
     var $txtTelefContacto = $('#txtTelefContacto');
     var $txtEstablecimientoCont = $('#txtEstablecimientoCont');
+    var $txtEmailContacto = $('#txtEmailContacto');
     var $txtCargoContacto = $('#txtCargoContacto');
     var $txtEmpresa = $('#txtEmpresa');
     var $txtSolVenta = $('#txtSolVenta');
@@ -823,6 +824,7 @@
                 , NombreContacto: $txtNomContacto.val()
                 , TelefonoContacto: $txtTelefContacto.val()
                 , CargoContacto: $txtCargoContacto.val()
+                , EmailContacto :$txtEmailContacto.val()
                 , Establecimiento: $txtEstablecimientoCont.val()
                 , TipoVenta: $cmbTipVenta.val()
                 , CodEmpresa: $hdnCodEmpresa.val()
@@ -1008,6 +1010,7 @@
             $txtNomContacto.val(requerimiento.NombreContacto);
             $txtCargoContacto.val(requerimiento.CargoContacto);
             $txtTelefContacto.val(requerimiento.TelefonoContacto);
+            $txtEmailContacto.val(requerimiento.EmailContacto);
             $txtOrdCompra.val(requerimiento.OrdenCompra);
             $txtEstablecimientoCont.val(requerimiento.Establecimiento);
             $cmbGarantias.val(requerimiento.Garantia).trigger('change.select2');
@@ -2215,6 +2218,10 @@
         $hdnIdTecnico.val(codigo);
         $txtTecnico.val(nombreTecnico);
         $txtEmpresaTecnico.val(nombreEmpresa);
+        if (nombreEmpresa == 'null' || nombreEmpresa == null) {
+            $txtEmpresaTecnico.val("");
+            $txtEmpresaTecnico.prop('disabled', false);
+        };
         $modalBusquedaTecnico.modal('toggle');
     };
     function $adjuntarDocumento_click() {

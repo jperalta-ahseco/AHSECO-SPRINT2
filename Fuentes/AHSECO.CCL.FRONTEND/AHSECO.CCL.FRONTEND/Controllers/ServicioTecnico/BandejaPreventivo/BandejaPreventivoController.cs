@@ -566,6 +566,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
 
             cell = row.CreateCell(cellnum++);
             cell.CellStyle = style;
+            cell.SetCellValue("Número de Registro de Instalación");
+
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
             cell.SetCellValue("Número de Mantenimiento");
 
             cell = row.CreateCell(cellnum++);
@@ -605,6 +609,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
             {
                 cellnum = 0;
                 row = sh.CreateRow(rownum++);
+
+
+                cell = row.CreateCell(cellnum++);
+                cell.SetCellValue(item.NumInst);
 
                 cell = row.CreateCell(cellnum++);
                 cell.SetCellValue(item.Id_Mant);

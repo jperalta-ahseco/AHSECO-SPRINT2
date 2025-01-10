@@ -13,6 +13,7 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica
         public string Ubicacion { get; set; }
         public string NombreContacto { get; set; }
         public string TelefonoContacto { get; set; }
+        public string EmailContacto { get; set; }
         public string CargoContacto { get; set; }
         public string Establecimiento { get; set; }
         public string TipoVenta { get; set; }
