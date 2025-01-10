@@ -1860,7 +1860,7 @@
         if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03" || $TipoSolicitud.val() === "TSOL05") {
 
             if ($TotalSeriesSS.val() != $ContadorSeriesSS.val()) {
-                app.message.error("Validación", "Debe ingresar la series completas.");
+                app.message.error("Validación", "Debe ingresar la series y/o lotes completas.");
                 return false;
             }
 
@@ -2075,7 +2075,7 @@
         }
         if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03" || $TipoSolicitud.val() === "TSOL05") {
             if (parseInt($ContadorSeriesCS.val()) != parseInt($TotalSeriesCS.val())) {
-                app.message.error("Validación", "Debe ingresar todas las series de los productos con stock antes de enviar a gestión.");
+                app.message.error("Validación", "Debe ingresar todas las series y/o lotes de los productos con stock antes de enviar a gestión.");
                 return false;
             }
         }
@@ -2121,7 +2121,7 @@
         }
         if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03" || $TipoSolicitud.val() === "TSOL05") {
             if (parseInt($ContadorSeriesSS.val()) != parseInt($TotalSeriesSS.val())) {
-                app.message.error("Validación", "Debe ingresar todas las series de los productos sin stock antes de enviar a gestión.");
+                app.message.error("Validación", "Debe ingresar todas las series y/o lotes de los productos sin stock antes de enviar a gestión.");
                 return false;
             }
         }
@@ -2178,7 +2178,7 @@
         if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03" || $TipoSolicitud.val() === "TSOL05") {
 
             if ($TotalSeriesCS.val() != $ContadorSeriesCS.val()) {
-                app.message.error("Validación", "Debe ingresar la series completas.");
+                app.message.error("Validación", "Debe ingresar la series y/o lotes completas.");
                 return false;
             }
 
@@ -4209,7 +4209,7 @@
 
     function $btnRegistrarSerie_click() {
         if ($txtSerie.val() === "" || $txtSerie.val() == null) {
-            app.message.error("Validación", "Debe ingresar el número de serie.");
+            app.message.error("Validación", "Debe ingresar el número de serie o lote.");
             return false;
         }
         var fnSi = function () {
@@ -4235,14 +4235,14 @@
             };
             return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.actualizarSerie);
         }
-        return app.message.confirm("Ventas", "¿Está seguro que registrar el número de serie?", "S&iacute;", "No", fnSi, null);
+        return app.message.confirm("Ventas", "¿Está seguro que registrar el número de serie o lote?", "S&iacute;", "No", fnSi, null);
 
     }
 
     function guardarSeries(codDetalleDespacho,stock) {
         var serie = $('#Serie' + codDetalleDespacho).val();
         if (serie === "" || serie == null) {
-            app.message.error("Validación", "Debe ingresar el número de serie.");
+            app.message.error("Validación", "Debe ingresar el número de serie o lote.");
             return false;
         }
         var fnSi = function () {
@@ -4284,7 +4284,7 @@
             };
             return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.actualizarSerie);
         }
-        return app.message.confirm("Ventas", "¿Está seguro que desea registrar el número de serie?", "S&iacute;", "No", fnSi, null);
+        return app.message.confirm("Ventas", "¿Está seguro que desea registrar el número de serie o lote?", "S&iacute;", "No", fnSi, null);
 
     }
 
