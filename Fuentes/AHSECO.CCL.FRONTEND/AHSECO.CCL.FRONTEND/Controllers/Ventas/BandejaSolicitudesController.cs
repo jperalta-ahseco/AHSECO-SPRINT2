@@ -3063,7 +3063,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 var select = new CotizacionDetalleDTO();
                 select.CodItem = CodItem;
                 select.CodItemTemp = "";
-                select.Descripcion = "Servicio:"+servicio.CabeceraServicio.TipoServicio.Trim()+", Equipo: "+servicio.CabeceraServicio.Equipo.Trim()+", Modelo:  "+servicio.CabeceraServicio.Modelo.Trim();
+                select.Descripcion = "Servicio:"+servicio.CabeceraServicio.TipoServicio.Trim()+", Equipo: "+servicio.CabeceraServicio.Equipo.Trim()+", Modelo:  "+servicio.CabeceraServicio.Modelo.Trim()+", Marca: "+servicio.CabeceraServicio.Marca.Trim();
                 select.Stock = 0;
                 select.TipoItem = ConstantesDTO.CotizacionVentaDetalle.TipoItem.Servicio;
                 select.EsItemPadre = true;
