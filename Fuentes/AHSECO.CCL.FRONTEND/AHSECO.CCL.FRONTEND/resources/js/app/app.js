@@ -367,7 +367,7 @@ var app = (function ($, win, doc) {
     function notificarInactividad() {
         tiempoInactividad++;
         if (tiempoInactividad >= maxInactividad) {
-            alert('El usuario está inactivo desde hace más de 5 minutos.');
+            alert('El usuario está inactivo desde hace más de 10 minutos.');
             // Llamar a una acción en el servidor (ejemplo con AJAX)
             $btnSalirPortal_click();
             

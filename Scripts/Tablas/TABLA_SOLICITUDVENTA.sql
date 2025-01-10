@@ -135,7 +135,7 @@ CREATE TABLE [dbo].[TBD_COTIZACIONVENTA](
 	[INDSTOCK] [char](1) NULL,
 	[UNDMED] [varchar](3) NULL,
 	[CANTIDAD] [int] NOT NULL,
-	[COSTOFOB] [decimal](18, 9) NULL,
+	[COSTOFOB] [varchar](50) NULL,
 	[VVENTAUNI] [decimal](18, 9) NULL,
 	[VVTOTALSIGV] [decimal](18, 9) NULL,
 	[PORCGANANCIA] [decimal](18, 9) NULL,
