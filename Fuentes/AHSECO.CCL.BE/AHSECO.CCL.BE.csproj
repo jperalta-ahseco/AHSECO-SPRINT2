@@ -115,6 +115,7 @@
     <Compile Include="Ventas\DocumentoCotizacionDTO.cs" />
     <Compile Include="Ventas\DocumentoDetCotizacionDTO.cs" />
     <Compile Include="Ventas\HistorialCotizacionCabeceraDTO.cs" />
+    <Compile Include="Ventas\CuentaBancariaDTO.cs" />
     <Compile Include="Ventas\ObservacionDTO.cs" />
     <Compile Include="Ventas\SolicitudDTO.cs" />
     <Compile Include="Ventas\SolicitudVentaGrupoDTO.cs" />

@@ -10,6 +10,8 @@ namespace AHSECO.CCL.BE.Ventas
     {
         public DocumentoCabCotizacionDTO DocumentoCabecera { get; set; }
         public List<DocumentoDetCotizacionDTO> DocumentoDetalle   { get; set; }
+
+        public List<CuentaBancariaDTO> ListaCuentas { get; set; }
         public int NroItems { get; set; }
     }
 }

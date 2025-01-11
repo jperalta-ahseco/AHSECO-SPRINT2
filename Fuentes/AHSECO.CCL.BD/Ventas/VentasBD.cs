@@ -1558,6 +1558,24 @@ namespace AHSECO.CCL.BD.Ventas
                     }
 
                     result.DocumentoDetalle = _listadetalleCotizacion;
+
+                    reader.NextResult();
+
+                    List<CuentaBancariaDTO> _listaCuentasBancarias = new List<CuentaBancariaDTO>();
+
+                    while (reader.Read())
+                    {
+                        var cuenta = new CuentaBancariaDTO()
+                        {
+                            NombreBanco = reader.IsDBNull(reader.GetOrdinal("BANCO")) ? "" : reader.GetString(reader.GetOrdinal("BANCO")),
+                            NroCuenta = reader.IsDBNull(reader.GetOrdinal("CUENTA")) ? "" : reader.GetString(reader.GetOrdinal("CUENTA")),
+                            NroCuentaInterbancaria = reader.IsDBNull(reader.GetOrdinal("CCI")) ? "" : reader.GetString(reader.GetOrdinal("CCI"))
+                        };
+                        _listaCuentasBancarias.Add(cuenta);
+                    }
+
+                    result.ListaCuentas = _listaCuentasBancarias;
+
                     result.NroItems = _listadetalleCotizacion.Count();
 
                 }

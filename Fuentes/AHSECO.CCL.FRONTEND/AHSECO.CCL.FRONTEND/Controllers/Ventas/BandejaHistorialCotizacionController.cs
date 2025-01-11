@@ -100,8 +100,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     // Agregar la sección al documento
                     mainPart.Document.Body.Append(sectionProperties);
 
-
-
                     #region Cabecera:
                     DocumentFormat.OpenXml.Wordprocessing.Table table = new DocumentFormat.OpenXml.Wordprocessing.Table();
                     // Establecer las propiedades de la tabla (opcional)
@@ -510,6 +508,103 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                     // Añadir la tabla al cuerpo del documento
                     mainPart.Document.Body.AppendChild(table3);
+
+                    #endregion
+
+                    #region Cuentas Bancarias:
+                    if(cotizacion.Result.ListaCuentas.Count > 0)
+                    {
+                        DocumentFormat.OpenXml.Wordprocessing.Table table7 = new DocumentFormat.OpenXml.Wordprocessing.Table();
+                        // Establecer las propiedades de la tabla (opcional)
+                        DocumentFormat.OpenXml.Wordprocessing.TableProperties tblProperties7 = new DocumentFormat.OpenXml.Wordprocessing.TableProperties(
+                            new TableWidth() { Type = TableWidthUnitValues.Auto }
+                        );
+                        table7.AppendChild(tblProperties7);
+
+                        //CABECERA:
+                        // Crear la primera fila
+                        DocumentFormat.OpenXml.Wordprocessing.TableRow row31 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+                        var cell99 = CreateCell("BANCO", "S", "16", "CENTER");
+                        cell99.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new VerticalMerge() { Val = MergedCellValues.Restart }, new GridSpan() { Val = 3 },
+                                                            new TableCellWidth() { Type = TableWidthUnitValues.Pct, Width = "100" });
+
+                        CellBackground(cell99, "22d9f4");
+                        CellBorder(cell99, 4, 4, 4, 4, "000000");
+
+                        var cell100 = CreateCell(" *  *  *   S  O  L  E  S   *  *  *", "S", "16", "CENTER");
+                        cell100.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 6 },
+                                                            new TableCellWidth() { Type = TableWidthUnitValues.Pct, Width = "100" });
+
+                        CellBackground(cell100, "22d9f4");
+                        CellBorder(cell100, 4, 4, 4, 4, "000000");
+
+                        row31.Append(cell99,cell100);
+                        table7.Append(row31);
+
+
+                        // Crear la primera fila
+                        DocumentFormat.OpenXml.Wordprocessing.TableRow row28 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+                        var cell93 = CreateCell("BANCO", "S", "16", "CENTER");
+                        cell93.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new VerticalMerge() { Val = MergedCellValues.Continue }, new GridSpan() { Val = 3 },
+                                                            new TableCellWidth() { Type = TableWidthUnitValues.Pct, Width = "100" });
+                        CellBackground(cell93, "22d9f4");
+                        CellBorder(cell93, 4, 4, 4, 4, "000000");
+
+
+                        var cell94 = CreateCell("N° DE CUENTA", "S", "16", "CENTER");
+                        cell94.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 3 },
+                                                            new TableCellWidth() { Type = TableWidthUnitValues.Pct, Width = "100" });
+                        CellBackground(cell94, "22d9f4");
+                        CellBorder(cell94, 4, 4, 4, 4, "000000");
+
+
+                        var cell95 = CreateCell("N° CUENTA CCI", "S", "16", "CENTER");
+                        cell95.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 3 },
+                                                                                                    new TableCellWidth() { Type = TableWidthUnitValues.Pct, Width = "100" });
+                        CellBackground(cell95, "22d9f4");
+                        CellBorder(cell95, 4, 4, 4, 4, "000000");
+
+                        row28.Append(cell93, cell94, cell95);
+                        table7.Append(row28);
+
+
+                        //Crea detalle de la tabla:
+                        foreach (var item in cotizacion.Result.ListaCuentas)
+                        {
+                            var row29 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+
+                            var cell96 = CreateCell(item.NombreBanco, "N", "16", "LEFT");
+                            cell96.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 3 });
+                            CellBorder(cell96, 4, 4, 4, 4, "000000");
+
+                            var cell97 = CreateCell(item.NroCuenta, "N", "16", "LEFT");
+                            cell97.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 3 });
+                            CellBorder(cell97, 4, 4, 4, 4, "000000");
+
+                            var cell98 = CreateCell(item.NroCuentaInterbancaria, "N", "16", "LEFT");
+                            cell98.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 3 });
+                            CellBorder(cell98, 4, 4, 4, 4, "000000");
+
+                            row29.AppendChild(cell96);
+                            row29.AppendChild(cell97);
+                            row29.AppendChild(cell98);
+
+                            table7.AppendChild(row29);
+                        }
+
+
+                        // Crear la ultima fila
+                        DocumentFormat.OpenXml.Wordprocessing.TableRow row30 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
+
+                        var cell92 = CreateCell("", "N", "16", "LEFT");
+                        cell92.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 10 });
+
+                        row30.Append(cell92);
+                        table7.Append(row30);
+
+                        // Añadir la tabla al cuerpo del documento
+                        mainPart.Document.Body.AppendChild(table7);
+                    }
 
                     #endregion
 
