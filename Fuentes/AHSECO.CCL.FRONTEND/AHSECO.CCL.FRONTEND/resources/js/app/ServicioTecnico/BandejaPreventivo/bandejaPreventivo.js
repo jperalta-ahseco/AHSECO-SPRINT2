@@ -30,8 +30,8 @@
         $openPeriodoIni.click($openRegFecIni_click);
         $openPeriodoFin.click($openRegFecFin_click);
 
-        $periodoIni.val(mesActual());
-        $periodoFin.val(mesPosterior());
+        //$periodoIni.val(mesActual());
+        //$periodoFin.val(mesPosterior());
 
         $periodoIni.datepicker({
             viewMode: "months",
@@ -96,7 +96,7 @@
         var url = "BandejaPreventivo/ObtenerPreventivos";
 
         var objConsulta = {
-            Id_Mant : $txtIdRegIns.val() == "" ? "0" : $txtIdRegIns.val(),
+            NumReq : $txtIdRegIns.val() == "" ? "0" : $txtIdRegIns.val(),
             NumSerie: $txtSerie.val() == "" ? "0" : $txtSerie.val(),
             NumProc: $txtNumProc.val() == "" ? "0" : $txtNumProc.val(),
             NumOrdCompra: $txtNumOrdCompra.val() == "" ? "0" : $txtNumOrdCompra.val(),
