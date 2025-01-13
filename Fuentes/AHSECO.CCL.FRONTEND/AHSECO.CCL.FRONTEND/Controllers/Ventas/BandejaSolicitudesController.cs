@@ -169,6 +169,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.PermitirEditarGanancia = false;
             ViewBag.PermitirActualizarCotizacion = false;
             ViewBag.PermitirEditarPorcentDscto = false;
+            ViewBag.PermitirVerPorcentDscto = false;
             ViewBag.PermitirAprobarCotizacion = false;
             ViewBag.DsctoRequiereAprobacion = false;
             ViewBag.DsctoAprobado = false;
@@ -214,7 +215,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             if (EsFlujoValorizacion())
             { ViewBag.PermitirEditarValorizacion = true; }
 
-            if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Gerente) { ViewBag.PermitirAprobarDscto = true; }
+            if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Gerente) { ViewBag.PermitirAprobarDscto = true; ViewBag.PermitirVerPorcentDscto = true; }
 
             if (ViewBag.PermitirEditarValorizacion == true)
             {
@@ -1135,6 +1136,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                         ViewBag.PermitirAprobarCotizacion = true;
                                         ViewBag.PermitirEditarGanancia = true;
                                         ViewBag.PermitirEditarPorcentDscto = true;
+                                        ViewBag.PermitirVerPorcentDscto = true;
                                         ViewBag.PermitirGuardarValorizacion = true;
                                     }
                                 }
@@ -1154,6 +1156,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                         ViewBag.PermitirAprobarCotizacion = true;
                                         ViewBag.PermitirEditarGanancia = true;
                                         ViewBag.PermitirEditarPorcentDscto = true;
+                                        ViewBag.PermitirVerPorcentDscto = true;
                                     }
                                 }
 

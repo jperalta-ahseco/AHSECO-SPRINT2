@@ -118,6 +118,7 @@ BEGIN
 			SET
 				ESTADO		= @IsESTADO
 				,USR_MOD	= @IsUsrEjecuta
+				,VAL_OTM	= @IsVAL_OTM
 				,FEC_MOD	= GETDATE()
 			WHERE ID = @IsID
 			IF @@ROWCOUNT = 0
@@ -139,6 +140,7 @@ BEGIN
 				,FECHAFACTURA	= @IsFECHAFACTURA
 				,FECGUIA		= @IsFECGUIA
 				,VAL_GUIA		= @IsVAL_GUIA
+				,VAL_OTM	= @IsVAL_OTM
 				,ESTADO			= @IsESTADO
 				,USR_MOD		= @IsUsrEjecuta
 				,FEC_MOD		= GETDATE()

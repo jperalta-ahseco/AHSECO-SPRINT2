@@ -422,6 +422,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaPreventivos
                         Garantia= reader.IsDBNull(reader.GetOrdinal("GARANTIA")) ? "" : reader.GetString(reader.GetOrdinal("GARANTIA")),
                         DiasDiff = reader.IsDBNull(reader.GetOrdinal("DIFDIAS")) ? 0 : reader.GetInt32(reader.GetOrdinal("DIFDIAS")),
                         DiasTranscurridos = reader.IsDBNull(reader.GetOrdinal("DIASTRANCURRIDOS")) ? 0 : reader.GetInt32(reader.GetOrdinal("DIASTRANCURRIDOS")),
+                        vventauni = reader.IsDBNull(reader.GetOrdinal("VVENTAUNI")) ? 0 : reader.GetDecimal(reader.GetOrdinal("VVENTAUNI")),
                     };
 
                     reader.NextResult();

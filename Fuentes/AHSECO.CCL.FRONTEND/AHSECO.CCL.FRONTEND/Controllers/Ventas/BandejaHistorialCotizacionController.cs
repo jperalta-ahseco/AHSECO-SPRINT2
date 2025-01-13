@@ -980,7 +980,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             sh.SetColumnWidth(9, 5 * 256);
             sh.SetColumnWidth(10, 5 * 256);
             sh.SetColumnWidth(11, 6 * 256);
-            sh.SetColumnWidth(12, 9 * 256);
+            sh.SetColumnWidth(12, 12 * 256);
             sh.SetColumnWidth(13, 12 * 256);
             sh.SetColumnWidth(14, 9 * 256);
             sh.SetColumnWidth(15, 8 * 256);
@@ -1036,6 +1036,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             style4.SetFont(fontbold4);
 
             var styleWrap = hssfworkbook.CreateCellStyle();
+            //styleWrap.VerticalAlignment = VerticalAlignment.Top;
+            //styleWrap.FillForegroundColor = HSSFColor.BlueGrey.Index;
             styleWrap.SetFont(fontbold5);
             styleWrap.WrapText = true;
             styleWrap.VerticalAlignment = VerticalAlignment.Top;
@@ -1043,6 +1045,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             styleWrap.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
             styleWrap.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
             styleWrap.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+            styleWrap.FillPattern = FillPattern.SolidForeground;
 
             var style5 = hssfworkbook.CreateCellStyle();
             style5.SetFont(fontbold5);
@@ -1090,6 +1093,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             style10.Alignment = HorizontalAlignment.Center;
             style10.VerticalAlignment = VerticalAlignment.Center;
             style10.WrapText = true;
+            style10.FillPattern = FillPattern.SolidForeground;
 
             var style11 = hssfworkbook.CreateCellStyle();
             style11.SetFont(fontbold5);
@@ -1358,7 +1362,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             cell = row.CreateCell(0);
             cell.CellStyle = style;
-            cell.SetCellValue("N° ORDEN CLIENTE");
+            cell.SetCellValue("N° ORDEN CLIENTE / N° DE CONTRATO");
 
             cell = row.CreateCell(2);
             cell.CellStyle = style3;
@@ -1476,6 +1480,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 cell = row.CreateCell(5);
                 cell.CellStyle = styleWrap;
                 cell.SetCellValue(det.Descripcion);
+                row.Height = 50 * 20;
 
                 cell = row.CreateCell(6);
                 cell.CellStyle = style5;

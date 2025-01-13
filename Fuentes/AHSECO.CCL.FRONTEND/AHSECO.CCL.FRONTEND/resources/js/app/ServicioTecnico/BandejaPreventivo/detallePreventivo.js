@@ -44,6 +44,9 @@
     var $openRegdateGuia = $('#openRegdateGuia');
     var $colNumGuia = $('#colNumGuia');
     var $colFechaGuia = $('#colFechaGuia');
+    var $colNumFact = $('#colNumFact');
+    var $colFechaFact = $('#colFechaFact');
+    var $vventaUni = $('#vventaUni');
 
     /*Modales*/
     var $modalCargaDocumento = $('#modalCargaDocumento');
@@ -178,6 +181,7 @@
         $spanSi.on('click', function () {
             botonSi();
             $txtMontoAcce.prop('disabled', false);
+            $txtMontoAcce.val($vventaUni.val());
         });
 
         $spanNo.on('click', function () {
@@ -659,7 +663,7 @@
         $dateFechaMant.val(detallePreventivo.MantPreventivo.FechaMantenimiento);
         //var monto = formatoMiles(detallePreventivo.MantPreventivo.MontoPrestAcce.toFixed(2));
         $txtMontoAcce.val(detallePreventivo.MantPreventivo.MontoPrestAcce);
-        $txtNumOTM.val(detallePreventivo.MantPreventivo.Val_OTM);
+        //$txtNumOTM.val(detallePreventivo.MantPreventivo.Val_OTM);
         if (detallePreventivo.MantPreventivo.IndPrestacion == true) {
             botonSi();
         }
@@ -667,9 +671,17 @@
             botonNo();
         };
 
+        if (detallePreventivo.MantPreventivo.IndRepuesto == true) {
+            botonCon();
+        }
+        else if (detallePreventivo.MantPreventivo.IndRepuesto == false) {
+            botonSin();
+        }
+
         $dateFechaMant.prop("disabled", true);
-        $txtNumOTM.prop('disabled', true);
+        //$txtNumOTM.prop('disabled', true);
         $txtMontoAcce.prop('disabled', true);
+        $btnFinalizarMant.css('display', 'inline-block');
         $spanSi.css('pointer-events', 'none');
         $spanNo.css('pointer-events', 'none');
 
@@ -770,6 +782,31 @@
         $txtObservacion.val("");
     }
 
+    function setDatosFin() {
+        var method = "POST";
+        var url = "BandejaPreventivo/SetMantPrev";
+
+        var obj = {
+            Id: $numPreventivo.val(),
+            CodEstado: "FIN",
+            Id_WorkFlow: $codigoWorkflow.val(),
+            Id_Mant: $idMantPadre.val(),
+            TipoTarea: "U"
+        };
+
+        var objParam = JSON.stringify(obj);
+
+        var fnDoneCallBack = function () {
+            location.reload();
+        };
+
+        var fnFailCallBack = function () {
+            app.message.error("Error", "Se produjo un error al modificar las variables internas. ")
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null, null);
+    }
+
     function setDatos()
     {
         var method = "POST";
@@ -796,8 +833,9 @@
         var btnEditr = document.getElementById("btnEditarMant");
         var btnRegresar = document.getElementById("btnRegresar");
         if (btnEditr != null) {
+            $btnFinalizarMant.css('display', 'none');
             $dateFechaMant.prop('disabled', false);
-            $txtNumOTM.prop('disabled', false);
+            //$txtNumOTM.prop('disabled', false);
             $spanSi.css('pointer-events', 'auto')
             $spanNo.css('pointer-events', 'auto')
             $spanCon.css('pointer-events', 'auto')
@@ -828,10 +866,10 @@
             return;
         };
 
-        if ($txtNumOTM.val().trim() == "" || $txtNumOTM.val().trim().length == 0 || $txtNumOTM.val() == null) {
-            app.message.error("Validación", "Debe de ingresar el OTM");
-            return;
-        };
+        //if ($txtNumOTM.val().trim() == "" || $txtNumOTM.val().trim().length == 0 || $txtNumOTM.val() == null) {
+        //    app.message.error("Validación", "Debe de ingresar el OTM");
+        //    return;
+        //};
 
         //var fecHoy = hoy()
 
@@ -857,7 +895,7 @@
             MontoPrestAcce: ($txtMontoAcce.val()).replaceAll(",", ""),
             IndPrestAcce: indPrest,
             IndRepuesto: indRepuesto,
-            valOTM: $txtNumOTM.val(),
+            //valOTM: $txtNumOTM.val(),
             Estado: $estadoMant.val()
         };
 
@@ -872,9 +910,10 @@
                 } else {
                     app.message.success("Éxito", "Se actualizaron los datos correctamente.");
                     detallePreventivo.MantPreventivo.IndPrestacion = indPrest;
+                    detallePreventivo.MantPreventivo.IndRepuesto = indRepuesto;
                     detallePreventivo.MantPreventivo.FechaMantenimiento = $dateFechaMant.val();
                     detallePreventivo.MantPreventivo.MontoPrestAcce = $txtMontoAcce.val();
-                    detallePreventivo.MantPreventivo.Val_OTM = $txtNumOTM.val();
+                    //detallePreventivo.MantPreventivo.Val_OTM = $txtNumOTM.val();
                     cancelarEditMant();
                 }
 
@@ -1463,6 +1502,11 @@
         };
 
         if (indPrest == 0 && indRepuesto == 0) {
+            if ($txtNumOTM.val().trim() == "" || $txtNumOTM.val().trim().length == 0 || $txtNumOTM.val() == null) {
+                app.message.error("Validación", "Debe de ingresar el OTM");
+                return;
+            };
+
             var validador = 1;
             for (var i = 0; i < adjuntos.length; i++) {
                 if (adjuntos[i].CodigoTipoDocumento == "DP01" || adjuntos[i].CodigoTipoDocumento == "DP02" || adjuntos[i].CodigoTipoDocumento == "DP03") {
@@ -1474,6 +1518,8 @@
                 return;
             };
 
+            
+
             var method = "POST";
             var url = "BandejaPreventivo/CerrarMantenimiento";
 
@@ -1483,7 +1529,8 @@
                 Id_Detalle: $numPreventivo.val(),
                 Id_Mant: $idMantPadre.val(),
                 FechaMantenimiento: $dateFechaMant.val(),
-                Id_WorkFlow: $codigoWorkflow.val()
+                Id_WorkFlow: $codigoWorkflow.val(),
+                valOTM: $txtNumOTM.val()
             };
 
             var objParam = JSON.stringify(obj);
@@ -1491,7 +1538,7 @@
             var fnSi = function () {
                 var fnDoneCallBack = function (data) {
                     var redirect = function () {
-                        setDatos()
+                        setDatosFin()
                     };
                     return app.message.success("Éxito", "Se realizó el cambio de estado", "Aceptar", redirect);
                 };
@@ -1535,6 +1582,7 @@
             Estado: "FIN",
             Id_Detalle: $numPreventivo.val(),
             Id_Mant: $idMantPadre.val(),
+            valOTM: $txtNumOTM.val(),
             FechaMantenimiento: $dateFechaMant.val(),
             Id_WorkFlow: $codigoWorkflow.val()
         };
@@ -1544,7 +1592,7 @@
         var fnSi = function () {
             var fnDoneCallBack = function (data) {
                 var redirect = function () {
-                    setDatos();
+                    setDatosFin();
                 };
                 return app.message.success("Éxito", "Se realizó el cambio de estado a 'Finalizado' ", "Aceptar", redirect);
             };
@@ -1558,16 +1606,30 @@
         return app.message.confirm("Confirmación", "¿Desea finalizar el mantenimiento actual?", "Sí", "No", fnSi);
     };
     function CompletarMant() {
-        if ($txtNumFactura.val() == "" || $txtNumFactura.val().trim().length == 0 || $txtNumFactura.val() == null) {
+
+        var validador = 1;
+
+        if (indPrest == true) {
+            if ($txtNumFactura.val() == "" || $txtNumFactura.val().trim().length == 0 || $txtNumFactura.val() == null) {
+                validador = 0
+            };
+        }
+
+        if (validador == 0) {
             app.message.error("Validación", "Debe de ingresar el número de factura");
             return;
         };
 
-        if ($dateFechaFact.val() == "" || $dateFechaFact.val().trim().length == 0 || $dateFechaFact.val() == null) {
+        if (indPrest == true) {
+            if ($dateFechaFact.val() == "" || $dateFechaFact.val().trim().length == 0 || $dateFechaFact.val() == null) {
+                validador = 0;
+            };
+        }
+
+        if (validador == 0) {
             app.message.error("Validación", "Debe de ingresar la fecha de factura");
             return;
         };
-        var validador = 1;
 
         if (indRepuesto == true) {
             if ($txtNumGuia.val() == "" || $txtNumGuia.val().trim().length == 0 || $txtNumGuia.val() == null) {
@@ -1592,15 +1654,24 @@
             return;
         };
 
+        if ($txtNumOTM.val().trim() == "" || $txtNumOTM.val().trim().length == 0 || $txtNumOTM.val() == null) {
+            app.message.error("Validación", "Debe de ingresar el OTM");
+            return;
+        };
+
         for (var i = 0; i < adjuntos.length; i++) {
             if (adjuntos[i].CodigoTipoDocumento == "DP01" || adjuntos[i].CodigoTipoDocumento == "DP02" || adjuntos[i].CodigoTipoDocumento == "DP03") {
                 validador = 0;
             };
         };
+
         if (validador == 1) {
             app.message.error("Validación", 'Debe de adjuntar por lo menos alguno de estos documentos: "Constancia","OTM","INFORME" para continuar.');
             return;
         };
+
+        
+
 
         var method = "POST";
         var url = "BandejaPreventivo/CerrarMantenimiento";
@@ -1615,6 +1686,7 @@
             FecFactura: $dateFechaFact.val(),
             valGuia: $txtNumGuia.val(),
             FecGuia: $dateFechaGuia.val(),
+            valOTM: $txtNumOTM.val(),
             Id_WorkFlow: $codigoWorkflow.val()
         };
 
@@ -1785,24 +1857,43 @@
 
         if ($txtNumFactura.val() != "" && $dateFechaFact.val() != "") {
             $rowFactura.css('display', 'block');
+            $colNumFact.css('display', 'block');
+            $colFechaFact.css('display', 'block');
         };
 
         if ($txtNumGuia.val() != "" && $dateFechaGuia.val() != "") {
+            $rowFactura.css('display', 'block');
             $colNumGuia.css('display', 'block');
             $colFechaGuia.css('display', 'block');
         };
 
-        if (mantenimiento.CodEstado == "FIN") {
-            $txtNumFactura.prop('disabled',false);
-            $dateFechaFact.prop('disabled', false);
+        if (mantenimiento.CodEstado == "FIN")
+        {
             $rowFactura.css('display', 'block');
-            if (mantenimiento.IndRepuesto == true) {
+            if (mantenimiento.IndPrestacion == true && mantenimiento.IndRepuesto == false) {
+                $colNumFact.css('display', 'block');
+                $colFechaFact.css('display', 'block');
+                $txtNumFactura.prop('disabled', false);
+                $dateFechaFact.prop('disabled', false);
+            }
+            else if (mantenimiento.IndRepuesto == true && mantenimiento.IndPrestacion == false) {
                 $colNumGuia.css('display', 'block');
                 $colFechaGuia.css('display', 'block');
                 $txtNumGuia.prop('disabled', false);
                 $dateFechaGuia.prop('disabled', false);
-            };
-        };
+            }
+            else if (mantenimiento.IndRepuesto == true && mantenimiento.IndPrestacion == true)
+            {
+                $colNumGuia.css('display', 'block');
+                $colFechaGuia.css('display', 'block');
+                $txtNumGuia.prop('disabled', false);
+                $dateFechaGuia.prop('disabled', false);
+                $colNumFact.css('display', 'block');
+                $colFechaFact.css('display', 'block');
+                $txtNumFactura.prop('disabled', false);
+                $dateFechaFact.prop('disabled', false);
+            }
+        }
 
         if (mantenimiento.IndPrestacion == true) {
             botonSi();
@@ -1989,6 +2080,7 @@
         if ($tipoAccion.val() == "V") {
             $btnAgregarObservacion.css('display', 'none');
             $btnAgregarDocumento.css('display', 'none');
+            $txtNumOTM.prop('disabled', true);
         }
 
     };
