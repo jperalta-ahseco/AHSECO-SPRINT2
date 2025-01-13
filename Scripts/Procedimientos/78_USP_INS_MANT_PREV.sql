@@ -6,7 +6,7 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_INS_MANT_PREV]
 /*=======================================================================================================
 	Nombre:				Fecha:			Descripcion:
 	Diego Bazalar		26.11.24		Realiza el insert de los mantenimientos a realizarce después de acabar la instalación técnica.
-	EXEC [USP_INS_MANT_PREV] 1, 'admin'
+	EXEC [USP_INS_MANT_PREV] 2, 'admin'
   =======================================================================================================*/
 	@isIdSolicitud BIGINT
 	,@UsrEjecuta NVARCHAR(50)
@@ -132,110 +132,118 @@ SET NOCOUNT ON
 		WHERE n.n <=t.CANTCOSTO
 
 		--select * FROM #cantidadCostos
-
-
-		SELECT 
-				ROW_NUMBER () OVER( ORDER BY CONT.ID) CUENTA
-				,NUMSEC
-				,ISNULL(CANTPREVENTIVO,0) CANTPREVENTIVO
-				,ISNULL(CODCICLOPREVENT,'') CODCICLOPREVENT 
-				,SUBSTRING(CODUBIGEODEST, 0,3) CODDEPARTAMENTO 
-				,CONCAT(UBI.NOMDEPARTAMENTO, ' / ', UBI.NOMPROVINCIA, ' / ', UBI.NOMDISTRITO) AS DESCUBIGEODEST
-				,CODUBIGEODEST CODUBIGEODEST
-				,DIRECCION
-				,ISNULL(NROPISO,1) NROPISO
-		INTO #CostosFinal
-		FROM #cantidadCostos CONT
-		LEFT JOIN TBD_COTIZACIONCOSTOS COSTOS ON COSTOS.ID = CONT.ID
-		LEFT JOIN [dbo].[TBM_UBIGEO] AS UBI WITH(NOLOCK) ON UBI.CODUBIGEO = COSTOS.CODUBIGEODEST
-
-		--select * FROM #CostosFinal
-
-/*Se arma los datos que se insertarán en la tabla*/---------------------------------------------------------------------------------------------------------
-	INSERT INTO [TBM_MANT_PREV](SERIE,NOMEMPRESA,ORDENCOMPRA,NUMPROCESO,TIPOPROCESO,NUMFIANZA,FECHAINSTALACION,UBIGEODEST,DIRECCION,USR_REG, FEC_REG)
-	SELECT
-		NUMSERIE
-		,RAZONSOCIAL
-		,NUMORDEN
-		,NROPROCESO
-		,TIPOPROCESO
-		,NUMFIANZA
-		,FECHAINSTALACION
-		,CODUBIGEODEST
-		,DIRECCION
-		,USR_REG
-		,FEC_REG
-	FROM #tmpDespachoParcial desp
-	LEFT JOIN #CostosFinal costos ON costos.CUENTA = desp.CONTADOR
-	
-	SELECT
-		ID_MANT
-		,PARCIAL.NUMSERIE
-		,DESP.FECHAINSTALACION
-		,costos.CANTPREVENTIVO
-		,costos.CODCICLOPREVENT
-		,DATOS.VALOR1			AS TIPCICLO
-		,DATOS.VALOR2			AS CANTIDAD
-	INTO #tmpParcial
-	FROM [dbo].[TBD_DESPACHO_DIST] DESP WITH(NOLOCK)
-	--INNER JOIN #tmpMain MAIN ON 1 = 1
-	LEFT JOIN [dbo].#tmpDespachoParcial PARCIAL ON DESP.NUMSERIE = PARCIAL.NUMSERIE
-	INNER JOIN #CostosFinal costos ON costos.CUENTA = PARCIAL.CONTADOR
-	LEFT JOIN [dbo].[TBM_MANT_PREV] MANT ON  PARCIAL.NUMSERIE = MANT.SERIE
-	--INNER JOIN [dbo].[TBD_COTIZACIONCOSTOS] COTCOST WITH(NOLOCK) ON DESP.ID_COTDETALLE = COTCOST.ID_COTDETALLE AND COTCOST.ID_COTDETALLE = MAIN.ID_DETALLE AND COTCOST.CODCOSTO = 'CXCD0002'
-	LEFT JOIN [dbo].[TBD_DATOS_GENERALES] AS DATOS WITH(NOLOCK) ON DATOS.DOMINIO = 'CICLOPREV' AND DATOS.PARAMETRO = costos.CODCICLOPREVENT AND DATOS.ESTADO = '1'
-	
-	SELECT @SUMA = SUM(CANTPREVENTIVO) FROM #tmpParcial --Determinamos el número de preventivos.
-	/*Registramos en el WorkFlow y creamos tabla auxiliar donde registramos los Ids*/------------------------------------------------------------------------------
-		SET @I = 0
-		WHILE @I < @SUMA
+		
+		IF NOT EXISTS (select 1 from #cantidadCostos)
 		BEGIN
-			INSERT INTO [dbo].[TBM_WORKFLOW](ID_PROCESO,AUDIT_REG_USR,AUDIT_REG_FEC)
-			SELECT @isTipoProceso,@UsrEjecuta,GETDATE()
-
-			INSERT INTO #tmpIdWorkFlows(ID_WORKFLOW)
-			SELECT  IDENT_CURRENT('TBM_WORKFLOW')
-
-			SET @I = @I + 1
+			SET @COD = 1
+			SET @MSG = 'No existen preventivos'
+			SELECT @COD COD, @MSG MSG
 		END
+		ELSE
+		BEGIN
+				SELECT 
+					ROW_NUMBER () OVER( ORDER BY CONT.ID) CUENTA
+					,NUMSEC
+					,ISNULL(CANTPREVENTIVO,0) CANTPREVENTIVO
+					,ISNULL(CODCICLOPREVENT,'') CODCICLOPREVENT 
+					,SUBSTRING(CODUBIGEODEST, 0,3) CODDEPARTAMENTO 
+					,CONCAT(UBI.NOMDEPARTAMENTO, ' / ', UBI.NOMPROVINCIA, ' / ', UBI.NOMDISTRITO) AS DESCUBIGEODEST
+					,CODUBIGEODEST CODUBIGEODEST
+					,DIRECCION
+					,ISNULL(NROPISO,1) NROPISO
+			INTO #CostosFinal
+			FROM #cantidadCostos CONT
+			LEFT JOIN TBD_COTIZACIONCOSTOS COSTOS ON COSTOS.ID = CONT.ID
+			LEFT JOIN [dbo].[TBM_UBIGEO] AS UBI WITH(NOLOCK) ON UBI.CODUBIGEO = COSTOS.CODUBIGEODEST
 
-		INSERT INTO [dbo].[TBM_WORKFLOWLOG] (ID_WORKFLOW,COD_ESTADO,CARGO,AREA,AUDIT_REG_USR,AUDIT_REG_FEC)
-		SELECT ID_WORKFLOW, @ESTADO,@PERFIL,'', @UsrEjecuta, GETDATE() FROM #tmpIdWorkFlows
+			--select * FROM #CostosFinal
+
+			/*Se arma los datos que se insertarán en la tabla*/---------------------------------------------------------------------------------------------------------
+			INSERT INTO [TBM_MANT_PREV](SERIE,NOMEMPRESA,ORDENCOMPRA,NUMPROCESO,TIPOPROCESO,NUMFIANZA,FECHAINSTALACION,UBIGEODEST,DIRECCION,USR_REG, FEC_REG)
+			SELECT
+				NUMSERIE
+				,RAZONSOCIAL
+				,NUMORDEN
+				,NROPROCESO
+				,TIPOPROCESO
+				,NUMFIANZA
+				,FECHAINSTALACION
+				,CODUBIGEODEST
+				,DIRECCION
+				,USR_REG
+				,FEC_REG
+			FROM #tmpDespachoParcial desp
+			LEFT JOIN #CostosFinal costos ON costos.CUENTA = desp.CONTADOR
+	
+			SELECT
+				ID_MANT
+				,PARCIAL.NUMSERIE
+				,DESP.FECHAINSTALACION
+				,costos.CANTPREVENTIVO
+				,costos.CODCICLOPREVENT
+				,DATOS.VALOR1			AS TIPCICLO
+				,DATOS.VALOR2			AS CANTIDAD
+			INTO #tmpParcial
+			FROM [dbo].[TBD_DESPACHO_DIST] DESP WITH(NOLOCK)
+			--INNER JOIN #tmpMain MAIN ON 1 = 1
+			LEFT JOIN [dbo].#tmpDespachoParcial PARCIAL ON DESP.NUMSERIE = PARCIAL.NUMSERIE
+			INNER JOIN #CostosFinal costos ON costos.CUENTA = PARCIAL.CONTADOR
+			LEFT JOIN [dbo].[TBM_MANT_PREV] MANT ON  PARCIAL.NUMSERIE = MANT.SERIE
+			--INNER JOIN [dbo].[TBD_COTIZACIONCOSTOS] COTCOST WITH(NOLOCK) ON DESP.ID_COTDETALLE = COTCOST.ID_COTDETALLE AND COTCOST.ID_COTDETALLE = MAIN.ID_DETALLE AND COTCOST.CODCOSTO = 'CXCD0002'
+			LEFT JOIN [dbo].[TBD_DATOS_GENERALES] AS DATOS WITH(NOLOCK) ON DATOS.DOMINIO = 'CICLOPREV' AND DATOS.PARAMETRO = costos.CODCICLOPREVENT AND DATOS.ESTADO = '1'
+	
+			SELECT @SUMA = SUM(CANTPREVENTIVO) FROM #tmpParcial --Determinamos el número de preventivos.
+			/*Registramos en el WorkFlow y creamos tabla auxiliar donde registramos los Ids*/------------------------------------------------------------------------------
+			SET @I = 0
+			WHILE @I < @SUMA
+			BEGIN
+				INSERT INTO [dbo].[TBM_WORKFLOW](ID_PROCESO,AUDIT_REG_USR,AUDIT_REG_FEC)
+				SELECT @isTipoProceso,@UsrEjecuta,GETDATE()
+
+				INSERT INTO #tmpIdWorkFlows(ID_WORKFLOW)
+				SELECT  IDENT_CURRENT('TBM_WORKFLOW')
+
+				SET @I = @I + 1
+			END
+
+			INSERT INTO [dbo].[TBM_WORKFLOWLOG] (ID_WORKFLOW,COD_ESTADO,CARGO,AREA,AUDIT_REG_USR,AUDIT_REG_FEC)
+			SELECT ID_WORKFLOW, @ESTADO,@PERFIL,'', @UsrEjecuta, GETDATE() FROM #tmpIdWorkFlows
 
 
-	/*Insertamos de forma parcial todos los mantenimientos*/-------------------------------------------------------------------------------------------------------
-		;WITH Numeros AS (
-			SELECT ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS n
-			FROM master.dbo.spt_values
-		)	
+			/*Insertamos de forma parcial todos los mantenimientos*/-------------------------------------------------------------------------------------------------------
+			;WITH Numeros AS (
+				SELECT ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS n
+				FROM master.dbo.spt_values
+			)	
 
-		INSERT INTO #tmpPreventivos(ID_MANT,FECHAINSTALACION,FECHAMANTENIMIENTO)
-		SELECT 
-		 ID_MANT
-		 ,t.FECHAINSTALACION
-		 ,CASE 
-			WHEN TIPCICLO='D' THEN DATEADD(DAY,(CANTIDAD * n.n),FECHAINSTALACION)
-			WHEN TIPCICLO='M' THEN DATEADD(MONTH,(CANTIDAD * n.n),FECHAINSTALACION)
-		  END AS FECHAMANTENIMIENTO
-		FROM #tmpParcial t 
-		CROSS JOIN Numeros n
-		 WHERE n.n <= t.CANTPREVENTIVO
+			INSERT INTO #tmpPreventivos(ID_MANT,FECHAINSTALACION,FECHAMANTENIMIENTO)
+			SELECT 
+			 ID_MANT
+			 ,t.FECHAINSTALACION
+			 ,CASE 
+				WHEN TIPCICLO='D' THEN DATEADD(DAY,(CANTIDAD * n.n),FECHAINSTALACION)
+				WHEN TIPCICLO='M' THEN DATEADD(MONTH,(CANTIDAD * n.n),FECHAINSTALACION)
+			  END AS FECHAMANTENIMIENTO
+			FROM #tmpParcial t 
+			CROSS JOIN Numeros n
+			 WHERE n.n <= t.CANTPREVENTIVO
 
-	/*Insertamos a la tabla maestra [TBM_MANT_PREV] realizando una coordinación de todos los datos*/----------------------------------------------------------------
-		INSERT INTO [dbo].[TBD_MANT_PREV](ID_MANT,ID_WORKFLOW,FECHAMANTENIMIENTO,ESTADO,USR_REG,FEC_REG)
-		SELECT
-			t.ID_MANT
-			,j.ID_WORKFLOW
-			,t.FECHAMANTENIMIENTO
-			,@ESTADO
-			,@UsrEjecuta
-			,GETDATE()
-		FROM #tmpPreventivos t
-		INNER JOIN #tmpIdWorkFlows j ON t.ID = j.ID
+			/*Insertamos a la tabla maestra [TBM_MANT_PREV] realizando una coordinación de todos los datos*/----------------------------------------------------------------
+			INSERT INTO [dbo].[TBD_MANT_PREV](ID_MANT,ID_WORKFLOW,FECHAMANTENIMIENTO,ESTADO,USR_REG,FEC_REG)
+			SELECT
+				t.ID_MANT
+				,j.ID_WORKFLOW
+				,t.FECHAMANTENIMIENTO
+				,@ESTADO
+				,@UsrEjecuta
+				,GETDATE()
+			FROM #tmpPreventivos t
+			INNER JOIN #tmpIdWorkFlows j ON t.ID = j.ID
 
-		SET @COD = 1
-		SET @MSG = 'USP ejecutado con éxito'
-		SELECT @COD COD, @MSG MSG
+			SET @COD = 1
+			SET @MSG = 'USP ejecutado con éxito'
+			SELECT @COD COD, @MSG MSG
+		END
 	END TRY
 	BEGIN CATCH
 		SET @COD = 0

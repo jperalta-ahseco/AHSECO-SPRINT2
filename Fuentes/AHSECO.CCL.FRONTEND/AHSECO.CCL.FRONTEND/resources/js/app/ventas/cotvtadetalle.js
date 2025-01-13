@@ -1661,21 +1661,21 @@ var cotvtadet = (function ($, win, doc) {
             columns = [
                 {
                     data: "NroItem",
-                    render: function (data) {
+                    render: function (data, type, row) {
                         if (data == null) { data = ""; }
                         return '<center>' + data + '</center>';
                     }
                 },
                 {
                     data: "CodItem",
-                    render: function (data) {
+                    render: function (data, type, row) {
                         if (data == null) { data = ""; }
                         return '<center>' + data + '</center>';
                     }
                 },
                 {
                     data: "Descripcion",
-                    render: function (data) {
+                    render: function (data, type, row) {
                         if (data == null) { data = ""; }
                         return '<center>' + data + '</center>';
                     }
@@ -1689,14 +1689,14 @@ var cotvtadet = (function ($, win, doc) {
                 },
                 {
                     data: "Cantidad",
-                    render: function (data) {
+                    render: function (data, type, row) {
                         if (data == null) { data = ""; }
                         return '<center>' + data + '</center>';
                     }
                 },
                 {
                     data: "CostoFOB",
-                    render: function (data) {
+                    render: function (data, type, row) {
                         if (data == null) { data = ""; }
                         else { data }
                         return '<center>' + data + '</center>';
@@ -1704,7 +1704,7 @@ var cotvtadet = (function ($, win, doc) {
                 },
                 {
                     data: "VentaUnitaria",
-                    render: function (data) {
+                    render: function (data, type, row) {
                         if (data == null) { data = ""; }
                         else { data = app.formatearEnteroComa(parseFloat(data).toFixed(2)); }
                         return '<center>' + data + '</center>';
@@ -1712,22 +1712,32 @@ var cotvtadet = (function ($, win, doc) {
                 },
                 {
                     data: "VentaTotalSinIGV",
-                    render: function (data) {
-                        if (data == null) { data = ""; }
-                        else { data = app.formatearEnteroComa(parseFloat(data).toFixed(2)); }
-                        return '<center>' + data + '</center>';
+                    render: function (data, type, row) {
+                        var valor;
+                        if (row.VentaTotalSinIGVDscto == null) {
+                            if (data == null) {
+                                valor = "";
+                            }
+                            else {
+                                valor = app.formatearEnteroComa(parseFloat(data).toFixed(2));
+                            }
+                        }
+                        else {
+                            valor = app.formatearEnteroComa(parseFloat(row.VentaTotalSinIGVDscto).toFixed(2));
+                        };
+                        return '<center>' + valor + '</center>';
                     }
                 },
                 {
                     data: "PorcentajeGanancia",
-                    render: function (data) {
+                    render: function (data, type, row) {
                         if (data == null) { data = ""; }
                         return '<center>' + data + '</center>';
                     }
                 },
                 {
                     data: "VentaTotalSinIGVConGanacia",
-                    render: function (data) {
+                    render: function (data, type, row) {
                         if (data == null) { data = ""; }
                         else { data = app.formatearEnteroComa(parseFloat(data).toFixed(2)); }
                         return '<center>' + data + '</center>';
@@ -1735,7 +1745,7 @@ var cotvtadet = (function ($, win, doc) {
                 },
                 {
                     data: "Features",
-                    render: function (data) {
+                    render: function (data, type, row) {
                         var oFeatures = data;
                         var strID = "";
                         var strCodItem = "";
@@ -1770,42 +1780,42 @@ var cotvtadet = (function ($, win, doc) {
             columns = [
                 {
                     data: "NroItem",
-                    render: function (data) {
+                    render: function (data, type, row) {
                         if (data == null) { data = ""; }
                         return '<center>' + data + '</center>';
                     }
                 },
                 {
                     data: "CodItem",
-                    render: function (data) {
+                    render: function (data, type, row) {
                         if (data == null) { data = ""; }
                         return '<center>' + data + '</center>';
                     }
                 },
                 {
                     data: "Descripcion",
-                    render: function (data) {
+                    render: function (data, type, row) {
                         if (data == null) { data = ""; }
                         return '<center>' + data + '</center>';
                     }
                 },
                 {
                     data: "DescUnidad",
-                    render: function (data) {
+                    render: function (data, type, row) {
                         if (data == null) { data = ""; }
                         return '<center>' + data + '</center>';
                     }
                 },
                 {
                     data: "Cantidad",
-                    render: function (data) {
+                    render: function (data, type, row) {
                         if (data == null) { data = ""; }
                         return '<center>' + data + '</center>';
                     }
                 },
                 {
                     data: "VentaUnitaria",
-                    render: function (data) {
+                    render: function (data, type, row) {
                         if (data == null) { data = ""; }
                         else { data = app.formatearEnteroComa(parseFloat(data).toFixed(2)); }
                         return '<center>' + data + '</center>';
@@ -1813,22 +1823,32 @@ var cotvtadet = (function ($, win, doc) {
                 },
                 {
                     data: "VentaTotalSinIGV",
-                    render: function (data) {
-                        if (data == null) { data = ""; }
-                        else { data = app.formatearEnteroComa(parseFloat(data).toFixed(2)); }
-                        return '<center>' + data + '</center>';
+                    render: function (data, type, row) {
+                        var valor;
+                        if (row.VentaTotalSinIGVDscto == null) {
+                            if (data == null) {
+                                valor = "";
+                            }
+                            else {
+                                valor = app.formatearEnteroComa(parseFloat(data).toFixed(2));
+                            }
+                        }
+                        else {
+                            valor = app.formatearEnteroComa(parseFloat(row.VentaTotalSinIGVDscto).toFixed(2));
+                        };
+                        return '<center>' + valor + '</center>';
                     }
                 },
                 {
                     data: "PorcentajeGanancia",
-                    render: function (data) {
+                    render: function (data, type, row) {
                         if (data == null) { data = ""; }
                         return '<center>' + data + '</center>';
                     }
                 },
                 {
                     data: "VentaTotalSinIGVConGanacia",
-                    render: function (data) {
+                    render: function (data, type, row) {
                         if (data == null) { data = ""; }
                         else { data = app.formatearEnteroComa(parseFloat(data).toFixed(2)); }
                         return '<center>' + data + '</center>';
@@ -1836,7 +1856,7 @@ var cotvtadet = (function ($, win, doc) {
                 },
                 {
                     data: "Features",
-                    render: function (data) {
+                    render: function (data, type, row) {
                         var oFeatures = data;
                         var strID = "";
                         var strCodItem = "";

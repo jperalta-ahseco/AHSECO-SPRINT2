@@ -6294,9 +6294,17 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 cell.SetCellValue(item.Cantidad.ToString());
 
                 var ventaTotalSinIgv = "";
-                if (item.VentaTotalSinIGV.HasValue)
+                if (item.VentaTotalSinIGVDscto.HasValue)
                 {
-                    ventaTotalSinIgv = item.VentaTotalSinIGV.Value.ToString("0.00");
+                    ventaTotalSinIgv = item.VentaTotalSinIGVDscto.Value.ToString("0.00");
+                    
+                }
+                else
+                {
+                    if (item.VentaTotalSinIGV.HasValue)
+                    {
+                        ventaTotalSinIgv = item.VentaTotalSinIGV.Value.ToString("0.00");
+                    }
                 }
 
                 cell = row.CreateCell(cellnum++);
