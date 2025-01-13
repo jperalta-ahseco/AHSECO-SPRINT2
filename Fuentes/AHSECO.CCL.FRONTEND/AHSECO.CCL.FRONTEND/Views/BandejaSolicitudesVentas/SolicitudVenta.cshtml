@@ -772,9 +772,13 @@
                                                                     <table id="tblSeriesCS" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                                                         <thead>
                                                                             <tr>
+                                                                                @if (NombreRol == "SGI_VENTA_LOGISTICA")
+                                                                                {
+                                                                                    <th style="text-align:center; width:5%; color:white; background-color:cornflowerblue"><input type="checkbox" id="SelTodosCSS" onclick="javascript:seleccionarTodoConStock();"/></th>
+                                                                                }
                                                                                 <th style="text-align:center; width:5%; color:white; background-color:cornflowerblue">N°</th>
                                                                                 <th style="text-align: center; width: 10%; color:white; background-color: cornflowerblue">C&oacute;digo</th>
-                                                                                <th style="text-align: center; width: 25%; color: white; background-color: cornflowerblue">Descripci&oacute;n Equipo</th>
+                                                                                <th style="text-align: center; width: 20%; color: white; background-color: cornflowerblue">Descripci&oacute;n Equipo</th>
                                                                                 <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">Marca</th>
                                                                                 <th style="text-align: center; width: 10%; color: white; background-color: cornflowerblue">Destino</th>
                                                                                 <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">N° Guia Remision</th>
@@ -867,9 +871,13 @@
                                                                     <table id="tblSeriesSS" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                                                         <thead>
                                                                             <tr>
+                                                                                @if (NombreRol == "SGI_VENTA_LOGISTICA")
+                                                                                {
+                                                                                    <th style="text-align:center; width:5%; color:white; background-color:cornflowerblue"><input type="checkbox" id="SelTodosSSS" onclick="javascript:seleccionarTodoSinStock();"/></th>
+                                                                                }
                                                                                 <th style="text-align:center; width:5%; color:white; background-color:cornflowerblue">N°</th>
                                                                                 <th style="text-align: center; width: 10%; color:white; background-color: cornflowerblue">C&oacute;digo</th>
-                                                                                <th style="text-align: center; width: 25%; color: white; background-color: cornflowerblue">Descripci&oacute;n Equipo</th>
+                                                                                <th style="text-align: center; width: 20%; color: white; background-color: cornflowerblue">Descripci&oacute;n Equipo</th>
                                                                                 <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">Marca</th>
                                                                                 <th style="text-align: center; width: 10%; color: white; background-color: cornflowerblue">Destino</th>
                                                                                 <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">N° Guia Remision</th>
@@ -1089,6 +1097,58 @@
             event.preventDefault(); // Evitar la entrada de caracteres no numéricos
         }
     });
+
+    function seleccionarTodoConStock() {
+        const selectAllCheckbox = document.getElementById("SelTodosCSS");
+        const itemCheckboxes = document.querySelectorAll(".chkCS");
+
+        // Función para seleccionar/deseleccionar todos los checkboxes
+        selectAllCheckbox.addEventListener("change", () => {
+            const isChecked = selectAllCheckbox.checked;
+            itemCheckboxes.forEach(checkbox => {
+                checkbox.checked = isChecked;
+            });
+        });
+
+        // Función para manejar el estado del checkbox "Seleccionar todo"
+        itemCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener("change", () => {
+                // Si algún checkbox no está seleccionado, desmarca "Seleccionar todo"
+                if ([...itemCheckboxes].some(checkbox => !checkbox.checked)) {
+                    selectAllCheckbox.checked = false;
+                } else {
+                    // Si todos están seleccionados, marca "Seleccionar todo"
+                    selectAllCheckbox.checked = true;
+                }
+            });
+        });
+    }
+
+    function seleccionarTodoSinStock() {
+        const selectAllCheckbox = document.getElementById("SelTodosSSS");
+        const itemCheckboxes = document.querySelectorAll(".chkSS");
+
+        // Función para seleccionar/deseleccionar todos los checkboxes
+        selectAllCheckbox.addEventListener("change", () => {
+            const isChecked = selectAllCheckbox.checked;
+            itemCheckboxes.forEach(checkbox => {
+                checkbox.checked = isChecked;
+            });
+        });
+
+        // Función para manejar el estado del checkbox "Seleccionar todo"
+        itemCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener("change", () => {
+                // Si algún checkbox no está seleccionado, desmarca "Seleccionar todo"
+                if ([...itemCheckboxes].some(checkbox => !checkbox.checked)) {
+                    selectAllCheckbox.checked = false;
+                } else {
+                    // Si todos están seleccionados, marca "Seleccionar todo"
+                    selectAllCheckbox.checked = true;
+                }
+            });
+        });
+    }
 
 </script>
 <!--Modal-->
@@ -1468,6 +1528,26 @@
                             </div>
                         </div>
                         <!--6ta fila:-->
+                        <div class="row container-fluid">
+                            <div class="col-md-12 col-sm-12">
+                                <div class="form-group">
+                                    <table id="tblSeriesGuia" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align: center; width: 50%; color: white; background-color: cornflowerblue">N° Guia Remision</th>
+                                                <th style="text-align: center; width: 50%; color: white; background-color: cornflowerblue">N° Serie / N° Lote</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr id="NoRegSeriesGuia">
+                                                <td align="center" colspan="2">No existen registros</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!--7ma fila:-->
                         <div class="row container-fluid">
                             <div class="col-md-6 col-sm-12">
                                 <button class="btn btn-danger btn-sm" type="button" id="btnAdjuntarDocumentoDespacho"><i class="fa fa-folder" aria-hidden="true"></i>&nbsp;Cargar Archivo</button>

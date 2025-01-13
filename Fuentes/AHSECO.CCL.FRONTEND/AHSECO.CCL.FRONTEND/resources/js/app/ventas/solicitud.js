@@ -2801,14 +2801,18 @@
 
                     for (i = 0; i < data.Result.DespachoDetalleSinStock.length; i++) {
                         var html = '<div class="text-center">';
+                        var sel_html = ''
                         if ($estadoSol.val() == "PRVT" && $idRolUsuario.val() == "SGI_VENTA_LOGISTICA" && data.Result.DespachoCabeceraSinStock.EstadoAprobacion == "IMP") {
 
                             html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleSinStock[i].Id + '" href="javascript:solicitud.editarSeries(' + data.Result.DespachoDetalleSinStock[i].Id + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';
                            /* html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleSinStock[i].Id + '" data-toggle="modal" data-target="#modalSeries"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';*/
                             html += ' <a class="btn btn-default btn-xs" title="Guardar" id="Boton' + data.Result.DespachoDetalleSinStock[i].Id + '" style="display:none"  href="javascript:solicitud.guardarSeries(' + data.Result.DespachoDetalleSinStock[i].Id + ',\'N\')"><i class="fa fa-save" aria-hidden="true"></i></a>&nbsp;';
+                            sel_html = '<th><div class="text-center">';
+                            sel_html += '<input type="checkbox" id="chk"' + data.Result.DespachoDetalleSinStock[i].Id + ' class="chkSS">'
+                            sel_html += '</div></th>';
                         }
                         html += '</div>';
-                        var nuevoTr = "<tr bgcolor='d0f2f7' id='fila" + data.Result.DespachoDetalleSinStock[i].Id + "'>" +
+                        var nuevoTr = "<tr bgcolor='d0f2f7' id='fila" + data.Result.DespachoDetalleSinStock[i].Id + "'>" + sel_html +
                             "<th>" + data.Result.DespachoDetalleSinStock[i].RowNumber + "</th>" +
                             "<th>" + data.Result.DespachoDetalleSinStock[i].CodigoEquipo + "</th>" +
                             "<th>" + data.Result.DespachoDetalleSinStock[i].DescripcionEquipo + "</th>" +
@@ -2867,14 +2871,19 @@
 
                     for (i = 0; i < data.Result.DespachoDetalleConStock.length; i++) {
                         var html = '<div class="text-center">';
+                        var sel_html = ''
                         if ($estadoSol.val() == "PRVT" && $idRolUsuario.val() == "SGI_VENTA_LOGISTICA") {
 
                             html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleConStock[i].Id + '" href="javascript:solicitud.editarSeries(' + data.Result.DespachoDetalleConStock[i].Id + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';
                            /* html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleConStock[i].Id + '" data-toggle="modal" data-target="#modalSeries"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';*/
                             html += ' <a class="btn btn-default btn-xs" title="Guardar" id="Boton' + data.Result.DespachoDetalleConStock[i].Id + '" style="display:none"  href="javascript:solicitud.guardarSeries(' + data.Result.DespachoDetalleConStock[i].Id + ',\'S\')"><i class="fa fa-save" aria-hidden="true"></i></a>&nbsp;';
+                            sel_html = '<th><div class="text-center">';
+                            sel_html += '<input type="checkbox" id="chk"' + data.Result.DespachoDetalleConStock[i].Id + ' class="chkCS" >'
+                            sel_html += '</div></th>';
                         }
                         html += '</div>';
-                        var nuevoTr = "<tr bgcolor='d0f2f7' id='fila" + data.Result.DespachoDetalleConStock[i].Id + "'>" +
+                       
+                        var nuevoTr = "<tr bgcolor='d0f2f7' id='fila" + data.Result.DespachoDetalleConStock[i].Id + "'>" + sel_html+
                             "<th>" + data.Result.DespachoDetalleConStock[i].RowNumber + "</th>" +
                             "<th>" + data.Result.DespachoDetalleConStock[i].CodigoEquipo + "</th>" +
                             "<th>" + data.Result.DespachoDetalleConStock[i].DescripcionEquipo + "</th>" +
