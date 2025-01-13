@@ -1270,7 +1270,11 @@ namespace AHSECO.CCL.BD.Ventas
                                 DescripcionEquipo = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION")),
                                 Marca = reader.IsDBNull(reader.GetOrdinal("MARCA")) ? "" : reader.GetString(reader.GetOrdinal("MARCA")),
                                 NumeroSerie = reader.IsDBNull(reader.GetOrdinal("NUMSERIE")) ? "" : reader.GetString(reader.GetOrdinal("NUMSERIE")),
-                                Id = reader.IsDBNull(reader.GetOrdinal("ID")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID"))
+                                Id = reader.IsDBNull(reader.GetOrdinal("ID")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID")),
+                                CodigoUbigeo = reader.IsDBNull(reader.GetOrdinal("COD_UBIGEO")) ? "" : reader.GetString(reader.GetOrdinal("COD_UBIGEO")),
+                                NombreUbigeo = reader.IsDBNull(reader.GetOrdinal("NOMUBIGEO")) ? "" : reader.GetString(reader.GetOrdinal("NOMUBIGEO")),
+                                RutaDocumento = reader.IsDBNull(reader.GetOrdinal("RUTA_DOCUMENTO")) ? "" : reader.GetString(reader.GetOrdinal("RUTA_DOCUMENTO")),
+                                NumeroGuia = reader.IsDBNull(reader.GetOrdinal("NUM_GUIA")) ? "" : reader.GetString(reader.GetOrdinal("NUM_GUIA"))
                             };
                             _listaDetalleDespachoconStock.Add(detalleDespachoConStock);
                         };
@@ -1325,7 +1329,11 @@ namespace AHSECO.CCL.BD.Ventas
                                 DescripcionEquipo = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION")),
                                 Marca = reader.IsDBNull(reader.GetOrdinal("MARCA")) ? "" : reader.GetString(reader.GetOrdinal("MARCA")),
                                 NumeroSerie = reader.IsDBNull(reader.GetOrdinal("NUMSERIE")) ? "" : reader.GetString(reader.GetOrdinal("NUMSERIE")),
-                                Id = reader.IsDBNull(reader.GetOrdinal("ID")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID"))
+                                Id = reader.IsDBNull(reader.GetOrdinal("ID")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID")),
+                                CodigoUbigeo = reader.IsDBNull(reader.GetOrdinal("COD_UBIGEO")) ? "" : reader.GetString(reader.GetOrdinal("COD_UBIGEO")),
+                                NombreUbigeo = reader.IsDBNull(reader.GetOrdinal("NOMUBIGEO")) ? "" : reader.GetString(reader.GetOrdinal("NOMUBIGEO")),
+                                RutaDocumento = reader.IsDBNull(reader.GetOrdinal("RUTA_DOCUMENTO")) ? "" : reader.GetString(reader.GetOrdinal("RUTA_DOCUMENTO")),
+                                NumeroGuia = reader.IsDBNull(reader.GetOrdinal("NUM_GUIA")) ? "" : reader.GetString(reader.GetOrdinal("NUM_GUIA"))
                             };
                             _listaDetalleDespachosinStock.Add(detalleDespachoSinStock);
                         };
@@ -1867,7 +1875,12 @@ namespace AHSECO.CCL.BD.Ventas
                         CodigoEquipo = i.Single(d => d.Key.Equals("CODEQUIPO")).Value.Parse<string>(),
                         DescripcionEquipo = i.Single(d => d.Key.Equals("DESCRIPCION")).Value.Parse<string>(),
                         Marca = i.Single(d => d.Key.Equals("MARCA")).Value.Parse<string>(),
-                        NumeroSerie = i.Single(d => d.Key.Equals("NUMSERIE")).Value.Parse<string>()
+                        NumeroSerie = i.Single(d => d.Key.Equals("NUMSERIE")).Value.Parse<string>(),
+                        CodigoUbigeo = i.Single(d => d.Key.Equals("COD_UBIGEO")).Value.Parse<string>(),
+                        NombreUbigeo = i.Single(d => d.Key.Equals("NOMUBIGEO")).Value.Parse<string>(),
+                        Direccion = i.Single(d => d.Key.Equals("DIRECCION")).Value.Parse<string>(),
+                        RutaDocumento = i.Single(d => d.Key.Equals("RUTA_DOCUMENTO")).Value.Parse<string>(),
+                        NumeroGuia = i.Single(d => d.Key.Equals("NUM_GUIA")).Value.Parse<string>()
                     }).FirstOrDefault();
 
                 return result;
@@ -1887,6 +1900,10 @@ namespace AHSECO.CCL.BD.Ventas
                 var parameters = new DynamicParameters();
                 parameters.Add("IDDETALLEDESPACHO", datos.codDetalleDespacho);
                 parameters.Add("NUMSERIE", datos.NumeroSerie);
+                parameters.Add("CODUBIGEO", datos.CodigoUbigeo);
+                parameters.Add("DIRECCION", datos.Direccion);
+                parameters.Add("NROGUIA", datos.NumeroGuiaRemision);
+                parameters.Add("RUTADOC", datos.RutaDocumento);
                 var result = connection.Query
                 (
                     sql: "USP_ACTUALIZAR_SERIE",

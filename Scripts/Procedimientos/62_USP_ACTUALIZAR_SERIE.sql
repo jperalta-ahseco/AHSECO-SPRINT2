@@ -10,7 +10,11 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_ACTUALIZAR_SERIE]
 	EXEC [USP_ACTUALIZAR_SERIE]  1,'XXXXX'
 =======================================================================================================*/
 	@IDDETALLEDESPACHO BIGINT,
-	@NUMSERIE VARCHAR(50)
+	@NUMSERIE VARCHAR(50),
+	@CODUBIGEO VARCHAR(6),
+	@DIRECCION VARCHAR(150),
+	@NROGUIA VARCHAR(50),
+	@RUTADOC VARCHAR(350)
 )
 AS
 BEGIN
@@ -31,11 +35,15 @@ BEGIN
 			ELSE
 			BEGIN
 					UPDATE TBD_DESPACHO_DIST
-					SET NUMSERIE = @NUMSERIE
+					SET NUMSERIE = @NUMSERIE,
+							COD_UBIGEO=@CODUBIGEO,
+							DIRECCION=@DIRECCION,
+							RUTA_DOCUMENTO=@RUTADOC,
+							NUM_GUIA=@NROGUIA
 					WHERE ID= @IDDETALLEDESPACHO;
 
 					SET @CODIGO=1
-					SET @MSG ='Se actualizo el numero de serie de manera correcta'
+					SET @MSG ='Se actualizo de manera correcta los datos de despacho'
 			END		
 
 		END TRY

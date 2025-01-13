@@ -10,5 +10,9 @@ namespace AHSECO.CCL.BE.Ventas
     {
         public long codDetalleDespacho { get; set; }
         public string NumeroSerie   { get; set; }
+        public string CodigoUbigeo { get; set; }
+        public string Direccion { get; set; }
+        public string NumeroGuiaRemision { get; set; }
+        public string RutaDocumento { get; set; }
     }
 }

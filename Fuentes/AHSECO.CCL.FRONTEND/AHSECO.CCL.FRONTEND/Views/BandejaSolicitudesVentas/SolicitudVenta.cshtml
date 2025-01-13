@@ -773,11 +773,13 @@
                                                                         <thead>
                                                                             <tr>
                                                                                 <th style="text-align:center; width:5%; color:white; background-color:cornflowerblue">N°</th>
-                                                                                <th style="text-align: center; width: 15%; color:white; background-color: cornflowerblue">C&oacute;digo</th>
-                                                                                <th style="text-align: center; width: 30%; color: white; background-color: cornflowerblue">Descripci&oacute;n Equipo</th>
-                                                                                <th style="text-align: center; width: 20%; color: white; background-color: cornflowerblue">Marca</th>
+                                                                                <th style="text-align: center; width: 10%; color:white; background-color: cornflowerblue">C&oacute;digo</th>
+                                                                                <th style="text-align: center; width: 25%; color: white; background-color: cornflowerblue">Descripci&oacute;n Equipo</th>
+                                                                                <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">Marca</th>
+                                                                                <th style="text-align: center; width: 10%; color: white; background-color: cornflowerblue">Destino</th>
+                                                                                <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">N° Guia Remision</th>
                                                                                 <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">N° Serie / N° Lote</th>
-                                                                                <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">Acciones</th>
+                                                                                <th style="text-align: center; width: 5%; color: white; background-color: cornflowerblue">Acciones</th>
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
@@ -866,11 +868,13 @@
                                                                         <thead>
                                                                             <tr>
                                                                                 <th style="text-align:center; width:5%; color:white; background-color:cornflowerblue">N°</th>
-                                                                                <th style="text-align: center; width: 15%; color:white; background-color: cornflowerblue">C&oacute;digo</th>
-                                                                                <th style="text-align: center; width: 30%; color: white; background-color: cornflowerblue">Descripci&oacute;n Equipo</th>
-                                                                                <th style="text-align: center; width: 20%; color: white; background-color: cornflowerblue">Marca</th>
+                                                                                <th style="text-align: center; width: 10%; color:white; background-color: cornflowerblue">C&oacute;digo</th>
+                                                                                <th style="text-align: center; width: 25%; color: white; background-color: cornflowerblue">Descripci&oacute;n Equipo</th>
+                                                                                <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">Marca</th>
+                                                                                <th style="text-align: center; width: 10%; color: white; background-color: cornflowerblue">Destino</th>
+                                                                                <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">N° Guia Remision</th>
                                                                                 <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">N° Serie / N° Lote</th>
-                                                                                <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">Acciones</th>
+                                                                                <th style="text-align: center; width: 5%; color: white; background-color: cornflowerblue">Acciones</th>
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
@@ -1266,7 +1270,6 @@
 
 <div class="modal fade" id="modalZonaTecSol" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
 
-
     @{
         ViewBag.Title = "Ubigeo";
     }
@@ -1339,6 +1342,7 @@
             <div class="modal-footer">
                 <button class="btn btn-default btn-sm pull-left" type="button" data-dismiss="modal" id="btnCerrarUbigeoServ">Cerrar</button>
                 <button class="btn btn-primary btn-sm" type="button" id="btnGuardarUbigeoSel">Seleccionar</button>
+                <button class="btn btn-primary btn-sm" type="button" style="display:none;" id="btnGuardarUbigeoDespachoSel">Seleccionar</button>
             </div>
         </div>
     </div>
@@ -1391,7 +1395,7 @@
         <div class="modal-content">
             <!-- Modal content header -->
             <div class="modal-header box-header well well-large">
-                <h5 class="modal-title" id="tituloModal"><b>Registro de Serie:</b></h5>
+                <h5 class="modal-title" id="tituloModal"><b>Detalle del Despacho:</b></h5>
             </div>
             <!-- Modal content body -->
             <div class="modal-body d-flex justify-content-center" align-items-center>
@@ -1426,21 +1430,59 @@
                         </div>
                         <!--3ra fila:-->
                         <div class="row container-fluid">
-                            <div class="col-md-12 col-sm-12">
-                                <label for="txtSerie">N° de Serie:</label>
+                            <div class="col-md-6 col-sm-12">
+                                <label for="txtZonaDepacho">Zona:</label>
                                 <div class="form-group">
-                                    <input placeholder="Ingresar N° de Serie" maxlength="100" type="text" class="form-control input-sm" id="txtSerie" value="">
+                                    <div class="input-group input-group-sm date">
+                                        <input hidden id="hdnIdZonaDespacho" />
+                                        <input disabled maxlength="6" type="text" class="form-control input-sm" id="txtZonaDepacho" placeholder="--Seleccionar Zona--" aria-describedby="sizing-addon3" />
+                                        <span style="cursor: pointer" class="input-group-addon input-sm" id="searchZonaDespacho" data-toggle="modal" data-target="#modalZonaTecSol">
+                                            <i class="fa fa-search"></i>
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
+                        <!--4ta fila:-->
+                        <div class="row container-fluid">
+                            <div class="col-md-12 col-sm-12">
+                                <div class="form-group">
+                                    <label for="txtDireccion">Direcci&oacute;n:</label>
+                                    <input placeholder="Ingresar Dirección" maxlength="150" type="text" class="form-control input-sm" id="txtDireccion" value="">
+                                </div>
+                            </div>
+                        </div>
+                        <!--5ta fila:-->
+                        <div class="row container-fluid">
+                            <div class="col-md-6 col-sm-12">
+                                <label for="txtSerie">N° de Serie o Lote:</label>
+                                <div class="form-group">
+                                    <input placeholder="Ingresar N° de Serie o Lote" maxlength="50" type="text" class="form-control input-sm" id="txtSerie" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                <label for="txtGuia">N° de Guia de Remisi&oacute;n:</label>
+                                <div class="form-group">
+                                    <input placeholder="Ingresar N° de Guia de Remisión" maxlength="50" type="text" class="form-control input-sm" id="txtGuia" value="">
+                                </div>
+                            </div>
+                        </div>
+                        <!--6ta fila:-->
+                        <div class="row container-fluid">
+                            <div class="col-md-6 col-sm-12">
+                                <button class="btn btn-danger btn-sm" type="button" id="btnAdjuntarDocumentoDespacho"><i class="fa fa-folder" aria-hidden="true"></i>&nbsp;Cargar Archivo</button>
+                                <b><label id="lblNombreArchivoDespacho" value=""></label></b>
+                                <input type="file" class="btn btn-danger btn-sm" id="fileCargaDocumentoSustentoDespacho" value="Cargar Adjunto" style="display:none;"><br />
+                                <span id="tipoDocAdjuntosDespacho" style="font-size:10px;color:gray">Archivos permitidos: .xls,.xlsx,.pdf,.doc,.docx,.zip,.rar,.ppt,.pptx</span>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
             <!-- Modal content footer -->
             <div class="modal-footer">
                 <button class="btn btn-default btn-sm pull-left" type="button" data-dismiss="modal" id="btnCerrarDetalle"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Cerrar</button>
-                <button class="btn btn-primary btn-sm" type="button" id="btnRegistrarSerie"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Registrar Serie</button>
+                <button class="btn btn-primary btn-sm" type="button" id="btnRegistrarSerie"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Registrar Despacho</button>
             </div>
         </div>
     </div>

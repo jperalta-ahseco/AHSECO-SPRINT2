@@ -174,6 +174,12 @@
     var $dateProg = $("#dateProg");
     var $btnGuardarProg = $("#btnGuardarProg");
     var $btnRegistrarFechaProg = $("#btnRegistrarFechaProg");
+    var $hdnIdZonaDespacho = $("#hdnIdZonaDespacho");
+    var $txtZonaDepacho = $("#txtZonaDepacho");
+    var $searchZonaDespacho = $("#searchZonaDespacho");
+    var $txtDireccion = $("#txtDireccion");
+    var $txtGuia = $("#txtGuia");
+    var $lblNombreArchivoDespacho = $("#lblNombreArchivoDespacho");
 
     //var detalleServicios = [];
     var contadorDetalle = 0;
@@ -315,6 +321,7 @@
     var $modalBusquedaTecnico = $("#modalBusquedaTecnico");
     var $NoExisteTec = $("#NoExisteTec");
     var $añadirTecnico = $("#añadirTecnico");
+    var $btnGuardarUbigeoDespachoSel = $("#btnGuardarUbigeoDespachoSel");
     var tecnicosAsig = [];
 
     var mensajes = {
@@ -497,10 +504,12 @@
         $btnVerComentarioDscto.click(verComentarioDscto);
         $btnAprobarCotizacion.click(aprobarCotizacion);
         $btnGuardarUbigeoSel.click(seleccionarUbi);
+        $btnGuardarUbigeoDespachoSel.click(seleccionarUbiDespacho);
         $btnBuscarTecnicos.click(BuscarTecnicosClick);
         $btnBuscarTecnico.click(BuscarTecnicos);
         $btnAñadirTecnico.click(AgregarTecnicoExterno);
         $searchZona.click(logicUbigeoTecnico);
+        $searchZonaDespacho.click(logicUbigeoDespacho);
         $btnRegistrarTecnicoExterno.click(CrearTecnico3ro_a_Producto);
         $btnEnviarServicio.click(btnEnviarServicioClick);
         $btnGuardarFactura.click($btnGuardarFactura_click);
@@ -509,6 +518,44 @@
         $btnEnviarGestionDespachoSE.click($btnEnviarGestionDespachoSE_click);
     };
 
+    function seleccionarUbiDespacho() {
+
+        var codDistrito = sessionStorage.getItem('codDistritoServ');
+
+        var nomDepartamentoDespacho = sessionStorage.getItem('nomDepartamentoServ')
+        var nomProvinciaDespacho = sessionStorage.getItem('nomProvinciaServ');
+        var nomDistritoDespacho = sessionStorage.getItem('nombreDistritoServ');
+
+        if ($cmbDepartamentoServ.val().trim() === "" || $cmbDepartamentoServ.val().trim() === null || $cmbDepartamentoServ.val().trim() === undefined) {
+            app.message.error("Validacion", "Debe seleccionar un departamento");
+            return;
+        }
+
+        if ($cmbProvinciaServ.val().trim() === "" || $cmbProvinciaServ.val().trim() === null || $cmbProvinciaServ.val().trim() === undefined) {
+            app.message.error("Validacion", "Debe seleccionar una provincia");
+            return;
+        }
+
+        if ($cmbDistritoServ.val().trim() === "" || $cmbDistritoServ.val().trim() === null || $cmbDistritoServ.val().trim() === undefined) {
+            app.message.error("Validacion", "Debe seleccionar un distrito");
+            return;
+        }
+
+        $txtZonaDepacho.val(nomDepartamentoDespacho + ' / ' + nomProvinciaDespacho + ' / ' + nomDistritoDespacho);
+        $hdnIdZonaDespacho.val(codDistrito);
+        $modalZonaTecSol.modal('toggle');      
+    };
+
+
+    function logicUbigeoDespacho() {
+        $btnGuardarUbigeoDespachoSel.show();
+        $btnGuardarUbigeoSel.hide();
+        getDepartamentosServ();
+        $cmbProvinciaServ.val('').trigger("change");
+        $cmbDistritoServ.val('').trigger("change");
+        $cmbProvinciaServ.prop("disabled", true);
+        $cmbDistritoServ.prop("disabled", true);
+    }
 
     function seleccionarUbi() {
 
@@ -1045,6 +1092,8 @@
     };
     
     function logicUbigeoTecnico() {
+        $btnGuardarUbigeoDespachoSel.hide();
+        $btnGuardarUbigeoSel.show();
         getDepartamentosServ();
         $cmbProvinciaServ.val('').trigger("change");
         $cmbDistritoServ.val('').trigger("change");
@@ -2755,6 +2804,7 @@
                         if ($estadoSol.val() == "PRVT" && $idRolUsuario.val() == "SGI_VENTA_LOGISTICA" && data.Result.DespachoCabeceraSinStock.EstadoAprobacion == "IMP") {
 
                             html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleSinStock[i].Id + '" href="javascript:solicitud.editarSeries(' + data.Result.DespachoDetalleSinStock[i].Id + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';
+                           /* html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleSinStock[i].Id + '" data-toggle="modal" data-target="#modalSeries"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';*/
                             html += ' <a class="btn btn-default btn-xs" title="Guardar" id="Boton' + data.Result.DespachoDetalleSinStock[i].Id + '" style="display:none"  href="javascript:solicitud.guardarSeries(' + data.Result.DespachoDetalleSinStock[i].Id + ',\'N\')"><i class="fa fa-save" aria-hidden="true"></i></a>&nbsp;';
                         }
                         html += '</div>';
@@ -2763,7 +2813,9 @@
                             "<th>" + data.Result.DespachoDetalleSinStock[i].CodigoEquipo + "</th>" +
                             "<th>" + data.Result.DespachoDetalleSinStock[i].DescripcionEquipo + "</th>" +
                             "<th>" + data.Result.DespachoDetalleSinStock[i].Marca + "</th>" +
-                            "<th><input type='text' style='border: none;background-color: transparent; outline: none;' readonly id='Serie" + data.Result.DespachoDetalleSinStock[i].Id + "' value='" + data.Result.DespachoDetalleSinStock[i].NumeroSerie + "'></th>" +
+                            "<th>" + data.Result.DespachoDetalleSinStock[i].NombreUbigeo + "</th>" +
+                            "<th>" + data.Result.DespachoDetalleSinStock[i].NumeroGuia + "</th>" +
+                            "<th>" + data.Result.DespachoDetalleSinStock[i].NumeroSerie + "</th>" +
                             "<th>" + html + "</th>" +
                             "</tr>";
 
@@ -2818,6 +2870,7 @@
                         if ($estadoSol.val() == "PRVT" && $idRolUsuario.val() == "SGI_VENTA_LOGISTICA") {
 
                             html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleConStock[i].Id + '" href="javascript:solicitud.editarSeries(' + data.Result.DespachoDetalleConStock[i].Id + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';
+                           /* html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleConStock[i].Id + '" data-toggle="modal" data-target="#modalSeries"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';*/
                             html += ' <a class="btn btn-default btn-xs" title="Guardar" id="Boton' + data.Result.DespachoDetalleConStock[i].Id + '" style="display:none"  href="javascript:solicitud.guardarSeries(' + data.Result.DespachoDetalleConStock[i].Id + ',\'S\')"><i class="fa fa-save" aria-hidden="true"></i></a>&nbsp;';
                         }
                         html += '</div>';
@@ -2826,7 +2879,9 @@
                             "<th>" + data.Result.DespachoDetalleConStock[i].CodigoEquipo + "</th>" +
                             "<th>" + data.Result.DespachoDetalleConStock[i].DescripcionEquipo + "</th>" +
                             "<th>" + data.Result.DespachoDetalleConStock[i].Marca + "</th>" +
-                            "<th><input type='text' style='border: none;background-color: transparent; outline: none;' readonly id='Serie" + data.Result.DespachoDetalleConStock[i].Id + "' value='" + data.Result.DespachoDetalleConStock[i].NumeroSerie + "'></th>" +
+                            "<th>" + data.Result.DespachoDetalleConStock[i].NombreUbigeo + "</th>" +
+                            "<th>" + data.Result.DespachoDetalleConStock[i].NumeroGuia + "</th>" +
+                            "<th>" + data.Result.DespachoDetalleConStock[i].NumeroSerie + "</th>" +
                             "<th>" + html + "</th>" +
                             "</tr>";
 
@@ -4186,13 +4241,13 @@
     
     function editarSeries(codDetalleDespacho) {
 
-        $('#Serie' + codDetalleDespacho).removeAttr('readonly');
-        $('#Serie' + codDetalleDespacho).css('border', '1px solid ');
-        $('#Serie' + codDetalleDespacho).css('background-color', 'white');
-        $('#Boton' + codDetalleDespacho).css('display', 'inline-block');
-        $('#Edi' + codDetalleDespacho).css('display', 'none');
+        //$('#Serie' + codDetalleDespacho).removeAttr('readonly');
+        //$('#Serie' + codDetalleDespacho).css('border', '1px solid ');
+        //$('#Serie' + codDetalleDespacho).css('background-color', 'white');
+        //$('#Boton' + codDetalleDespacho).css('display', 'inline-block');
+        //$('#Edi' + codDetalleDespacho).css('display', 'none');
        // $('#Boton' + codDetalleDespacho).css('width', '30px');
-        return;
+        //return;
         $modalSeries.modal("show");
         var m = "POST";
         var url = "BandejaSolicitudesVentas/VerDetalleItemDespacho?codDetalleDespacho=" + codDetalleDespacho;
@@ -4202,14 +4257,31 @@
             $txtCodigoProductoSerie.val(data.Result.CodigoEquipo);
             $txtMarcaSerie.val(data.Result.Marca);
             $txtDescripcion.val(data.Result.DescripcionEquipo);
-            $txtSerie.val(data.Result.NumeroSerie);       
+            $txtSerie.val(data.Result.NumeroSerie); 
+            $hdnIdZonaDespacho.val(data.Result.CodigoUbigeo);
+            $txtZonaDepacho.val(data.Result.NombreUbigeo);
+            $txtDireccion.val(data.Result.Direccion);
+            $txtGuia.val(data.Result.NumeroGuia);
+            $lblNombreArchivoDespacho.text(data.Result.RutaDocumento);
         };
         return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.consultaDetalleDespacho);
     }
 
     function $btnRegistrarSerie_click() {
+        if ($hdnIdZonaDespacho.val() === "" || $hdnIdZonaDespacho.val() == null) {
+            app.message.error("Validación", "Debe ingresar un ubigeo del despacho.");
+            return false;
+        }
+        if ($txtDireccion.val() === "" || $txtDireccion.val() == null) {
+            app.message.error("Validación", "Debe ingresar una dirección del despacho.");
+            return false;
+        }
         if ($txtSerie.val() === "" || $txtSerie.val() == null) {
             app.message.error("Validación", "Debe ingresar el número de serie o lote.");
+            return false;
+        }
+        if ($txtGuia.val() === "" || $txtGuia.val() == null) {
+            app.message.error("Validación", "Debe ingresar el número de la guia de remisión");
             return false;
         }
         var fnSi = function () {
@@ -4218,7 +4290,11 @@
             var url = "BandejaSolicitudesVentas/ActualizarNumeroSerie";
             var obj = {
                 codDetalleDespacho: $codDetalleDespacho.val(),
-                NumeroSerie: $txtSerie.val()
+                NumeroSerie: $txtSerie.val(),
+                CodigoUbigeo: $hdnIdZonaDespacho.val(),
+                Direccion: $txtDireccion.val(),
+                NumeroGuiaRemision: $txtGuia.val(),
+                RutaDocumento: ""
             }
             var objParam = JSON.stringify(obj);
             var fnDoneCallback = function (data) {
@@ -4235,7 +4311,7 @@
             };
             return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.actualizarSerie);
         }
-        return app.message.confirm("Ventas", "¿Está seguro que registrar el número de serie o lote?", "S&iacute;", "No", fnSi, null);
+        return app.message.confirm("Ventas", "¿Está seguro que registrar el detalle del despacho?", "S&iacute;", "No", fnSi, null);
 
     }
 
