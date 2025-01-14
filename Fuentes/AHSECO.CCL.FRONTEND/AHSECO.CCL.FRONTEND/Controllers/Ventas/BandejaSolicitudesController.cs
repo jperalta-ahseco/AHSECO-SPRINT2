@@ -5285,7 +5285,12 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         {
             var ventasBL = new VentasBL();
             datos.UsuarioRegistra = User.ObtenerUsuario();
+            var dat = datos;
+            //Se adjunta el archivo.
+
             var response = ventasBL.ActualizarNumeroSerie(datos);
+
+
             return Json(response);
         }
 

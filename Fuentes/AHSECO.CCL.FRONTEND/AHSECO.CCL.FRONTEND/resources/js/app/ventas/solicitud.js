@@ -331,6 +331,8 @@
     var $ListaGuias = $("#ListaGuias");
     var $TipoReg = $("#TipoReg");
     var $RegStock = $("#RegStock");
+    var $btnAdjuntarDocumentoDespacho = $("#btnAdjuntarDocumentoDespacho");
+    var $fileCargaDocumentoSustentoDespacho = $('#fileCargaDocumentoSustentoDespacho');
     var tecnicosAsig = [];
 
     var mensajes = {
@@ -526,7 +528,57 @@
         $btnRegistrarFechaProg.click($btnRegistrarFechaProg_click);
         $btnEnviarGestionDespachoSE.click($btnEnviarGestionDespachoSE_click);
         $btnRegistrarDespacho.click($btnRegistrarDespacho_click);
+        $btnAdjuntarDocumentoDespacho.click($AdjuntarDocumentoDespacho_click)
+        $fileCargaDocumentoSustentoDespacho.on("change", $fileCargaDocumentoSustentoDespacho_change);
+        $fileCargaDocumentoSustentoDespacho.click($fileCargaDocumentoSustentoDespacho_change);
     };
+
+    function $fileCargaDocumentoSustentoDespacho_change() {
+        $lblNombreArchivoDespacho.text("");
+        var fileInput = document.getElementById("fileCargaDocumentoSustentoDespacho");
+
+        if (myfile.length > 0) {
+            myfile = "";
+        }
+
+        myfile = $(this).val();
+        var ext = myfile.split('.').pop();
+        if (ext == "pdf" || ext == "PDF" ||
+            ext == "xls" || ext == "XLS" ||
+            ext == "xlsx" || ext == "XLSX" ||
+            ext == "doc" || ext == "DOC" ||
+            ext == "docx" || ext == "DOCX" ||
+            ext == "zip" || ext == "ZIP" ||
+            ext == "rar" || ext == "RAR" ||
+            ext == "ppt" || ext == "PPT" ||
+            ext == "pptx" || ext == "PPTX") {
+            //beforeSendCargaDoc();
+            var formdata = new FormData(); //FormData object
+            //Appending each file to FormData object
+            formdata.append(fileInput.files[0].name, fileInput.files[0]);
+            formdata.append('name', name);
+
+            $lblNombreArchivoDespacho.text(fileInput.files[0].name);
+
+        }
+        else if (myfile !== "") {
+
+            app.message.error('Validación', 'El formato no es el permitido', 'Aceptar', null)
+            this.value = "";
+            $lblNombreArchivoDespacho.text("");
+
+        } else {
+            this.value = "";
+            $lblNombreArchivoDespacho.text("");
+
+        }
+    }
+
+    function $AdjuntarDocumentoDespacho_click() {
+        $lblNombreArchivoDespacho.text("");
+        myfile = "";
+        document.getElementById('fileCargaDocumentoSustentoDespacho').click();
+    }
 
     function $btnRegistrarDespacho_click() {
         
@@ -537,8 +589,8 @@
             // Verificar si el checkbox de esta fila está marcado
             if ($(this).find(".chkCS").is(":checked")) {
                 // Obtener el texto de la segunda celda (Nombre de Ubigeos)
-                let nombre = $(this).find("td:eq(2)").text();
-                ubigeos.push(nombre);
+                let nombre = $(this).find("th:eq(5)").text();
+                ubigeos.push(nombre.trim());
             }
         });
 
@@ -546,8 +598,6 @@
         let ubigeosOri = ubigeos.filter((valor, indice, self) => {
             return self.indexOf(valor) === indice;
         });
-        console.log(ubigeos);
-        console.log(ubigeosOri.length);
 
         const itemCheckboxes = document.querySelectorAll(".chkCS");
         // Crear un array con los valores de los checkboxes seleccionados
@@ -562,6 +612,12 @@
             app.message.error("Validacion", "Debe seleccionar por lo menos un producto.");
             return;
         }
+
+        if (ubigeosOri.length > 1) {
+            app.message.error("Validacion", "Debe seleccionar productos de un único destino para ejecutar esta opción.");
+            return;
+        }
+
 
         const arrayResult = concatenatedCodes.split(",").map(item => item.trim()); 
 
@@ -603,7 +659,10 @@
 
             //Se construye tabla de series y guias por registros seleccionados
             for (i = 0; i < arrayResult.length; i++) {
-                var nuevoTr = "<tr id='rowSerieGuia" + i + "'>" +                
+                var contador = 0;
+                contador = 1 + i;
+                var nuevoTr = "<tr id='rowSerieGuia" + i + "'>" + 
+                    "<th style='text-align:center'>" + contador + "</th>" +
                     "<th>" + "<input type='text' value='' id='Guia" + i + "' style='width:100%' class='GuiaCS'>" + "</th>" +
                     "<th>" + "<input type='text' value='' id='SerieCS" + i + "' style='width:100%' class='SerieCS'>" + "</th>" +
                     "</tr>";
@@ -4363,13 +4422,24 @@
             $txtMarcaSerie.val(data.Result.Marca);
             $txtDescripcion.val(data.Result.DescripcionEquipo);
             $txtSerie.val(data.Result.NumeroSerie); 
-            $hdnIdZonaDespacho.val(data.Result.CodigoUbigeo);
+            var codUbigeo = data.Result.CodigoUbigeo;
+            $hdnIdZonaDespacho.val(codUbigeo);
+            $searchZonaDespacho.css("visibility", "visible");
+            if (codUbigeo != "" || codUbigeo != null) {
+                $searchZonaDespacho.css("visibility", "hidden");
+            }
             $txtZonaDepacho.val(data.Result.NombreUbigeo);
-            $txtDireccion.val(data.Result.Direccion);
+            var direccion = data.Result.Direccion;
+            $txtDireccion.val(direccion);
+            $txtDireccion.prop("disabled", false);
+            if (direccion != "" || direccion != null) {
+                $txtDireccion.prop("disabled", true);
+            }
             $txtGuia.val(data.Result.NumeroGuia);
             $lblNombreArchivoDespacho.text(data.Result.RutaDocumento);
             $rowTablaSeriesGuias.hide();
             $rowSerieGuia.show();
+            $TipoReg.val("U");
         };
         return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.consultaDetalleDespacho);
     }
@@ -4454,6 +4524,13 @@
             }
         }
 
+        if ($lblNombreArchivoDespacho.text() === "" || $lblNombreArchivoDespacho.text() == null) {
+            app.message.error("Validación", "Debe adjuntar el documento Guia de Remision al despacho.");
+            return false;
+        }
+
+
+
         let lista_series = "";
         let lista_guias = "";
         if ($TipoReg.val() === "T" && $RegStock.val() === "S") {
@@ -4490,6 +4567,12 @@
         }
      
 
+        var fileInput = document.getElementById("fileCargaDocumentoSustentoDespacho");
+        const file = fileInput.files[0];
+        // Crear el objeto FormData
+        const formData = new FormData();
+        formData.append('File', file); // Agregar el archivo con el nombre "file"
+
         var fnSi = function () {
 
             var m = "POST";
@@ -4504,7 +4587,8 @@
                 Tipo: $TipoReg.val(),
                 Ids: $codigosIds.val(),
                 Series: lista_series,
-                Guias: lista_guias
+                Guias: lista_guias,
+                File: formdata
             }
             var objParam = JSON.stringify(obj);
             var fnDoneCallback = function (data) {
