@@ -217,14 +217,14 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             if (EsFlujoValorizacion())
             { ViewBag.PermitirEditarValorizacion = true; }
 
-            if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Gerente) { ViewBag.PermitirAprobarDscto = true; ViewBag.PermitirVerPorcentDscto = true; }
+            if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Gerente) { ViewBag.PermitirAprobarDscto = true; /*ViewBag.PermitirVerPorcentDscto = true; */}
 
             if (ViewBag.PermitirEditarValorizacion == true)
             {
                 string[] CD_Columns =
                 {
                     "Nro. Item", "Codigo Producto", "Descripción", "Unidad Medida", "Cantidad", "Ex-Work", "Valor Venta Unitario",
-                    "Valor. Venta Total Sin IGV (Sin Ganancia)", "Ganancia(%)", "Valor. Venta Total Sin IGV Con Ganancia)", "Acción"
+                    "Valor. Venta Total Sin IGV (Sin Ganancia)", "Ganancia(%)", "Valor. Venta Total Sin IGV (Con Ganancia)","Acción"
                 };
                 ViewBag.CabeceraCotDet = CD_Columns;
 
@@ -975,11 +975,15 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         ViewBag.PermitirTabManuales = true;
                         ViewBag.PermitirTabVideos = true;
                         ViewBag.PermitirTabCalib = false;
+                        ViewBag.PermitirTabDetCot = false;
+                        ViewBag.VerBandejaCotizacion = false;
                     }
 
                     if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Logistica)
                     {
                         ViewBag.PermitirTabFlete = true;
+                        ViewBag.PermitirTabDetCot = false;
+                        ViewBag.VerBandejaCotizacion = false;
                     }
 
                 }
@@ -1140,7 +1144,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                         ViewBag.PermitirAprobarCotizacion = true;
                                         ViewBag.PermitirEditarGanancia = true;
                                         ViewBag.PermitirEditarPorcentDscto = true;
-                                        ViewBag.PermitirVerPorcentDscto = true;
+                                        //ViewBag.PermitirVerPorcentDscto = true;
                                         ViewBag.PermitirGuardarValorizacion = true;
                                     }
                                 }
@@ -1160,7 +1164,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                         ViewBag.PermitirAprobarCotizacion = true;
                                         ViewBag.PermitirEditarGanancia = true;
                                         ViewBag.PermitirEditarPorcentDscto = true;
-                                        ViewBag.PermitirVerPorcentDscto = true;
+                                        //ViewBag.PermitirVerPorcentDscto = true;
                                     }
                                 }
 
@@ -3939,6 +3943,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         oSolicitudActual.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
                     {
                         if (!swProductos) { throw new Exception("La cotización no contiene productos para la venta."); }
+                    }
+
+                    if (lstItems.Any( x => x.CotizacionCostos.Any(d => d.CodCosto == "CXCD0007") == true && !x.CotizacionCostos.Any(d => d.MontoUnitarioCosto != null)))
+                    {
+                        throw new Exception("Debe de ingresar el monto unitario del costo calibración de todos los productos ingresados");
                     }
                 }
                 else { throw new Exception("La cotización no contiene servicios o productos para la venta."); }

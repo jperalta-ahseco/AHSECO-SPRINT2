@@ -1000,74 +1000,75 @@
         var fnDoneCallBack = function (data) {
 
             LimpiarModalCostos();
-
-            $CI_pnlInfoGeneral.css("display", "");
-            $CI_hdnIdCotDetCosto.val(data.Result.Id);
-            $CI_cmbCDItem.val(data.Result.IdCotizacionDetalle).trigger("change.select2");
-            if ($CI_opcGrilla.val() == "1" || $CI_opcGrilla.val() == "2") {
-                $CI_cmbTipoCosto.val(data.Result.CodCosto).trigger("change.select2");
-            }
-            if ($CI_opcGrilla.val() == "3") {
-                $CI_cmbTipoCosto.val($CI_hdnCodCosto.val()).trigger("change.select2");
-            }
-            $CI_cmbTipoCosto.attr("disabled", "disabled");
-            if (data.Result.CotizacionDetalle != null) {
-                $CI_txtCantCotDet.val(data.Result.CotizacionDetalle.Cantidad);
-                $CI_txtUnidadMedida.val(data.Result.CotizacionDetalle.DescUnidad);
-            }
-            $CI_txtCantCotDet.val(data.Result.CantidadCotizada);
-            $CI_txtUnidadMedida.val(data.Result.DescUnidadCotizada);
-            if (data.Result.CodUbigeoDestino != null) {
-                ubigeo.setUbigeoById(data.Result.CodUbigeoDestino);
-                if ($CI_txtUbicacion.attr("readonly") == "readonly") {
-                    $CI_txtUbicacion.removeAttr("readonly");
-                    $CI_txtUbicacion.attr("disabled", "disabled");
+            setTimeout(function () {
+                $CI_pnlInfoGeneral.css("display", "");
+                $CI_hdnIdCotDetCosto.val(data.Result.Id);
+                $CI_cmbCDItem.val(data.Result.IdCotizacionDetalle).trigger("change.select2");
+                if ($CI_opcGrilla.val() == "1" || $CI_opcGrilla.val() == "2") {
+                    $CI_cmbTipoCosto.val(data.Result.CodCosto).trigger("change.select2");
                 }
-            }
-            $CI_txtDireccion.val(data.Result.Direccion);
-            $CI_txtAmbDestino.val(data.Result.AmbienteDestino);
-            $CI_txtNroPiso.val(data.Result.NroPiso);
-            $CI_txtCantCosteo.val(data.Result.CantidadCosto);
-            if (data.Result.MontoUnitarioCosto != null) {
-                $CI_txtMtoUnitarioCosto.val(app.formatearEnteroComa(parseFloat(data.Result.MontoUnitarioCosto).toFixed(2)));
-            }
-            if (data.Result.MontoTotalCosto != null) {
-                $CI_txtMtoTotalCosto.val(app.formatearEnteroComa(parseFloat(data.Result.MontoTotalCosto).toFixed(2)));
-            }
-            $CI_txtCantPrevent.val(data.Result.CantPreventivo);
-            $CI_cmbCicloPreventivo.val(data.Result.CodCicloPreventivo).trigger("change.select2");
-
-            configurarModalCosto();
-
-            //Si el Registro de COSTO está deshabilitado será de SOLO LECTURA
-            if (data.Result.Features != null) {
-                if (data.Result.Features.IsEnabled == false) {
-                    $CI_cmbCDItem.attr("disabled", "disabled");
-                    $CI_cmbTipoCosto.attr("disabled", "disabled");
-                    $CI_txtCantCotDet.attr("disabled", "disabled");
-                    $CI_txtUnidadMedida.attr("disabled", "disabled");
-
-                    $CI_txtUbicacion.attr("disabled", "disabled");
-                    $("#searchUbigeo").attr("data-target", "");
-                    $("#searchUbigeo").css("cursor", "not-allowed");
-                    $CI_txtDireccion.attr("disabled", "disabled");
-                    $CI_txtAmbDestino.attr("disabled", "disabled");
-                    $CI_txtNroPiso.attr("disabled", "disabled");
-
-                    $CI_txtDireccion.attr("disabled", "disabled");
-                    $CI_txtAmbDestino.attr("disabled", "disabled");
-                    $CI_txtNroPiso.attr("disabled", "disabled");
-                    $CI_txtCantCosteo.attr("disabled", "disabled");
-                    $CI_txtMtoUnitarioCosto.attr("disabled", "disabled");
-                    $CI_txtMtoTotalCosto.attr("disabled", "disabled");
-                    $CI_txtCantPrevent.attr("disabled", "disabled");
-                    $CI_cmbCicloPreventivo.attr("disabled", "disabled");
-
-                    $CI_btnGuardar.css("display", "none");
+                if ($CI_opcGrilla.val() == "3") {
+                    $CI_cmbTipoCosto.val($CI_hdnCodCosto.val()).trigger("change.select2");
                 }
-            }
+                $CI_cmbTipoCosto.attr("disabled", "disabled");
+                if (data.Result.CotizacionDetalle != null) {
+                    $CI_txtCantCotDet.val(data.Result.CotizacionDetalle.Cantidad);
+                    $CI_txtUnidadMedida.val(data.Result.CotizacionDetalle.DescUnidad);
+                }
+                $CI_txtCantCotDet.val(data.Result.CantidadCotizada);
+                $CI_txtUnidadMedida.val(data.Result.DescUnidadCotizada);
+                if (data.Result.CodUbigeoDestino != null) {
+                    ubigeo.setUbigeoById(data.Result.CodUbigeoDestino);
+                    if ($CI_txtUbicacion.attr("readonly") == "readonly") {
+                        $CI_txtUbicacion.removeAttr("readonly");
+                        $CI_txtUbicacion.attr("disabled", "disabled");
+                    }
+                }
+                $CI_txtDireccion.val(data.Result.Direccion);
+                $CI_txtAmbDestino.val(data.Result.AmbienteDestino);
+                $CI_txtNroPiso.val(data.Result.NroPiso);
+                $CI_txtCantCosteo.val(data.Result.CantidadCosto);
+                if (data.Result.MontoUnitarioCosto != null) {
+                    $CI_txtMtoUnitarioCosto.val(app.formatearEnteroComa(parseFloat(data.Result.MontoUnitarioCosto).toFixed(2)));
+                }
+                if (data.Result.MontoTotalCosto != null) {
+                    $CI_txtMtoTotalCosto.val(app.formatearEnteroComa(parseFloat(data.Result.MontoTotalCosto).toFixed(2)));
+                }
+                $CI_txtCantPrevent.val(data.Result.CantPreventivo);
+                $CI_cmbCicloPreventivo.val(data.Result.CodCicloPreventivo).trigger("change.select2");
 
-            $('#modalCostoItem').modal('show');
+                configurarModalCosto();
+
+                //Si el Registro de COSTO está deshabilitado será de SOLO LECTURA
+                if (data.Result.Features != null) {
+                    if (data.Result.Features.IsEnabled == false) {
+                        $CI_cmbCDItem.attr("disabled", "disabled");
+                        $CI_cmbTipoCosto.attr("disabled", "disabled");
+                        $CI_txtCantCotDet.attr("disabled", "disabled");
+                        $CI_txtUnidadMedida.attr("disabled", "disabled");
+
+                        $CI_txtUbicacion.attr("disabled", "disabled");
+                        $("#searchUbigeo").attr("data-target", "");
+                        $("#searchUbigeo").css("cursor", "not-allowed");
+                        $CI_txtDireccion.attr("disabled", "disabled");
+                        $CI_txtAmbDestino.attr("disabled", "disabled");
+                        $CI_txtNroPiso.attr("disabled", "disabled");
+
+                        $CI_txtDireccion.attr("disabled", "disabled");
+                        $CI_txtAmbDestino.attr("disabled", "disabled");
+                        $CI_txtNroPiso.attr("disabled", "disabled");
+                        $CI_txtCantCosteo.attr("disabled", "disabled");
+                        $CI_txtMtoUnitarioCosto.attr("disabled", "disabled");
+                        $CI_txtMtoTotalCosto.attr("disabled", "disabled");
+                        $CI_txtCantPrevent.attr("disabled", "disabled");
+                        $CI_cmbCicloPreventivo.attr("disabled", "disabled");
+
+                        $CI_btnGuardar.css("display", "none");
+                    }
+                }
+
+                $('#modalCostoItem').modal('show');
+            }, 1000); //Se coloca el tiempo para que antes se cargue los valores del combo, para luego poder establecer el código de costo respectivo.
         };
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);

@@ -46,7 +46,6 @@
     var $colFechaGuia = $('#colFechaGuia');
     var $colNumFact = $('#colNumFact');
     var $colFechaFact = $('#colFechaFact');
-    var $vventaUni = $('#vventaUni');
 
     /*Modales*/
     var $modalCargaDocumento = $('#modalCargaDocumento');
@@ -180,13 +179,11 @@
         $btnRegresar.click(btnRegresarClick);
         $spanSi.on('click', function () {
             botonSi();
-            $txtMontoAcce.prop('disabled', false);
-            $txtMontoAcce.val($vventaUni.val());
+            $txtMontoAcce.val(detallePreventivo.MantPreventivo.MontoPrestAcce);
         });
 
         $spanNo.on('click', function () {
-            botonNo();
-            $txtMontoAcce.prop('disabled', true);
+            botonNo(); 
             $txtMontoAcce.val("0.00");
         });
 
@@ -662,7 +659,7 @@
         //$dateFechaMant.val(app.obtenerFecha(detallePreventivo.MantPreventivo.FechaMantenimiento));
         $dateFechaMant.val(detallePreventivo.MantPreventivo.FechaMantenimiento);
         //var monto = formatoMiles(detallePreventivo.MantPreventivo.MontoPrestAcce.toFixed(2));
-        $txtMontoAcce.val(detallePreventivo.MantPreventivo.MontoPrestAcce);
+        //$txtMontoAcce.val(detallePreventivo.MantPreventivo.MontoPrestAcce);
         //$txtNumOTM.val(detallePreventivo.MantPreventivo.Val_OTM);
         if (detallePreventivo.MantPreventivo.IndPrestacion == true) {
             botonSi();
@@ -680,7 +677,6 @@
 
         $dateFechaMant.prop("disabled", true);
         //$txtNumOTM.prop('disabled', true);
-        $txtMontoAcce.prop('disabled', true);
         $btnFinalizarMant.css('display', 'inline-block');
         $spanSi.css('pointer-events', 'none');
         $spanNo.css('pointer-events', 'none');
@@ -835,7 +831,6 @@
         if (btnEditr != null) {
             $btnFinalizarMant.css('display', 'none');
             $dateFechaMant.prop('disabled', false);
-            $txtMontoAcce.prop('disabled', false);
             //$txtNumOTM.prop('disabled', false);
             $spanSi.css('pointer-events', 'auto')
             $spanNo.css('pointer-events', 'auto')
@@ -893,7 +888,7 @@
             Id_Mant: $idMantPadre.val(),
             Id_WorkFlow: 0,
             FechaMantenimiento: $dateFechaMant.val(),
-            MontoPrestAcce: ($txtMontoAcce.val()).replaceAll(",", ""),
+            //MontoPrestAcce: ($txtMontoAcce.val()).replaceAll(",", ""),
             IndPrestAcce: indPrest,
             IndRepuesto: indRepuesto,
             //valOTM: $txtNumOTM.val(),
@@ -1848,7 +1843,7 @@
             $btnFinalizarMant.prop('disabled', false);
         };
         $dateFechaMant.val(mantenimiento.FechaMantenimiento);
-        $txtMontoAcce.val(mantenimiento.MontoPrestAcce);
+        //$txtMontoAcce.val(mantenimiento.MontoPrestAcce);
         $txtNumFactura.val(mantenimiento.NumFactura);
         $txtNumOTM.val(mantenimiento.Val_OTM);
         $dateFechaFact.val(mantenimiento.FecFactura);
@@ -1898,6 +1893,7 @@
 
         if (mantenimiento.IndPrestacion == true) {
             botonSi();
+            $txtMontoAcce.val(mantenimiento.MontoPrestAcce);
         }
         else if (mantenimiento.IndPrestacion == false) {
             botonNo();
