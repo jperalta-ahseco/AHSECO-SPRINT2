@@ -20,6 +20,7 @@ namespace AHSECO.CCL.BE
         public string NombreCompletoTecnico { get; set; }
         public string DescProduct { get; set; }
         public string Marca { get; set; }
+        public string Modelo { get; set; }
         public string Serie { get; set; }
         public int NumSec { get; set; }
         public int CantPreventivo { get; set; }

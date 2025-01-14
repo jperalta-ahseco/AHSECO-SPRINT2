@@ -13,6 +13,7 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica
         public string DescProducto { get; set; }
         public int Cantidad { get; set; }
         public string Marca { get; set; }
+        public string Modelo { get; set; }
         public string NumFianza { get; set; }
         //public bool IndLLaveMano { get; set; }
         public string Dimensiones { get; set; }

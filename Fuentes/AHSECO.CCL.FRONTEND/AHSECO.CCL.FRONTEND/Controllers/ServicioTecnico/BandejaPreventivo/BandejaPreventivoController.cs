@@ -39,9 +39,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
         [Permissions(Permissions = "BANDEJAPREVENTIVO")]
         public ActionResult Index()
         {
-            ViewBag.VentaUni = 0;
             VariableSesion.setCadena("NumMant", "");
             VariableSesion.setCadena("TipoTarea", "");
+            VariableSesion.setCadena("VentaUni", "");
 
             return View();
         }
@@ -117,7 +117,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
         {
             var preventivoBL = new PreventivosBL();
             var result = preventivoBL.ObtenerMainMant(NumMant);
-            ViewBag.VentaUni = result.Result.CabeceraEquipo.vventauni; //se establece el valor de venta unitaria
+            VariableSesion.setCadena("VentaUni", result.Result.CabeceraEquipo.vventauni.ToString()); //se establece el valor de venta unitaria
             return Json(result);
         }
         public JsonResult ObtenerDetalleInstalacion(InstalacionTecnicaDetalleDTO detalle)

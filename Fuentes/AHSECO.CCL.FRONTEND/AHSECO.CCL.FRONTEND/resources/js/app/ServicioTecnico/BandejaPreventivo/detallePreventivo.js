@@ -835,6 +835,7 @@
         if (btnEditr != null) {
             $btnFinalizarMant.css('display', 'none');
             $dateFechaMant.prop('disabled', false);
+            $txtMontoAcce.prop('disabled', false);
             //$txtNumOTM.prop('disabled', false);
             $spanSi.css('pointer-events', 'auto')
             $spanNo.css('pointer-events', 'auto')

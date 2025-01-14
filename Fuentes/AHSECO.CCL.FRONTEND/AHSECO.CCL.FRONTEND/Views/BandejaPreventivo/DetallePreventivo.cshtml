@@ -9,6 +9,7 @@
     var idWorkFlow = VariableSesion.getCadena("idWorkFlow");
     var estadoMant = VariableSesion.getCadena("EstadoPrev");
     var idMant = VariableSesion.getCadena("IdMant");
+    var ventaUni = VariableSesion.getCadena("VentaUni");
 
     var visualizar = false;
 
@@ -24,6 +25,7 @@
 <input hidden id="codigoWorkflow" value="@idWorkFlow" />
 <input hidden id="estadoMant" value="@estadoMant" />
 <input hidden id="idMantPadre" value="@idMant"/>
+<input hidden id="vventaUni" value="@ventaUni" />
 
 <div class="container-fluid">
     @if (numPreventivo == "")
@@ -101,23 +103,26 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3 col-sm-12">
-                                    <label for="txtNumOTM">OTM</label>
-                                        <input disabled placeholder="-- OTM --" type="text" class="form-control input-sm" id="txtNumOTM" value="">
-                                    <div class="form-group">
+                                @if (estadoMant != "PEND")
+                                {
+                                    <div class="col-md-3 col-sm-12">
+                                        <label for="txtNumOTM">OTM</label>
+                                        <input placeholder="-- OTM --" type="text" class="form-control input-sm" id="txtNumOTM" value="">
+                                        <div class="form-group">
+                                        </div>
                                     </div>
-                                </div>
+                                }
                             </div>
                             @if (estadoMant == "FIN" || tipoAccion == "V")
                             {
                                 <div class="row container-fluid" id="rowFactura" style="display:none">
-                                    <div class="col-md-3 col-sm-12">
+                                    <div class="col-md-3 col-sm-12" id="colNumFact" style="display:none">
                                         <label for="">Número de Factura</label>
                                         <div class="form-group">
                                             <input disabled placeholder="--N° de Factura--" type="text" class="form-control input-sm" id="txtNumFactura" value="">
                                         </div>
                                     </div>
-                                    <div class="col-md-3 col-sm-12">
+                                    <div class="col-md-3 col-sm-12" id="colFechaFact" style="display:none">
                                         <label for="dateFechaFact">Fecha de Factura</label>
                                         <div class="input-group date">
                                             <input disabled type="text" class="form-control input-sm" id="dateFechaFact" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">

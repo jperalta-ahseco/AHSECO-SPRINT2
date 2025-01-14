@@ -1045,7 +1045,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             styleWrap.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
             styleWrap.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
             styleWrap.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
-            styleWrap.FillPattern = FillPattern.SolidForeground;
+            //styleWrap.FillPattern = FillPattern.SolidForeground;
 
             var style5 = hssfworkbook.CreateCellStyle();
             style5.SetFont(fontbold5);
@@ -1093,7 +1093,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             style10.Alignment = HorizontalAlignment.Center;
             style10.VerticalAlignment = VerticalAlignment.Center;
             style10.WrapText = true;
-            style10.FillPattern = FillPattern.SolidForeground;
+            //style10.FillPattern = FillPattern.SolidForeground;
 
             var style11 = hssfworkbook.CreateCellStyle();
             style11.SetFont(fontbold5);

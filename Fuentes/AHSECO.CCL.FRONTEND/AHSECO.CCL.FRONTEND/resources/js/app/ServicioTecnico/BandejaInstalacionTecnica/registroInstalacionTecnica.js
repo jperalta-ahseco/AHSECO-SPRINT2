@@ -599,6 +599,7 @@
                     CodProducto: data.Result[i].CodProducto,
                     DescProducto: data.Result[i].DescProducto,
                     Marca: data.Result[i].Marca,
+                    Modelo: data.Result[i].Modelo,
                     IndFianza: data.Result[i].IndFianza,
                     NumFianza: data.Result[i].NumFianza,
                     //IndLLaveMano: data.Result[i].IndLLaveMano,
@@ -936,6 +937,7 @@
                     CodProducto: data.Result.DetalleCotizacion[i].CodItem,
                     DescProducto: data.Result.DetalleCotizacion[i].Descripcion,
                     Marca: data.Result.DetalleCotizacion[i].Marca,
+                    Modelo: data.Result.DetalleCotizacion[i].Modelo,
                     Cantidad: data.Result.DetalleCotizacion[i].Cantidad,
                     IndFianza: data.Result.DetalleCotizacion[i].IndFianza,
                     NumFianza: data.Result.DetalleCotizacion[i].NumFianza,
@@ -1121,6 +1123,12 @@
                 data: "Marca",
                 render: function (data, type, row) {
                     return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "Modelo",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>';
                 }
             },
             {
@@ -2017,6 +2025,7 @@
                         CodProducto: data.Result.DetalleInstalacion[i].CodItem,
                         DescProducto: data.Result.DetalleInstalacion[i].DescProducto,
                         Marca: data.Result.DetalleInstalacion[i].Marca,
+                        Modelo: data.Result.DetalleInstalacion[i].Modelo,
                         Cantidad: data.Result.DetalleInstalacion[i].Cantidad,
                         IndFianza: data.Result.DetalleInstalacion[i].IndFianza,
                         NumFianza: data.Result.DetalleInstalacion[i].NumFianza,
@@ -2576,6 +2585,12 @@
                     }
                 },
                 {
+                    data: "Modelo",
+                    render: function (data, type, row) {
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
                     data: "Serie",
                     render: function (data, type, row) {
                         return '<center>' + data + '</center>';
@@ -2630,6 +2645,12 @@
                 },
                 {
                     data: "Marca",
+                    render: function (data, type, row) {
+                        return '<center>' + data + '</center>';
+                    }
+                },
+                {
+                    data: "Modelo",
                     render: function (data, type, row) {
                         return '<center>' + data + '</center>';
                     }
