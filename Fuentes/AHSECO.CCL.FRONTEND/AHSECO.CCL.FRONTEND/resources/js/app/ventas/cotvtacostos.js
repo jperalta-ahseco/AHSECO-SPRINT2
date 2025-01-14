@@ -1079,7 +1079,13 @@
             if ($CI_txtCantCosteo.val() != "" && $CI_txtMtoUnitarioCosto.val() != "") {
                 if (app.validaNumeroEntero($CI_txtCantCosteo.val()) && app.validaNumeroDecimal($CI_txtMtoUnitarioCosto.val())) {
                     var redondeo = app.obtenerCantidadDecimales($CI_txtMtoUnitarioCosto.val());
-                    $CI_txtMtoTotalCosto.val((parseFloat($CI_txtMtoUnitarioCosto.val()) * parseInt($CI_txtCantCosteo.val())).toFixed(redondeo));
+                    if ($CI_cmbTipoCosto.val() == "CXCD0006")
+                    { //Validamos para mant.preventivo
+                        $CI_txtMtoTotalCosto.val((parseFloat($CI_txtMtoUnitarioCosto.val()) * parseInt($CI_txtCantCosteo.val()) * parseInt($CI_txtCantCotDet.val()) ).toFixed(redondeo));
+                    }
+                    else {
+                        $CI_txtMtoTotalCosto.val((parseFloat($CI_txtMtoUnitarioCosto.val()) * parseInt($CI_txtCantCosteo.val())).toFixed(redondeo));
+                    }
                 }
             }
         }
