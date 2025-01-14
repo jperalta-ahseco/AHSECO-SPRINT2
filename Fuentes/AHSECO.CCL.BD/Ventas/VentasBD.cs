@@ -1904,6 +1904,11 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("DIRECCION", datos.Direccion);
                 parameters.Add("NROGUIA", datos.NumeroGuiaRemision);
                 parameters.Add("RUTADOC", datos.RutaDocumento);
+                parameters.Add("TIPO", datos.Tipo);
+                parameters.Add("IDS ", datos.Ids);
+                parameters.Add("SERIES", datos.Series);
+                parameters.Add("GUIAS", datos.Guias);
+                parameters.Add("USRREG", datos.UsuarioRegistra);
                 var result = connection.Query
                 (
                     sql: "USP_ACTUALIZAR_SERIE",

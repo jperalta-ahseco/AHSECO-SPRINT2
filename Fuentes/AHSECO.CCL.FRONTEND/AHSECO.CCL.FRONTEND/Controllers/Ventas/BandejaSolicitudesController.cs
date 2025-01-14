@@ -97,6 +97,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.Btn_EditarGestionLogistica = "none";
             ViewBag.Btn_EditarGestionLogisticaSE = "none";
             ViewBag.Btn_GuardarGestionLogisticaSE = "none";
+            ViewBag.Btn_RegistrarDespacho = "none";
+            ViewBag.Btn_RegistrarDespachoSinStock ="none";
             ViewBag.Btn_EnviarGestionDespachoSE = "none";
             ViewBag.Btn_EditarDespacho = "none";
             ViewBag.TxtOrdenCompra = "disabled";
@@ -679,6 +681,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 else
                                 {
                                     ViewBag.Btn_GuardarGestionLogisticaSE = "inline-block";
+                                    ViewBag.Btn_RegistrarDespachoSinStock = "inline-block";
 
                                 }
                             }
@@ -700,6 +703,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 else
                                 {
                                     ViewBag.Btn_GuardarGestionLogistica = "inline-block";
+                                    ViewBag.Btn_RegistrarDespacho = "inline-block";
                                 }
                             }
                             
@@ -5280,6 +5284,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         public JsonResult ActualizarNumeroSerie(DatosActualizarSerieSTO datos)
         {
             var ventasBL = new VentasBL();
+            datos.UsuarioRegistra = User.ObtenerUsuario();
             var response = ventasBL.ActualizarNumeroSerie(datos);
             return Json(response);
         }

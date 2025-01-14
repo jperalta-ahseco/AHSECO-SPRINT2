@@ -759,6 +759,7 @@
                                                             <div class="text-right">
                                                                 <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnEditarGestionLogistica" tabindex="120" style="display:@ViewBag.Btn_EditarGestionLogistica"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Editar&nbsp;</button>&nbsp;
                                                                 <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnGuardarGestionLogistica" tabindex="121" style="display:@ViewBag.Btn_GuardarGestionLogistica"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar&nbsp;</button>&nbsp;
+                                                                <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegistrarDespacho" tabindex="121" style="display:@ViewBag.Btn_RegistrarDespacho"><i class="fa fa-truck" aria-hidden="true"></i>&nbsp;Despacho&nbsp;</button>&nbsp;
                                                                 <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnEnviarGestionDespacho" tabindex="122" style="display:@ViewBag.Btn_EnviarGestionDespacho"><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;Enviar a Gesti&oacute;n&nbsp;</button>
                                                             </div>
                                                         </div>
@@ -858,6 +859,7 @@
                                                                 <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnGuardarImportacion" tabindex="126" style="display:@ViewBag.Btn_GuardarImportacion"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar Importaci&oacute;n</button>
                                                                 <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnEditarGestionLogisticaSE" tabindex="127" style="display:@ViewBag.Btn_EditarGestionLogisticaSE"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Editar&nbsp;</button>&nbsp;
                                                                 <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnGuardarGestionLogisticaSE" tabindex="128" style="display:@ViewBag.Btn_GuardarGestionLogisticaSE"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar&nbsp;</button>&nbsp;
+                                                                <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegistrarDespachoSE" tabindex="121" style="display:@ViewBag.Btn_RegistrarDespachoSinStock"><i class="fa fa-truck" aria-hidden="true"></i>&nbsp;Despacho&nbsp;</button>&nbsp;
                                                                 <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnEnviarGestionDespachoSE" tabindex="129" style="display:@ViewBag.Btn_EnviarGestionDespachoSE"><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;Enviar a Gesti&oacute;n&nbsp;</button>
                                                             </div>
                                                         </div>
@@ -1122,6 +1124,8 @@
                 }
             });
         });
+
+      
     }
 
     function seleccionarTodoSinStock() {
@@ -1448,7 +1452,12 @@
 </div>
 
 <div class="modal fade" id="modalSeries" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <input type="hidden" id="codDetalleDespacho" value="" />
+    <input type="hidden" id="codDetalleDespacho" value="0" />
+    <input type="hidden" id="codigosIds" value="" />
+    <input type="hidden" id="ListaSeries" value="" />
+    <input type="hidden" id="ListaGuias" value="" />
+    <input type="hidden" id="TipoReg" value="" />
+    <input type="hidden" id="RegStock" value="" />
 
     <div class="modal-dialog modal-lg container-fluid" role="document">
         <!-- Modal content -->
@@ -1490,7 +1499,7 @@
                         </div>
                         <!--3ra fila:-->
                         <div class="row container-fluid">
-                            <div class="col-md-6 col-sm-12">
+                            <div class="col-md-12 col-sm-12">
                                 <label for="txtZonaDepacho">Zona:</label>
                                 <div class="form-group">
                                     <div class="input-group input-group-sm date">
@@ -1513,7 +1522,7 @@
                             </div>
                         </div>
                         <!--5ta fila:-->
-                        <div class="row container-fluid">
+                        <div class="row container-fluid" id="rowSerieGuia">
                             <div class="col-md-6 col-sm-12">
                                 <label for="txtSerie">N° de Serie o Lote:</label>
                                 <div class="form-group">
@@ -1528,7 +1537,7 @@
                             </div>
                         </div>
                         <!--6ta fila:-->
-                        <div class="row container-fluid">
+                        <div class="row container-fluid" id="rowTablaSeriesGuias">
                             <div class="col-md-12 col-sm-12">
                                 <div class="form-group">
                                     <table id="tblSeriesGuia" class="table table-hover table-condensed table-striped table-bordered" width="100%">

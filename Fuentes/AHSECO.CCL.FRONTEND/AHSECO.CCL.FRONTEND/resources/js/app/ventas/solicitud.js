@@ -322,6 +322,15 @@
     var $NoExisteTec = $("#NoExisteTec");
     var $añadirTecnico = $("#añadirTecnico");
     var $btnGuardarUbigeoDespachoSel = $("#btnGuardarUbigeoDespachoSel");
+    var $btnRegistrarDespacho = $("#btnRegistrarDespacho");
+    var $rowSerieGuia = $("#rowSerieGuia");
+    var $rowTablaSeriesGuias = $("#rowTablaSeriesGuias");
+    var $tblSeriesGuia = $("#tblSeriesGuia");
+    var $codigosIds = $("#codigosIds");
+    var $ListaSeries = $("#ListaSeries");
+    var $ListaGuias = $("#ListaGuias");
+    var $TipoReg = $("#TipoReg");
+    var $RegStock = $("#RegStock");
     var tecnicosAsig = [];
 
     var mensajes = {
@@ -516,7 +525,94 @@
         $btnGuardarProg.click($btnGuardarProg_click);
         $btnRegistrarFechaProg.click($btnRegistrarFechaProg_click);
         $btnEnviarGestionDespachoSE.click($btnEnviarGestionDespachoSE_click);
+        $btnRegistrarDespacho.click($btnRegistrarDespacho_click);
     };
+
+    function $btnRegistrarDespacho_click() {
+        
+        let ubigeos = [];
+
+        // Recorrer cada checkbox marcado
+        $("#tblSeriesCS tbody tr").each(function () {
+            // Verificar si el checkbox de esta fila está marcado
+            if ($(this).find(".chkCS").is(":checked")) {
+                // Obtener el texto de la segunda celda (Nombre de Ubigeos)
+                let nombre = $(this).find("td:eq(2)").text();
+                ubigeos.push(nombre);
+            }
+        });
+
+        // Usando .filter() para eliminar duplicados
+        let ubigeosOri = ubigeos.filter((valor, indice, self) => {
+            return self.indexOf(valor) === indice;
+        });
+        console.log(ubigeos);
+        console.log(ubigeosOri.length);
+
+        const itemCheckboxes = document.querySelectorAll(".chkCS");
+        // Crear un array con los valores de los checkboxes seleccionados
+        const selectedCodes = Array.from(itemCheckboxes)
+            .filter(checkbox => checkbox.checked) // Filtrar solo los seleccionados
+            .map(checkbox => checkbox.value);    // Obtener los valores
+
+        // Concatenar los códigos en una cadena, separados por comas
+        const concatenatedCodes = selectedCodes.join(", ");
+
+        if (concatenatedCodes === "") {
+            app.message.error("Validacion", "Debe seleccionar por lo menos un producto.");
+            return;
+        }
+
+        const arrayResult = concatenatedCodes.split(",").map(item => item.trim()); 
+
+        $rowSerieGuia.hide();
+        $rowTablaSeriesGuias.show();
+        $modalSeries.modal("show");
+        var m = "POST";
+        var url = "BandejaSolicitudesVentas/VerDetalleItemDespacho?codDetalleDespacho=" + arrayResult[0];
+        var objParam = "";
+        var fnDoneCallback = function (data) {
+            $codDetalleDespacho.val(data.Result.Id);
+            $txtCodigoProductoSerie.val(data.Result.CodigoEquipo);
+            $txtMarcaSerie.val(data.Result.Marca);
+            $txtDescripcion.val(data.Result.DescripcionEquipo);
+            $txtSerie.val('');
+
+            var codUbigeo = data.Result.CodigoUbigeo;
+            $hdnIdZonaDespacho.val(codUbigeo);
+            $searchZonaDespacho.css("visibility", "visible");
+            if (codUbigeo != "" || codUbigeo != null) {
+                $searchZonaDespacho.css("visibility", "hidden");
+            }
+            $txtZonaDepacho.val(data.Result.NombreUbigeo);
+            searchZonaDespacho
+            var direccion = data.Result.Direccion;
+            $txtDireccion.val(direccion);
+            $txtDireccion.prop("disabled", false);
+            if (direccion != "" || direccion != null) {
+                $txtDireccion.prop("disabled", true);
+            }
+
+            $txtGuia.val('');
+            $lblNombreArchivoDespacho.text('');
+            $codigosIds.val(concatenatedCodes);
+            $TipoReg.val("T");
+            $RegStock.val("S");
+
+            $("#tblSeriesGuia tbody tr").remove();
+
+            //Se construye tabla de series y guias por registros seleccionados
+            for (i = 0; i < arrayResult.length; i++) {
+                var nuevoTr = "<tr id='rowSerieGuia" + i + "'>" +                
+                    "<th>" + "<input type='text' value='' id='Guia" + i + "' style='width:100%' class='GuiaCS'>" + "</th>" +
+                    "<th>" + "<input type='text' value='' id='SerieCS" + i + "' style='width:100%' class='SerieCS'>" + "</th>" +
+                    "</tr>";
+                $tblSeriesGuia.append(nuevoTr);
+            }
+
+        };
+        return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.consultaDetalleDespacho);
+    }
 
     function seleccionarUbiDespacho() {
 
@@ -2808,7 +2904,7 @@
                            /* html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleSinStock[i].Id + '" data-toggle="modal" data-target="#modalSeries"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';*/
                             html += ' <a class="btn btn-default btn-xs" title="Guardar" id="Boton' + data.Result.DespachoDetalleSinStock[i].Id + '" style="display:none"  href="javascript:solicitud.guardarSeries(' + data.Result.DespachoDetalleSinStock[i].Id + ',\'N\')"><i class="fa fa-save" aria-hidden="true"></i></a>&nbsp;';
                             sel_html = '<th><div class="text-center">';
-                            sel_html += '<input type="checkbox" id="chk"' + data.Result.DespachoDetalleSinStock[i].Id + ' class="chkSS">'
+                            sel_html += '<input type="checkbox" id="chk"' + data.Result.DespachoDetalleSinStock[i].Id + ' class="chkSS" value="' + data.Result.DespachoDetalleSinStock[i].Id +'">'
                             sel_html += '</div></th>';
                         }
                         html += '</div>';
@@ -2878,7 +2974,7 @@
                            /* html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleConStock[i].Id + '" data-toggle="modal" data-target="#modalSeries"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';*/
                             html += ' <a class="btn btn-default btn-xs" title="Guardar" id="Boton' + data.Result.DespachoDetalleConStock[i].Id + '" style="display:none"  href="javascript:solicitud.guardarSeries(' + data.Result.DespachoDetalleConStock[i].Id + ',\'S\')"><i class="fa fa-save" aria-hidden="true"></i></a>&nbsp;';
                             sel_html = '<th><div class="text-center">';
-                            sel_html += '<input type="checkbox" id="chk"' + data.Result.DespachoDetalleConStock[i].Id + ' class="chkCS" >'
+                            sel_html += '<input type="checkbox" id="chk"' + data.Result.DespachoDetalleConStock[i].Id + ' class="chkCS" value="' + data.Result.DespachoDetalleConStock[i].Id +'">'
                             sel_html += '</div></th>';
                         }
                         html += '</div>';
@@ -4272,6 +4368,8 @@
             $txtDireccion.val(data.Result.Direccion);
             $txtGuia.val(data.Result.NumeroGuia);
             $lblNombreArchivoDespacho.text(data.Result.RutaDocumento);
+            $rowTablaSeriesGuias.hide();
+            $rowSerieGuia.show();
         };
         return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.consultaDetalleDespacho);
     }
@@ -4285,14 +4383,113 @@
             app.message.error("Validación", "Debe ingresar una dirección del despacho.");
             return false;
         }
-        if ($txtSerie.val() === "" || $txtSerie.val() == null) {
-            app.message.error("Validación", "Debe ingresar el número de serie o lote.");
-            return false;
+
+        if ($TipoReg.val() === "U") {
+            if ($txtSerie.val() === "" || $txtSerie.val() == null) {
+                app.message.error("Validación", "Debe ingresar el número de serie o lote.");
+                return false;
+            }
+            if ($txtGuia.val() === "" || $txtGuia.val() == null) {
+                app.message.error("Validación", "Debe ingresar el número de la guia de remisión");
+                return false;
+            }
         }
-        if ($txtGuia.val() === "" || $txtGuia.val() == null) {
-            app.message.error("Validación", "Debe ingresar el número de la guia de remisión");
-            return false;
+        else {
+            let flagSeries = false;
+            let flagGuias = false;
+            if ($RegStock.val() === "S") {
+
+                $(".GuiaCS").each(function () {
+                    if ($(this).val().trim() === "") { // Verificar si está vacío (ignora espacios en blanco)
+                        flagGuias = true;
+                        return false; // Salir del bucle si se encuentra un campo vacío
+                    }
+                });
+
+                if (flagGuias) {
+                    app.message.error("Validación", "Debe ingresar todos los números de las Guias de Remision.");
+                    return false;
+                }
+
+                $(".SerieCS").each(function () {
+                    if ($(this).val().trim() === "") { // Verificar si está vacío (ignora espacios en blanco)
+                        flagSeries = true;
+                        return false; // Salir del bucle si se encuentra un campo vacío
+                    }
+                });
+
+                if (flagSeries) {
+                    app.message.error("Validación", "Debe ingresar todas las series y/o lotes.");
+                    return false;
+                }
+
+             
+            }
+            else {
+               
+
+                $(".GuiaSS").each(function () {
+                    if ($(this).val().trim() === "") { // Verificar si está vacío (ignora espacios en blanco)
+                        flagGuias = true;
+                        return false; // Salir del bucle si se encuentra un campo vacío
+                    }
+                });
+
+                if (flagGuias) {
+                    app.message.error("Validación", "Debe ingresar todos los números de las Guias de Remision.");
+                    return false;
+                }
+
+                $(".SerieSS").each(function () {
+                    if ($(this).val().trim() === "") { // Verificar si está vacío (ignora espacios en blanco)
+                        flagSeries = true;
+                        return false; // Salir del bucle si se encuentra un campo vacío
+                    }
+                });
+
+                if (flagSeries) {
+                    app.message.error("Validación", "Debe ingresar todas las series y/o lotes");
+                    return false;
+                }
+            }
         }
+
+        let lista_series = "";
+        let lista_guias = "";
+        if ($TipoReg.val() === "T" && $RegStock.val() === "S") {
+            let series = $(".SerieCS").map(function () {
+                return $(this).val().trim(); // Obtener el valor del input y eliminar espacios en blanco
+            }).get(); // Convertir a un array estándar
+
+            // Unir los valores con comas
+            lista_series = series.join(", ");
+
+            let guias = $(".GuiaCS").map(function () {
+                return $(this).val().trim(); // Obtener el valor del input y eliminar espacios en blanco
+            }).get(); // Convertir a un array estándar
+
+            // Unir los valores con comas
+            lista_guias = guias.join(", ");
+
+
+        }
+        else if ($TipoReg.val() === "T" && $RegStock.val() === "N") {
+            let series = $(".SerieSS").map(function () {
+                return $(this).val().trim(); // Obtener el valor del input y eliminar espacios en blanco
+            }).get(); // Convertir a un array estándar
+
+            // Unir los valores con comas
+            lista_series = series.join(", ");
+
+            let guias = $(".GuiaSS").map(function () {
+                return $(this).val().trim(); // Obtener el valor del input y eliminar espacios en blanco
+            }).get(); // Convertir a un array estándar
+
+            // Unir los valores con comas
+            lista_guias = guias.join(", ");
+        }
+     
+
         var fnSi = function () {
 
             var m = "POST";
@@ -4303,18 +4500,22 @@
                 CodigoUbigeo: $hdnIdZonaDespacho.val(),
                 Direccion: $txtDireccion.val(),
                 NumeroGuiaRemision: $txtGuia.val(),
-                RutaDocumento: ""
+                RutaDocumento: "",
+                Tipo: $TipoReg.val(),
+                Ids: $codigosIds.val(),
+                Series: lista_series,
+                Guias: lista_guias
             }
             var objParam = JSON.stringify(obj);
             var fnDoneCallback = function (data) {
                 var fnCallback = function () {
                     location.reload();
                 };
-                if (data.Result.Codigo > 0) {
+                if (data.Result.Codigo == 1) {
                     app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
                 }
                 else {
-                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", null);
                 }
 
             };
