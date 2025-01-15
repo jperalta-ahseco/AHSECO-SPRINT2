@@ -1458,6 +1458,7 @@
     <input type="hidden" id="ListaGuias" value="" />
     <input type="hidden" id="TipoReg" value="" />
     <input type="hidden" id="RegStock" value="" />
+    <input type="hidden" id="ArchivoBase64" value="" />
 
     <div class="modal-dialog modal-lg container-fluid" role="document">
         <!-- Modal content -->
@@ -1558,12 +1559,18 @@
                             </div>
                         </div>
                         <!--7ma fila:-->
-                        <div class="row container-fluid">
+                        <div class="row container-fluid" id="rowTablaSeriesCargar">
                             <div class="col-md-6 col-sm-12">
                                 <button class="btn btn-danger btn-sm" type="button" id="btnAdjuntarDocumentoDespacho"><i class="fa fa-folder" aria-hidden="true"></i>&nbsp;Cargar Archivo</button>
                                 <b><label id="lblNombreArchivoDespacho" value=""></label></b>
                                 <input type="file" class="btn btn-danger btn-sm" id="fileCargaDocumentoSustentoDespacho" value="Cargar Adjunto" style="display:none;"><br />
                                 <span id="tipoDocAdjuntosDespacho" style="font-size:10px;color:gray">Archivos permitidos: .xls,.xlsx,.pdf,.doc,.docx,.zip,.rar,.ppt,.pptx</span>
+                            </div>
+                        </div>
+                        <!--8va fila:-->
+                        <div class="row container-fluid" id="rowTablaSeriesDescarga">
+                            <div class="col-md-6 col-sm-12">
+                                <button class="btn btn-danger btn-sm" type="button" id="btnDescargarGuiaRemision"><i class="fa fa-folder" aria-hidden="true"></i>&nbsp;Descargar Archivo</button>
                             </div>
                         </div>
                     </div>

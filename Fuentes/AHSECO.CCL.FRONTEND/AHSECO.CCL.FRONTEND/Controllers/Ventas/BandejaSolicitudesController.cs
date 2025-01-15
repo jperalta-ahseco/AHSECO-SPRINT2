@@ -5294,9 +5294,43 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         {
             var ventasBL = new VentasBL();
             datos.UsuarioRegistra = User.ObtenerUsuario();
-            var dat = datos;
-            //Se adjunta el archivo.
 
+            // Convertir el string Base64 a un arreglo de bytes
+            byte[] archivoBytes = Convert.FromBase64String(datos.Archivo);
+
+            var correlativo = DateTime.Now.ToString("yyyyMMddHHmmss");
+            string ruta_temporal = ConfigurationManager.AppSettings.Get("tempFiles");
+            string UploadSize = ConfigurationManager.AppSettings.Get("UploadSize");
+            string folder = DateTime.Now.ToString("yyyyMM");
+            string rutafinal = ruta_temporal + folder;
+            string nombre = "VENT" + correlativo;
+            string rutaDocumento = folder + "\\" + nombre + "." + datos.Extension;
+            string rutaArchivo = rutafinal + "\\" + nombre + "." + datos.Extension;
+
+            bool exists = System.IO.Directory.Exists(rutafinal);
+
+            if (!exists)
+                System.IO.Directory.CreateDirectory(rutafinal);
+
+            // Guardar el archivo en la ruta especificada:
+            System.IO.File.WriteAllBytes(rutaArchivo, archivoBytes);
+
+            var documentosBL = new DocumentosBL();
+            var documentoDTO = new DocumentoDTO();
+            documentoDTO.Accion = "I";
+            documentoDTO.NombreUsuario = User.ObtenerNombresCompletos();
+            documentoDTO.NombrePerfil = User.ObtenerPerfil();
+            documentoDTO.UsuarioRegistra = User.ObtenerUsuario();
+            documentoDTO.CodigoDocumento = 0;
+            documentoDTO.CodigoWorkFlow = datos.CodigoWorkFlow;
+            documentoDTO.CodigoTipoDocumento = "DVT08"; //Guia de Remision
+            documentoDTO.NombreDocumento = datos.NombreArchivo;
+            documentoDTO.VerDocumento = true;
+            documentoDTO.RutaDocumento = rutaDocumento;
+            documentoDTO.Eliminado = 0;
+            var doc = documentosBL.MantenimientoDocumentos(documentoDTO);
+
+            datos.RutaDocumento = rutaDocumento;
             var response = ventasBL.ActualizarNumeroSerie(datos);
 
 

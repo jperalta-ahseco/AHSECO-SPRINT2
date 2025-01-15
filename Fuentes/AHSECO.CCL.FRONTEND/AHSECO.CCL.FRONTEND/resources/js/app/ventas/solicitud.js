@@ -333,6 +333,8 @@
     var $RegStock = $("#RegStock");
     var $btnAdjuntarDocumentoDespacho = $("#btnAdjuntarDocumentoDespacho");
     var $fileCargaDocumentoSustentoDespacho = $('#fileCargaDocumentoSustentoDespacho');
+    var $ArchivoBase64 = $("#ArchivoBase64");
+    var $btnDescargarGuiaRemision = $("#btnDescargarGuiaRemision");
     var tecnicosAsig = [];
 
     var mensajes = {
@@ -531,7 +533,25 @@
         $btnAdjuntarDocumentoDespacho.click($AdjuntarDocumentoDespacho_click)
         $fileCargaDocumentoSustentoDespacho.on("change", $fileCargaDocumentoSustentoDespacho_change);
         $fileCargaDocumentoSustentoDespacho.click($fileCargaDocumentoSustentoDespacho_change);
+        $btnDescargarGuiaRemision.click($btnDescargarGuiaRemision_click);
     };
+
+    function $btnDescargarGuiaRemision_click() {
+        downloadxRuta($lblNombreArchivoDespacho.text);
+    }
+
+    function downloadxRuta(RutaDoc) {
+
+        //var documento = adjuntos.find(documento => documento.RutaDocumento == RutaDoc);
+
+        var ruta = RutaDoc;// documento.RutaDocumento;
+
+        var nombre = "GR_11";
+
+        app.abrirVentana("BandejaSolicitudesVentas/DescargarFile?url=" + ruta + "&nombreDoc=" + nombre);
+
+        // app.redirectToWindow("RegistrarViatico/DownloadDocumento?codWorkflow=" + $codigoWorkflow.val() + "&codDocumento=" + IdDocumento);
+    }
 
     function $fileCargaDocumentoSustentoDespacho_change() {
         $lblNombreArchivoDespacho.text("");
@@ -633,7 +653,7 @@
             $txtMarcaSerie.val(data.Result.Marca);
             $txtDescripcion.val(data.Result.DescripcionEquipo);
             $txtSerie.val('');
-
+            $ArchivoBase64.val('');
             var codUbigeo = data.Result.CodigoUbigeo;
             $hdnIdZonaDespacho.val(codUbigeo);
             $searchZonaDespacho.css("visibility", "visible");
@@ -4436,7 +4456,18 @@
                 $txtDireccion.prop("disabled", true);
             }
             $txtGuia.val(data.Result.NumeroGuia);
-            $lblNombreArchivoDespacho.text(data.Result.RutaDocumento);
+            var rutaDocumento = data.Result.RutaDocumento
+            $lblNombreArchivoDespacho.text(rutaDocumento);
+
+            if (rutaDocumento.length > 0) {
+                $("#rowTablaSeriesCargar").hide();
+                $("#rowTablaSeriesDescarga").show();
+            }
+            else {
+                $("#rowTablaSeriesCargar").show();
+                $("#rowTablaSeriesDescarga").hide();
+            }
+                
             $rowTablaSeriesGuias.hide();
             $rowSerieGuia.show();
             $TipoReg.val("U");
@@ -4568,10 +4599,10 @@
      
 
         var fileInput = document.getElementById("fileCargaDocumentoSustentoDespacho");
-        const file = fileInput.files[0];
-        // Crear el objeto FormData
-        const formData = new FormData();
-        formData.append('File', file); // Agregar el archivo con el nombre "file"
+        const archivo = fileInput.files[0];
+        var ext = fileInput.files[0].name.split('.').pop();
+
+        convertirABase64(archivo);
 
         var fnSi = function () {
 
@@ -4588,7 +4619,10 @@
                 Ids: $codigosIds.val(),
                 Series: lista_series,
                 Guias: lista_guias,
-                File: formdata
+                Archivo: $ArchivoBase64.val(),
+                NombreArchivo: archivo.name,
+                Extension: ext,
+                CodigoWorkFlow: $codigoWorkflow.val()
             }
             var objParam = JSON.stringify(obj);
             var fnDoneCallback = function (data) {
@@ -4607,6 +4641,26 @@
         }
         return app.message.confirm("Ventas", "¿Está seguro que registrar el detalle del despacho?", "S&iacute;", "No", fnSi, null);
 
+    }
+
+    function convertirABase64(archivo) {
+        const reader = new FileReader();
+
+        // Leer el archivo como un ArrayBuffer
+        reader.readAsArrayBuffer(archivo);
+
+        // Convertir el ArrayBuffer a Base64 una vez cargado
+        reader.onloadend = () => {
+            const arrayBuffer = reader.result; // El contenido en ArrayBuffer
+            const bytes = new Uint8Array(arrayBuffer); // Convertir a Uint8Array
+            let base64 = '';
+            for (let i = 0; i < bytes.length; i++) {
+                base64 += String.fromCharCode(bytes[i]);
+            }
+            const base64String = btoa(base64); // Convertir a Base64
+           // console.log(base64String); // Imprimir Base64 en consola
+            $ArchivoBase64.val(base64String);
+        };
     }
 
     function guardarSeries(codDetalleDespacho,stock) {

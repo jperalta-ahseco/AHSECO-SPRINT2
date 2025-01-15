@@ -21,6 +21,12 @@ namespace AHSECO.CCL.BE.Ventas
         public string Guias { get; set;}
         public int FlagAdjunto { get; set; }
 
-        public HttpPostedFileBase File { get; set; }
+        public string Archivo { get; set; }
+        public string NombreArchivo { get; set; }
+        public string Extension { get; set; }
+
+        public long CodigoWorkFlow { get; set; }
+
+
     }
 }
