@@ -335,6 +335,9 @@
     var $fileCargaDocumentoSustentoDespacho = $('#fileCargaDocumentoSustentoDespacho');
     var $ArchivoBase64 = $("#ArchivoBase64");
     var $btnDescargarGuiaRemision = $("#btnDescargarGuiaRemision");
+    var $CodigoDocumentoDespacho = $("#CodigoDocumentoDespacho");
+    var $btnCargarOtroDocumento = $("#btnCargarOtroDocumento");
+    var $FlagCargaDocumentoDespacho = $("#FlagCargaDocumentoDespacho");
     var tecnicosAsig = [];
 
     var mensajes = {
@@ -534,23 +537,19 @@
         $fileCargaDocumentoSustentoDespacho.on("change", $fileCargaDocumentoSustentoDespacho_change);
         $fileCargaDocumentoSustentoDespacho.click($fileCargaDocumentoSustentoDespacho_change);
         $btnDescargarGuiaRemision.click($btnDescargarGuiaRemision_click);
+        $btnCargarOtroDocumento.click($btnCargarOtroDocumento_click);
     };
 
-    function $btnDescargarGuiaRemision_click() {
-        downloadxRuta($lblNombreArchivoDespacho.text);
+
+    function $btnCargarOtroDocumento_click() {
+        $("#rowTablaSeriesDescarga").hide();
+        $("#rowTablaSeriesCargar").show();
+        $lblNombreArchivoDespacho.text("");
+        $FlagCargaDocumentoDespacho.val("1");
     }
 
-    function downloadxRuta(RutaDoc) {
-
-        //var documento = adjuntos.find(documento => documento.RutaDocumento == RutaDoc);
-
-        var ruta = RutaDoc;// documento.RutaDocumento;
-
-        var nombre = "GR_11";
-
-        app.abrirVentana("BandejaSolicitudesVentas/DescargarFile?url=" + ruta + "&nombreDoc=" + nombre);
-
-        // app.redirectToWindow("RegistrarViatico/DownloadDocumento?codWorkflow=" + $codigoWorkflow.val() + "&codDocumento=" + IdDocumento);
+    function $btnDescargarGuiaRemision_click() {
+        download($CodigoDocumentoDespacho.val());
     }
 
     function $fileCargaDocumentoSustentoDespacho_change() {
@@ -674,6 +673,10 @@
             $codigosIds.val(concatenatedCodes);
             $TipoReg.val("T");
             $RegStock.val("S");
+            $FlagCargaDocumentoDespacho.val("1");
+            $CodigoDocumentoDespacho.val("0");
+            $("#rowTablaSeriesCargar").show();
+            $("#rowTablaSeriesDescarga").hide();
 
             $("#tblSeriesGuia tbody tr").remove();
 
@@ -2075,10 +2078,7 @@
             app.message.error("Validación", "Debe ingresar el N° de Factura de los productos sin stock");
             return false;
         }
-        if ($txtNumeroGuiaRemisionSE.val() === "" || $txtNumeroGuiaRemisionSE.val() == null) {
-            app.message.error("Validación", "Debe ingresar el N° de Guia de Remision de los productos sin stock");
-            return false;
-        }
+      
 
         //Validación de numero de series agregadas:
         if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03" || $TipoSolicitud.val() === "TSOL05") {
@@ -2088,6 +2088,13 @@
                 return false;
             }
 
+        }
+        else {
+
+            if ($txtNumeroGuiaRemisionSE.val() === "" || $txtNumeroGuiaRemisionSE.val() == null) {
+                app.message.error("Validación", "Debe ingresar el N° de Guia de Remision de los productos sin stock");
+                return false;
+            }
         }
 
         if ($TipoSolicitud.val() === "TSOL04" || $TipoSolicitud.val() === "TSOL05") //Para ventas de materiales y venta de equipos:
@@ -2293,13 +2300,16 @@
             app.message.error("Validación", "Debe ingresar el N° de Factura de los productos con stock");
             return false;
         }
-        if ($txtNumeroGuiaRemisionCE.val() === "" || $txtNumeroGuiaRemisionCE.val() == null) {
-            app.message.error("Validación", "Debe ingresar el N° de Guia de Remision de los productos con stock");
-            return false;
-        }
+       
         if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03" || $TipoSolicitud.val() === "TSOL05") {
             if (parseInt($ContadorSeriesCS.val()) != parseInt($TotalSeriesCS.val())) {
                 app.message.error("Validación", "Debe ingresar todas las series y/o lotes de los productos con stock antes de enviar a gestión.");
+                return false;
+            }
+        }
+        else {
+            if ($txtNumeroGuiaRemisionCE.val() === "" || $txtNumeroGuiaRemisionCE.val() == null) {
+                app.message.error("Validación", "Debe ingresar el N° de Guia de Remision de los productos con stock");
                 return false;
             }
         }
@@ -2339,13 +2349,16 @@
             app.message.error("Validación", "Debe ingresar el N° de Factura de los productos sin stock");
             return false;
         }
-        if ($txtNumeroGuiaRemisionSE.val() === "" || $txtNumeroGuiaRemisionSE.val() == null) {
-            app.message.error("Validación", "Debe ingresar el N° de Guia de Remision de los productos sin stock");
-            return false;
-        }
+       
         if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03" || $TipoSolicitud.val() === "TSOL05") {
             if (parseInt($ContadorSeriesSS.val()) != parseInt($TotalSeriesSS.val())) {
                 app.message.error("Validación", "Debe ingresar todas las series y/o lotes de los productos sin stock antes de enviar a gestión.");
+                return false;
+            }
+        }
+        else {
+            if ($txtNumeroGuiaRemisionSE.val() === "" || $txtNumeroGuiaRemisionSE.val() == null) {
+                app.message.error("Validación", "Debe ingresar el N° de Guia de Remision de los productos sin stock");
                 return false;
             }
         }
@@ -2393,10 +2406,7 @@
             app.message.error("Validación", "Debe ingresar el N° de Factura de los productos con stock");
             return false;
         }
-        if ($txtNumeroGuiaRemisionCE.val() === "" || $txtNumeroGuiaRemisionCE.val() == null) {
-            app.message.error("Validación", "Debe ingresar el N° de Guia de Remision de los productos con stock");
-            return false;
-        }
+       
 
         //Validación de numero de series agregadas:
         if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03" || $TipoSolicitud.val() === "TSOL05") {
@@ -2406,6 +2416,11 @@
                 return false;
             }
 
+        } else {
+            if ($txtNumeroGuiaRemisionCE.val() === "" || $txtNumeroGuiaRemisionCE.val() == null) {
+                app.message.error("Validación", "Debe ingresar el N° de Guia de Remision de los productos con stock");
+                return false;
+            }
         }
 
         //Validación de documentación adjunta:
@@ -2983,9 +2998,13 @@
                            /* html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleSinStock[i].Id + '" data-toggle="modal" data-target="#modalSeries"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';*/
                             html += ' <a class="btn btn-default btn-xs" title="Guardar" id="Boton' + data.Result.DespachoDetalleSinStock[i].Id + '" style="display:none"  href="javascript:solicitud.guardarSeries(' + data.Result.DespachoDetalleSinStock[i].Id + ',\'N\')"><i class="fa fa-save" aria-hidden="true"></i></a>&nbsp;';
                             sel_html = '<th><div class="text-center">';
-                            sel_html += '<input type="checkbox" id="chk"' + data.Result.DespachoDetalleSinStock[i].Id + ' class="chkSS" value="' + data.Result.DespachoDetalleSinStock[i].Id +'">'
+                            if (data.Result.DespachoDetalleSinStock[i].NumeroSerie.length == 0) {
+                                sel_html += '<input type="checkbox" id="chk"' + data.Result.DespachoDetalleSinStock[i].Id + ' class="chkSS" value="' + data.Result.DespachoDetalleSinStock[i].Id + '">'
+                            }
                             sel_html += '</div></th>';
                         }
+                        html += ' <a class="btn btn-default btn-xs" title="Ver" id="Ver' + data.Result.DespachoDetalleSinStock[i].Id + '" href="javascript:solicitud.verSeries(' + data.Result.DespachoDetalleSinStock[i].Id + ')"><i class="fa fa-eye" aria-hidden="true"></i></a>&nbsp;';
+
                         html += '</div>';
                         var nuevoTr = "<tr bgcolor='d0f2f7' id='fila" + data.Result.DespachoDetalleSinStock[i].Id + "'>" + sel_html +
                             "<th>" + data.Result.DespachoDetalleSinStock[i].RowNumber + "</th>" +
@@ -3053,9 +3072,12 @@
                            /* html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleConStock[i].Id + '" data-toggle="modal" data-target="#modalSeries"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';*/
                             html += ' <a class="btn btn-default btn-xs" title="Guardar" id="Boton' + data.Result.DespachoDetalleConStock[i].Id + '" style="display:none"  href="javascript:solicitud.guardarSeries(' + data.Result.DespachoDetalleConStock[i].Id + ',\'S\')"><i class="fa fa-save" aria-hidden="true"></i></a>&nbsp;';
                             sel_html = '<th><div class="text-center">';
-                            sel_html += '<input type="checkbox" id="chk"' + data.Result.DespachoDetalleConStock[i].Id + ' class="chkCS" value="' + data.Result.DespachoDetalleConStock[i].Id +'">'
+                            if (data.Result.DespachoDetalleConStock[i].NumeroSerie.length == 0) {
+                                sel_html += '<input type="checkbox" id="chk"' + data.Result.DespachoDetalleConStock[i].Id + ' class="chkCS" value="' + data.Result.DespachoDetalleConStock[i].Id + '">'
+                            }
                             sel_html += '</div></th>';
                         }
+                        html += ' <a class="btn btn-default btn-xs" title="Ver" id="Ver' + data.Result.DespachoDetalleConStock[i].Id + '" href="javascript:solicitud.verSeries(' + data.Result.DespachoDetalleConStock[i].Id + ')"><i class="fa fa-eye" aria-hidden="true"></i></a>&nbsp;';
                         html += '</div>';
                        
                         var nuevoTr = "<tr bgcolor='d0f2f7' id='fila" + data.Result.DespachoDetalleConStock[i].Id + "'>" + sel_html+
@@ -4422,7 +4444,57 @@
             };
         };
     };
-    
+
+
+    function verSeries(codDetalleDespacho) {
+        $modalSeries.modal("show");
+        var m = "POST";
+        var url = "BandejaSolicitudesVentas/VerDetalleItemDespacho?codDetalleDespacho=" + codDetalleDespacho;
+        var objParam = "";
+        var fnDoneCallback = function (data) {
+            $codDetalleDespacho.val(data.Result.Id);
+            $txtCodigoProductoSerie.val(data.Result.CodigoEquipo);
+            $txtMarcaSerie.val(data.Result.Marca);
+            $txtDescripcion.val(data.Result.DescripcionEquipo);
+            $txtSerie.val(data.Result.NumeroSerie);
+            $txtSerie.prop("disabled", true);
+            var codUbigeo = data.Result.CodigoUbigeo;
+            $hdnIdZonaDespacho.val(codUbigeo);
+            $searchZonaDespacho.css("visibility", "visible");
+            if (codUbigeo != "" || codUbigeo != null) {
+                $searchZonaDespacho.css("visibility", "hidden");
+            }
+            $txtZonaDepacho.val(data.Result.NombreUbigeo);
+            var direccion = data.Result.Direccion;
+            $txtDireccion.val(direccion);
+            $txtDireccion.prop("disabled", true);
+
+            $txtGuia.val(data.Result.NumeroGuia);
+            $txtGuia.prop("disabled", true);
+            var rutaDocumento = data.Result.RutaDocumento
+            $lblNombreArchivoDespacho.text(rutaDocumento);
+            $("#rowTablaSeriesCargar").hide();
+
+            if (data.Result.RutaDocumento.length > 0) {
+                $("#rowTablaSeriesDescarga").show();
+            }
+            else {
+                $("#rowTablaSeriesDescarga").hide();
+            }
+          
+            $CodigoDocumentoDespacho.val(data.Result.CodigoDocumento);
+
+            $rowTablaSeriesGuias.hide();
+            $rowSerieGuia.show();
+            $TipoReg.val("U");
+            $FlagCargaDocumentoDespacho.val("0");
+            $btnCargarOtroDocumento.hide();
+            $btnRegistrarSerie.hide();
+        };
+        return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.consultaDetalleDespacho);
+    }
+
+
     function editarSeries(codDetalleDespacho) {
 
         //$('#Serie' + codDetalleDespacho).removeAttr('readonly');
@@ -4467,10 +4539,17 @@
                 $("#rowTablaSeriesCargar").show();
                 $("#rowTablaSeriesDescarga").hide();
             }
+
+            $CodigoDocumentoDespacho.val(data.Result.CodigoDocumento);
                 
             $rowTablaSeriesGuias.hide();
             $rowSerieGuia.show();
             $TipoReg.val("U");
+            $FlagCargaDocumentoDespacho.val("0");
+            $txtSerie.prop("disabled", false);
+            $txtGuia.prop("disabled", false);
+            $btnCargarOtroDocumento.show();
+            $btnRegistrarSerie.show();
         };
         return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.consultaDetalleDespacho);
     }
@@ -4614,7 +4693,7 @@
                 CodigoUbigeo: $hdnIdZonaDespacho.val(),
                 Direccion: $txtDireccion.val(),
                 NumeroGuiaRemision: $txtGuia.val(),
-                RutaDocumento: "",
+                RutaDocumento: $lblNombreArchivoDespacho.text(),
                 Tipo: $TipoReg.val(),
                 Ids: $codigosIds.val(),
                 Series: lista_series,
@@ -4622,7 +4701,9 @@
                 Archivo: $ArchivoBase64.val(),
                 NombreArchivo: archivo.name,
                 Extension: ext,
-                CodigoWorkFlow: $codigoWorkflow.val()
+                CodigoWorkFlow: $codigoWorkflow.val(),
+                FlagCarga: $FlagCargaDocumentoDespacho.val(),
+                CodigoDocumento: $CodigoDocumentoDespacho.val()
             }
             var objParam = JSON.stringify(obj);
             var fnDoneCallback = function (data) {
@@ -5075,6 +5156,7 @@
         reducirCantidad: reducirCantidad,
         verHistorial: verHistorial,
         editarSeries: editarSeries,
+        verSeries: verSeries,
         guardarSeries: guardarSeries,
         cargarTablaDetCotServicios: cargarTablaDetCotServicios,
         agregarItemServicio: agregarItemServicio,

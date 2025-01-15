@@ -747,19 +747,22 @@
                                                                     <input type="text" class="form-control input-sm" id="txtNumeroFacturaCE" placeholder="Ingresar Número de Factura" @ViewBag.TxtNumeroFacturaCE>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-4 col-sm-12">
-                                                                <label for="txtNumeroGuiaRemisionCE">N° de Gu&iacute;a de Remisi&oacute;n: </label>
-                                                                <div class="form-group">
-                                                                    <input type="text" class="form-control input-sm" id="txtNumeroGuiaRemisionCE" placeholder="Ingresar N° Guia de Remisión" @ViewBag.TxtNumeroGuiaRemisionCE>
+                                                            @if (tipoSol == "TSOL04")
+                                                            {
+                                                                <div class="col-md-4 col-sm-12">
+                                                                    <label for="txtNumeroGuiaRemisionCE">N° de Gu&iacute;a de Remisi&oacute;n: </label>
+                                                                    <div class="form-group">
+                                                                        <input type="text" class="form-control input-sm" id="txtNumeroGuiaRemisionCE" placeholder="Ingresar N° Guia de Remisión" @ViewBag.TxtNumeroGuiaRemisionCE>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
+                                                            }
                                                         </div>
 
                                                         <div class="row container-fluid">
                                                             <div class="text-right">
                                                                 <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnEditarGestionLogistica" tabindex="120" style="display:@ViewBag.Btn_EditarGestionLogistica"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Editar&nbsp;</button>&nbsp;
                                                                 <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnGuardarGestionLogistica" tabindex="121" style="display:@ViewBag.Btn_GuardarGestionLogistica"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar&nbsp;</button>&nbsp;
-                                                                <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegistrarDespacho" tabindex="121" style="display:@ViewBag.Btn_RegistrarDespacho"><i class="fa fa-truck" aria-hidden="true"></i>&nbsp;Despacho&nbsp;</button>&nbsp;
+                                                                <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegistrarDespacho" tabindex="121" style="display:@ViewBag.Btn_RegistrarDespacho"><i class="fa fa-truck" aria-hidden="true"></i>&nbsp;Despacho Multiple&nbsp;</button>&nbsp;
                                                                 <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnEnviarGestionDespacho" tabindex="122" style="display:@ViewBag.Btn_EnviarGestionDespacho"><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;Enviar a Gesti&oacute;n&nbsp;</button>
                                                             </div>
                                                         </div>
@@ -773,18 +776,18 @@
                                                                     <table id="tblSeriesCS" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                                                         <thead>
                                                                             <tr>
-                                                                                @if (NombreRol == "SGI_VENTA_LOGISTICA")
+                                                                                @if (NombreRol == "SGI_VENTA_LOGISTICA" && estadoSol == "PRVT")
                                                                                 {
                                                                                     <th style="text-align:center; width:5%; color:white; background-color:cornflowerblue"><input type="checkbox" id="SelTodosCSS" onclick="javascript:seleccionarTodoConStock();"/></th>
                                                                                 }
                                                                                 <th style="text-align:center; width:5%; color:white; background-color:cornflowerblue">N°</th>
                                                                                 <th style="text-align: center; width: 10%; color:white; background-color: cornflowerblue">C&oacute;digo</th>
                                                                                 <th style="text-align: center; width: 20%; color: white; background-color: cornflowerblue">Descripci&oacute;n Equipo</th>
-                                                                                <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">Marca</th>
+                                                                                <th style="text-align: center; width: 10%; color: white; background-color: cornflowerblue">Marca</th>
                                                                                 <th style="text-align: center; width: 10%; color: white; background-color: cornflowerblue">Destino</th>
                                                                                 <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">N° Guia Remision</th>
                                                                                 <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">N° Serie / N° Lote</th>
-                                                                                <th style="text-align: center; width: 5%; color: white; background-color: cornflowerblue">Acciones</th>
+                                                                                <th style="text-align: center; width: 10%; color: white; background-color: cornflowerblue">Acciones</th>
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
@@ -847,12 +850,15 @@
                                                                     <input type="text" class="form-control input-sm" id="txtNumeroFacturaSE" placeholder="Ingresar Número de Factura" @ViewBag.TxtNumeroFacturaSE>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-4 col-sm-12">
-                                                                <label for="txtNumeroGuiaRemisionSE">N° de Gu&iacute;a de Remisi&oacute;n: </label>
-                                                                <div class="form-group">
-                                                                    <input type="text" class="form-control input-sm" id="txtNumeroGuiaRemisionSE" placeholder="Ingresar N° Guia de Remisión" @ViewBag.TxtNumeroGuiaRemisionSE>
+                                                            @if (tipoSol == "TSOL04")
+                                                            {
+                                                                <div class="col-md-4 col-sm-12">
+                                                                    <label for="txtNumeroGuiaRemisionSE">N° de Gu&iacute;a de Remisi&oacute;n: </label>
+                                                                    <div class="form-group">
+                                                                        <input type="text" class="form-control input-sm" id="txtNumeroGuiaRemisionSE" placeholder="Ingresar N° Guia de Remisión" @ViewBag.TxtNumeroGuiaRemisionSE>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
+                                                            }
                                                         </div>
                                                         <div class="row container-fluid">
                                                             <div class="text-right">
@@ -873,18 +879,18 @@
                                                                     <table id="tblSeriesSS" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                                                         <thead>
                                                                             <tr>
-                                                                                @if (NombreRol == "SGI_VENTA_LOGISTICA")
+                                                                                @if (NombreRol == "SGI_VENTA_LOGISTICA" && estadoSol == "PRVT")
                                                                                 {
                                                                                     <th style="text-align:center; width:5%; color:white; background-color:cornflowerblue"><input type="checkbox" id="SelTodosSSS" onclick="javascript:seleccionarTodoSinStock();"/></th>
                                                                                 }
                                                                                 <th style="text-align:center; width:5%; color:white; background-color:cornflowerblue">N°</th>
                                                                                 <th style="text-align: center; width: 10%; color:white; background-color: cornflowerblue">C&oacute;digo</th>
                                                                                 <th style="text-align: center; width: 20%; color: white; background-color: cornflowerblue">Descripci&oacute;n Equipo</th>
-                                                                                <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">Marca</th>
+                                                                                <th style="text-align: center; width: 10%; color: white; background-color: cornflowerblue">Marca</th>
                                                                                 <th style="text-align: center; width: 10%; color: white; background-color: cornflowerblue">Destino</th>
                                                                                 <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">N° Guia Remision</th>
                                                                                 <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">N° Serie / N° Lote</th>
-                                                                                <th style="text-align: center; width: 5%; color: white; background-color: cornflowerblue">Acciones</th>
+                                                                                <th style="text-align: center; width: 10%; color: white; background-color: cornflowerblue">Acciones</th>
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
@@ -1458,7 +1464,9 @@
     <input type="hidden" id="ListaGuias" value="" />
     <input type="hidden" id="TipoReg" value="" />
     <input type="hidden" id="RegStock" value="" />
+    <input type="hidden" id="CodigoDocumentoDespacho" value="0" />
     <input type="hidden" id="ArchivoBase64" value="" />
+    <input type="hidden" id="FlagCargaDocumentoDespacho" value="" />
 
     <div class="modal-dialog modal-lg container-fluid" role="document">
         <!-- Modal content -->
@@ -1570,7 +1578,8 @@
                         <!--8va fila:-->
                         <div class="row container-fluid" id="rowTablaSeriesDescarga">
                             <div class="col-md-6 col-sm-12">
-                                <button class="btn btn-danger btn-sm" type="button" id="btnDescargarGuiaRemision"><i class="fa fa-folder" aria-hidden="true"></i>&nbsp;Descargar Archivo</button>
+                                <button class="btn btn-danger btn-sm" type="button" id="btnDescargarGuiaRemision"><i class="fa fa-download" aria-hidden="true"></i>&nbsp;Descargar Archivo</button>
+                                <button class="btn btn-default btn-sm" type="button" id="btnCargarOtroDocumento"><i class="fa fa-file" aria-hidden="true"></i>&nbsp;Cargar Otro Archivo</button>
                             </div>
                         </div>
                     </div>

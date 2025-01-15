@@ -26,7 +26,7 @@ namespace AHSECO.CCL.BE.Ventas
         public string Extension { get; set; }
 
         public long CodigoWorkFlow { get; set; }
-
-
+        public long CodigoDocumento { get; set; }
+        public int FlagCarga { get; set; }
     }
 }

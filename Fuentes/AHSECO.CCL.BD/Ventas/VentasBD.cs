@@ -1880,7 +1880,8 @@ namespace AHSECO.CCL.BD.Ventas
                         NombreUbigeo = i.Single(d => d.Key.Equals("NOMUBIGEO")).Value.Parse<string>(),
                         Direccion = i.Single(d => d.Key.Equals("DIRECCION")).Value.Parse<string>(),
                         RutaDocumento = i.Single(d => d.Key.Equals("RUTA_DOCUMENTO")).Value.Parse<string>(),
-                        NumeroGuia = i.Single(d => d.Key.Equals("NUM_GUIA")).Value.Parse<string>()
+                        NumeroGuia = i.Single(d => d.Key.Equals("NUM_GUIA")).Value.Parse<string>(),
+                        CodigoDocumento = i.Single(d => d.Key.Equals("ID_DOCUMENTO")).Value.Parse<long>()
                     }).FirstOrDefault();
 
                 return result;
@@ -1909,6 +1910,7 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("SERIES", datos.Series);
                 parameters.Add("GUIAS", datos.Guias);
                 parameters.Add("USRREG", datos.UsuarioRegistra);
+                parameters.Add("IDDOCUMENTO", datos.CodigoDocumento);
                 var result = connection.Query
                 (
                     sql: "USP_ACTUALIZAR_SERIE",
