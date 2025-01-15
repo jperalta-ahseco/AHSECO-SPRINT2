@@ -323,6 +323,7 @@
     var $añadirTecnico = $("#añadirTecnico");
     var $btnGuardarUbigeoDespachoSel = $("#btnGuardarUbigeoDespachoSel");
     var $btnRegistrarDespacho = $("#btnRegistrarDespacho");
+    var $btnRegistrarDespachoSE = $("#btnRegistrarDespachoSE");
     var $rowSerieGuia = $("#rowSerieGuia");
     var $rowTablaSeriesGuias = $("#rowTablaSeriesGuias");
     var $tblSeriesGuia = $("#tblSeriesGuia");
@@ -533,12 +534,110 @@
         $btnRegistrarFechaProg.click($btnRegistrarFechaProg_click);
         $btnEnviarGestionDespachoSE.click($btnEnviarGestionDespachoSE_click);
         $btnRegistrarDespacho.click($btnRegistrarDespacho_click);
+        $btnRegistrarDespachoSE.click($btnRegistrarDespachoSE_click);
         $btnAdjuntarDocumentoDespacho.click($AdjuntarDocumentoDespacho_click)
         $fileCargaDocumentoSustentoDespacho.on("change", $fileCargaDocumentoSustentoDespacho_change);
         $fileCargaDocumentoSustentoDespacho.click($fileCargaDocumentoSustentoDespacho_change);
         $btnDescargarGuiaRemision.click($btnDescargarGuiaRemision_click);
         $btnCargarOtroDocumento.click($btnCargarOtroDocumento_click);
     };
+
+    function $btnRegistrarDespachoSE_click() {
+
+        let ubigeos = [];
+
+        // Recorrer cada checkbox marcado
+        $("#tblSeriesSS tbody tr").each(function () {
+            // Verificar si el checkbox de esta fila está marcado
+            if ($(this).find(".chkSS").is(":checked")) {
+                // Obtener el texto de la segunda celda (Nombre de Ubigeos)
+                let nombre = $(this).find("th:eq(5)").text();
+                ubigeos.push(nombre.trim());
+            }
+        });
+
+        // Usando .filter() para eliminar duplicados
+        let ubigeosOri = ubigeos.filter((valor, indice, self) => {
+            return self.indexOf(valor) === indice;
+        });
+
+        const itemCheckboxes = document.querySelectorAll(".chkSS");
+        // Crear un array con los valores de los checkboxes seleccionados
+        const selectedCodes = Array.from(itemCheckboxes)
+            .filter(checkbox => checkbox.checked) // Filtrar solo los seleccionados
+            .map(checkbox => checkbox.value);    // Obtener los valores
+
+        // Concatenar los códigos en una cadena, separados por comas
+        const concatenatedCodes = selectedCodes.join(", ");
+
+        if (concatenatedCodes === "") {
+            app.message.error("Validacion", "Debe seleccionar por lo menos un producto.");
+            return;
+        }
+
+        if (ubigeosOri.length > 1) {
+            app.message.error("Validacion", "Debe seleccionar productos de un único destino para ejecutar esta opción.");
+            return;
+        }
+
+
+        const arrayResult = concatenatedCodes.split(",").map(item => item.trim());
+
+        $rowSerieGuia.hide();
+        $rowTablaSeriesGuias.show();
+        $modalSeries.modal("show");
+        var m = "POST";
+        var url = "BandejaSolicitudesVentas/VerDetalleItemDespacho?codDetalleDespacho=" + arrayResult[0];
+        var objParam = "";
+        var fnDoneCallback = function (data) {
+            $codDetalleDespacho.val(data.Result.Id);
+            $txtCodigoProductoSerie.val(data.Result.CodigoEquipo);
+            $txtMarcaSerie.val(data.Result.Marca);
+            $txtDescripcion.val(data.Result.DescripcionEquipo);
+            $txtSerie.val('');
+            $ArchivoBase64.val('');
+            var codUbigeo = data.Result.CodigoUbigeo;
+            $hdnIdZonaDespacho.val(codUbigeo);
+            $searchZonaDespacho.css("visibility", "visible");
+            if (codUbigeo != "" || codUbigeo != null) {
+                $searchZonaDespacho.css("visibility", "hidden");
+            }
+            $txtZonaDepacho.val(data.Result.NombreUbigeo);
+            searchZonaDespacho
+            var direccion = data.Result.Direccion;
+            $txtDireccion.val(direccion);
+            $txtDireccion.prop("disabled", false);
+            if (direccion != "" || direccion != null) {
+                $txtDireccion.prop("disabled", true);
+            }
+
+            $txtGuia.val('');
+            $lblNombreArchivoDespacho.text('');
+            $codigosIds.val(concatenatedCodes);
+            $TipoReg.val("T");
+            $RegStock.val("N");
+            $FlagCargaDocumentoDespacho.val("1");
+            $CodigoDocumentoDespacho.val("0");
+            $("#rowTablaSeriesCargar").show();
+            $("#rowTablaSeriesDescarga").hide();
+
+            $("#tblSeriesGuia tbody tr").remove();
+
+            //Se construye tabla de series y guias por registros seleccionados
+            for (i = 0; i < arrayResult.length; i++) {
+                var contador = 0;
+                contador = 1 + i;
+                var nuevoTr = "<tr id='rowSerieGuia" + i + "'>" +
+                    "<th style='text-align:center'>" + contador + "</th>" +
+                    "<th>" + "<input type='text' value='' id='Guia" + i + "' style='width:100%' class='GuiaSS'>" + "</th>" +
+                    "<th>" + "<input type='text' value='' id='SerieSS" + i + "' style='width:100%' class='SerieSS'>" + "</th>" +
+                    "</tr>";
+                $tblSeriesGuia.append(nuevoTr);
+            }
+
+        };
+        return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.consultaDetalleDespacho);
+    }
 
 
     function $btnCargarOtroDocumento_click() {
