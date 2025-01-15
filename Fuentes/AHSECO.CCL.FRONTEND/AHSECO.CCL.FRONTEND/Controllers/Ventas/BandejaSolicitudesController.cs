@@ -1406,7 +1406,14 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         oPropCotDetItem.IsDeletable = true; //Es ELIMINABLE
                         //Solo se habilita si el código es modificable
                         if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.Codigo)
-                        { if (oItem.CodItem_IsUpdatable) { pc.IsEnabled = true; } }
+                        {
+                            if (oItem.CodItem_IsUpdatable) { pc.IsEnabled = true; }
+                        }
+
+                        if(pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.Descrip)
+                        {
+                            if (oItem.CodItem_IsUpdatable) { pc.IsEnabled = true; }    
+                        }
 
                         //Se oculta los PRECIOS DE VENTA
                         if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.CostoFOB) { pc.IsVisible = false; pc.IsEnabled = false; }
@@ -3666,6 +3673,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 oCotDetItemAux.CodItem = CotizacionDetalle.CodItemTemp;
                 oCotDetItemAux.CodItemTemp = CotizacionDetalle.CodItemTemp;
                 oCotDetItemAux.CodItem_IsUpdatable = false;
+                oCotDetItemAux.Descripcion = CotizacionDetalle.Descripcion;
                 oCotDetItemAux.DescripcionAdicional = CotizacionDetalle.DescripcionAdicional;
                 oCotDetItemAux.Cantidad = CotizacionDetalle.Cantidad;
                 oCotDetItemAux.CostoFOB = CotizacionDetalle.CostoFOB;

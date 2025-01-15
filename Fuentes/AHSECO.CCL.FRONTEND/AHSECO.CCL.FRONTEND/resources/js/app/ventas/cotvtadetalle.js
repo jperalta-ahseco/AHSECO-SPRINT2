@@ -432,7 +432,7 @@ var cotvtadet = (function ($, win, doc) {
             },
             {
                 data: "Features",
-                render: function (data) {
+                render: function (data, type, row) {
                     var oFeatures = data;
                     var strID = "";
                     var strCodItem = "";
@@ -443,7 +443,7 @@ var cotvtadet = (function ($, win, doc) {
                     }
                     var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
                     var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',1)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                    var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarCotDetItem(' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + ',1)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                    var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarCotDetItem(' + String.fromCharCode(39) + row.CodItem + String.fromCharCode(39) + ',1)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
                     return '<center>' + hidden + editar + ' ' + quitar + '</center>';
                 }
             }
@@ -616,12 +616,15 @@ var cotvtadet = (function ($, win, doc) {
         if (data.Result.CodItem_IsUpdatable == true) {
             $DI_txtCodigo.removeAttr("disabled");
             $DI_txtCodigo.val(data.Result.CodItemTemp);
+            $DI_txtDescripcion.removeAttr("disabled");
         }
         else {
             $DI_txtCodigo.attr("disabled", "");
             $DI_txtCodigo.val(data.Result.CodItem);
+            $DI_txtDescripcion.attr("disabled", "");
         }
         $DI_txtDescripcion.val(data.Result.Descripcion);
+
         //Cargando Datos
         if (data.Result.Id != 0) {
             $DI_hdnIdCotDet.val(data.Result.Id);
@@ -1347,6 +1350,11 @@ var cotvtadet = (function ($, win, doc) {
             return false;
         }
 
+        if ($.trim($DI_txtDescripcion.val()) == "") {
+            app.message.error("Validaci&oacute;n", "Campo Descripcion no puede ser vac&iacute;o");
+            return false;
+        }
+
         if ($DI_txtCantidad.val() == "") {
             app.message.error("Validaci&oacute;n", "Campo Cantidad no puede ser vac&iacute;o");
             return false;
@@ -1566,6 +1574,7 @@ var cotvtadet = (function ($, win, doc) {
                     Id: $DI_hdnIdCotDet.val(),
                     CodItem: $DI_hdnCodigo.val(),
                     CodItemTemp: $DI_txtCodigo.val(),
+                    Descripcion: $DI_txtDescripcion.val(),
                     DescripcionAdicional: $DI_txtDescripcionAdic.val(),
                     Cantidad: app.convertirNumero($DI_txtCantidad.val()),
                     CostoFOB: $DI_txtCostoFOB.val(),
@@ -1868,7 +1877,7 @@ var cotvtadet = (function ($, win, doc) {
                         var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
                         var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
                         var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',2)"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
-                        var quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarCotDetItem(' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + ',2)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                        var quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarCotDetItem(' + String.fromCharCode(39) + row.CodItem + String.fromCharCode(39) + ',2)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
 
                         if ($estadoSol.val() == "CAPR" || $estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG" ) {
                             return '<center>' + ver + '</center>';
