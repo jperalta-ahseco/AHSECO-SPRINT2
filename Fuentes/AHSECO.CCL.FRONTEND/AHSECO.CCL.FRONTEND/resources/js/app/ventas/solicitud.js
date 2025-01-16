@@ -575,22 +575,31 @@
     };
 
     function $btnGuardarFacturaLogistica_click() {
-        if ($dateEntregaPedido.val() === "" || $dateEntregaPedido.val() == null) {
-            app.message.error("Validacion", "Debe ingresar una fecha de entrega de pedido.");
-            return;
-        }
 
         if ($txtNumeroFactura.val() === "" || $txtNumeroFactura.val() == null) {
             app.message.error("Validacion", "Debe ingresar un N° de Factura.");
             return;
         }
+
+        var documento_factura = 0;
+        adjuntos.forEach(function (currentValue, index, arr) {
+            if (adjuntos[index].CodigoTipoDocumento == "DVT03") { //Factura
+                documento_factura = 1;
+            }
+        });
+
+        if (documento_factura === 0) {
+            app.message.error("Validación", "Debe adjuntar un documento de Factura.");
+            return false;
+        }
+
+
         var fnSi = function () {
             var m = "POST";
             var url = "BandejaSolicitudesVentas/MantenimientoDespacho";
             var obj = {
                 Tipo: "C",
                 CodigoSolicitud: $numeroSolicitud.val(),
-                FechaEntrega: $dateEntregaPedido.val(),
                 NumeroFactura: $txtNumeroFactura.val()
             }
             var objParam = JSON.stringify(obj);
@@ -613,8 +622,8 @@
     }
 
     function $btnEditarFacturaLogistica_click() {
-        $dateEntregaPedido.prop("disabled", false);
-        $opendateEntregaPedido.prop("disabled", false);
+       // $dateEntregaPedido.prop("disabled", false);
+       // $opendateEntregaPedido.prop("disabled", false);
         $txtNumeroFactura.prop("disabled", false);
         $btnGuardarFacturaLogistica.show();
         $btnEditarFacturaLogistica.hide();
@@ -3144,6 +3153,10 @@
                     $btnAgregarDocumento.hide();
                 }
 
+                if ($idRolUsuario.val() === "SGI_VENTA_LOGISTICA" && $estadoSol.val() == "VTPG") {
+                    $btnAgregarDocumento.show();
+                }
+
                 if (data.Result.ContadorCabecera.FechaFactura != "") {
                     $dateFactura.val(data.Result.ContadorCabecera.FechaFactura);
                 }
@@ -3377,7 +3390,7 @@
                         var html = '<div class="text-center">';
                         //var d = "'" + data.Result.Adjuntos[i].CodigoDocumento + "','" + data.Result.Adjuntos[i].RutaDocumento + "'";
                         html += ' <a class="btn btn-default btn-xs" title="Descargar"  href="javascript:solicitud.download(' + data.Result.Adjuntos[i].CodigoDocumento + ')"><i class="fa fa-download" aria-hidden="true"></i></a>&nbsp;';
-                        if (($estadoSol.val() != "SFIN" && $estadoSol.val() != "NOVT" && $estadoSol.val() != "VTPG") && $idRolUsuario.val() != "SGI_VENTA_FACTURA") {
+                        if (($estadoSol.val() != "SFIN" && $estadoSol.val() != "NOVT" && $estadoSol.val() != "VTPG") && $idRolUsuario.val() != "SGI_VENTA_FACTURA" ) {
                             html += ' <a class="btn btn-default btn-xs" title="Eliminar"  href="javascript:solicitud.eliminarDocumento(' + data.Result.Adjuntos[i].CodigoDocumento + ')"><i class="fa fa-ban" aria-hidden="true"></i></a>&nbsp;';
                         }
                         html += '</div>';

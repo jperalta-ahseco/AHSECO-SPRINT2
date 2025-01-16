@@ -492,15 +492,14 @@ BEGIN
 	BEGIN
 
 		UPDATE TBM_DESPACHO
-			SET FECHAENTREGA =@FECHAENTREGA,
-				   NUMFACTURA= @NUMFACTURA,
+			SET NUMFACTURA= @NUMFACTURA,
 				   USR_MOD = @USRREG,
 				   FEC_MOD = GETDATE()
 			WHERE ID_SOLICITUD= @CODSOLICITUD
 
 
 		SET  @CODIGO = 1
-		SET @MSG ='Actualización exitosa de los datos de facturación.'
+		SET @MSG ='Actualización exitosa del numero de factura'
 	END
 
 
