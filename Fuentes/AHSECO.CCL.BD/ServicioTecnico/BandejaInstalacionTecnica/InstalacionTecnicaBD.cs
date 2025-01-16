@@ -173,6 +173,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                 parameters.Add("IsTipoProcesoVenta", filtros.TipoProceso);
                 parameters.Add("IsNumOrdenCompra", filtros.OrdenCompra); //pendiente de añadir en ventas
                 parameters.Add("IsNumFianza", filtros.NumFianza);
+                parameters.Add("IsModelo", filtros.Modelo);
 
                 var result = connection.Query(
                     sql: "USP_SEL_INSTALL_TEC",

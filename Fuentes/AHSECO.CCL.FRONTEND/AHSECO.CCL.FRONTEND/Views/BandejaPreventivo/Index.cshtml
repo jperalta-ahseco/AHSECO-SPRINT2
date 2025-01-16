@@ -71,6 +71,45 @@
                             </span>
                         </div>
                     </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="cmbCliente">Cliente:</label>
+                        <div class="form-group">
+                            <select class="form-control select2 input-sm" style="width:100%;" id="cmbCliente" tabindex="3"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtMarca">Marca:</label>
+                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                            <input class="form-control input-sm" type="text" id="txtMarca" placeholder="Ingresar la Marca" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtModelo">Modelo:</label>
+                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                            <input class="form-control input-sm" type="text" id="txtModelo" placeholder="Ingresar el Modelo" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtNomEquipo">Nombre de Equipo:</label>
+                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                            <input class="form-control input-sm" type="text" id="txtNomEquipo" placeholder="Ingresar el Nombre del Equipo" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtUbicacion">Ubicación Destino:</label>
+                        <div class="form-group">
+                            <div class="input-group input-group-sm date">
+                                <input disabled maxlength="6" placeholder="Ingresar Ubicación" type="text" class="form-control input-sm" id="txtUbicacion" value="" aria-describedby="sizing-addon3" />
+                                <span style="cursor:pointer" class="input-group-addon input-sm" id="searchUbigeo" data-toggle="modal" data-target="#modalUbigeo">
+                                    <i class="fa fa-search"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                     <br />
                     <div class="text-right">
@@ -87,6 +126,9 @@
                             <th style="text-align: center; width: 5%">N° Instalación</th>
                             <th style="text-align: center; width: 5%">Num. Serie</th>
                             <th style="text-align: center; width: 15%">Nombre Equipo</th>
+                            <th style="text-align: center; width: 15%">Marca</th>
+                            <th style="text-align: center; width: 15%">Modelo</th>
+                            <th style="text-align: center; width: 15%">Cliente</th>
                             <th style="text-align: center; width: 5%">Fecha Instalación</th>
                             <th style="text-align: center; width: 5%">Fecha Próx. Mantenimiento</th>
                             <th style="text-align: center; width: 5%">Cantidad de Preventivos</th>

@@ -392,17 +392,20 @@
         solicitud.itemMant = [];
         solicitud.itemTransporte = [];
         solicitud.nuevoContacto = false;
-        
+        $openRegdateCotizacion.click($openRegdateCotizacionClick);
+
         $dateSolicitud.datepicker({
             viewMode: 0,
             minViewMode: 0,
             format: 'dd/mm/yyyy'
         });
-        
+
+
         $dateCotizacion.datepicker({
             viewMode: 0,
             minViewMode: 0,
-            format:'dd/mm/yyyy'
+            format: 'dd/mm/yyyy',
+            startDate: hoy()
         });
 
         $dateOrdenCompra.datepicker({
@@ -455,7 +458,9 @@
         });
 
         $dateSolicitud.val(hoy());
-        $dateCotizacion.val(hoy());
+        if ($dateCotizacion.val() == "" || $dateCotizacion.val() == null) {
+            $dateCotizacion.val(hoy());
+        };
         $dateOrdenCompra.val(hoy());
         $dateEntregaPedidoCE.val(hoy());
         $dateIngresoAlmacenSE.val(hoy());
@@ -473,7 +478,6 @@
         $btnAgregarDocumento.click($modalCargaDocumentoClick);
         $btnAgregarObservacion.click($modalObservacionClick);
         $openRegdateSolicitud.click($openRegdateSolicitudClick);
-        $openRegdateCotizacion.click($openRegdateCotizacionClick);
         $openRegdateOrdenCompra.click($openRegdateOrdenCompraClick)
         $btnBuscarContactos.click($btnBuscarContactosClick);
         $btnRegresar.click(btnRegresarClick);
@@ -3887,6 +3891,14 @@
 
         if ($dateCotizacion.val().trim() === "" || $dateCotizacion.val().trim().length <= 0 || $dateCotizacion.val().trim() == null) {
             app.message.error("Validación", "Debe ingresar la fecha de cotización.");
+            return;
+        };
+
+        var fnsol = app.stringToDate($dateSolicitud.val());
+        var fnCot = app.stringToDate($dateCotizacion.val());
+
+        if (fnsol > fnCot) {
+            app.message.error("Validación", "La Fecha de Cotización no puede ser menor a la Fecha de Solicitud");
             return;
         };
 

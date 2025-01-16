@@ -18,6 +18,9 @@
     var $btnSeleccionar = $('#btnGuardarUbigeo');
     var $txtNumRec = $('#txtNumRec');
     var $txtNumSerie = $('#txtNumSerie');
+    var $txtNomEquipo = $('#txtNomEquipo');
+    var $txtModelo = $('#txtModelo');
+    var $txtMarca = $('#txtMarca');
 
 
     var $btnGuardarUbigeo = $('#btnGuardarUbigeo');
@@ -120,7 +123,10 @@
             Contrato: "",
             OrdenCompra: "",
             NumFianza: "",
-            NumeroSerie: $txtNumSerie.val() == null ? "" : $txtNumSerie.val()
+            NumeroSerie: $txtNumSerie.val() == null ? "" : $txtNumSerie.val(),
+            NomEquipo: $txtNomEquipo.val() == null ? "" : $txtNomEquipo.val(),
+            Marca: $txtMarca.val() == null ? "" : $txtMarca.val(),
+            Modelo:$txtModelo.val() == null ? "" : $txtModelo.val(),
         };
 
         var objParam = JSON.stringify(objBuscar);
@@ -169,6 +175,9 @@
         $("<input>", { type: "hidden", name: "OrdenCompra", value: "" }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "NumFianza", value: "" }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "NumeroSerie", value: $txtNumSerie.val() == null ? "" : $txtNumSerie.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "NomEquipo", value: $txtNomEquipo.val() == null ? "" : $txtNomEquipo.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "Marca", value: $txtMarca.val() == null ? "" : $txtMarca.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "Modelo", value: $txtModelo.val() == null ? "" : $txtModelo.val() }).appendTo("#hidden_fields");
         $formReclamos.attr('action', href);
         $formReclamos.submit();
     }
@@ -501,6 +510,24 @@
             },
             {
                 data: "Serie",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "Descripcion",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "Marca",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "Modelo",
                 render: function (data, type, row) {
                     return '<center>' + data + '</center>'
                 }

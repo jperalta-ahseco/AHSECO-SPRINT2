@@ -2168,7 +2168,7 @@ var cotvtadet = (function ($, win, doc) {
             };
 
             var fnDoneCallBack = function (data) {
-                app.message.success("Cotizaci&oacute;n", "Se envi&oacute; la cotizaci&oacute;n correctamente.", "Aceptar", redirect);
+                app.message.success("Cotizaci&oacute;n", "Se grabo correctamente.", "Aceptar", redirect);
             };
 
             app.llamarAjax(method, url, objParam, fnDoneCallBack, null);

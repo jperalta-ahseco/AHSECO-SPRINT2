@@ -14,7 +14,7 @@ CREATE OR ALTER PROCEDURE[dbo].[USP_SEL_MAIN_INSTALL_TEC]
 AS
 BEGIN
 	--Instalacion
-	EXEC [dbo].[USP_SEL_INSTALL_TEC] @IsRequerimiento = @isNumReq, @isFecIni = '', @isFecFin = '' , @IsEstado='' ,@IsDestino='' ,@IsVendedor='' ,@IsRuc='' ,@IsCodEmpresa='' ,@IsTipVenta='0' ,@IsNumProceso='' ,@IsTipoProcesoVenta='' ,@IsNumOrdenCompra='' ,@IsNumFianza=''
+	EXEC [dbo].[USP_SEL_INSTALL_TEC] @IsRequerimiento = @isNumReq, @isFecIni = '', @isFecFin = '' , @IsEstado='' ,@IsDestino='' ,@IsVendedor='' ,@IsRuc='' ,@IsCodEmpresa='' ,@IsTipVenta='0' ,@IsNumProceso='' ,@IsTipoProcesoVenta='' ,@IsNumOrdenCompra='' ,@IsNumFianza='', @isModelo = ''
 	--Detalle de instalacion
 	EXEC [dbo].[USP_SEL_DETALLE_INSTALL] @isNumReq = @isNumReq 
 	--Documentos adjuntos:

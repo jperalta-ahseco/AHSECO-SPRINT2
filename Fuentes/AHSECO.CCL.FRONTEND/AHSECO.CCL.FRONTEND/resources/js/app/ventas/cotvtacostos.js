@@ -1081,7 +1081,7 @@
                     var redondeo = app.obtenerCantidadDecimales($CI_txtMtoUnitarioCosto.val());
                     if ($CI_cmbTipoCosto.val() == "CXCD0006")
                     { //Validamos para mant.preventivo
-                        $CI_txtMtoTotalCosto.val((parseFloat($CI_txtMtoUnitarioCosto.val()) * parseInt($CI_txtCantCosteo.val()) * parseInt($CI_txtCantCotDet.val()) ).toFixed(redondeo));
+                        $CI_txtMtoTotalCosto.val((parseFloat($CI_txtMtoUnitarioCosto.val()) * parseInt($CI_txtCantCosteo.val()) * parseInt($CI_txtCantPrevent.val()) ).toFixed(redondeo));
                     }
                     else {
                         $CI_txtMtoTotalCosto.val((parseFloat($CI_txtMtoUnitarioCosto.val()) * parseInt($CI_txtCantCosteo.val())).toFixed(redondeo));

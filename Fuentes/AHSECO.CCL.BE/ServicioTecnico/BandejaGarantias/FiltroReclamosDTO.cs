@@ -22,5 +22,9 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaGarantias
         public string CodUbigeoDest { get; set; }
         public string Estado { get; set; }
         public string NumeroSerie { get; set; }
+        public string Marca { get; set; }
+        public string Modelo{ get; set; }
+        public string NomEquipo { get; set; }
+
     }
 }

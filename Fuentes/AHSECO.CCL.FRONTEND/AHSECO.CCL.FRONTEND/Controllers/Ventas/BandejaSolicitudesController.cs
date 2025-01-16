@@ -955,6 +955,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         {
                             ViewBag.PermitirAgregarProductos = true;
                             ViewBag.PermitirEnvioCotizacion = true;
+                            ViewBag.PermitirGuardarCotizacion = true;
+                            ViewBag.PermitirCancelarCot = true;
                         }
                     }
 
@@ -980,6 +982,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     //Si es Asesor de Costos o Gerente General podrá modificar los PRECIOS DE VENTAS
                     //pero el Asesor de Ventas solo modificará el porcentaje de GANANCIA
                     //y los Coordinadores solo modificarán los servicios
+                    if(NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
+                    {
+                        ViewBag.PermitirCancelarCot = true;
+                    };
+
                     if (
                         //NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor ||  Probando
                         EsFlujoValorizacion() ||

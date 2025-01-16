@@ -22,9 +22,13 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_GAR_SEL_RECLAMOS]
   ,@IsNumOrdenCompra	VARCHAR(35)
   ,@IsNumFianza			VARCHAR(15)
   ,@IsNumSerie			VARCHAR(200)
+  ,@IsDESCRIPCION		VARCHAR(100)
+  ,@IsMARCA				VARCHAR(150)
+  ,@IsMODELO			VARCHAR(200)
 )
 AS
 BEGIN
+SET NOCOUNT ON
 	
 	DECLARE @sql NVARCHAR(MAX)
 
@@ -138,7 +142,20 @@ BEGIN
 	BEGIN
 			SET @sql = @sql +' AND RECLAMO.SERIE = ''' + CAST(@IsNumSerie AS VARCHAR) + ''' '
 	END
+	IF(@IsMODELO != '')
+	BEGIN
+			SET @sql = @sql +' AND RECLAMO.MODELO  LIKE '''+'%'+ CAST(@IsMODELO AS VARCHAR) +'%'+''' '
+	END
+	IF(@IsMARCA != '')
+	BEGIN
+			SET @sql = @sql +' AND RECLAMO.MARCA  LIKE '''+'%'+ CAST(@IsMARCA AS VARCHAR) +'%'+''' '
+	END
+	IF(@IsDESCRIPCION != '')
+	BEGIN
+			SET @sql = @sql +' AND RECLAMO.DESCRIPCION  LIKE '''+'%'+CAST(@IsDESCRIPCION AS VARCHAR) +'%'+''' '
+	END
 
 	--print @sql
 	EXEC sp_executesql @sql
+SET NOCOUNT OFF
 END

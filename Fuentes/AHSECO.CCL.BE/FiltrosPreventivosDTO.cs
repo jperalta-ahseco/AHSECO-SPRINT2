@@ -13,5 +13,6 @@ namespace AHSECO.CCL.BE
         public List<ComboDTO> Estados { get; set; }
 
         public List<ComboDTO> TipoEmpleado { get; set; }
+        public List<ComboDTO> Clientes { get; set; }
     }
 }

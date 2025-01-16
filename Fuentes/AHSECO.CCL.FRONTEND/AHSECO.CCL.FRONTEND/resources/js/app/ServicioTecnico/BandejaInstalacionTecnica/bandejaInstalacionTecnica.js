@@ -24,6 +24,7 @@
     var $txtNumOrdCompra = $('#txtNumOrdCompra');
     var $txtNumFianza = $('#txtNumFianza');
     var $formInstallTec = $('#formInstallTec');
+    var $txtModelo = $('#txtModelo');
     
     var $btnGuardarUbigeo = $('#btnGuardarUbigeo');
     var $txtUbicacion = $('#txtUbicacion');
@@ -109,15 +110,12 @@
         var method = "POST";
         var url = "BandejaInstalacionTecnica/ObtenerInstalacionesTec";
 
-        var codDepartamento = sessionStorage.getItem('codDepartamento');
-        var codProvincia = sessionStorage.getItem('codProvincia');
-        var codDistrito = sessionStorage.getItem('codDistrito');
-
         var objBuscar = {
             FecIni: $dateFecIni.val() == "" ? "" : app.parseDate($dateFecIni.val()),
             FecFin: $dateFecFin.val() == "" ? "" : app.parseDate($dateFecFin.val()),
             NumReq: $txtNumReq.val() == "" ? "0" : $txtNumReq.val(),
             Estado: $cmbEstado.val() == 0 ? "" : $cmbEstado.val(),
+            Modelo: $txtModelo.val(),
             //Destino: codDepartamento,
             Destino: $cmbDepartamento.val(),
             Vendedor: $cmbVendedor.val() == 0 ? "" : $cmbVendedor.val(),
@@ -171,6 +169,7 @@
         $("<input>", { type: "hidden", name: "Contrato", value: $txtTipProceso.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "OrdenCompra", value: $txtNumOrdCompra.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "NumFianza", value: $txtNumFianza.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "Modelo", value: $txtModelo.val() }).appendTo("#hidden_fields");
         $formInstallTec.attr('action', href);
         $formInstallTec.submit();
     }

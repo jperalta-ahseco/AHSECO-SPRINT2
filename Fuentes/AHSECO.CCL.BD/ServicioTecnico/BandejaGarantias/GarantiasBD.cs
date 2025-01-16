@@ -167,7 +167,10 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
                 parameters.Add("IsNumContrato", filtros.Contrato == null ? "" : filtros.Contrato);
                 parameters.Add("IsNumOrdenCompra", filtros.OrdenCompra == null ? "" : filtros.OrdenCompra);
                 parameters.Add("IsNumFianza", filtros.NumFianza == null ? "" : filtros.NumFianza);
-                parameters.Add("@IsNumSerie", filtros.NumeroSerie == null ? "" : filtros.NumeroSerie);
+                parameters.Add("IsNumSerie", filtros.NumeroSerie == null ? "" : filtros.NumeroSerie);
+                parameters.Add("IsMARCA", filtros.Marca == null ? "" : filtros.Marca);
+                parameters.Add("IsMODELO", filtros.Modelo == null ? "" : filtros.Modelo);
+                parameters.Add("IsDESCRIPCION", filtros.NomEquipo == null ? "" : filtros.NomEquipo);
 
                 var result = connection.Query(
                     sql: "USP_GAR_SEL_RECLAMOS",

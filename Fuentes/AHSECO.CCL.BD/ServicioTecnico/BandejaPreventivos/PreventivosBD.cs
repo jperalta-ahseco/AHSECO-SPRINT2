@@ -83,6 +83,19 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaPreventivos
                         _tipoEmpleado.Add(tipEmpleado);
                     }
 
+                    reader.NextResult();
+                    List<ComboDTO> _clientes = new List<ComboDTO>();
+                    while (reader.Read())
+                    {
+                        var cliente = new ComboDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("ID")) ? "" : reader.GetString(reader.GetOrdinal("ID")),
+                            Text = reader.IsDBNull(reader.GetOrdinal("NOMEMPRESA")) ? "" : reader.GetString(reader.GetOrdinal("NOMEMPRESA"))
+                        };
+                        _clientes.Add(cliente);
+                    }
+
+                    result.Clientes = _clientes;
                     result.Empresas = _listEmpresa;
                     result.Estados = _Estados;
                     result.TipoEmpleado = _tipoEmpleado;
@@ -146,6 +159,11 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaPreventivos
                 parameters.Add("IsEmpresa", req.Empresa);
                 parameters.Add("IsPeriodoInicio", req.PeriodoInicio);
                 parameters.Add("IsPeriodoFinal", req.PeriodoFinal);
+                parameters.Add("IsModelo", req.Modelo);
+                parameters.Add("IsUbigeoDestino", req.CodUbigeoDest);
+                parameters.Add("IsMarca", req.Marca);
+                parameters.Add("IsNomEquipo", req.NomEquipo);
+                parameters.Add("IsRUC", req.Ruc);
                 //parameters.Add("IsEstado", req.Estado);
 
                 var result = connection.Query(
@@ -159,6 +177,9 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaPreventivos
                         NumInst = i.Single(d => d.Key.Equals("NUMREQ")).Value.Parse<long>(),
                         Serie = i.Single(d => d.Key.Equals("SERIE")).Value.Parse<string>(),
                         Descripcion = i.Single(d => d.Key.Equals("DESCRIPCION")).Value.Parse<string>(),
+                        Marca = i.Single(d => d.Key.Equals("MARCA")).Value.Parse<string>(),
+                        Modelo = i.Single(d => d.Key.Equals("MODELO")).Value.Parse<string>(),
+                        Cliente = i.Single(d => d.Key.Equals("NOMEMPRESA")).Value.Parse<string>(),
                         FechaInstalacion = i.Single(d => d.Key.Equals("FECHAINSTALACION")).Value.Parse<DateTime>(),
                         ProxFechaMant = i.Single(d => d.Key.Equals("PROXFECHAMANT")).Value.Parse<string>(),
                         TotalPrevent = i.Single(d => d.Key.Equals("TOTALPREVE")).Value.Parse<int>(),
