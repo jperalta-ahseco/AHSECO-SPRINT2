@@ -1634,7 +1634,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                     if (!swTieneStock)
                                     {
                                         if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.CostoFOB) { pc.IsVisible = true; pc.IsEnabled = false; }
-                                        if (oItem.CostoFOB!= "")
+                                        if (!string.IsNullOrEmpty(oItem.CostoFOB))
                                             {
                                                 if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = true; }
                                             }
