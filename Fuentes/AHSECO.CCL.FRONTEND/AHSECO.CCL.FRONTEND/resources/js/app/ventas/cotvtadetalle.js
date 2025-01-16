@@ -36,6 +36,7 @@ var cotvtadet = (function ($, win, doc) {
     var $cmbGarantia = $('#cmbGarantia');
     var $txtObs = $('#txtObs');
     var $txtPorcentajeDscto = $("#txtPorcentajeDscto");
+    var $dateSolicitud = $('#dateSolicitud');
 
     var $RolVenta_Asesor = $("#RolVenta_Asesor");
     var $RolVenta_Jefe = $("#RolVenta_Jefe");
