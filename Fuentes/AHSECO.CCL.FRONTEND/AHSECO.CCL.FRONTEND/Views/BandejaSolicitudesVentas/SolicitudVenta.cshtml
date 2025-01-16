@@ -72,6 +72,7 @@
 <input type="hidden" id="Asesor" value="@empleado.NombresCompletosEmpleado" />
 <input type="hidden" id="numeroSolicitud" value="@numSol" />
 <input type="hidden" id="estadoSol" value="@estadoSol" />
+<input type="hidden" id="tipoVenta" value="@ViewBag.TipoVenta"/>
 <input type="hidden" id="idWorkFlow" value="@idWorkFlow" />
 <input type="hidden" id="idCotizacion" value="@idCotizacion" />
 <input type="hidden" id="idRolUsuario" value="@NombreRol" />
@@ -675,7 +676,43 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="row container-fluid" style="@(ViewBag.VerContrato ? "" : "display:none");">
+                                                    <div class="col-md-4 col-sm-12">
+                                                        <label for="txtNroContrato">N° de Contrato: </label>
+                                                        <div class="form-group">
+                                                            <input placeholder="Ingresar Número de Contrato" type="text" class="form-control input-sm" maxlength="50" id="txtNroContrato" @ViewBag.TxtNroContrato>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 col-sm-12">
+                                                        <label for="dateFechaContrato">Fecha de Contrato: </label>
+                                                        <div class="input-group date">
+                                                            <input type="text" class="form-control input-sm" id="dateFechaContrato" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" readonly maxlength="10" @ViewBag.FechaContrato>
+                                                            <span class="input-group-addon input-sm" id="openRegdateFechaContrato" @ViewBag.FechaContrato>
+                                                                <i class="fa fa-calendar"></i>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 col-sm-12">
+                                                        <label for="radCalculo">C&aacute;lculo por: </label>
+                                                        <div class="radio-group">
+                                                            <label>
+                                                                <input type="radio" id="radCalculo" aria-describedby="sizing-addon3" readonly value="OC" />
+                                                                Por Orden de Compra
+                                                            </label>
+                                                            <label>
+                                                                <input type="radio" id="radCalculo" aria-describedby="sizing-addon3" readonly value="CO" />
+                                                                Por Contrato
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 <div class="row container-fluid" style="@(ViewBag.VerFacturacion ? "" : "display:none");">
+                                                    <div class="col-md-4 col-sm-12">
+                                                        <label for="txtNumeroFactura">N° de Factura: </label>
+                                                        <div class="form-group">
+                                                            <input type="text" class="form-control input-sm" id="txtNumeroFactura" placeholder="Ingresar Número de Factura" @ViewBag.TxtNumFactura>
+                                                        </div>
+                                                    </div>
                                                     <div class="col-md-4 col-sm-12">
                                                         <label for="dateEntregaPedido">Fecha de Entrega de Pedido: </label>
                                                         <div class="input-group date">
@@ -683,12 +720,6 @@
                                                             <span class="input-group-addon input-sm" id="opendateEntregaPedido" @ViewBag.FecEntregaPedido>
                                                                 <i class="fa fa-calendar"></i>
                                                             </span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-4 col-sm-12">
-                                                        <label for="txtNumeroFactura">N° de Factura: </label>
-                                                        <div class="form-group">
-                                                            <input type="text" class="form-control input-sm" id="txtNumeroFactura" placeholder="Ingresar Número de Factura" @ViewBag.TxtNumFactura>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1019,6 +1050,11 @@
 }
 
 <style>
+    .radio-group {
+        display: flex; /* Alineación en fila */
+        gap: 15px; /* Espaciado entre los botones */
+    }
+
     .fixed-column {
         position: sticky;
         left: 0;
@@ -1087,6 +1123,20 @@
                 $(this).val(numberValue);
             }
         });
+    });
+
+    $('#txtNroContrato').keyup(function (event) {
+        // Captura el valor actual del campo de texto
+        const valor = $(this).val();
+        console.log(valor);
+
+        if (valor == "") {
+            $('#dateOrdenCompra').val('');
+            $('#dateOrdenCompra').prop('disabled', true);
+        }
+        else {
+            $('#dateOrdenCompra').prop('disabled', false);
+        }
     });
 
     $('#txtVigencia').keypress(function (event) {
@@ -1552,8 +1602,8 @@
                                         <thead>
                                             <tr>
                                                 <th style="text-align: center; width: 6%; color: white; background-color: cornflowerblue">N°</th>
-                                                <th style="text-align: center; width: 47%; color: white; background-color: cornflowerblue">N° Guia Remision</th>
                                                 <th style="text-align: center; width: 47%; color: white; background-color: cornflowerblue">N° Serie / N° Lote</th>
+                                                <th style="text-align: center; width: 47%; color: white; background-color: cornflowerblue">N° Guia Remision</th>
                                             </tr>
                                         </thead>
                                         <tbody>

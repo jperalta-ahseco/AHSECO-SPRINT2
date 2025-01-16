@@ -343,6 +343,10 @@
     var $btnEditarFacturaLogistica = $("#btnEditarFacturaLogistica");
     var $btnGuardarFacturaLogistica = $("#btnGuardarFacturaLogistica");
     var $opendateEntregaPedido = $("#opendateEntregaPedido");
+    var $txtNroContrato = $("#txtNroContrato");
+    var $dateFechaContrato = $("#dateFechaContrato");
+    var $openRegdateFechaContrato = $("#openRegdateFechaContrato");
+
     var tecnicosAsig = [];
 
     var mensajes = {
@@ -457,15 +461,25 @@
             startDate: hoy()
         });
 
+        $dateFechaContrato.datepicker({
+            viewMode: 0,
+            minViewMode: 0,
+            format: 'dd/mm/yyyy',
+            startDate: hoy()
+        });
+
         $dateSolicitud.val(hoy());
         if ($dateCotizacion.val() == "" || $dateCotizacion.val() == null) {
             $dateCotizacion.val(hoy());
         };
-        $dateOrdenCompra.val(hoy());
+
+        //$dateOrdenCompra.val(hoy());
+
         $dateEntregaPedidoCE.val(hoy());
         $dateIngresoAlmacenSE.val(hoy());
         $dateEntregaPedidoSE.val(hoy());
         $dateEntregaPedido.val(hoy());
+        //$dateFechaContrato.val(hoy());
         
         $dateFactura.val(hoy());
         $fileCargaDocumentoSustento.on("change", $fileCargaDocumentoSustento_change);
@@ -693,8 +707,8 @@
                 contador = 1 + i;
                 var nuevoTr = "<tr id='rowSerieGuia" + i + "'>" +
                     "<th style='text-align:center'>" + contador + "</th>" +
-                    "<th>" + "<input type='text' value='' id='Guia" + i + "' style='width:100%' class='GuiaSS'>" + "</th>" +
                     "<th>" + "<input type='text' value='' id='SerieSS" + i + "' style='width:100%' class='SerieSS'>" + "</th>" +
+                    "<th>" + "<input type='text' value='' id='Guia" + i + "' style='width:100%' class='GuiaSS'>" + "</th>" +
                     "</tr>";
                 $tblSeriesGuia.append(nuevoTr);
             }
@@ -849,8 +863,8 @@
                 contador = 1 + i;
                 var nuevoTr = "<tr id='rowSerieGuia" + i + "'>" + 
                     "<th style='text-align:center'>" + contador + "</th>" +
-                    "<th>" + "<input type='text' value='' id='Guia" + i + "' style='width:100%' class='GuiaCS'>" + "</th>" +
                     "<th>" + "<input type='text' value='' id='SerieCS" + i + "' style='width:100%' class='SerieCS'>" + "</th>" +
+                    "<th>" + "<input type='text' value='' id='Guia" + i + "' style='width:100%' class='GuiaCS'>" + "</th>" +
                     "</tr>";
                 $tblSeriesGuia.append(nuevoTr);
             }
@@ -2260,7 +2274,7 @@
             }
         }
 
-        if ($TipoSolicitud.val() === "TSOL04" || $TipoSolicitud.val() === "TSOL05") //Para ventas de materiales y venta de equipos:
+        if ($TipoSolicitud.val() === "TSOL04") //Para ventas de materiales y venta de equipos:
         {
             var documento_guiaRemision = 0;
             var documento_factura = 0;
@@ -2587,7 +2601,7 @@
         }
 
         //Validación de documentación adjunta:
-        if ($TipoSolicitud.val() === "TSOL04" || $TipoSolicitud.val() === "TSOL05") //Para ventas de materiales y venta de equipos:
+        if ($TipoSolicitud.val() === "TSOL04") //Para ventas de materiales y venta de equipos:
         {
             var documento_guiaRemision = 0;
             var documento_factura = 0;
@@ -2736,8 +2750,16 @@
     }
 
     function $btnGuardarGestion_click() {
-        
-        if ($txtNroOrdenCompra.val() === "" || $txtNroOrdenCompra.val() == null) {
+
+        if (($txtNroOrdenCompra.val() === "" || $txtNroOrdenCompra.val() == null) &&
+            ($txtNroContrato.val() === "" || $txtNroContrato.val() == null)) {
+            app.message.error("Validación", "Debe ingresar N° de Orden de Compra y/o. N° de Contrato.");
+            return false;
+            }
+
+
+
+        if ($cmbTipoVenta.val() === "TVEN01" && ($txtNroOrdenCompra.val() === "" || $txtNroOrdenCompra.val() == null)) {
             app.message.error("Validación", "Debe ingresar el número de orden de compra.");
             return false;
         }
@@ -4720,6 +4742,10 @@
             $rowSerieGuia.show();
             $TipoReg.val("U");
             $FlagCargaDocumentoDespacho.val("0");
+
+            if (data.Result.CodigoDocumento === "" || data.Result.CodigoDocumento == null || data.Result.CodigoDocumento == "0") {
+                $FlagCargaDocumentoDespacho.val("1");
+            }
             $txtSerie.prop("disabled", false);
             $txtGuia.prop("disabled", false);
             $btnCargarOtroDocumento.show();
@@ -4822,6 +4848,14 @@
                 return $(this).val().trim(); // Obtener el valor del input y eliminar espacios en blanco
             }).get(); // Convertir a un array estándar
 
+            const duplicates = findDuplicates(series);
+
+            if (duplicates.length > 0) {
+                app.message.error("Validación", "Las series ingresadas se encuentran repetidas.");
+                return false;
+            }
+
+
             // Unir los valores con comas
             lista_series = series.join(", ");
 
@@ -4839,6 +4873,14 @@
                 return $(this).val().trim(); // Obtener el valor del input y eliminar espacios en blanco
             }).get(); // Convertir a un array estándar
 
+
+            const duplicates = findDuplicates(series);
+
+            if (duplicates.length > 0) {
+                app.message.error("Validación", "Las series ingresadas se encuentran repetidas.");
+                return false;
+            }
+
             // Unir los valores con comas
             lista_series = series.join(", ");
 
@@ -4849,13 +4891,39 @@
             // Unir los valores con comas
             lista_guias = guias.join(", ");
         }
-     
 
-        var fileInput = document.getElementById("fileCargaDocumentoSustentoDespacho");
-        const archivo = fileInput.files[0];
-        var ext = fileInput.files[0].name.split('.').pop();
 
-        convertirABase64(archivo);
+
+        var archivo_name = "";
+        var ext = "";
+
+        if ($FlagCargaDocumentoDespacho.val() === "1") {
+            var fileInput = document.getElementById("fileCargaDocumentoSustentoDespacho");
+            const archivo = fileInput.files[0];
+            ext = fileInput.files[0].name.split('.').pop();
+            archivo_name = archivo.name;
+            convertirABase64(archivo);
+        }
+
+
+        function findDuplicates(arr) {
+            const counts = {};
+            const duplicates = [];
+
+            // Contar ocurrencias
+            arr.forEach(item => {
+                counts[item] = (counts[item] || 0) + 1;
+            });
+
+            // Filtrar duplicados
+            for (const key in counts) {
+                if (counts[key] > 1) {
+                    duplicates.push(key);
+                }
+            }
+
+            return duplicates;
+        }
 
         var fnSi = function () {
 
@@ -4873,7 +4941,7 @@
                 Series: lista_series,
                 Guias: lista_guias,
                 Archivo: $ArchivoBase64.val(),
-                NombreArchivo: archivo.name,
+                NombreArchivo: archivo_name,
                 Extension: ext,
                 CodigoWorkFlow: $codigoWorkflow.val(),
                 FlagCarga: $FlagCargaDocumentoDespacho.val(),

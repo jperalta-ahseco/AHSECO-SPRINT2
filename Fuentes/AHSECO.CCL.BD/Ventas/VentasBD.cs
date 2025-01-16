@@ -63,7 +63,8 @@ namespace AHSECO.CCL.BD.Ventas
                         RUC = i.Single(d => d.Key.Equals("RUC")).Value.Parse<string>(),
                         RazonSocial = i.Single(d => d.Key.Equals("RAZONSOCIAL")).Value.Parse<string>(),
                         AsesorVenta = i.Single(d => d.Key.Equals("ASESORVENTA")).Value.Parse<string>(),
-                        NumeroSolicitudFormat = i.Single(d => d.Key.Equals("SOL_FORMAT")).Value.Parse<string>()
+                        NumeroSolicitudFormat = i.Single(d => d.Key.Equals("SOL_FORMAT")).Value.Parse<string>(),
+                        TipoVenta = i.Single(d => d.Key.Equals("TIPOVENTA")).Value.Parse<string>()
                     });
 
                 connection.Close();
