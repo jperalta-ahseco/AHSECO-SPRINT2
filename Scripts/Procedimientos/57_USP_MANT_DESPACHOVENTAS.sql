@@ -485,6 +485,22 @@ BEGIN
 		SET @MSG ='Se realizó la actualizacion de generacion de guia de BO'
 	END
 
+	IF(@TIPO = 'C') 
+	BEGIN
+
+		UPDATE TBM_DESPACHO
+			SET FECHAENTREGA =@FECHAENTREGA,
+				   NUMFACTURA= @NUMFACTURA,
+				   USR_MOD = @USRREG,
+				   FEC_MOD = GETDATE()
+			WHERE ID_SOLICITUD= @CODSOLICITUD
+
+
+		SET  @CODIGO = 1
+		SET @MSG ='Actualización exitosa de los datos de facturación.'
+	END
+
+
 		SELECT @CODIGO COD ,@MSG MSG
 		SET NOCOUNT OFF;
 

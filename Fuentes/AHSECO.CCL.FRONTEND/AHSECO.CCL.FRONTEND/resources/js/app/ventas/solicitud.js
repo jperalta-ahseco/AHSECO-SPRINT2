@@ -227,6 +227,7 @@
     var $ValidaBtnObservacion = $("#ValidaBtnObservacion");
 
     /** Seccion de Despacho*/
+    var $dateEntregaPedido = $("#dateEntregaPedido");
     var $dateOrdenCompra = $("#dateOrdenCompra");
     var $openRegdateOrdenCompra = $("#openRegdateOrdenCompra");
     var $txtFechaEntregaMax = $("#txtFechaEntregaMax");
@@ -268,7 +269,7 @@
     var $btnGuardarGestionLogisticaSE = $("#btnGuardarGestionLogisticaSE");
     var $dateEntregaPedidoSE = $("#dateEntregaPedidoSE");
     var $opendateEntregaPedidoSE = $("#opendateEntregaPedidoSE");
-    var $txtNumeroFacturaSE = $("#txtNumeroFacturaSE");
+    var $txtNumeroFactura = $("#txtNumeroFactura");
     var $txtNumeroGuiaRemisionSE = $("#txtNumeroGuiaRemisionSE");
     var $btnEditarGestionLogisticaSE = $("#btnEditarGestionLogisticaSE");
     var $tblSeriesSS = $("#tblSeriesSS");
@@ -339,6 +340,9 @@
     var $CodigoDocumentoDespacho = $("#CodigoDocumentoDespacho");
     var $btnCargarOtroDocumento = $("#btnCargarOtroDocumento");
     var $FlagCargaDocumentoDespacho = $("#FlagCargaDocumentoDespacho");
+    var $btnEditarFacturaLogistica = $("#btnEditarFacturaLogistica");
+    var $btnGuardarFacturaLogistica = $("#btnGuardarFacturaLogistica");
+    var $opendateEntregaPedido = $("#opendateEntregaPedido");
     var tecnicosAsig = [];
 
     var mensajes = {
@@ -443,12 +447,20 @@
             startDate: hoy()
         });
 
+        $dateEntregaPedido.datepicker({
+            viewMode: 0,
+            minViewMode: 0,
+            format: 'dd/mm/yyyy',
+            startDate: hoy()
+        });
+
         $dateSolicitud.val(hoy());
         $dateCotizacion.val(hoy());
         $dateOrdenCompra.val(hoy());
         $dateEntregaPedidoCE.val(hoy());
         $dateIngresoAlmacenSE.val(hoy());
         $dateEntregaPedidoSE.val(hoy());
+        $dateEntregaPedido.val(hoy());
         
         $dateFactura.val(hoy());
         $fileCargaDocumentoSustento.on("change", $fileCargaDocumentoSustento_change);
@@ -540,7 +552,55 @@
         $fileCargaDocumentoSustentoDespacho.click($fileCargaDocumentoSustentoDespacho_change);
         $btnDescargarGuiaRemision.click($btnDescargarGuiaRemision_click);
         $btnCargarOtroDocumento.click($btnCargarOtroDocumento_click);
+        $btnEditarFacturaLogistica.click($btnEditarFacturaLogistica_click);
+        $btnGuardarFacturaLogistica.click($btnGuardarFacturaLogistica_click);
     };
+
+    function $btnGuardarFacturaLogistica_click() {
+        if ($dateEntregaPedido.val() === "" || $dateEntregaPedido.val() == null) {
+            app.message.error("Validacion", "Debe ingresar una fecha de entrega de pedido.");
+            return;
+        }
+
+        if ($txtNumeroFactura.val() === "" || $txtNumeroFactura.val() == null) {
+            app.message.error("Validacion", "Debe ingresar un N° de Factura.");
+            return;
+        }
+        var fnSi = function () {
+            var m = "POST";
+            var url = "BandejaSolicitudesVentas/MantenimientoDespacho";
+            var obj = {
+                Tipo: "C",
+                CodigoSolicitud: $numeroSolicitud.val(),
+                FechaEntrega: $dateEntregaPedido.val(),
+                NumeroFactura: $txtNumeroFactura.val()
+            }
+            var objParam = JSON.stringify(obj);
+            var fnDoneCallback = function (data) {
+                var fnCallback = function () {
+                    location.reload();
+                };
+                if (data.Result.Codigo > 0) {
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+                else {
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+
+            };
+            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.consultaDetalleDespacho);
+        }
+        return app.message.confirm("Ventas", "¿Está seguro que desea guardar los datos de Facturacion?", "Si;", "No", fnSi, null);
+
+    }
+
+    function $btnEditarFacturaLogistica_click() {
+        $dateEntregaPedido.prop("disabled", false);
+        $opendateEntregaPedido.prop("disabled", false);
+        $txtNumeroFactura.prop("disabled", false);
+        $btnGuardarFacturaLogistica.show();
+        $btnEditarFacturaLogistica.hide();
+    }
 
     function $btnRegistrarDespachoSE_click() {
 
@@ -2169,14 +2229,14 @@
     }
 
     function $btnGuardarGestionLogisticaSE_click() {
-        if ($dateEntregaPedidoSE.val() === "" || $dateEntregaPedidoSE.val() == null) {
-            app.message.error("Validación", "Debe seleccionar la fecha de entrega de pedido de los productos sin stock");
+        if ($dateEntregaPedido.val() === "" || $dateEntregaPedido.val() == null) {
+            app.message.error("Validación", "Debe seleccionar la fecha de entrega de pedido.");
             return false;
         }
-        if ($txtNumeroFacturaSE.val() === "" || $txtNumeroFacturaSE.val() == null) {
-            app.message.error("Validación", "Debe ingresar el N° de Factura de los productos sin stock");
-            return false;
-        }
+        //if ($txtNumeroFacturaSE.val() === "" || $txtNumeroFacturaSE.val() == null) {
+        //    app.message.error("Validación", "Debe ingresar el N° de Factura de los productos sin stock");
+        //    return false;
+        //}
       
 
         //Validación de numero de series agregadas:
@@ -2232,8 +2292,8 @@
                 Stock: "N",
                 EstadoAprobacion: $TipoSolicitud.val() ,
                 NumeroGuiaRemision: $txtNumeroGuiaRemisionSE.val(),
-                NumeroFactura: $txtNumeroFacturaSE.val(),
-                FechaEntrega: $dateEntregaPedidoSE.val()
+                NumeroFactura: $txtNumeroFactura.val(),
+                FechaEntrega: $dateEntregaPedido.val()
             }
             var objParam = JSON.stringify(obj);
             var fnDoneCallback = function (data) {
@@ -2391,14 +2451,14 @@
     }
 
     function $btnEnviarGestionDespacho_click() {
-        if ($dateEntregaPedidoCE.val() === "" || $dateEntregaPedidoCE.val() == null) {
-            app.message.error("Validación", "Debe seleccionar la fecha de entrega de pedido de los productos con stock");
+        if ($dateEntregaPedido.val() === "" || $dateEntregaPedido.val() == null) {
+            app.message.error("Validación", "Debe seleccionar la fecha de entrega de pedido");
             return false;
         }
-        if ($txtNumeroFacturaCE.val() === "" || $txtNumeroFacturaCE.val() == null) {
-            app.message.error("Validación", "Debe ingresar el N° de Factura de los productos con stock");
-            return false;
-        }
+        //if ($txtNumeroFacturaCE.val() === "" || $txtNumeroFacturaCE.val() == null) {
+        //    app.message.error("Validación", "Debe ingresar el N° de Factura de los productos con stock");
+        //    return false;
+        //}
        
         if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03" || $TipoSolicitud.val() === "TSOL05") {
             if (parseInt($ContadorSeriesCS.val()) != parseInt($TotalSeriesCS.val())) {
@@ -2440,14 +2500,14 @@
     }
 
     function $btnEnviarGestionDespachoSE_click() {
-        if ($dateEntregaPedidoSE.val() === "" || $dateEntregaPedidoSE.val() == null) {
-            app.message.error("Validación", "Debe seleccionar la fecha de entrega de pedido de los productos sin stock");
+        if ($dateEntregaPedido.val() === "" || $dateEntregaPedido.val() == null) {
+            app.message.error("Validación", "Debe seleccionar la fecha de entrega de pedido");
             return false;
         }
-        if ($txtNumeroFacturaSE.val() === "" || $txtNumeroFacturaSE.val() == null) {
-            app.message.error("Validación", "Debe ingresar el N° de Factura de los productos sin stock");
-            return false;
-        }
+        //if ($txtNumeroFacturaSE.val() === "" || $txtNumeroFacturaSE.val() == null) {
+        //    app.message.error("Validación", "Debe ingresar el N° de Factura de los productos sin stock");
+        //    return false;
+        //}
        
         if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03" || $TipoSolicitud.val() === "TSOL05") {
             if (parseInt($ContadorSeriesSS.val()) != parseInt($TotalSeriesSS.val())) {
@@ -2497,14 +2557,14 @@
     }
 
     function $btnGuardarGestionLogistica_click() {
-        if ($dateEntregaPedidoCE.val() === "" || $dateEntregaPedidoCE.val() == null) {
-            app.message.error("Validación", "Debe seleccionar la fecha de entrega de pedido de los productos con stock");
+        if ($dateEntregaPedido.val() === "" || $dateEntregaPedido.val() == null) {
+            app.message.error("Validación", "Debe seleccionar la fecha de entrega de pedido.");
             return false;
         }
-        if ($txtNumeroFacturaCE.val() === "" || $txtNumeroFacturaCE.val() == null) {
-            app.message.error("Validación", "Debe ingresar el N° de Factura de los productos con stock");
-            return false;
-        }
+        //if ($txtNumeroFacturaCE.val() === "" || $txtNumeroFacturaCE.val() == null) {
+        //    app.message.error("Validación", "Debe ingresar el N° de Factura de los productos con stock");
+        //    return false;
+        //}
        
 
         //Validación de numero de series agregadas:
@@ -2557,8 +2617,8 @@
                 EstadoAprobacion: $TipoSolicitud.val(),
                 CodigoWorkFlow: $codigoWorkflow.val(),
                 NumeroGuiaRemision: $txtNumeroGuiaRemisionCE.val(),
-                NumeroFactura: $txtNumeroFacturaCE.val(),
-                FechaEntrega: $dateEntregaPedidoCE.val()
+                NumeroFactura: $txtNumeroFactura.val(),
+                FechaEntrega: $dateEntregaPedido.val()
             }
             var objParam = JSON.stringify(obj);
             var fnDoneCallback = function (data) {
@@ -3067,6 +3127,9 @@
                 $txtNumeroFacturaServ.val(data.Result.ContadorCabecera.NumeroFactura);
                 $dateProgramacionServ.val(data.Result.ContadorCabecera.FechaProgramacionTecnico);
 
+                $txtNumeroFactura.val(data.Result.ContadorCabecera.NumeroFacturaDespacho);
+                $dateEntregaPedido.val(data.Result.ContadorCabecera.FechaEntregaPedido);
+
                 if (data.Result.ContadorCabecera.ContadorSinStock > 0) {
 
 
@@ -3128,14 +3191,14 @@
                    
 
 
-                    $txtNumeroFacturaSE.val(data.Result.DespachoCabeceraSinStock.NumeroFactura);
+                    //$txtNumeroFacturaSE.val(data.Result.DespachoCabeceraSinStock.NumeroFactura);
                     $txtNumeroGuiaRemisionSE.val(data.Result.DespachoCabeceraSinStock.NumeroGuiaRemision);
 
 
 
                     if (data.Result.ContadorCabecera.GestionLogSinStock > 0) {
                         $dateEntregaPedidoSE.prop('disabled', true);
-                        $txtNumeroFacturaSE.prop('disabled', true);
+                      //  $txtNumeroFacturaSE.prop('disabled', true);
                         $txtNumeroGuiaRemisionSE.prop('disabled', true);
                         $opendateEntregaPedidoSE.prop('disabled', true);
                     }
@@ -3148,13 +3211,13 @@
                         $dateEntregaPedidoCE.val(data.Result.DespachoCabeceraConStock.FechaEntrega);
                     }
 
-                    $txtNumeroFacturaCE.val(data.Result.DespachoCabeceraConStock.NumeroFactura);
+                    //$txtNumeroFacturaCE.val(data.Result.DespachoCabeceraConStock.NumeroFactura);
                     $txtNumeroGuiaRemisionCE.val(data.Result.DespachoCabeceraConStock.NumeroGuiaRemision);
 
 
                     if (data.Result.ContadorCabecera.GestionLogConStock > 0) {
                         $dateEntregaPedidoCE.prop('disabled', true);
-                        $txtNumeroFacturaCE.prop('disabled', true);
+                        //$txtNumeroFacturaCE.prop('disabled', true);
                         $txtNumeroGuiaRemisionCE.prop('disabled', true);
                         $opendateEntregaPedidoCE.prop('disabled', true);
                     }

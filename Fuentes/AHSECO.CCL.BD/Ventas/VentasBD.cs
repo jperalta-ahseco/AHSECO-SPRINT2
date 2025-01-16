@@ -1217,7 +1217,9 @@ namespace AHSECO.CCL.BD.Ventas
                             GestionLogServicio = reader.IsDBNull(reader.GetOrdinal("GESFAC")) ? 0 : reader.GetInt32(reader.GetOrdinal("GESFAC")),
                             FechaProgramacionTecnico = reader.IsDBNull(reader.GetOrdinal("FECHAPROGTEC")) ? "" : reader.GetString(reader.GetOrdinal("FECHAPROGTEC")),
                             FechaFactura = reader.IsDBNull(reader.GetOrdinal("FECHAFACTURA")) ? "" : reader.GetString(reader.GetOrdinal("FECHAFACTURA")),
-                            NumeroFactura = reader.IsDBNull(reader.GetOrdinal("NUMFACTSERV")) ? "" : reader.GetString(reader.GetOrdinal("NUMFACTSERV"))
+                            NumeroFactura = reader.IsDBNull(reader.GetOrdinal("NUMFACTSERV")) ? "" : reader.GetString(reader.GetOrdinal("NUMFACTSERV")),
+                            NumeroFacturaDespacho = reader.IsDBNull(reader.GetOrdinal("NUMFACTURA")) ? "" : reader.GetString(reader.GetOrdinal("NUMFACTURA")),
+                            FechaEntregaPedido = reader.IsDBNull(reader.GetOrdinal("FECHAENTREGA")) ? "" : reader.GetString(reader.GetOrdinal("FECHAENTREGA"))
                         };
                     }
 

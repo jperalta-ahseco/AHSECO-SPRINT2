@@ -84,6 +84,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             //Para los botones de despacho:
             ViewBag.Btn_FinalizarVenta = "none";
+            ViewBag.Btn_GuardarFacturaLogistica = "none";
+            ViewBag.Btn_EditarFacturaLogistica = "none";
             ViewBag.Btn_GuardarDespacho = "none";
             ViewBag.Btn_GuardarGestionLogistica = "none";
             ViewBag.Btn_EnviarGuia = "none";
@@ -119,6 +121,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.FechaFactura = "disabled";
             ViewBag.TxtNumeroFacturaServ = "disabled";
             ViewBag.Btn_GuardarFactura = "none";
+            ViewBag.VerFacturacion = false;
+            ViewBag.TxtNumFactura = "disabled";
+            ViewBag.FecEntregaPedido = "disabled";
 
 
             ViewBag.Btn_EnviarGuiaCS = "none";
@@ -350,7 +355,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnProcVentas)
                     {
 
-                        
+                        ViewBag.VerFacturacion = true;
                         ViewBag.VerGestionLogistica = true;
                         if (validarDespacho.Result != null)
                         {
@@ -471,6 +476,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                         ViewBag.Btn_FinalizarVenta = "inline-block";
                         ViewBag.VerGestionLogistica = true;
+                        ViewBag.VerFacturacion = true;
 
                         if (validarDespacho.Result != null)
                         {
@@ -511,6 +517,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                     if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Finalizado)
                     {
+                        ViewBag.VerFacturacion = true;
                         ViewBag.VerGestionLogistica = true;
                         if (validarDespacho.Result != null)
                         {
@@ -554,6 +561,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             soli.Tipo_Sol != ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio)
                         {
                             ViewBag.VerGestionLogistica = true;
+                            ViewBag.VerFacturacion = true;
                             if (validarDespacho.Result.ContadorSinStock > 0)
                             {
                                 ViewBag.VerNavSinStock = true;
@@ -597,6 +605,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                            soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Finalizado ||
                            soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.CotSinVenta)
                     {
+                        ViewBag.VerFacturacion = true;
                         ViewBag.VerGestionLogistica = true;
                         ViewBag.SeccionImpSS = true;
                         ViewBag.SeccionLogSS = true;
@@ -643,6 +652,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     ViewBag.TxtNumeroFacturaCE = "";
                     ViewBag.TxtNumeroGuiaRemisionCE = "";
                     ViewBag.TxtNumeroSerieCE = "";
+                    ViewBag.VerFacturacion = true;
 
                     if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnProcVentas
                    || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.VentaProg
@@ -653,13 +663,16 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                     if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnProcVentas)
                     {
+                        
                         if (validarDespacho.Result != null)
                         {
                             if (validarDespacho.Result.ContadorSinStock > 0 && validarDespacho.Result.EnvioGPSinStock > 0)
                             {
 
                                 ViewBag.VerNavSinStock = true;
-
+                                ViewBag.TxtNumFactura = "";
+                                ViewBag.FecEntregaPedido = "";
+                               // ViewBag.Btn_EditarFacturaLogistica = "inline-block";
                                 ViewBag.SeccionImpSS = true;
                                 ViewBag.SeccionLogSS = true;
 
@@ -688,7 +701,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             if (validarDespacho.Result.ContadorConStock > 0 && validarDespacho.Result.EnvioGPConStock > 0)
                             {
                                 ViewBag.VerNavConStock = true;
-
+                                ViewBag.TxtNumFactura = "";
+                                ViewBag.FecEntregaPedido = "";
+                               // ViewBag.Btn_EditarFacturaLogistica = "inline-block";
                                 ViewBag.SeccionLogCS = true;
 
                                 if (validarDespacho.Result.GestionLogConStock > 0)
@@ -735,6 +750,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.VentaProg
                    || soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Finalizado)
                     {
+                        if(soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.VentaProg)
+                        {
+                            ViewBag.Btn_EditarFacturaLogistica = "inline-block";
+                        }
+
                         if (validarDespacho.Result != null)
                         {
                             if (validarDespacho.Result.ContadorSinStock > 0 && validarDespacho.Result.EnvioGPSinStock > 0)
@@ -770,6 +790,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnProcVentas)
                     {
                         ViewBag.VerGestionLogistica = true;
+                        ViewBag.VerFacturacion = true;
                         if (validarDespacho.Result != null)
                         {
                             if (validarDespacho.Result.ContadorSinStock > 0 && soli.Tipo_Sol != ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio)
@@ -793,6 +814,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                        soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Finalizado ||
                        soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.CotSinVenta)
                     {
+                        ViewBag.VerFacturacion = true;
                         ViewBag.VerGestionLogistica = true;
                         if (validarDespacho.Result != null)
                         {
@@ -822,6 +844,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                     if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnProcVentas)
                     {
+                        ViewBag.VerFacturacion = true;
                         ViewBag.VerGestionLogistica = true;
                         if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio
                             || soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
@@ -860,6 +883,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.VentaProg ||
                         soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Finalizado)
                     {
+                        ViewBag.VerFacturacion = true;
                         ViewBag.VerGestionLogistica = true;
                         if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio
                            || soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
