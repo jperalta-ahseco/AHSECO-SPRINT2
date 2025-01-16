@@ -6,7 +6,7 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_PREV_SEL_PREVENTIVOS]
 /*=======================================================================================================
 	Nombre:				Fecha:				Descripcion:
 	Diego Bazalar		28.11.24		Realiza el select de los mantenimientod preventivos.
-	EXEC [USP_PREV_SEL_PREVENTIVOS] @IsNumReq='', @IsNumSerie='0', @IsNumProc='0',@IsNumOrdCompra='0',@IsNumFianza='0',@IsEmpresa='0',@IsPeriodoInicio=NULL,@IsPeriodoFinal=NULL
+	EXEC [USP_PREV_SEL_PREVENTIVOS] @IsNumReq='', @IsNumSerie='0', @IsNumProc='0',@IsNumOrdCompra='0',@IsNumFianza='0',@IsEmpresa='0',@IsPeriodoInicio=NULL,@IsPeriodoFinal=NULL,@IsRUC= '0',@IsNomEquipo='',@IsMarca='',@IsUbigeoDestino='000000',@IsModelo=''
 =======================================================================================================*/
 	 @IsNumReq			BIGINT
 	,@IsNumSerie		VARCHAR(100)
@@ -229,8 +229,8 @@ SET NOCOUNT ON
 	LEFT JOIN (SELECT [DESMARCA],[CODIGOPRODUCTO],[DESC_MODELO] FROM OPENQUERY([AH-SRV4],'
 		SELECT
 			A.AR_CCODIGO CODIGOPRODUCTO,
-			D.TG_CDESCRI DESMARCA,
-			MO.TG_CDESCRI AS DESC_MODELO
+			ISNULL(D.TG_CDESCRI,'''') DESMARCA,
+			ISNULL(MO.TG_CDESCRI,'''') AS DESC_MODELO
 		FROM  [RSFACCAR].[dbo].[AL0007ARTI] A WITH(NOLOCK)
 		LEFT JOIN  [RSFACCAR].[dbo].[AL0007STOC] B WITH(NOLOCK) ON A.AR_CCODIGO=B.SK_CCODIGO
 		LEFT JOIN  [RSFACCAR].[dbo].[AL0007TABL] D WITH(NOLOCK) ON D.TG_CCOD=''V7'' AND A.AR_CMARCA=D.TG_CCLAVE 
