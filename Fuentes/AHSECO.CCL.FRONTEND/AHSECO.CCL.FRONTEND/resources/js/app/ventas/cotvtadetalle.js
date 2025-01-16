@@ -2133,6 +2133,14 @@ var cotvtadet = (function ($, win, doc) {
             vFecCotizacion = app.stringToDate($dateCotizacion.val());
         }
 
+        var fnsol = app.stringToDate($dateSolicitud.val());
+        var fnCot = app.stringToDate($dateCotizacion.val());
+
+        if (fnsol > fnCot) {
+            app.message.error("Validación", "La Fecha de Cotización no puede ser menor a la Fecha de Solicitud");
+            return;
+        };
+
         var vPorcDscto = null;
         if ($txtPorcentajeDscto.val() != "") {
             if (app.validaNumeroDecimal($txtPorcentajeDscto.val())) { vPorcDscto = parseFloat($txtPorcentajeDscto.val()); }

@@ -4572,24 +4572,24 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 var oResSolicitud = ventasBL.ObtenerSolicitudes(new SolicitudDTO { Id_Solicitud = int.Parse(numSol) });
                 var oSolicitudActual = oResSolicitud.Result.First();
 
-                if (lstItems != null)
-                {
-                    var swProductos = lstItems.Any(x => x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto && x.Cantidad > 0);
-                    var swServicios = lstItems.Any(x => x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Servicio && x.Cantidad > 0);
-                    if (oSolicitudActual.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio ||
-                        oSolicitudActual.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
-                    {
-                        if (!swServicios) { throw new Exception("La cotización no contiene servicios para la venta."); }
-                    }
-                    if (oSolicitudActual.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaEquipos ||
-                        oSolicitudActual.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaMateriales ||
-                        oSolicitudActual.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.RepuestosoConsumibles ||
-                        oSolicitudActual.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
-                    {
-                        if (!swProductos) { throw new Exception("La cotización no contiene productos para la venta."); }
-                    }
-                }
-                else { throw new Exception("La cotización no contiene servicios o productos para la venta."); }
+                //if (lstItems != null)
+                //{
+                //    var swProductos = lstItems.Any(x => x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto && x.Cantidad > 0);
+                //    var swServicios = lstItems.Any(x => x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Servicio && x.Cantidad > 0);
+                //    if (oSolicitudActual.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio ||
+                //        oSolicitudActual.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
+                //    {
+                //        if (!swServicios) { throw new Exception("La cotización no contiene servicios para la venta."); }
+                //    }
+                //    if (oSolicitudActual.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaEquipos ||
+                //        oSolicitudActual.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaMateriales ||
+                //        oSolicitudActual.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.RepuestosoConsumibles ||
+                //        oSolicitudActual.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
+                //    {
+                //        if (!swProductos) { throw new Exception("La cotización no contiene productos para la venta."); }
+                //    }
+                //}
+                //else { throw new Exception("La cotización no contiene servicios o productos para la venta."); }
 
                 ActualizarCotizacion(oCotizacion);
 
