@@ -2132,13 +2132,13 @@ var cotvtadet = (function ($, win, doc) {
         var vFecCotizacion = null;
         if ($dateCotizacion.val() != "") {
             vFecCotizacion = app.stringToDate($dateCotizacion.val());
-        }
+        };
 
         var fnsol = app.stringToDate($dateSolicitud.val());
         var fnCot = app.stringToDate($dateCotizacion.val());
 
         if (fnsol > fnCot) {
-            app.message.error("Validación", "La Fecha de Cotización no puede ser menor a la Fecha de Solicitud");
+            app.message.error("Validaci&oacute;n", "La Fecha de Cotizaci&oacute;n no puede ser menor a la Fecha de Solicitud");
             return;
         };
 
