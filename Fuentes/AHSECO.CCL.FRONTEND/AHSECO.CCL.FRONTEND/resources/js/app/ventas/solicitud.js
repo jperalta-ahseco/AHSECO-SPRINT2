@@ -3213,6 +3213,8 @@
                     $btnAgregarDocumento.hide();
                 }
 
+               
+
                 if (($estadoSol.val() == "SFIN" || $estadoSol.val() == "NOVT" || $estadoSol.val() =="VTPG")) {
                     $btnCargarDocumento.hide();
                     $btnAgregarObservacion.hide();
@@ -3221,6 +3223,7 @@
 
                 if ($idRolUsuario.val() === "SGI_VENTA_LOGISTICA" && $estadoSol.val() == "VTPG") {
                     $btnAgregarDocumento.show();
+                    $btnCargarDocumento.show();
                 }
 
                 if (data.Result.ContadorCabecera.FechaFactura != "") {

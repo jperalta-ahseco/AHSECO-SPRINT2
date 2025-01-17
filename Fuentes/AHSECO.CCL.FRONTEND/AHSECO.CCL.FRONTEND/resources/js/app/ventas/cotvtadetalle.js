@@ -195,6 +195,8 @@ var cotvtadet = (function ($, win, doc) {
         listarCotDetItems();
         cargarGarantias();
 
+    
+
     }
 
     function ObtenerFiltrosPrecios() {
@@ -556,7 +558,7 @@ var cotvtadet = (function ($, win, doc) {
 
         if ($DI_radTieneStock_No.is(':checked')) {
             $DI_txtCostoFOB.val("");
-            $DI_txtCostoFOB.removeAttr("disabled");
+            //$DI_txtCostoFOB.removeAttr("disabled");
         }
 
         //Si no es para VALORIZACION se deshabilitará
@@ -570,6 +572,8 @@ var cotvtadet = (function ($, win, doc) {
                 $DI_txtCostoFOB.attr("disabled", "disabled");
             }
         }
+
+
 
     }
 
@@ -784,6 +788,7 @@ var cotvtadet = (function ($, win, doc) {
             $DI_btnGuardar.css("display", "");
         }
 
+     
         //Para flujo de valorizacion puede agregar el COSTO FOB y el VALOR UNITARIO
         if ($PermitirEditarValorizacion.val() == "S") {
             if ($idRolUsuario.val() == $RolVenta_Gerente.val()) {
@@ -898,11 +903,14 @@ var cotvtadet = (function ($, win, doc) {
     }
 
     function cargarPropiedadesPorCotDetItem(oFeatures) {
-
         if (oFeatures != null) {
 
             if (oFeatures.IsEnabled) { $DI_btnGuardar.css("display", ""); }
             else { $DI_btnGuardar.css("display", "none"); }
+
+            if ($idRolUsuario.val() === "SGI_VENTA_GERENTE") {
+                $DI_btnGuardar.css("display", "none");
+            }
 
             var arrSubProp = oFeatures.SubPropiedades
 
@@ -1374,15 +1382,15 @@ var cotvtadet = (function ($, win, doc) {
         }
 
         if ($DI_pnlCostos_PrecioVenta.css("display") != "none") {
-            if ($DI_pnlCostos_CostoFOB.css("display") != "none") {
-                if ($DI_txtCostoFOB.attr("readonly") != "readonly" && $DI_txtCostoFOB.attr("disabled") != "disabled") {
-                    if ($DI_txtCostoFOB.val() == null || $DI_txtCostoFOB.val() === "") {
-                        app.message.error("Validaci&oacute;n", "El campo Ex-Work no debe estar vac&iacute;o.");
-                            return false;
-                    }
+            //if ($DI_pnlCostos_CostoFOB.css("display") != "none") {
+            //    if ($DI_txtCostoFOB.attr("readonly") != "readonly" && $DI_txtCostoFOB.attr("disabled") != "disabled") {
+            //        if ($DI_txtCostoFOB.val() == null || $DI_txtCostoFOB.val() === "") {
+            //            app.message.error("Validaci&oacute;n", "El campo Ex-Work no debe estar vac&iacute;o.");
+            //                return false;
+            //        }
                     
-                }
-            }
+            //    }
+            //}
             if ($DI_pnlCostos_ValorUnitario.css("display") != "none") {
                 if ($DI_txtValorUnitario.attr("readonly") != "readonly" && $DI_txtValorUnitario.attr("disabled") != "disabled") {
                     if (!app.validaNumeroDecimal($DI_txtValorUnitario.val())) {
@@ -1709,7 +1717,8 @@ var cotvtadet = (function ($, win, doc) {
                     render: function (data, type, row) {
                         if (data == null) { data = ""; }
                         else { data }
-                        return '<center>' + data + '</center>';
+                        var casilla = "<input type='text' id='ExWork" + row.NroItem + "' value='" + data + "' style='border: none;background-color: transparent; outline: none;' readonly  maxlength='50'/>";
+                        return '<center>' + casilla + '</center>';
                     }
                 },
                 {
@@ -1767,13 +1776,24 @@ var cotvtadet = (function ($, win, doc) {
                         var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
                         var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
                         var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',2)"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
-                        
+                        var editar_FOB = '<a id="btnEditarFOBItem' + strID +'" class="botonDetCot btn btn-info btn-xs" title="Editar Ex-Work" href="javascript: cotvtadet.editarExWork(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',' + String.fromCharCode(39) + row.NroItem + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Ex-Work</a>'; 
+                        var guardar_FOB = '<a id="btnGuardarFOBItem' + strID + '" class="botonDetCot btn btn-info btn-xs" title="Guardar Ex-Work" href="javascript: cotvtadet.guardarExWork(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',' + String.fromCharCode(39) + row.NroItem + String.fromCharCode(39) + ')" style=' + String.fromCharCode(39) + 'display:none' + String.fromCharCode(39) +'><i class="fa fa-pencil-save" aria-hidden="true"></i>Guardar</a>'; 
+
                         if ($estadoSol.val() == "CAPR" || $estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG") {
                             return '<center>' + ver + '</center>';
                         }
                         else {
+                            
+                            var fob = "";
+                            var guardar_fob = "";
+                            if (oFeatures.IsEnabled && $idRolUsuario.val() === "SGI_VENTA_GERENTE") {
+                                fob = editar_FOB;
+                                guardar_fob = guardar_FOB;
+                                editar = ver;
+                            }
+
                             if (!oFeatures.IsEnabled) { editar = ver; }
-                            return '<center>' + hidden + editar + '</center>';
+                            return '<center>' + hidden + editar + fob + guardar_fob+ '</center>';
                         }
                     }
                 }
@@ -2282,6 +2302,60 @@ var cotvtadet = (function ($, win, doc) {
         return app.message.confirm("Confirmaci&oacute;n", "Desea guardar la valoraci&oacute;n?", "S&iacute;", "No", fnSi);
     }
 
+    function editarExWork(id, NroItem) {
+        $('#btnEditarFOBItem' + id).hide();
+        $('#btnGuardarFOBItem' + id).show();
+
+
+        $('#ExWork' + NroItem).removeAttr('readonly');
+        $('#ExWork' + NroItem).css('border', '1px solid ');
+        $('#ExWork' + NroItem).css('background-color', 'white');
+        $('#ExWork' + NroItem).css('display', 'block');
+    }
+
+    function guardarExWork(id, NroItem) {
+
+        var text_exwork = $('#ExWork' + NroItem).val();
+        if (text_exwork === "" || text_exwork === null) {
+            $('#ExWork' + NroItem).focus();
+            app.message.error("Validacion", "Debe ingresar el valor del Ex-Work.");
+            return false;
+        }
+
+        var fnSi = function () {
+
+            var m = "POST";
+            var url = "BandejaSolicitudesVentas/MantenimientoDespacho";
+            var obj = {
+                Tipo: "W",
+                CodigoSolicitud: id,
+                NumeroOrden: text_exwork
+            }
+            var objParam = JSON.stringify(obj);
+            var fnDoneCallback = function (data) {
+                var fnCallback = function () {
+                    //location.reload();
+                    $('#ExWork' + NroItem).css('border', 'none');
+                    $('#ExWork' + NroItem).css('background-color', 'transparent');
+                    $('#ExWork' + NroItem).css('outline', 'none');
+                    $('#ExWork' + NroItem).prop('readonly', true);
+                };
+                if (data.Result.Codigo > 0) {
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+                else {
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", null);
+                }
+
+            };
+            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.RegistrarGestionVenta);
+        }
+        return app.message.confirm("Ventas", "Esta seguro que desea guardar el Ex-Work?", "Si", "No", fnSi, null);
+
+
+      
+    }
+
     return {
         buscarItems: buscarItems,
         ObtenerFiltrosPrecios: ObtenerFiltrosPrecios,
@@ -2302,6 +2376,9 @@ var cotvtadet = (function ($, win, doc) {
         listarCotDetItems: listarCotDetItems,
         //listarCotDetItemsTemp: listarCotDetItemsTemp,
         //listarCotDetItemsCostos: listarCotDetItemsCostos,
-        recotizarSolicitud: recotizarSolicitud
+        recotizarSolicitud: recotizarSolicitud,
+        editarExWork: editarExWork,
+        guardarExWork: guardarExWork
+
     }
 })(window.jQuery, window, document);
