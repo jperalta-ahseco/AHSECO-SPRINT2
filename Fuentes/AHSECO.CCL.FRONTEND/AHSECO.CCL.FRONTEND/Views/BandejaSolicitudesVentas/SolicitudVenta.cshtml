@@ -696,11 +696,11 @@
                                                         <label for="radCalculo">C&aacute;lculo por: </label>
                                                         <div class="radio-group">
                                                             <label>
-                                                                <input type="radio" id="radCalculo" aria-describedby="sizing-addon3" readonly value="OC" />
+                                                                <input type="radio" id="radCalculo" aria-describedby="sizing-addon3" readonly value="1" name="opcion" />
                                                                 Por Orden de Compra
                                                             </label>
                                                             <label>
-                                                                <input type="radio" id="radCalculo" aria-describedby="sizing-addon3" readonly value="CO" />
+                                                                <input type="radio" id="radCalculo2" aria-describedby="sizing-addon3" readonly value="2" name="opcion" />
                                                                 Por Contrato
                                                             </label>
                                                         </div>
@@ -1125,17 +1125,33 @@
         });
     });
 
-    $('#txtNroContrato').keyup(function (event) {
+    $('#txtNroOrdenCompra').keyup(function (event) {
         // Captura el valor actual del campo de texto
         const valor = $(this).val();
-        console.log(valor);
 
-        if (valor == "") {
+        if (valor == "" && $('#cmbTipoVenta').val() == "TVEN02") {
+            $('input[name="opcion"][value="1"]').prop('checked', false);
             $('#dateOrdenCompra').val('');
+            $('#txtFechaEntregaMax').val('');
             $('#dateOrdenCompra').prop('disabled', true);
         }
         else {
             $('#dateOrdenCompra').prop('disabled', false);
+        }
+    });
+
+    $('#txtNroContrato').keyup(function (event) {
+        // Captura el valor actual del campo de texto
+        const valor = $(this).val();
+
+        if (valor == "" && $('#cmbTipoVenta').val() == "TVEN02") {
+            $('input[name="opcion"][value="2"]').prop('checked', false);
+            $('#dateFechaContrato').val('');
+            $('#txtFechaEntregaMax').val('');
+            $('#dateFechaContrato').prop('disabled', true);
+        }
+        else {
+            $('#dateFechaContrato').prop('disabled', false);
         }
     });
 

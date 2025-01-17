@@ -346,6 +346,8 @@
     var $txtNroContrato = $("#txtNroContrato");
     var $dateFechaContrato = $("#dateFechaContrato");
     var $openRegdateFechaContrato = $("#openRegdateFechaContrato");
+    var $radCalculo = $("#radCalculo");
+    var $radCalculo2 = $("#radCalculo2");
 
     var tecnicosAsig = [];
 
@@ -572,7 +574,46 @@
         $btnCargarOtroDocumento.click($btnCargarOtroDocumento_click);
         $btnEditarFacturaLogistica.click($btnEditarFacturaLogistica_click);
         $btnGuardarFacturaLogistica.click($btnGuardarFacturaLogistica_click);
+        $radCalculo.click($radCalculo_click);
+        $radCalculo2.click($radCalculo2_click);
     };
+
+    function CalcularFechaEntregaMaximaxContrato() {
+        var dias = Number($txtPlazoEntrega.val());
+        var fecha = $dateFechaContrato.val();
+        const partes = fecha.split('/');
+        let nuevaFecha = new Date(partes[2], partes[1] - 1, partes[0]);
+        nuevaFecha.setDate(nuevaFecha.getDate() + dias);
+        var dia = String(nuevaFecha.getDate()).padStart(2, '0');
+        var mes = String(nuevaFecha.getMonth() + 1).padStart(2, '0');
+        var year = nuevaFecha.getFullYear();
+        $txtFechaEntregaMax.val(`${dia}/${mes}/${year}`);
+    }
+
+    function $radCalculo_click() {
+        if ($dateOrdenCompra.val() === "" || $dateOrdenCompra.val() == null) {
+            app.message.error("Validacion", "No se puede realizar el cálculo de la Fecha de Entrega Máxima. Debe ingresar la Fecha de Orden de Compra");
+            $radCalculo.prop('checked', false);
+            $txtFechaEntregaMax.val("");
+            return;
+        }
+
+        CalcularFechaEntregaMaxima();
+        $radCalculo.prop('checked', true);
+        $radCalculo2.prop('checked', false);
+    }
+
+    function $radCalculo2_click() {
+        if ($dateFechaContrato.val() === "" || $dateFechaContrato.val() == null) {
+            app.message.error("Validacion", "No se puede realizar el cálculo de la Fecha de Entrega Máxima. Debe ingresar la Fecha del Contrato");
+            $radCalculo2.prop('checked', false);
+            $txtFechaEntregaMax.val("");
+            return;
+        }
+        CalcularFechaEntregaMaximaxContrato();
+        $radCalculo.prop('checked', false);
+        $radCalculo2.prop('checked', true);
+    }
 
     function $btnGuardarFacturaLogistica_click() {
 
@@ -2760,7 +2801,7 @@
 
     function $btnGuardarGestion_click() {
 
-        if (($txtNroOrdenCompra.val() === "" || $txtNroOrdenCompra.val() == null) &&
+        if ($cmbTipoVenta.val() === "TVEN02" && ($txtNroOrdenCompra.val() === "" || $txtNroOrdenCompra.val() == null) &&
             ($txtNroContrato.val() === "" || $txtNroContrato.val() == null)) {
             app.message.error("Validación", "Debe ingresar N° de Orden de Compra y/o. N° de Contrato.");
             return false;
@@ -2772,8 +2813,13 @@
             app.message.error("Validación", "Debe ingresar el número de orden de compra.");
             return false;
         }
-        if ($dateOrdenCompra.val() === "" || $dateOrdenCompra.val() == null) {
+        if ($cmbTipoVenta.val() === "TVEN01" &&($dateOrdenCompra.val() === "" || $dateOrdenCompra.val() == null)) {
             app.message.error("Validación", "Debe ingresar la fecha de orden de compra.");
+            return false;
+        }
+
+        if ($txtFechaEntregaMax.val() === "" || $txtFechaEntregaMax.val() == null) {
+            app.message.error("Validación", "Debe ingresar la fecha de entrega máxima.");
             return false;
         }
         var fnSi = function () {
@@ -2843,7 +2889,10 @@
     }
 
     function $dateOrdenCompra_change() {
-        CalcularFechaEntregaMaxima();
+        if ($cmbTipoVenta.val() == "TVEN01") {
+            CalcularFechaEntregaMaxima();
+        }
+        
     }
     
     function changeTipoVenta() {
@@ -3130,7 +3179,12 @@
                 }
 
                 if ($estadoSol.val() == "PRVT" || $estadoSol.val() == "CAPR") {
-                    CalcularFechaEntregaMaxima();
+                    if ($cmbTipoVenta.val() == "TVEN01") {
+                        CalcularFechaEntregaMaxima();
+                    } else {
+                        $('#dateOrdenCompra').prop('disabled', true);
+                        $('#dateFechaContrato').prop('disabled', true);
+                    }  
                 }
                 
                 if ($estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG" || $estadoSol.val() == "SFIN" || $estadoSol.val() == "NOVT") {
