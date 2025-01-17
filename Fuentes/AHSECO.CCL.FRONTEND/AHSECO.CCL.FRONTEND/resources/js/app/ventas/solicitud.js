@@ -2338,17 +2338,17 @@
         if ($TipoSolicitud.val() === "TSOL04") //Para ventas de materiales y venta de equipos:
         {
             var documento_guiaRemision = 0;
-            var documento_factura = 0;
-            adjuntos.forEach(function (currentValue, index, arr) {
-                if (adjuntos[index].CodigoTipoDocumento == "DVT03") { //Factura
-                    documento_factura = 1;
-                }
-            });
+            //var documento_factura = 0;
+            //adjuntos.forEach(function (currentValue, index, arr) {
+            //    if (adjuntos[index].CodigoTipoDocumento == "DVT03") { //Factura
+            //        documento_factura = 1;
+            //    }
+            //});
 
-            if (documento_factura === 0) {
-                app.message.error("Validación", "Debe adjuntar un documento de Factura.");
-                return false;
-            }
+            //if (documento_factura === 0) {
+            //    app.message.error("Validación", "Debe adjuntar un documento de Factura.");
+            //    return false;
+            //}
             adjuntos.forEach(function (currentValue, index, arr) {
                 if (adjuntos[index].CodigoTipoDocumento == "DVT08") { //Guia de Remision
                     documento_guiaRemision = 1;
@@ -2665,17 +2665,17 @@
         if ($TipoSolicitud.val() === "TSOL04") //Para ventas de materiales y venta de equipos:
         {
             var documento_guiaRemision = 0;
-            var documento_factura = 0;
-            adjuntos.forEach(function (currentValue, index, arr) {
-                if (adjuntos[index].CodigoTipoDocumento == "DVT03") { //Factura
-                    documento_factura = 1;
-                }
-            });
+            //var documento_factura = 0;
+            //adjuntos.forEach(function (currentValue, index, arr) {
+            //    if (adjuntos[index].CodigoTipoDocumento == "DVT03") { //Factura
+            //        documento_factura = 1;
+            //    }
+            //});
 
-            if (documento_factura === 0) {
-                app.message.error("Validación", "Debe adjuntar un documento de Factura.");
-                return false;
-            }
+            //if (documento_factura === 0) {
+            //    app.message.error("Validación", "Debe adjuntar un documento de Factura.");
+            //    return false;
+            //}
             adjuntos.forEach(function (currentValue, index, arr) {
                 if (adjuntos[index].CodigoTipoDocumento == "DVT08") { //Guia de Remision
                     documento_guiaRemision = 1;
