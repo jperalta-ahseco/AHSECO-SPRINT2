@@ -373,10 +373,24 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         }
                         if (validarDespacho.Result != null)
                         {
+                            if(validarDespacho.Result.ContadorConStock > 0 && validarDespacho.Result.ContadorSinStock > 0
+                                 && validarDespacho.Result.EnvioGPConStock == 0 && validarDespacho.Result.EnvioBOSinStock == 0)
+                            {
+                                ViewBag.Btn_EditarDespacho = "inline-block";
+                            }
+                            else if(validarDespacho.Result.ContadorConStock > 0 && validarDespacho.Result.EnvioGPConStock == 0)
+                            {
+                                ViewBag.Btn_EditarDespacho = "inline-block";
+                            }
+                            else if (validarDespacho.Result.ContadorSinStock > 0 && validarDespacho.Result.EnvioBOSinStock == 0)
+                            {
+                                ViewBag.Btn_EditarDespacho = "inline-block";
+                            }
+
+
                             if (validarDespacho.Result.ContadorSinStock > 0 && soli.Tipo_Sol != ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio)
                             {
 
-                               ViewBag.Btn_EditarDespacho = "inline-block";
                                ViewBag.VerNavSinStock = true;
 
                                 if (validarDespacho.Result.ContadorConStock == 0)
@@ -434,7 +448,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                                 if (validarDespacho.Result.EnvioGPConStock == 0)
                                 {
-                                    ViewBag.Btn_EditarDespacho = "inline-block";
+                                    
                                     if(validarDespacho.Result.GenerarGuiaPedidoConStock > 0)
                                     {
                                         ViewBag.Btn_EnviarGuiaCS = "inline-block";
@@ -5370,54 +5384,66 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             var ventasBL = new VentasBL();
             datos.UsuarioRegistra = User.ObtenerUsuario();
 
+            //VALIDA SI EXISTE REGISTRO DE SERIE:
+            var datosDespachoDTO = new DatosDespachoDTO();
+            datosDespachoDTO.Tipo = "S";
+            datosDespachoDTO.Stock = datos.Tipo;
+            datosDespachoDTO.NumeroOrden = datos.NumeroSerie;
+            datosDespachoDTO.CodigoSolicitud = datos.codDetalleDespacho;
+            datosDespachoDTO.Observacion = datos.Series;
+            datosDespachoDTO.UsuarioRegistro = User.ObtenerUsuario();
+            datosDespachoDTO.NombrePerfil = User.ObtenerPerfil();
+            var valida_series = ventasBL.MantenimientoDespacho(datosDespachoDTO);
 
-            if(datos.FlagCarga > 0)
+            if(valida_series.Result.Codigo > 0)
             {
-                // Convertir el string Base64 a un arreglo de bytes
-                byte[] archivoBytes = Convert.FromBase64String(datos.Archivo);
+                if (datos.FlagCarga > 0)
+                {
+                    // Convertir el string Base64 a un arreglo de bytes
+                    byte[] archivoBytes = Convert.FromBase64String(datos.Archivo);
 
-                var correlativo = DateTime.Now.ToString("yyyyMMddHHmmss");
-                string ruta_temporal = ConfigurationManager.AppSettings.Get("tempFiles");
-                string UploadSize = ConfigurationManager.AppSettings.Get("UploadSize");
-                string folder = DateTime.Now.ToString("yyyyMM");
-                string rutafinal = ruta_temporal + folder;
-                string nombre = "VENT" + correlativo;
-                string rutaDocumento = folder + "\\" + nombre + "." + datos.Extension;
-                string rutaArchivo = rutafinal + "\\" + nombre + "." + datos.Extension;
+                    var correlativo = DateTime.Now.ToString("yyyyMMddHHmmss");
+                    string ruta_temporal = ConfigurationManager.AppSettings.Get("tempFiles");
+                    string UploadSize = ConfigurationManager.AppSettings.Get("UploadSize");
+                    string folder = DateTime.Now.ToString("yyyyMM");
+                    string rutafinal = ruta_temporal + folder;
+                    string nombre = "VENT" + correlativo;
+                    string rutaDocumento = folder + "\\" + nombre + "." + datos.Extension;
+                    string rutaArchivo = rutafinal + "\\" + nombre + "." + datos.Extension;
 
-                bool exists = System.IO.Directory.Exists(rutafinal);
+                    bool exists = System.IO.Directory.Exists(rutafinal);
 
-                if (!exists)
-                    System.IO.Directory.CreateDirectory(rutafinal);
+                    if (!exists)
+                        System.IO.Directory.CreateDirectory(rutafinal);
 
-                // Guardar el archivo en la ruta especificada:
-                System.IO.File.WriteAllBytes(rutaArchivo, archivoBytes);
+                    // Guardar el archivo en la ruta especificada:
+                    System.IO.File.WriteAllBytes(rutaArchivo, archivoBytes);
 
-                var documentosBL = new DocumentosBL();
-                var documentoDTO = new DocumentoDTO();
-                documentoDTO.Accion = "I";
-                documentoDTO.NombreUsuario = User.ObtenerNombresCompletos();
-                documentoDTO.NombrePerfil = User.ObtenerPerfil();
-                documentoDTO.UsuarioRegistra = User.ObtenerUsuario();
-                documentoDTO.CodigoDocumento = 0;
-                documentoDTO.CodigoWorkFlow = datos.CodigoWorkFlow;
-                documentoDTO.CodigoTipoDocumento = "DVT08"; //Guia de Remision
-                documentoDTO.NombreDocumento = datos.NombreArchivo;
-                documentoDTO.VerDocumento = true;
-                documentoDTO.RutaDocumento = rutaDocumento;
-                documentoDTO.Eliminado = 0;
-                var doc = documentosBL.MantenimientoDocumentos(documentoDTO);
-                datos.RutaDocumento = rutaDocumento;
-                datos.CodigoDocumento = doc.Result.Codigo;
+                    var documentosBL = new DocumentosBL();
+                    var documentoDTO = new DocumentoDTO();
+                    documentoDTO.Accion = "I";
+                    documentoDTO.NombreUsuario = User.ObtenerNombresCompletos();
+                    documentoDTO.NombrePerfil = User.ObtenerPerfil();
+                    documentoDTO.UsuarioRegistra = User.ObtenerUsuario();
+                    documentoDTO.CodigoDocumento = 0;
+                    documentoDTO.CodigoWorkFlow = datos.CodigoWorkFlow;
+                    documentoDTO.CodigoTipoDocumento = "DVT08"; //Guia de Remision
+                    documentoDTO.NombreDocumento = datos.NombreArchivo;
+                    documentoDTO.VerDocumento = true;
+                    documentoDTO.RutaDocumento = rutaDocumento;
+                    documentoDTO.Eliminado = 0;
+                    var doc = documentosBL.MantenimientoDocumentos(documentoDTO);
+                    datos.RutaDocumento = rutaDocumento;
+                    datos.CodigoDocumento = doc.Result.Codigo;
+                }
+
+                var response = ventasBL.ActualizarNumeroSerie(datos);
+                return Json(response);
             }
-            
-
-           
-            
-            var response = ventasBL.ActualizarNumeroSerie(datos);
-
-
-            return Json(response);
+            else
+            {
+                return Json(valida_series);
+            }
         }
 
         [HttpPost]

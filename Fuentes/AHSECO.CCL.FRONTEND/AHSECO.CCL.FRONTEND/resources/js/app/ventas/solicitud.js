@@ -475,8 +475,10 @@
             $dateCotizacion.val(hoy());
         };
 
-        //$dateOrdenCompra.val(hoy());
-
+        //if ($cmbTipoVenta.val() === "TVEN01") {
+        //    $dateOrdenCompra.val(hoy());
+        //}
+       
         $dateEntregaPedidoCE.val(hoy());
         $dateIngresoAlmacenSE.val(hoy());
         $dateEntregaPedidoSE.val(hoy());
@@ -882,16 +884,25 @@
             $ArchivoBase64.val('');
             var codUbigeo = data.Result.CodigoUbigeo;
             $hdnIdZonaDespacho.val(codUbigeo);
-            $searchZonaDespacho.css("visibility", "visible");
-            if (codUbigeo != "" || codUbigeo != null) {
+            
+            if (codUbigeo == "" || codUbigeo == null) {
+                $searchZonaDespacho.css("visibility", "visible");
+            }
+            else {
                 $searchZonaDespacho.css("visibility", "hidden");
             }
+
+
             $txtZonaDepacho.val(data.Result.NombreUbigeo);
             searchZonaDespacho
             var direccion = data.Result.Direccion;
             $txtDireccion.val(direccion);
-            $txtDireccion.prop("disabled", false);
-            if (direccion != "" || direccion != null) {
+            
+            if (direccion == "" || direccion == null) {
+                $txtDireccion.prop("disabled", false);
+
+            }
+            else {
                 $txtDireccion.prop("disabled", true);
             }
 
@@ -3178,8 +3189,9 @@
                     $btnHistorial.show();
                 }
 
-                if ($estadoSol.val() == "PRVT" || $estadoSol.val() == "CAPR") {
+                if ($estadoSol.val() == "CAPR") {
                     if ($cmbTipoVenta.val() == "TVEN01") {
+                        $dateOrdenCompra.val(hoy());
                         CalcularFechaEntregaMaxima();
                     } else {
                         $('#dateOrdenCompra').prop('disabled', true);
@@ -3350,6 +3362,17 @@
                         $tblSeriesCS.append(nuevoTr);
                     }
                 }
+
+                if ($('.chkCS').length == 0) {
+                    $("#btnRegistrarDespacho").hide();
+                    $("#SelTodosCSS").hide();
+                }
+
+                if ($('.chkSS').length == 0) {
+                    $("#btnRegistrarDespachoSE").hide();
+                    $("#SelTodosSSS").hide();
+                }
+
 
                 if (data.Result.TecnicosDespacho.length > 0) {
 
@@ -4779,15 +4802,19 @@
             $txtSerie.val(data.Result.NumeroSerie); 
             var codUbigeo = data.Result.CodigoUbigeo;
             $hdnIdZonaDespacho.val(codUbigeo);
-            $searchZonaDespacho.css("visibility", "visible");
-            if (codUbigeo != "" || codUbigeo != null) {
+            if (codUbigeo == "" || codUbigeo == null) {
+                $searchZonaDespacho.css("visibility", "visible");
+            }
+            else {
                 $searchZonaDespacho.css("visibility", "hidden");
             }
             $txtZonaDepacho.val(data.Result.NombreUbigeo);
             var direccion = data.Result.Direccion;
-            $txtDireccion.val(direccion);
-            $txtDireccion.prop("disabled", false);
-            if (direccion != "" || direccion != null) {
+            $txtDireccion.val(direccion);         
+            if (direccion == "" || direccion == null) {
+                $txtDireccion.prop("disabled", false);
+            }
+            else {
                 $txtDireccion.prop("disabled", true);
             }
             $txtGuia.val(data.Result.NumeroGuia);
