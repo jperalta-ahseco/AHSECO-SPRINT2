@@ -378,11 +378,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             {
                                 ViewBag.Btn_EditarDespacho = "inline-block";
                             }
-                            else if(validarDespacho.Result.ContadorConStock > 0 && validarDespacho.Result.EnvioGPConStock == 0)
+                            else if(validarDespacho.Result.ContadorConStock > 0 && validarDespacho.Result.ContadorSinStock == 0 && validarDespacho.Result.EnvioGPConStock == 0)
                             {
                                 ViewBag.Btn_EditarDespacho = "inline-block";
                             }
-                            else if (validarDespacho.Result.ContadorSinStock > 0 && validarDespacho.Result.EnvioBOSinStock == 0)
+                            else if (validarDespacho.Result.ContadorSinStock > 0 && validarDespacho.Result.ContadorConStock==0  && validarDespacho.Result.EnvioBOSinStock == 0)
                             {
                                 ViewBag.Btn_EditarDespacho = "inline-block";
                             }
