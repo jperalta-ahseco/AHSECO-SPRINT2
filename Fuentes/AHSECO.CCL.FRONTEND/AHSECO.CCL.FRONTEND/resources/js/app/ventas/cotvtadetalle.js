@@ -1648,6 +1648,9 @@ var cotvtadet = (function ($, win, doc) {
         if ($DI_hdnHabilitado.val() != "S") {
             $('#modalDetalleItem').modal('hide');
         }
+        else if ($idRolUsuario.val() === "SGI_VENTA_GERENTE") {
+            $('#modalDetalleItem').modal('hide');
+        }
         else {
             return app.message.confirm("Validaci&oacute;n", "Desea retroceder sin guardar? Se perder&aacute;n los datos no guardados", "S&iacute;", "No", fnSi);
         }
@@ -1717,7 +1720,7 @@ var cotvtadet = (function ($, win, doc) {
                     render: function (data, type, row) {
                         if (data == null) { data = ""; }
                         else { data }
-                        var casilla = "<input type='text' id='ExWork" + row.NroItem + "' value='" + data + "' style='border: none;background-color: transparent; outline: none;' readonly  maxlength='50'/>";
+                        var casilla = "<input type='text'  id='ExWork" + row.NroItem + "' value='" + data + "' style='border: none;background-color: transparent; outline: none;' readonly  maxlength='50'/>";
                         return '<center>' + casilla + '</center>';
                     }
                 },
@@ -1776,7 +1779,7 @@ var cotvtadet = (function ($, win, doc) {
                         var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
                         var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
                         var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',2)"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
-                        var editar_FOB = '<a id="btnEditarFOBItem' + strID +'" class="botonDetCot btn btn-info btn-xs" title="Editar Ex-Work" href="javascript: cotvtadet.editarExWork(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',' + String.fromCharCode(39) + row.NroItem + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Ex-Work</a>'; 
+                        var editar_FOB = '<a id="btnEditarFOBItem' + strID + '" name="BtnExWord" class="botonDetCot btn btn-info btn-xs" title="Editar Ex-Work" href="javascript: cotvtadet.editarExWork(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',' + String.fromCharCode(39) + row.NroItem + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Ex-Work</a>'; 
                         var guardar_FOB = '<a id="btnGuardarFOBItem' + strID + '" class="botonDetCot btn btn-info btn-xs" title="Guardar Ex-Work" href="javascript: cotvtadet.guardarExWork(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',' + String.fromCharCode(39) + row.NroItem + String.fromCharCode(39) + ')" style=' + String.fromCharCode(39) + 'display:none' + String.fromCharCode(39) +'><i class="fa fa-pencil-save" aria-hidden="true"></i>Guardar</a>'; 
 
                         if ($estadoSol.val() == "CAPR" || $estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG") {
@@ -1944,7 +1947,8 @@ var cotvtadet = (function ($, win, doc) {
     }
     
     function cerrarModalDetCot() {
-        
+
+     
         var fnSi = function () {
 
             method = "POST";
@@ -2253,6 +2257,36 @@ var cotvtadet = (function ($, win, doc) {
 
     function guardarValorizacion() {
 
+        if ($idRolUsuario.val() === "SGI_VENTA_GERENTE") {
+            let fobs = [];
+
+            // Recorrer cada checkbox marcado
+            $("#tblDetCotCostos tbody tr").each(function () {
+                // Verificar si el boton de esta fila existe
+                if ($(this).find("a[name='BtnExWord']").length > 0) {
+                    // Obtener el texto de la sexta celda (Nombre de ex-works)
+                    let item = $(this).find("td:eq(0)").text();
+                    let valor_fob = $("#ExWork" + item).val();
+                    fobs.push(valor_fob.trim());
+                }
+            });
+
+            // Usando .filter() para eliminar duplicados
+            let fobsOri = fobs.filter((valor, indice, self) => {
+                return self.indexOf(valor) === indice;
+            });
+
+            const tieneVacio = fobsOri.some(elemento => elemento === "" || elemento === null || elemento === undefined);
+
+
+            if (tieneVacio) {
+                app.message.error("Validacion", "Debe ingresar todos los valores de Ex-Work de la cotizacion.");
+                return;
+            }
+
+        }
+        
+
         if (!validarCotizacion()) { return false; }
 
         var vFecCotizacion = null;
@@ -2311,6 +2345,14 @@ var cotvtadet = (function ($, win, doc) {
         $('#ExWork' + NroItem).css('border', '1px solid ');
         $('#ExWork' + NroItem).css('background-color', 'white');
         $('#ExWork' + NroItem).css('display', 'block');
+        $("#btnGuardarValorizacion").prop("disabled", true);
+       // $(".BtnExWord").prop("disabled", true);
+
+        $("a[name='BtnExWord']").css({
+            "pointer-events": "none",
+            "cursor": "not-allowed",
+            "color": "gray"
+        });
     }
 
     function guardarExWork(id, NroItem) {
@@ -2339,6 +2381,15 @@ var cotvtadet = (function ($, win, doc) {
                     $('#ExWork' + NroItem).css('background-color', 'transparent');
                     $('#ExWork' + NroItem).css('outline', 'none');
                     $('#ExWork' + NroItem).prop('readonly', true);
+                    $("#btnGuardarValorizacion").prop("disabled", false);
+                   // $(".BtnExWord").prop("disabled", false);
+                    $("a[name='BtnExWord']").css({
+                        "pointer-events": "auto",
+                        "cursor": "pointer",
+                        "color": ""
+                    });
+                    $('#btnEditarFOBItem' + id).show();
+                    $('#btnGuardarFOBItem' + id).hide();
                 };
                 if (data.Result.Codigo > 0) {
                     app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
