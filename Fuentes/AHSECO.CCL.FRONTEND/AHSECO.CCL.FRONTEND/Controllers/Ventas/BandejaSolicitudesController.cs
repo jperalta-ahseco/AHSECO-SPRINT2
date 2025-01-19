@@ -127,6 +127,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.VerContrato = false;
             ViewBag.FechaContrato = "disabled";
             ViewBag.TxtNroContrato = "disabled";
+            ViewBag.ControlCalculoFechaMaxima = "disabled";
 
 
             ViewBag.Btn_EnviarGuiaCS = "none";
@@ -358,6 +359,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         {
                             ViewBag.VerContrato = true;
                             ViewBag.FechaContrato = "";
+                            ViewBag.ControlCalculoFechaMaxima = "";
                             ViewBag.TxtNroContrato = "";
                         }
                     }

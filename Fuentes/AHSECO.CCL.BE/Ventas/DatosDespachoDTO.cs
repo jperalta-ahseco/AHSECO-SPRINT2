@@ -24,7 +24,9 @@ namespace AHSECO.CCL.BE.Ventas
         public DateTime? FechaIngreso { get; set; }
         public string EstadoAprobacion { get; set; }
         public string Observacion { get; set; }
+        public string NumeroContrato { get; set; }
+        public DateTime? FechaContrato { get; set; }
         public string UsuarioRegistro { get; set; }
-
+        public string Calculo { get; set; }
     }
 }

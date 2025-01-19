@@ -1220,7 +1220,10 @@ namespace AHSECO.CCL.BD.Ventas
                             FechaFactura = reader.IsDBNull(reader.GetOrdinal("FECHAFACTURA")) ? "" : reader.GetString(reader.GetOrdinal("FECHAFACTURA")),
                             NumeroFactura = reader.IsDBNull(reader.GetOrdinal("NUMFACTSERV")) ? "" : reader.GetString(reader.GetOrdinal("NUMFACTSERV")),
                             NumeroFacturaDespacho = reader.IsDBNull(reader.GetOrdinal("NUMFACTURA")) ? "" : reader.GetString(reader.GetOrdinal("NUMFACTURA")),
-                            FechaEntregaPedido = reader.IsDBNull(reader.GetOrdinal("FECHAENTREGA")) ? "" : reader.GetString(reader.GetOrdinal("FECHAENTREGA"))
+                            FechaEntregaPedido = reader.IsDBNull(reader.GetOrdinal("FECHAENTREGA")) ? "" : reader.GetString(reader.GetOrdinal("FECHAENTREGA")),
+                            NumeroContrato = reader.IsDBNull(reader.GetOrdinal("NUMCONTRATO")) ? "" : reader.GetString(reader.GetOrdinal("NUMCONTRATO")),
+                            FechaContrato = reader.IsDBNull(reader.GetOrdinal("FECHACONTRATO")) ? "" : reader.GetString(reader.GetOrdinal("FECHACONTRATO")),
+                            Calculo = reader.IsDBNull(reader.GetOrdinal("CALCULO")) ? "" : reader.GetString(reader.GetOrdinal("CALCULO"))
                         };
                     }
 
@@ -1780,6 +1783,9 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("FECHAINGRESO", datosDespachoDTO.FechaIngreso);
                 parameters.Add("ESTAPROB", datosDespachoDTO.EstadoAprobacion);
                 parameters.Add("OBSERVACION", datosDespachoDTO.Observacion);
+                parameters.Add("NUMCONTRATO", datosDespachoDTO.NumeroContrato);
+                parameters.Add("FECHACONTRATO", datosDespachoDTO.FechaContrato);
+                parameters.Add("CALCULO", datosDespachoDTO.Calculo);
                 parameters.Add("USRREG", datosDespachoDTO.UsuarioRegistro);
 
                 var result = connection.Query

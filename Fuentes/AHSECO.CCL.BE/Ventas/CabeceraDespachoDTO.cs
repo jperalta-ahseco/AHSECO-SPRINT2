@@ -65,5 +65,9 @@ namespace AHSECO.CCL.BE.Ventas
 
         public string NumeroFacturaDespacho { get; set; }
         public string FechaEntregaPedido { get; set; }
+        public string NumeroContrato { get; set; }
+        public string FechaContrato { get; set; }
+        public string Calculo { get; set; }
+
     }
 }

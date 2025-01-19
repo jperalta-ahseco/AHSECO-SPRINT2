@@ -516,6 +516,7 @@
         $btnGuardarGestion.click($btnGuardarGestion_click);
         $cmbTipoVenta.on("change", changeTipoVenta);
         $dateOrdenCompra.on("change", $dateOrdenCompra_change);
+        $dateFechaContrato.on("change", $dateFechaContrato_change);
         $btnRegistrarSerie.click($btnRegistrarSerie_click);
         $btnEditarGestion.click($btnEditarGestion_click);
         $btnActualizarGestion.click($btnActualizarGestion_click);
@@ -2764,20 +2765,65 @@
         $btnEditarGestion.hide();
         $btnActualizarGestion.show();
 
+        if ($cmbTipoVenta.val() === "TVEN02")//Para licitacion
+        { 
+            $txtNroContrato.prop('disabled', false);
+            $dateFechaContrato.prop('disabled', false);
+            $('#radCalculo').prop('disabled', false);
+            $('#radCalculo2').prop('disabled', false);
+        }
+
         if ($TipoSolicitud.val() === "TSOL01") {
             $btnEnviarServicio.hide();
         }
     }
 
     function $btnActualizarGestion_click() {
-        if ($txtNroOrdenCompra.val() === "" || $txtNroOrdenCompra.val() == null) {
+
+        if ($cmbTipoVenta.val() === "TVEN02" && ($txtNroOrdenCompra.val() === "" || $txtNroOrdenCompra.val() == null) &&
+            ($txtNroContrato.val() === "" || $txtNroContrato.val() == null)) {
+            app.message.error("Validación", "Debe ingresar N° de Orden de Compra y/o. N° de Contrato.");
+            return false;
+        }
+
+        if ($cmbTipoVenta.val() === "TVEN01" && ($txtNroOrdenCompra.val() === "" || $txtNroOrdenCompra.val() == null)) {
             app.message.error("Validación", "Debe ingresar el número de orden de compra.");
             return false;
         }
-        if ($dateOrdenCompra.val() === "" || $dateOrdenCompra.val() == null) {
+        if ($cmbTipoVenta.val() === "TVEN01" && ($dateOrdenCompra.val() === "" || $dateOrdenCompra.val() == null)) {
             app.message.error("Validación", "Debe ingresar la fecha de orden de compra.");
             return false;
         }
+
+        if ($txtFechaEntregaMax.val() === "" || $txtFechaEntregaMax.val() == null) {
+            app.message.error("Validación", "Debe ingresar la fecha de entrega máxima.");
+            return false;
+        }
+
+        var num_contrato = "";
+        var fec_contrato = "";
+        var calculo = "";
+        if ($cmbTipoVenta.val() === "TVEN02")//Si es licitacion:
+        {
+            if ($txtNroContrato.val() != "" && $txtNroContrato.val() != null) {
+                num_contrato = $txtNroContrato.val();
+            }
+
+            if ($dateFechaContrato.val() != "" && $dateFechaContrato.val() != null) {
+                fec_contrato = $dateFechaContrato.val();
+            }
+
+            if ($('#radCalculo').is(':checked')) {
+                calculo = "O";
+            }
+
+            if ($('#radCalculo2').is(':checked')) {
+                calculo = "C";
+            }
+
+        }
+
+
         var fnSi = function () {
 
             var m = "POST";
@@ -2790,7 +2836,10 @@
                 NumeroOrden: $txtNroOrdenCompra.val(),
                 FechaOrden: $dateOrdenCompra.val(),
                 FechaMaxima: $txtFechaEntregaMax.val(),
-                Stock: ""
+                Stock: "",
+                NumeroContrato: num_contrato,
+                FechaContrato: fec_contrato,
+                Calculo: calculo
             }
             var objParam = JSON.stringify(obj);
             var fnDoneCallback = function (data) {
@@ -2833,6 +2882,30 @@
             app.message.error("Validación", "Debe ingresar la fecha de entrega máxima.");
             return false;
         }
+
+        var num_contrato = "";
+        var fec_contrato = "";
+        var calculo = "";
+        if ($cmbTipoVenta.val() === "TVEN02")//Si es licitacion:
+        {
+            if ($txtNroContrato.val() != "" && $txtNroContrato.val() != null) {
+                num_contrato = $txtNroContrato.val();
+            }
+
+            if ($dateFechaContrato.val() != "" && $dateFechaContrato.val() != null) {
+                fec_contrato = $dateFechaContrato.val();
+            }
+
+            if ($('#radCalculo').is(':checked')) {
+                calculo = "O";
+            }
+
+            if ($('#radCalculo2').is(':checked')) {
+                calculo = "C";
+            }
+             
+        }
+
         var fnSi = function () {
 
             var m = "POST";
@@ -2845,7 +2918,10 @@
                 NumeroOrden: $txtNroOrdenCompra.val(),
                 FechaOrden: $dateOrdenCompra.val(),
                 FechaMaxima: $txtFechaEntregaMax.val(),
-                Stock: ""
+                NumeroContrato: num_contrato,
+                FechaContrato: fec_contrato,
+                Stock: "",
+                Calculo: calculo
             }
             var objParam = JSON.stringify(obj);
             var fnDoneCallback = function (data) {
@@ -2903,7 +2979,15 @@
         if ($cmbTipoVenta.val() == "TVEN01") {
             CalcularFechaEntregaMaxima();
         }
-        
+        if ($cmbTipoVenta.val() == "TVEN02" && $radCalculo.is(':checked')) {
+            CalcularFechaEntregaMaxima();
+        }    
+    }
+
+    function $dateFechaContrato_change() {
+        if ($cmbTipoVenta.val() == "TVEN02" && $radCalculo2.is(':checked')) {
+            CalcularFechaEntregaMaximaxContrato();
+        } 
     }
     
     function changeTipoVenta() {
@@ -3207,6 +3291,19 @@
                     $txtNroOrdenCompra.prop('disabled', true);
                     $dateOrdenCompra.prop('disabled', true);
                     $openRegdateOrdenCompra.prop('disabled', true);
+
+                    if ($cmbTipoVenta.val() === "TVEN02") //Para licitaciones:
+                    {
+                        $txtNroContrato.val(data.Result.ContadorCabecera.NumeroContrato);
+                        $dateFechaContrato.val(data.Result.ContadorCabecera.FechaContrato);
+                        if (data.Result.ContadorCabecera.Calculo === "O") {
+                            $('#radCalculo').prop('checked', true);
+                        }
+                        else if (data.Result.ContadorCabecera.Calculo === "C") {
+                            $('#radCalculo2').prop('checked', true);
+                        }
+                    }
+                  
                 }
 
                 if ($idRolUsuario.val() === "SGI_VENTA_FACTURA") {
