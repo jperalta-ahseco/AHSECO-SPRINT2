@@ -24,6 +24,7 @@ using System.Security.Cryptography;
 using System.Xml.Linq;
 using System.Data.Common;
 using Microsoft.Win32;
+using AHSECO.CCL.BE.Mantenimiento;
 
 namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
 {
@@ -140,6 +141,17 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                         _garantias.Add(garantia);
                     }
 
+                    reader.NextResult();
+                    List<ComboDTO> _tipoDoc = new List<ComboDTO>();
+                    while (reader.Read())
+                    {
+                        var tipoDoc = new ComboDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("COD")) ? "" : reader.GetString(reader.GetOrdinal("COD")),
+                            Text = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION"))
+                        };
+                        _tipoDoc.Add(tipoDoc);
+                    };
 
                     result.Periodos = _periodos;
                     result.Empresas = _listEmpresa;
@@ -148,11 +160,127 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                     result.TipVenta = _tiposVenta;
                     result.TipoEmpleado = _tipoEmpleado;
                     result.Garantias = _garantias;
+                    result.TipoDoc = _tipoDoc;
+
 
                     return result;
                 };
             };
         }
+
+        public RespuestaDTO MantContactos(ContactoInstalDTO contacto)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using(var connection = Factory.ConnectionSingle())
+            {
+                connection.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("IsTipoProceso", contacto.TipIngreso);
+                parameters.Add("IsID_ASIG",contacto.Id_Asig);
+                parameters.Add("IsID_CONTACTO", contacto.IdContacto);
+                parameters.Add("IsNUMREQ",contacto.NumReq);
+                parameters.Add("IsTIPO_DOC",contacto.TipDoc);
+                parameters.Add("IsNUM_DOC",contacto.NumDoc);
+                parameters.Add("IsNOMBRES",contacto.NomCont);
+                parameters.Add("IsESTABLECIMIENTO",contacto.Establecimiento);
+                parameters.Add("IsAREA",contacto.AreaContacto);
+                parameters.Add("IsTELEFONO",contacto.Telefono);
+                parameters.Add("IsRUC", contacto.RucCliente);
+                parameters.Add("IsCARGO",contacto.Cargo);
+                parameters.Add("IsCORREO",contacto.Correo);
+                parameters.Add("IsESTADO",contacto.CodEstado);
+                parameters.Add("IsUsrEjecuta",contacto.UsuarioRegistra);
+
+
+                var result = connection.Query(
+                    sql: "USP_MANT_INSTAL_CONTACTOS",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new RespuestaDTO
+                    {
+                        Codigo = i.Single(d => d.Key.Equals("COD")).Value.Parse<int>(),
+                        Mensaje = i.Single(d => d.Key.Equals("MSG")).Value.Parse<string>()
+                    }).FirstOrDefault();
+                connection.Close();
+                return result;
+            }
+        }
+
+
+        public IEnumerable<ContactoInstalDTO> ObtenerContactos(long NumReq)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using(var connection = Factory.ConnectionSingle())
+            {
+                connection.Open();
+                var parameters = new DynamicParameters();
+                parameters.Add("IsNumReq", NumReq);
+
+                var result = connection.Query(
+                    sql: "USP_SEL_INSTAL_CONTACTOS",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new ContactoInstalDTO
+                    {
+                        Id_Asig = i.Single(d => d.Key.Equals("ID_ASIG")).Value.Parse<long>(),
+                        NumReq = i.Single(d => d.Key.Equals("NUMREQ")).Value.Parse<long>(),
+                        IdContacto = i.Single(d => d.Key.Equals("ID_CONTACTO")).Value.Parse<int>(),
+                        CodTipDocContacto = i.Single(d => d.Key.Equals("TIPO_DOC")).Value.Parse<string>(),
+                        TipDoc = i.Single(d => d.Key.Equals("DESCRIPCION")).Value.Parse<string>(),
+                        NumDoc = i.Single(d => d.Key.Equals("NUM_DOC")).Value.Parse<string>(),
+                        NomCont = i.Single(d => d.Key.Equals("NOMBRES")).Value.Parse<string>(),
+                        Establecimiento = i.Single(d => d.Key.Equals("ESTABLECIMIENTO")).Value.Parse<string>(),
+                        AreaContacto = i.Single(d => d.Key.Equals("AREA")).Value.Parse<string>(),
+                        Telefono = i.Single(d => d.Key.Equals("TELEFONO")).Value.Parse<string>(),
+                        Cargo = i.Single(d => d.Key.Equals("CARGO")).Value.Parse<string>(),
+                        Correo = i.Single(d => d.Key.Equals("CORREO")).Value.Parse<string>(),
+                        CodEstado = i.Single(d => d.Key.Equals("ESTADO")).Value.Parse<bool>()
+                    });
+                connection.Close();
+                return result;
+            }
+        }
+
+        public IEnumerable<ContactoDTO> ObtenerContactosxRuc(ContactoDTO contacto)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using (var connection = Factory.ConnectionSingle())
+            {
+                connection.Open();
+                var parameters = new DynamicParameters();
+                parameters.Add("IsRUC", contacto.RucCliente);
+                parameters.Add("IsNomContacto", contacto.NomCont);
+                parameters.Add("IsEstablecimiento", contacto.Establecimiento);
+
+                var result = connection.Query(
+                    sql: "USP_SEL_CONTACTOS_X_RUC",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new ContactoDTO
+                    {
+                        IdContacto = i.Single(d => d.Key.Equals("IDCONTACTO")).Value.Parse<int>(),
+                        TipDoc = i.Single(d => d.Key.Equals("DESCRIPCION")).Value.Parse<string>(),
+                        NumDoc = i.Single(d => d.Key.Equals("NUMDOCCONTACTO")).Value.Parse<string>(),
+                        NomCont = i.Single(d => d.Key.Equals("NOMBRE CONTACTO")).Value.Parse<string>(),
+                        Establecimiento = i.Single(d => d.Key.Equals("ESTABLECIMIENTO")).Value.Parse<string>(),
+                        AreaContacto = i.Single(d => d.Key.Equals("AREA")).Value.Parse<string>(),
+                        Telefono = i.Single(d => d.Key.Equals("TELEFONOCONTACTO")).Value.Parse<string>(),
+                        Telefono2 = i.Single(d => d.Key.Equals("TELEFONO2CONTACTO")).Value.Parse<string>(),
+                        Cargo = i.Single(d => d.Key.Equals("CARGOCONTACTO")).Value.Parse<string>(),
+                        Correo = i.Single(d => d.Key.Equals("CORREOCONTACTO")).Value.Parse<string>(),
+                        Estado = i.Single(d => d.Key.Equals("ESTADO")).Value.Parse<string>()
+                    });
+                connection.Close();
+                return result;
+            }
+        }
+
+
+
         public IEnumerable<InstalacionTecnicaDTO> ObtenerInstalacionesTec(FiltroInstalacionTecDTO filtros)
         {
             Log.TraceInfo(Utilidades.GetCaller());  
@@ -188,11 +316,6 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                         RucEmpresa = i.Single(d => d.Key.Equals("RUCEMPRESA")).Value.Parse<string>(),
                         NomEmpresa = i.Single(d => d.Key.Equals("NOMEMPRESA")).Value.Parse<string>(),
                         Ubicacion = i.Single(d => d.Key.Equals("UBICACION")).Value.Parse<string>(),
-                        NombreContacto = i.Single(d => d.Key.Equals("NOMBRECONTACTO")).Value.Parse<string>(),
-                        TelefonoContacto = i.Single(d => d.Key.Equals("TELEFONOCONTACTO")).Value.Parse<string>(),
-                        EmailContacto = i.Single(d => d.Key.Equals("EMAILCONTACTO")).Value.Parse<string>(),
-                        CargoContacto = i.Single(d => d.Key.Equals("CARGOCONTACTO")).Value.Parse<string>(),
-                        Establecimiento = i.Single(d => d.Key.Equals("ESTABLECIMIENTO")).Value.Parse<string>(),
                         TipoVenta = i.Single(d => d.Key.Equals("TIPOVENTA")).Value.Parse<string>(),
                         Vendedor = i.Single(d => d.Key.Equals("VENDEDOR")).Value.Parse<string>(),
                         CodEmpresa = i.Single(d => d.Key.Equals("CODEMPRESA")).Value.Parse<string>(),
@@ -334,11 +457,6 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                 parameters.Add("RUCEMPRESA", instalacion.RucEmpresa);
                 parameters.Add("NOMEMPRESA", instalacion.NomEmpresa);
                 parameters.Add("UBICACION", instalacion.Ubicacion);
-                parameters.Add("NOMBRECONTACTO", instalacion.NombreContacto);
-                parameters.Add("TELEFONOCONTACTO", instalacion.TelefonoContacto);
-                parameters.Add("CARGOCONTACTO", instalacion.CargoContacto);
-                parameters.Add("ESTABLECIMIENTO", instalacion.Establecimiento);
-                parameters.Add("EMAILCONTACTO", instalacion.EmailContacto);
                 parameters.Add("TIPOVENTA", instalacion.TipoVenta);
                 parameters.Add("ORDENCOMPRA", instalacion.OrdenCompra);          //pendiente de crear en solicitud ventas
                 parameters.Add("NUMPROCESO", instalacion.NroProceso);
@@ -766,11 +884,6 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                         ,RucEmpresa = reader.IsDBNull(reader.GetOrdinal("RUCEMPRESA")) ? "" : reader.GetString(reader.GetOrdinal("RUCEMPRESA"))
                         ,NomEmpresa = reader.IsDBNull(reader.GetOrdinal("NOMEMPRESA")) ? "" : reader.GetString(reader.GetOrdinal("NOMEMPRESA"))
                         ,Ubicacion = reader.IsDBNull(reader.GetOrdinal("UBICACION")) ? "" : reader.GetString(reader.GetOrdinal("UBICACION"))
-                        ,NombreContacto = reader.IsDBNull(reader.GetOrdinal("NOMBRECONTACTO")) ? "" : reader.GetString(reader.GetOrdinal("NOMBRECONTACTO"))
-                        ,TelefonoContacto = reader.IsDBNull(reader.GetOrdinal("TELEFONOCONTACTO")) ? "" : reader.GetString(reader.GetOrdinal("TELEFONOCONTACTO"))
-                        ,CargoContacto = reader.IsDBNull(reader.GetOrdinal("CARGOCONTACTO")) ? "" : reader.GetString(reader.GetOrdinal("CARGOCONTACTO"))
-                        ,Establecimiento = reader.IsDBNull(reader.GetOrdinal("ESTABLECIMIENTO")) ? "" : reader.GetString(reader.GetOrdinal("ESTABLECIMIENTO"))
-                        ,EmailContacto = reader.IsDBNull(reader.GetOrdinal("EMAILCONTACTO")) ? "" : reader.GetString(reader.GetOrdinal("EMAILCONTACTO"))
                         ,OrdenCompra = reader.IsDBNull(reader.GetOrdinal("ORDENCOMPRA")) ? "" : reader.GetString(reader.GetOrdinal("ORDENCOMPRA"))
                         ,NroProceso = reader.IsDBNull(reader.GetOrdinal("NUMPROCESO")) ? "" : reader.GetString(reader.GetOrdinal("NUMPROCESO"))
                         ,TipoProceso = reader.IsDBNull(reader.GetOrdinal("TIPOPROCESO")) ? "" : reader.GetString(reader.GetOrdinal("TIPOPROCESO"))

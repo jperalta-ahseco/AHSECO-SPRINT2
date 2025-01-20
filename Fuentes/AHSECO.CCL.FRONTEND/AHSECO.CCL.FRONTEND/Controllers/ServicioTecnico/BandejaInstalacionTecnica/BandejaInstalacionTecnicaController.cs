@@ -27,6 +27,8 @@ using System.Web.Http.Results;
 using Microsoft.Ajax.Utilities;
 using System.Data.SqlTypes;
 using System.Xml.XPath;
+using System.ComponentModel;
+using System.Diagnostics.Contracts;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecnica
 {
@@ -109,6 +111,47 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
                 });
             }
         }
+
+        public JsonResult EliminarContacto(ContactoInstalDTO contacto)
+        {
+            var instalacionBL = new InstalacionTecnicaBL();
+            contacto.UsuarioRegistra = User.ObtenerUsuario();
+            contacto.TipIngreso = "D";
+            var result = instalacionBL.MantContactos(contacto);
+            return Json(result);
+        }
+
+        public JsonResult ActualizarContacto (ContactoInstalDTO contacto)
+        {
+            var instalacionBL = new InstalacionTecnicaBL();
+            contacto.UsuarioRegistra = User.ObtenerUsuario();
+            contacto.TipIngreso = "U";
+            var result = instalacionBL.MantContactos(contacto);
+            return Json(result);
+        }
+
+        public JsonResult InsertarContacto (ContactoInstalDTO contacto)
+        {
+            var instalacionBL = new InstalacionTecnicaBL();
+            contacto.UsuarioRegistra = User.ObtenerUsuario();
+            contacto.TipIngreso = "I";
+            var result = instalacionBL.MantContactos(contacto);
+            return Json(result);
+        }
+        public JsonResult ObtenerContactos (long NumReq)
+        {
+            var instalacionBL = new InstalacionTecnicaBL();
+            var result = instalacionBL.ObtenerContactos(NumReq);
+            return Json(result);
+        }
+
+        public JsonResult ObtenerContactosxRuc(ContactoDTO contacto)
+        {
+            var instalacionBL = new InstalacionTecnicaBL();
+            var result = instalacionBL.ObtenerContactosxRuc(contacto);
+            return Json(result);
+        }
+
         public JsonResult RegistroRequerimientoMain(GrupoInstalacionTecnicaDTO grupoInstalacionTecnicaDTO)
         {
             try

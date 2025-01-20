@@ -1,0 +1,37 @@
+USE [DB_AHSECO]
+GO
+
+
+CREATE OR ALTER PROCEDURE [dbo].[USP_SEL_GAR_CONTACTOS]
+(
+/*=======================================================================================================
+	Nombre:				Fecha:			Descripcion:
+	Diego Bazalar		16.01.25		Realiza el select de contactos activos por numero de reclamo
+	[[USP_SEL_GAR_CONTACTOS]] 2
+  =======================================================================================================*/
+	@IsNumRec BIGINT
+)
+AS
+BEGIN
+SET NOCOUNT ON
+	SELECT
+		ID_ASIG
+		,CONTACTO.ID_RECLAMO
+		,ID_CONTACTO
+		,CONTACTO.TIPO_DOC
+		,ISNULL(DATOS.DESCRIPCION,'') DESCRIPCION
+		,ISNULL(NUM_DOC,'') NUM_DOC
+		,ISNULL(NOMBRES,'') NOMBRES
+		,ISNULL(CONTACTO.ESTABLECIMIENTO,'') ESTABLECIMIENTO
+		,ISNULL(AREA,'') AREA
+		,ISNULL(TELEFONO,'') TELEFONO
+		,ISNULL(CARGO,'') CARGO
+		,ISNULL(CORREO,'') CORREO
+		,CONTACTO.ESTADO
+	FROM [dbo].[TBM_GAR_CONTACTO] AS CONTACTO WITH(NOLOCK)
+	LEFT JOIN [dbo].[TBM_RECLAMOS] AS RECLAMO WITH(NOLOCK) ON RECLAMO.ID_RECLAMO = CONTACTO.ID_RECLAMO
+	LEFT JOIN [dbo].[TBD_DATOS_GENERALES] AS DATOS WITH(NOLOCK) ON DATOS.PARAMETRO = CONTACTO.TIPO_DOC AND DOMINIO = 'GENTDOC' AND DATOS.ESTADO = 1
+	WHERE CONTACTO.ESTADO = 1 AND CONTACTO.ID_RECLAMO = @IsNumRec
+SET NOCOUNT OFF
+END
+

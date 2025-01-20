@@ -12,5 +12,7 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaPreventivos
         public string NumProceso { get; set; }
         public string TipoProceso { get; set; }
         public string OrdenCompra { get; set; }
+        public string Ruc { get; set; }
+        public string AsesorV { get; set; }
     }
 }

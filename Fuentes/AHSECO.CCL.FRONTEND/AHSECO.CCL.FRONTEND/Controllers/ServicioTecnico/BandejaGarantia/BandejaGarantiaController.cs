@@ -178,6 +178,47 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
             }
         }
 
+        public JsonResult EliminarContacto(ContactoGarantiaDTO contacto)
+        {
+            var garantiasBL = new GarantiasBL();
+            contacto.UsuarioRegistra = User.ObtenerUsuario();
+            contacto.TipoProceso = "D";
+            var result = garantiasBL.MantContactos(contacto);
+            return Json(result);
+        }
+
+        public JsonResult ActualizarContacto(ContactoGarantiaDTO contacto)
+        {
+            var garantiasBL = new GarantiasBL();
+            contacto.UsuarioRegistra = User.ObtenerUsuario();
+            contacto.TipoProceso = "U";
+            var result = garantiasBL.MantContactos(contacto);
+            return Json(result);
+        }
+
+        public JsonResult InsertarContacto(ContactoGarantiaDTO contacto)
+        {
+            var garantiasBL = new GarantiasBL();
+            contacto.UsuarioRegistra = User.ObtenerUsuario();
+            contacto.TipoProceso = "I";
+            var result = garantiasBL.MantContactos(contacto);
+            return Json(result);
+        }
+
+        public JsonResult ObtenerContactosxRuc(ContactoDTO contacto)
+        {
+            var garantiasBL = new GarantiasBL();
+            var result = garantiasBL.ObtenerContactosxRuc(contacto);
+            return Json(result);
+        }
+
+        public JsonResult ObtenerContactos(long NumRec)
+        {
+            var garantiasBL = new GarantiasBL();
+            var result = garantiasBL.ObtenerContactos(NumRec);
+            return Json(result);
+        }
+
         public JsonResult RegistroGarantiaMain(GrupoReclamoDTO grupoReclamoDTO)
         {
             try

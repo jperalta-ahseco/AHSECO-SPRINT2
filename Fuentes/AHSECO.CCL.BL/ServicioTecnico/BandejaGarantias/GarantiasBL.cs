@@ -7,6 +7,7 @@ using AHSECO.CCL.COMUN;
 using System.Collections.Generic;
 using AHSECO.CCL.BE.ServicioTecnico.BandejaGarantias;
 using System.DirectoryServices;
+using AHSECO.CCL.BE.Mantenimiento;
 
 namespace AHSECO.CCL.BL.ServicioTecnico.BandejaGarantias
 {
@@ -23,6 +24,50 @@ namespace AHSECO.CCL.BL.ServicioTecnico.BandejaGarantias
         {
             Repository = instalacionTecnicaBD;
             Log = log;
+        }
+
+
+        public ResponseDTO<IEnumerable<ContactoGarantiaDTO>> ObtenerContactos(long NumRec)
+        {
+            try
+            {
+                var result = Repository.ObtenerContactos(NumRec);
+                return new ResponseDTO<IEnumerable<ContactoGarantiaDTO>>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<IEnumerable<ContactoGarantiaDTO>>(ex);
+            }
+        }
+
+
+        public ResponseDTO<IEnumerable<ContactoDTO>> ObtenerContactosxRuc(ContactoDTO contacto)
+        {
+            try
+            {
+                var result = Repository.ObtenerContactosxRuc(contacto);
+                return new ResponseDTO<IEnumerable<ContactoDTO>>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<IEnumerable<ContactoDTO>>(ex);
+            }
+        }
+
+        public ResponseDTO<RespuestaDTO> MantContactos(ContactoGarantiaDTO contacto)
+        {
+            try
+            {
+                var result = Repository.MantContactos(contacto);
+                return new ResponseDTO<RespuestaDTO>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<RespuestaDTO>(ex);
+            }
         }
 
         public ResponseDTO<FiltroGarantiasDTO> ObtenerFiltrosGarantias()

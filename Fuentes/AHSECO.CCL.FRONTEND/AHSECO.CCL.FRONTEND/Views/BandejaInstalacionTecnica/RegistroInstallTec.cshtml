@@ -15,7 +15,7 @@
         visualizar = true;
     };
 
-    if(tipoProceso == "V")
+    if (tipoProceso == "V")
     {
         ViewBag.Title = "Consulta Instalación Técnica";
     };
@@ -186,9 +186,12 @@
                     <li class="" id="tabObservaciones">
                         <a href="#navObservaciones" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-exclamation" aria-hidden="true"></i> Observaciones</a>
                     </li>
-                    <li class="" id="tabContacto">
-                        <a href="#navContactoDetalle" data-toggle="tab" style="font-weight:bold; color: black;" tabindex="22"><i class="fa fa-address-card-o" aria-hidden="true"></i> Info. Contacto</a>
-                    </li>
+                    @if (numReq != "")
+                    {
+                        <li class="" id="tabContacto">
+                            <a href="#navContactoDetalle" data-toggle="tab" style="font-weight:bold; color: black;" tabindex="22"><i class="fa fa-address-card-o" aria-hidden="true"></i> Contactos</a>
+                        </li>
+                    }
                 </ul>
                 <div class="tab-content" style="padding-top: 5px;">
                     <div id="navDetalleSolicitud" class="tab-pane fade in active">
@@ -259,41 +262,39 @@
                     <div id="navContactoDetalle" class="tab-pane fade">
                         <div class="panel-group" id="accordion7401210" role="tablist" aria-multiselectable="false">
                             <div class="box-content">
-                                <div class="row container-fluid">
-                                    <div class="col-md-6 col-sm-12">
-                                        <label for="txtNomContacto">Nombre de Contacto:</label>
-                                        <div class="form-group">
-                                            <input placeholder="Nombre de Contacto" disabled type="text" class="form-control input-sm" id="txtNomContacto">
+                                <div class="modal-body d-flex justify-content-center" align-items-center>
+                                    <form id="formContacto" class="d-flex flex-row">
+                                        <div class="row container-fluid d-flex justify-content-center">
+                                            <div class="text-right">
+                                                <span id="hidden_fields"></span>
+                                                <button class="btn btn-primary btn-sm" type="button" id="btnNuevoContacto" data-toggle="modal" data-target="#modalModificarContacto"><i class="fa fa-plus"></i> Nuevo Contacto</button>
+                                                <button class="btn btn-primary btn-sm" type="button" id="btnSelectContacto" data-toggle="modal" data-target="#modalContactos"><i class="fa fa-plus"></i> Seleccionar Contacto</button>
+                                            </div>
+                                            <br />
+                                            <div class="table-responsive">
+                                                <table id="tblContactosMain" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Id</th>
+                                                            <th style="text-align: center; width:20%">Tip. de Doc.</th>
+                                                            <th style="text-align: center; width:20%">N&uacute;m. de Documento</th>
+                                                            <th style="text-align: center; width:20%">Nombres y Apellidos</th>
+                                                            <th style="text-align: center; width: 20%; padding-bottom: 20px;">Establecimiento</th>
+                                                            <th style="text-align: center; width: 20%; padding-bottom: 20px;">Area Contacto</th>
+                                                            <th style="text-align: center; width:20%">Tel&eacute;fono</th>
+                                                            <th style="text-align: center; width: 20%; padding-bottom: 20px;">Cargo</th>
+                                                            <th style="text-align: center; width: 20%; padding-bottom: 20px;">Correo</th>
+                                                            <th style="padding-bottom: 20px;"><center>Acciones</center></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="tbodyContactos">
+                                                        <tr id="NoExisteRegContact"><td colspan="10" style="text-align:center">No existen registro de contactos...</td></tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-6 col-sm-12">
-                                        <label for="txtTelefContacto">Tel&eacute;fono de Contacto:</label>
-                                        <div class="form-group">
-                                            <input placeholder="Teléfono de Contacto" disabled type="text" class="form-control input-sm" id="txtTelefContacto">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row container-fluid">
-                                    <div class="col-md-6 col-sm-12">
-                                        <label for="txtEstablecimientoCont">Establecimiento:</label>
-                                        <div class="form-group">
-                                            <input placeholder="Establecimiento" disabled type="text" class="form-control input-sm" id="txtEstablecimientoCont">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-sm-12">
-                                        <label for="txtCargoContacto">Cargo de Contacto:</label>
-                                        <div class="form-group">
-                                            <input placeholder="Cargo de Contacto" disabled type="text" class="form-control input-sm" id="txtCargoContacto">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row container-fluid">
-                                    <div class="col-md-6 col-sm-12">
-                                        <label for="txtEmailContacto">Email de Contacto:</label>
-                                        <div class="form-group">
-                                            <input placeholder="Email de Contacto" disabled type="text" class="form-control input-sm" id="txtEmailContacto">
-                                        </div>
-                                    </div>
+                                        <br />
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -308,6 +309,10 @@
     Html.RenderPartial("~/Views/Modelos/_Modales.cshtml");
 }
 
+<!--No se debe poner un MODAL dentro de otro MODAL-->
+@{
+    Html.RenderPartial("_Contactos");
+}
 
 
 <div class="modal fade" id="modalAsignacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
@@ -353,6 +358,21 @@
         Html.RenderPartial("_VerInfoAdiServicioTecnico");
     }
 </div>
+
+<div class="modal fade" id="modalModificarContacto" tabindex="-2" role="dialog" aria-labelledby="exampleModalLabel">
+    @{
+        Html.RenderPartial("_ModificarContacto");
+    }
+</div>
+
+<div class="modal fade" id="modalBuscarContactos" tabindex="-2" role="dialog" aria-labelledby="exampleModalLabel">
+    @{
+        Html.RenderPartial("_Contactos");
+    }
+</div>
+
+
+
 
 @section scripts{
     <script type="text/javascript" src="~/resources/js/app/ServicioTecnico/BandejaInstalacionTecnica/registroInstalacionTecnica.js"></script>

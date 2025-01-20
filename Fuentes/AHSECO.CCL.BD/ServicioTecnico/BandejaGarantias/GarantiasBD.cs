@@ -133,6 +133,20 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
                         _motivos.Add(motivo);
                     };
 
+                    reader.NextResult();
+                    List<ComboDTO> _tipoDoc = new List<ComboDTO>();
+                    while (reader.Read())
+                    {
+                        var tipoDoc = new ComboDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("COD")) ? "" : reader.GetString(reader.GetOrdinal("COD")),
+                            Text = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION"))
+                        };
+                        _tipoDoc.Add(tipoDoc);
+                    };
+
+
+
                     result.Empresas = _listEmpresa;
                     result.Estados = _Estados;
                     result.Clientes = _Clientes;
@@ -140,12 +154,127 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
                     result.TipoEmpleado = _tipoEmpleado;
                     result.Motivos = _motivos;
                     result.Urgencia = _urgencias;
+                    result.TipoDoc = _tipoDoc;
 
                     connection.Close();
                     return result;
                 };
             };
         }
+
+        public IEnumerable<ContactoGarantiaDTO> ObtenerContactos(long NumRec)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using (var connection = Factory.ConnectionSingle())
+            {
+                connection.Open();
+                var parameters = new DynamicParameters();
+                parameters.Add("IsNumRec", NumRec);
+
+                var result = connection.Query(
+                    sql: "USP_SEL_GAR_CONTACTOS",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new ContactoGarantiaDTO
+                    {
+                        Id_Asig = i.Single(d => d.Key.Equals("ID_ASIG")).Value.Parse<long>(),
+                        Id_Reclamo = i.Single(d => d.Key.Equals("ID_RECLAMO")).Value.Parse<long>(),
+                        IdContacto = i.Single(d => d.Key.Equals("ID_CONTACTO")).Value.Parse<int>(),
+                        CodTipDocContacto = i.Single(d => d.Key.Equals("TIPO_DOC")).Value.Parse<string>(),
+                        TipDoc = i.Single(d => d.Key.Equals("DESCRIPCION")).Value.Parse<string>(),
+                        NumDoc = i.Single(d => d.Key.Equals("NUM_DOC")).Value.Parse<string>(),
+                        NomCont = i.Single(d => d.Key.Equals("NOMBRES")).Value.Parse<string>(),
+                        Establecimiento = i.Single(d => d.Key.Equals("ESTABLECIMIENTO")).Value.Parse<string>(),
+                        AreaContacto = i.Single(d => d.Key.Equals("AREA")).Value.Parse<string>(),
+                        Telefono = i.Single(d => d.Key.Equals("TELEFONO")).Value.Parse<string>(),
+                        Cargo = i.Single(d => d.Key.Equals("CARGO")).Value.Parse<string>(),
+                        Correo = i.Single(d => d.Key.Equals("CORREO")).Value.Parse<string>(),
+                        CodEstado = i.Single(d => d.Key.Equals("ESTADO")).Value.Parse<bool>()
+                    });
+                connection.Close();
+                return result;
+            }
+        }
+
+
+        public IEnumerable<ContactoDTO> ObtenerContactosxRuc(ContactoDTO contacto)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using (var connection = Factory.ConnectionSingle())
+            {
+                connection.Open();
+                var parameters = new DynamicParameters();
+                parameters.Add("IsRUC", contacto.RucCliente);
+                parameters.Add("IsNomContacto", contacto.NomCont);
+                parameters.Add("IsEstablecimiento", contacto.Establecimiento);
+
+                var result = connection.Query(
+                    sql: "USP_SEL_CONTACTOS_X_RUC",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new ContactoDTO
+                    {
+                        IdContacto = i.Single(d => d.Key.Equals("IDCONTACTO")).Value.Parse<int>(),
+                        TipDoc = i.Single(d => d.Key.Equals("DESCRIPCION")).Value.Parse<string>(),
+                        NumDoc = i.Single(d => d.Key.Equals("NUMDOCCONTACTO")).Value.Parse<string>(),
+                        NomCont = i.Single(d => d.Key.Equals("NOMBRE CONTACTO")).Value.Parse<string>(),
+                        Establecimiento = i.Single(d => d.Key.Equals("ESTABLECIMIENTO")).Value.Parse<string>(),
+                        AreaContacto = i.Single(d => d.Key.Equals("AREA")).Value.Parse<string>(),
+                        Telefono = i.Single(d => d.Key.Equals("TELEFONOCONTACTO")).Value.Parse<string>(),
+                        Telefono2 = i.Single(d => d.Key.Equals("TELEFONO2CONTACTO")).Value.Parse<string>(),
+                        Cargo = i.Single(d => d.Key.Equals("CARGOCONTACTO")).Value.Parse<string>(),
+                        Correo = i.Single(d => d.Key.Equals("CORREOCONTACTO")).Value.Parse<string>(),
+                        Estado = i.Single(d => d.Key.Equals("ESTADO")).Value.Parse<string>()
+                    });
+                connection.Close();
+                return result;
+            }
+        }
+
+        public RespuestaDTO MantContactos(ContactoGarantiaDTO contacto)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using (var connection = Factory.ConnectionSingle())
+            {
+                connection.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("IsTipoProceso", contacto.TipoProceso);
+                parameters.Add("IsID_ASIG", contacto.Id_Asig);
+                parameters.Add("IsID_CONTACTO", contacto.IdContacto);
+                parameters.Add("IsID_RECLAMO", contacto.Id_Reclamo);
+                parameters.Add("IsTIPO_DOC", contacto.TipDoc);
+                parameters.Add("IsNUM_DOC", contacto.NumDoc);
+                parameters.Add("IsNOMBRES", contacto.NomCont);
+                parameters.Add("IsESTABLECIMIENTO", contacto.Establecimiento);
+                parameters.Add("IsAREA", contacto.AreaContacto);
+                parameters.Add("IsTELEFONO", contacto.Telefono);
+                parameters.Add("IsRUC", contacto.RucCliente);
+                parameters.Add("IsCARGO", contacto.Cargo);
+                parameters.Add("IsCORREO", contacto.Correo);
+                parameters.Add("IsESTADO", contacto.CodEstado);
+                parameters.Add("IsUsrEjecuta", contacto.UsuarioRegistra);
+
+
+                var result = connection.Query(
+                    sql: "USP_MANT_GAR_CONTACTOS",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new RespuestaDTO
+                    {
+                        Codigo = i.Single(d => d.Key.Equals("COD")).Value.Parse<int>(),
+                        Mensaje = i.Single(d => d.Key.Equals("MSG")).Value.Parse<string>()
+                    }).FirstOrDefault();
+                connection.Close();
+                return result;
+            }
+        }
+
+
+
 
         public IEnumerable<ReclamosDTO> ObtenerReclamos(FiltroReclamosDTO filtros)
         {

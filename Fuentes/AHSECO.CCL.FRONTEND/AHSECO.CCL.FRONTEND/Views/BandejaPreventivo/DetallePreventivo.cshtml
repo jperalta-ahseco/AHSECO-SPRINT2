@@ -9,6 +9,7 @@
     var idWorkFlow = VariableSesion.getCadena("idWorkFlow");
     var estadoMant = VariableSesion.getCadena("EstadoPrev");
     var idMant = VariableSesion.getCadena("IdMant");
+    var ruc = VariableSesion.getCadena("RucEmpresa");
 
     var visualizar = false;
 
@@ -20,10 +21,11 @@
 }
 <input hidden id="numPreventivo" value="@numPreventivo" />
 <input hidden id="tipoAccion" value="@tipoAccion" />
-<input hidden id="tipoAccionPadre" value="@tipoAccionPadre"/>
+<input hidden id="tipoAccionPadre" value="@tipoAccionPadre" />
 <input hidden id="codigoWorkflow" value="@idWorkFlow" />
 <input hidden id="estadoMant" value="@estadoMant" />
-<input hidden id="idMantPadre" value="@idMant"/>
+<input hidden id="idMantPadre" value="@idMant" />
+<input hidden id="ruc" value="@ruc" />
 
 <div class="container-fluid">
     @if (numPreventivo == "")
@@ -159,13 +161,13 @@
 
                                 if (estadoMant == "FIN")
                                 {
-                                    <button class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnCerrar" tabindex="14"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;Completado</button>
+                                    <button class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnCompletar" tabindex="14"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;Completado</button>
 
                                 }
                                 else
                                 {
                                     <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnEditarMant" tabindex="14"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;Editar Mantenimiento</button>
-                                       <button disabled class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnFinalizarMant" tabindex="14"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;Finalizar</button>
+                                    <button disabled class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnFinalizarMant" tabindex="14"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;Finalizar</button>
                                 }
                             }
                             else
@@ -191,6 +193,9 @@
                     </li>
                     <li class="" id="tabAdjuntos">
                         <a href="#navDocumentos" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-file-text" aria-hidden="true"></i> Adjunto de Documentos</a>
+                    </li>
+                    <li class="" id="tabContacto">
+                        <a href="#navContactoDetalle" data-toggle="tab" style="font-weight:bold; color: black;" tabindex="22"><i class="fa fa-address-card-o" aria-hidden="true"></i> Contactos</a>
                     </li>
                 </ul>
                 <div class="tab-content" style="padding-top: 5px;">
@@ -250,6 +255,49 @@
                         @{
                             Html.RenderPartial("~/Views/Modelos/_Observaciones.cshtml");
                         }
+                    </div>
+                    <div id="navContactoDetalle" class="tab-pane fade">
+                        <div class="panel-group" id="accordion7401210" role="tablist" aria-multiselectable="false">
+                            <div class="box-content">
+                                <div class="modal-body d-flex justify-content-center" align-items-center>
+                                    <form id="formContacto" class="d-flex flex-row">
+                                        <div class="row container-fluid d-flex justify-content-center">
+                                            @if (tipoAccion != "V")
+                                            {
+                                                <div class="text-right">
+                                                    <span id="hidden_fields"></span>
+                                                    <button class="btn btn-primary btn-sm" type="button" id="btnNuevoContacto" data-toggle="modal" data-target="#modalModificarContacto"><i class="fa fa-plus"></i> Nuevo Contacto</button>
+                                                    <button class="btn btn-primary btn-sm" type="button" id="btnSelectContacto" data-toggle="modal" data-target="#modalContactos"><i class="fa fa-plus"></i> Seleccionar Contacto</button>
+                                                </div>
+                                            }
+                                            <br />
+                                            <div class="table-responsive">
+                                                <table id="tblContactosMain" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Id</th>
+                                                            <th style="text-align: center; width:20%">Tip. de Doc.</th>
+                                                            <th style="text-align: center; width:20%">N&uacute;m. de Documento</th>
+                                                            <th style="text-align: center; width:20%">Nombres y Apellidos</th>
+                                                            <th style="text-align: center; width: 20%; padding-bottom: 20px;">Establecimiento</th>
+                                                            <th style="text-align: center; width: 20%; padding-bottom: 20px;">Area Contacto</th>
+                                                            <th style="text-align: center; width:20%">Tel&eacute;fono</th>
+                                                            <th style="text-align: center; width: 20%; padding-bottom: 20px;">Cargo</th>
+                                                            <th style="text-align: center; width: 20%; padding-bottom: 20px;">Correo</th>
+                                                            <th style="padding-bottom: 20px;"><center>Acciones</center></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="tbodyContactos">
+                                                        <tr id="NoExisteRegContact"><td colspan="10" style="text-align:center">No existen registro de contactos...</td></tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <br />
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -311,7 +359,10 @@
 @{
     Html.RenderPartial("~/Views/Modelos/_Modales.cshtml");
 }
-
+<!--No se debe poner un MODAL dentro de otro MODAL-->
+@{
+    Html.RenderPartial("_Contactos");
+}
 
 
 <div class="modal fade" id="añadirTecnico" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
@@ -337,6 +388,12 @@
 <div class="modal fade" id="modalZona" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     @{
         Html.RenderPartial("_Ubigeo");
+    }
+</div>
+
+<div class="modal fade" id="modalBuscarContactos" tabindex="-2" role="dialog" aria-labelledby="exampleModalLabel">
+    @{
+        Html.RenderPartial("_Contactos");
     }
 </div>
 

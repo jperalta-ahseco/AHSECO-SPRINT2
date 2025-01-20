@@ -1,6 +1,7 @@
 ﻿using AHSECO.CCL.BD;
 using AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica;
 using AHSECO.CCL.BE;
+using AHSECO.CCL.BE.Mantenimiento;
 using AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica;
 using AHSECO.CCL.BE.Ventas;
 using AHSECO.CCL.COMUN;
@@ -85,6 +86,47 @@ namespace AHSECO.CCL.BL.ServicioTecnico.BandejaInstalacionTecnica
             }
         }
 
+        public ResponseDTO<IEnumerable<ContactoInstalDTO>> ObtenerContactos(long NumReq)
+        {
+            try
+            {
+                var result = Repository.ObtenerContactos(NumReq);
+                return new ResponseDTO<IEnumerable<ContactoInstalDTO>>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<IEnumerable<ContactoInstalDTO>>(ex);
+            }
+        }
+
+        public ResponseDTO<IEnumerable<ContactoDTO>> ObtenerContactosxRuc(ContactoDTO contacto)
+        {
+            try
+            {
+                var result = Repository.ObtenerContactosxRuc(contacto);
+                return new ResponseDTO<IEnumerable<ContactoDTO>>(result);
+            }
+            catch(Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<IEnumerable<ContactoDTO>>(ex);
+            }
+        }
+
+        public ResponseDTO<RespuestaDTO> MantContactos(ContactoInstalDTO contacto)
+        {
+            try
+            {
+                var result = Repository.MantContactos(contacto);
+                return new ResponseDTO<RespuestaDTO>(result);
+            }
+            catch(Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<RespuestaDTO>(ex);
+            }
+        }
         public ResponseDTO<RespuestaDTO> MantInstalacion(InstalacionTecnicaDTO instalacion)
         {
             try

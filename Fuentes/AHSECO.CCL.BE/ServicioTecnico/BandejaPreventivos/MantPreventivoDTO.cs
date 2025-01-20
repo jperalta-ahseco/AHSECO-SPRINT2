@@ -29,5 +29,6 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaPreventivos
         public string Val_OTM { get; set; }
         public string Val_GUIA { get; set; }
         public string FecGuia { get; set; }
+        public string Ruc { get; set; }
     }
 }

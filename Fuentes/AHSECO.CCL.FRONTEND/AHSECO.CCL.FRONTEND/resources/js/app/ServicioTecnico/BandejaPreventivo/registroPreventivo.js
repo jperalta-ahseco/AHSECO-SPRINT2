@@ -554,6 +554,9 @@
         $txtNumProceso.val(requerimiento.NumProceso);
         $txtTipoProceso.val(requerimiento.TipoProceso);
         $txtOrden.val(requerimiento.OrdenCompra);
+        $txtRuc.val(requerimiento.Ruc);
+        $txtNomEmpresa.val(requerimiento.RazonSocial);
+        $txtAsesor.val(requerimiento.AsesorV);
         $titleCoti.html("<i class='fa fa-user' aria-hidden='true' style='color:yellow'></i> Cliente: " + requerimiento.RazonSocial);
     };
     function limpiarCabecera() {
@@ -778,7 +781,9 @@
                     RazonSocial: data.Result.CabeceraCot.RazonSocial,
                     NumProceso: data.Result.CabeceraCot.NumProceso,
                     TipoProceso: data.Result.CabeceraCot.TipoProceso,
-                    OrdenCompra: data.Result.CabeceraCot.OrdenCompra 
+                    OrdenCompra: data.Result.CabeceraCot.OrdenCompra,
+                    Ruc: data.Result.CabeceraCot.Ruc,
+                    AsesorV: data.Result.CabeceraCot.AsesorV
                 };
 
                 var equipo = {
@@ -921,7 +926,8 @@
             Id_WorkFlow: idworkflow,
             Id_Mant: $numMant.val(),
             TipoTarea: "U",
-            TipoTareaPadre: $tipoproceso.val()
+            TipoTareaPadre: $tipoproceso.val(),
+            Ruc: $txtRuc.val()
         };
 
         var objParam = JSON.stringify(obj);

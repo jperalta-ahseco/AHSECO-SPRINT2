@@ -24,6 +24,10 @@
     var $modalUbigeo = $('#modalUbigeo');
     var $btnGuardarUbigeo = $('#btnGuardarUbigeo');
 
+    var $spanSi = $('#spanSi');
+    var $spanNo = $('#spanNo');
+
+
 
     /*Combos*/
     var $cmbempresa = $('#cmbempresa');
@@ -61,8 +65,55 @@
         $btnExportar.click(btnExportarClick);
         $periodoIni.datepicker().on("changeDate", changeDateFechaInicialRegFecIni);
 
+        $spanSi.on('click', function () {
+            botonSi();
+        });
+
+        $spanNo.on('click', function () {
+            botonNo();
+        });
 
         BuscarPreventivos();
+    };
+
+    function botonSi() {
+        $spanNo.css('background-color', 'gray');
+        $spanSi.css('background-color', 'green');
+        limpiarFiltrosBusqueda();
+        cambiarTipBusqueda(2);
+    }
+
+    function botonNo() {
+        $spanSi.css('background-color', 'gray');
+        $spanNo.css('background-color', 'red');
+        limpiarFiltrosBusqueda();
+        cambiarTipBusqueda(1);
+    }
+
+    function cambiarTipBusqueda(tip) {
+        $.ajax({
+                url: app.baseUrl + "BandejaPreventivo/SetIdMigra",
+                data: {
+                    tip: tip
+                }
+            }
+        );
+    }
+
+    function limpiarFiltrosBusqueda() {
+        $txtIdRegIns.val("");
+        $txtSerie.val("");
+        $txtNumProc.val("");
+        $txtNumOrdCompra.val("");
+        $txtNumFianza.val("");
+        $cmbempresa.val("");
+        $periodoIni.val("");
+        $periodoFin.val("");
+        $cmbCliente.val("");
+        $txtMarca.val("");
+        $txtModelo.val("");
+        $txtNomEquipo.val("");
+        $txtUbicacion.val("");
     };
 
     function seleccionar() {

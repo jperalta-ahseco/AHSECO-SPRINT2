@@ -30,6 +30,7 @@ using AHSECO.CCL.BE.ServicioTecnico.BandejaPreventivos;
 using static NPOI.HSSF.Util.HSSFColor;
 using AHSECO.CCL.BE.ServicioTecnico.BandejaGarantias;
 using AHSECO.CCL.BL.ServicioTecnico.BandejaGarantias;
+using Microsoft.Owin.Security.Notifications;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
 {
@@ -41,6 +42,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
         {
             VariableSesion.setCadena("NumMant", "");
             VariableSesion.setCadena("TipoTarea", "");
+            VariableSesion.setCadena("Migracion", "1");
 
             return View();
         }
@@ -54,6 +56,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
             VariableSesion.setCadena("TipoAccionPadre", "");
             VariableSesion.setCadena("idWorkFlow", "");
             VariableSesion.setCadena("IdMant", "");
+            VariableSesion.setCadena("RucEmpresa", "");
             return View();
         }
 
@@ -73,8 +76,23 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
         public JsonResult ObtenerPreventivos(ReqPreventivoDTO req)
         {
             var preventivosBL = new PreventivosBL();
-            var result = preventivosBL.ObtenerPreventivos(req);
-            return Json(result);
+            var tipoRpta = VariableSesion.getCadena("Migracion");
+            if(tipoRpta == "1")
+            {
+                var result = preventivosBL.ObtenerPreventivos(req);
+
+                return Json(result);
+            }
+            else {
+                var result = preventivosBL.ObtenerPreventivosMigrados(req);
+
+                return Json(result);
+            }
+        }
+
+        public void SetIdMigra(int tip)
+        {
+            VariableSesion.setCadena("Migracion", tip.ToString());
         }
 
 
@@ -408,6 +426,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
                 VariableSesion.setCadena("idWorkFlow", mantenimiento.Id_WorkFlow.ToString());
                 VariableSesion.setCadena("IdMant", mantenimiento.Id_Mant.ToString());
                 VariableSesion.setCadena("TipoAccionPadre", mantenimiento.TipoTareaPadre);
+                VariableSesion.setCadena("RucEmpresa", mantenimiento.Ruc);
+
                 return Json(new
                 {
                     Status = 1
@@ -745,6 +765,47 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
         {
             var preventivosBL = new PreventivosBL();
             var result = preventivosBL.ObtenerMainPreventivo(NumPreventivo, IdWorkFlow);
+            return Json(result);
+        }
+
+        public JsonResult EliminarContacto(ContactoPrevDTO contacto)
+        {
+            var preventivoBL = new PreventivosBL();
+            contacto.UsuarioRegistra = User.ObtenerUsuario();
+            contacto.TipoProceso = "D";
+            var result = preventivoBL.MantContactos(contacto);
+            return Json(result);
+        }
+
+        public JsonResult ActualizarContacto(ContactoPrevDTO contacto)
+        {
+            var preventivoBL = new PreventivosBL();
+            contacto.UsuarioRegistra = User.ObtenerUsuario();
+            contacto.TipoProceso = "U";
+            var result = preventivoBL.MantContactos(contacto);
+            return Json(result);
+        }
+
+        public JsonResult InsertarContacto(ContactoPrevDTO contacto)
+        {
+            var preventivoBL = new PreventivosBL();
+            contacto.UsuarioRegistra = User.ObtenerUsuario();
+            contacto.TipoProceso = "I";
+            var result = preventivoBL.MantContactos(contacto);
+            return Json(result);
+        }
+
+        public JsonResult ObtenerContactosxRuc(ContactoDTO contacto)
+        {
+            var preventivoBL = new PreventivosBL();
+            var result = preventivoBL.ObtenerContactosxRuc(contacto);
+            return Json(result);
+        }
+
+        public JsonResult ObtenerContactos(long IdMant)
+        {
+            var preventivoBL = new PreventivosBL();
+            var result = preventivoBL.ObtenerContactos(IdMant);
             return Json(result);
         }
 

@@ -1,0 +1,37 @@
+USE [DB_AHSECO]
+GO
+
+
+CREATE OR ALTER PROCEDURE [dbo].[USP_SEL_INSTAL_CONTACTOS]
+(
+/*=======================================================================================================
+	Nombre:				Fecha:			Descripcion:
+	Diego Bazalar		16.01.25		Realiza el select de contactos activos por numero de requerimiento
+	[USP_SEL_INSTAL_CONTACTOS] 2
+  =======================================================================================================*/
+	@IsNumReq BIGINT
+)
+AS
+BEGIN
+SET NOCOUNT ON
+	SELECT
+		ID_ASIG
+		,CONTACTO.NUMREQ
+		,ID_CONTACTO
+		,CONTACTO.TIPO_DOC
+		,ISNULL(DATOS.DESCRIPCION,'') DESCRIPCION
+		,ISNULL(NUM_DOC,'') NUM_DOC
+		,ISNULL(NOMBRES,'') NOMBRES
+		,ISNULL(CONTACTO.ESTABLECIMIENTO,'') ESTABLECIMIENTO
+		,ISNULL(AREA,'') AREA
+		,ISNULL(TELEFONO,'') TELEFONO
+		,ISNULL(CARGO,'') CARGO
+		,ISNULL(CORREO,'') CORREO
+		,CONTACTO.ESTADO
+	FROM [dbo].[TBM_INSTAL_CONTACTO] AS CONTACTO WITH(NOLOCK)
+	LEFT JOIN [dbo].[TBM_INSTALACION] AS INSTAL WITH(NOLOCK) ON INSTAL.NUMREQ = CONTACTO.NUMREQ
+	LEFT JOIN [dbo].[TBD_DATOS_GENERALES] AS DATOS WITH(NOLOCK) ON DATOS.PARAMETRO = CONTACTO.TIPO_DOC AND DOMINIO = 'GENTDOC' AND DATOS.ESTADO = 1
+	WHERE CONTACTO.ESTADO = 1 AND CONTACTO.NUMREQ = @IsNumReq
+SET NOCOUNT OFF
+END
+

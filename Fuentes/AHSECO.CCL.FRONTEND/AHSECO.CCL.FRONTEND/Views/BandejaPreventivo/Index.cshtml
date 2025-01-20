@@ -8,7 +8,18 @@
     <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
     <div class="box-inner">
         <div class="box-header well" data-original-title="">
-            <h2><i class="glyphicon glyphicon-list"></i> Bandeja de Mantenimientos Preventivos</h2>
+            <div style="display: flex;justify-content: space-between;">
+                <h2><i class="glyphicon glyphicon-list"></i> Bandeja de Mantenimientos Preventivos</h2>
+                <div class="input-group input-group-sm">
+                    Migración:
+                    <span style="cursor:pointer;background-color: grey;color: white; pointer-events: auto" class="input-group-addon input-sm" id="spanSi">
+                        SÍ
+                    </span>
+                    <span style="cursor: pointer; background-color: red; color: white; pointer-events: auto" class="input-group-addon input-sm" id="spanNo">
+                        NO
+                    </span>
+                </div>
+            </div>
         </div>
         <div class="box-content">
             <form id="formPreventivo">

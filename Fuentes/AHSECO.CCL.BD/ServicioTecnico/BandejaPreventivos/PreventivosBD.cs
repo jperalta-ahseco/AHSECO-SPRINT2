@@ -1,4 +1,5 @@
 ﻿using AHSECO.CCL.BE;
+using AHSECO.CCL.BE.Mantenimiento;
 using AHSECO.CCL.BE.ServicioTecnico.BandejaGarantias;
 using AHSECO.CCL.BE.ServicioTecnico.BandejaPreventivos;
 using AHSECO.CCL.BE.Ventas;
@@ -95,14 +96,140 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaPreventivos
                         _clientes.Add(cliente);
                     }
 
+                    reader.NextResult();
+                    List<ComboDTO> _tipoDoc = new List<ComboDTO>();
+                    while (reader.Read())
+                    {
+                        var tipoDoc = new ComboDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("COD")) ? "" : reader.GetString(reader.GetOrdinal("COD")),
+                            Text = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION"))
+                        };
+                        _tipoDoc.Add(tipoDoc);
+                    };
+
+
                     result.Clientes = _clientes;
                     result.Empresas = _listEmpresa;
                     result.Estados = _Estados;
                     result.TipoEmpleado = _tipoEmpleado;
+                    result.TipoDoc = _tipoDoc;
                 }
             }
             return result;
         }
+
+        public IEnumerable<ContactoPrevDTO> ObtenerContactos(long IdMant)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using (var connection = Factory.ConnectionSingle())
+            {
+                connection.Open();
+                var parameters = new DynamicParameters();
+                parameters.Add("IsIdMant", IdMant);
+
+                var result = connection.Query(
+                    sql: "USP_SEL_PREV_CONTACTOS",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new ContactoPrevDTO
+                    {
+                        Id_Asig = i.Single(d => d.Key.Equals("ID_ASIG")).Value.Parse<long>(),
+                        Id_Mant = i.Single(d => d.Key.Equals("ID_MANT")).Value.Parse<long>(),
+                        IdContacto = i.Single(d => d.Key.Equals("ID_CONTACTO")).Value.Parse<int>(),
+                        CodTipDocContacto = i.Single(d => d.Key.Equals("TIPO_DOC")).Value.Parse<string>(),
+                        TipDoc = i.Single(d => d.Key.Equals("DESCRIPCION")).Value.Parse<string>(),
+                        NumDoc = i.Single(d => d.Key.Equals("NUM_DOC")).Value.Parse<string>(),
+                        NomCont = i.Single(d => d.Key.Equals("NOMBRES")).Value.Parse<string>(),
+                        Establecimiento = i.Single(d => d.Key.Equals("ESTABLECIMIENTO")).Value.Parse<string>(),
+                        AreaContacto = i.Single(d => d.Key.Equals("AREA")).Value.Parse<string>(),
+                        Telefono = i.Single(d => d.Key.Equals("TELEFONO")).Value.Parse<string>(),
+                        Cargo = i.Single(d => d.Key.Equals("CARGO")).Value.Parse<string>(),
+                        Correo = i.Single(d => d.Key.Equals("CORREO")).Value.Parse<string>(),
+                        CodEstado = i.Single(d => d.Key.Equals("ESTADO")).Value.Parse<bool>()
+                    });
+                connection.Close();
+                return result;
+            }
+        }
+
+
+        public IEnumerable<ContactoDTO> ObtenerContactosxRuc(ContactoDTO contacto)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using (var connection = Factory.ConnectionSingle())
+            {
+                connection.Open();
+                var parameters = new DynamicParameters();
+                parameters.Add("IsRUC", contacto.RucCliente);
+                parameters.Add("IsNomContacto", contacto.NomCont);
+                parameters.Add("IsEstablecimiento", contacto.Establecimiento);
+
+                var result = connection.Query(
+                    sql: "USP_SEL_CONTACTOS_X_RUC",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new ContactoDTO
+                    {
+                        IdContacto = i.Single(d => d.Key.Equals("IDCONTACTO")).Value.Parse<int>(),
+                        TipDoc = i.Single(d => d.Key.Equals("DESCRIPCION")).Value.Parse<string>(),
+                        NumDoc = i.Single(d => d.Key.Equals("NUMDOCCONTACTO")).Value.Parse<string>(),
+                        NomCont = i.Single(d => d.Key.Equals("NOMBRE CONTACTO")).Value.Parse<string>(),
+                        Establecimiento = i.Single(d => d.Key.Equals("ESTABLECIMIENTO")).Value.Parse<string>(),
+                        AreaContacto = i.Single(d => d.Key.Equals("AREA")).Value.Parse<string>(),
+                        Telefono = i.Single(d => d.Key.Equals("TELEFONOCONTACTO")).Value.Parse<string>(),
+                        Telefono2 = i.Single(d => d.Key.Equals("TELEFONO2CONTACTO")).Value.Parse<string>(),
+                        Cargo = i.Single(d => d.Key.Equals("CARGOCONTACTO")).Value.Parse<string>(),
+                        Correo = i.Single(d => d.Key.Equals("CORREOCONTACTO")).Value.Parse<string>(),
+                        Estado = i.Single(d => d.Key.Equals("ESTADO")).Value.Parse<string>()
+                    });
+                connection.Close();
+                return result;
+            }
+        }
+
+        public RespuestaDTO MantContactos(ContactoPrevDTO contacto)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using (var connection = Factory.ConnectionSingle())
+            {
+                connection.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("IsTipoProceso", contacto.TipoProceso);
+                parameters.Add("IsID_ASIG", contacto.Id_Asig);
+                parameters.Add("IsID_CONTACTO", contacto.IdContacto);
+                parameters.Add("IsID_MANT", contacto.Id_Mant);
+                parameters.Add("IsTIPO_DOC", contacto.TipDoc);
+                parameters.Add("IsNUM_DOC", contacto.NumDoc);
+                parameters.Add("IsNOMBRES", contacto.NomCont);
+                parameters.Add("IsESTABLECIMIENTO", contacto.Establecimiento);
+                parameters.Add("IsAREA", contacto.AreaContacto);
+                parameters.Add("IsTELEFONO", contacto.Telefono);
+                parameters.Add("IsRUC", contacto.RucCliente);
+                parameters.Add("IsCARGO", contacto.Cargo);
+                parameters.Add("IsCORREO", contacto.Correo);
+                parameters.Add("IsESTADO", contacto.CodEstado);
+                parameters.Add("IsUsrEjecuta", contacto.UsuarioRegistra);
+
+
+                var result = connection.Query(
+                    sql: "USP_MANT_PREV_CONTACTOS",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new RespuestaDTO
+                    {
+                        Codigo = i.Single(d => d.Key.Equals("COD")).Value.Parse<int>(),
+                        Mensaje = i.Single(d => d.Key.Equals("MSG")).Value.Parse<string>()
+                    }).FirstOrDefault();
+                connection.Close();
+                return result;
+            }
+        }
+
 
         public IEnumerable<TecnicoMantPreventivoDTO> ObtenerTecnicosPreventivos(long NumPreventivo)
         {
@@ -142,6 +269,56 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaPreventivos
                 return result;
             };
         }
+       
+        public IEnumerable<ResultPreventivoDTO> ObtenerPreventivosMigrados(ReqPreventivoDTO req)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using (var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+                var parameters = new DynamicParameters();
+
+                //parameters.Add("IsNumReq", req.NumReq);
+                //parameters.Add("IsNumSerie", req.NumSerie);
+                //parameters.Add("IsNumProc", req.NumProc);
+                //parameters.Add("IsNumOrdCompra", req.NumOrdCompra);
+                //parameters.Add("IsNumFianza", req.NumFianza);
+                //parameters.Add("IsEmpresa", req.Empresa);
+                //parameters.Add("IsPeriodoInicio", req.PeriodoInicio);
+                //parameters.Add("IsPeriodoFinal", req.PeriodoFinal);
+                //parameters.Add("IsModelo", req.Modelo);
+                //parameters.Add("IsUbigeoDestino", req.CodUbigeoDest);
+                //parameters.Add("IsMarca", req.Marca);
+                //parameters.Add("IsNomEquipo", req.NomEquipo);
+                //parameters.Add("IsRUC", req.Ruc);
+                //parameters.Add("IsEstado", req.Estado);
+
+                var result = connection.Query(
+                    sql: "USP_PREV_SEL_PREVENTIVOS_MIGRA",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new ResultPreventivoDTO()
+                    {
+                        Id_Mant = i.Single(d => d.Key.Equals("ID_MANT")).Value.Parse<long>(),
+                        NumInst = i.Single(d => d.Key.Equals("NUMREQ")).Value.Parse<long>(),
+                        Serie = i.Single(d => d.Key.Equals("SERIE")).Value.Parse<string>(),
+                        Descripcion = i.Single(d => d.Key.Equals("DESCRIPCION")).Value.Parse<string>(),
+                        Marca = i.Single(d => d.Key.Equals("MARCA")).Value.Parse<string>(),
+                        Modelo = i.Single(d => d.Key.Equals("MODELO")).Value.Parse<string>(),
+                        Cliente = i.Single(d => d.Key.Equals("NOMEMPRESA")).Value.Parse<string>(),
+                        FechaInstalacion = i.Single(d => d.Key.Equals("FECHAINSTALACION")).Value.Parse<DateTime>(),
+                        ProxFechaMant = i.Single(d => d.Key.Equals("PROXFECHAMANT")).Value.Parse<string>(),
+                        TotalPrevent = i.Single(d => d.Key.Equals("TOTALPREVE")).Value.Parse<int>(),
+                        PreventReal = i.Single(d => d.Key.Equals("COMPLETADOS")).Value.Parse<int>(),
+                        PreventPend = i.Single(d => d.Key.Equals("PENDIENTES")).Value.Parse<int>(),
+                        UbigeoDest = i.Single(d => d.Key.Equals("UBIGEODEST")).Value.Parse<string>()
+                    });
+                connection.Close();
+                return result;
+            }
+        }
+
 
         public IEnumerable<ResultPreventivoDTO> ObtenerPreventivos(ReqPreventivoDTO req)
         {
@@ -416,7 +593,9 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaPreventivos
                         RazonSocial = reader.IsDBNull(reader.GetOrdinal("RAZONSOCIAL")) ? "" : reader.GetString(reader.GetOrdinal("RAZONSOCIAL")),
                         NumProceso = reader.IsDBNull(reader.GetOrdinal("NUMPROCESO")) ? "" : reader.GetString(reader.GetOrdinal("NUMPROCESO")),
                         TipoProceso = reader.IsDBNull(reader.GetOrdinal("TIPOPROCESO")) ? "" : reader.GetString(reader.GetOrdinal("TIPOPROCESO")),
-                        OrdenCompra = reader.IsDBNull(reader.GetOrdinal("ORDENCOMPRA")) ? "" : reader.GetString(reader.GetOrdinal("ORDENCOMPRA"))
+                        OrdenCompra = reader.IsDBNull(reader.GetOrdinal("ORDENCOMPRA")) ? "" : reader.GetString(reader.GetOrdinal("ORDENCOMPRA")),
+                        Ruc = reader.IsDBNull(reader.GetOrdinal("RUC")) ? "" : reader.GetString(reader.GetOrdinal("RUC")),
+                        AsesorV = reader.IsDBNull(reader.GetOrdinal("ASESOR")) ? "" : reader.GetString(reader.GetOrdinal("ASESOR"))
                     };
 
                     reader.NextResult();

@@ -143,9 +143,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 "Stock Disponible",
                 "Unidad Medida",
                 "Cantidad",
-                "Valor. Venta Total Sin IGV (Sin Ganancia)",
-                "Ganancia(%)",
-                "Valor. Venta Total Sin IGV Con Ganancia)",
+                "Valor. Venta Total Sin IGV (Sin Margen Adicional)",
+                "Margen Adicional(%)",
+                "Valor. Venta Total Sin IGV Con Margen Adicional)",
                 "Acción"
             };
             ViewBag.Cabecera = dtHeadProducto;
@@ -233,11 +233,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 string[] CD_Columns =
                 {
                     "Nro. Item", "Codigo Producto", "Descripción", "Unidad Medida", "Cantidad", "Ex-Work", "Valor Venta Unitario",
-                    "Valor. Venta Total Sin IGV (Sin Ganancia)", "Ganancia(%)", "Valor. Venta Total Sin IGV (Con Ganancia)","Acción"
+                    "Valor. Venta Total Sin IGV (Sin Margen Adicional)", "Margen Adicional(%)", "Valor. Venta Total Sin IGV (Con Margen Adicional)","Acción"
                 };
                 ViewBag.CabeceraCotDet = CD_Columns;
 
-                //El tipo de solicitud REPUESTOS no muestra PORCENTAJE DE GANANCIA
+                //El tipo de solicitud REPUESTOS no muestra PORCENTAJE DE Margen Adicional
                 if (VariableSesion.getCadena("tipoSol") == ConstantesDTO.SolicitudVenta.TipoSolicitud.RepuestosoConsumibles ||
                     VariableSesion.getCadena("tipoSol") == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
                 {
@@ -254,11 +254,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 string[] CD_Columns =
                 {
                     "Nro. Item", "Codigo Producto", "Descripción", "Unidad Medida", "Cantidad", "Valor Venta Unitario",
-                    "Valor. Venta Total Sin IGV (Sin Ganancia)", "Ganancia(%)", "Valor. Venta Total Sin IGV Con Ganancia)", "Acción"
+                    "Valor. Venta Total Sin IGV (Sin Margen Adicional)", "Margen Adicional(%)", "Valor. Venta Total Sin IGV (Con Margen Adicional)", "Acción"
                 };
                 ViewBag.CabeceraCotDet = CD_Columns;
 
-                //El tipo de solicitud REPUESTOS no muestra PORCENTAJE DE GANANCIA
+                //El tipo de solicitud REPUESTOS no muestra PORCENTAJE DE Margen Adicional
                 if (VariableSesion.getCadena("tipoSol") == ConstantesDTO.SolicitudVenta.TipoSolicitud.RepuestosoConsumibles ||
                     VariableSesion.getCadena("tipoSol") == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
                 {
@@ -333,13 +333,13 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                     if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnCotizacion)
                     {
-                        if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
+                        if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ)
                         { ViewBag.PermitirEditarCotizacion_Sec = true; }
                     }
 
                     if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion)
                     {
-                        if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
+                        if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ)
                         { ViewBag.PermitirEditarCotizacion_Sec = true; }
                     }
                 }
@@ -996,6 +996,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         {
                             ViewBag.PermitirAgregarProductos = true;
                             ViewBag.PermitirEnvioCotizacion = true;
+                            ViewBag.PermitirGuardarCotizacion = true;
                         }
                     }
 
@@ -1023,6 +1024,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             ViewBag.PermitirAgregarServicios = true;
                             ViewBag.PermitirAgregarProductos = true;
                             ViewBag.PermitirEnvioCotizacion = true;
+                            ViewBag.PermitirGuardarCotizacion = true;
                         }
 
                     }
@@ -1032,12 +1034,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 {
 
                     //Si es Asesor de Costos o Gerente General podrá modificar los PRECIOS DE VENTAS
-                    //pero el Asesor de Ventas solo modificará el porcentaje de GANANCIA
+                    //pero el Asesor de Ventas solo modificará el porcentaje de Margen Adicional
                     //y los Coordinadores solo modificarán los servicios
-                    if(NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
-                    {
-                        ViewBag.PermitirCancelarCot = true;
-                    };
 
                     if (
                         //NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor ||  Probando
@@ -1654,7 +1652,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                             {
                                                 if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = true; }
                                             }
-                                            else
+                                        else
                                             {
                                                 if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = false; }
                                             }
@@ -1737,7 +1735,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                 });
 
-                //Se habilita la GANANCIA cuando se haya VALORIZADO y/o COSTEADO por los INDICADORES
+                //Se habilita la Margen Adicional cuando se haya VALORIZADO y/o COSTEADO por los INDICADORES
                 if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
                 {
                     //Se valida de forma temporal las configuraciones actuales de la COTIZACION DETALLE
@@ -1852,7 +1850,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                 });
 
-                //Se habilita la GANANCIA cuando se haya VALORIZADO y/o COSTEADO por los INDICADORES
+                //Se habilita la Margen Adicional cuando se haya VALORIZADO y/o COSTEADO por los INDICADORES
                 if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor)
                 {
                     //Se valida de forma temporal las configuraciones actuales de la COTIZACION DETALLE
@@ -3881,7 +3879,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                 //Se realiza lo siguiente:
                 //1. Se totaliza el precio por cada registro de cotizacion detalle (Monto del Producto o Servicio más sus accesorios)
-                //2. La ganancia por registro de Cotizacion Detalle
+                //2. La Margen Adicional por registro de Cotizacion Detalle
                 //3. El descuento total de la venta pero se le divide entre cada uno de los registros de cotizacion detalle
 
                 lstItems = TotalizarCotDet(lstItems);
@@ -6422,11 +6420,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             {
                 cell = row.CreateCell(cellnum++);
                 cell.CellStyle = style;
-                cell.SetCellValue("Ganancia(%)");
+                cell.SetCellValue("Margen Adicional(%)");
 
                 cell = row.CreateCell(cellnum++);
                 cell.CellStyle = style;
-                cell.SetCellValue("Valor Venta Total Sin IGV (Con Ganancia)");
+                cell.SetCellValue("Valor Venta Total Sin IGV (Con Margen Adicional)");
             }
 
             //// Impresión de la data

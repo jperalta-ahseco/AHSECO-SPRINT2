@@ -1,6 +1,45 @@
 ﻿var garantias = (function ($, win, doc) {
     $(Initializer);
     //+Ids Hidden - Importante
+
+    var $txtidContacto = $('#txtidContacto');
+    var $btnCerrar = $('#btnCerrar');
+    var $btnActualizarContacto = $('#btnActualizarContacto');
+    var $btnAgregarNuevoContacto = $('#btnAgregarNuevoContacto');
+    var $btnAgregarContacto = $('#btnAgregarContacto');
+    var $btnLimpiar = $('#btnLimpiar');
+    var $cmbTipDocContacto = $('#cmbTipDocContacto');
+    var $txtNumContacto = $('#txtNumContacto');
+    var $btnSelectContacto = $('#btnSelectContacto');
+    var $btnLimpiarTodo = $('#btnLimpiarTodo');
+    var $btnAñadir = $('#btnAñadir');
+    var $txtEstablecimiento = $('#txtEstablecimiento');
+    var $txtAreaContacto = $('#txtAreaContacto');
+    var $txtContactoTelefono = $('#txtContactoTelefono');
+    var $txtContactoTelefono2 = $('#txtContactoTelefono2');
+    var $txtContactoCorreo = $('#txtContactoCorreo');
+    var $txtCargoContacto = $('#txtCargoContacto');
+    var $txtContacto = $('#txtContacto');
+    var $txtConsultaEstablecimiento = $('#txtConsultaEstablecimiento');
+    var $txtConsultaCargo = $('#txtConsultaCargo');
+    var $btnBuscarContactos = $('#btnBuscarContactos');
+    var $btnNuevoContacto = $('#btnNuevoContacto');
+    var $modalModificarContacto = $('#modalModificarContacto');
+    var $tblContactosMain = $('#tblContactosMain');
+    var $tbodyContactos = $('#tbodyContactos');
+    var $NoExisteRegContact = $('#NoExisteRegContact');
+    var $NoExisteContact = $('#NoExisteContact');
+    var $rowTelefono2 = $('#rowTelefono2');
+    var $tituloContacto = $('#tituloContacto');
+    var $cmbEstadoContacto = $('#cmbEstadoContacto');
+    var $modalBuscarContactos = $('#modalBuscarContactos');
+    var $modalContactos = $('#modalContactos');
+    var $tblContactos = $('#tblContactos');
+
+
+
+
+
     var $nombreusuario = $('#nombreusuario');
     var $numReclamo = $('#numReclamo');
     var $estadoReq = $('#estadoReq');
@@ -168,8 +207,19 @@
     let destinos_select = [];
     let observaciones = [];
     let adjuntos = [];
+    let contactos = [];
     let rptaFinal = 0;
     function Initializer() {
+        $cmbEstadoContacto.val("1");
+        $btnActualizarContacto.css('display', 'none');
+        $btnAgregarContacto.css('display', 'none');
+        $btnLimpiar.css('display', 'none');
+        $rowTelefono2.css('display', 'none');
+        $btnAñadir.css('display', 'none');
+        $btnLimpiarTodo.css('display', 'none');
+
+
+
         $tipoDocAdjuntos.text("Archivos permitidos: .xls,.xlsx,.pdf,.doc,.docx,.zip,.rar,.ppt,.pptx");
         cargarTipoDoc();
         ObtenerFiltrosGarantias();
@@ -182,6 +232,13 @@
         $openRegdateSolicitud.click($openRegdateSolicitud_click);
         $openRegdateProgramacion.click($openRegdateProgramacion_click);
         $btnRegistrarRec.click(RegistrarReclamo);
+        $btnNuevoContacto.click(btnAñadirClick)
+        $btnCerrar.click(Cerrar);
+        $btnAgregarNuevoContacto.click(RegistrarNuevoContacto);
+        $btnSelectContacto.click(BuscarContactosxCliente);
+        $btnBuscarContactos.click(BuscarContactosxCliente);
+        $btnActualizarContacto.click(ActualizarContacto);
+
         $btnGuardarObservacionReq.click(GuardarObservacionReqClick);
         $btnAgregarObservacion.click($modalObservacionClick);
         $btnBuscarTecnicos.click(BuscarTecnicosClick);
@@ -214,6 +271,11 @@
         $fileCargaDocumentoSustento.on("change", $fileCargaDocumentoSustento_change);
         CargarTipoDocumento(7); //Cambiar a tipo de proceso Instalación Técnica.
         IniciarBotonSeleccionarTecnico();
+
+        if ($numReclamo.val() != "") {
+            BuscarContactos();
+        };
+
 
         setTimeout(function () {
             cargarDatos();
@@ -520,7 +582,6 @@
             if (data.Result.CodRpta == 3) {
                 cargarCabecera(data.Result.CabeceraSolicitud);
                 cargarCuerpoEquipo(data.Result.Detalle);
-                cargarInfoContactos(data.Result.Contacto);
             } else if (data.Result.CodRpta == 0) {
                 app.message.error("Validación", "El número de serie no ha sido registrado en el sistema, por favor revisar.");
                 return;
@@ -852,6 +913,12 @@
             app.llenarComboMultiResult($cmbMotivo, data.Result.Motivos, null, 0, "--Seleccionar--", filters);
             app.llenarComboMultiResult($cmbUrgencia, data.Result.Urgencia, null, 0, "--Seleccionar--", filters);
             app.llenarComboMultiResult($cmbTipoEmpleado, data.Result.TipoEmpleado, null, 0, "--Seleccionar--", filters);
+
+
+            var filters2 = {};
+            filters2.placeholder = "--Seleccionar--";
+            filters2.allowClear = false;
+            app.llenarComboMultiResult($cmbTipDocContacto, data.Result.TipoDoc, null, " ", "Sin definir", filters2);
         };
 
         var fnFailCallBack = function () {
@@ -943,13 +1010,13 @@
         $txtOrdCompra.val("");
     };
 
-    function cargarInfoContactos(contacto) {
-        $txtNomContacto.val(contacto.NomCont);
-        $txtTelefContacto.val(contacto.Telefono);
-        $txtEstablecimientoCont.val(contacto.Establecimiento);
-        $txtCargoContacto.val(contacto.Cargo);
-        $txtEmailContacto.val(contacto.Correo);
-    }
+    //function cargarInfoContactos(contacto) {
+    //    $txtNomContacto.val(contacto.NomCont);
+    //    $txtTelefContacto.val(contacto.Telefono);
+    //    $txtEstablecimientoCont.val(contacto.Establecimiento);
+    //    $txtCargoContacto.val(contacto.Cargo);
+    //    $txtEmailContacto.val(contacto.Correo);
+    //}
 
     function cargarCuerpoEquipo(detalle) {
         $txtCodEquipo.val(detalle.CodigoProducto);
@@ -1532,7 +1599,7 @@
         if ($numReclamo.val() != "") {
             var fnSi = function () {
                 var method = "POST";
-                var url = "BandejaInstalacionTecnica/EliminarAdjunto";
+                var url = "BandejaGarantia/EliminarAdjunto";
                 var obj = {
                     Accion: "D",
                     CodigoDocumento: idDocumento,
@@ -2017,14 +2084,6 @@
                     NumFianza: data.Result.Reclamo.NumFianza
                 };
 
-                var contacto = {
-                    NomCont: data.Result.Reclamo.NombreContacto,
-                    Telefono: data.Result.Reclamo.TelefonoContacto,
-                    Establecimiento: data.Result.Reclamo.Establecimiento,
-                    Cargo: data.Result.Reclamo.CargoContacto,
-                    Correo: data.Result.Reclamo.Correo
-                };
-
                 var reclamo = {
                     FechaReclamo: data.Result.Reclamo.FechaReclamo,
                     Motivo: data.Result.Reclamo.Motivo,
@@ -2036,7 +2095,7 @@
 
                 cargarCabecera(requerimiento);
                 cargarCuerpoEquipo(equipo);
-                cargarInfoContactos(contacto)
+                //cargarInfoContactos(contacto)
                 llenarInfoReclamo(reclamo);
                 $dateProgramacion.val(app.obtenerFecha(data.Result.Reclamo.FechaProgramacion));
                 //$dateProgramacion.prop('disabled', true);
@@ -2150,6 +2209,10 @@
     };
 
     function FinalizarReclamo() {
+        if (contactos.length == 0 && $estadoReq.val() == "REG") {
+            app.message.error("Validación", "Es necesario que vincule por lo menos un contacto");
+            return;
+        };
 
         if ($txtSerieVenta.val() == "" || $txtSerieVenta.val() == null || $txtSerieVenta.val().trim().length == 0) {
             app.message.error("Validación", "Debe de ingresar un número de serie");
@@ -2262,6 +2325,720 @@
     };
 
 
+
+    function Cerrar() {
+        $modalModificarContacto.modal('hide');
+    };
+
+    function BuscarContactosxCliente() {
+        var method = "POST";
+        var url = "BandejaGarantia/ObtenerContactosxRuc";
+        var objCliente = {
+            RucCliente: $txtRuc.val(),
+            NomCont: $txtContacto.val(),
+            Establecimiento: $txtConsultaEstablecimiento.val()
+        };
+
+        var objParam = JSON.stringify(objCliente);
+
+        var fnDoneCallBack = function (data) {
+            cargarTablaContactosAux(data);
+        };
+
+        var fnFailCallBack = function () {
+            cargarTablaContactosAux();
+            app.message.error("Error", "Error al listar los contactos, por favor revisar");
+        };
+
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null)
+    };
+
+
+    function btnLimpiarClick() {
+        $cmbTipDocContacto.val("");
+        $txtNumContacto.val("");
+        $txtNomContacto.val("");
+        $txtContactoTelefono.val("");
+        $txtContactoTelefono2.val("");
+        $txtContactoCorreo.val("");
+        $txtCargoContacto.val("");
+        $txtEstablecimiento.val("");
+        $txtAreaContacto.val("");
+    }
+
+    function ActualizarContacto() {
+        var id = $txtidContacto.val();
+
+        if (($txtNomContacto.val() === "") || !(isNaN($txtNomContacto.val())) || ($txtNomContacto.val().trim().length === 0)) {
+            app.message.error("Validación", "Debe de agregar nombres.");
+            return
+        };
+
+        if ($txtEstablecimiento.val().trim() === "" || $txtEstablecimiento.val().trim().length === 0) {
+            app.message.error("Validación", "Debe de agregar el establecimiento.");
+            return
+        }
+
+        if ($txtAreaContacto.val().trim() === "" || $txtAreaContacto.val().trim().length === 0) {
+            app.message.error("Validación", "Debe de agregar el area de contacto.");
+            return
+        }
+
+        var telefonoContacto = $txtContactoTelefono.val().trim();
+
+        telefonoContacto = telefonoContacto.replace(/\s+/g, ' ');
+
+        if (isNaN(telefonoContacto.trim()) || (telefonoContacto.length === 0 && telefonoContacto != "")) {
+            app.message.error("Validación", "El teléfono no está en el formato correcto.");
+            return
+        };
+
+        var telefonoContacto2 = $txtContactoTelefono2.val().trim();
+
+        telefonoContacto2 = telefonoContacto2.replace(/\s+/g, ' ');
+
+        if (isNaN(telefonoContacto2.trim()) || (telefonoContacto2.length === 0 && telefonoContacto2 != "")) {
+            app.message.error("Validación", "El teléfono no está en el formato correcto.");
+            return
+        };
+
+        if ($txtContactoTelefono.val() == "" && $txtContactoTelefono2.val() == "") {
+            app.message.error("Validación", "Debe de ingresar por lo menos un número de teléfono.");
+            return
+        }
+
+        if ($txtContactoCorreo.val() === "" || !app.validarEmail($txtContactoCorreo.val())) {
+            app.message.error("Validación", "El correo no ha sido ingresado o el formato no es válido.");
+            return
+        };
+
+        if ($txtCargoContacto.val().trim() === "" || $txtCargoContacto.val().trim().length === 0) {
+            app.message.error("Validación", "No ha ingresado un cargo");
+            return
+        };
+
+        if ($cmbEstadoContacto.val().trim() === "") {
+            app.message.error("Validación", "Debe de escoger un estado.");
+            return
+        };
+
+        var fnSi = function () {
+
+
+            var estado;
+            if ($cmbEstadoContacto.val() == "1") {
+                estado = true;
+            }
+            else {
+                estado = false;
+            }
+
+            var method = "POST";
+            var url = "BandejaGarantia/ActualizarContacto";
+            var objContacto = {
+                Id_Asig: id,
+                Id_Reclamo: $numReclamo.val(),
+                TipDoc: $cmbTipDocContacto.val(),
+                NumDoc: $txtNumContacto.val(),
+                NomCont: $txtNomContacto.val(),
+                Establecimiento: $txtEstablecimiento.val(),
+                AreaContacto: $txtAreaContacto.val(),
+                Telefono: $txtContactoTelefono.val(),
+                RucCliente: $txtRuc.val(),
+                Cargo: $txtCargoContacto.val(),
+                Correo: $txtContactoCorreo.val(),
+                CodEstado: estado
+            };
+
+            var objParam = JSON.stringify(objContacto);
+
+            var fnDoneCallBack = function (data) {
+                if (data.Result.Codigo == 0) {
+                    app.message.error("Error", "Error al actualizar el contacto, por favor revisar");
+                }
+                else if (data.Result.Codigo == -1) {
+                    app.message.error("Error", "El numero de documento ya ha sido registrado");
+                }
+                else {
+                    app.message.success("Éxito", "Se realizó la actualización correctamente");
+                    BuscarContactos();
+                    $modalModificarContacto.modal('toggle');
+                }
+            };
+
+            var fnFailCallBack = function () {
+                app.message.error("Error", "Se presentó un error al actualizar el contacto, por favor revisar");
+                return;
+            };
+
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+        }
+        return app.message.confirm("Confirmación", "Desea actualizar los datos del contacto", "Sí", "No", fnSi);
+    };
+
+    function btnAñadirClick() {
+        btnLimpiarClick();
+        $btnAgregarContacto.css("display", "none");
+        $btnAgregarNuevoContacto.css('display', 'in-line block');
+        $cmbTipDocContacto.val(" ").trigger("change.select2");
+        $cmbEstadoContacto.val("1").trigger("change.select2");
+        $cmbEstadoContacto.prop("disabled", true);
+        $tituloContacto.text("Registrar Contacto");
+        $cmbTipDocContacto.on('change', function () {
+            if ($cmbTipDocContacto.val() == ' ') {
+                $txtNumContacto.prop("disabled", true);
+                $txtNumContacto.val("");
+            }
+            else {
+                $txtNumContacto.prop("disabled", false);
+            }
+        });
+        $btnActualizarContacto.css("display", "none");
+    }
+
+
+
+    function validarTipoDoc() {
+        const tipoDocContacto = $('select[id="cmbTipDocContacto"] option:selected').text();
+
+        var rpta;
+
+        if (tipoDocContacto == "DNI") {
+            if ($txtNumContacto.val().length != 8 || isNaN($txtNumContacto.val())) {
+                app.message.error("Validación", "El DNI debe ser un número de 8 dígitos.")
+                rpta = false;
+            }
+            else {
+                rpta = true;
+            }
+        }
+        else if (tipoDocContacto == "Carnet Extranjería") {
+            if ($txtNumContacto.val().length != 12) {
+                app.message.error("Validación", "El Carnet de Extranjeria debe ser un número de 12 dígitos.")
+                rpta = false;
+            }
+            else {
+                rpta = true;
+            }
+        }
+        else if (tipoDocContacto == "Pasaporte") {
+            if ($txtNumContacto.val().length != 12) {
+                app.message.error("Validación", "El Pasaporte debe ser un valor alfanumérico de 12 dígitos.")
+                rpta = false;
+            }
+            else {
+                rpta = true;
+            }
+        } else if (tipoDocContacto == "RUC") {
+            if ($txtNumContacto.val().length != 11) {
+                app.message.error("Validación", "El RUC debe ser un número de 11 dígitos.")
+                rpta = false;
+            }
+            else {
+                rpta = true;
+            }
+        }
+        return rpta;
+    }
+
+    function RegistrarNuevoContacto() {
+        var rpta = validarTipoDoc();
+
+        if (!rpta && rpta != undefined) {
+            return;
+        };
+
+        if (($txtNomContacto.val() === "") || !(isNaN($txtNomContacto.val())) || ($txtNomContacto.val().trim().length === 0)) {
+            app.message.error("Validación", "Debe de agregar nombres.");
+            return
+        };
+
+        if ($txtEstablecimiento.val().trim() === "" || $txtEstablecimiento.val().trim().length === 0) {
+            app.message.error("Validación", "Debe de agregar el establecimiento.");
+            return
+        }
+
+        if ($txtAreaContacto.val().trim() === "" || $txtAreaContacto.val().trim().length === 0) {
+            app.message.error("Validación", "Debe de agregar el area de contacto.");
+            return
+        }
+
+        var telefonoContacto = $txtContactoTelefono.val().trim();
+
+        telefonoContacto = telefonoContacto.replace(/\s+/g, ' ');
+
+        if (isNaN(telefonoContacto.trim()) || (telefonoContacto.length === 0 && telefonoContacto != "")) {
+            app.message.error("Validación", "El teléfono no está en el formato correcto.");
+            return
+        };
+
+        var telefonoContacto2 = $txtContactoTelefono2.val().trim();
+
+        telefonoContacto2 = telefonoContacto2.replace(/\s+/g, ' ');
+
+        if (isNaN(telefonoContacto2.trim()) || (telefonoContacto2.length === 0 && telefonoContacto2 != "")) {
+            app.message.error("Validación", "El teléfono no está en el formato correcto.");
+            return
+        };
+
+        if ($txtContactoTelefono.val() == "" && $txtContactoTelefono2.val() == "") {
+            app.message.error("Validación", "Debe de ingresar por lo menos un número de teléfono.");
+            return
+        }
+
+        if ($txtContactoCorreo.val() === "" || !app.validarEmail($txtContactoCorreo.val())) {
+            app.message.error("Validación", "El correo no ha sido ingresado o el formato no es válido.");
+            return
+        };
+
+        if ($txtCargoContacto.val().trim() === "" || $txtCargoContacto.val().trim().length === 0) {
+            app.message.error("Validación", "No ha ingresado un cargo");
+            return
+        };
+
+        if ($cmbEstadoContacto.val().trim() === "") {
+            app.message.error("Validación", "Debe de escoger un estado.");
+            return
+        };
+
+
+        var fnSi = function () {
+            var estado;
+            if ($cmbEstadoContacto.val() == "1") {
+                estado = true;
+            }
+            else {
+                estado = false;
+            }
+
+            var method = "POST"
+            var url = "BandejaGarantia/InsertarContacto"
+            var objContact = {
+                Id_Asig: 0,
+                Id_Reclamo: $numReclamo.val(),
+                TipDoc: $cmbTipDocContacto.val(),
+                NumDoc: $txtNumContacto.val(),
+                NomCont: $txtNomContacto.val(),
+                Establecimiento: $txtEstablecimiento.val(),
+                AreaContacto: $txtAreaContacto.val(),
+                Telefono: $txtContactoTelefono.val(),
+                RucCliente: $txtRuc.val(),
+                Cargo: $txtCargoContacto.val(),
+                Correo: $txtContactoCorreo.val(),
+                CodEstado: estado
+            };
+
+            var objParam = JSON.stringify(objContact);
+
+            var fnDoneCallBack = function (data) {
+                if (data.Result.Codigo == -1) {
+                    app.message.error("Error", "El número de documento ingresado es duplicado, por favor revisar");
+                }
+                else if (data.Result.Codigo == 0) {
+                    app.message.error("Error", "Error al registrar el contacto, por favor revisar");
+                }
+                else if (data.Result.Codigo == -2) {
+                    app.message.error("Error", "Contacto ya ha sido asignado");
+                }
+                else {
+                    app.message.success("Éxito", "Se realizó la inserción correctamente");
+                    BuscarContactos();
+                    $modalModificarContacto.modal('toggle');
+                }
+            };
+
+            var fnFailCallBack = function () {
+                app.message.error("Error", "Se presentó un error al registrar el contacto, por favor revisar");
+                return;
+            };
+
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+        };
+        return app.message.confirm("Confirmación", "¿Está seguro que desea guardar los datos del contacto?", "Sí", "No", fnSi);
+
+    }
+
+    function BuscarContactos() {
+        var method = "POST";
+        var url = "BandejaGarantia/ObtenerContactos";
+        var obj = {
+            NumRec: $numReclamo.val() == null ? "" : $numReclamo.val()
+        };
+        var objParam = JSON.stringify(obj);
+
+        var fnDoneCallBack = function (data) {
+            cargarTablaContactos(data);
+            contactos = data.Result;
+        };
+
+        var fnFailCallBack = function () {
+            cargarTablaContactos()
+            app.message.error("Validación", "Error al cargar los resultados");
+            return;
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+    }
+
+
+    function cargarTablaContactosAux(data) {
+        $NoExisteContact.remove();
+        var columns = [
+            {
+                data: "IdContacto",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "TipDoc",
+                render: function (data, type, row) {
+                    if (data == "") {
+                        return '<center>' + 'Sin definir' + '</center>'
+                    } else {
+                        return '<center>' + data + '</center>'
+                    }
+                }
+            },
+            {
+                data: "NumDoc",
+                render: function (data, type, row) {
+                    if (data == "") {
+                        return '<center>' + 'No definido' + '</center>'
+                    } else {
+                        return '<center>' + data + '</center>'
+                    }
+                }
+            },
+            {
+                data: "NomCont",
+                render: function (data, type, row) {
+                    if (data == "") {
+                        return '<center>' + 'No definido' + '</center>'
+                    } else {
+                        return '<center>' + data + '</center>'
+                    }
+                }
+            },
+            {
+                data: "Establecimiento",
+                render: function (data, type, row) {
+                    if (data == "") {
+                        return '<center>' + 'No definido' + '</center>'
+                    } else {
+                        return '<center>' + data + '</center>'
+                    }
+                }
+            },
+            {
+                data: "AreaContacto",
+                render: function (data, type, row) {
+                    if (data == "") {
+                        return '<center>' + 'No definido' + '</center>'
+                    } else {
+                        return '<center>' + data + '</center>'
+                    }
+                }
+            },
+            {
+                data: "Telefono",
+                render: function (data, type, row) {
+                    if (data == "") {
+                        return '<center>' + 'No definido' + '</center>'
+                    } else {
+                        return '<center>' + data + '</center>'
+                    }
+                }
+            },
+            {
+                data: "Telefono2",
+                render: function (data, type, row) {
+                    if (data == "") {
+                        return '<center>' + 'No definido' + '</center>'
+                    } else {
+                        return '<center>' + data + '</center>'
+                    }
+                }
+            },
+            {
+                data: "Cargo",
+                render: function (data, type, row) {
+                    if (data == "") {
+                        return '<center>' + 'No definido' + '</center>'
+                    } else {
+                        return '<center>' + data + '</center>'
+                    }
+                }
+            },
+            {
+                data: "Correo",
+                render: function (data, type, row) {
+                    if (data == "") {
+                        return '<center>' + 'No definido' + '</center>'
+                    } else {
+                        return '<center>' + data + '</center>'
+                    }
+                }
+            },
+            {
+                data: "Estado",
+                render: function (data, type, row) {
+                    if (data == "") {
+                        return '<center>' + 'No definido' + '</center>'
+                    } else {
+                        return '<center>' + data + '</center>'
+                    }
+                }
+            },
+            {
+                data: "IdContacto",
+                render: function (data, type, row) {
+                    var seleccionar = '<a id="btnSelectContact" class="btn btn-default btn-xs" title="Seleccionar" href="javascript: garantias.seleccionarContacto(' + data + ')"><i class="fa fa-plus" aria-hidden="true"></i> Seleccionar</a>';
+                    return '<center>' + seleccionar + '</center>';
+                }
+            }
+        ];
+
+        var columnDefs = [
+            {
+                targets: [0],
+                visible: false
+            }
+        ];
+
+        app.llenarTabla($tblContactos, data, columns, columnDefs, "#tblContactos", null);
+    }
+
+    function cargarTablaContactos(data) {
+        $NoExisteRegContact.remove();
+
+        var columns = [
+            {
+                data: "Id_Asig",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "TipDoc",
+                render: function (data, type, row) {
+                    if (data == "") {
+                        return '<center>' + 'No definido' + '</center>'
+                    } else {
+                        return '<center>' + data + '</center>'
+                    }
+                }
+
+            },
+            {
+                data: "NumDoc",
+                render: function (data, type, row) {
+                    if (data == "") {
+                        return '<center>' + 'No definido' + '</center>'
+                    } else {
+                        return '<center>' + data + '</center>'
+                    }
+                }
+            },
+            {
+                data: "NomCont",
+                render: function (data, type, row) {
+                    if (data == "") {
+                        return '<center>' + 'No definido' + '</center>'
+                    } else {
+                        return '<center>' + data + '</center>'
+                    }
+                }
+            },
+            {
+                data: "Establecimiento",
+                render: function (data, type, row) {
+                    if (data == "") {
+                        return '<center>' + 'No definido' + '</center>'
+                    } else {
+                        return '<center>' + data + '</center>'
+                    }
+                }
+            },
+            {
+                data: "AreaContacto",
+                render: function (data, type, row) {
+                    if (data == "") {
+                        return '<center>' + 'No definido' + '</center>'
+                    } else {
+                        return '<center>' + data + '</center>'
+                    }
+                }
+            },
+            {
+                data: "Telefono",
+                render: function (data, type, row) {
+                    if (data == "") {
+                        return '<center>' + 'No definido' + '</center>'
+                    } else {
+                        return '<center>' + data + '</center>'
+                    }
+                }
+            },
+            {
+                data: "Cargo",
+                render: function (data, type, row) {
+                    if (data == "") {
+                        return '<center>' + 'No definido' + '</center>'
+                    } else {
+                        return '<center>' + data + '</center>'
+                    }
+                }
+            },
+            {
+                data: "Correo",
+                render: function (data, type, row) {
+                    if (data == "") {
+                        return '<center>' + 'No definido' + '</center>'
+                    } else {
+                        return '<center>' + data + '</center>'
+                    }
+                }
+            },
+            {
+                data: "Id_Asig",
+                render: function (data, type, row) {
+                    if ($tipoproceso.val() == "V") {
+                        return '<center> No disponible </center>';
+                    }
+                    else {
+                        var editar = '<a id="btnEditarContacto" class="btn btn-default btn-xs" title="Editar" href="javascript:garantias.editarContacto(' + data + ')"><i class="fa fa-pencil"></i></a>'
+                        var eliminar = '<a id="btnEliminarContacto" class="btn btn-default btn-xs" title="Eliminar" href="javascript:garantias.eliminarContacto(' + data + ')"><i class="fa fa-trash"></i></a>'
+                        return '<center>' + eliminar + ' ' + editar + '</center>';
+                    }
+                }
+            }
+        ];
+
+        var columnsDefs = [
+            {
+                targets: [0],
+                visible: false
+            }
+        ];
+
+        app.llenarTabla($tblContactosMain, data, columns, columnsDefs, "#tblContactosMain", null);
+    }
+
+    function editarContacto(id) {
+
+        var contactosFilter = contactos.filter(x => x.Id_Asig == id);
+        var estado;
+
+
+        if (contactosFilter[0].CodEstado == true) {
+            estado = 1;
+        }
+        else {
+            estado = 0;
+        };
+
+        if (contactosFilter[0].CodTipDocContacto == "" && contactosFilter[0].NumDoc == "") {
+            $txtNumContacto.prop("disabled", true);
+        } else {
+            $txtNumContacto.prop("disabled", false);
+        }
+
+        $txtidContacto.val(id);
+        $cmbTipDocContacto.val(contactosFilter[0].CodTipDocContacto == "" ? " " : contactosFilter[0].CodTipDocContacto).trigger("change.select2");
+        $txtNumContacto.val(contactosFilter[0].NumDoc);
+        $txtNomContacto.val(contactosFilter[0].NomCont);
+        $txtEstablecimiento.val(contactosFilter[0].Establecimiento);
+        $txtAreaContacto.val(contactosFilter[0].AreaContacto);
+        $txtContactoTelefono.val(contactosFilter[0].Telefono);
+        $txtContactoCorreo.val(contactosFilter[0].Correo);
+        $txtCargoContacto.val(contactosFilter[0].Cargo);
+        $cmbEstadoContacto.val(estado).trigger("change.select2");
+
+        $btnActualizarContacto.css('display', 'in-line block');
+        $btnAgregarNuevoContacto.css('display', 'none');
+
+        $modalModificarContacto.modal('toggle');
+
+
+        if (contactosFilter[0].CodTipDocContacto == " ") {
+            $txtNumContacto.prop("disabled", true);
+            $txtNumContacto.val("");
+        };
+        $cmbTipDocContacto.on('change', function () {
+            if ($cmbTipDocContacto.val() == ' ') {
+                $txtNumContacto.prop("disabled", true);
+                $txtNumContacto.val("");
+            }
+            else {
+                $txtNumContacto.prop("disabled", false);
+            }
+        });
+    };
+    function eliminarContacto(id) {
+        var fnSi = function () {
+            var method = "POST";
+            var url = "BandejaGarantia/EliminarContacto";
+            var obj = {
+                Id_Asig: id
+            };
+
+            var objParam = JSON.stringify(obj);
+
+            var fnDoneCallBack = function () {
+                app.message.success("Éxito", "Se realízó la desvinculación con éxito");
+                BuscarContactos();
+            };
+
+            var fnFailCallBack = function () {
+                app.message.error("Error", "Se produjo un error al realizar la desvinculación");
+            };
+
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+        }
+        return app.message.confirm("Confirmación", "¿Desea desvincular el contacto al requerimiento actual?", "Sí", "No", fnSi);
+    };
+
+
+    function seleccionarContacto(id) {
+        var id_contacto = id;
+
+        var fnSi = function () {
+            var method = "POST";
+            var url = "BandejaGarantia/InsertarContacto";
+            var obj = {
+                IdContacto: id_contacto,
+                Id_Reclamo: $numReclamo.val(),
+                CodEstado: true
+            };
+            var objParam = JSON.stringify(obj);
+
+            var fnDoneCallBack = function (data) {
+                if (data.Result.Codigo == -2) {
+                    app.message.error("Error", "El contacto ya se encuentra seleccionado");
+                    return;
+                }
+                else if (data.Result.Codigo == 0) {
+                    app.message.error("Error", "Se produjo un error al asignar el contacto, por favor revisar");
+                    return;
+                }
+                else {
+                    app.message.success("Éxito", "Se realizó la asignación con éxito");
+                    $modalContactos.modal('toggle');
+                    BuscarContactos();
+                }
+            };
+
+            var fnFailCallBack = function () {
+                app.message.error("Error", "Error al realizar la asignación, por favor revisar");
+            };
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+        };
+        return app.message.confirm("Confirmación", "¿Está seguro que desea vincular el contacto a la instalación?", "Sí", "No", fnSi);
+
+    }
+
     return {
         DesasignarTecnicoTmp: DesasignarTecnicoTmp,
         DesasignarTecnico: DesasignarTecnico,
@@ -2269,6 +3046,9 @@
         eliminarDocumento: eliminarDocumento,
         eliminarDocTemp: eliminarDocTemp,
         eliminarObsTmp: eliminarObsTmp,
-        saveEmpresaTecnico: saveEmpresaTecnico
+        saveEmpresaTecnico: saveEmpresaTecnico,
+        eliminarContacto: eliminarContacto,
+        seleccionarContacto: seleccionarContacto,
+        editarContacto: editarContacto
     }
 })(window.jQuery, window, document);

@@ -1,0 +1,189 @@
+USE [DB_AHSECO]
+GO
+
+
+CREATE OR ALTER PROCEDURE [dbo].[USP_MANT_INSTAL_CONTACTOS]
+(
+/*=======================================================================================================
+	Nombre:				Fecha:			Descripcion:
+	Diego Bazalar		16.01.25		Se realiza el mantenimiento de los registros de la tabla [TBM_INSTAL_CONTACTO]
+	[USP_MANT_INSTAL_CONTACTOS]
+  =======================================================================================================*/
+	@IsTipoProceso		   CHAR(1)
+	,@IsID_ASIG			   BIGINT
+	,@IsID_CONTACTO		   BIGINT
+	,@IsNUMREQ			   BIGINT
+	,@IsTIPO_DOC		   VARCHAR(10)
+	,@IsNUM_DOC			   VARCHAR(12)
+	,@IsNOMBRES			   VARCHAR(150)
+	,@IsESTABLECIMIENTO	   VARCHAR(100)
+	,@IsAREA			   VARCHAR(100)
+	,@IsTELEFONO		   VARCHAR(50)
+	,@IsCARGO			   VARCHAR(50)
+	,@IsCORREO			   VARCHAR(35)
+	,@IsESTADO			   BIT
+	,@IsRUC				   VARCHAR(12)
+	,@IsUsrEjecuta		   VARCHAR(50)
+)
+AS
+BEGIN
+SET NOCOUNT ON
+
+	DECLARE @COD INT, @MSG VARCHAR(100)
+
+	IF (@IsTipoProceso = 'I')
+	BEGIN
+		DECLARE @IDCLIENTE BIGINT
+		SELECT @IDCLIENTE = ID FROM [dbo].[TBM_CLIENTES] WHERE RUCEMPRESA = @IsRUC
+
+		IF(@IsID_CONTACTO = 0)
+		BEGIN
+			IF EXISTS (SELECT 1 FROM [TBM_CONTACTOS] WHERE NUMDOCCONTACTO = @IsNUM_DOC AND TIPDOCCONTACTO = @IsTIPO_DOC)
+			BEGIN
+				SET @COD = -1;
+				SET @MSG = 'Ya existe un empleado con el mismo documento.'
+			END
+			ELSE
+			BEGIN
+				INSERT INTO [dbo].[TBM_CONTACTOS](ID_CLIENTE,TIPDOCCONTACTO,NUMDOCCONTACTO,[NOMBRE CONTACTO],TELEFONOCONTACTO,CARGOCONTACTO,AREACONTACTO,CORREOCONTACTO,ESTABLECIMIENTO,ESTADO,AUDIT_REG_USR,AUDIT_REG_FEC)
+				VALUES(@IDCLIENTE,@IsTIPO_DOC,@IsNUM_DOC,@IsNOMBRES,@IsTELEFONO,@IsCARGO,@IsAREA,@IsCORREO,@IsESTABLECIMIENTO,@IsESTADO,@IsUsrEjecuta,GETDATE())
+
+				IF(@@ROWCOUNT = 0)
+				BEGIN
+					SET @COD = 0
+					SET @MSG = 'Ocurrió un error al realizar la inserción de la tabla [TBM_INSTAL_CONTACTO]'
+				END
+				ELSE
+				BEGIN
+					SELECT @IsID_CONTACTO = @@IDENTITY
+
+					INSERT INTO [dbo].[TBM_INSTAL_CONTACTO](NUMREQ,ID_CONTACTO,TIPO_DOC,NUM_DOC,NOMBRES,ESTABLECIMIENTO,AREA,TELEFONO,CARGO,CORREO,ESTADO,USR_REG,FEC_REG)
+					VALUES (@IsNUMREQ,@IsID_CONTACTO,@IsTIPO_DOC,@IsNUM_DOC,@IsNOMBRES,@IsESTABLECIMIENTO,@IsAREA,@IsTELEFONO,@IsCARGO,@IsCORREO,@IsESTADO,@IsUsrEjecuta,GETDATE())
+					IF(@@ROWCOUNT = 0)
+					BEGIN
+						SET @COD = 0
+						SET @MSG = 'Ocurrió un error al realizar la inserción de la tabla [TBM_INSTAL_CONTACTO]'
+					END
+					ELSE
+					BEGIN
+						SET @COD = @@IDENTITY
+						SET @MSG = 'Se registró con éxito'
+					END
+				END
+			END
+		END
+		ELSE
+		BEGIN
+			IF EXISTS (SELECT 1 FROM TBM_INSTAL_CONTACTO WHERE ID_CONTACTO = @IsID_CONTACTO AND NUMREQ = @IsNUMREQ AND ESTADO = 1)
+			BEGIN
+				SET @COD = -2
+				SET @MSG = 'Contacto ya asignado al requerimiento'
+			END
+			ELSE
+			BEGIN
+				INSERT INTO [dbo].[TBM_INSTAL_CONTACTO](NUMREQ,ID_CONTACTO,TIPO_DOC,NUM_DOC,NOMBRES,ESTABLECIMIENTO,AREA,TELEFONO,CARGO,CORREO,ESTADO,USR_REG,FEC_REG)
+				SELECT @IsNUMREQ, IDCONTACTO, TIPDOCCONTACTO, NUMDOCCONTACTO,[NOMBRE CONTACTO],ESTABLECIMIENTO,AREACONTACTO,TELEFONOCONTACTO,CARGOCONTACTO,CORREOCONTACTO,@IsESTADO,@IsUsrEjecuta, GETDATE()
+				FROM [dbo].[TBM_CONTACTOS] WHERE IDCONTACTO = @IsID_CONTACTO
+			
+				IF(@@ROWCOUNT = 0)
+				BEGIN
+					SET @COD = 0
+					SET @MSG = 'Ocurrió un error al realizar la inserción de la tabla [TBM_INSTAL_CONTACTO]'
+				END
+				ELSE
+				BEGIN
+					SET @COD = @@IDENTITY
+					SET @MSG = 'Se registró con éxito'
+				END		
+			END
+		END
+	END
+	IF (@IsTipoProceso = 'U')
+	BEGIN
+		IF EXISTS (SELECT 1 FROM [TBM_CONTACTOS] WHERE NUMDOCCONTACTO = @IsNUM_DOC AND TIPDOCCONTACTO = @IsTIPO_DOC)
+			BEGIN
+				SET @COD = -1;
+				SET @MSG = 'Ya existe un empleado con el mismo documento.'
+			END
+			ELSE
+			BEGIN
+				SELECT @IsID_CONTACTO = ID_CONTACTO FROM TBM_INSTAL_CONTACTO WHERE ID_ASIG = @IsID_ASIG
+				UPDATE [TBM_INSTAL_CONTACTO] 
+				SET 
+					TIPO_DOC		 = @IsTIPO_DOC
+					,NUM_DOC		 = @IsNUM_DOC
+					,NOMBRES		 = @IsNOMBRES
+					,ESTABLECIMIENTO = @IsESTABLECIMIENTO
+					,AREA			 = @IsAREA
+					,TELEFONO		 = @IsTELEFONO
+					,CARGO			 = @IsCARGO
+					,CORREO			 = @IsCORREO
+					,ESTADO			 = @IsESTADO
+					,USR_MOD		 = @IsUsrEjecuta
+					,FEC_MOD		 = GETDATE()
+				WHERE ID_ASIG = @IsID_ASIG
+
+				IF (@@ROWCOUNT = 0 )
+				BEGIN
+					SET @COD = 0
+					SET @MSG = 'Se produjo un erro al actualizar la tabla [TBM_INSTAL_CONTACTO]'
+				END
+				ELSE
+				BEGIN
+					SET @COD = @IsID_ASIG;
+					SET @MSG = 'Se actualizó correctamente';
+				END
+
+
+				UPDATE [TBM_CONTACTOS]
+				SET 
+				TIPDOCCONTACTO		 =@IsTIPO_DOC
+				,NUMDOCCONTACTO		 =@IsNUM_DOC
+				,[NOMBRE CONTACTO]	 =@IsNOMBRES
+				,TELEFONOCONTACTO	 =@IsTELEFONO
+				,CARGOCONTACTO		 =@IsCARGO
+				,CORREOCONTACTO		 =@IsCORREO
+				,ESTABLECIMIENTO	 =@IsESTABLECIMIENTO
+				,AUDIT_MOD_USR		 =@IsUsrEjecuta
+				,AUDIT_MOD_FEC		 =GETDATE()
+				WHERE IDCONTACTO = @IsID_CONTACTO
+
+				IF (@@ROWCOUNT = 0 )
+				BEGIN
+					SET @COD = 0
+					SET @MSG = 'Se produjo un erro al actualizar la tabla [TBM_INSTAL_CONTACTO]'
+				END
+				ELSE
+				BEGIN
+					SET @COD = @IsID_ASIG;
+					SET @MSG = 'Se actualizó correctamente';
+				END
+			END
+	END
+
+	IF (@IsTipoProceso = 'D')
+	BEGIN
+		UPDATE [TBM_INSTAL_CONTACTO] 
+		SET 
+			ESTADO			 = @IsESTADO
+			,USR_MOD		 = @IsUsrEjecuta
+			,FEC_MOD		 = GETDATE()
+		WHERE ID_ASIG = @IsID_ASIG
+
+		IF (@@ROWCOUNT = 0 )
+		BEGIN
+			SET @COD = 0
+			SET @MSG = 'Se produjo un erro al actualizar la tabla [TBM_INSTAL_CONTACTO]'
+		END
+		ELSE
+		BEGIN
+			SET @COD = @IsID_ASIG;
+			SET @MSG = 'Se actualizó correctamente';
+		END
+	END
+
+	SELECT @COD COD, @MSG MSG
+
+SET NOCOUNT OFF
+END
+
