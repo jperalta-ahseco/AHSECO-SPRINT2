@@ -832,7 +832,7 @@
                                                                             </thead>
                                                                             <tbody>
                                                                                 <tr id="NoRegSeries">
-                                                                                    <td align="center" colspan="6">No existen registros</td>
+                                                                                    <td align="center" colspan="8">No existen registros</td>
                                                                                 </tr>
                                                                             </tbody>
                                                                         </table>
@@ -925,7 +925,7 @@
                                                                             </thead>
                                                                             <tbody>
                                                                                 <tr id="NoRegSeriesSS">
-                                                                                    <td align="center" colspan="6">No existen registros</td>
+                                                                                    <td align="center" colspan="8">No existen registros</td>
                                                                                 </tr>
                                                                             </tbody>
                                                                         </table>
@@ -1277,6 +1277,12 @@
 <div class="modal fade" id="modalCostoItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false">
     @{
         Html.RenderPartial("_SolicitudCostoItem");
+    }
+</div>
+
+<div class="modal fade" id="modalCostoItemMultiple" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_SolicitudCostoItemMultiple");
     }
 </div>
 

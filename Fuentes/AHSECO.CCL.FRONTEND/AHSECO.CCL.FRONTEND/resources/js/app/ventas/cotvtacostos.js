@@ -102,6 +102,31 @@
     var $tabCalib = $("#tabCalib");
     var $tabFlete = $("#tabFlete");
 
+    var $CX_cmbCDItem = $("#CX_cmbCDItem");
+    var $CX_hdnIdCotDetCosto = $("#CX_hdnIdCotDetCosto");
+    var $CX_cmbTipoCosto = $("#CX_cmbTipoCosto");
+    var $CX_txtCantCotDet = $("#CX_txtCantCotDet");
+    var $CX_txtUnidadMedida = $("#CX_txtUnidadMedida");
+    var $CX_hdnUbicacion = $("#CX_hdnUbicacion");
+    var $CX_txtUbicacion = $("#CX_txtUbicacion");
+    var $CX_txtDireccion = $("#CX_txtDireccion");
+    var $CX_txtAmbDestino = $("#CX_txtAmbDestino");
+    var $CX_txtNroPiso = $("#CX_txtNroPiso");
+    var $CX_txtCantCosteo = $("#CX_txtCantCosteo");
+    var $CX_txtCantPrevent = $("#CX_txtCantPrevent");
+    var $CX_cmbCicloPreventivo = $("#CX_cmbCicloPreventivo");
+    var $CX_btnCerrar = $("#CX_btnCerrar");
+    var $CX_CodCosto_LLaveMano = $("#CX_CodCosto_LLaveMano");
+    var $CX_CodCosto_Instalacion = $("#CX_CodCosto_Instalacion");
+    var $CX_CodCosto_Capacitacion = $("#CX_CodCosto_Capacitacion");
+    var $CX_CodCosto_Manuales = $("#CX_CodCosto_Manuales");
+    var $CX_CodCosto_Videos = $("#CX_CodCosto_Videos");
+    var $CX_CodCosto_MantPrevent = $("#CX_CodCosto_MantPrevent");
+    var $CX_CodCosto_Calibra = $("#CX_CodCosto_Calibra");
+    var $CX_CodCosto_Flete = $("#CX_CodCosto_Flete");
+
+    var $CI_opcGrilla = $("#CI_opcGrilla");
+
     var $hdnCostosAgregados = $("#hdnCostosAgregados");
 
     $(Initialize);
@@ -116,11 +141,17 @@
         $DI_btnAgregarCosto.click(agregarCostoItem);
 
         $CI_btnCerrar.click(cerrarModalCostosItem);
+        $CX_btnCerrar.click(cerrarModalCostosItemMultiple);
         
         cargarCiclosPreventivos();
         cargarTipoCostos();
 
+
+        
+
         $CI_cmbCDItem.on("change", cargarCotDetSeleccionada);
+
+        $CX_cmbTipoCosto.on("change", configurarModalCostoMultiple);
 
         //$DI_radInstalacion_Si.click(cargarTipoCostos);
         //$DI_radInstalacion_No.click(cargarTipoCostos);
@@ -337,6 +368,61 @@
 
     }
 
+    function LimpiarDatosFormulario() {
+        $("#CX_hdnUbicacion").val('');
+        $("#CX_txtUbicacion").val('');
+        $("#CX_txtAmbDestino").val('');
+        $("#CX_txtDireccion").val('');
+        $("#CX_txtNroPiso").val('');
+        $("#CX_txtCantCosteo").val('0');
+        $("#CX_txtCantPrevent").val('0');
+        $CX_cmbCicloPreventivo.get(0).selectedIndex = 0;
+        $CX_cmbCicloPreventivo.trigger("change.select2");
+    }
+
+
+    function configurarModalCostoMultiple() {
+
+        LimpiarDatosFormulario();
+        if ($CX_cmbTipoCosto.val() == $CX_CodCosto_Manuales.val() || $CX_cmbTipoCosto.val() == $CX_CodCosto_Videos.val() ||
+            $CX_cmbTipoCosto.val() == $CX_CodCosto_Capacitacion.val() || $CX_cmbTipoCosto.val() == $CX_CodCosto_Calibra.val()) {
+
+
+            $("#SeccionDestino").css("display", "none");
+            $("#leyInfoDestino").css("display", "none");
+            $("#SeccionDireccion").css("display", "none");
+            $("#LeyPreventivo").css("display", "none");
+            $("#SeccionPreventivo").css("display", "none");
+
+           
+
+        }
+        else if ($CX_cmbTipoCosto.val() == $CX_CodCosto_LLaveMano.val() ||
+            $CX_cmbTipoCosto.val() == $CX_CodCosto_Instalacion.val() ||
+            $CX_cmbTipoCosto.val() == $CX_CodCosto_Flete.val()) {
+            $("#SeccionDestino").css("display", "");
+            $("#leyInfoDestino").css("display", "");
+            $("#SeccionDireccion").css("display", "");
+            $("#LeyPreventivo").css("display", "none");
+            $("#SeccionPreventivo").css("display", "none");
+
+        }
+        else if ($CX_cmbTipoCosto.val() == $CX_CodCosto_MantPrevent.val())
+        {
+            $("#SeccionDestino").css("display", "");
+            $("#leyInfoDestino").css("display", "");
+            $("#SeccionDireccion").css("display", "");
+            $("#LeyPreventivo").css("display", "");
+            $("#SeccionPreventivo").css("display", "");
+        }
+        else {
+            $("#SeccionDestino").css("display", "none");
+            $("#leyInfoDestino").css("display", "none");
+            $("#SeccionDireccion").css("display", "none");
+            $("#LeyPreventivo").css("display", "none");
+            $("#SeccionPreventivo").css("display", "none");
+        }
+    }
     function agregarCostoItem() {
 
         if ($DI_txtCantidad.val() == "") {
@@ -381,6 +467,81 @@
 
         $("#modalCostoItem").modal('show');
     }
+    //function agregarCostoItem() {
+
+
+    //    if ($DI_txtCantidad.val() == "") {
+    //        app.message.error("Validaci&oacute;n", "La Cantidad no puede ser vac&iacute;o");
+    //        return false;
+    //    }
+    //    else {
+    //        if (!app.validaNumeroEntero($DI_txtCantidad.val())) {
+    //            app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Cantidad");
+    //            return false;
+    //        }
+    //        else {
+    //            if (parseInt($DI_txtCantidad.val()) <= 0) {
+    //                app.message.error("Validaci&oacute;n", "La cantidad debe ser mayor a 0.");
+    //                return false;
+    //            }
+    //        }
+    //    }
+
+    //    $CX_cmbCDItem.attr("data-selected", $DI_hdnIdCotDet.val());
+    //    $CX_cmbCDItem.val($DI_hdnIdCotDet.val()).trigger("change.select2");
+    //    cargarCiclosPreventivosMultiple();
+    //    cargarComboCotDetItemsMultiple();
+    //    cargarTipoCostosxMultiple();
+    //    LimpiarModalCostos2();
+    //    configurarModalCostoMultiple();
+    //    setTimeout(function () {
+    //        cargarCotDetSeleccionadaMultiple();
+    //    }, 1000);
+
+
+    //    $("#modalCostoItemMultiple").modal('show');
+    //}
+
+    function LimpiarModalCostos2() {
+        $CX_hdnIdCotDetCosto.val("");
+        //$CX_cmbCDItem.removeAttr("disabled");
+        $CX_cmbCDItem.get(0).selectedIndex = 0;
+        $CX_cmbCDItem.trigger("change.select2");
+        $CX_cmbTipoCosto.removeAttr("disabled");
+        $CX_cmbTipoCosto.get(0).selectedIndex = 0;
+        $CX_cmbTipoCosto.trigger("change.select2");
+        $CX_txtCantCotDet.val("");
+        $CX_txtUnidadMedida.val("");
+        $CX_hdnUbicacion.val("");
+        $CX_txtUbicacion.val("");
+        ubigeo.setUbigeoById("");
+        $CX_txtDireccion.val("");
+        $CX_txtAmbDestino.val("");
+        $CX_txtNroPiso.val("");
+        $CX_txtCantCosteo.val("0");
+        $CX_txtCantPrevent.val("0");
+        $CX_cmbCicloPreventivo.get(0).selectedIndex = 0;
+        $CX_cmbCicloPreventivo.trigger("change.select2");
+    }
+
+    function cargarComboCotDetItemsMultiple() {
+        method = "POST";
+        url = "BandejaSolicitudesVentas/CargarComboCotDetItems";
+        var objFiltros = {};
+        var objParam = JSON.stringify(objFiltros);
+
+        var fnDoneCallback = function (data) {
+
+            //Cargar combo de items:
+            var filters = {};
+            filters.placeholder = "-- Seleccione --";
+            filters.allowClear = false;
+            app.llenarComboMultiResult($CX_cmbCDItem, data.Result, null, " ", "-- Seleccione --", filters);
+
+        };
+
+        return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, null);
+    }
 
     function cargarComboCotDetItems() {
         method = "POST";
@@ -411,6 +572,20 @@
             filters.placeholder = "-- Ninguno --";
             filters.allowClear = false;
             app.llenarComboMultiResult($CI_cmbCicloPreventivo, data.Result, null, " ", "-- Ninguno --", filters);
+        }
+        return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, null);
+    }
+
+    function cargarCiclosPreventivosMultiple() {
+        var method = "POST";
+        var url = "BandejaSolicitudesVentas/ObtenerCiclosPreventivos";
+        var oValores = {};
+        var objParam = JSON.stringify(oValores);
+        var fnDoneCallback = function (data) {
+            var filters = {};
+            filters.placeholder = "-- Ninguno --";
+            filters.allowClear = false;
+            app.llenarComboMultiResult($CX_cmbCicloPreventivo, data.Result, null, " ", "-- Ninguno --", filters);
         }
         return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, null);
     }
@@ -491,6 +666,88 @@
             app.llenarComboMultiResult($CI_cmbTipoCosto, data.Result, $("#modalCostoItem"), " ", "-- Seleccione --", filters);
         }
         return app.llamarAjaxNoLoading(method, url, objParam, fnDoneCallback, null, null, null);
+    }
+
+    function cargarTipoCostosxMultiple() {
+
+        var vInstalacion = null;
+        var vCapacitacion = null;
+        var vManuales = null;
+        var vVideos = null;
+        var vMantPrevent = null;
+        var vCalibracion = null;
+        var vFlete = null;
+
+        if ($DI_radInstalacion_Si.is(':checked')) { vInstalacion = true; }
+        if ($DI_radInstalacion_No.is(':checked')) { vInstalacion = false; }
+
+        if ($DI_radCapacitacion_Si.is(':checked')) { vCapacitacion = true; }
+        if ($DI_radCapacitacion_No.is(':checked')) { vCapacitacion = false; }
+
+        if ($DI_radManuales_Si.is(':checked')) { vManuales = true; }
+        if ($DI_radManuales_No.is(':checked')) { vManuales = false; }
+
+        if ($DI_radVideos_Si.is(':checked')) { vVideos = true; }
+        if ($DI_radVideos_No.is(':checked')) { vVideos = false; }
+
+        if ($DI_radMantPrevent_Si.is(':checked')) { vMantPrevent = true; }
+        if ($DI_radMantPrevent_No.is(':checked')) { vMantPrevent = false; }
+
+        if ($DI_radCalibracion_Si.is(':checked')) { vCalibracion = true; }
+        if ($DI_radCalibracion_No.is(':checked')) { vCalibracion = false; }
+
+        if ($DI_radFlete_Si.is(':checked')) { vFlete = true; }
+        if ($DI_radFlete_No.is(':checked')) { vFlete = false; }
+
+        var method = "POST";
+        var url = "BandejaSolicitudesVentas/ObtenerTipoCostos";
+        var oValores = {
+            CotizacionDespacho: {
+                IndInstalacion: vInstalacion,
+                IndCapacitacion: vCapacitacion,
+                IndInfoManual: vManuales,
+                IndInfoVideo: vVideos,
+                IndMantPreventivo: vMantPrevent,
+                IndCalibracion: vCalibracion,
+                IndFlete: vFlete
+            }
+        };
+        var objParam = JSON.stringify(oValores);
+        var fnDoneCallback = function (data) {
+
+            var tipoSol = $tipoSolicitud.val();
+
+            if (tipoSol != "TSOL05") {
+                data.Result = data.Result.filter(tipCosto => tipCosto.Id != "CXCD0001");
+            };
+
+            var filters = {};
+            filters.placeholder = "-- Seleccione --";
+            filters.allowClear = false;
+            app.llenarComboMultiResult($CX_cmbTipoCosto, data.Result, $("#modalCostoItemMultiple"), " ", "-- Seleccione --", filters);
+        }
+        return app.llamarAjaxNoLoading(method, url, objParam, fnDoneCallback, null, null, null);
+    }
+
+    function cargarCotDetSeleccionadaMultiple() {
+        method = "POST";
+        url = "BandejaSolicitudesVentas/CargarCotDetSeleccionada";
+        var objFiltros = {
+            Id: $CX_cmbCDItem.val(),
+            Cantidad: $DI_txtCantidad.val()
+        };
+        var objParam = JSON.stringify(objFiltros);
+
+        var fnDoneCallback = function (data) {
+            $CX_txtCantCotDet.val("");
+            $CX_txtUnidadMedida.val("");
+            if (data.Result != null) {
+                $CX_txtCantCotDet.val(data.Result.Cantidad);
+                $CX_txtUnidadMedida.val(data.Result.DescUnidad);
+            }
+        };
+
+        return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, null);
     }
 
     function cargarCotDetSeleccionada() {
@@ -1139,6 +1396,10 @@
 
     function cerrarModalCostosItem() {
         $('#modalCostoItem').modal('hide');
+    }
+
+    function cerrarModalCostosItemMultiple() {
+        $('#modalCostoItemMultiple').modal('hide');
     }
 
     return {
