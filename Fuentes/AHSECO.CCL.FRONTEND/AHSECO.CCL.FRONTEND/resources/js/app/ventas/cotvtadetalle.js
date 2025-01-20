@@ -1726,7 +1726,7 @@ var cotvtadet = (function ($, win, doc) {
                     render: function (data, type, row) {
                         if (data == null) { data = ""; }
                         else { data }
-                        var casilla = "<input type='text'  id='ExWork" + row.NroItem + "' value='" + data + "' style='border: none;background-color: transparent; outline: none;' readonly  maxlength='50'/>";
+                        var casilla = "<input type='text'  id='ExWork" + row.NroItem + row.Id+ "' value='" + data + "' style='border: none;background-color: transparent; outline: none;' readonly  maxlength='50'/>";
                         return '<center>' + casilla + '</center>';
                     }
                 },
@@ -1785,7 +1785,7 @@ var cotvtadet = (function ($, win, doc) {
                         var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
                         var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
                         var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',2)"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
-                        var editar_FOB = '<a id="btnEditarFOBItem' + strID + '" name="BtnExWord" class="botonDetCot btn btn-info btn-xs" title="Editar Ex-Work" href="javascript: cotvtadet.editarExWork(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',' + String.fromCharCode(39) + row.NroItem + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Ex-Work</a>'; 
+                        var editar_FOB = '<a id="btnEditarFOBItem' + strID + '" value="' + strID+'" name="BtnExWord" class="botonDetCot btn btn-info btn-xs" title="Editar Ex-Work" href="javascript: cotvtadet.editarExWork(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',' + String.fromCharCode(39) + row.NroItem + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Ex-Work</a>'; 
                         var guardar_FOB = '<a id="btnGuardarFOBItem' + strID + '" class="botonDetCot btn btn-info btn-xs" title="Guardar Ex-Work" href="javascript: cotvtadet.guardarExWork(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',' + String.fromCharCode(39) + row.NroItem + String.fromCharCode(39) + ')" style=' + String.fromCharCode(39) + 'display:none' + String.fromCharCode(39) +'><i class="fa fa-pencil-save" aria-hidden="true"></i>Guardar</a>'; 
 
                         if ($estadoSol.val() == "CAPR" || $estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG") {
@@ -2268,11 +2268,14 @@ var cotvtadet = (function ($, win, doc) {
 
             // Recorrer cada checkbox marcado
             $("#tblDetCotCostos tbody tr").each(function () {
+                const fila = $(this).closest('tr');
                 // Verificar si el boton de esta fila existe
                 if ($(this).find("a[name='BtnExWord']").length > 0) {
                     // Obtener el texto de la sexta celda (Nombre de ex-works)
                     let item = $(this).find("td:eq(0)").text();
-                    let valor_fob = $("#ExWork" + item).val();
+                    const id_boton = fila.find("a[name='BtnExWord']").attr('id');
+                    let id = id_boton.replace("btnEditarFOBItem", "");
+                    let valor_fob = $("#ExWork" + item+id).val();
                     fobs.push(valor_fob.trim());
                 }
             });
@@ -2347,10 +2350,10 @@ var cotvtadet = (function ($, win, doc) {
         $('#btnGuardarFOBItem' + id).show();
 
 
-        $('#ExWork' + NroItem).removeAttr('readonly');
-        $('#ExWork' + NroItem).css('border', '1px solid ');
-        $('#ExWork' + NroItem).css('background-color', 'white');
-        $('#ExWork' + NroItem).css('display', 'block');
+        $('#ExWork' + NroItem +id).removeAttr('readonly');
+        $('#ExWork' + NroItem+id).css('border', '1px solid ');
+        $('#ExWork' + NroItem+id).css('background-color', 'white');
+        $('#ExWork' + NroItem+id).css('display', 'block');
         $("#btnGuardarValorizacion").prop("disabled", true);
        // $(".BtnExWord").prop("disabled", true);
 
@@ -2363,9 +2366,9 @@ var cotvtadet = (function ($, win, doc) {
 
     function guardarExWork(id, NroItem) {
 
-        var text_exwork = $('#ExWork' + NroItem).val();
+        var text_exwork = $('#ExWork' + NroItem + id).val();
         if (text_exwork === "" || text_exwork === null) {
-            $('#ExWork' + NroItem).focus();
+            $('#ExWork' + NroItem + id).focus();
             app.message.error("Validacion", "Debe ingresar el valor del Ex-Work.");
             return false;
         }
@@ -2383,10 +2386,10 @@ var cotvtadet = (function ($, win, doc) {
             var fnDoneCallback = function (data) {
                 var fnCallback = function () {
                     //location.reload();
-                    $('#ExWork' + NroItem).css('border', 'none');
-                    $('#ExWork' + NroItem).css('background-color', 'transparent');
-                    $('#ExWork' + NroItem).css('outline', 'none');
-                    $('#ExWork' + NroItem).prop('readonly', true);
+                    $('#ExWork' + NroItem + id).css('border', 'none');
+                    $('#ExWork' + NroItem + id).css('background-color', 'transparent');
+                    $('#ExWork' + NroItem + id).css('outline', 'none');
+                    $('#ExWork' + NroItem + id).prop('readonly', true);
                     $("#btnGuardarValorizacion").prop("disabled", false);
                    // $(".BtnExWord").prop("disabled", false);
                     $("a[name='BtnExWord']").css({
