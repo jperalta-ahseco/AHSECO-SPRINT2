@@ -14,6 +14,7 @@ namespace AHSECO.CCL.BE.Ventas
         public string CodsFamilia { get; set; }
         public string CodsLinea { get; set; }
         public string CodsMarca { get; set; }
+        public string CodsModelo { get; set; }
         public string CodsAlma { get; set; }
         public int? CantidadRegistros { get; set; }
         public bool AddDescriptionAsNewRecord { get; set; }
