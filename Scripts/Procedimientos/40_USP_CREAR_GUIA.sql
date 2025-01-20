@@ -5,7 +5,7 @@ CREATE OR ALTER   PROCEDURE [dbo].[USP_CREAR_GUIA]
 /*===========================================================================================
 	NOMBRE:					FECHA:		DESCRIPCIÓN:
 	José A. Peralta		28.10.24		Se obtiene los datos para la guia de pedidos y guia de BO.
-	EXEC USP_CREAR_GUIA 191,'BO','N'
+	EXEC USP_CREAR_GUIA 65,'GP','N'
   ===========================================================================================*/
 @CodigoSol BIGINT,
 @Tipo VARCHAR(2),
@@ -127,7 +127,7 @@ DECLARE @SUBTOT DECIMAL(18,9)
 
 	SELECT CAST(B.NROITEM AS VARCHAR) NROITEM, 
 	B.CODITEM CATALOGO,
-	(B.DESCRIPCION+ CHAR(13) + CHAR(10) +' MARCA:'+E.TG_CDESCRI + CHAR(13) + CHAR(10) + 'MODELO:'+ MO.TG_CDESCRI) DESCRIPCION,
+	(B.DESCRIPCION+ CHAR(13) + CHAR(10) +' MARCA:'+ISNULL(E.TG_CDESCRI,'') + CHAR(13) + CHAR(10) + 'MODELO:'+ ISNULL(MO.TG_CDESCRI,'')) DESCRIPCION,
 	ISNULL(B.UNDMED,'') UNIDAD,
 	CAST(B.CANTIDAD AS VARCHAR) CANTIDAD,
 
