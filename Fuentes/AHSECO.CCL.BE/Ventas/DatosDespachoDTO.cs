@@ -28,5 +28,10 @@ namespace AHSECO.CCL.BE.Ventas
         public DateTime? FechaContrato { get; set; }
         public string UsuarioRegistro { get; set; }
         public string Calculo { get; set; }
+        public string Fianza { get; set; }
+        public string PrestacionPrincipal { get; set; }
+        public string PrestacionAccesoria { get; set; }
+        public string NumeroFianzaPP { get; set; }
+        public string NumeroFianzaPA { get; set; }
     }
 }

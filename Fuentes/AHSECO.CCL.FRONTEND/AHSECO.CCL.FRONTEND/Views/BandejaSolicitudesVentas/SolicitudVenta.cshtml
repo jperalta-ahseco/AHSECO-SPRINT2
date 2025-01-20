@@ -696,13 +696,48 @@
                                                         <label for="radCalculo">C&aacute;lculo por: </label>
                                                         <div class="radio-group">
                                                             <label>
-                                                                <input type="radio" id="radCalculo" aria-describedby="sizing-addon3" readonly value="1" name="opcion" @ViewBag.ControlCalculoFechaMaxima/>
+                                                                <input type="radio" id="radCalculo" aria-describedby="sizing-addon3" readonly value="1" name="opcion" @ViewBag.ControlCalculoFechaMaxima />
                                                                 Por Orden de Compra
                                                             </label>
                                                             <label>
-                                                                <input type="radio" id="radCalculo2" aria-describedby="sizing-addon3" readonly value="2" name="opcion" @ViewBag.ControlCalculoFechaMaxima/>
+                                                                <input type="radio" id="radCalculo2" aria-describedby="sizing-addon3" readonly value="2" name="opcion" @ViewBag.ControlCalculoFechaMaxima />
                                                                 Por Contrato
                                                             </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row container-fluid form-group" style="@(ViewBag.VerContrato ? "" : "display:none");">
+                                                    <div class="col-md-4 col-sm-12">
+                                                        <label for="radFianza">Fianza: </label>
+                                                        <div class="radio-group">
+                                                            <label>
+                                                                <input type="radio" id="radFianza" aria-describedby="sizing-addon3" readonly value="1" name="opcionFianza" />
+                                                                Si
+                                                            </label>
+                                                            <label>
+                                                                <input type="radio" id="radFianza2" aria-describedby="sizing-addon3" readonly value="2" name="opcionFianza" />
+                                                                No
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 col-sm-12">
+                                                        <div class="form-group">
+                                                            <label>
+                                                                <input type="checkbox" name="opciones" id="chkPrestacionPrincipal" value="1" disabled>
+                                                                Prestaci&oacute;n Principal:
+                                                            </label>
+                                                            <div class="form-group">
+                                                                <input placeholder="Ingresar N° Fianza" type="text" class="form-control input-sm" maxlength="50" id="txtNroFianzaPP" disabled>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 col-sm-12">
+                                                        <label>
+                                                            <input type="checkbox" name="opciones" id="chkPrestacionAccesoria" value="2" disabled>
+                                                            Prestaci&oacute;n Accesoria:
+                                                        </label>
+                                                        <div class="form-group">
+                                                            <input placeholder="Ingresar N° Fianza" type="text" class="form-control input-sm" maxlength="50" id="txtNroFianzaPA" disabled>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -724,29 +759,29 @@
                                                     </div>
                                                 </div>
                                                 <div class="row container-fluid" style="@(ViewBag.VerObservacionGerencia ? "" : "display:none");">
-                                                        <div class="col-md-12">
-                                                            <div class="form-group">
-                                                                <label for="txtObservacion">Observaci&oacute;n de Gerencia:</label>
-                                                                <textarea class="form-control" rows="4" maxlength="1000" id="txtObservacionGerente" disabled>@ViewBag.ObservacionGerencia</textarea>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row container-fluid">
-                                                        <div class="text-right">
-                                                            <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnEnviarServicio" style="display:@ViewBag.Btn_EnviarServicio"><i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar Servicio</button>
-
-                                                            <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnAprobarGestionSS" tabindex="114" style="display:@ViewBag.Btn_Aprobar"><i class="fa fa-handshake-o" aria-hidden="true"></i>&nbsp;Aprobar</button>
-                                                            <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnObservarGestionSS" tabindex="115" style="display:@ViewBag.Btn_Observar"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Observar</button>
-                                                            <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnGuardarGestion" tabindex="116" style="display:@ViewBag.Btn_GuardarDespacho"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar</button>
-
-                                                            <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnEditarGestion" tabindex="118" style="display:@ViewBag.Btn_EditarDespacho"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Editar</button>
-                                                            <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnActualizarGestion" tabindex="119" style="display:none"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar</button>
-                                                            <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnFinalizarVenta" tabindex="120" style="display:@ViewBag.Btn_FinalizarVenta"><i class="fa fa-window-close" aria-hidden="true"></i>&nbsp;Finalizar Venta</button>
-                                                            <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnEditarFacturaLogistica" tabindex="123" style="display:@ViewBag.Btn_EditarFacturaLogistica"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Editar Factura</button>
-                                                            <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnGuardarFacturaLogistica" tabindex="123" style="display:@ViewBag.Btn_GuardarFacturaLogistica"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar Factura</button>
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label for="txtObservacion">Observaci&oacute;n de Gerencia:</label>
+                                                            <textarea class="form-control" rows="4" maxlength="1000" id="txtObservacionGerente" disabled>@ViewBag.ObservacionGerencia</textarea>
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="row container-fluid">
+                                                    <div class="text-right">
+                                                        <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnEnviarServicio" style="display:@ViewBag.Btn_EnviarServicio"><i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar Servicio</button>
+
+                                                        <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnAprobarGestionSS" tabindex="114" style="display:@ViewBag.Btn_Aprobar"><i class="fa fa-handshake-o" aria-hidden="true"></i>&nbsp;Aprobar</button>
+                                                        <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnObservarGestionSS" tabindex="115" style="display:@ViewBag.Btn_Observar"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Observar</button>
+                                                        <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnGuardarGestion" tabindex="116" style="display:@ViewBag.Btn_GuardarDespacho"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar</button>
+
+                                                        <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnEditarGestion" tabindex="118" style="display:@ViewBag.Btn_EditarDespacho"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Editar</button>
+                                                        <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnActualizarGestion" tabindex="119" style="display:none"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar</button>
+                                                        <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnFinalizarVenta" tabindex="120" style="display:@ViewBag.Btn_FinalizarVenta"><i class="fa fa-window-close" aria-hidden="true"></i>&nbsp;Finalizar Venta</button>
+                                                        <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnEditarFacturaLogistica" tabindex="123" style="display:@ViewBag.Btn_EditarFacturaLogistica"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Editar Factura</button>
+                                                        <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnGuardarFacturaLogistica" tabindex="123" style="display:@ViewBag.Btn_GuardarFacturaLogistica"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar Factura</button>
+                                                    </div>
+                                                </div>
+                                            </div>
                                                 <div class="box-content" style="@(ViewBag.VerGestionLogistica ? "" : "display:none");">
                                                     <ul class="nav nav-tabs" style="padding-top: 5px;">
                                                         <li class="" id="tabConStock" style="@(ViewBag.VerNavConStock ? "":"display:none");">

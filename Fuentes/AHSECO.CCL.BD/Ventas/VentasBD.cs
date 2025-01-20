@@ -1223,7 +1223,12 @@ namespace AHSECO.CCL.BD.Ventas
                             FechaEntregaPedido = reader.IsDBNull(reader.GetOrdinal("FECHAENTREGA")) ? "" : reader.GetString(reader.GetOrdinal("FECHAENTREGA")),
                             NumeroContrato = reader.IsDBNull(reader.GetOrdinal("NUMCONTRATO")) ? "" : reader.GetString(reader.GetOrdinal("NUMCONTRATO")),
                             FechaContrato = reader.IsDBNull(reader.GetOrdinal("FECHACONTRATO")) ? "" : reader.GetString(reader.GetOrdinal("FECHACONTRATO")),
-                            Calculo = reader.IsDBNull(reader.GetOrdinal("CALCULO")) ? "" : reader.GetString(reader.GetOrdinal("CALCULO"))
+                            Calculo = reader.IsDBNull(reader.GetOrdinal("CALCULO")) ? "" : reader.GetString(reader.GetOrdinal("CALCULO")),
+                            Fianza = reader.IsDBNull(reader.GetOrdinal("FIANZA")) ? "" : reader.GetString(reader.GetOrdinal("FIANZA")),
+                            PrestacionPrincipal = reader.IsDBNull(reader.GetOrdinal("PRESTPRIN")) ? "" : reader.GetString(reader.GetOrdinal("PRESTPRIN")),
+                            NroFianzaPrestacionPrincipal = reader.IsDBNull(reader.GetOrdinal("NUMFIANZAPP")) ? "" : reader.GetString(reader.GetOrdinal("NUMFIANZAPP")),
+                            PrestacionAccesoria = reader.IsDBNull(reader.GetOrdinal("PRESTACC")) ? "" : reader.GetString(reader.GetOrdinal("PRESTACC")),
+                            NroFianzaPrestacionAccesoria = reader.IsDBNull(reader.GetOrdinal("NUMFIANZAPA")) ? "" : reader.GetString(reader.GetOrdinal("NUMFIANZAPA"))
                         };
                     }
 
@@ -1786,6 +1791,11 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("NUMCONTRATO", datosDespachoDTO.NumeroContrato);
                 parameters.Add("FECHACONTRATO", datosDespachoDTO.FechaContrato);
                 parameters.Add("CALCULO", datosDespachoDTO.Calculo);
+                parameters.Add("FIANZA", datosDespachoDTO.Fianza);
+                parameters.Add("PRESTPRIN", datosDespachoDTO.PrestacionPrincipal);
+                parameters.Add("NUMFIANZAPP", datosDespachoDTO.NumeroFianzaPP);
+                parameters.Add("PRESTACC", datosDespachoDTO.PrestacionAccesoria);
+                parameters.Add("NUMFIANZAPA", datosDespachoDTO.NumeroFianzaPA);
                 parameters.Add("USRREG", datosDespachoDTO.UsuarioRegistro);
 
                 var result = connection.Query

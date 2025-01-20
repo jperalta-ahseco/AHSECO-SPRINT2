@@ -348,6 +348,12 @@
     var $openRegdateFechaContrato = $("#openRegdateFechaContrato");
     var $radCalculo = $("#radCalculo");
     var $radCalculo2 = $("#radCalculo2");
+    var $chkPrestacionPrincipal = $("#chkPrestacionPrincipal");
+    var $chkPrestacionAccesoria = $("#chkPrestacionAccesoria");
+    var $txtNroFianzaPP = $("#txtNroFianzaPP");
+    var $txtNroFianzaPA = $("#txtNroFianzaPA");
+    var $radFianza = $("#radFianza");
+    var $radFianza2 = $("#radFianza2");
 
     var tecnicosAsig = [];
 
@@ -579,7 +585,57 @@
         $btnGuardarFacturaLogistica.click($btnGuardarFacturaLogistica_click);
         $radCalculo.click($radCalculo_click);
         $radCalculo2.click($radCalculo2_click);
+        $chkPrestacionPrincipal.click($chkPrestacionPrincipal_click);
+        $chkPrestacionAccesoria.click($chkPrestacionAccesoria_click);
+        $radFianza.click($radFianza_click);
+        $radFianza2.click($radFianza2_click);
     };
+
+    function $radFianza2_click() {
+        if ($radFianza2.is(':checked')) {
+            $chkPrestacionPrincipal.attr("disabled", "disabled");
+            $chkPrestacionAccesoria.attr("disabled", "disabled");
+            $chkPrestacionPrincipal.prop('checked', false);
+            $chkPrestacionAccesoria.prop('checked', false);
+            $txtNroFianzaPA.attr("disabled", "disabled");
+            $txtNroFianzaPP.attr("disabled", "disabled");
+            $txtNroFianzaPA.val('');
+            $txtNroFianzaPP.val('');
+        }
+    }
+
+    function $radFianza_click() {
+        if ($radFianza.is(':checked')) {
+            $chkPrestacionPrincipal.removeAttr("disabled");
+            $chkPrestacionAccesoria.removeAttr("disabled");
+            $txtNroFianzaPA.attr("disabled", "disabled");
+            $txtNroFianzaPP.attr("disabled", "disabled");
+            $txtNroFianzaPA.val('');
+            $txtNroFianzaPP.val('');
+        }
+    }
+
+    function $chkPrestacionAccesoria_click() {
+        if ($chkPrestacionAccesoria.is(':checked')) {
+            $txtNroFianzaPA.removeAttr("disabled");
+            $txtNroFianzaPA.val('');
+        }
+        else {
+            $txtNroFianzaPA.attr("disabled", "disabled");
+            $txtNroFianzaPA.val('');
+        }   
+    }
+
+    function $chkPrestacionPrincipal_click() {   
+        if ($chkPrestacionPrincipal.is(':checked')) {
+            $txtNroFianzaPP.removeAttr("disabled");
+            $txtNroFianzaPP.val('');
+        }
+        else { 
+            $txtNroFianzaPP.attr("disabled", "disabled");
+            $txtNroFianzaPP.val('');
+        }        
+    }
 
     function CalcularFechaEntregaMaximaxContrato() {
         var dias = Number($txtPlazoEntrega.val());
@@ -2771,6 +2827,22 @@
             $dateFechaContrato.prop('disabled', false);
             $('#radCalculo').prop('disabled', false);
             $('#radCalculo2').prop('disabled', false);
+            $radFianza.prop('disabled', false);
+            $radFianza2.prop('disabled', false);
+
+            if ($radFianza.is(':checked')) {
+                $chkPrestacionPrincipal.prop('disabled', false);
+                $chkPrestacionAccesoria.prop('disabled', false);
+
+                if ($chkPrestacionPrincipal.is(':checked')) {
+                    $txtNroFianzaPP.prop('disabled', false);
+                }
+                if ($chkPrestacionAccesoria.is(':checked')) {
+                    $txtNroFianzaPA.prop('disabled', false);
+                }
+
+            }
+
         }
 
         if ($TipoSolicitud.val() === "TSOL01") {
@@ -2800,9 +2872,40 @@
             return false;
         }
 
+        if ($cmbTipoVenta.val() === "TVEN02") {
+
+            if (!$radFianza.is(':checked') && !$radFianza2.is(':checked')) {
+                app.message.error("Validación", "Debe seleccionar si tiene o no tiene fianza.");
+                return false;
+            }
+
+            if ($radFianza.is(':checked')) { //Si tiene fianza:
+                if (!$chkPrestacionPrincipal.is(':checked') && !$chkPrestacionAccesoria.is(':checked')) {
+                    app.message.error("Validación", "Debe seleccionar si tiene Prestacion Principal y/o Prestacion Accesoria.");
+                    return false;
+                }
+
+                if ($chkPrestacionPrincipal.is(':checked') && $txtNroFianzaPP.val() === "") {
+                    app.message.error("Validación", "Debe ingresar el N° de Fianza para la Prestacion Principal.");
+                    return false;
+                }
+
+                if ($chkPrestacionAccesoria.is(':checked') && $txtNroFianzaPA.val() === "") {
+                    app.message.error("Validación", "Debe ingresar el N° de Fianza para la Prestacion Accesoria.");
+                    return false;
+                }
+
+            }
+        }
+
         var num_contrato = "";
         var fec_contrato = "";
         var calculo = "";
+        var fianza = "";
+        var prest_principal = "";
+        var prest_accesoria = "";
+        var num_fianza_principal = "";
+        var num_fianza_accesoria = "";
         if ($cmbTipoVenta.val() === "TVEN02")//Si es licitacion:
         {
             if ($txtNroContrato.val() != "" && $txtNroContrato.val() != null) {
@@ -2820,6 +2923,30 @@
             if ($('#radCalculo2').is(':checked')) {
                 calculo = "C";
             }
+
+            if ($radFianza.is(':checked')) {
+                fianza = "S";
+            }
+            else {
+                fianza = "N";
+            }
+
+            if ($chkPrestacionPrincipal.is(':checked')) {
+                prest_principal = "S";
+            }
+            else {
+                prest_principal = "N";
+            }
+
+            if ($chkPrestacionAccesoria.is(':checked')) {
+                prest_accesoria = "S";
+            }
+            else {
+                prest_accesoria = "N";
+            }
+
+            num_fianza_principal = $txtNroFianzaPP.val();
+            num_fianza_accesoria = $txtNroFianzaPA.val();
 
         }
 
@@ -2839,7 +2966,12 @@
                 Stock: "",
                 NumeroContrato: num_contrato,
                 FechaContrato: fec_contrato,
-                Calculo: calculo
+                Calculo: calculo,
+                Fianza: fianza,
+                PrestacionPrincipal: prest_principal,
+                PrestacionAccesoria: prest_accesoria,
+                NumeroFianzaPP: num_fianza_principal,
+                NumeroFianzaPA: num_fianza_accesoria
             }
             var objParam = JSON.stringify(obj);
             var fnDoneCallback = function (data) {
@@ -2883,9 +3015,41 @@
             return false;
         }
 
+        if ($cmbTipoVenta.val() === "TVEN02") { 
+
+            if (!$radFianza.is(':checked') && !$radFianza2.is(':checked')) {
+                app.message.error("Validación", "Debe seleccionar si tiene o no tiene fianza.");
+                return false;
+            }
+
+            if ($radFianza.is(':checked')) { //Si tiene fianza:
+                if (!$chkPrestacionPrincipal.is(':checked') && !$chkPrestacionAccesoria.is(':checked')) {
+                    app.message.error("Validación", "Debe seleccionar si tiene Prestacion Principal y/o Prestacion Accesoria.");
+                    return false;
+                }
+
+                if ($chkPrestacionPrincipal.is(':checked') && $txtNroFianzaPP.val() === "") {
+                    app.message.error("Validación", "Debe ingresar el N° de Fianza para la Prestacion Principal.");
+                    return false;
+                }
+
+                if ($chkPrestacionAccesoria.is(':checked') && $txtNroFianzaPA.val() === "") {
+                    app.message.error("Validación", "Debe ingresar el N° de Fianza para la Prestacion Accesoria.");
+                    return false;
+                }
+
+            }
+        }
+
+
         var num_contrato = "";
         var fec_contrato = "";
         var calculo = "";
+        var fianza = "";
+        var prest_principal = "";
+        var prest_accesoria = "";
+        var num_fianza_principal = "";
+        var num_fianza_accesoria = "";
         if ($cmbTipoVenta.val() === "TVEN02")//Si es licitacion:
         {
             if ($txtNroContrato.val() != "" && $txtNroContrato.val() != null) {
@@ -2903,6 +3067,30 @@
             if ($('#radCalculo2').is(':checked')) {
                 calculo = "C";
             }
+
+            if ($radFianza.is(':checked')) {
+                fianza = "S";
+            }
+            else {
+                fianza = "N";
+            }
+
+            if ($chkPrestacionPrincipal.is(':checked')) {
+                prest_principal = "S";
+            }
+            else {
+                prest_principal = "N";
+            }
+
+            if ($chkPrestacionAccesoria.is(':checked')) {
+                prest_accesoria = "S";
+            }
+            else {
+                prest_accesoria = "N";
+            }
+
+            num_fianza_principal = $txtNroFianzaPP.val();
+            num_fianza_accesoria = $txtNroFianzaPA.val();
              
         }
 
@@ -2921,7 +3109,12 @@
                 NumeroContrato: num_contrato,
                 FechaContrato: fec_contrato,
                 Stock: "",
-                Calculo: calculo
+                Calculo: calculo,
+                Fianza: fianza,
+                PrestacionPrincipal: prest_principal,
+                PrestacionAccesoria: prest_accesoria,
+                NumeroFianzaPP: num_fianza_principal,
+                NumeroFianzaPA: num_fianza_accesoria
             }
             var objParam = JSON.stringify(obj);
             var fnDoneCallback = function (data) {
@@ -3302,6 +3495,35 @@
                         else if (data.Result.ContadorCabecera.Calculo === "C") {
                             $('#radCalculo2').prop('checked', true);
                         }
+                        $radFianza.prop('disabled', true);
+                        $radFianza2.prop('disabled', true);
+
+                        if (data.Result.ContadorCabecera.Fianza === "S") {
+                            $radFianza.prop('checked', true);
+                            $radFianza2.prop('checked', false);
+                        }
+
+                        if (data.Result.ContadorCabecera.Fianza === "N") {
+                            $radFianza.prop('checked', false);
+                            $radFianza2.prop('checked', true);
+                        }
+
+                        if (data.Result.ContadorCabecera.PrestacionPrincipal === "S") {
+                            $chkPrestacionPrincipal.prop('checked', true);
+                        }
+
+                        if (data.Result.ContadorCabecera.PrestacionAccesoria === "S") {
+                            $chkPrestacionAccesoria.prop('checked', true);
+                        }
+
+                        if (data.Result.ContadorCabecera.NroFianzaPrestacionPrincipal.length > 0) {
+                            $txtNroFianzaPP.val(data.Result.ContadorCabecera.NroFianzaPrestacionPrincipal);
+                        }
+
+                        if (data.Result.ContadorCabecera.NroFianzaPrestacionAccesoria.length > 0) {
+                            $txtNroFianzaPA.val(data.Result.ContadorCabecera.NroFianzaPrestacionAccesoria);
+                        }
+
                     }
                   
                 }
