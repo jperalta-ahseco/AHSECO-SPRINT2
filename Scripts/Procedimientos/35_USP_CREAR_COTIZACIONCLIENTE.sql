@@ -5,7 +5,7 @@ CREATE OR ALTER PROCEDURE USP_CREAR_COTIZACIONCLIENTE
 /*===============================================================================================
 	NOMBRE:					FECHA:			DESCRIPCIÓN:
 	José A. Peralta		24.10.24			Se realiza la construcción del formato de cotización a entregar al cliente.
-	EXEC USP_CREAR_COTIZACIONCLIENTE 7
+	EXEC USP_CREAR_COTIZACIONCLIENTE 79
   ===============================================================================================*/
 @COD_COTIZACION BIGINT
 AS
@@ -316,7 +316,7 @@ SET NOCOUNT ON;
 				LEFT JOIN TBD_DATOS_GENERALES SV WITH(NOLOCK) ON SV.DOMINIO='TIPOSERV' AND SERV.TIPO_SERVICIO=SV.COD_VALOR1 AND SV.ESTADO=1
 				LEFT JOIN #TMP_LISTAACTFINAL ACT ON ISNULL(A.ID,0) = ACT.CODDETALLE
 				WHERE A.ID_COTIZACION =@COD_COTIZACION AND  A.TIPOITEM IN ('PRO','ACC','SER')
-				ORDER BY A.NROITEM;
+				ORDER BY A.NROITEM, A.FEC_REG;
 
 				--CUENTAS DE BANCOS DE AHSECO:
 				SELECT ISNULL(VALOR1,'') BANCO,
