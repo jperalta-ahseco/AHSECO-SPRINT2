@@ -25,5 +25,6 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaPreventivos
         public int TotalPrevent { get; set; }
         public int PreventPend { get; set; }
         public int PreventReal { get; set; }
+        public string NumContrato { get; set; }
     }
 }

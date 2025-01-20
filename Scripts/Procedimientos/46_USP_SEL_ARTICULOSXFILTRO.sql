@@ -9,6 +9,7 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_SEL_ARTICULOSXFILTRO](
     @pAR_CLINEA VARCHAR(100),
 	@pAR_CMARCA VARCHAR(100),
 	@pSK_CALMA VARCHAR(100),
+	@pAR_CMODELO VARCHAR(100),
 	@pCANTREG INT
 )
 /*==========================================================================================
@@ -126,6 +127,18 @@ BEGIN
 			SET @SQL = @SQL + ' AND RTRIM(ST.SK_CALMA) = '''+RTRIM(@pSK_CALMA)+''' ';
 		END;
 	END;
+
+	IF ISNULL(@pAR_CMODELO,'') <> '' BEGIN
+		IF CHARINDEX(';',@pAR_CMODELO) > 0 BEGIN
+			SET @SQL = @SQL + ' AND (''' + @pAR_CMODELO + ''' LIKE ''%;''+RTRIM(MO.TG_CDESCRI)+'';%'' ';
+			SET @SQL = @SQL + ' OR ''' + @pAR_CMODELO + ''' LIKE RTRIM(MO.TG_CDESCRI)+'';%'' ';
+			SET @SQL = @SQL + ' OR ''' + @pAR_CMODELO + ''' LIKE ''%;''+RTRIM(MO.TG_CDESCRI)) ';
+		END
+		ELSE BEGIN
+			SET @SQL = @SQL + ' AND RTRIM(MO.TG_CDESCRI) LIKE ''%'+RTRIM(@pAR_CMODELO)+'%'' ';
+		END;
+	END;
+
 	
 	SET @SQL = @SQL + ' ORDER BY (CASE RTRIM(FA.TG_CCLAVE) WHEN ''08'' THEN 100 WHEN ''01'' THEN 1 ELSE 2 END) ASC, A.AR_CDESCRI ASC';
 

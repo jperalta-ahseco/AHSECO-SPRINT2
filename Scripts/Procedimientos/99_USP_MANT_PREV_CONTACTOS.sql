@@ -51,7 +51,7 @@ SET NOCOUNT ON
 				IF(@@ROWCOUNT = 0)
 				BEGIN
 					SET @COD = 0
-					SET @MSG = 'Ocurrió un error al realizar la inserción de la tabla [TBM_INSTAL_CONTACTO]'
+					SET @MSG = 'Ocurrió un error al realizar la inserción de la tabla [TBM_PREV_CONTACTO]'
 				END
 				ELSE
 				BEGIN
@@ -62,7 +62,7 @@ SET NOCOUNT ON
 					IF(@@ROWCOUNT = 0)
 					BEGIN
 						SET @COD = 0
-						SET @MSG = 'Ocurrió un error al realizar la inserción de la tabla [TBM_INSTAL_CONTACTO]'
+						SET @MSG = 'Ocurrió un error al realizar la inserción de la tabla [TBM_PREV_CONTACTO]'
 					END
 					ELSE
 					BEGIN
@@ -88,7 +88,7 @@ SET NOCOUNT ON
 				IF(@@ROWCOUNT = 0)
 				BEGIN
 					SET @COD = 0
-					SET @MSG = 'Ocurrió un error al realizar la inserción de la tabla [TBM_INSTAL_CONTACTO]'
+					SET @MSG = 'Ocurrió un error al realizar la inserción de la tabla [TBM_PREV_CONTACTO]'
 				END
 				ELSE
 				BEGIN
@@ -107,7 +107,7 @@ SET NOCOUNT ON
 			END
 			ELSE
 			BEGIN
-				SELECT @IsID_CONTACTO = ID_CONTACTO FROM TBM_GAR_CONTACTO WHERE ID_ASIG = @IsID_ASIG
+				SELECT @IsID_CONTACTO = ID_CONTACTO FROM TBM_PREV_CONTACTO WHERE ID_ASIG = @IsID_ASIG
 				UPDATE [TBM_PREV_CONTACTO] 
 				SET 
 					TIPO_DOC		 = @IsTIPO_DOC

@@ -31,6 +31,7 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaPreventivos
         public string Marca { get; set; }
         public string Modelo { get; set; }
         public string Ruc { get; set; }
+        public string NumContrato { get; set; }
         public string CodUbigeoDest { get; set; }
         public string valOTM { get; set; }
         public string valGuia { get; set; }
