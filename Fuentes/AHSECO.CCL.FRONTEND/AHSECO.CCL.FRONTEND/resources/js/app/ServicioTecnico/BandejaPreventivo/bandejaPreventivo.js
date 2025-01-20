@@ -23,6 +23,7 @@
     var $cmbDistrito = $('#cmbDistrito');
     var $modalUbigeo = $('#modalUbigeo');
     var $btnGuardarUbigeo = $('#btnGuardarUbigeo');
+    var $txtNumContrato = $('#txtNumContrato');
 
     var $spanSi = $('#spanSi');
     var $spanNo = $('#spanNo');
@@ -237,7 +238,8 @@
             NomEquipo: $txtNomEquipo.val(),
             Marca:$txtMarca.val(),
             CodUbigeoDest: codDepartamento + codProvincia.slice(2, 4) + codDistrito.slice(4, 6),
-            Modelo: $txtModelo.val()
+            Modelo: $txtModelo.val(),
+            NumContrato: $txtNumContrato.val()
             //Estado: $cmbEstado.val() == "" || $cmbEstado.val() == 0 ? "" : $cmbEstado.val(),
         };
 
@@ -315,6 +317,12 @@
             {
                 data: "Cliente",
                 render: function (data,type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "NumContrato",
+                render: function (data, type, row) {
                     return '<center>' + data + '</center>'
                 }
             },

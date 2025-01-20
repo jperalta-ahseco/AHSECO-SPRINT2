@@ -99,6 +99,7 @@ var cotvtadet = (function ($, win, doc) {
     var $BI_cmbTipoMedida = $('#BI_cmbTipoMedida');
     var $BI_cmbMarca = $('#BI_cmbMarca');
     var $BI_cmbAlmacen = $("#BI_cmbAlmacen");
+    var $BI_txtModelo = $('#BI_txtModelo');
     
     var $btnBuscarItems = $('#btnBuscarItems');
     var $tblItems = $('#tblItems');
@@ -264,6 +265,8 @@ var cotvtadet = (function ($, win, doc) {
             CodsMarca: $BI_cmbMarca.val(),
             CodsAlma: $BI_cmbAlmacen.val(),
             AddDescriptionAsNewRecord: true,
+            CodsAlma: $BI_cmbAlmacen.val(),
+            CodsModelo: $BI_txtModelo.val(),
             CantidadRegistros: 20
         };
         var objParam = JSON.stringify(objFiltros);
@@ -345,10 +348,13 @@ var cotvtadet = (function ($, win, doc) {
                 }
             },
             {
-                data: "DescRealModelo",
-                render: function (data) {
-                    if (data == null) { data = ""; }
-                    return '<center>' + data + '</center>';
+                data: "DescModelo",
+                render: function (data, type, row) {
+                    var modelo = data
+                    if (data == null || data == ""){
+                        modelo = row.DescRealModelo == null || row.DescRealModelo == "" ? "" : row.DescRealModelo; //En la situación de no encontrar un modelo, realiza la búsqueda 
+                    }
+                    return '<center>' + modelo  + '</center>';
                 }
             },
             {
