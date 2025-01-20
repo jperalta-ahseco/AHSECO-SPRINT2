@@ -1627,6 +1627,8 @@ namespace AHSECO.CCL.BD.Ventas
                     else { parameters.Add("pAR_CMARCA", DBNull.Value, DbType.String, ParameterDirection.Input); }
                     if (filtro.CodsAlma != null) { parameters.Add("pSK_CALMA", filtro.CodsAlma, DbType.String, ParameterDirection.Input); }
                     else { parameters.Add("pSK_CALMA", DBNull.Value, DbType.String, ParameterDirection.Input); }
+                    if (filtro.CodsModelo != null) { parameters.Add("pAR_CMODELO", filtro.CodsModelo, DbType.String, ParameterDirection.Input); }
+                    else { parameters.Add("pAR_CMODELO", DBNull.Value, DbType.String, ParameterDirection.Input); }
                     if (filtro.CantidadRegistros != null) { parameters.Add("pCANTREG", filtro.CantidadRegistros.Value, DbType.Int32, ParameterDirection.Input); }
                     else { parameters.Add("pCANTREG", DBNull.Value, DbType.String, ParameterDirection.Input); }
 
