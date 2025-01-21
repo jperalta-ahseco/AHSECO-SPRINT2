@@ -1189,14 +1189,14 @@
         });
 
         adjuntos.forEach(function (currentValue, index, arr) {
-            if (adjuntos[index].CodigoTipoDocumento == "DVT05") {
+            if (adjuntos[index].CodigoTipoDocumento == "DVT09") { //Se cambia por guia de servicios
                 documento_guiaManuscrita = 1;
             }
         });
 
         if (documento_guiaManuscrita === 0 && documento_constanciaServicio === 0 && 
             documento_actaConformidad === 0) {
-            app.message.error("Validación", "Debe adjuntar por lo menos uno de estos documentos para enviar a Facturación: (Acta de Conformidad o Constancia de Servicio Técnico o Guía Manuscrita).");
+            app.message.error("Validación", "Debe adjuntar por lo menos uno de estos documentos para enviar a Facturación: (Acta de Conformidad o Constancia de Servicio Técnico o Guía de Servicios).");
             return false;
         }
 
@@ -2809,11 +2809,19 @@
         //    return false;
         //}
 
+        var mensaje = "";
+        if ($("#idFlujo").val() == "1") {
+            mensaje = "¿Está seguro que desea enviar la Guia de Pedido?";
+        }
+        else {
+            mensaje = "¿Está seguro que desea enviar la Guia de Venta?";
+        }
+
         var fnSi = function () {
             $FlagStock.val("S");
             $modalCargaDocumentoGuiaClick();
         }
-        return app.message.confirm("Ventas", "¿Está seguro que desea enviar la Guia de Pedido?", "S&iacute;", "No", fnSi, null);
+        return app.message.confirm("Ventas", mensaje, "S&iacute;", "No", fnSi, null);
     }
 
     function $btnEnviarGuiaSS_click() {
@@ -2828,11 +2836,18 @@
         //    app.message.error("Validación", "Debe adjuntar un documento de guía de pedido.");
         //    return false;
         //}
+        var mensaje = "";
+        if ($("#idFlujo").val() == "1") {
+            mensaje = "¿Está seguro que desea enviar la Guia de Pedido?";
+        }
+        else {
+            mensaje = "¿Está seguro que desea enviar la Guia de Venta?";
+        }
         var fnSi = function () {
             $FlagStock.val("N");
             $modalCargaDocumentoGuiaClick();
         }
-        return app.message.confirm("Ventas", "¿Está seguro que desea enviar la Guia de Pedido?", "S&iacute;", "No", fnSi, null);
+        return app.message.confirm("Ventas", mensaje , "S&iacute;", "No", fnSi, null);
     }
 
 
@@ -3464,6 +3479,14 @@
             }
             
             if ($numeroSolicitud.val() != "") {
+
+              
+                if ($("#idFlujo").val() == "2")//Para post-venta
+                {
+                    $("#btnGuiaPedido").html('<i class="fa fa-file" aria-hidden="true"></i>&nbsp;Generar Gu&iacute;a de Venta');
+                    $("#btnEnviarGuiaCS").html('<i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar Guia de Venta');
+                    $("#btnGuiaPedidoSS").html('<i class="fa fa-file" aria-hidden="true" tabindex="113"></i>&nbsp;Generar Gu&iacute;a de Venta');
+                }
 
                 cotvtadet.ObtenerFiltrosPrecios();
 
@@ -4475,7 +4498,13 @@
         //$cmbTipoDocumentoCarga.empty();
         $cmbDocumentoCargaGuia.empty();
         $txtDescripcionDocumentoCargaGuia.val("");
-        $cmbTipoDocumentoCargaGuia.val("DVT07").trigger("change.select2");
+        if ($("#idFlujo").val() == "1") {
+            $cmbTipoDocumentoCargaGuia.val("DVT07").trigger("change.select2");
+        }
+        else {
+            $cmbTipoDocumentoCargaGuia.val("DVT10").trigger("change.select2");
+        }
+        
         $cmbTipoDocumentoCargaGuia.prop('disabled', true);
         $lblNombreArchivoGuia.text("");
         $modalCargaDocumentoGuia.modal("show");

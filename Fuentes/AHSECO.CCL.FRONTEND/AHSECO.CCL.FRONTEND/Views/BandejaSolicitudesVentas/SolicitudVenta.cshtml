@@ -65,6 +65,7 @@
     if (ViewBag.PermitirEnvioCotizacion != null) { if (ViewBag.PermitirEnvioCotizacion == true) { strPermitirEnvioCotizacion = "S"; } }
 }
 
+<input type="hidden" id="idFlujo" value="@idflujo" />
 <input type="hidden" id="nomEmpresa" value="@cliente.NomEmpresa" />
 <input type="hidden" id="codigoWorkflow" value="@idWorkFlow" />
 <input type="hidden" id="idCliente" value="@cliente.ID" />

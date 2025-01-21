@@ -265,7 +265,10 @@ SELECT @ID=ID FROM  [TBM_DATOS_GENERALES] WHERE DOMINIO='TIPODOC'
 INSERT INTO [TBD_DATOS_GENERALES] VALUES (@ID,'TIPDOC14','TIPODOC','Tipo Documento 14','1','','DVT06','Guía de BO','','',1,'system',GETDATE(),1,1)
 INSERT INTO [TBD_DATOS_GENERALES] VALUES (@ID,'TIPDOC15','TIPODOC','Tipo Documento 15','1','','DVT07','Guía de Pedidos','','',1,'system',GETDATE(),1,1)
 INSERT INTO [TBD_DATOS_GENERALES] VALUES (@ID,'TIPDOC16','TIPODOC','Tipo Documento 16','1','','DVT08','Guía de Remision','','',1,'system',GETDATE(),1,1)
-INSERT INTO [TBD_DATOS_GENERALES] VALUES (@ID,'TIPDOC17','TIPODOC','Tipo Documento 17','1','','DVT09','Otros Documentos','','',1,'system',GETDATE(),1,1)
+
+INSERT INTO [TBD_DATOS_GENERALES] VALUES (@ID,'TIPDOC17','TIPODOC','Tipo Documento 17','1','','DVT09','Guía de Servicios','','',1,'system',GETDATE(),1,1)
+INSERT INTO [TBD_DATOS_GENERALES] VALUES (@ID,'TIPDOC18','TIPODOC','Tipo Documento 18','1','','DVT10','Guía de Ventas','','',1,'system',GETDATE(),1,1)
+INSERT INTO [TBD_DATOS_GENERALES] VALUES (@ID,'TIPDOC19','TIPODOC','Tipo Documento 19','1','','DVT11','Otros Documentos','','',1,'system',GETDATE(),1,1)
 
 
 
