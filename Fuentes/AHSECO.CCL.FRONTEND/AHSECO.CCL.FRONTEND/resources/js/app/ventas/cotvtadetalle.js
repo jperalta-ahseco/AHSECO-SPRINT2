@@ -1797,7 +1797,7 @@ var cotvtadet = (function ($, win, doc) {
                             var guardar_fob = "";
                             if (oFeatures.IsEnabled && $idRolUsuario.val() === "SGI_VENTA_GERENTE") {
                                 fob = String.fromCharCode(32) +"<br><br>"+ editar_FOB;
-                                guardar_fob = String.fromCharCode(32) +"<br><br>"+guardar_FOB;
+                                guardar_fob = guardar_FOB;
                                 editar = ver;
                             }
 

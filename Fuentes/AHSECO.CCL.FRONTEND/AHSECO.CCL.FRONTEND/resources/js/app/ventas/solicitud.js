@@ -354,6 +354,7 @@
     var $txtNroFianzaPA = $("#txtNroFianzaPA");
     var $radFianza = $("#radFianza");
     var $radFianza2 = $("#radFianza2");
+    var $btnGuiaPedido = $("#btnGuiaPedido");
 
     var tecnicosAsig = [];
 
@@ -589,7 +590,28 @@
         $chkPrestacionAccesoria.click($chkPrestacionAccesoria_click);
         $radFianza.click($radFianza_click);
         $radFianza2.click($radFianza2_click);
+        $btnGuiaPedido.click($btnGuiaPedido_click);
     };
+
+
+    function $btnGuiaPedido_click() {
+        var num_solicitud = $numeroSolicitud.val();
+        var tipo = "GP"
+        method = 'POST';
+        url = 'BandejaHistorialCotizacion/ExportarDocumentosVentas?tipo=' + tipo + "&codSolicitud=" + num_solicitud + "&stock=S";
+
+        objParam = '';
+
+        var fnDoneCallBack = function (data) {
+            app.abrirVentana("BandejaHistorialCotizacion/ExportarFileGuiaPedido?nombreDoc=" + data.Archivo);
+            app.message.success("Ventas", "Se generó la guía de pedidos correctamente.");
+            location.reload();
+        }
+        var fnFailCallBack = function () {
+
+        }
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, mensajes.GenerarGuiaPedidos);
+    }
 
     function $radFianza2_click() {
         if ($radFianza2.is(':checked')) {

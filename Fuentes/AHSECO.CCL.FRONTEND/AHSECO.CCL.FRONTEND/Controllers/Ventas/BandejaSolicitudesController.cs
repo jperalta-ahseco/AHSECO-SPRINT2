@@ -129,11 +129,13 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.TxtNroContrato = "disabled";
             ViewBag.ControlCalculoFechaMaxima = "disabled";
 
-
-            ViewBag.Btn_EnviarGuiaCS = "none";
-            ViewBag.Btn_GuiaPedidoCS = "none";
+            ViewBag.Btn_EnviarGuiaCS = "none";           
             ViewBag.Btn_EnviarGuiaSS = "none";
+
+            ViewBag.Btn_GuiaPedidoCS = "none";
             ViewBag.Btn_GuiaPedidoSS = "none";
+
+            ViewBag.Btn_GuiaPedido = "none";
 
             string[] dtHeadProducto =
             {
@@ -432,7 +434,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                             ViewBag.Btn_EnviarGuiaSS = "inline-block";
                                         }
                                         
-                                        ViewBag.Btn_GuiaPedidoSS = "inline-block";
+                                        ViewBag.Btn_GuiaPedido = "inline-block";
                                     }
                                 }
 
@@ -455,7 +457,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                     {
                                         ViewBag.Btn_EnviarGuiaCS = "inline-block";
                                     }
-                                    ViewBag.Btn_GuiaPedidoCS = "inline-block";
+
+                                    ViewBag.Btn_GuiaPedido = "inline-block";
                                 }
                                 else
                                 {
