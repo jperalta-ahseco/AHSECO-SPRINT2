@@ -255,6 +255,23 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaGarantia
                     };
                 }
 
+                foreach (var contacto in grupoReclamoDTO.Contactos)
+                {
+                    contacto.TipoProceso = "I";
+                    contacto.Id_Reclamo = mainReclamo.Result.Codigo;
+                    contacto.UsuarioRegistra = User.ObtenerUsuario();
+                    var rptaContacto = garantiasBL.MantContactos(contacto);
+                    if (rptaContacto.Result.Codigo == 0)
+                    {
+                        return Json(new
+                        {
+                            Status = 0,
+                            Mensaje = rptaContacto.Result.Mensaje
+                        });
+                    };
+                };
+
+
                 //Registra documentos
                 if (grupoReclamoDTO.Adjuntos != null)
                 {

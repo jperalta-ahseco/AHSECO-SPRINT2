@@ -342,6 +342,8 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaPreventivos
                 parameters.Add("IsNomEquipo", req.NomEquipo);
                 parameters.Add("IsRUC", req.Ruc);
                 parameters.Add("IsContrato", req.NumContrato);
+                parameters.Add("IsNumFianzaApp", req.NumFianzaPP);
+                parameters.Add("IsNumFianzaApa", req.NumFianzaPA);
                 //parameters.Add("IsEstado", req.Estado);
 
                 var result = connection.Query(
@@ -364,7 +366,9 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaPreventivos
                         PreventReal = i.Single(d => d.Key.Equals("COMPLETADOS")).Value.Parse<int>(),
                         PreventPend = i.Single(d => d.Key.Equals("PENDIENTES")).Value.Parse<int>(),
                         UbigeoDest = i.Single(d => d.Key.Equals("UBIGEODEST")).Value.Parse<string>(),
-                        NumContrato = i.Single(d => d.Key.Equals("NUMCONTRATO")).Value.Parse<string>()
+                        NumContrato = i.Single(d => d.Key.Equals("NUMCONTRATO")).Value.Parse<string>(),
+                        NumFianzaPP = i.Single(d => d.Key.Equals("NUMFIANZAPP")).Value.Parse<string>(),
+                        NumFianzaPA = i.Single(d => d.Key.Equals("NUMFIANZAPA")).Value.Parse<string>()
                     });
                 connection.Close();
                 return result;

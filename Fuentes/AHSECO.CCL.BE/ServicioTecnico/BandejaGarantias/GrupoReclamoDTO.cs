@@ -11,6 +11,7 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaGarantias
         public List<WorkflowLogDTO> Seguimiento { get; set; }
         public List<ObservacionDTO> Observaciones { get; set; }
         public List<DocumentoDTO> Adjuntos { get; set; }
+        public List<ContactoGarantiaDTO> Contactos { get; set; }
     }
 }
 

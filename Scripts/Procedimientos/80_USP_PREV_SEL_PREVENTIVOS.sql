@@ -6,7 +6,7 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_PREV_SEL_PREVENTIVOS]
 /*=======================================================================================================
 	Nombre:				Fecha:				Descripcion:
 	Diego Bazalar		28.11.24		Realiza el select de los mantenimientod preventivos.
-	EXEC [USP_PREV_SEL_PREVENTIVOS] @IsNumReq='', @IsNumSerie='0', @IsNumProc='0',@IsNumOrdCompra='0',@IsNumFianza='0',@IsEmpresa='0',@IsPeriodoInicio=NULL,@IsPeriodoFinal=NULL,@IsRUC='',@IsNomEquipo = '', @IsMarca='',@IsUbigeoDestino='', @IsModelo=''
+	EXEC [USP_PREV_SEL_PREVENTIVOS] @IsNumReq='', @IsNumSerie='0', @IsNumProc='0',@IsNumOrdCompra='0',@IsNumFianza='0',@IsEmpresa='0',@IsPeriodoInicio=NULL,@IsPeriodoFinal=NULL,@IsRUC='0',@IsNomEquipo = '', @IsMarca=NULL,@IsUbigeoDestino='', @IsModelo=NULL,@IsContrato=NULL, @IsNumFianzaApp = NULL,@IsNumFianzaApa = NULL
 =======================================================================================================*/
 	 @IsNumReq			BIGINT
 	,@IsNumSerie		VARCHAR(100)
@@ -22,6 +22,8 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_PREV_SEL_PREVENTIVOS]
 	,@IsUbigeoDestino	VARCHAR(6)
 	,@IsModelo			VARCHAR(60)
 	,@IsContrato		VARCHAR(50)
+	,@IsNumFianzaApp	VARCHAR(50)
+	,@IsNumFianzaApa	VARCHAR(50)
 	--Pendiente contrato
 	--,@IsEstado			VARCHAR(5)
 )
@@ -55,6 +57,8 @@ SET NOCOUNT ON
 		,NUMFIANZA VARCHAR(15)
 		,IDCLIENTE	INT
 		,NUMCONTRATO VARCHAR(50)
+		,NUMFIANZAPP VARCHAR(50)
+		,NUMFIANZAPA VARCHAR(50)
 	)
 	
 
@@ -132,6 +136,8 @@ SET NOCOUNT ON
 					,MANT.NUMFIANZA				   AS NUMFIANZA
 					,SOL.IDCLIENTE				   AS IDCLIENTE
 					,ISNULL(DESPACHO.NUMCONTRATO,'''') NUMCONTRATO
+					,ISNULL(DESPACHO.NUMFIANZAPP,'''') NUMFIANZAPP
+					,ISNULL(DESPACHO.NUMFIANZAPA,'''') NUMFIANZAPA
 				FROM [dbo].[TBM_MANT_PREV] MANT WITH(NOLOCK)										
 				LEFT JOIN [dbo].[TBD_MANT_PREV] MANTDET WITH(NOLOCK) ON MANT.ID_MANT = MANTDET.ID_MANT
 				LEFT JOIN [dbo].[TBD_DESPACHO_DIST] DESP WITH(NOLOCK) ON MANT.SERIE = DESP.NUMSERIE
@@ -201,8 +207,10 @@ SET NOCOUNT ON
 					,MANT.ORDENCOMPRA
 					,MANT.NUMFIANZA
 					,INSTAL.NUMREQ
-					,SOL.IDCLIENTE'
-
+					,SOL.IDCLIENTE
+					,DESPACHO.NUMFIANZAPP
+					,DESPACHO.NUMFIANZAPA
+					'
 	
 	INSERT INTO #tmpParcial
 	EXEC sp_executesql @sql
@@ -226,6 +234,8 @@ SET NOCOUNT ON
 		,calc.PENDIENTES
 		,CONCAT(UBI.NOMDEPARTAMENTO,' / ',UBI.NOMPROVINCIA,' / ',UBI.NOMDISTRITO) AS UBIGEODEST
 		,ISNULL(parcial.NUMCONTRATO,'') NUMCONTRATO
+		,ISNULL(parcial.NUMFIANZAPP,'') NUMFIANZAPP
+		,ISNULL(parcial.NUMFIANZAPA,'') NUMFIANZAPA
 	FROM #tmpParcial parcial
 	INNER JOIN #tmpProxavencer prox ON parcial.SERIE = prox.SERIE
 	LEFT JOIN #tmpMantPrev calc ON calc.ID_MANT = parcial.ID_MANT
@@ -248,7 +258,10 @@ SET NOCOUNT ON
 	AND RGA.DESC_MODELO = IIF(@IsModelo IS NUll, RGA.DESC_MODELO, @IsModelo)
 	AND RGA.DESMARCA = IIF(@IsMarca IS NULL, RGA.DESMARCA, @IsMarca)
 	AND parcial.NUMCONTRATO = IIF(@IsContrato IS NULL, parcial.NUMCONTRATO, @IsContrato)
+	AND parcial.NUMFIANZAPP = IIF(@IsNumFianzaApp IS NULL, parcial.NUMFIANZAPP,@IsNumFianzaApp)
+	AND parcial.NUMFIANZAPA = IIF(@IsNumFianzaApa IS NULL, parcial.NUMFIANZAPA,@IsNumFianzaApa)
 	ORDER BY ID_MANT ASC
-
+	
+	
 SET NOCOUNT OFF
 END

@@ -303,12 +303,9 @@
                     <li class="" id="tabAdjuntos">
                         <a href="#navDocumentos" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-file-text" aria-hidden="true"></i> Adjunto de Documentos</a>
                     </li>
-                    @if (numReclamo != "")
-                    {
-                        <li class="" id="tabContacto">
+                    <li class="" id="tabContacto">
                             <a href="#navContactoDetalle" data-toggle="tab" style="font-weight:bold; color: black;" tabindex="22"><i class="fa fa-address-card-o" aria-hidden="true"></i> Contactos</a>
-                        </li>
-                    }
+                    </li>
                 </ul>
                 <div class="tab-content" style="padding-top: 5px;">
                     @if (numReclamo != "")
@@ -394,8 +391,8 @@
                                             {
                                                 <div class="text-right">
                                                     <span id="hidden_fields"></span>
-                                                    <button class="btn btn-primary btn-sm" type="button" id="btnNuevoContacto" data-toggle="modal" data-target="#modalModificarContacto"><i class="fa fa-plus"></i> Nuevo Contacto</button>
-                                                    <button class="btn btn-primary btn-sm" type="button" id="btnSelectContacto" data-toggle="modal" data-target="#modalContactos"><i class="fa fa-plus"></i> Seleccionar Contacto</button>
+                                                    <button style="display:none"  class="btn btn-primary btn-sm" type="button" id="btnNuevoContacto" data-toggle="modal" data-target="#modalModificarContacto"><i class="fa fa-plus"></i> Nuevo Contacto</button>
+                                                    <button style="display:none"  class="btn btn-primary btn-sm" type="button" id="btnSelectContacto" data-toggle="modal" data-target="#modalContactos"><i class="fa fa-plus"></i> Seleccionar Contacto</button>
                                                 </div>
                                             }
                                                 <br />

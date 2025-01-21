@@ -24,6 +24,8 @@
     var $modalUbigeo = $('#modalUbigeo');
     var $btnGuardarUbigeo = $('#btnGuardarUbigeo');
     var $txtNumContrato = $('#txtNumContrato');
+    var $txtNumFianzaPP = $('#txtNumFianzaPP');
+    var $txtNumFianzaPA = $('#txtNumFianzaPA');
 
     var $spanSi = $('#spanSi');
     var $spanNo = $('#spanNo');
@@ -239,7 +241,9 @@
             Marca:$txtMarca.val(),
             CodUbigeoDest: codDepartamento + codProvincia.slice(2, 4) + codDistrito.slice(4, 6),
             Modelo: $txtModelo.val(),
-            NumContrato: $txtNumContrato.val()
+            NumContrato: $txtNumContrato.val(),
+            NumFianzaPP: $txtNumFianzaPP.val(),
+            NumFianzaPA: $txtNumFianzaPA.val()
             //Estado: $cmbEstado.val() == "" || $cmbEstado.val() == 0 ? "" : $cmbEstado.val(),
         };
 
@@ -257,6 +261,12 @@
 
     }
     function btnExportarClick(e) {
+
+        var codDepartamento = sessionStorage.getItem('codDepartamento');
+        var codProvincia = sessionStorage.getItem('codProvincia');
+        var codDistrito = sessionStorage.getItem('codDistrito');
+
+
         var self = jQuery(this);
         var href = self.attr('href');
         e.preventDefault();
@@ -267,15 +277,21 @@
             return false;
         }
         $("#hidden_fields").empty();
-        $("<input>", { type: "hidden", name: "NumReq", value: $txtIdRegIns.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "NumSerie", value: $txtSerie.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "NumProc", value: $txtNumProc.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "NumOrdCompra", value: $txtNumOrdCompra.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "NumFianza", value: $txtNumFianza.val() }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "Empresa", value: $cmbempresa.val() == "0" || $cmbempresa.val() == null ? "" : $cmbempresa.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "NumReq", value: $txtIdRegIns.val() == "" ? "0" : $txtIdRegIns.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "NumSerie", value: $txtSerie.val() == "" ? "0" : $txtSerie.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "NumProc", value: $txtNumProc.val() == "" ? "0" : $txtNumProc.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "NumOrdCompra", value: $txtNumOrdCompra.val() == "" ? "0" : $txtNumOrdCompra.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "NumFianza", value: $txtNumFianza.val() == "" ? "0" : $txtNumFianza.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "Empresa", value: $cmbempresa.val() == "" ? "0" : $cmbempresa.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "PeriodoInicio", value: $periodoIni.val().toString().replace("/",".")}).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "PeriodoFinal", value: $periodoFin.val().toString().replace("/", ".")}).appendTo("#hidden_fields");
-
+        $("<input>", { type: "hidden", name: "PeriodoFinal", value: $periodoFin.val().toString().replace("/", ".") }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "Ruc", value: $cmbCliente.val() == null ? "0" : $cmbCliente.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "NomEquipo", value: $txtNomEquipo.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "Marca", value: $txtMarca.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "CodUbigeoDest", value: codDepartamento + codProvincia.slice(2, 4) + codDistrito.slice(4, 6) }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "Modelo", value: $txtModelo.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "NumContrato", value: $txtNumContrato.val() }).appendTo("#hidden_fields");
+        
         $formPreventivo.attr('action', href);
         $formPreventivo.submit();
     }
@@ -322,6 +338,18 @@
             },
             {
                 data: "NumContrato",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "NumFianzaPP",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "NumFianzaPA",
                 render: function (data, type, row) {
                     return '<center>' + data + '</center>'
                 }

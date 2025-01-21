@@ -231,6 +231,7 @@
     let observaciones = [];
     let adjuntos = [];
     let contactos = [];
+    let contactosCreados = [];
     const baseUrl = window.location.origin;
     function Initializer() {
         $cmbEstadoContacto.val("1");
@@ -301,7 +302,6 @@
             BuscarContactos();
         };
 
-
             
         setTimeout(function () {
             cargarDatos();
@@ -337,6 +337,7 @@
 
         var fnDoneCallBack = function (data) {
             cargarTablaContactosAux(data);
+            contactosCreados = data.Result;
         };
 
         var fnFailCallBack = function () {
@@ -428,10 +429,7 @@
                 estado = false;
             }
 
-            var method = "POST";
-            var url = "BandejaInstalacionTecnica/ActualizarContacto";
             var objContacto = {
-                Id_Asig: id,
                 NumReq: $numeroReq.val(),
                 TipDoc: $cmbTipDocContacto.val(),
                 NumDoc: $txtNumContacto.val(),
@@ -445,28 +443,54 @@
                 CodEstado: estado
             };
 
-            var objParam = JSON.stringify(objContacto);
+            if ($numeroReq.val() != "") {
+                objContacto.Id_Asig = id;
+                var method = "POST";
+                var url = "BandejaInstalacionTecnica/ActualizarContacto";
+                var objParam = JSON.stringify(objContacto);
 
-            var fnDoneCallBack = function (data) {
-                if (data.Result.Codigo == 0) {
-                    app.message.error("Error", "Error al actualizar el contacto, por favor revisar");
-                }
-                else if (data.Result.Codigo == -1) {
-                    app.message.error("Error", "El numero de documento ya ha sido registrado, por favor revisar");
-                }
-                else {
-                    app.message.success("Éxito", "Se realizó la actualización correctamente");
-                    BuscarContactos();
-                    $modalModificarContacto.modal('toggle');
-                }
-            };
+                var fnDoneCallBack = function (data) {
+                    if (data.Result.Codigo == 0) {
+                        app.message.error("Error", "Error al actualizar el contacto, por favor revisar");
+                    }
+                    else if (data.Result.Codigo == -1) {
+                        app.message.error("Error", "El numero de documento ya ha sido registrado, por favor revisar");
+                    }
+                    else {
+                        app.message.success("Éxito", "Se realizó la actualización correctamente");
+                        BuscarContactos();
+                        $modalModificarContacto.modal('toggle');
+                    }
+                };
 
-            var fnFailCallBack = function () {
-                app.message.error("Error", "Se presentó un error al actualizar el contacto, por favor revisar");
-                return;
-            };
+                var fnFailCallBack = function () {
+                    app.message.error("Error", "Se presentó un error al actualizar el contacto, por favor revisar");
+                    return;
+                };
 
-            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+                app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+            } else {
+                objContacto.estadoText = $("#cmbEstadoContacto option:selected").text();
+                objContacto.tipDocText = $("#cmbTipDocContacto option:selected").text() == "" ? "Sin definir" : $("#cmbTipDocContacto option:selected").text();
+                objContacto.Id = id;
+                objContacto.Id_Asig = 0;
+
+                for (var i = 0; contactos.length > i; i++) {
+                    if (contactos[i].Id == id) {
+                        contactos[i] = objContacto;
+                    };
+                };
+
+                var listContactos = {};
+                listContactos.Result = [];
+                listContactos.Result = contactos;
+
+                app.message.success("Éxito", "Se realizó la actualización correctamente");
+                $modalModificarContacto.modal('toggle');
+                cargarTablaContactos(listContactos);
+            };   
+
+            
         }
         return app.message.confirm("Confirmación", "Desea actualizar los datos del contacto","Sí","No",fnSi);
     };
@@ -490,7 +514,6 @@
         });
         $btnActualizarContacto.css("display", "none");
     }
-
 
     function LimpiarInfoAdi() {
         $txtTieneManual.val('');
@@ -610,7 +633,25 @@
             return
         };
 
-        
+        var validador = {
+            contactos: []
+        };
+
+        if ($txtNumContacto.val() != undefined && $txtNumContacto.val() != "" && $txtNumContacto.val() != " ") {
+            if (contactosCreados.length >= 1) {
+                validador.contactos = [contactosCreados.find((contacto) => contacto.NumDoc.trim() === $txtNumContacto.val().trim())]
+                if (validador.contactos.length >= 1 && !(validador.contactos.includes(undefined))) {
+                    app.message.error("Validación", "El número de documento debe de ser único.");
+                    return
+                }
+            } else if (contactos.length >= 1) {
+                validador.contactos = [contactos.find((contacto) => contacto.NumDoc.trim() === $txtNumContacto.val().trim())]
+                if (validador.contactos.length >= 1 && !(validador.contactos.includes(undefined))) {
+                    app.message.error("Validación", "El número de documento debe de ser único.");
+                    return
+                }
+            }
+        }
         var fnSi = function () {
             var estado;
             if ($cmbEstadoContacto.val() == "1") {
@@ -620,9 +661,7 @@
                 estado = false;
             }
 
-            var method = "POST"
-            var url = "BandejaInstalacionTecnica/InsertarContacto"
-            var objContact = {
+            var objContacto = {
                 Id_Asig: 0,
                 NumReq: $numeroReq.val(),
                 TipDoc: $cmbTipDocContacto.val(),
@@ -637,32 +676,58 @@
                 CodEstado: estado
             };
 
-            var objParam = JSON.stringify(objContact);
 
-            var fnDoneCallBack = function (data) {
-                if (data.Result.Codigo == -1) {
-                    app.message.error("Error", "El número de documento ingresado es duplicado, por favor revisar");
-                }
-                else if (data.Result.Codigo == 0) {
-                    app.message.error("Error", "Error al registrar el contacto, por favor revisar");
-                }
-                else if (data.Result.Codigo == -2) {
-                    app.message.error("Error", "Contacto ya ha sido asignado");
-                }
-                else
-                {
-                    app.message.success("Éxito", "Se realizó la inserción correctamente");
-                    BuscarContactos();
-                    $modalModificarContacto.modal('toggle');
-                }
-            };
+            if ($numeroReq.val() != "") {
+                var method = "POST"
+                var url = "BandejaInstalacionTecnica/InsertarContacto"
 
-            var fnFailCallBack = function () {
-                app.message.error("Error", "Se presentó un error al registrar el contacto, por favor revisar");
-                return;
-            };
+                var objParam = JSON.stringify(objContacto);
 
-            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+                var fnDoneCallBack = function (data) {
+                    if (data.Result.Codigo == -1) {
+                        app.message.error("Error", "El número de documento ingresado es duplicado, por favor revisar");
+                    }
+                    else if (data.Result.Codigo == 0) {
+                        app.message.error("Error", "Error al registrar el contacto, por favor revisar");
+                    }
+                    else if (data.Result.Codigo == -2) {
+                        app.message.error("Error", "Contacto ya ha sido asignado");
+                    }
+                    else {
+                        app.message.success("Éxito", "Se realizó la inserción correctamente");
+                        BuscarContactos();
+                        $modalModificarContacto.modal('toggle');
+                    }
+                };
+
+                var fnFailCallBack = function () {
+                    app.message.error("Error", "Se presentó un error al registrar el contacto, por favor revisar");
+                    return;
+                };
+
+                app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+            }
+            else {
+                objContacto.estadoText = $("#cmbEstadoContacto option:selected").text();
+                objContacto.tipDocText = $("#cmbTipDocContacto option:selected").text() == "" ? "Sin definir" : $("#cmbTipDocContacto option:selected").text();
+
+                if (contactos.length == 0) {
+                    objContacto.Id = 1;
+                } else {
+                    objContacto.Id = Math.max(...contactos.map(o => o.Id)) + 1
+                };
+
+                contactos.push(objContacto); // agregamos los contactos
+
+                var listContactos = {};
+                listContactos.Result = [];
+                listContactos.Result = contactos;
+
+                app.message.success("Éxito", "Se realizó la inserción correctamente");
+                $modalModificarContacto.modal('toggle');
+                cargarTablaContactos(listContactos);
+
+            };            
         };
         return app.message.confirm("Confirmación", "¿Está seguro que desea guardar los datos del contacto?","Sí","No",fnSi);
 
@@ -826,7 +891,12 @@
             {
                 data: "Id_Asig",
                 render: function (data, type, row) {
-                    return '<center>' + data + '</center>' 
+                    if ($numeroReq.val() != "") {
+                        return '<center>' + data + '</center>' 
+                    } else {
+                        return '<center>' + row.Id + '</center>' 
+                    }
+
                 }
             },
             {
@@ -835,7 +905,12 @@
                     if (data == "") {
                         return '<center>' + 'No definido' + '</center>' 
                     } else {
-                        return '<center>' + data + '</center>' 
+                        if ($numeroReq.val()) {
+                            return '<center>' + data + '</center>'
+                        }
+                        else {
+                            return '<center>' + row.tipDocText + '</center>'
+                        }
                     }
                 }
 
@@ -917,8 +992,16 @@
                         return '<center> No disponible </center>';
                     }
                     else {
-                        var editar = '<a id="btnEditarContacto" class="btn btn-default btn-xs" title="Editar" href="javascript:registroInstalacionTec.editarContacto(' + data + ')"><i class="fa fa-pencil"></i></a>'
-                        var eliminar = '<a id="btnEliminarContacto" class="btn btn-default btn-xs" title="Eliminar" href="javascript:registroInstalacionTec.eliminarContacto('+data+')"><i class="fa fa-trash"></i></a>'
+                        var editar = "";
+                        var eliminar = "";
+                        if ($numeroReq.val() != "") {
+                            editar = '<a id="btnEditarContacto" class="btn btn-default btn-xs" title="Editar" href="javascript:registroInstalacionTec.editarContacto(' + data + ')"><i class="fa fa-pencil"></i></a>'
+                            eliminar = '<a id="btnEliminarContacto" class="btn btn-default btn-xs" title="Eliminar" href="javascript:registroInstalacionTec.eliminarContacto(' + data + ')"><i class="fa fa-trash"></i></a>'
+                        }
+                        else {
+                            editar = '<a id="btnEditarContacto" class="btn btn-default btn-xs" title="Editar" href="javascript:registroInstalacionTec.editarContacto(' + row.Id + ')"><i class="fa fa-pencil"></i></a>'
+                            eliminar = '<a id="btnEliminarContacto" class="btn btn-default btn-xs" title="Eliminar" href="javascript:registroInstalacionTec.eliminarContactoTmp(' + row.Id + ')"><i class="fa fa-trash"></i></a>'
+                        }
                         return '<center>' + eliminar + ' ' + editar + '</center>';
                     }
                 }
@@ -936,10 +1019,13 @@
     }
 
     function editarContacto(id) {
-
-        var contactosFilter = contactos.filter(x => x.Id_Asig == id);
         var estado;
 
+        if ($numeroReq.val() != "") {
+            var contactosFilter = contactos.filter(x => x.Id_Asig == id);
+        } else {
+            var contactosFilter = contactos.filter(x => x.Id == id);
+        };
 
         if (contactosFilter[0].CodEstado == true) {
             estado = 1;
@@ -955,7 +1041,11 @@
         }
 
         $txtidContacto.val(id);
-        $cmbTipDocContacto.val(contactosFilter[0].CodTipDocContacto == "" ? " " : contactosFilter[0].CodTipDocContacto).trigger("change.select2");
+        if ($numeroReq.val() != "") {
+            $cmbTipDocContacto.val(contactosFilter[0].CodTipDocContacto == "" ? " " : contactosFilter[0].CodTipDocContacto).trigger("change.select2");
+        } else {
+            $cmbTipDocContacto.val(contactosFilter[0].TipDoc == "" ? " " : contactosFilter[0].TipDoc).trigger("change.select2");
+        }
         $txtNumContacto.val(contactosFilter[0].NumDoc);
         $txtNomContacto.val(contactosFilter[0].NomCont);
         $txtEstablecimiento.val(contactosFilter[0].Establecimiento);
@@ -1168,37 +1258,80 @@
     
     function seleccionarContacto(id) {
         var id_contacto = id;
-
         var fnSi = function () {
-            var method = "POST";
-            var url = "BandejaInstalacionTecnica/InsertarContacto";
-            var obj = {
-                IdContacto: id_contacto,
-                NumReq: $numeroReq.val(),
-                CodEstado: true
-            };
-            var objParam = JSON.stringify(obj);
+            if ($numeroReq.val() != "") {
+                var method = "POST";
+                var url = "BandejaInstalacionTecnica/InsertarContacto";
+                var obj = {
+                    IdContacto: id_contacto,
+                    NumReq: $numeroReq.val(),
+                    CodEstado: true
+                };
+                var objParam = JSON.stringify(obj);
 
-            var fnDoneCallBack = function (data) {
-                if (data.Result.Codigo == -2) {
-                    app.message.error("Error", "El contacto ya se encuentra seleccionado");
-                    return;
-                }
-                else if (data.Result.Codigo == 0) {
-                    app.message.error("Error", "Se produjo un error al asignar el contacto, por favor revisar");
-                    return;
-                }
-                else {
-                    app.message.success("Éxito", "Se realizó la asignación con éxito");
-                    $modalContactos.modal('toggle');
-                    BuscarContactos();
-                }
-            };
+                var fnDoneCallBack = function (data) {
+                    if (data.Result.Codigo == -2) {
+                        app.message.error("Error", "El contacto ya se encuentra seleccionado");
+                        return;
+                    }
+                    else if (data.Result.Codigo == 0) {
+                        app.message.error("Error", "Se produjo un error al asignar el contacto, por favor revisar");
+                        return;
+                    }
+                    else {
+                        app.message.success("Éxito", "Se realizó la asignación con éxito");
+                        $modalContactos.modal('toggle');
+                        BuscarContactos();
+                    }
+                };
 
-            var fnFailCallBack = function () {
-                app.message.error("Error", "Error al realizar la asignación, por favor revisar");
+                var fnFailCallBack = function () {
+                    app.message.error("Error", "Error al realizar la asignación, por favor revisar");
+                };
+                app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+            } else {
+                var contacto = contactosCreados.filter(x => x.IdContacto == id_contacto);
+
+                if (contactos.some(e => e.NumDoc == contacto[0].NumDoc)) {
+                    app.message.error("Validación", "El contacto ya ha sido seleccionado")
+                    return;
+                };
+
+                var objContacto = {
+                    Id_Asig: 0,
+                    Id_Reclamo: 0,
+                    IdContacto: id_contacto,
+                    TipDoc: contacto[0].CodTipDocContacto,
+                    tipDocText: contacto[0].TipDoc,
+                    NumDoc: contacto[0].NumDoc,
+                    NomCont: contacto[0].NomCont,
+                    Establecimiento: contacto[0].Establecimiento,
+                    AreaContacto: contacto[0].AreaContacto,
+                    Telefono: contacto[0].Telefono == "" ? contacto[0].Telefono2 : contacto[0].Telefono,
+                    RucCliente: $txtRuc.val(),
+                    Cargo: contacto[0].Cargo,
+                    Correo: contacto[0].Correo,
+                    CodEstado: contacto[0].CodEstado,
+                    estadoText: contacto[0].Estado
+                }
+
+                if (contactos.length == 0) {
+                    objContacto.Id = 1;
+                } else {
+                    objContacto.Id = Math.max(...contactos.map(o => o.Id)) + 1
+                };
+
+                contactos.push(objContacto); // agregamos los contactos
+
+                var listContactos = {};
+                listContactos.Result = [];
+                listContactos.Result = contactos;
+
+                app.message.success("Éxito", "Se realizó la inserción correctamente");
+                $modalContactos.modal('toggle');
+                cargarTablaContactos(listContactos);
+
             };
-            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
         };
         return app.message.confirm("Confirmación", "¿Está seguro que desea vincular el contacto a la instalación?","Sí","No",fnSi);
 
@@ -1610,8 +1743,8 @@
             },
             DetalleInstalacion: productos,
             Observaciones: observaciones,
-            Adjuntos: adjuntos
-
+            Adjuntos: adjuntos,
+            Contactos: contactos
         }
         var objParam = JSON.stringify(objGrupo);
 
@@ -1680,6 +1813,8 @@
             $colContrato.css('display', 'none');
             $colOrdenCompra.css('display', 'none');
             $rowDocsProc.css('display', 'none');
+            $btnNuevoContacto.css('display', 'in-line block');
+            $btnSelectContacto.css('display', 'in-line block');
 
             //$cmbDestino.val("00");
             cargarCabecera(data.Result.Solicitud)
@@ -1718,12 +1853,15 @@
                     Elementos: elementos
                 });
 
+
             };
             cargarBandejaProductos(productos);
             $modalSolicitud.modal('toggle');
             //$cmbDestino.prop('disabled', false);
             //$dateSolicitud.prop('disabled', false);
             cargarBtnInfoAdicional();
+
+            BuscarContactosxCliente();
         };
 
         var fnFailCallBack = function () {
@@ -2851,6 +2989,10 @@
                     }
                     $NoExisteRegDoc.hide();
                 }
+
+                $btnNuevoContacto.css('display', 'in-line block');
+                $btnSelectContacto.css('display', 'in-line block');
+                
             };
             var fnFailCallBack = function () {
                 app.message.error("Validación", "Hubo un error en obtener el detalle de la instalación técnica.")
@@ -3632,6 +3774,22 @@
         return app.message.confirm("Confirmación", "¿Desea finalizar el requerimiento?", "Sí", "No", fnSi, null);
     };
 
+    function editarContactoTmp(id) {
+        var contacto = contactos.filter(x => x.Id == id); //Se filtran los contactos
+    }
+
+    function eliminarContactoTmp(id) {
+        var fnSi = function () {
+            contactos = contactos.filter(x => x.Id != id); //Se filtran los contactos
+            var listContactos = {};
+            listContactos.Result = contactos;
+
+            app.message.success("Éxito", "Se eliminó el contacto");
+            cargarTablaContactos(listContactos);
+        }
+        return app.message.confirm("Confirmación", "¿Desea eliminar el contacto seleccionado?", "Sí", "No", fnSi);
+    };
+
     return {
         eliminarObsTmp: eliminarObsTmp,
         eliminarDocTemp: eliminarDocTemp,
@@ -3646,7 +3804,9 @@
         desactivarFechaInstalacion: desactivarFechaInstalacion,
         eliminarContacto: eliminarContacto,
         seleccionarContacto: seleccionarContacto,
-        editarContacto: editarContacto
+        editarContacto: editarContacto,
+        editarContactoTmp: editarContactoTmp,
+        eliminarContactoTmp: eliminarContactoTmp
         //cargarBtnInfoAdicional: cargarBtnInfoAdicional
        //añadirTecnico: añadirTecnico,
         //DesasignarTécnicoTmp: DesasignarTécnicoTmp

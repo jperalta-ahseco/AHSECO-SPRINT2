@@ -188,7 +188,23 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
                             Mensaje = rptaDetalle.Result.Mensaje
                         });
                     };
-                }
+                };
+
+                foreach(var contacto in grupoInstalacionTecnicaDTO.Contactos)
+                {
+                    contacto.TipIngreso = "I";
+                    contacto.NumReq = mainRequerimiento.Result.Codigo;
+                    contacto.UsuarioRegistra = User.ObtenerUsuario();
+                    var rptaContacto = instalacionTecnicaBL.MantContactos(contacto);
+                    if(rptaContacto.Result.Codigo == 0)
+                    {
+                        return Json(new
+                        {
+                            Status = 0,
+                            Mensaje = rptaContacto.Result.Mensaje
+                        });
+                    };
+                };
 
                 //Registra documentos
                 if (grupoInstalacionTecnicaDTO.Adjuntos != null)

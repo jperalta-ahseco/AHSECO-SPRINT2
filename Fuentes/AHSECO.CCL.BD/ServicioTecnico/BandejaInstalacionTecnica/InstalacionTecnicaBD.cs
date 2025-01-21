@@ -264,6 +264,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                     {
                         IdContacto = i.Single(d => d.Key.Equals("IDCONTACTO")).Value.Parse<int>(),
                         TipDoc = i.Single(d => d.Key.Equals("DESCRIPCION")).Value.Parse<string>(),
+                        CodTipDocContacto = i.Single(d => d.Key.Equals("TIPDOCCONTACTO")).Value.Parse<string>(),
                         NumDoc = i.Single(d => d.Key.Equals("NUMDOCCONTACTO")).Value.Parse<string>(),
                         NomCont = i.Single(d => d.Key.Equals("NOMBRE CONTACTO")).Value.Parse<string>(),
                         Establecimiento = i.Single(d => d.Key.Equals("ESTABLECIMIENTO")).Value.Parse<string>(),
@@ -272,7 +273,8 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                         Telefono2 = i.Single(d => d.Key.Equals("TELEFONO2CONTACTO")).Value.Parse<string>(),
                         Cargo = i.Single(d => d.Key.Equals("CARGOCONTACTO")).Value.Parse<string>(),
                         Correo = i.Single(d => d.Key.Equals("CORREOCONTACTO")).Value.Parse<string>(),
-                        Estado = i.Single(d => d.Key.Equals("ESTADO")).Value.Parse<string>()
+                        Estado = i.Single(d => d.Key.Equals("ESTADO")).Value.Parse<string>(),
+                        CodEstado = i.Single(d => d.Key.Equals("CODESTADO")).Value.Parse<bool>(),
                     });
                 connection.Close();
                 return result;

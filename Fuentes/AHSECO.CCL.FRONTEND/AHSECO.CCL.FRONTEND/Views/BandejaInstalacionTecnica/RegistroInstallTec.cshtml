@@ -186,12 +186,9 @@
                     <li class="" id="tabObservaciones">
                         <a href="#navObservaciones" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-exclamation" aria-hidden="true"></i> Observaciones</a>
                     </li>
-                    @if (numReq != "")
-                    {
-                        <li class="" id="tabContacto">
+                    <li class="" id="tabContacto">
                             <a href="#navContactoDetalle" data-toggle="tab" style="font-weight:bold; color: black;" tabindex="22"><i class="fa fa-address-card-o" aria-hidden="true"></i> Contactos</a>
-                        </li>
-                    }
+                    </li>
                 </ul>
                 <div class="tab-content" style="padding-top: 5px;">
                     <div id="navDetalleSolicitud" class="tab-pane fade in active">
@@ -265,11 +262,14 @@
                                 <div class="modal-body d-flex justify-content-center" align-items-center>
                                     <form id="formContacto" class="d-flex flex-row">
                                         <div class="row container-fluid d-flex justify-content-center">
-                                            <div class="text-right">
-                                                <span id="hidden_fields"></span>
-                                                <button class="btn btn-primary btn-sm" type="button" id="btnNuevoContacto" data-toggle="modal" data-target="#modalModificarContacto"><i class="fa fa-plus"></i> Nuevo Contacto</button>
-                                                <button class="btn btn-primary btn-sm" type="button" id="btnSelectContacto" data-toggle="modal" data-target="#modalContactos"><i class="fa fa-plus"></i> Seleccionar Contacto</button>
-                                            </div>
+                                            @if (tipoProceso != "V")
+                                            {
+                                                <div class="text-right">
+                                                    <span id="hidden_fields"></span>
+                                                    <button style="display:none" class="btn btn-primary btn-sm" type="button" id="btnNuevoContacto" data-toggle="modal" data-target="#modalModificarContacto"><i class="fa fa-plus"></i> Nuevo Contacto</button>
+                                                    <button style="display:none" class="btn btn-primary btn-sm" type="button" id="btnSelectContacto" data-toggle="modal" data-target="#modalContactos"><i class="fa fa-plus"></i> Seleccionar Contacto</button>
+                                                </div>
+                                            }
                                             <br />
                                             <div class="table-responsive">
                                                 <table id="tblContactosMain" class="table table-hover table-condensed table-striped table-bordered" width="100%">

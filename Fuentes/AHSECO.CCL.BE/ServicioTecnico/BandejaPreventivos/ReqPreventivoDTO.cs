@@ -35,6 +35,8 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaPreventivos
         public string CodUbigeoDest { get; set; }
         public string valOTM { get; set; }
         public string valGuia { get; set; }
+        public string NumFianzaPP { get; set; }
+        public string NumFianzaPA { get; set; }
         public DateTime? FecGuia { get; set; }
         public DateTime FechaMantenimiento { get; set; }
         public string NumFactura { get; set; }

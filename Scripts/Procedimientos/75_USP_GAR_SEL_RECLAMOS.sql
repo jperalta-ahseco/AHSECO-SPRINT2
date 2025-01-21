@@ -6,7 +6,7 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_GAR_SEL_RECLAMOS]
 /*=======================================================================================================
 	Nombre:				Fecha:			Descripcion:
 	Diego Bazalar		18.11.24		Realiza el select de la tabla [TBM_INSTALACION] con parámetros de búsqueda para la bandeja de instalacion técnica.
-	EXEC [USP_GAR_SEL_RECLAMOS] '','','','','','','','','0','','','','','124231asd'
+	EXEC [USP_GAR_SEL_RECLAMOS] '','','','','','','','','0','','','','','','','EX',''
   =======================================================================================================*/
 	@isFecIni			VARCHAR(10)
   ,@isFecFin			VARCHAR(10) 

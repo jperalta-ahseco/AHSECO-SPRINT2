@@ -218,6 +218,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
                     {
                         IdContacto = i.Single(d => d.Key.Equals("IDCONTACTO")).Value.Parse<int>(),
                         TipDoc = i.Single(d => d.Key.Equals("DESCRIPCION")).Value.Parse<string>(),
+                        CodTipDocContacto = i.Single(d => d.Key.Equals("TIPDOCCONTACTO")).Value.Parse<string>(),
                         NumDoc = i.Single(d => d.Key.Equals("NUMDOCCONTACTO")).Value.Parse<string>(),
                         NomCont = i.Single(d => d.Key.Equals("NOMBRE CONTACTO")).Value.Parse<string>(),
                         Establecimiento = i.Single(d => d.Key.Equals("ESTABLECIMIENTO")).Value.Parse<string>(),
@@ -226,7 +227,8 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
                         Telefono2 = i.Single(d => d.Key.Equals("TELEFONO2CONTACTO")).Value.Parse<string>(),
                         Cargo = i.Single(d => d.Key.Equals("CARGOCONTACTO")).Value.Parse<string>(),
                         Correo = i.Single(d => d.Key.Equals("CORREOCONTACTO")).Value.Parse<string>(),
-                        Estado = i.Single(d => d.Key.Equals("ESTADO")).Value.Parse<string>()
+                        Estado = i.Single(d => d.Key.Equals("ESTADO")).Value.Parse<string>(),
+                        CodEstado = i.Single(d => d.Key.Equals("CODESTADO")).Value.Parse<bool>(),
                     });
                 connection.Close();
                 return result;
@@ -377,11 +379,6 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
                         RucEmpresa = reader.IsDBNull(reader.GetOrdinal("RUCEMPRESA")) ? "" : reader.GetString(reader.GetOrdinal("RUCEMPRESA")),
                         RazonSocial = reader.IsDBNull(reader.GetOrdinal("RAZONSOCIAL")) ? "" : reader.GetString(reader.GetOrdinal("RAZONSOCIAL")),
                         Ubicacion = reader.IsDBNull(reader.GetOrdinal("UBICACION")) ? "" : reader.GetString(reader.GetOrdinal("UBICACION")),
-                        NombreContacto = reader.IsDBNull(reader.GetOrdinal("NOMBRECONTACTO")) ? "" : reader.GetString(reader.GetOrdinal("NOMBRECONTACTO")),
-                        TelefonoContacto = reader.IsDBNull(reader.GetOrdinal("TELEFONOCONTACTO")) ? "" : reader.GetString(reader.GetOrdinal("TELEFONOCONTACTO")),
-                        CargoContacto = reader.IsDBNull(reader.GetOrdinal("CARGOCONTACTO")) ? "" : reader.GetString(reader.GetOrdinal("CARGOCONTACTO")),
-                        Correo = reader.IsDBNull(reader.GetOrdinal("EMAILCONTACTO")) ? "" : reader.GetString(reader.GetOrdinal("EMAILCONTACTO")),
-                        Establecimiento = reader.IsDBNull(reader.GetOrdinal("ESTABLECIMIENTO")) ? "" : reader.GetString(reader.GetOrdinal("ESTABLECIMIENTO")),
                         OrdenCompra = reader.IsDBNull(reader.GetOrdinal("ORDENCOMPRA")) ? "" : reader.GetString(reader.GetOrdinal("ORDENCOMPRA")),
                         NumProceso = reader.IsDBNull(reader.GetOrdinal("NUMPROCESO")) ? "" : reader.GetString(reader.GetOrdinal("NUMPROCESO")),
                         TipoProceso = reader.IsDBNull(reader.GetOrdinal("TIPOPROCESO")) ? "" : reader.GetString(reader.GetOrdinal("TIPOPROCESO")),
@@ -568,11 +565,6 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaGarantias
                 parameters.Add("IsRUCEMPRESA", reclamo.RucEmpresa);
                 parameters.Add("IsNOMEMPRESA", reclamo.RazonSocial);
                 parameters.Add("IsUBICACION", reclamo.Ubicacion);
-                parameters.Add("IsNOMBRECONTACTO", reclamo.NombreContacto);
-                parameters.Add("IsTELEFONOCONTACTO", reclamo.TelefonoContacto);
-                parameters.Add("IsCARGOCONTACTO", reclamo.CargoContacto);
-                parameters.Add("IsCORREOCONTACTO", reclamo.Correo);
-                parameters.Add("IsESTABLECIMIENTO", reclamo.Establecimiento);
                 parameters.Add("IsTIPOVENTA",reclamo.TipoVenta);
                 parameters.Add("IsORDENCOMPRA", reclamo.OrdenCompra);
                 parameters.Add("IsNUMPROCESO", reclamo.NumProceso);

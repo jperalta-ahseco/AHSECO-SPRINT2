@@ -13,5 +13,6 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica
         //        public List<TecnicoInstalacionDTO> TecnicoInstalacion { get; set; }
         public List<ObservacionDTO> Observaciones { get; set; }
         public List<DocumentoDTO> Adjuntos { get; set; }
+        public List<ContactoInstalDTO> Contactos { get; set; }
     }
 }

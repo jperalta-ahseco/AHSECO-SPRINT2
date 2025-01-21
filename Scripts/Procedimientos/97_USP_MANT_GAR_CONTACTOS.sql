@@ -38,7 +38,7 @@ SET NOCOUNT ON
 
 		IF(@IsID_CONTACTO = 0)
 		BEGIN
-			IF EXISTS (SELECT 1 FROM [TBM_CONTACTOS] WHERE NUMDOCCONTACTO = @IsNUM_DOC AND TIPDOCCONTACTO = @IsTIPO_DOC)
+			IF EXISTS (SELECT 1 FROM [TBM_GAR_CONTACTO] WHERE NUM_DOC = @IsNUM_DOC AND TIPO_DOC = @IsTIPO_DOC AND ID_RECLAMO = @IsID_RECLAMO)
 			BEGIN
 				SET @COD = -1;
 				SET @MSG = 'Ya existe un empleado con el mismo documento.'
@@ -51,7 +51,7 @@ SET NOCOUNT ON
 				IF(@@ROWCOUNT = 0)
 				BEGIN
 					SET @COD = 0
-					SET @MSG = 'Ocurrió un error al realizar la inserción de la tabla [TBM_INSTAL_CONTACTO]'
+					SET @MSG = 'Ocurrió un error al realizar la inserción de la tabla [TBM_CONTACTOS]'
 				END
 				ELSE
 				BEGIN
@@ -62,7 +62,7 @@ SET NOCOUNT ON
 					IF(@@ROWCOUNT = 0)
 					BEGIN
 						SET @COD = 0
-						SET @MSG = 'Ocurrió un error al realizar la inserción de la tabla [TBM_INSTAL_CONTACTO]'
+						SET @MSG = 'Ocurrió un error al realizar la inserción de la tabla [[TBM_GAR_CONTACTO]]'
 					END
 					ELSE
 					BEGIN
@@ -88,7 +88,7 @@ SET NOCOUNT ON
 				IF(@@ROWCOUNT = 0)
 				BEGIN
 					SET @COD = 0
-					SET @MSG = 'Ocurrió un error al realizar la inserción de la tabla [TBM_INSTAL_CONTACTO]'
+					SET @MSG = 'Ocurrió un error al realizar la inserción de la tabla [TBM_GAR_CONTACTO]'
 				END
 				ELSE
 				BEGIN
@@ -100,7 +100,7 @@ SET NOCOUNT ON
 	END
 	IF (@IsTipoProceso = 'U')
 	BEGIN
-		IF EXISTS (SELECT 1 FROM [TBM_CONTACTOS] WHERE NUMDOCCONTACTO = @IsNUM_DOC AND TIPDOCCONTACTO = @IsTIPO_DOC)
+		IF EXISTS (SELECT 1 FROM [TBM_GAR_CONTACTO] WHERE NUM_DOC = @IsNUM_DOC AND TIPO_DOC = @IsTIPO_DOC)
 			BEGIN
 				SET @COD = -1;
 				SET @MSG = 'Ya existe un empleado con el mismo documento.'
