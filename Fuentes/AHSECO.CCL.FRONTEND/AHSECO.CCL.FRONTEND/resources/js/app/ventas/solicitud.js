@@ -438,8 +438,7 @@
         $dateIngresoAlmacenSE.datepicker({
             viewMode: 0,
             minViewMode: 0,
-            format: 'dd/mm/yyyy',
-            startDate: hoy()
+            format: 'dd/mm/yyyy'
         });
 
         $dateEntregaPedidoSE.datepicker({
@@ -453,7 +452,6 @@
             viewMode: 0,
             minViewMode: 0,
             format: 'dd/mm/yyyy',
-            startDate: hoy()
         });
 
         $dateProg.datepicker({

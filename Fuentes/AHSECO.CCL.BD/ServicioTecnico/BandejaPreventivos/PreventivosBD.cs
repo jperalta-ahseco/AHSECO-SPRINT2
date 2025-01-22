@@ -618,6 +618,8 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaPreventivos
                         UbigeoDest = reader.IsDBNull(reader.GetOrdinal("UBIGEODEST")) ? "" : reader.GetString(reader.GetOrdinal("UBIGEODEST")),
                         CodUbigeoDest = reader.IsDBNull(reader.GetOrdinal("CODUBIGEODEST")) ? "" : reader.GetString(reader.GetOrdinal("CODUBIGEODEST")),
                         NumFianza = reader.IsDBNull(reader.GetOrdinal("NUMFIANZA")) ? "" : reader.GetString(reader.GetOrdinal("NUMFIANZA")),
+                        FianzaPP = reader.IsDBNull(reader.GetOrdinal("NUMFIANZAPP")) ? "" : reader.GetString(reader.GetOrdinal("NUMFIANZAPP")),
+                        FianzaPA = reader.IsDBNull(reader.GetOrdinal("NUMFIANZAPA")) ? "" : reader.GetString(reader.GetOrdinal("NUMFIANZAPA")),
                         TotalPrev = reader.IsDBNull(reader.GetOrdinal("TOTALPREVE")) ? 0 : reader.GetInt32(reader.GetOrdinal("TOTALPREVE")),
                         PrevPendientes = reader.IsDBNull(reader.GetOrdinal("PENDIENTES")) ? 0 : reader.GetInt32(reader.GetOrdinal("PENDIENTES")),
                         PrevCompletados = reader.IsDBNull(reader.GetOrdinal("COMPLETADOS")) ? 0 : reader.GetInt32(reader.GetOrdinal("COMPLETADOS")),

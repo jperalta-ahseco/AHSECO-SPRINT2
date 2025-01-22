@@ -30,5 +30,7 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaPreventivos
         public int DiasDiff { get; set; }
         public int DiasTranscurridos { get; set; }
         public decimal vventauni { get; set; }
+        public string FianzaPP { get; set; }
+        public string FianzaPA { get; set; }
     }
 }

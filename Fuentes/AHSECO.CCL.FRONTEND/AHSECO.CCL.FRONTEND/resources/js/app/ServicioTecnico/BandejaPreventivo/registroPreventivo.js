@@ -64,6 +64,10 @@
     var $txtNumProceso = $('#txtNumProceso');
     var $txtTipoProceso = $('#txtTipoProceso');
     var $txtOrden = $('#txtOrden');
+    var $txtNumFianzaPP = $('#txtNumFianzaPP');
+    var $txtNumFianzaPA = $('#txtNumFianzaPA');
+
+
     //Btns
     var $searchSolVenta = $('#searchSolVenta');
     var $btnRegresar = $('#btnRegresar');
@@ -529,6 +533,8 @@
         $hdnCodUbigeo.val(detalle.CodUbicacionDestino);
         $txtUbiDestino.val(detalle.UbigeoDest);
         $txtNumFianza.val(detalle.NumFianza);
+        $txtNumFianzaPP.val(detalle.FianzaPP);
+        $txtNumFianzaPA.val(detalle.FianzaPA);
         $txtPeriodicidad.text('Periodicidad: ' + detalle.Periodo)
         $fechaVencGar.text(detalle.FechaVencimientoGar);
         $diasTransc.text(detalle.DiasTranscurridos);
@@ -802,6 +808,8 @@
                     CodUbicacionDestino: data.Result.CabeceraEquipo.CodUbigeo,
                     UbigeoDest: data.Result.CabeceraEquipo.UbigeoDest,
                     NumFianza: data.Result.CabeceraEquipo.NumFianza,
+                    FianzaPP : data.Result.CabeceraEquipo.FianzaPP,
+                    FianzaPA : data.Result.CabeceraEquipo.FianzaPA,
                     FechaVencimientoGar: app.obtenerFecha(data.Result.CabeceraEquipo.FechaVencimientoGar),
                     Periodo: data.Result.CabeceraEquipo.Periodo,
                     GarantiaAdic: data.Result.CabeceraEquipo.GarantiaAdic,
