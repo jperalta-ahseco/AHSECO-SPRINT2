@@ -438,7 +438,8 @@
         $dateIngresoAlmacenSE.datepicker({
             viewMode: 0,
             minViewMode: 0,
-            format: 'dd/mm/yyyy'
+            format: 'dd/mm/yyyy',
+            startDate: hoy()
         });
 
         $dateEntregaPedidoSE.datepicker({
@@ -452,6 +453,7 @@
             viewMode: 0,
             minViewMode: 0,
             format: 'dd/mm/yyyy',
+            startDate: hoy()
         });
 
         $dateProg.datepicker({
@@ -485,12 +487,12 @@
         //}
        
         $dateEntregaPedidoCE.val(hoy());
-        $dateIngresoAlmacenSE.val(hoy());
+        //$dateIngresoAlmacenSE.val(hoy());
         $dateEntregaPedidoSE.val(hoy());
         $dateEntregaPedido.val(hoy());
         //$dateFechaContrato.val(hoy());
         
-        $dateFactura.val(hoy());
+        //$dateFactura.val(hoy());
         $fileCargaDocumentoSustento.on("change", $fileCargaDocumentoSustento_change);
         $fileCargaDocumentoSustento.click($fileCargaDocumentoSustento_change);
         $fileCargaDocumentoSustentoGuia.on("change", $fileCargaDocumentoSustentoGuia_change);
@@ -3592,7 +3594,7 @@
                     $dateFactura.val(data.Result.ContadorCabecera.FechaFactura);
                 }
                 else {
-                    $dateFactura.val(hoy());
+                    $dateFactura.val("");
                 }
                 $txtNumeroFacturaServ.val(data.Result.ContadorCabecera.NumeroFactura);
                 $dateProgramacionServ.val(data.Result.ContadorCabecera.FechaProgramacionTecnico);

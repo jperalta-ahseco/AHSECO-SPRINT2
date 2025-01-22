@@ -68,7 +68,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         {
             var sw = false;
             var NombreRol = VariableSesion.getCadena("VENTA_NOMBRE_ROL");
-            if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Gerente || NombreRol == ConstantesDTO.WorkflowRol.Venta.Costos)
+            if ( (NombreRol == ConstantesDTO.WorkflowRol.Venta.Gerente && (VariableSesion.getCadena("tipoSol") == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaEquipos || VariableSesion.getCadena("tipoSol") == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaMateriales)) 
+                || NombreRol == ConstantesDTO.WorkflowRol.Venta.Costos)
             {
                 sw = true;
             }
@@ -243,7 +244,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 {
                     string[] CD_ColumnsRepuestos =
                     {
-                        "Nro. Item", "Codigo Producto", "Descripción", "Unidad Medida", "Cantidad", "Ex-Work", "Valor Venta Unitario", 
+                        "Nro. Item", "Codigo Producto", "Descripción", "Unidad Medida", "Cantidad", "Valor Venta Unitario", 
                         "Valor. Venta Total Sin IGV", "Acción"
                     };
                     ViewBag.CabeceraCotDet = CD_ColumnsRepuestos;
@@ -964,10 +965,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.VentaProg ||
                         soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Finalizado)
                     {
-                        if (soli.Tipo_Sol != "TSOL01")
-                        {
-                            ViewBag.VerFacturacion = true;
-                        }
+                        ViewBag.VerFacturacion = true;
                         ViewBag.VerGestionLogistica = true;
                         if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio
                            || soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
@@ -1837,7 +1835,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 if (!swTieneStock)
                                 {
                                     if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.CostoFOB) { pc.IsVisible = true; pc.IsEnabled = false; }
-                                    if (oItem.CostoFOB != "")
+                                    if (!string.IsNullOrEmpty(oItem.CostoFOB))
                                     {
                                             if (pc.Tag == MultiFlujo.Tag.CotDetalle.Campo.ValUni) { pc.IsVisible = true; pc.IsEnabled = true; }
                                      }
@@ -3868,7 +3866,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     if (swValidarCostoFOB)
                     {
                         var swDatos = false;
-                        if (oItem.CostoFOB != "") { swDatos = true; } 
+                        if (!string.IsNullOrEmpty(oItem.CostoFOB)) { swDatos = true; } 
 
                         if (!swDatos) { throw new Exception("No se ha ingresado el COSTO FOB de '" + oItem.Descripcion + "'"); }
                     }
@@ -4065,10 +4063,12 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     {
                         if (!swProductos) { throw new Exception("La cotización no contiene productos para la venta."); }
                     }
-
-                    if (lstItems.Any( x => x.CotizacionCostos.Any(d => d.CodCosto == "CXCD0007") == true && !x.CotizacionCostos.Any(d => d.MontoUnitarioCosto != null)))
+                    if(lstItems.Any(x => x.CotizacionCostos != null) && oSolicitudActual.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaEquipos)
                     {
-                        throw new Exception("Debe de ingresar el monto unitario del costo calibración de todos los productos ingresados");
+                        if (lstItems.Any(x => x.CotizacionCostos.Any(d => d.CodCosto == "CXCD0007") == true && !x.CotizacionCostos.Any(d => d.MontoUnitarioCosto != null)))
+                        {
+                            throw new Exception("Debe de ingresar el monto unitario del costo calibración de todos los productos ingresados");
+                        }
                     }
                 }
                 else { throw new Exception("La cotización no contiene servicios o productos para la venta."); }
@@ -4328,7 +4328,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     if (swValidarCostoFOB)
                     {
                         var swDatos = false;
-                         if (oItem.CostoFOB != "") { swDatos = true; } 
+                         if (!string.IsNullOrEmpty(oItem.CostoFOB)) { swDatos = true; } 
 
                         if (!swDatos) { throw new Exception("No se ha ingresado el COSTO FOB de '" + oItem.Descripcion + "'"); }
                     }
