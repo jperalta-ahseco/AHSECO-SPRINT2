@@ -35,7 +35,7 @@ BEGIN
 			SET @INDINSTALACION='S'
 	END
 
-	IF(LEN(@NUMFACTURA) = 0 )
+	IF(LEN(@NUMFACTURA) = 0  AND @TIPOSOL IN ('TSOL02','TSOL03','TSOL04','TSOL05'))
 	BEGIN
 			SELECT @CODIGO=0,@MSG='Logistica, no ha agregado el número de factura de la venta.'
 	END

@@ -369,7 +369,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnProcVentas)
                     {
 
-                        ViewBag.VerFacturacion = true;
+                        if(soli.Tipo_Sol != "TSOL01")
+                        {
+                            ViewBag.VerFacturacion = true;
+                        }
+
                         ViewBag.VerGestionLogistica = true;
                         if (soli.TipoVenta == "TVEN02")
                         {
@@ -512,7 +516,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         }
                         ViewBag.Btn_FinalizarVenta = "inline-block";
                         ViewBag.VerGestionLogistica = true;
-                        ViewBag.VerFacturacion = true;
+                        if (soli.Tipo_Sol != "TSOL01")
+                        {
+                            ViewBag.VerFacturacion = true;
+                        }
+
 
                         if (validarDespacho.Result != null)
                         {
@@ -557,7 +565,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         {
                             ViewBag.VerContrato = true;
                         }
-                        ViewBag.VerFacturacion = true;
+                        if (soli.Tipo_Sol != "TSOL01")
+                        {
+                            ViewBag.VerFacturacion = true;
+                        }
                         ViewBag.VerGestionLogistica = true;
                         if (validarDespacho.Result != null)
                         {
@@ -605,7 +616,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             soli.Tipo_Sol != ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio)
                         {
                             ViewBag.VerGestionLogistica = true;
-                            ViewBag.VerFacturacion = true;
+                            if (soli.Tipo_Sol != "TSOL01")
+                            {
+                                ViewBag.VerFacturacion = true;
+                            }
                             if (validarDespacho.Result.ContadorSinStock > 0)
                             {
                                 ViewBag.VerNavSinStock = true;
@@ -649,7 +663,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                            soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Finalizado ||
                            soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.CotSinVenta)
                     {
-                        ViewBag.VerFacturacion = true;
+                        if (soli.Tipo_Sol != "TSOL01")
+                        {
+                            ViewBag.VerFacturacion = true;
+                        }
                         ViewBag.VerGestionLogistica = true;
                         ViewBag.SeccionImpSS = true;
                         ViewBag.SeccionLogSS = true;
@@ -696,7 +713,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     ViewBag.TxtNumeroFacturaCE = "";
                     ViewBag.TxtNumeroGuiaRemisionCE = "";
                     ViewBag.TxtNumeroSerieCE = "";
-                    ViewBag.VerFacturacion = true;
+                    if (soli.Tipo_Sol != "TSOL01")
+                    {
+                        ViewBag.VerFacturacion = true;
+                    }
 
                     if (soli.TipoVenta == "TVEN02")
                     {
@@ -842,7 +862,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnProcVentas)
                     {
                         ViewBag.VerGestionLogistica = true;
-                        ViewBag.VerFacturacion = true;
+                        if (soli.Tipo_Sol != "TSOL01")
+                        {
+                            ViewBag.VerFacturacion = true;
+                        }
                         if (validarDespacho.Result != null)
                         {
                             if (validarDespacho.Result.ContadorSinStock > 0 && soli.Tipo_Sol != ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio)
@@ -866,7 +889,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                        soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Finalizado ||
                        soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.CotSinVenta)
                     {
-                        ViewBag.VerFacturacion = true;
+                        if (soli.Tipo_Sol != "TSOL01")
+                        {
+                            ViewBag.VerFacturacion = true;
+                        }
                         ViewBag.VerGestionLogistica = true;
                         if (validarDespacho.Result != null)
                         {
@@ -899,7 +925,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     }
                     if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnProcVentas)
                     {
-                        ViewBag.VerFacturacion = true;
+                        if (soli.Tipo_Sol != "TSOL01")
+                        {
+                            ViewBag.VerFacturacion = true;
+                        }
                         ViewBag.VerGestionLogistica = true;
                         if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio
                             || soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
@@ -938,7 +967,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.VentaProg ||
                         soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Finalizado)
                     {
-                        ViewBag.VerFacturacion = true;
+                        if (soli.Tipo_Sol != "TSOL01")
+                        {
+                            ViewBag.VerFacturacion = true;
+                        }
                         ViewBag.VerGestionLogistica = true;
                         if (soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio
                            || soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
