@@ -33,5 +33,6 @@ namespace AHSECO.CCL.BE.Ventas
         public string PrestacionAccesoria { get; set; }
         public string NumeroFianzaPP { get; set; }
         public string NumeroFianzaPA { get; set; }
+        public string TipoVenta { get; set; }
     }
 }

@@ -2398,47 +2398,47 @@
       
 
         //Validación de numero de series agregadas:
-        if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03" || $TipoSolicitud.val() === "TSOL05") {
+        //if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03" || $TipoSolicitud.val() === "TSOL05") {
 
-            if ($TotalSeriesSS.val() != $ContadorSeriesSS.val()) {
-                app.message.error("Validación", "Debe ingresar la series y/o lotes completas.");
-                return false;
-            }
+        //    if ($TotalSeriesSS.val() != $ContadorSeriesSS.val()) {
+        //        app.message.error("Validación", "Debe ingresar la series y/o lotes completas.");
+        //        return false;
+        //    }
 
-        }
-        else {
+        //}
+        //else {
 
-            if ($txtNumeroGuiaRemisionSE.val() === "" || $txtNumeroGuiaRemisionSE.val() == null) {
-                app.message.error("Validación", "Debe ingresar el N° de Guia de Remision de los productos sin stock");
-                return false;
-            }
-        }
+        //    if ($txtNumeroGuiaRemisionSE.val() === "" || $txtNumeroGuiaRemisionSE.val() == null) {
+        //        app.message.error("Validación", "Debe ingresar el N° de Guia de Remision de los productos sin stock");
+        //        return false;
+        //    }
+        //}
 
-        if ($TipoSolicitud.val() === "TSOL04") //Para ventas de materiales y venta de equipos:
-        {
-            var documento_guiaRemision = 0;
-            //var documento_factura = 0;
-            //adjuntos.forEach(function (currentValue, index, arr) {
-            //    if (adjuntos[index].CodigoTipoDocumento == "DVT03") { //Factura
-            //        documento_factura = 1;
-            //    }
-            //});
+        //if ($TipoSolicitud.val() === "TSOL04") //Para ventas de materiales y venta de equipos:
+        //{
+        //    var documento_guiaRemision = 0;
+        //    //var documento_factura = 0;
+        //    //adjuntos.forEach(function (currentValue, index, arr) {
+        //    //    if (adjuntos[index].CodigoTipoDocumento == "DVT03") { //Factura
+        //    //        documento_factura = 1;
+        //    //    }
+        //    //});
 
-            //if (documento_factura === 0) {
-            //    app.message.error("Validación", "Debe adjuntar un documento de Factura.");
-            //    return false;
-            //}
-            adjuntos.forEach(function (currentValue, index, arr) {
-                if (adjuntos[index].CodigoTipoDocumento == "DVT08") { //Guia de Remision
-                    documento_guiaRemision = 1;
-                }
-            });
+        //    //if (documento_factura === 0) {
+        //    //    app.message.error("Validación", "Debe adjuntar un documento de Factura.");
+        //    //    return false;
+        //    //}
+        //    adjuntos.forEach(function (currentValue, index, arr) {
+        //        if (adjuntos[index].CodigoTipoDocumento == "DVT08") { //Guia de Remision
+        //            documento_guiaRemision = 1;
+        //        }
+        //    });
 
-            if (documento_guiaRemision === 0) {
-                app.message.error("Validación", "Debe adjuntar un documento de Guía de Remisión.");
-                return false;
-            }
-        }
+        //    if (documento_guiaRemision === 0) {
+        //        app.message.error("Validación", "Debe adjuntar un documento de Guía de Remisión.");
+        //        return false;
+        //    }
+        //}
 
 
         var fnSi = function () {
@@ -2618,25 +2618,34 @@
         //    return false;
         //}
        
-        if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03" || $TipoSolicitud.val() === "TSOL05") {
-            if (parseInt($ContadorSeriesCS.val()) != parseInt($TotalSeriesCS.val())) {
-                app.message.error("Validación", "Debe ingresar todas las series y/o lotes de los productos con stock antes de enviar a gestión.");
-                return false;
-            }
-        }
-        else {
-            if ($txtNumeroGuiaRemisionCE.val() === "" || $txtNumeroGuiaRemisionCE.val() == null) {
-                app.message.error("Validación", "Debe ingresar el N° de Guia de Remision de los productos con stock");
-                return false;
-            }
-        }
+        //if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03" || $TipoSolicitud.val() === "TSOL05") {
+        //    if (parseInt($ContadorSeriesCS.val()) != parseInt($TotalSeriesCS.val())) {
+        //        app.message.error("Validación", "Debe ingresar todas las series y/o lotes de los productos con stock antes de enviar a gestión.");
+        //        return false;
+        //    }
+
+        //}
+        //else {
+        //    if ($txtNumeroGuiaRemisionCE.val() === "" || $txtNumeroGuiaRemisionCE.val() == null) {
+        //        app.message.error("Validación", "Debe ingresar el N° de Guia de Remision de los productos con stock");
+        //        return false;
+        //    }
+        //}
 
 
         var fnSi = function () {
 
             var m = "POST";
-            var url = "BandejaSolicitudesVentas/EnviarGestionVentaConStock?codigoSolicitud=" + $numeroSolicitud.val() + "&codigoWorkFlow=" + $codigoWorkflow.val() + "&tipoVenta=" + $TipoSolicitud.val();
-            var objParam = '';
+            var url = "BandejaSolicitudesVentas/EnviarGestionVentaConStock";
+            var obj = {
+                CodigoSolicitud: $numeroSolicitud.val(),
+                CodigoWorkFlow: $codigoWorkflow.val(),
+                TipoVenta: $TipoSolicitud.val(),
+                NumeroGuiaRemision: $txtNumeroGuiaRemisionCE.val(),
+                NumeroFactura: $txtNumeroFactura.val(),
+                FechaEntrega: $dateEntregaPedido.val()
+            }
+            var objParam = JSON.stringify(obj);
             var fnDoneCallback = function (data) {
                 var fnCallback = function () {
 
@@ -2667,25 +2676,33 @@
         //    return false;
         //}
        
-        if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03" || $TipoSolicitud.val() === "TSOL05") {
-            if (parseInt($ContadorSeriesSS.val()) != parseInt($TotalSeriesSS.val())) {
-                app.message.error("Validación", "Debe ingresar todas las series y/o lotes de los productos sin stock antes de enviar a gestión.");
-                return false;
-            }
-        }
-        else {
-            if ($txtNumeroGuiaRemisionSE.val() === "" || $txtNumeroGuiaRemisionSE.val() == null) {
-                app.message.error("Validación", "Debe ingresar el N° de Guia de Remision de los productos sin stock");
-                return false;
-            }
-        }
+        //if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03" || $TipoSolicitud.val() === "TSOL05") {
+        //    if (parseInt($ContadorSeriesSS.val()) != parseInt($TotalSeriesSS.val())) {
+        //        app.message.error("Validación", "Debe ingresar todas las series y/o lotes de los productos sin stock antes de enviar a gestión.");
+        //        return false;
+        //    }
+        //}
+        //else {
+        //    if ($txtNumeroGuiaRemisionSE.val() === "" || $txtNumeroGuiaRemisionSE.val() == null) {
+        //        app.message.error("Validación", "Debe ingresar el N° de Guia de Remision de los productos sin stock");
+        //        return false;
+        //    }
+        //}
 
 
         var fnSi = function () {
 
             var m = "POST";
-            var url = "BandejaSolicitudesVentas/EnviarGestionVentaSinStock?codigoSolicitud=" + $numeroSolicitud.val() + "&codigoWorkFlow=" + $codigoWorkflow.val()+"&tipoVenta="+$TipoSolicitud.val();
-            var objParam = '';
+            var url = "BandejaSolicitudesVentas/EnviarGestionVentaSinStock";
+            var obj = {
+                CodigoSolicitud: $numeroSolicitud.val(),
+                CodigoWorkFlow: $codigoWorkflow.val(),
+                TipoVenta: $TipoSolicitud.val(),
+                NumeroGuiaRemision: $txtNumeroGuiaRemisionSE.val(),
+                NumeroFactura: $txtNumeroFactura.val(),
+                FechaEntrega: $dateEntregaPedido.val()
+            }
+            var objParam = JSON.stringify(obj);
             var fnDoneCallback = function (data) {
                 var fnCallback = function () {
 
@@ -2726,46 +2743,46 @@
        
 
         //Validación de numero de series agregadas:
-        if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03" || $TipoSolicitud.val() === "TSOL05") {
+        //if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03" || $TipoSolicitud.val() === "TSOL05") {
 
-            if ($TotalSeriesCS.val() != $ContadorSeriesCS.val()) {
-                app.message.error("Validación", "Debe ingresar la series y/o lotes completas.");
-                return false;
-            }
+        //    if ($TotalSeriesCS.val() != $ContadorSeriesCS.val()) {
+        //        app.message.error("Validación", "Debe ingresar la series y/o lotes completas.");
+        //        return false;
+        //    }
 
-        } else {
-            if ($txtNumeroGuiaRemisionCE.val() === "" || $txtNumeroGuiaRemisionCE.val() == null) {
-                app.message.error("Validación", "Debe ingresar el N° de Guia de Remision de los productos con stock");
-                return false;
-            }
-        }
+        //} else {
+        //    if ($txtNumeroGuiaRemisionCE.val() === "" || $txtNumeroGuiaRemisionCE.val() == null) {
+        //        app.message.error("Validación", "Debe ingresar el N° de Guia de Remision de los productos con stock");
+        //        return false;
+        //    }
+        //}
 
         //Validación de documentación adjunta:
-        if ($TipoSolicitud.val() === "TSOL04") //Para ventas de materiales y venta de equipos:
-        {
-            var documento_guiaRemision = 0;
-            //var documento_factura = 0;
-            //adjuntos.forEach(function (currentValue, index, arr) {
-            //    if (adjuntos[index].CodigoTipoDocumento == "DVT03") { //Factura
-            //        documento_factura = 1;
-            //    }
-            //});
+        //if ($TipoSolicitud.val() === "TSOL04") //Para ventas de materiales y venta de equipos:
+        //{
+        //    var documento_guiaRemision = 0;
+        //    //var documento_factura = 0;
+        //    //adjuntos.forEach(function (currentValue, index, arr) {
+        //    //    if (adjuntos[index].CodigoTipoDocumento == "DVT03") { //Factura
+        //    //        documento_factura = 1;
+        //    //    }
+        //    //});
 
-            //if (documento_factura === 0) {
-            //    app.message.error("Validación", "Debe adjuntar un documento de Factura.");
-            //    return false;
-            //}
-            adjuntos.forEach(function (currentValue, index, arr) {
-                if (adjuntos[index].CodigoTipoDocumento == "DVT08") { //Guia de Remision
-                    documento_guiaRemision = 1;
-                }
-            });
+        //    //if (documento_factura === 0) {
+        //    //    app.message.error("Validación", "Debe adjuntar un documento de Factura.");
+        //    //    return false;
+        //    //}
+        //    adjuntos.forEach(function (currentValue, index, arr) {
+        //        if (adjuntos[index].CodigoTipoDocumento == "DVT08") { //Guia de Remision
+        //            documento_guiaRemision = 1;
+        //        }
+        //    });
 
-            if (documento_guiaRemision === 0) {
-                app.message.error("Validación", "Debe adjuntar un documento de Guía de Remisión.");
-                return false;
-            }
-        }
+        //    if (documento_guiaRemision === 0) {
+        //        app.message.error("Validación", "Debe adjuntar un documento de Guía de Remisión.");
+        //        return false;
+        //    }
+        //}
         var fnSi = function () {
             var m = "POST";
             var url = "BandejaSolicitudesVentas/GestionLogistica";
@@ -3473,9 +3490,12 @@
                     $('#cmbTipoDocumentoCarga option[value="DVT03"]').remove(); //Factura
                     $('#cmbTipoDocumentoCarga option[value="DVT04"]').remove(); //Ficha Instalacion
                     $('#cmbTipoDocumentoCarga option[value="DVT06"]').remove(); //Guia de BO
-                    $('#cmbTipoDocumentoCarga option[value="DVT07"]').remove(); //Guia de Pedidos
+                    $('#cmbTipoDocumentoCarga option[value="DVT10"]').remove(); //Guia de Ventas
                     $('#cmbTipoDocumentoCarga option[value="DVT08"]').remove(); //Guia de Remision
-                }         
+                }  
+                if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03") { //Para repuestos:
+                    $('#cmbTipoDocumentoCarga option[value="DVT03"]').remove(); //Factura
+                }
             }
             
             if ($numeroSolicitud.val() != "") {
@@ -3626,7 +3646,7 @@
                     for (i = 0; i < data.Result.DespachoDetalleSinStock.length; i++) {
                         var html = '<div class="text-center">';
                         var sel_html = ''
-                        if ($estadoSol.val() == "PRVT" && $idRolUsuario.val() == "SGI_VENTA_LOGISTICA" && data.Result.DespachoCabeceraSinStock.EstadoAprobacion == "IMP") {
+                        if (($estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG") && $idRolUsuario.val() == "SGI_VENTA_LOGISTICA" && data.Result.DespachoCabeceraSinStock.EstadoAprobacion == "IMP") {
 
                             html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleSinStock[i].Id + '" href="javascript:solicitud.editarSeries(' + data.Result.DespachoDetalleSinStock[i].Id + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';
                            /* html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleSinStock[i].Id + '" data-toggle="modal" data-target="#modalSeries"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';*/
@@ -3700,7 +3720,7 @@
                     for (i = 0; i < data.Result.DespachoDetalleConStock.length; i++) {
                         var html = '<div class="text-center">';
                         var sel_html = ''
-                        if ($estadoSol.val() == "PRVT" && $idRolUsuario.val() == "SGI_VENTA_LOGISTICA") {
+                        if (($estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG") && $idRolUsuario.val() == "SGI_VENTA_LOGISTICA") {
 
                             html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleConStock[i].Id + '" href="javascript:solicitud.editarSeries(' + data.Result.DespachoDetalleConStock[i].Id + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';
                            /* html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleConStock[i].Id + '" data-toggle="modal" data-target="#modalSeries"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';*/

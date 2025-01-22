@@ -852,7 +852,7 @@
                                                                         <table id="tblSeriesCS" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                                                             <thead>
                                                                                 <tr>
-                                                                                    @if (NombreRol == "SGI_VENTA_LOGISTICA" && estadoSol == "PRVT")
+                                                                                    @if (NombreRol == "SGI_VENTA_LOGISTICA" && (estadoSol == "PRVT" || estadoSol == "VTPG"))
                                                                                     {
                                                                                         <th style="text-align:center; width:5%; color:white; background-color:cornflowerblue"><input type="checkbox" id="SelTodosCSS" onclick="javascript:seleccionarTodoConStock();" /></th>
                                                                                     }
@@ -945,7 +945,7 @@
                                                                         <table id="tblSeriesSS" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                                                             <thead>
                                                                                 <tr>
-                                                                                    @if (NombreRol == "SGI_VENTA_LOGISTICA" && estadoSol == "PRVT")
+                                                                                    @if (NombreRol == "SGI_VENTA_LOGISTICA" && (estadoSol == "PRVT" || estadoSol == "VTPG"))
                                                                                     {
                                                                                         <th style="text-align:center; width:5%; color:white; background-color:cornflowerblue"><input type="checkbox" id="SelTodosSSS" onclick="javascript:seleccionarTodoSinStock();" /></th>
                                                                                     }
