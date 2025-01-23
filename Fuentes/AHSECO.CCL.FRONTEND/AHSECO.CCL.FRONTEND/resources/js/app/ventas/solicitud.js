@@ -3688,7 +3688,7 @@
 
 
 
-                    if (data.Result.ContadorCabecera.GestionLogSinStock > 0) {
+                    if (data.Result.ContadorCabecera.GestionLogSinStock > 0 && ($estadoSol.val() == "SFIN" || $estadoSol.val() == "NOVT")) {
                         $dateEntregaPedidoSE.prop('disabled', true);
                       //  $txtNumeroFacturaSE.prop('disabled', true);
                         $txtNumeroGuiaRemisionSE.prop('disabled', true);
@@ -3707,7 +3707,7 @@
                     $txtNumeroGuiaRemisionCE.val(data.Result.DespachoCabeceraConStock.NumeroGuiaRemision);
 
 
-                    if (data.Result.ContadorCabecera.GestionLogConStock > 0) {
+                    if (data.Result.ContadorCabecera.GestionLogConStock > 0 && ($estadoSol.val() == "SFIN" || $estadoSol.val() == "NOVT")) {
                         $dateEntregaPedidoCE.prop('disabled', true);
                         //$txtNumeroFacturaCE.prop('disabled', true);
                         $txtNumeroGuiaRemisionCE.prop('disabled', true);

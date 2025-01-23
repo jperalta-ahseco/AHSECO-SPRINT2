@@ -748,19 +748,23 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                     ViewBag.InActiveSinStock = "in active";
                                 }
 
-                                ViewBag.Btn_EnviarGestionDespachoSE = "inline-block";
+                                ViewBag.Btn_GuardarGestionLogisticaSE = "inline-block";
+                                if (validarDespacho.Result.EnvioVentaSinStock == 0)
+                                {
+                                    ViewBag.Btn_EnviarGestionDespachoSE = "inline-block";
+                                }
+
                                 if (validarDespacho.Result.GestionLogSinStock > 0)
                                 {
                                     if(validarDespacho.Result.EnvioVentaSinStock == 0)
                                     {
-                                        
                                         ViewBag.Btn_EditarGestionLogisticaSE = "inline-block";
                                     }
                                     
                                 }
                                 else
                                 {
-                                    ViewBag.Btn_GuardarGestionLogisticaSE = "inline-block";
+                                    
                                     ViewBag.Btn_RegistrarDespachoSinStock = "inline-block";
 
                                 }
@@ -772,19 +776,25 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 ViewBag.FecEntregaPedido = "";
                                // ViewBag.Btn_EditarFacturaLogistica = "inline-block";
                                 ViewBag.SeccionLogCS = true;
-                                ViewBag.Btn_EnviarGestionDespacho = "inline-block";
+
+                                ViewBag.Btn_GuardarGestionLogistica = "inline-block";
+
+                                if (validarDespacho.Result.EnvioVentaConStock == 0)
+                                {
+                                    ViewBag.Btn_EnviarGestionDespacho = "inline-block";
+                                }
+
                                 if (validarDespacho.Result.GestionLogConStock > 0)
                                 {
                                     if (validarDespacho.Result.EnvioVentaConStock == 0)
                                     {
-                                        
                                         ViewBag.Btn_EditarGestionLogistica = "inline-block";
                                     }
 
                                 }
                                 else
                                 {
-                                    ViewBag.Btn_GuardarGestionLogistica = "inline-block";
+                                   
                                     ViewBag.Btn_RegistrarDespacho = "inline-block";
                                 }
                             }
@@ -823,6 +833,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             ViewBag.Btn_RegistrarDespacho = "inline-block";
                             ViewBag.Btn_RegistrarDespachoSinStock = "inline-block";
 
+                            if(soli.Tipo_Sol == "TSOL04")
+                            {
+                                ViewBag.Btn_GuardarGestionLogistica = "inline-block";
+                                ViewBag.Btn_GuardarGestionLogisticaSE = "inline-block";
+                            }
                         }
 
                         if (validarDespacho.Result != null)
