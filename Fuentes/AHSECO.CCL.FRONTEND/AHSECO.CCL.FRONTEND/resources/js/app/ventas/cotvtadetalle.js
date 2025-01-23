@@ -1813,6 +1813,11 @@ var cotvtadet = (function ($, win, doc) {
                 columns.splice(8, 2);
             };
 
+            if ($TipoSolicitud.val() == $TipoSol_RepOComes.val() || $TipoSolicitud.val() == $TipoSol_ServYRep.val()) {
+                columns.splice(4, 1);
+            };
+
+
         }
         else {
 
