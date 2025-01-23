@@ -4331,13 +4331,13 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         }
                     }
 
-                    if (swValidarCostoFOB)
-                    {
-                        var swDatos = false;
-                         if (!string.IsNullOrEmpty(oItem.CostoFOB)) { swDatos = true; } 
+                    //if (swValidarCostoFOB)
+                    //{
+                    //    var swDatos = false;
+                    //     if (!string.IsNullOrEmpty(oItem.CostoFOB)) { swDatos = true; } 
 
-                        if (!swDatos) { throw new Exception("No se ha ingresado el COSTO FOB de '" + oItem.Descripcion + "'"); }
-                    }
+                    //    if (!swDatos) { throw new Exception("No se ha ingresado el COSTO FOB de '" + oItem.Descripcion + "'"); }
+                    //}
 
                     if (swValidarValorUni)
                     {
