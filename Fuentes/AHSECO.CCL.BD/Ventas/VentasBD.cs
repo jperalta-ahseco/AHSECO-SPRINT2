@@ -1798,6 +1798,7 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("NUMFIANZAPP", datosDespachoDTO.NumeroFianzaPP);
                 parameters.Add("PRESTACC", datosDespachoDTO.PrestacionAccesoria);
                 parameters.Add("NUMFIANZAPA", datosDespachoDTO.NumeroFianzaPA);
+                parameters.Add("TIPODESP", datosDespachoDTO.TipoDespacho);
                 parameters.Add("USRREG", datosDespachoDTO.UsuarioRegistro);
 
                 var result = connection.Query

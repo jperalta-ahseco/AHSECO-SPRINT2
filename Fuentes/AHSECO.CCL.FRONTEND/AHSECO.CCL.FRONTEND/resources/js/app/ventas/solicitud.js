@@ -2618,13 +2618,13 @@
         //    return false;
         //}
        
-        //if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03" || $TipoSolicitud.val() === "TSOL05") {
-        //    if (parseInt($ContadorSeriesCS.val()) != parseInt($TotalSeriesCS.val())) {
-        //        app.message.error("Validación", "Debe ingresar todas las series y/o lotes de los productos con stock antes de enviar a gestión.");
-        //        return false;
-        //    }
+        if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03" || $TipoSolicitud.val() === "TSOL05") {
+            if (parseInt($ContadorSeriesCS.val()) != parseInt($TotalSeriesCS.val())) {
+                app.message.error("Validación", "Debe ingresar todas las series y/o lotes de los productos con stock antes de enviar a gestión.");
+                return false;
+            }
 
-        //}
+        }
         //else {
         //    if ($txtNumeroGuiaRemisionCE.val() === "" || $txtNumeroGuiaRemisionCE.val() == null) {
         //        app.message.error("Validación", "Debe ingresar el N° de Guia de Remision de los productos con stock");
@@ -2676,12 +2676,12 @@
         //    return false;
         //}
        
-        //if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03" || $TipoSolicitud.val() === "TSOL05") {
-        //    if (parseInt($ContadorSeriesSS.val()) != parseInt($TotalSeriesSS.val())) {
-        //        app.message.error("Validación", "Debe ingresar todas las series y/o lotes de los productos sin stock antes de enviar a gestión.");
-        //        return false;
-        //    }
-        //}
+        if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03" || $TipoSolicitud.val() === "TSOL05") {
+            if (parseInt($ContadorSeriesSS.val()) != parseInt($TotalSeriesSS.val())) {
+                app.message.error("Validación", "Debe ingresar todas las series y/o lotes de los productos sin stock antes de enviar a gestión.");
+                return false;
+            }
+        }
         //else {
         //    if ($txtNumeroGuiaRemisionSE.val() === "" || $txtNumeroGuiaRemisionSE.val() == null) {
         //        app.message.error("Validación", "Debe ingresar el N° de Guia de Remision de los productos sin stock");
@@ -3168,7 +3168,8 @@
                 PrestacionPrincipal: prest_principal,
                 PrestacionAccesoria: prest_accesoria,
                 NumeroFianzaPP: num_fianza_principal,
-                NumeroFianzaPA: num_fianza_accesoria
+                NumeroFianzaPA: num_fianza_accesoria,
+                TipoDespacho: "T" //se registra el tipo de despacho para el registro como total
             }
             var objParam = JSON.stringify(obj);
             var fnDoneCallback = function (data) {
@@ -5265,6 +5266,17 @@
             let flagSeries = false;
             let flagGuias = false;
             if ($RegStock.val() === "S") {
+                $(".SerieCS").each(function () {
+                    if ($(this).val().trim() === "") { // Verificar si está vacío (ignora espacios en blanco)
+                        flagSeries = true;
+                        return false; // Salir del bucle si se encuentra un campo vacío
+                    }
+                });
+
+                if (flagSeries) {
+                    app.message.error("Validación", "Debe ingresar todas las series y/o lotes.");
+                    return false;
+                }
 
                 $(".GuiaCS").each(function () {
                     if ($(this).val().trim() === "") { // Verificar si está vacío (ignora espacios en blanco)
@@ -5278,7 +5290,12 @@
                     return false;
                 }
 
-                $(".SerieCS").each(function () {
+              
+             
+            }
+            else {
+               
+                $(".SerieSS").each(function () {
                     if ($(this).val().trim() === "") { // Verificar si está vacío (ignora espacios en blanco)
                         flagSeries = true;
                         return false; // Salir del bucle si se encuentra un campo vacío
@@ -5286,15 +5303,9 @@
                 });
 
                 if (flagSeries) {
-                    app.message.error("Validación", "Debe ingresar todas las series y/o lotes.");
+                    app.message.error("Validación", "Debe ingresar todas las series y/o lotes");
                     return false;
                 }
-
-             
-            }
-            else {
-               
-
                 $(".GuiaSS").each(function () {
                     if ($(this).val().trim() === "") { // Verificar si está vacío (ignora espacios en blanco)
                         flagGuias = true;
@@ -5307,17 +5318,7 @@
                     return false;
                 }
 
-                $(".SerieSS").each(function () {
-                    if ($(this).val().trim() === "") { // Verificar si está vacío (ignora espacios en blanco)
-                        flagSeries = true;
-                        return false; // Salir del bucle si se encuentra un campo vacío
-                    }
-                });
-
-                if (flagSeries) {
-                    app.message.error("Validación", "Debe ingresar todas las series y/o lotes");
-                    return false;
-                }
+                
             }
         }
 
