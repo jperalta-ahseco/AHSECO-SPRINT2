@@ -137,6 +137,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.Btn_EnviarGuiaSS = "none";
             ViewBag.Btn_GuiaPedidoSS = "none";
 
+            ViewBag.Btn_EnviarGuiaTotal = "none";
+            ViewBag.Btn_GuiaPedidoTotal = "none";
+            ViewBag.Btn_EnviarGuiaBOTotal = "none";
+            ViewBag.Btn_GuiaBOTotal= "none";
+
             string[] dtHeadProducto =
             {
                 "Nro. Item",

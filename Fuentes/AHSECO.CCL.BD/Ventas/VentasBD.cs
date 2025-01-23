@@ -1228,7 +1228,8 @@ namespace AHSECO.CCL.BD.Ventas
                             PrestacionPrincipal = reader.IsDBNull(reader.GetOrdinal("PRESTPRIN")) ? "" : reader.GetString(reader.GetOrdinal("PRESTPRIN")),
                             NroFianzaPrestacionPrincipal = reader.IsDBNull(reader.GetOrdinal("NUMFIANZAPP")) ? "" : reader.GetString(reader.GetOrdinal("NUMFIANZAPP")),
                             PrestacionAccesoria = reader.IsDBNull(reader.GetOrdinal("PRESTACC")) ? "" : reader.GetString(reader.GetOrdinal("PRESTACC")),
-                            NroFianzaPrestacionAccesoria = reader.IsDBNull(reader.GetOrdinal("NUMFIANZAPA")) ? "" : reader.GetString(reader.GetOrdinal("NUMFIANZAPA"))
+                            NroFianzaPrestacionAccesoria = reader.IsDBNull(reader.GetOrdinal("NUMFIANZAPA")) ? "" : reader.GetString(reader.GetOrdinal("NUMFIANZAPA")),
+                            TipoDespacho = reader.IsDBNull(reader.GetOrdinal("TIPODESPACHO")) ? "" : reader.GetString(reader.GetOrdinal("TIPODESPACHO"))
                         };
                     }
 

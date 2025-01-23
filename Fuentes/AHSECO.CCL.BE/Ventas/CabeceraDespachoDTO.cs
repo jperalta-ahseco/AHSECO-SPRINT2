@@ -74,6 +74,6 @@ namespace AHSECO.CCL.BE.Ventas
         public string PrestacionPrincipal { get; set; }
         public string NroFianzaPrestacionAccesoria { get; set; }
         public string NroFianzaPrestacionPrincipal { get; set; }
-
+        public string TipoDespacho { get; set; }
     }
 }
