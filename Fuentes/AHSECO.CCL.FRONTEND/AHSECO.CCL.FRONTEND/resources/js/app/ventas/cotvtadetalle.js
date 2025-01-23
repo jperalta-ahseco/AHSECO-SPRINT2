@@ -1814,7 +1814,7 @@ var cotvtadet = (function ($, win, doc) {
             };
 
             if ($TipoSolicitud.val() == $TipoSol_RepOComes.val() || $TipoSolicitud.val() == $TipoSol_ServYRep.val()) {
-                columns.splice(4, 1);
+                columns.splice(5, 1);
             };
 
 
