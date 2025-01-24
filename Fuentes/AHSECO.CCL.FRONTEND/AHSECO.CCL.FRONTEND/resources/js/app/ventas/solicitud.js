@@ -355,6 +355,12 @@
     var $radFianza = $("#radFianza");
     var $radFianza2 = $("#radFianza2");
     var $btnGuiaPedido = $("#btnGuiaPedido");
+    var $radTipDespacho =$('#radTipDespacho');
+    var $radTipDespacho2 = $('#radTipDespacho2');
+    var $btnGuiaBOTotal = $('#btnGuiaBOTotal');
+    var $btnEnviarGuiaBOTotal = $('#btnEnviarGuiaBOTotal');
+    var $btnGuiaPedidoTotal = $('#btnGuiaPedidoTotal');
+    var $btnEnviarGuiaTotal = $('#btnEnviarGuiaTotal');
 
     var tecnicosAsig = [];
 
@@ -591,7 +597,110 @@
         $radFianza.click($radFianza_click);
         $radFianza2.click($radFianza2_click);
         $btnGuiaPedido.click($btnGuiaPedido_click);
+        $radTipDespacho.click($radTipDespacho_click);
+        $radTipDespacho2.click($radTipDespacho2_click);
+        $btnGuiaBOTotal.click($btnGuiaBOTotal_click);
+        $btnEnviarGuiaBOTotal.click($btnEnviarGuiaBOTotal_click);
+        $btnGuiaPedidoTotal.click($btnGuiaPedidoTotal_click);
+        $btnEnviarGuiaTotal.click($btnEnviarGuiaTotal_click);
     };
+
+    function $btnEnviarGuiaTotal_click() {
+
+        var mensaje = "";
+        if ($("#idFlujo").val() == "1") {
+            mensaje = "¿Está seguro que desea enviar la Guia de Pedido?";
+        }
+        else {
+            mensaje = "¿Está seguro que desea enviar la Guia de Venta?";
+        }
+        var fnSi = function () {
+            $FlagStock.val("X");
+            $modalCargaDocumentoGuiaClick();
+        }
+        return app.message.confirm("Ventas", mensaje, "S&iacute;", "No", fnSi, null);
+    }
+    function $btnGuiaPedidoTotal_click() {
+        var tipo_despacho = "T";
+
+        var num_solicitud = $numeroSolicitud.val();
+        var tipo = "GP"
+        method = 'POST';
+        url = 'BandejaHistorialCotizacion/ExportarDocumentosVentas?tipo=' + tipo + "&codSolicitud=" + num_solicitud + "&stock=X" + "&tipoDespacho=" + tipo_despacho;
+
+        objParam = '';
+
+        var fnDoneCallBack = function (data) {
+            app.abrirVentana("BandejaHistorialCotizacion/ExportarFileGuiaPedido?nombreDoc=" + data.Archivo);
+            app.message.success("Ventas", "Se generó la guía de pedidos correctamente.");
+            $btnEnviarGuiaTotal.show();
+        }
+        var fnFailCallBack = function () {
+
+        }
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, mensajes.GenerarGuiaPedidos);
+    }
+
+    function $btnEnviarGuiaBOTotal_click() {
+        var fnSi = function () {
+
+            $modalCargaDocumentoGuiaBOClick();
+
+        }
+        return app.message.confirm("Ventas", "¿Está seguro que desea enviar la Guia de BO?", "S&iacute;", "No", fnSi, null);
+    }
+
+    function $btnGuiaBOTotal_click() {
+
+        var tipo_despacho = "T";
+
+
+        var num_solicitud = $numeroSolicitud.val();
+        var tipo = "BO";
+        method = 'POST';
+        url = 'BandejaHistorialCotizacion/ExportarDocumentosVentas?tipo=' + tipo + "&codSolicitud=" + num_solicitud + "&stock=N" + "&tipoDespacho=" + tipo_despacho;
+        objParam = '';
+
+        var fnDoneCallBack = function (data) {
+            app.abrirVentana("BandejaHistorialCotizacion/ExportarFileGuiaBO?nombreDoc=" + data.Archivo);
+            app.message.success("Ventas", "Se generó la guía de BO correctamente.");
+            $btnEnviarGuiaBOTotal.show();
+            $radTipDespacho.prop('disabled', true);
+            $radTipDespacho2.prop('disabled', true);
+        }
+        var fnFailCallBack = function () {
+
+        }
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, mensajes.GenerarBO);
+    }
+
+    function $radTipDespacho_click() {
+        $('#btnEnviarGuiaTotal').hide();
+        $('#btnGuiaPedidoTotal').hide();
+        $('#btnEnviarGuiaBOTotal').hide();
+        $('#btnGuiaBOTotal').show();
+
+        $('#btnEnviarGuiaCS').hide();
+        $('#btnGuiaPedidoCS').hide();
+        $('#btnEnviarGuiaSS').hide();
+        $('#btnEnviarGuiaBOSS').hide();
+        $('#btnGuiaBOSS').hide();
+        $('#btnGuiaPedidoSS').hide();
+    }
+
+    function $radTipDespacho2_click() {
+        $('#btnEnviarGuiaTotal').hide();
+        $('#btnGuiaPedidoTotal').hide();
+        $('#btnEnviarGuiaBOTotal').hide();
+        $('#btnGuiaBOTotal').hide();
+        $('#btnEnviarGuiaCS').hide();
+        $('#btnGuiaPedidoCS').show();
+        $('#btnEnviarGuiaSS').hide();
+        $('#btnEnviarGuiaBOSS').hide();
+        $('#btnGuiaBOSS').show();
+        $('#btnGuiaPedidoSS').hide();
+    }
 
 
     function $btnGuiaPedido_click() {
@@ -3169,7 +3278,7 @@
                 PrestacionAccesoria: prest_accesoria,
                 NumeroFianzaPP: num_fianza_principal,
                 NumeroFianzaPA: num_fianza_accesoria,
-                TipoDespacho: "T" //se registra el tipo de despacho para el registro como total
+                TipoDespacho: "P" //se registra el tipo de despacho para el registro como parcial
             }
             var objParam = JSON.stringify(obj);
             var fnDoneCallback = function (data) {
@@ -3301,10 +3410,12 @@
     }
 
     function $btnGuiaPedidoCS_click() {
+        var tipo_despacho = "P";
+
         var num_solicitud = $numeroSolicitud.val();
         var tipo = "GP"
         method = 'POST';
-        url = 'BandejaHistorialCotizacion/ExportarDocumentosVentas?tipo=' + tipo + "&codSolicitud=" + num_solicitud + "&stock=S";
+        url = 'BandejaHistorialCotizacion/ExportarDocumentosVentas?tipo=' + tipo + "&codSolicitud=" + num_solicitud + "&stock=S" + "&tipoDespacho=" + tipo_despacho;
 
         objParam = '';
 
@@ -3312,6 +3423,8 @@
             app.abrirVentana("BandejaHistorialCotizacion/ExportarFileGuiaPedido?nombreDoc=" + data.Archivo);
             app.message.success("Ventas", "Se generó la guía de pedidos correctamente.");
             $btnEnviarGuiaCS.show();
+            $radTipDespacho.prop('disabled', true);
+            $radTipDespacho2.prop('disabled', true);
         }
         var fnFailCallBack = function () {
 
@@ -3320,10 +3433,13 @@
     }
 
     function $btnGuiaPedidoSS_click() {
+
+        var tipo_despacho = "P";
+
         var num_solicitud = $numeroSolicitud.val();
         var tipo = "GP"
         method = 'POST';
-        url = 'BandejaHistorialCotizacion/ExportarDocumentosVentas?tipo=' + tipo + "&codSolicitud=" + num_solicitud + "&stock=N";
+        url = 'BandejaHistorialCotizacion/ExportarDocumentosVentas?tipo=' + tipo + "&codSolicitud=" + num_solicitud + "&stock=N" + "&tipoDespacho=" + tipo_despacho;
 
         objParam = '';
 
@@ -3339,16 +3455,22 @@
     }
 
     function $btnGuiaBO_click() {
+
+        var tipo_despacho = "P";
+
+
         var num_solicitud = $numeroSolicitud.val();
         var tipo = "BO";
         method = 'POST';
-        url = 'BandejaHistorialCotizacion/ExportarDocumentosVentas?tipo=' + tipo + "&codSolicitud=" + num_solicitud +"&stock=N";
+        url = 'BandejaHistorialCotizacion/ExportarDocumentosVentas?tipo=' + tipo + "&codSolicitud=" + num_solicitud + "&stock=N" + "&tipoDespacho=" + tipo_despacho;
         objParam = '';
 
         var fnDoneCallBack = function (data) {
             app.abrirVentana("BandejaHistorialCotizacion/ExportarFileGuiaBO?nombreDoc=" + data.Archivo);
             app.message.success("Ventas", "Se generó la guía de BO correctamente.");
             $btnEnviarGuiaBOSS.show();
+            $radTipDespacho.prop('disabled', true);
+            $radTipDespacho2.prop('disabled', true);
         }
         var fnFailCallBack = function () {
 
@@ -3505,8 +3627,14 @@
                 if ($("#idFlujo").val() == "2")//Para post-venta
                 {
                     $("#btnGuiaPedido").html('<i class="fa fa-file" aria-hidden="true"></i>&nbsp;Generar Gu&iacute;a de Venta');
-                    $("#btnEnviarGuiaCS").html('<i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar Guia de Venta');
+                    $("#btnEnviarGuiaSS").html('<i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar Guia de Venta');
                     $("#btnGuiaPedidoSS").html('<i class="fa fa-file" aria-hidden="true" tabindex="113"></i>&nbsp;Generar Gu&iacute;a de Venta');
+                    $("#btnEnviarGuiaCS").html('<i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar Guia de Venta');
+                    $("#btnGuiaPedidoCS").html('<i class="fa fa-file" aria-hidden="true" tabindex="113"></i>&nbsp;Generar Gu&iacute;a de Venta');
+
+                    $("#btnEnviarGuiaTotal").html('<i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar Guia de Venta');
+                    $("#btnGuiaPedidoTotal").html('<i class="fa fa-file" aria-hidden="true" tabindex="113"></i>&nbsp;Generar Gu&iacute;a de Venta');
+
                 }
 
                 cotvtadet.ObtenerFiltrosPrecios();
@@ -3550,6 +3678,21 @@
                     $txtNroOrdenCompra.prop('disabled', true);
                     $dateOrdenCompra.prop('disabled', true);
                     $openRegdateOrdenCompra.prop('disabled', true);
+
+                    if (data.Result.ContadorCabecera.ContadorConStock > 0 && data.Result.ContadorCabecera.ContadorSinStock > 0) {
+
+                        if (data.Result.ContadorCabecera.TipoDespacho === "T") {
+                            $('#radTipDespacho').prop('checked', true);
+                            $('#radTipDespacho2').prop('checked', false);
+                        }
+
+                        if (data.Result.ContadorCabecera.TipoDespacho === "P") {
+                            $('#radTipDespacho').prop('checked', false);
+                            $('#radTipDespacho2').prop('checked', true);
+                        }
+                    }
+
+                  
 
                     if ($cmbTipoVenta.val() === "TVEN02") //Para licitaciones:
                     {
@@ -5140,10 +5283,7 @@
             $txtSerie.prop("disabled", true);
             var codUbigeo = data.Result.CodigoUbigeo;
             $hdnIdZonaDespacho.val(codUbigeo);
-            $searchZonaDespacho.css("visibility", "visible");
-            if (codUbigeo != "" || codUbigeo != null) {
-                $searchZonaDespacho.css("visibility", "hidden");
-            }
+            $searchZonaDespacho.css("visibility", "hidden");
             $txtZonaDepacho.val(data.Result.NombreUbigeo);
             var direccion = data.Result.Direccion;
             $txtDireccion.val(direccion);
@@ -5196,20 +5336,22 @@
             $txtSerie.val(data.Result.NumeroSerie); 
             var codUbigeo = data.Result.CodigoUbigeo;
             $hdnIdZonaDespacho.val(codUbigeo);
-            if (codUbigeo == "" || codUbigeo == null) {
-                $searchZonaDespacho.css("visibility", "visible");
+
+
+            if (codUbigeo != "" && codUbigeo != null) {
+                $searchZonaDespacho.css("visibility", "hidden");
             }
             else {
-                $searchZonaDespacho.css("visibility", "hidden");
+                $searchZonaDespacho.css("visibility", "visible");
             }
             $txtZonaDepacho.val(data.Result.NombreUbigeo);
             var direccion = data.Result.Direccion;
             $txtDireccion.val(direccion);         
-            if (direccion == "" || direccion == null) {
-                $txtDireccion.prop("disabled", false);
+            if (direccion != "" && direccion != null) {
+                $txtDireccion.prop("disabled", true);
             }
             else {
-                $txtDireccion.prop("disabled", true);
+                $txtDireccion.prop("disabled", false);
             }
             $txtGuia.val(data.Result.NumeroGuia);
             var rutaDocumento = data.Result.RutaDocumento

@@ -955,11 +955,12 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         }
 
         [HttpPost]
-        public JsonResult ExportarDocumentosVentas(string tipo, long codSolicitud, string stock)
+        public JsonResult ExportarDocumentosVentas(string tipo, long codSolicitud, string stock, string tipoDespacho)
         {
             var ventasBL = new VentasBL();
             var datosGuia = ventasBL.ConsultaGuia(codSolicitud,tipo, stock).Result;
 
+            #region Construccion de Guia:
             var hssfworkbook = new HSSFWorkbook();
 
             var namesheet = datosGuia.GuiaCabecera.Titulo;
@@ -1958,6 +1959,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             #endregion
 
+            #endregion
+
             string rutaInicial;
             string nombre;
             if(tipo == "GP")
@@ -1993,6 +1996,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 }
                 datosDespachoDTO.CodigoSolicitud = codSolicitud;
                 datosDespachoDTO.Stock = stock;
+                datosDespachoDTO.TipoDespacho = tipoDespacho;
                 datosDespachoDTO.UsuarioRegistro = User.ObtenerUsuario();
                 datosDespachoDTO.NombrePerfil = User.ObtenerPerfil();
                 var envio_log = ventasBL.MantenimientoDespacho(datosDespachoDTO);
