@@ -917,16 +917,18 @@
             var codUbigeo = data.Result.CodigoUbigeo;
             $hdnIdZonaDespacho.val(codUbigeo);
             $searchZonaDespacho.css("visibility", "visible");
-            if (codUbigeo != "" || codUbigeo != null) {
+
+            if (codUbigeo != "" && codUbigeo != null && codUbigeo.length > 0) {
                 $searchZonaDespacho.css("visibility", "hidden");
             }
             $txtZonaDepacho.val(data.Result.NombreUbigeo);
-            searchZonaDespacho
             var direccion = data.Result.Direccion;
             $txtDireccion.val(direccion);
+
             $txtDireccion.prop("disabled", false);
-            if (direccion != "" || direccion != null) {
+            if (direccion != "" && direccion != null && direccion.length > 0) {
                 $txtDireccion.prop("disabled", true);
+
             }
 
             $txtGuia.val('');
@@ -1072,27 +1074,23 @@
             $ArchivoBase64.val('');
             var codUbigeo = data.Result.CodigoUbigeo;
             $hdnIdZonaDespacho.val(codUbigeo);
-            
-            if (codUbigeo == "" || codUbigeo == null) {
-                $searchZonaDespacho.css("visibility", "visible");
-            }
-            else {
+
+            $searchZonaDespacho.css("visibility", "visible");
+
+            if (codUbigeo != "" && codUbigeo != null && codUbigeo.length > 0) {
                 $searchZonaDespacho.css("visibility", "hidden");
             }
-
-
             $txtZonaDepacho.val(data.Result.NombreUbigeo);
-            searchZonaDespacho
             var direccion = data.Result.Direccion;
             $txtDireccion.val(direccion);
-            
-            if (direccion == "" || direccion == null) {
-                $txtDireccion.prop("disabled", false);
+
+
+            $txtDireccion.prop("disabled", false);
+            if (direccion != "" && direccion != null && direccion.length >0) {
+                $txtDireccion.prop("disabled", true);
 
             }
-            else {
-                $txtDireccion.prop("disabled", true);
-            }
+
 
             $txtGuia.val('');
             $lblNombreArchivoDespacho.text('');
@@ -5338,11 +5336,11 @@
             $hdnIdZonaDespacho.val(codUbigeo);
 
 
-            if (codUbigeo != "" && codUbigeo != null) {
-                $searchZonaDespacho.css("visibility", "hidden");
+            if (codUbigeo.length != 0 && codUbigeo != null) {
+                $searchZonaDespacho.css("visibility", "visible");
             }
             else {
-                $searchZonaDespacho.css("visibility", "visible");
+                $searchZonaDespacho.css("visibility", "hidden");
             }
             $txtZonaDepacho.val(data.Result.NombreUbigeo);
             var direccion = data.Result.Direccion;

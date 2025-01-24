@@ -537,9 +537,30 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             {
                                 if (validarDespacho.Result.EnvioServicio == 0)
                                 {
-                                    ViewBag.Btn_EnviarServicio = "inline-block";
+                                    if(soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
+                                    {
+                                        if(validarDespacho.Result.ContadorConStock >0 && validarDespacho.Result.ContadorSinStock > 0)
+                                        {
+                                            if(validarDespacho.Result.GestionLogConStock >0 && validarDespacho.Result.GestionLogSinStock >0)
+                                            {
+                                                ViewBag.Btn_EnviarServicio = "inline-block";
+                                            }
+                                        }
+
+                                        if(validarDespacho.Result.ContadorConStock>0 && validarDespacho.Result.GestionLogConStock >0)
+                                        {
+                                            ViewBag.Btn_EnviarServicio = "inline-block";
+                                        }
+
+                                        if(validarDespacho.Result.ContadorSinStock>0 && validarDespacho.Result.GestionLogSinStock >0)
+                                        {
+                                            ViewBag.Btn_EnviarServicio = "inline-block";
+                                        }
+                                    }
+                                  
                                     if(soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio)
                                     {
+                                        ViewBag.Btn_EnviarServicio = "inline-block";
                                         ViewBag.InActiveTecnico = "in active";
                                     }         
                                 }
