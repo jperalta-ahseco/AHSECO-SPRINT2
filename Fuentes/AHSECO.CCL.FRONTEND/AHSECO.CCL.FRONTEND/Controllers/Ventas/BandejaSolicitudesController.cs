@@ -5711,7 +5711,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 var docs = documentos.Result.OrderByDescending(e => e.CodigoDocumento);
                 foreach (var doc in docs)
                 {
-                    if ((doc.CodigoTipoDocumento == "DVT07" || doc.CodigoTipoDocumento == "DVT10") && doc.Eliminado == 0) //Solo documentos de tipo Guia de pedidos:
+                    if ((doc.CodigoTipoDocumento == "DVT07" || doc.CodigoTipoDocumento == "DVT05") && doc.Eliminado == 0) //Solo documentos de tipo Guia de pedidos y manuscrita:
                     {
                         string pao_files = ConfigurationManager.AppSettings.Get("tempFiles");
                         string ruta = pao_files + doc.RutaDocumento;

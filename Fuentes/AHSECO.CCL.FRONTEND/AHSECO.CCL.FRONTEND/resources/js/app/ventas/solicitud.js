@@ -612,7 +612,7 @@
             mensaje = "¿Está seguro que desea enviar la Guia de Pedido?";
         }
         else {
-            mensaje = "¿Está seguro que desea enviar la Guia de Venta?";
+            mensaje = "¿Está seguro que desea enviar la Guia Manuscrita?";
         }
         var fnSi = function () {
             $FlagStock.val("X");
@@ -2938,7 +2938,7 @@
             mensaje = "¿Está seguro que desea enviar la Guia de Pedido?";
         }
         else {
-            mensaje = "¿Está seguro que desea enviar la Guia de Venta?";
+            mensaje = "¿Está seguro que desea enviar la Guia Manuscrita?";
         }
 
         var fnSi = function () {
@@ -2965,7 +2965,7 @@
             mensaje = "¿Está seguro que desea enviar la Guia de Pedido?";
         }
         else {
-            mensaje = "¿Está seguro que desea enviar la Guia de Venta?";
+            mensaje = "¿Está seguro que desea enviar la Guia Manuscrita?";
         }
         var fnSi = function () {
             $FlagStock.val("N");
@@ -3624,14 +3624,14 @@
               
                 if ($("#idFlujo").val() == "2")//Para post-venta
                 {
-                    $("#btnGuiaPedido").html('<i class="fa fa-file" aria-hidden="true"></i>&nbsp;Generar Gu&iacute;a de Venta');
-                    $("#btnEnviarGuiaSS").html('<i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar Guia de Venta');
-                    $("#btnGuiaPedidoSS").html('<i class="fa fa-file" aria-hidden="true" tabindex="113"></i>&nbsp;Generar Gu&iacute;a de Venta');
-                    $("#btnEnviarGuiaCS").html('<i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar Guia de Venta');
-                    $("#btnGuiaPedidoCS").html('<i class="fa fa-file" aria-hidden="true" tabindex="113"></i>&nbsp;Generar Gu&iacute;a de Venta');
+                    $("#btnGuiaPedido").html('<i class="fa fa-file" aria-hidden="true"></i>&nbsp;Generar Gu&iacute;a Manuscrita');
+                    $("#btnEnviarGuiaSS").html('<i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar Guia Manuscrita');
+                    $("#btnGuiaPedidoSS").html('<i class="fa fa-file" aria-hidden="true" tabindex="113"></i>&nbsp;Generar Gu&iacute;a Manuscrita');
+                    $("#btnEnviarGuiaCS").html('<i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar Guia Manuscrita');
+                    $("#btnGuiaPedidoCS").html('<i class="fa fa-file" aria-hidden="true" tabindex="113"></i>&nbsp;Generar Gu&iacute;a Manuscrita');
 
-                    $("#btnEnviarGuiaTotal").html('<i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar Guia de Venta');
-                    $("#btnGuiaPedidoTotal").html('<i class="fa fa-file" aria-hidden="true" tabindex="113"></i>&nbsp;Generar Gu&iacute;a de Venta');
+                    $("#btnEnviarGuiaTotal").html('<i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar Guia Manuscrita');
+                    $("#btnGuiaPedidoTotal").html('<i class="fa fa-file" aria-hidden="true" tabindex="113"></i>&nbsp;Generar Gu&iacute;a Manuscrita');
 
                 }
 
@@ -4664,7 +4664,7 @@
             $cmbTipoDocumentoCargaGuia.val("DVT07").trigger("change.select2");
         }
         else {
-            $cmbTipoDocumentoCargaGuia.val("DVT10").trigger("change.select2");
+            $cmbTipoDocumentoCargaGuia.val("DVT05").trigger("change.select2");
         }
         
         $cmbTipoDocumentoCargaGuia.prop('disabled', true);
