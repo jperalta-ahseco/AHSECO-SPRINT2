@@ -4374,7 +4374,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             itemCDC.FechaRegistro = DateTime.Now;
                             var resCDC = ventasBL.MantenimientoCotDetCosto(itemCDC);
                         }
-                        if (swServicioTecnico == false) { swServicioTecnico = itemCD.CotizacionCostos.Any(x => x.CodCosto != ConstantesDTO.CotizacionDetalleCostos.Costos.Flete); }
+                        if (swServicioTecnico == false) { swServicioTecnico = itemCD.CotizacionCostos.Any(x => x.CodCosto != ConstantesDTO.CotizacionDetalleCostos.Costos.Flete && x.CodCosto != ConstantesDTO.CotizacionDetalleCostos.Costos.Calibra);}
                         if (swCostoLogistica == false) { swCostoLogistica = itemCD.CotizacionCostos.Any(x => x.CodCosto == ConstantesDTO.CotizacionDetalleCostos.Costos.Flete); }
                     }
                     if (itemCD.CotizacionActividades != null)
