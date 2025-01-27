@@ -143,6 +143,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.Btn_GuiaBOTotal= "none";
             ViewBag.Disabled_TipoDespacho = "";
 
+            ViewBag.Btn_GuiaManuscritaTotal = "none";
+
             string[] dtHeadProducto =
             {
                 "Nro. Item",
@@ -543,23 +545,27 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                         {
                                             if(validarDespacho.Result.GestionLogConStock >0 && validarDespacho.Result.GestionLogSinStock >0)
                                             {
+                                                ViewBag.Btn_GuiaManuscritaTotal = "inline-block";
                                                 ViewBag.Btn_EnviarServicio = "inline-block";
                                             }
                                         }
 
                                         if(validarDespacho.Result.ContadorConStock>0 && validarDespacho.Result.GestionLogConStock >0)
                                         {
+                                            ViewBag.Btn_GuiaManuscritaTotal = "inline-block";
                                             ViewBag.Btn_EnviarServicio = "inline-block";
                                         }
 
                                         if(validarDespacho.Result.ContadorSinStock>0 && validarDespacho.Result.GestionLogSinStock >0)
                                         {
+                                            ViewBag.Btn_GuiaManuscritaTotal = "inline-block";
                                             ViewBag.Btn_EnviarServicio = "inline-block";
                                         }
                                     }
                                   
                                     if(soli.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio)
                                     {
+                                        ViewBag.Btn_GuiaManuscritaTotal = "inline-block";
                                         ViewBag.Btn_EnviarServicio = "inline-block";
                                         ViewBag.InActiveTecnico = "in active";
                                     }         
