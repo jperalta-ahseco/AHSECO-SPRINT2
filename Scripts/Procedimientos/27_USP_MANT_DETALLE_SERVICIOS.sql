@@ -1,7 +1,7 @@
 USE [DB_AHSECO]
 GO
 
-CREATE PROCEDURE [dbo].[USP_MANT_DETALLE_SERVICIOS] 
+CREATE OR ALTER PROCEDURE [dbo].[USP_MANT_DETALLE_SERVICIOS] 
 /*=======================================================================================================
 	Nombre:				Fecha:			Descripcion:
 	Diego Bazalar		17.10.24		Realiza el mantenimiento de la tabla TBD_SERVICIOS con parametros.

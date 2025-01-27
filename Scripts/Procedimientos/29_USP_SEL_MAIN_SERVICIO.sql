@@ -1,7 +1,7 @@
 USE [DB_AHSECO]
 GO
 
-CREATE PROCEDURE [dbo].[USP_SEL_MAIN_SERVICIO] 
+CREATE OR ALTER PROCEDURE [dbo].[USP_SEL_MAIN_SERVICIO] 
 (
 /*=======================================================================================================
 	Nombre:				Fecha:			Descripcion:

@@ -1,7 +1,7 @@
 USE [DB_AHSECO]
 GO
 
-CREATE PROCEDURE [dbo].[USP_SEL_TBD_SERVICIO](
+CREATE OR ALTER PROCEDURE [dbo].[USP_SEL_TBD_SERVICIO](
 /*============================================================================================
 	Nombre:					Fecha:			Descripción
 	Diego A.Bazalar			17.10.24		Lista los registros de la tabla TBD_SERVICIOS según @isIdServicio

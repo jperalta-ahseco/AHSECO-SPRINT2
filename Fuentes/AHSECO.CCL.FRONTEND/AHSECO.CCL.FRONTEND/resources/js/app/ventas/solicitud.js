@@ -5336,20 +5336,20 @@
             $hdnIdZonaDespacho.val(codUbigeo);
 
 
-            if (codUbigeo.length != 0 && codUbigeo != null) {
-                $searchZonaDespacho.css("visibility", "visible");
-            }
-            else {
+            $searchZonaDespacho.css("visibility", "visible");
+
+            if (codUbigeo != "" && codUbigeo != null && codUbigeo.length > 0) {
                 $searchZonaDespacho.css("visibility", "hidden");
             }
+
+
             $txtZonaDepacho.val(data.Result.NombreUbigeo);
             var direccion = data.Result.Direccion;
             $txtDireccion.val(direccion);         
-            if (direccion != "" && direccion != null) {
+            $txtDireccion.prop("disabled", false);
+            if (direccion != "" && direccion != null && direccion.length > 0) {
                 $txtDireccion.prop("disabled", true);
-            }
-            else {
-                $txtDireccion.prop("disabled", false);
+
             }
             $txtGuia.val(data.Result.NumeroGuia);
             var rutaDocumento = data.Result.RutaDocumento
