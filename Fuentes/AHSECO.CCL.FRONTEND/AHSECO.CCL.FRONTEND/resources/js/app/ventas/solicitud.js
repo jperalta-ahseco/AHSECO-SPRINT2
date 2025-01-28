@@ -15,6 +15,8 @@
     var $idWorkFlow = $("#idWorkFlow");
     var $idCotizacion = $("#idCotizacion");
     var $TipoSolicitud = $("#TipoSolicitud");
+    var $det_nav_tabs = $('#det_nav_tabs');
+
 
     var $RolVenta_Asesor = $("#RolVenta_Asesor");
     var $RolVenta_Gerente = $("#RolVenta_Gerente");
@@ -417,14 +419,6 @@
             viewMode: 0,
             minViewMode: 0,
             format: 'dd/mm/yyyy'
-        });
-
-
-        $dateCotizacion.datepicker({
-            viewMode: 0,
-            minViewMode: 0,
-            format: 'dd/mm/yyyy',
-            startDate: hoy()
         });
 
         $dateOrdenCompra.datepicker({
@@ -4012,7 +4006,16 @@
                         $tblDocumentosCargados.append(nuevoTr);
                     }
                     $NoExisteRegDoc.hide();
+             
                 }
+
+                $dateCotizacion.datepicker({
+                    viewMode: 0,
+                    minViewMode: 0,
+                    format: 'dd/mm/yyyy',
+                    startDate: data.Result.Solicitud.Fecha_Sol,
+                    endDate: hoy()
+                });
             }
             
         };

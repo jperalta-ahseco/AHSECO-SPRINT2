@@ -124,6 +124,7 @@
     var $CX_CodCosto_MantPrevent = $("#CX_CodCosto_MantPrevent");
     var $CX_CodCosto_Calibra = $("#CX_CodCosto_Calibra");
     var $CX_CodCosto_Flete = $("#CX_CodCosto_Flete");
+    var $det_nav_tabs = $('#det_nav_tabs');
 
     var $CI_opcGrilla = $("#CI_opcGrilla");
 
@@ -134,6 +135,10 @@
     function Initialize() {
 
         $tabDetCot.addClass("active");
+
+        logicaTabs();
+        //console.log(nodeList);
+        //element.style
 
         ubigeo.setTxtUbigeo_Id("CI_hdnUbicacion");
         ubigeo.setTxtUbigeo_Text("CI_txtUbicacion");
@@ -227,6 +232,35 @@
 
     function setTab_Flete() {
         setTab($CI_CodCosto_Flete.val());
+    }
+
+    function logicaTabs() {
+        var nav = document.getElementById('det_nav_tabs');
+        if (nav != undefined) {
+            var nodeList = nav.childNodes;
+            var tabsActivos = [];
+
+            for (var i = 0; nodeList.length > i; i++) {
+                //console.log(nodeList[i].style);
+                if (nodeList[i].style != undefined) {
+                    var estilos = nodeList[i].style;
+                    if (estilos.cssText != 'display: none;') {
+                        tabsActivos.push(nodeList[i]);
+                    }
+                };
+            }
+
+            if (tabsActivos.length > 0) {
+                var tabActivo = tabsActivos[0];
+                $('#' + tabActivo.id.toString()).addClass("active");
+
+                tabActivo = document.getElementById(tabActivo.id.toString());
+                var anchor = tabActivo.childNodes;
+                var href = anchor[1].hash
+
+                $(href.toString()).addClass("active in");
+            }
+        }
     }
 
     function LimpiarModalCostos() {

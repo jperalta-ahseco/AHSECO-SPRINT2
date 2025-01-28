@@ -3233,7 +3233,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 if (item.Parametro == ConstantesDTO.DatosGenerales.CicloPreventivo.Mensual ||
                     item.Parametro == ConstantesDTO.DatosGenerales.CicloPreventivo.Bimestral ||
                     item.Parametro == ConstantesDTO.DatosGenerales.CicloPreventivo.Semestral ||
-                    item.Parametro == ConstantesDTO.DatosGenerales.CicloPreventivo.Anual)
+                    item.Parametro == ConstantesDTO.DatosGenerales.CicloPreventivo.Anual ||
+                    item.Parametro == ConstantesDTO.DatosGenerales.CicloPreventivo.Trimestral
+                    )
                 {
                     var param = new ComboDTO();
                     param.Id = item.Parametro;
