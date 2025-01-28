@@ -1968,6 +1968,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 rutaInicial=ConfigurationManager.AppSettings.Get("RutaVentaGP");
                 nombre = "GP_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
             }
+            else if(tipo == "MA" || tipo == "MI") //Para la guia manuscrita de servicios:
+            {
+                rutaInicial = ConfigurationManager.AppSettings.Get("RutaVentaGP");
+                nombre = "GM_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
+            }
             else
             {
                 rutaInicial=ConfigurationManager.AppSettings.Get("RutaVentaBO");
@@ -1986,7 +1991,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                 //Se actualiza el log de generación de guia:
                 DatosDespachoDTO datosDespachoDTO = new DatosDespachoDTO();
-                if(tipo == "GP")
+                if(tipo == "GP" || tipo == "MI")
                 {
                     datosDespachoDTO.Tipo = "G";
                 }
@@ -1994,6 +1999,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 {
                     datosDespachoDTO.Tipo = "B";
                 }
+                else if(tipo == "MA")
+                {
+                    datosDespachoDTO.Tipo= "M";
+                }
+
                 datosDespachoDTO.CodigoSolicitud = codSolicitud;
                 datosDespachoDTO.Stock = stock;
                 datosDespachoDTO.TipoDespacho = tipoDespacho;

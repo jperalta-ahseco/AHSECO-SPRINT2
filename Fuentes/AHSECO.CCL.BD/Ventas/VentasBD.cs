@@ -1865,6 +1865,7 @@ namespace AHSECO.CCL.BD.Ventas
                         GenerarGuiaPedidoSinStock = i.Single(d => d.Key.Equals("GENGP_SS")).Value.Parse<int>(),
                         GenerarGuiaBOSinStock = i.Single(d => d.Key.Equals("GENBO_SS")).Value.Parse<int>(),
                         TipoDespacho = i.Single(d => d.Key.Equals("TIPODESPACHO")).Value.Parse<string>(),
+                        GenerarGuiaManuscrita = i.Single(d => d.Key.Equals("GENMAN_SERV")).Value.Parse<int>()
                     }).FirstOrDefault();
 
                 return result;

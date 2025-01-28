@@ -521,6 +521,23 @@ BEGIN
 		SET @MSG ='Se realizó la actualizacion de generacion de guia de pedidos'
 	END
 
+	IF(@TIPO ='M')
+	BEGIN
+		--SE ACTUALIZA EL LOG DE GENERACION DE GUIA MANUSCRITA:
+		  UPDATE TBM_DESPACHO
+			SET GENGP =1,
+					USR_MOD=@USRREG,
+					FEC_MOD=GETDATE()
+					WHERE ID_SOLICITUD=@CODSOLICITUD AND STOCK='X';
+
+			UPDATE TBM_DESPACHO
+				SET TIPODESP= @TIPODESP
+				WHERE ID_SOLICITUD=@CODSOLICITUD;
+		
+		SET  @CODIGO = 1
+		SET @MSG ='Se realizó la actualizacion de generacion de guia manuscrita'
+	END
+
 	IF(@TIPO ='B')
 	BEGIN
 		--SE ACTUALIZA EL LOG DE GENERACION DE GUIAS:

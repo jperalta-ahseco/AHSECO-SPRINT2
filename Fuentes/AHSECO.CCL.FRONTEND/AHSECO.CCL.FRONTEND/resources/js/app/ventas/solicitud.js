@@ -363,6 +363,7 @@
     var $btnEnviarGuiaBOTotal = $('#btnEnviarGuiaBOTotal');
     var $btnGuiaPedidoTotal = $('#btnGuiaPedidoTotal');
     var $btnEnviarGuiaTotal = $('#btnEnviarGuiaTotal');
+    var $btnGuiaManuscritaTotal = $('#btnGuiaManuscritaTotal');
 
     var tecnicosAsig = [];
 
@@ -392,7 +393,8 @@
         ActualizarImportacion: "Actualizando Importación, por favor espere...",
         ObteniendoTipoServicio: "Obteniendo tipo de servicios, por favor espere...",
         obteniendoServicio: "Obteniendo resultados de la busqueda, por favor espere...",
-        procesandoUbigeo: "Procesando Ubigeo, por favor espere..."
+        procesandoUbigeo: "Procesando Ubigeo, por favor espere...",
+        GenerarGuiaManuscrita: "Generando Guia Manuscrita, por favor espere..."
     };
 
     $(Initialize);
@@ -597,9 +599,46 @@
         $btnEnviarGuiaBOTotal.click($btnEnviarGuiaBOTotal_click);
         $btnGuiaPedidoTotal.click($btnGuiaPedidoTotal_click);
         $btnEnviarGuiaTotal.click($btnEnviarGuiaTotal_click);
+        $btnGuiaManuscritaTotal.click($btnGuiaManuscritaTotal_click);
     };
 
+
+    function $btnGuiaManuscritaTotal_click() {
+        var tipo_despacho = "T";
+
+        var num_solicitud = $numeroSolicitud.val();
+        var tipo = "MA"
+        method = 'POST';
+        url = 'BandejaHistorialCotizacion/ExportarDocumentosVentas?tipo=' + tipo + "&codSolicitud=" + num_solicitud + "&stock=X" + "&tipoDespacho=" + tipo_despacho;
+
+        objParam = '';
+
+        var fnDoneCallBack = function (data) {
+            app.abrirVentana("BandejaHistorialCotizacion/ExportarFileGuiaPedido?nombreDoc=" + data.Archivo);
+            app.message.success("Ventas", "Se generó la guía manuscrita correctamente.");
+            $btnEnviarServicio.show();
+        }
+        var fnFailCallBack = function () {
+
+        }
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, mensajes.GenerarGuiaManuscrita);
+    }
+
     function $btnEnviarGuiaTotal_click() {
+
+        if ($TipoSolicitud.val() === "TSOL03") //Validaciones para tipos de ventas servicio y repuestos:
+        {
+            if ($dateProgramacionServ.val() === null || $dateProgramacionServ.val() === "") {
+                app.message.error("Validación", "Debe seleccionar una fecha de programación del técnico.");
+                return;
+            }
+
+            if (tecnicosAsig.length == 0) {
+                app.message.error("Validación", "Debe seleccionar un técnico para realizar el servicio.");
+                return;
+            };
+        }
+
 
         var mensaje = "";
         if ($("#idFlujo").val() == "1") {
@@ -619,6 +658,10 @@
 
         var num_solicitud = $numeroSolicitud.val();
         var tipo = "GP"
+        if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03") //para repuestos y servicio y repuestos:
+        {
+            tipo = "MI";
+        }
         method = 'POST';
         url = 'BandejaHistorialCotizacion/ExportarDocumentosVentas?tipo=' + tipo + "&codSolicitud=" + num_solicitud + "&stock=X" + "&tipoDespacho=" + tipo_despacho;
 
@@ -1290,14 +1333,14 @@
         });
 
         adjuntos.forEach(function (currentValue, index, arr) {
-            if (adjuntos[index].CodigoTipoDocumento == "DVT09") { //Se cambia por guia de servicios
+            if (adjuntos[index].CodigoTipoDocumento == "DVT05") { //Se cambia por guia manuscrita
                 documento_guiaManuscrita = 1;
             }
         });
 
         if (documento_guiaManuscrita === 0 && documento_constanciaServicio === 0 && 
             documento_actaConformidad === 0) {
-            app.message.error("Validación", "Debe adjuntar por lo menos uno de estos documentos para enviar a Facturación: (Acta de Conformidad o Constancia de Servicio Técnico o Guía de Servicios).");
+            app.message.error("Validación", "Debe adjuntar por lo menos uno de estos documentos para enviar a Facturación: (Acta de Conformidad o Constancia de Servicio Técnico o Guía Manuscrita de Servicios).");
             return false;
         }
 
@@ -3249,6 +3292,13 @@
              
         }
 
+        var tipo_despacho = "P";
+        if ($TipoSolicitud.val() === "TSOL03") //para servicios y repuestos:
+        {
+            tipo_despacho = "T";
+        }
+
+
         var fnSi = function () {
 
             var m = "POST";
@@ -3270,7 +3320,7 @@
                 PrestacionAccesoria: prest_accesoria,
                 NumeroFianzaPP: num_fianza_principal,
                 NumeroFianzaPA: num_fianza_accesoria,
-                TipoDespacho: "P" //se registra el tipo de despacho para el registro como parcial
+                TipoDespacho: tipo_despacho //se registra el tipo de despacho para el registro como parcial
             }
             var objParam = JSON.stringify(obj);
             var fnDoneCallback = function (data) {
@@ -3405,7 +3455,13 @@
         var tipo_despacho = "P";
 
         var num_solicitud = $numeroSolicitud.val();
-        var tipo = "GP"
+        var tipo = "GP";
+
+        if ($TipoSolicitud.val() === "TSOL02") //para repuestos:
+        {
+            tipo = "MI";
+        }
+
         method = 'POST';
         url = 'BandejaHistorialCotizacion/ExportarDocumentosVentas?tipo=' + tipo + "&codSolicitud=" + num_solicitud + "&stock=S" + "&tipoDespacho=" + tipo_despacho;
 
@@ -3430,6 +3486,10 @@
 
         var num_solicitud = $numeroSolicitud.val();
         var tipo = "GP"
+        if ($TipoSolicitud.val() === "TSOL02") //para repuestos:
+        {
+            tipo = "MI";
+        }
         method = 'POST';
         url = 'BandejaHistorialCotizacion/ExportarDocumentosVentas?tipo=' + tipo + "&codSolicitud=" + num_solicitud + "&stock=N" + "&tipoDespacho=" + tipo_despacho;
 

@@ -62,6 +62,7 @@ namespace AHSECO.CCL.BE.Ventas
         public int GenerarGuiaPedidoConStock { get; set; }
         public int GenerarGuiaPedidoSinStock { get; set; }
         public int GenerarGuiaBOSinStock { get; set; }
+        public int GenerarGuiaManuscrita { get; set; }
 
         public string NumeroFacturaDespacho { get; set; }
         public string FechaEntregaPedido { get; set; }
