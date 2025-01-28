@@ -114,14 +114,16 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     DocumentFormat.OpenXml.Wordprocessing.TableCellProperties cellProperties1 = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties();
 
                     // Agregar las propiedades y contenido a la celda
-                    var cell1 = CreateCell("Logo","S","16","LEFT");
+                    
+                    //var cell1 = CreateCell("Logo","S","16","LEFT");
                     string url = ConfigurationManager.AppSettings.Get("RutaImagenGuia");
                     string imageLogo = url + cotizacion.Result.DocumentoCabecera.RutaImagen;
+                    var cell1 = AddImageToCell(mainPart, imageLogo);
 
                     //var cell1 = AddImageToCell(imageLogo, wordDoc);
-                    cell1.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new VerticalMerge() { Val = MergedCellValues.Restart },
-                                                                                                              new GridSpan() { Val = 4 }
-                                                                                                             );
+                    //cell1.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new VerticalMerge() { Val = MergedCellValues.Restart },
+                    //                                                                                          new GridSpan() { Val = 4 }
+                    //                                                                                         );
 
 
 
@@ -130,28 +132,43 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                                                                                               new GridSpan() { Val = 4 }
                                                                                                               );
 
+                    var cell1000 = CreateCell("", "N", "16", "CENTER");
+                    cell1000.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new VerticalMerge() { Val = MergedCellValues.Restart }, 
+                                                                                                                 new GridSpan() { Val = 1 });
+
+
                     CellWith(cell2, "9");
-                    var cell3 = CreateCell("COTIZACIÓN","N","22","CENTER");
-                    cell3.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 2 });
+                    var cell3 = CreateCell("COTIZACIÓN","S","22","CENTER");
+                    cell3.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 4 });
                     CellWith(cell3, "4");
-                    row1.Append(cell1, cell2, cell3);
+                    CellBorder(cell3, 4, 4, 4, 4, "000000");
+                    row1.Append(cell1, cell2, cell1000, cell3);
 
                     // Crear la segunda fila
                     DocumentFormat.OpenXml.Wordprocessing.TableRow row2 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
 
                     var cell4 = CreateCell("","S","16","LEFT");
                     cell4.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new VerticalMerge() { Val = MergedCellValues.Continue },
-                                                                                                              new GridSpan() { Val = 4 });
+                                                                                                              new GridSpan() { Val = 2 });
 
                     var cell5 = CreateCell("","N","16", "CENTER");
                     cell5.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new VerticalMerge() { Val = MergedCellValues.Continue },
                                                                                                               new GridSpan() { Val = 4 });
 
-                    var cell6 = CreateCell(cotizacion.Result.DocumentoCabecera.NumeroCotizacion,"N","22", "CENTER");
-                    cell6.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 2 });
+
+                    var cell1001 = CreateCell("", "N", "16", "CENTER");
+                    cell1001.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new VerticalMerge() { Val = MergedCellValues.Continue },
+                                                                                                                 new GridSpan() { Val = 1 });
 
 
-                    row2.Append(cell4, cell5, cell6);
+                    var cell6 = CreateCell(cotizacion.Result.DocumentoCabecera.NumeroCotizacion,"S","22", "CENTER");
+                    cell6.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(
+                        new GridSpan() { Val = 4 },
+                        new TableCellVerticalAlignment() { Val = TableVerticalAlignmentValues.Center }); // Alineación vertical centrado);
+
+                    CellBorder(cell6, 4, 4, 4, 4, "000000");
+
+                    row2.Append(cell4, cell5, cell1001,cell6);
 
                     // Crear la 3ra fila:
                     DocumentFormat.OpenXml.Wordprocessing.TableRow row3 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
@@ -177,14 +194,14 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                     // Crear la primera fila
                     DocumentFormat.OpenXml.Wordprocessing.TableRow row8 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
-                    var cell8 = CreateCell("","N","16", "CENTER");
-                    cell8.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new TableCellWidth() { Type = TableWidthUnitValues.Pct, Width = "100" });
+                  //  var cell8 = CreateCell("","N","16", "CENTER");
+                   // cell8.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new TableCellWidth() { Type = TableWidthUnitValues.Pct, Width = "100" });
 
                     var cell9 = CreateCell("RUC:","S","16", "LEFT");
                     cell9.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 2 }, new TableCellWidth() { Type = TableWidthUnitValues.Pct, Width = "250" });
                     
                     var cell10 = CreateCell(cotizacion.Result.DocumentoCabecera.Ruc,"N","16", "LEFT");
-                    cell10.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 3 });
+                    cell10.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 4 });
                     
                     var cell11 = CreateCell("Fecha:","S","16", "LEFT");
                     cell11.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 2 });
@@ -192,12 +209,12 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     var cell12 = CreateCell(cotizacion.Result.DocumentoCabecera.Fecha,"N","16", "LEFT");
                     cell12.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 2 });
                     
-                    row8.Append(cell8, cell9, cell10, cell11, cell12);
+                    row8.Append(cell9, cell10, cell11, cell12);
 
                     // Crear la 2da fila
                     DocumentFormat.OpenXml.Wordprocessing.TableRow row9 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
-                    var cell13 = CreateCell("","N","16", "CENTER");
-                    cell13.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new VerticalMerge() { Val = MergedCellValues.Restart });
+                   // var cell13 = CreateCell("","N","16", "CENTER");
+                   // cell13.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new VerticalMerge() { Val = MergedCellValues.Restart });
                     
                     var cell14 = CreateCell("Señor:","S","16", "LEFT");
                     //cell14.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 2 });
@@ -207,7 +224,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     var cell15 = CreateCell(cotizacion.Result.DocumentoCabecera.RazonSocial,"N","16", "LEFT");
                     //cell15.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 3 });
                     cell15.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new VerticalMerge() { Val = MergedCellValues.Restart },
-                                                                      new GridSpan() { Val = 3 });
+                                                                      new GridSpan() { Val = 4 });
 
                     var cell16 = CreateCell("Plazo de Entrega:","S","16","LEFT");
                     cell16.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 2 });
@@ -215,12 +232,12 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     var cell17 = CreateCell(cotizacion.Result.DocumentoCabecera.PlazoEntrega,"N","16", "LEFT");
                     cell17.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 2 });
 
-                    row9.Append(cell13, cell14, cell15, cell16, cell17);
+                    row9.Append(cell14, cell15, cell16, cell17);
 
                     // Crear la 3ra fila
                     DocumentFormat.OpenXml.Wordprocessing.TableRow row10 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
-                    var cell18 = CreateCell("","N","16", "CENTER");
-                    cell18.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new VerticalMerge() { Val = MergedCellValues.Continue });
+                   // var cell18 = CreateCell("","N","16", "CENTER");
+                   // cell18.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new VerticalMerge() { Val = MergedCellValues.Continue });
                     
                     var cell19 = CreateCell("","N","16", "CENTER");
                     //cell19.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 2 });
@@ -229,24 +246,24 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     var cell20 = CreateCell("","N","16","CENTER");
                     //cell20.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 3 });
                     cell20.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new VerticalMerge() { Val = MergedCellValues.Continue },
-                                                                      new GridSpan() { Val = 3 });
+                                                                      new GridSpan() { Val = 4 });
                     var cell21 = CreateCell("Forma de Pago:","S","16", "LEFT");
                     cell21.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 2 });
 
                     var cell22 = CreateCell(cotizacion.Result.DocumentoCabecera.FormaPago, "N","16","LEFT");
                     cell22.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 2 });
 
-                    row10.Append(cell18, cell19, cell20, cell21, cell22);
+                    row10.Append(cell19, cell20, cell21, cell22);
 
                     // Crear la 4ta fila
                     DocumentFormat.OpenXml.Wordprocessing.TableRow row11 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
-                    var cell23 = CreateCell("","N","16", "CENTER");
+                   // var cell23 = CreateCell("","N","16", "CENTER");
 
                     var cell24 = CreateCell("Atención:","S","16","LEFT");
                     cell24.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 2 });
 
                     var cell25 = CreateCell(cotizacion.Result.DocumentoCabecera.NombreContacto,"N","16","LEFT");
-                    cell25.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 3 });
+                    cell25.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 4 });
 
                     var cell26 = CreateCell("Moneda:","S","16","LEFT");
                     cell26.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 2 });
@@ -254,17 +271,17 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     var cell27 = CreateCell(cotizacionDTO.DescMoneda,"N","16","LEFT");
                     cell27.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 2 });
 
-                    row11.Append(cell23, cell24, cell25, cell26, cell27);
+                    row11.Append(cell24, cell25, cell26, cell27);
 
                     // Crear la 5ta fila
                     DocumentFormat.OpenXml.Wordprocessing.TableRow row12 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
-                    var cell28 = CreateCell("","N","16", "CENTER");
+                   // var cell28 = CreateCell("","N","16", "CENTER");
 
                     var cell29 = CreateCell("Área:","S","16","LEFT");
                     cell29.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 2 });
 
                     var cell30 = CreateCell(cotizacion.Result.DocumentoCabecera.AreaContacto,"N","16", "LEFT");
-                    cell30.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 3 });
+                    cell30.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 4 });
 
                     var cell31 = CreateCell("Vigencia cotización:","S","16", "LEFT");
                     cell31.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 2 });
@@ -272,17 +289,17 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     var cell32 = CreateCell(cotizacion.Result.DocumentoCabecera.Vigencia,"N","16", "LEFT");
                     cell32.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 2 });
 
-                    row12.Append(cell28, cell29, cell30, cell31, cell32);
+                    row12.Append(cell29, cell30, cell31, cell32);
 
                     // Crear la 6ta fila
                     DocumentFormat.OpenXml.Wordprocessing.TableRow row13 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
-                    var cell33 = CreateCell("","N","16", "CENTER");
+                   // var cell33 = CreateCell("","N","16", "CENTER");
 
                     var cell34 = CreateCell("Teléfono:","S","16", "LEFT");
                     cell34.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 2 });
 
                     var cell35 = CreateCell(cotizacion.Result.DocumentoCabecera.TelefonoContacto,"N","16","LEFT");
-                    cell35.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 3 });
+                    cell35.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 4 });
 
                     var cell36 = CreateCell("Garantía:","S","16", "LEFT");
                     cell36.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 2 });
@@ -290,17 +307,17 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     var cell37 = CreateCell(cotizacionDTO.DescGarantia,"N","16", "LEFT");
                     cell37.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 2 });
 
-                    row13.Append(cell33, cell34, cell35, cell36, cell37);
+                    row13.Append(cell34, cell35, cell36, cell37);
 
                     // Crear la 7ma fila
                     DocumentFormat.OpenXml.Wordprocessing.TableRow row14 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
-                    var cell38 = CreateCell("","N","16", "CENTER");
+                   // var cell38 = CreateCell("","N","16", "CENTER");
 
                     var cell39 = CreateCell("Correo:","S","16", "LEFT");
                     cell39.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 2 });
 
                     var cell40 = CreateCell(cotizacion.Result.DocumentoCabecera.EmailContacto,"N","16", "LEFT");
-                    cell40.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 3 });
+                    cell40.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 4 });
 
                     var cell41 = CreateCell("Observación:","S","16", "LEFT");
                     cell41.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 2 });
@@ -308,7 +325,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     var cell42 = CreateCell(cotizacion.Result.DocumentoCabecera.Observacion,"N","16", "LEFT");
                     cell42.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 2 });
 
-                    row14.Append(cell38, cell39, cell40, cell41, cell42);
+                    row14.Append(cell39, cell40, cell41, cell42);
 
                     // Crear la 8va fila:
                     DocumentFormat.OpenXml.Wordprocessing.TableRow row15 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
@@ -393,7 +410,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     foreach (var item in cotizacion.Result.DocumentoDetalle)
                     {
                         var row17 = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
-                        var cell51 = CreateCell(item.NumeroItem, "N", "16", "LEFT");
+                        var cell51 = CreateCell(item.NumeroItem, "N", "16", "CENTER");
                         CellBorder(cell51, 4, 4, 4, 4, "000000");
 
                         var cell52 = CreateCell(item.Catalogo, "N", "16", "LEFT");    
@@ -404,10 +421,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         cell53.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new GridSpan() { Val = 3 });
                         CellBorder(cell53, 4, 4, 4, 4, "000000");
 
-                        var cell54 = CreateCell(item.Unidad, "N", "16", "LEFT");
+                        var cell54 = CreateCell(item.Unidad, "N", "16", "CENTER");
                         CellBorder(cell54, 4, 4, 4, 4, "000000");
 
-                        var cell55 = CreateCell(item.Cantidad, "N", "16", "LEFT");
+                        var cell55 = CreateCell(item.Cantidad, "N", "16", "CENTER");
                         CellBorder(cell55, 4, 4, 4, 4, "000000");
 
                         var cell56 = CreateCell(item.PrecioUnitario, "N", "16", "LEFT");
@@ -702,34 +719,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                     #endregion
 
-
-                    // Recorrer todos los párrafos en el cuerpo del documento
-                    foreach (var paragraph in body.Elements<DocumentFormat.OpenXml.Math.Paragraph>())
-                    {
-                        // Obtener las propiedades del párrafo (si no existen, crear nuevas)
-                        var paragraphProperties = paragraph.Elements<DocumentFormat.OpenXml.Math.ParagraphProperties>().FirstOrDefault();
-                        if (paragraphProperties == null)
-                        {
-                            paragraphProperties = new DocumentFormat.OpenXml.Math.ParagraphProperties();
-                            paragraph.InsertAt(paragraphProperties, 0);
-                        }
-
-                        var spacing = new SpacingBetweenLines() { After = "0" };
-                        paragraphProperties.Append(spacing);
-                        //var spacing = paragraphProperties.Elements<Spacing>().FirstOrDefault();
-                        //if (spacing == null)
-                        //{
-                        //    spacing = new Spacing();
-                        //    paragraphProperties.Append(spacing);  // Añadir Spacing si no existe
-                        //}
-
-                        // Establecer el espaciado después del párrafo a 0
-                        // spacing.After = 0;  // Eliminar el espaciado después del párrafo
-
-                        // También puedes asegurarte de que el espaciado antes del párrafo sea 0 (opcional)
-                        // spacing.Before = 0;
-                    }
-
                     // Guarda los cambios en el documento
                     mainPart.Document.Save();
                 }
@@ -753,51 +742,108 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
         }
 
-
-        static DocumentFormat.OpenXml.Wordprocessing.TableCell AddImageToCell(string imagePath, WordprocessingDocument wordDoc)
+        static DocumentFormat.OpenXml.Wordprocessing.TableCell AddImageToCell(MainDocumentPart mainPart,string imagePath)
         {
-
             var cell = new DocumentFormat.OpenXml.Wordprocessing.TableCell();
 
 
+            cell.TableCellProperties = new DocumentFormat.OpenXml.Wordprocessing.TableCellProperties(new VerticalMerge() { Val = MergedCellValues.Restart },
+                                                                                                             new GridSpan() { Val = 2 },
+                                                                                                             new TableCellWidth { Type = TableWidthUnitValues.Dxa, Width = "2268" } // Ancho de la celda (en Twips)
+                                                                                                            );
 
-            // Crear la parte de la imagen en el documento
-            var imagePart = wordDoc.MainDocumentPart.AddNewPart<ImagePart>( contentType:"image/png");
+            // Añadir una parte de imagen al documento
+            ImagePart imagePart = mainPart.AddImagePart(ImagePartType.Png);
 
-            // Leer la imagen desde el archivo y agregarla a la parte de imagen
-            using (FileStream fs = new FileStream(imagePath, FileMode.OpenOrCreate))
+            // Copiar la imagen al documento
+            using (FileStream stream = new FileStream(imagePath, FileMode.Open))
             {
-                imagePart.FeedData(fs);
+                imagePart.FeedData(stream);
             }
 
             // Obtener el ID de la imagen
-            string imagePartId = wordDoc.MainDocumentPart.GetIdOfPart(imagePart);
+            string imagePartId = mainPart.GetIdOfPart(imagePart);
 
-            // Crear el objeto Drawing que contiene la imagen
-            var drawing = new DocumentFormat.OpenXml.Wordprocessing.Drawing(
-                new A.Picture(
-                    new A.NonVisualPictureProperties(
-                        new A.NonVisualDrawingProperties() { Id = (UInt32Value)1U, Name = "Logo" },
-                        new A.NonVisualPictureDrawingProperties()),
-                    new A.BlipFill(
-                        new A.Blip() { Embed = imagePartId },
-                        new A.Stretch()),
-                    new A.ShapeProperties())
+            // Crear un elemento Drawing para incluir la imagen
+            DocumentFormat.OpenXml.Wordprocessing.Drawing drawing = new DocumentFormat.OpenXml.Wordprocessing.Drawing(
+                new DocumentFormat.OpenXml.Drawing.Wordprocessing.Inline(
+                    new DocumentFormat.OpenXml.Drawing.Wordprocessing.Extent { Cx = 1800000L, Cy = 720000L }, // Tamaño de la imagen (en EMUs)
+                    new DocumentFormat.OpenXml.Drawing.Wordprocessing.EffectExtent
+                    {
+                        LeftEdge = 0L,
+                        TopEdge = 0L,
+                        RightEdge = 0L,
+                        BottomEdge = 0L
+                    },
+                    new DocumentFormat.OpenXml.Drawing.Wordprocessing.DocProperties
+                    {
+                        Id = (UInt32Value)1U,
+                        Name = "Logo"
+                    },
+                    new DocumentFormat.OpenXml.Drawing.Graphic(
+                        new DocumentFormat.OpenXml.Drawing.GraphicData(
+                            new DocumentFormat.OpenXml.Drawing.Pictures.Picture(
+                                new DocumentFormat.OpenXml.Drawing.Pictures.NonVisualPictureProperties(
+                                    new DocumentFormat.OpenXml.Drawing.Pictures.NonVisualDrawingProperties
+                                    {
+                                        Id = (UInt32Value)0U,
+                                        Name = "Logo.png"
+                                    },
+                                    new DocumentFormat.OpenXml.Drawing.Pictures.NonVisualPictureDrawingProperties()
+                                ),
+                                new DocumentFormat.OpenXml.Drawing.Pictures.BlipFill(
+                                    new DocumentFormat.OpenXml.Drawing.Blip
+                                    {
+                                        Embed = imagePartId,
+                                        CompressionState = DocumentFormat.OpenXml.Drawing.BlipCompressionValues.Print
+                                    },
+                                    new DocumentFormat.OpenXml.Drawing.Stretch(
+                                        new DocumentFormat.OpenXml.Drawing.FillRectangle()
+                                    )
+                                ),
+                                new DocumentFormat.OpenXml.Drawing.Pictures.ShapeProperties(
+                                    new DocumentFormat.OpenXml.Drawing.Transform2D(
+                                        new DocumentFormat.OpenXml.Drawing.Offset { X = 0L, Y = 0L },
+                                        new DocumentFormat.OpenXml.Drawing.Extents { Cx = 1800000L, Cy = 720000L }
+                                    ),
+                                    new DocumentFormat.OpenXml.Drawing.PresetGeometry(
+                                        new DocumentFormat.OpenXml.Drawing.AdjustValueList()
+                                    )
+                                    { Preset = DocumentFormat.OpenXml.Drawing.ShapeTypeValues.Rectangle }
+                                )
+                            )
+                        )
+                        { Uri = "http://schemas.openxmlformats.org/drawingml/2006/picture" }
+                    )
+                )
+                {
+                    DistanceFromTop = (UInt32Value)0U,
+                    DistanceFromBottom = (UInt32Value)0U,
+                    DistanceFromLeft = (UInt32Value)0U,
+                    DistanceFromRight = (UInt32Value)0U
+                }
             );
 
-            // Crear un párrafo y un run con el dibujo (imagen) y agregarlo a la celda
-            var run = new DocumentFormat.OpenXml.Wordprocessing.Run(drawing);
-            var paragraph = new DocumentFormat.OpenXml.Wordprocessing.Paragraph();
-            paragraph.Append(run);
+            // Añadir el elemento Drawing a la celda
+            DocumentFormat.OpenXml.Wordprocessing.Paragraph paragraph = new DocumentFormat.OpenXml.Wordprocessing.Paragraph(new DocumentFormat.OpenXml.Wordprocessing.Run(drawing));
+
+            var paraProperties = new DocumentFormat.OpenXml.Wordprocessing.ParagraphProperties(
+                       new DocumentFormat.OpenXml.Wordprocessing.Justification() { Val = DocumentFormat.OpenXml.Wordprocessing.JustificationValues.Center }, // Alineación al centro
+                       new SpacingBetweenLines
+                       {
+                           After = "0",  // Quitar espacio después del párrafo
+                           Before = "0", // (Opcional) Quitar espacio antes del párrafo
+                           Line = "240", // 360 representa 1.5 líneas (en Twips: 240 = sencillo, 480 = doble)
+                           LineRule = LineSpacingRuleValues.Auto
+                       } // Ajuste automático de líneas
+                       );
+            paragraph.Append(paraProperties);
+
+
             cell.Append(paragraph);
 
             return cell;
         }
-
-
-
-
-
 
 
         // Función para crear una celda con contenido de texto
@@ -820,7 +866,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                         new DocumentFormat.OpenXml.Wordprocessing.RunFonts() { Ascii = "Calibri" }, // Fuente Calibri
                                         new DocumentFormat.OpenXml.Wordprocessing.FontSize() { Val = sizeText }, // 8 puntos (16 unidades de medio punto)
                                         new DocumentFormat.OpenXml.Wordprocessing.Bold() // Texto en negrita
-);
+                    );
                 }
                 else
                 {
@@ -837,21 +883,39 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 if(alineacion == "CENTER")
                 {
                     var paraProperties = new DocumentFormat.OpenXml.Wordprocessing.ParagraphProperties(
-                        new DocumentFormat.OpenXml.Wordprocessing.Justification() { Val = DocumentFormat.OpenXml.Wordprocessing.JustificationValues.Center } // Alineación al centro
-                    );
+                        new DocumentFormat.OpenXml.Wordprocessing.Justification() { Val = DocumentFormat.OpenXml.Wordprocessing.JustificationValues.Center }, // Alineación al centro
+                        new SpacingBetweenLines {
+                            After = "0",  // Quitar espacio después del párrafo
+                            Before = "0", // (Opcional) Quitar espacio antes del párrafo
+                            Line = "240", // 360 representa 1.5 líneas (en Twips: 240 = sencillo, 480 = doble)
+                            LineRule = LineSpacingRuleValues.Auto 
+                        } // Ajuste automático de líneas
+                        );
                     para.Append(paraProperties);
                 }
                 else if (alineacion == "RIGHT")
                 {
                     var paraProperties = new DocumentFormat.OpenXml.Wordprocessing.ParagraphProperties(
-                        new DocumentFormat.OpenXml.Wordprocessing.Justification() { Val = DocumentFormat.OpenXml.Wordprocessing.JustificationValues.Right } // Alineación a la derecha
-                    );
+                        new DocumentFormat.OpenXml.Wordprocessing.Justification() { Val = DocumentFormat.OpenXml.Wordprocessing.JustificationValues.Right }, // Alineación a la derecha
+                        new SpacingBetweenLines {
+                            After = "0",  // Quitar espacio después del párrafo
+                            Before = "0", // (Opcional) Quitar espacio antes del párrafo
+                            Line = "240", // 360 representa 1.5 líneas (en Twips: 240 = sencillo, 480 = doble)
+                            LineRule = LineSpacingRuleValues.Auto 
+                        } // Ajuste automático de líneas
+                        );
                     para.Append(paraProperties);
                 }
                 else if (alineacion == "LEFT")
                 {
                     var paraProperties = new DocumentFormat.OpenXml.Wordprocessing.ParagraphProperties(
                         new DocumentFormat.OpenXml.Wordprocessing.Justification() { Val = DocumentFormat.OpenXml.Wordprocessing.JustificationValues.Left } // Alineación a la izquierda
+                        , new SpacingBetweenLines {
+                            After = "0",  // Quitar espacio después del párrafo
+                            Before = "0", // (Opcional) Quitar espacio antes del párrafo
+                            Line = "240", // 360 representa 1.5 líneas (en Twips: 240 = sencillo, 480 = doble)
+                            LineRule = LineSpacingRuleValues.Auto 
+                        }
                     );
                     para.Append(paraProperties);
                 }
@@ -865,11 +929,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 }
             }
 
-           
-
             //run.Append(textCell);
             //para.Append(run);
-           
+
             cell.Append(para);
             return cell;
         }
