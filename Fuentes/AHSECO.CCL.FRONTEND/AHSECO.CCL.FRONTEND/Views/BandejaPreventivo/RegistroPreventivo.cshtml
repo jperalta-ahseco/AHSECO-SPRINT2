@@ -5,6 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     var numMant = VariableSesion.getCadena("NumMant");
     var tipoProceso = VariableSesion.getCadena("TipoTarea");
+    var IndMigracion = VariableSesion.getCadena("Migracion");
 
     var visualizar = false;
 
@@ -16,6 +17,7 @@
 }
 <input hidden id="numMant" value="@numMant" />
 <input hidden id="tipoproceso" value="@tipoProceso" />
+<input hidden id="indMigracion" value="@IndMigracion"/>
 
 <div class="container-fluid">
     @if (numMant == "")
@@ -54,41 +56,57 @@
                             <div class="col-md-4 col-sm-12">
                                 <label for="txtRuc">R.U.C:</label>
                                 <div class="form-group">
-                                    <input placeholder="--R.U.C--" disabled type="text" class="form-control input-sm" id="txtRuc" value="">
+                                    <input @ViewBag.PermiteEditar placeholder="--R.U.C--" type="text" class="form-control input-sm" id="txtRuc" value="" tabindex="1">
                                 </div>
                             </div>
                             <div class="col-md-4 col-sm-12">
                                 <label for="txtNomEmpresa">Razón Social(Cliente):</label>
                                 <div class="form-group">
-                                    <input placeholder="--Razón Social--" disabled type="text" class="form-control input-sm" id="txtNomEmpresa" value="">
+                                    <input @ViewBag.PermiteEditar placeholder="--Razón Social--" type="text" class="form-control input-sm" id="txtNomEmpresa" value="" tabindex="2">
                                 </div>
                             </div>
-                            <div class="col-md-4 col-sm-12">
-                                <label for="txtAsesor">Representante de Ventas:</label>
-                                <div class="form-group">
-                                    <input placeholder="--Representante de Ventas--" disabled type="text" class="form-control input-sm" id="txtAsesor" value="">
+                            @if (IndMigracion == "1")
+                            {
+                                <div class="col-md-4 col-sm-12">
+                                    <label for="txtAsesor">Representante de Ventas:</label>
+                                    <div class="form-group">
+                                        <input @ViewBag.PermiteEditar placeholder="--Representante de Ventas--" type="text" class="form-control input-sm" id="txtAsesor" value="" tabindex="3">
+                                    </div>
                                 </div>
-                            </div>
+                            }
+                            else if(IndMigracion == "2") 
+                            {
+                                <div class="col-md-4 col-sm-12">
+                                    <label for="txtNumProceso">N° Proceso:</label>
+                                    <div class="form-group">
+                                        <input @ViewBag.PermiteEditar placeholder="--N° de Proceso--" type="text" class="form-control input-sm" id="txtNumProceso" value="" tabindex="4">
+                                    </div>
+                                </div>
+                            }
                         </div>
                         <div class="row container-fluid">
-                            <div class="col-md-4 col-sm-12">
-                                <label for="txtNumProceso">N° Proceso:</label>
-                                <div class="form-group">
-                                    <input placeholder="--N° de Proceso--" disabled type="text" class="form-control input-sm" id="txtNumProceso" value="">
+
+                            @if (IndMigracion == "1")
+                            {
+                                <div class="col-md-4 col-sm-12">
+                                    <label for="txtNumProceso">N° Proceso:</label>
+                                    <div class="form-group">
+                                        <input @ViewBag.PermiteEditar placeholder="--N° de Proceso--" type="text" class="form-control input-sm" id="txtNumProceso" value="" tabindex="4">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-4 col-sm-12">
-                                <label for="txtTipoProceso">Tipo de Proceso:</label>
-                                <div class="form-group">
-                                    <input placeholder="--Tipo de Proceso--" disabled type="text" class="form-control input-sm" id="txtTipoProceso" value="">
+                                <div class="col-md-4 col-sm-12">
+                                    <label for="txtTipoProceso">Tipo de Proceso:</label>
+                                    <div class="form-group">
+                                        <input @ViewBag.PermiteEditar placeholder="--Tipo de Proceso--" type="text" class="form-control input-sm" id="txtTipoProceso" value="" tabindex="5">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-4 col-sm-12">
-                                <label for="txtOrden">Orden de Compra:</label>
-                                <div class="form-group">
-                                    <input placeholder="--Orden de Compra--" disabled type="text" class="form-control input-sm" id="txtOrden" value="">
+                                <div class="col-md-4 col-sm-12">
+                                    <label for="txtOrden">Orden de Compra:</label>
+                                    <div class="form-group">
+                                        <input @ViewBag.PermiteEditar placeholder="--Orden de Compra--" type="text" class="form-control input-sm" id="txtOrden" value="" tabindex="6">
+                                    </div>
                                 </div>
-                            </div>
+                            }
                         </div>
                     </div>
                 </div>
@@ -105,77 +123,87 @@
                                 <div class="col-md-4 col-sm-12">
                                     <label for="txtCodEquipo">Código Equipo:</label>
                                     <div class="form-group">
-                                        <input placeholder="--Código Equipo--" disabled type="text" class="form-control input-sm" id="txtCodEquipo" value="">
+                                        <input @ViewBag.PermiteEditar placeholder="--Código Equipo--" type="text" class="form-control input-sm" id="txtCodEquipo" value="" tabindex="7">
                                     </div>
                                 </div>
                                 <div class="col-md-4 col-sm-12">
                                     <label for="txtDescEquipo">Descripción Equipo:</label>
                                     <div class="form-group">
-                                        <input placeholder="--Descripción Equipo--" disabled type="text" class="form-control input-sm" id="txtDescEquipo" value="">
+                                        <input @ViewBag.PermiteEditar placeholder="--Descripción Equipo--" type="text" class="form-control input-sm" id="txtDescEquipo" value="" tabindex="8">
                                     </div>
                                 </div>
                                 <div class="col-md-4 col-sm-12">
                                     <label for="txtMarcaEquipo">Marca:</label>
                                     <div class="form-group">
-                                        <input placeholder="--Marca--" disabled type="text" class="form-control input-sm" id="txtMarcaEquipo" value="">
+                                        <input @ViewBag.PermiteEditar placeholder="--Marca--" type="text" class="form-control input-sm" id="txtMarcaEquipo" value="" tabindex="9">
                                     </div>
                                 </div>
                             </div>
                             <div class="row container-fluid">
                                 <div class="col-md-4 col-sm-12">
                                     <label for="txtFechaInstall">Fecha Instalaci&oacute;n:</label>
-                                    <div class="form-group">
-                                        <input placeholder="--Fecha Instalación--" disabled type="text" class="form-control input-sm" id="txtFechaInstall" value="">
+                                    <div class="input-group date">
+                                        <input @ViewBag.PermiteEditar type="text" class="form-control input-sm" id="txtFechaInstall" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
+                                        <span class="input-group-addon input-sm" id="openRegdateMant">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
                                     </div>
                                 </div>
                                 <div class="col-md-4 col-sm-12">
                                     <label for="txtModeloEquipo">Modelo:</label>
                                     <div class="form-group">
-                                        <input placeholder="--Modelo--" disabled type="text" class="form-control input-sm" id="txtModeloEquipo" value="">
+                                        <input @ViewBag.PermiteEditar placeholder="--Modelo--" type="text" class="form-control input-sm" id="txtModeloEquipo" value="" tabindex="11">
                                     </div>
                                 </div>
                                 <div class="col-md-4 col-sm-12">
                                     <label for="txtNumSerie">Serie:</label>
                                     <div class="form-group">
-                                        <input placeholder="--Serie--" disabled type="text" class="form-control input-sm" id="txtNumSerie" value="">
+                                        <input @ViewBag.PermiteEditar placeholder="--Serie--" type="text" class="form-control input-sm" id="txtNumSerie" value="" tabindex="12">
                                     </div>
                                 </div>
                             </div>
                             <div class="row container-fluid">
-                                <div class="col-md-6 col-sm-12">
-                                    <label for="txtDirecInstall">Dirección de Instalación:</label>
-                                    <div class="form-group">
-                                        <input placeholder="--Dirección de Instalación--" disabled type="text" class="form-control input-sm" id="txtDirecInstall" value="">
+                                @if (IndMigracion == "1")
+                                {
+                                    <div class="col-md-6 col-sm-12">
+                                        <label for="txtDirecInstall">Dirección de Instalación:</label>
+                                        <div class="form-group">
+                                            <input @ViewBag.PermiteEditar placeholder="--Dirección de Instalación--" type="text" class="form-control input-sm" id="txtDirecInstall" value="" tabindex="13">
+                                        </div>
                                     </div>
-                                </div>
+                                }
+
                                 <div class="col-md-6 col-sm-12">
                                     <input hidden id="hdnCodUbigeo" value="" />
                                     <label for="txtUbiDestino">Localidad de Instalación:</label>
                                     <div class="form-group">
                                         <div class="form-group">
-                                            <input placeholder="--Ubicación de Instalación--" disabled type="text" class="form-control input-sm" id="txtUbiDestino" value="">
+                                            <input @ViewBag.PermiteEditar placeholder="--Ubicación de Instalación--" type="text" class="form-control input-sm" id="txtUbiDestino" value="" tabindex="14">
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row container-fluid">
-                                <div class="col-md-6 col-sm-12">
-                                    <label for="txtNumFianzaPP">Fianza - Prestación Principal:</label>
-                                    <div class="form-group">
+                            @if (IndMigracion == "1")
+                            {
+                                <div class="row container-fluid">
+                                    <div class="col-md-6 col-sm-12">
+                                        <label for="txtNumFianzaPP">Fianza - Prestación Principal:</label>
                                         <div class="form-group">
-                                            <input placeholder="--Prestación Principal--" disabled type="text" class="form-control input-sm" id="txtNumFianzaPP" value="">
+                                            <div class="form-group">
+                                                <input @ViewBag.PermiteEditar placeholder="--Prestación Principal--" type="text" class="form-control input-sm" id="txtNumFianzaPP" value="" tabindex="15">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12">
+                                        <label for="txtNumFianzaPA">Fianza - Prestación Accesoria:</label>
+                                        <div class="form-group">
+                                            <div class="form-group">
+                                                <input @ViewBag.PermiteEditar placeholder="--Prestación Accesoria--" type="text" class="form-control input-sm" id="txtNumFianzaPA" value="" tabindex="16">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-sm-12">
-                                    <label for="txtNumFianzaPA">Fianza - Prestación Accesoria:</label>
-                                    <div class="form-group">
-                                        <div class="form-group">
-                                            <input placeholder="--Prestación Accesoria--" disabled type="text" class="form-control input-sm" id="txtNumFianzaPA" value="">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            }
                         </div>
                     </div>
                 </div>
@@ -186,16 +214,18 @@
                             <h3 class="panel-title"><i class="fa fa-wrench" aria-hidden="true"></i>  Detalle de Mant. Preventivos</h3>
                         </div>
                         <div class="panel-body">
-                            <div class="panel panel-default" style="width: 50%">
-                                <div class="panel-body" style="padding:5px">
-                                    <label id="txtPeriodicidad">Periodicidad: </label>
+                            @if (IndMigracion == "1")
+                            {
+                                <div class="panel panel-default" style="width: 50%">
+                                    <div class="panel-body" style="padding:5px">
+                                        <label id="txtPeriodicidad">Periodicidad: </label>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row container-fluid">
-                                <!--<button class="btn btn-default" type="button" style="width: 50%;pointer-events: none;">-->
-                                Total de Mantenimientos:<span class="badge" style="background-color: blue; margin-left: 31px" id="MantTotales"></span>
-                                <!--</button>-->
-                            </div>
+                                <div class="row container-fluid">
+                                    <!--<button class="btn btn-default" type="button" style="width: 50%;pointer-events: none;">-->
+                                    Total de Mantenimientos:<span class="badge" style="background-color: blue; margin-left: 31px" id="MantTotales"></span>
+                                    <!--</button>-->
+                                </div>
                                 <br />
                                 <div class="row container-fluid">
                                     <!--<button class="btn btn-default" type="button" style="width: 50%;pointer-events: none;background-color:#38b44a">-->
@@ -215,7 +245,50 @@
                                     <div class="progress-bar progress-bar-danger" id="barraPendientes">
                                     </div>
                                 </div>
+                            }
+                            else if (IndMigracion == "2")
+                            { 
+                            <div class="row container-fluid">
+                                <div class="col-md-6 col-sm-12">
+                                    <div class="input-group input-group-sm">
+                                        <label for="cmbPeriodo">Periodicidad: </label>
+                                        <select class="form-control select2 input-sm" style="width:100%;" id="cmbPeriodo" tabindex="17"></select>
+                                    </div>
+                                </div>
                             </div>
+                            <div class="row container-fluid">
+                                <div class="col-md-6 col-sm-12">
+                                    <div class="input-group input-group-sm">
+                                        <label for="txtNumContrato">Total de Preventivos: </label>
+                                        <input type="number" class="form-control" id="MantTotales" placeholder="Total" tabindex="18" aria-describedby="sizing-addon1" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row container-fluid">
+                                <div class="col-md-6 col-sm-12">
+                                    <div class="input-group input-group-sm">
+                                        <label for="MantCompletados">Mantenimientos Completados: </label>
+                                        <input type="number" class="form-control" id="MantCompletados" placeholder="Mant. Completados" tabindex="19" aria-describedby="sizing-addon1" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row container-fluid">
+                                <div class="col-md-6 col-sm-12">
+                                    <div class="input-group input-group-sm">
+                                        <label for="MantPendientes">Mantenimientos Pendientes: </label>
+                                        <input type="number" class="form-control" id="MantPendientes" placeholder="Mant. Pendientes" tabindex="20" aria-describedby="sizing-addon1" />
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-success" id="barraCompletado">
+                                </div>
+                                <div class="progress-bar progress-bar-danger" id="barraPendientes">
+                                </div>
+                            </div>
+                            }
+                        </div>
                         </div>
                         <div style="width: 2%"></div>
                         <div class="panel panel-default" style="width: 49%">
@@ -224,19 +297,59 @@
                             </div>
                             <div class="panel-body">
                                 <div class="row container-fluid">
-                                    <label>Fecha de Vencimiento de Garantía</label>
-                                    <p id="fechaVencGar"></p>
+                                    @if (IndMigracion == "1")
+                                    {
+                                        <label>Fecha de Vencimiento de Garantía</label>
+                                        <p id="fechaVencGar"></p>
+                                    }
+                                    else
+                                    {
+                                        <div class="col-md-6 col-sm-12">
+                                            <label for="dateVencGarantia">Fecha de Vencimiento de Garantía:</label>
+                                            <div class="input-group date">
+                                                <input type="text" class="form-control input-sm" id="dateVencGarantia" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
+                                                <span class="input-group-addon input-sm" id="openRegdateVencGarantia">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    }
                                 </div>
-                                <div class="row container-fluid">
-                                    <label>Días Transcurridos</label>
-                                    <p id="diasTransc"></p>
-                                </div>
-                                <div class="row container-fluid">
-                                    <label>Días Vigentes</label>
-                                    <p id="diasVig"></p>
-                                </div>
+                                @if (IndMigracion == "1")
+                                {
+                                    <div class="row container-fluid">
+                                        <label>Días Transcurridos</label>
+                                        <p id="diasTransc"></p>
+                                    </div>
+                                    <div class="row container-fluid">
+                                        <label>Días Vigentes</label>
+                                        <p id="diasVig"></p>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="row container-fluid">
+                                        <div class="col-md-6 col-sm-12">
+                                            <div class="input-group input-group-sm">
+                                                <label for="numGarantiaAnual">Garantía Anual: </label>
+                                                <input type="number" class="form-control" id="numGarantiaAnual" placeholder="Total" tabindex="18" aria-describedby="sizing-addon1" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row container-fluid">
+                                        <div class="col-md-6 col-sm-12">
+                                            <div class="input-group input-group-sm">
+                                                <label for="numGarantiaMensual">Garantía Mensual: </label>
+                                                <input type="number" class="form-control" id="numGarantiaMensual" placeholder="Total" tabindex="18" aria-describedby="sizing-addon1" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <br />
+                                }
+
                                 <div class="progress" style="margin-top: 8px;">
-                                    <div class="progress-bar" id="barraGarantia" role="progressbar" style="width: 60%; background-color: blue;" >
+                                    <div class="progress-bar" id="barraGarantia" role="progressbar" style="width: 60%; background-color: blue;">
                                     </div>
                                 </div>
                             </div>
@@ -247,6 +360,12 @@
                     <div class="row container-fluid">
                         <div class="text-right">
                             <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegresar" tabindex="14"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Regresar</button>
+                            @if (IndMigracion == "2")
+                            {
+                                <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnGenCronograma" tabindex="14"><i class="fa fa-table" aria-hidden="true"></i>&nbsp; Generar Cronograma</button>
+                                <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnGuardarPrev" tabindex="15"><i class="fa fa-save" aria-hidden="true"></i>&nbsp; Guardar Cambios</button>
+                            }
+
                         </div>
                     </div>
                     <br />

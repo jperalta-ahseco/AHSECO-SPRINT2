@@ -22,10 +22,18 @@
     var $cmbDepartamento = $('#cmbDepartamento');
     var $cmbDistrito = $('#cmbDistrito');
     var $modalUbigeo = $('#modalUbigeo');
+    var $txtIdEquipo = $('#txtIdEquipo');
+    var $txtDestinoUbi = $('#txtDestinoUbi');
     var $btnGuardarUbigeo = $('#btnGuardarUbigeo');
     var $txtNumContrato = $('#txtNumContrato');
     var $txtNumFianzaPP = $('#txtNumFianzaPP');
     var $txtNumFianzaPA = $('#txtNumFianzaPA');
+    var $indMigracion = $('#indMigracion');
+    var $txtNomCliente = $('#txtNomCliente');
+    var $DI_pnlMant_TieneCronograma = $('#DI_pnlMant_TieneCronograma');
+    var $DI_radTieneCronograma = $('#DI_radTieneCronograma');
+    var $DI_radTieneCronograma_Si = $('#DI_radTieneCronograma_Si');
+    var $DI_radTieneCronograma_No = $('#DI_radTieneCronograma_No');
 
     var $spanSi = $('#spanSi');
     var $spanNo = $('#spanNo');
@@ -49,10 +57,10 @@
         $openPeriodoIni.click($openRegFecIni_click);
         $openPeriodoFin.click($openRegFecFin_click);
         $btnGuardarUbigeo.click(seleccionar);
-
         //$periodoIni.val(mesActual());
         //$periodoFin.val(mesPosterior());
 
+        
         $periodoIni.datepicker({
             viewMode: "months",
             minViewMode: "months",
@@ -71,18 +79,31 @@
         $spanSi.on('click', function () {
             botonSi();
         });
-
+        
         $spanNo.on('click', function () {
             botonNo();
         });
+        ActivaColorBoton();
+
+        if ($indMigracion.val() == "2") {
+            $DI_radTieneCronograma_Si.prop('checked', true);
+        };
 
         BuscarPreventivos();
     };
 
+    function ActivaColorBoton() {
+        if ($indMigracion.val() == 1) {
+            $spanSi.css('background-color', 'gray');
+            $spanNo.css('background-color', 'red');
+        }
+        else if ($indMigracion.val() == 2) {
+            $spanNo.css('background-color', 'gray');
+            $spanSi.css('background-color', 'green');
+        };
+    };
+
     function botonSi() {
-        $spanNo.css('background-color', 'gray');
-        $spanSi.css('background-color', 'green');
-        limpiarFiltrosBusqueda();
         cambiarTipBusqueda(2);
     }
 
@@ -94,13 +115,23 @@
     }
 
     function cambiarTipBusqueda(tip) {
-        $.ajax({
-                url: app.baseUrl + "BandejaPreventivo/SetIdMigra",
-                data: {
-                    tip: tip
-                }
-            }
-        );
+        var method = "POST";
+        var url = "BandejaPreventivo/SetIdMigra";
+
+        var data = {
+            tip: tip
+        };
+        var objParam = JSON.stringify(data);
+
+        var fnDoneCallBack = function (data) {
+            location.reload()
+        };
+
+        var fnFailCallBack = function (data) {
+            app.message.error("Error", data.CurrentException, "Aceptar");
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack);
     }
 
     function limpiarFiltrosBusqueda() {
@@ -227,32 +258,68 @@
         var codProvincia = sessionStorage.getItem('codProvincia');
         var codDistrito = sessionStorage.getItem('codDistrito');
 
-        var objConsulta = {
-            NumReq : $txtIdRegIns.val() == "" ? "0" : $txtIdRegIns.val(),
-            NumSerie: $txtSerie.val() == "" ? "0" : $txtSerie.val(),
-            NumProc: $txtNumProc.val() == "" ? "0" : $txtNumProc.val(),
-            NumOrdCompra: $txtNumOrdCompra.val() == "" ? "0" : $txtNumOrdCompra.val(),
-            NumFianza: $txtNumFianza.val() == "" ? "0" : $txtNumFianza.val(),
-            Empresa: $cmbempresa.val() == "" ? "0" : $cmbempresa.val(),
-            PeriodoInicio: $periodoIni.val().replace("/","."),
-            PeriodoFinal: $periodoFin.val().replace("/", "."),
-            Ruc: $cmbCliente.val() == null ? "0" : $cmbCliente.val(),
-            NomEquipo: $txtNomEquipo.val(),
-            Marca:$txtMarca.val(),
-            CodUbigeoDest: codDepartamento + codProvincia.slice(2, 4) + codDistrito.slice(4, 6),
-            Modelo: $txtModelo.val(),
-            NumContrato: $txtNumContrato.val(),
-            NumFianzaPP: $txtNumFianzaPP.val(),
-            NumFianzaPA: $txtNumFianzaPA.val()
-            //Estado: $cmbEstado.val() == "" || $cmbEstado.val() == 0 ? "" : $cmbEstado.val(),
+        var objConsulta = {};
+
+        if ($indMigracion.val() == "1") {
+            objConsulta = {
+                NumReq: $txtIdRegIns.val() == "" ? "0" : $txtIdRegIns.val(),
+                NumSerie: $txtSerie.val() == "" ? "0" : $txtSerie.val(),
+                NumProc: $txtNumProc.val() == "" ? "0" : $txtNumProc.val(),
+                NumOrdCompra: $txtNumOrdCompra.val() == "" ? "0" : $txtNumOrdCompra.val(),
+                NumFianza: $txtNumFianza.val() == "" ? "0" : $txtNumFianza.val(),
+                Empresa: $cmbempresa.val() == "" ? "0" : $cmbempresa.val(),
+                PeriodoInicio: $periodoIni.val().replace("/", "."),
+                PeriodoFinal: $periodoFin.val().replace("/", "."),
+                Ruc: $cmbCliente.val() == null ? "0" : $cmbCliente.val(),
+                NomEquipo: $txtNomEquipo.val(),
+                Marca: $txtMarca.val(),
+                CodUbigeoDest: codDepartamento + codProvincia.slice(2, 4) + codDistrito.slice(4, 6),
+                Modelo: $txtModelo.val(),
+                NumContrato: $txtNumContrato.val(),
+                NumFianzaPP: $txtNumFianzaPP.val(),
+                NumFianzaPA: $txtNumFianzaPA.val()
+                //Estado: $cmbEstado.val() == "" || $cmbEstado.val() == 0 ? "" : $cmbEstado.val(),
+            };
+        }
+        else {
+            objConsulta = {
+                Id_Equipo: $txtIdEquipo.val() == undefined ? "" : $txtIdEquipo.val(),
+                NumSerie: $txtSerie.val() == undefined ? "" : $txtSerie.val(),
+                NumProc: $txtNumProc.val() == undefined ? "" : $txtNumProc.val(),
+                Empresa: $cmbempresa.val() == undefined ? "" : $cmbempresa.val(),
+                PeriodoInicio: $periodoIni.val().replace("/", "."),
+                PeriodoFinal: $periodoFin.val().replace("/", "."),
+                NombreCliente: $txtNomCliente.val() == undefined ? "" : $txtNomCliente.val(),
+                NomEquipo: $txtNomEquipo.val() == undefined ? "" : $txtNomEquipo.val(),
+                Marca: $txtMarca.val() == undefined ? "" : $txtMarca.val(),
+                NomDestino: $txtDestinoUbi.val() == undefined ? "" : $txtDestinoUbi.val(),
+                Modelo: $txtModelo.val() == undefined ? "" : $txtModelo.val(),
+                NumPagina: 500,
+                Pagina: 1
+                //Estado: $cmbEstado.val() == "" || $cmbEstado.val() == 0 ? "" : $cmbEstado.val(),
+            };
+        };
+
+        
+
+        if ($indMigracion.val() == "2") {
+            var btnCronograma;
+            if ($DI_radTieneCronograma_Si.is(':checked')) { btnCronograma = true }
+            if ($DI_radTieneCronograma_No.is(':checked')) { btnCronograma = false }
+
+            objConsulta.IndCronograma = btnCronograma;
         };
 
         var objParam = JSON.stringify(objConsulta);
 
         var fnDoneCallBack = function (data) {
-            cargarTablaPreventivos(data);
+            if ($indMigracion.val() == "1") {
+                cargarTablaPreventivos(data);
+            }
+            else if ($indMigracion.val() == "2") {
+                cargarTablaPreventivosMigrados(data);
+            };
         };
-
         var fnFailCallBack = function () {
             cargarTablaPreventivos();
         };
@@ -295,6 +362,139 @@
         $formPreventivo.attr('action', href);
         $formPreventivo.submit();
     }
+    function cargarTablaPreventivosMigrados(data) {
+        var columns = [
+            {
+                data: "Id_Equipo",
+                render: function (data, type, row) {
+                    if (data == null) {
+                        return '';
+                    }
+                    else {
+                        var numReqFormateado = ("000000" + data.toString());
+                        numReqFormateado = numReqFormateado.substring((numReqFormateado.length) - 6, numReqFormateado.length);
+                        return '<center>' + numReqFormateado + '</center>'
+                    }
+                }
+            },
+            {
+                data: "Serie",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "Descripcion",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "Marca",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "Modelo",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "Cliente",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "Proceso",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "FechaInstalacion",
+                render: function (data, type, row) {
+                    return '<center>' + app.obtenerFecha(data) + '</center>'
+                }
+            },
+            {
+                data: "ProxFechaMant",
+                render: function (data, type, row) {
+                    if (data == "") {
+                        return ''
+                    }
+                    else {
+                        var dia = data.toString().substring(8,10);
+                        var mes = data.toString().substring(5,7);
+                        var año = data.toString().substring(0, 4);
+                        return '<center>' + dia + '/'+ mes + '/' + año + '</center>'
+                    }
+                }
+            },
+            {
+                data: "TotalPrevent",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "PreventReal",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "PreventPend",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "UbigeoDest",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "RazonSocial",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "IndCronograma",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "Id_Mant",
+                render: function (data, type, row) {
+                    var ver = '<a id="btnVer" class="btn btn-info btn-xs" title="Ver" href="javascript: bandejaPreventivos.ver(' + data + ')"><i class="fa fa-eye" aria-hidden="true"></i></a>';
+                    var accion = '<a id="btnEditar" class="btn btn-default btn-xs" title="Editar" href="javascript: bandejaPreventivos.editar(' + data + ')"><i class="fa fa-pencil" aria-hidden="true"></i></a>';
+                    return '<center>' + ver + ' ' + accion + '</center>'
+                }
+            }
+        ];
+
+
+        var columnDefs = [
+            {
+                targets: [0],
+                visible: true
+            }
+        ];
+
+        var filters = {};
+        filters.dataTableInfo = true;
+        filters.dataTablePageLength = 10;
+        filters.dataTablePaging = true;
+
+        app.llenarTabla($tblMantenimientos, data, columns, columnDefs, "#tblMantenimientos", null, null, filters);
+    };
+
     function cargarTablaPreventivos(data) {
         var columns = [
             {

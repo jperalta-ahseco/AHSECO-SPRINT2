@@ -12,6 +12,7 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaPreventivos
     {
         public string NumSerie { get; set; }
         public long Id_Mant { get; set; }
+        public long Id_Equipo { get; set; }
         public long NumReq { get; set; }
         public long Id_Detalle{ get; set; }
         public long Id_WorkFlow { get; set; }
@@ -31,8 +32,11 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaPreventivos
         public string Marca { get; set; }
         public string Modelo { get; set; }
         public string Ruc { get; set; }
+
+        public string NombreCliente { get; set; }
         public string NumContrato { get; set; }
         public string CodUbigeoDest { get; set; }
+        public string NomDestino { get; set; }
         public string valOTM { get; set; }
         public string valGuia { get; set; }
         public string NumFianzaPP { get; set; }
@@ -41,5 +45,12 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaPreventivos
         public DateTime FechaMantenimiento { get; set; }
         public string NumFactura { get; set; }
         public DateTime? FecFactura { get; set; }
+
+        public bool? IndCronograma { get; set; }
+
+        public int NumPagina { get; set; }
+
+        public int Pagina { get; set; }
+
     }
 }

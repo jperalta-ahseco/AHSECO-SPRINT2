@@ -50,7 +50,7 @@
     var $colFechaFact = $('#colFechaFact');
 
     var $txtidContacto = $('#txtidContacto');
-    var $btnCompletar = $('#btnCerrar');
+    var $btnCerrar = $('#btnCerrar');
     var $btnActualizarContacto = $('#btnActualizarContacto');
     var $btnAgregarNuevoContacto = $('#btnAgregarNuevoContacto');
     var $btnAgregarContacto = $('#btnAgregarContacto');
@@ -180,7 +180,7 @@
         $btnLimpiarTodo.css('display', 'none');
 
         $btnNuevoContacto.click(btnAñadirClick)
-        $btnCompletar.click(Cerrar);
+        $btnCerrar.click(Cerrar);
         $btnAgregarNuevoContacto.click(RegistrarNuevoContacto);
         $btnSelectContacto.click(BuscarContactosxCliente);
         $btnBuscarContactos.click(BuscarContactosxCliente);
@@ -844,6 +844,33 @@
         $txtObservacion.val("");
     }
 
+    function setDatosCompletar() {
+        var method = "POST";
+        var url = "BandejaPreventivo/SetMantPrev";
+
+        var obj = {
+            Id: $numPreventivo.val(),
+            CodEstado: "COM",
+            Id_WorkFlow: $codigoWorkflow.val(),
+            Id_Mant: $idMantPadre.val(),
+            TipoTarea: "V",
+            Ruc: $ruc.val()
+        };
+
+        var objParam = JSON.stringify(obj);
+
+        var fnDoneCallBack = function () {
+            location.reload();
+        };
+
+        var fnFailCallBack = function () {
+            app.message.error("Error", "Se produjo un error al modificar las variables internas. ")
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null, null);
+    }
+
+
     function setDatosFin() {
         var method = "POST";
         var url = "BandejaPreventivo/SetMantPrev";
@@ -853,7 +880,8 @@
             CodEstado: "FIN",
             Id_WorkFlow: $codigoWorkflow.val(),
             Id_Mant: $idMantPadre.val(),
-            TipoTarea: "U"
+            TipoTarea: "U",
+            Ruc: $ruc.val()
         };
 
         var objParam = JSON.stringify(obj);
@@ -881,7 +909,7 @@
         var objParam = JSON.stringify(objEditar);
 
         var fnDoneCallBack = function () {
-            app.redirectTo("BandejaPreventivo/RegistroPreventivo");
+            //app.redirectTo("BandejaPreventivo/RegistroPreventivo");
         };
 
         var fnFailCallBack = function (Message) {
@@ -1529,7 +1557,8 @@
             CodEstado: "PROG",
             Id_WorkFlow: $codigoWorkflow.val(),
             Id_Mant: $idMantPadre.val(),
-            TipoTarea: "U"
+            TipoTarea: "U",
+            Ruc: $ruc.val()
         };
 
         var objParam = JSON.stringify(obj);
@@ -1605,7 +1634,7 @@
             var fnSi = function () {
                 var fnDoneCallBack = function (data) {
                     var redirect = function () {
-                        setDatosFin()
+                        setDatosCompletar()
                     };
                     return app.message.success("Éxito", "Se realizó el cambio de estado", "Aceptar", redirect);
                 };
@@ -1762,7 +1791,7 @@
         var fnSi = function () {
             var fnDoneCallBack = function (data) {
                 var redirect = function () {
-                    setDatos();
+                    setDatosCompletar();
                 };
                 return app.message.success("Éxito", "Se realizó el cambio de estado a 'Completado' ", "Aceptar", redirect);
             };

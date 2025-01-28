@@ -27,6 +27,8 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaPreventivos
         public string Periodo { get; set; }
         public string GarantiaAdic { get; set; }
         public string Garantia { get; set; }
+        public int Garantia_Anual { get; set; }
+        public int Garantia_Mensual { get; set; }
         public int DiasDiff { get; set; }
         public int DiasTranscurridos { get; set; }
         public decimal vventauni { get; set; }

@@ -1,8 +1,14 @@
-﻿
+﻿@using AHSECO.CCL.FRONTEND.Core;
+
 @{
+
     ViewBag.Title = "Mantenimientos Preventivos";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var IndMigracion = VariableSesion.getCadena("Migracion");
 }
+
+<input hidden id="indMigracion" value="@IndMigracion"/>
 
 <div class="container-fluid" style="margin-right: 15px;">
     <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
@@ -25,10 +31,20 @@
             <form id="formPreventivo">
                 <div class="row container-fluid" style="margin-bottom:10px">
                     <div class="col-md-4 col-sm-12">
-                        <label for="txtIdMant">N° de Registro de Instalaci&oacute;n:</label>
-                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
-                            <input class="form-control input-sm" type="text" id="txtIdRegIns" placeholder="Ingresar el número de registro de instalación" />
-                        </div>
+                        @if (IndMigracion == "1")
+                        {
+                            <label for="txtIdMant">N° de Registro de Instalaci&oacute;n:</label>
+                            <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                                <input class="form-control input-sm" type="text" id="txtIdRegIns" placeholder="Ingresar el número de registro de instalación" />
+                            </div>
+                        }
+                        else if (IndMigracion == "2")
+                        {
+                            <label for="txtIdEquipo">Id de Equipo:</label>
+                            <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                                <input class="form-control input-sm" type="text" id="txtIdEquipo" placeholder="Ingresar el número de id de equipo" />
+                            </div>
+                        }
                     </div>
                     <div class="col-md-4 col-sm-12">
                         <label for="txtSerie">N° de Serie:</label>
@@ -43,126 +59,198 @@
                         </div>
                     </div>
                 </div>
-                <div class="row container-fluid">
-                    <div class="col-md-4 col-sm-12">
-                        <label for="txtNumOrdCompra">N° Orden de Compra:</label>
-                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
-                            <input class="form-control input-sm" type="text" id="txtNumOrdCompra" placeholder="Ingresar el número de orden de compra" />
+                @if (IndMigracion == "1")
+                {
+                    <div class="row container-fluid">
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtNumOrdCompra">N° Orden de Compra:</label>
+                            <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                                <input class="form-control input-sm" type="text" id="txtNumOrdCompra" placeholder="Ingresar el número de orden de compra" />
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtNumContrato">N° de Contrato:</label>
+                            <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                                <input class="form-control input-sm" type="text" id="txtNumContrato" placeholder="Ingresar el número de contrato" />
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="cmbempresa">Empresa:</label>
+                            <div class="form-group">
+                                <select class="form-control select2 input-sm" style="width:100%;" id="cmbempresa" tabindex="3"></select>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-4 col-sm-12">
-                        <label for="txtNumContrato">N° de Contrato:</label>
-                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
-                            <input class="form-control input-sm" type="text" id="txtNumContrato" placeholder="Ingresar el número de contrato" />
+                    <div class="row container-fluid">
+                        <div class="col-md-4 col-sm-12">
+                            <label for="periodoIni">Periodo Inicio:</label>
+                            <div class="input-group date">
+                                <input type="text" class="form-control input-sm" id="periodoIni" aria-describedby="sizing-addon3" placeholder="mm/aaaa" maxlength="10">
+                                <span class="input-group-addon input-sm" id="openPeriodoIni">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="periodoFin">Periodo Fin:</label>
+                            <div class="input-group date">
+                                <input type="text" class="form-control input-sm" id="periodoFin" aria-describedby="sizing-addon3" placeholder="mm/aaaa" maxlength="10">
+                                <span class="input-group-addon input-sm" id="openPeriodoFin">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="cmbCliente">Cliente:</label>
+                            <div class="form-group">
+                                <select class="form-control select2 input-sm" style="width:100%;" id="cmbCliente" tabindex="3"></select>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-4 col-sm-12">
-                        <label for="cmbempresa">Empresa:</label>
-                        <div class="form-group">
-                            <select class="form-control select2 input-sm" style="width:100%;" id="cmbempresa" tabindex="3"></select>
+                    <div class="row container-fluid">
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtMarca">Marca:</label>
+                            <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                                <input class="form-control input-sm" type="text" id="txtMarca" placeholder="Ingresar la Marca" />
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtModelo">Modelo:</label>
+                            <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                                <input class="form-control input-sm" type="text" id="txtModelo" placeholder="Ingresar el Modelo" />
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtNomEquipo">Nombre de Equipo:</label>
+                            <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                                <input class="form-control input-sm" type="text" id="txtNomEquipo" placeholder="Ingresar el Nombre del Equipo" />
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="row container-fluid">
-                    <div class="col-md-4 col-sm-12">
-                        <label for="periodoIni">Periodo Inicio:</label>
-                        <div class="input-group date">
-                            <input type="text" class="form-control input-sm" id="periodoIni" aria-describedby="sizing-addon3" placeholder="mm/aaaa" maxlength="10">
-                            <span class="input-group-addon input-sm" id="openPeriodoIni">
-                                <i class="fa fa-calendar"></i>
-                            </span>
+                    <br />
+                    <div class="row container-fluid">
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtUbicacion">Ubicación Destino:</label>
+                            <div class="form-group">
+                                <div class="input-group input-group-sm date">
+                                    <input disabled maxlength="6" placeholder="Ingresar Ubicación" type="text" class="form-control input-sm" id="txtUbicacion" value="" aria-describedby="sizing-addon3" />
+                                    <span style="cursor:pointer" class="input-group-addon input-sm" id="searchUbigeo" data-toggle="modal" data-target="#modalUbigeo">
+                                        <i class="fa fa-search"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtNumFianzaPP">Fianza - Prestación Principal:</label>
+                            <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                                <input class="form-control input-sm" type="text" id="txtNumFianzaPP" placeholder="Fianza - Prestación Principal" />
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtNumFianzaPA">Fianza - Prestación Accesoria:</label>
+                            <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                                <input class="form-control input-sm" type="text" id="txtNumFianzaPA" placeholder="Fianza - Prestación Accesoria" />
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-4 col-sm-12">
-                        <label for="periodoFin">Periodo Fin:</label>
-                        <div class="input-group date">
-                            <input type="text" class="form-control input-sm" id="periodoFin" aria-describedby="sizing-addon3" placeholder="mm/aaaa" maxlength="10">
-                            <span class="input-group-addon input-sm" id="openPeriodoFin">
-                                <i class="fa fa-calendar"></i>
-                            </span>
+                }
+                else if (IndMigracion == "2")
+                {
+                    <div class="row container-fluid">
+                        <div class="col-md-4 col-sm-12">
+                            <label for="cmbempresa">Empresa:</label>
+                            <div class="form-group">
+                                <select class="form-control select2 input-sm" style="width:100%;" id="cmbempresa" tabindex="3"></select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-4 col-sm-12">
-                        <label for="cmbCliente">Cliente:</label>
-                        <div class="form-group">
-                            <select class="form-control select2 input-sm" style="width:100%;" id="cmbCliente" tabindex="3"></select>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="periodoIni">Periodo Inicio:</label>
+                            <div class="input-group date">
+                                <input type="text" class="form-control input-sm" id="periodoIni" aria-describedby="sizing-addon3" placeholder="mm/aaaa" maxlength="10">
+                                <span class="input-group-addon input-sm" id="openPeriodoIni">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="row container-fluid">
-                    <div class="col-md-4 col-sm-12">
-                        <label for="txtMarca">Marca:</label>
-                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
-                            <input class="form-control input-sm" type="text" id="txtMarca" placeholder="Ingresar la Marca" />
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-sm-12">
-                        <label for="txtModelo">Modelo:</label>
-                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
-                            <input class="form-control input-sm" type="text" id="txtModelo" placeholder="Ingresar el Modelo" />
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-sm-12">
-                        <label for="txtNomEquipo">Nombre de Equipo:</label>
-                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
-                            <input class="form-control input-sm" type="text" id="txtNomEquipo" placeholder="Ingresar el Nombre del Equipo" />
-                        </div>
-                    </div>
-                </div>
-                <br />
-                <div class="row container-fluid">
-                    <div class="col-md-4 col-sm-12">
-                        <label for="txtUbicacion">Ubicación Destino:</label>
-                        <div class="form-group">
-                            <div class="input-group input-group-sm date">
-                                <input disabled maxlength="6" placeholder="Ingresar Ubicación" type="text" class="form-control input-sm" id="txtUbicacion" value="" aria-describedby="sizing-addon3" />
-                                <span style="cursor:pointer" class="input-group-addon input-sm" id="searchUbigeo" data-toggle="modal" data-target="#modalUbigeo">
-                                    <i class="fa fa-search"></i>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="periodoFin">Periodo Fin:</label>
+                            <div class="input-group date">
+                                <input type="text" class="form-control input-sm" id="periodoFin" aria-describedby="sizing-addon3" placeholder="mm/aaaa" maxlength="10">
+                                <span class="input-group-addon input-sm" id="openPeriodoFin">
+                                    <i class="fa fa-calendar"></i>
                                 </span>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4 col-sm-12">
-                        <label for="txtNumFianzaPP">Fianza - Prestación Principal:</label>
-                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
-                            <input class="form-control input-sm" type="text" id="txtNumFianzaPP" placeholder="Fianza - Prestación Principal" />
+                    <div class="row container-fluid">
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtNomCliente">Cliente:</label>
+                            <div class="form-group">
+                                <input class="form-control input-sm" type="text" id="txtNomCliente" placeholder="Ingresar el nombre de cliente" />
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtMarca">Marca:</label>
+                            <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                                <input class="form-control input-sm" type="text" id="txtMarca" placeholder="Ingresar la Marca" />
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtModelo">Modelo:</label>
+                            <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                                <input class="form-control input-sm" type="text" id="txtModelo" placeholder="Ingresar el Modelo" />
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-4 col-sm-12">
-                        <label for="txtNumFianzaPA">Fianza - Prestación Accesoria:</label>
-                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
-                            <input class="form-control input-sm" type="text" id="txtNumFianzaPA" placeholder="Fianza - Prestación Accesoria" />
+                    <div class="row container-fluid">
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtDestinoUbi">Destino:</label>
+                            <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                                <input class="form-control input-sm" type="text" id="txtDestinoUbi" placeholder="Ingresa el Destino" />
+                            </div>
                         </div>
                     </div>
-                </div>
                     <br />
-                    <div class="text-right">
-                        <button class="btn btn-primary btn-sm" type="button" id="btnBuscar"><i class="fa fa-search"></i> Buscar</button>
-                        <span id="hidden_fields"></span>
-                        <a class="btn btn-info btn-sm" type="button" id="btnExportar" href="BandejaPreventivo/GenerarReporte"><i class="fa fa-table"></i> Exportar</a>
+                    <div class="row container-fluid">
+                        <div id="DI_pnlMant_TieneCronograma" class="col-md-4 col-sm-12">
+                            <div class="col-md-5">
+                                <label for="DI_radTieneCronograma">TIENE CRONOGRAMA: </label>
+                            </div>
+                            <div class="col-md-2">
+                                <table style="width:100%">
+                                    <tr>
+                                        <td><input type="radio" name="DI_radTieneCronograma" class="input-sm" id="DI_radTieneCronograma_Si"></td>
+                                        <td style="padding-top:5px"><label>SI</label></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-md-2">
+                                <table style="width:100%">
+                                    <tr>
+                                        <td><input type="radio" name="DI_radTieneCronograma" class="input-sm" id="DI_radTieneCronograma_No"></td>
+                                        <td style="padding-top:5px"><label>NO</label></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
                     </div>
+                }
+                <br />
+                <div class="text-right">
+                    <button class="btn btn-primary btn-sm" type="button" id="btnBuscar"><i class="fa fa-search"></i> Buscar</button>
+                    <span id="hidden_fields"></span>
+                    <a class="btn btn-info btn-sm" type="button" id="btnExportar" href="BandejaPreventivo/GenerarReporte"><i class="fa fa-table"></i> Exportar</a>
+                </div>
             </form>
             <br />
             <div class="table-responsive">
                 <table id="tblMantenimientos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                     <thead>
                         <tr>
-                            <th style="text-align: center; width: 5%">N° Instalación</th>
-                            <th style="text-align: center; width: 5%">Num. Serie</th>
-                            <th style="text-align: center; width: 15%">Nombre Equipo</th>
-                            <th style="text-align: center; width: 15%">Marca</th>
-                            <th style="text-align: center; width: 15%">Modelo</th>
-                            <th style="text-align: center; width: 15%">Cliente</th>
-                            <th style="text-align: center; width: 15%">N° de Contrato</th>
-                            <th style="text-align: center; width: 15%">Prestación Principal</th>
-                            <th style="text-align: center; width: 15%">Prestación Accesoria</th>
-                            <th style="text-align: center; width: 5%">Fecha Instalación</th>
-                            <th style="text-align: center; width: 5%">Fecha Próx. Mantenimiento</th>
-                            <th style="text-align: center; width: 5%">Cantidad de Preventivos</th>
-                            <th style="text-align: center; width: 5%">Prev. Realizados</th>
-                            <th style="text-align: center; width: 5%">Prev. Pendientes</th>
-                            <th style="text-align: center; width: 15%">Ubigeo Destino</th>
-                            <th style="text-align: center; width: 5%">Acciones</th>
+                            @for (var i = 0; @ViewBag.Cabecera.Length > i; i++)
+                            {
+                                <th style="text-align: center">@ViewBag.Cabecera[i]</th>
+                            }
                         </tr>
                     </thead>
                     <tbody></tbody>

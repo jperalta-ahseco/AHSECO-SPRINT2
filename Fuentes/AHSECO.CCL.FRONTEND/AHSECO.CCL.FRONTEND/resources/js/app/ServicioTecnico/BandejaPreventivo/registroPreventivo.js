@@ -20,6 +20,7 @@
     var $barraCompletado = $('#barraCompletado');
     var $barraPendientes = $('#barraPendientes');
     var $barraGarantia = $('#barraGarantia');
+    var $indMigracion = $('#indMigracion');
     /*Txt*/
     var $diasTransc = $('#diasTransc');
     var $diasVig = $('#diasVig');
@@ -66,7 +67,11 @@
     var $txtOrden = $('#txtOrden');
     var $txtNumFianzaPP = $('#txtNumFianzaPP');
     var $txtNumFianzaPA = $('#txtNumFianzaPA');
-
+    var $openRegdateMant = $('#openRegdateMant');
+    var $dateVencGarantia = $('#dateVencGarantia');
+    var $openRegdateVencGarantia = $('#openRegdateVencGarantia');
+    var $numGarantiaAnual = $('#numGarantiaAnual');
+    var $numGarantiaMensual = $('#numGarantiaMensual');
 
     //Btns
     var $searchSolVenta = $('#searchSolVenta');
@@ -78,6 +83,8 @@
     var $btnBuscarTecnico = $('#btnBuscarTecnico');
     var $btnAñadirTecnico = $('#btnAñadirTecnico');
     var $btnFinalizarRec = $('#btnFinalizarRec');
+    var $btnGuardarPrev = $('#btnGuardarPrev');
+    var $btnGenCronograma = $('#btnGenCronograma');
     // var $btnDesasignarTecnico = $('#btnDesasignarTecnico');
     //TxT
     var $txtSolicitud = $('#txtSolicitud');
@@ -126,6 +133,8 @@
     var $cmbTipoCredencial = $('#cmbTipoCredencial');
     var $txtUbiDestino = $('#txtUbiDestino');
     var $cmbDocumentoCarga = $('#cmbDocumentoCarga');
+    var $cmbPeriodo = $('#cmbPeriodo');
+
 
     /*Modales*/
     var $modalCargaDocumento = $('#modalCargaDocumento');
@@ -222,11 +231,34 @@
         $btnBuscarTecnicos.click(BuscarTecnicos);
         $btnGuardarObservacionReq.click(GuardarObservacionReqClick);
         $btnAñadirTecnico.click(AgregarTecnicoExterno);
+        $openRegdateMant.click($openRegdateMantClick);
+        $openRegdateVencGarantia.click($openRegdateVencGarantiaClick);
+        $btnGuardarPrev.click(GuardarMantPreventivo);
+        $btnGenCronograma.click(GenerarCronograma);
+
         CargarTipoDocumento(6);
         registroPreventivos.contadorObservaciones = 0;
         registroPreventivos.mantenimientos = [];
         registroPreventivos.tecnicosAsig = [];
-        cargarDatos();
+        if ($indMigracion.val() == "2") {
+            ObtenerFiltrosPreventivos();
+        };
+
+        $dateVencGarantia.datepicker({
+            viewMode: 0,
+            minViewMode: 0,
+            format: 'dd/mm/yyyy',
+            startDate: hoy()
+        });
+
+        $txtFechaInstall.datepicker({
+            viewMode: 0,
+            minViewMode: 0,
+            format: 'dd/mm/yyyy',
+            startDate: hoy()
+        });
+
+        setTimeout(cargarDatos(), 10000);
     };
     function CargarTipoDocumento(codFlujo) {
         var method = "POST";
@@ -243,6 +275,10 @@
         return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, null);
     }
 
+
+    function $openRegdateMantClick() {
+        $txtFechaInstall.focus();
+    }
     function btnRegresarClick(){
         app.redirectTo("BandejaPreventivo");
     }
@@ -254,6 +290,61 @@
         $lblUsuarioCreacionObservacion.text($nombreusuario.val());
         $lblFechaCreacionObservacion.text(hoy());
     };
+
+    function GuardarMantPreventivo() {
+        var method = "POST";
+        var url = "";
+        var obj = {
+            Ruc: $txtRuc.val()
+            , RazonSocial: $txtNomEmpresa.val()
+            , Proceso: $txtNumProceso.val()
+            , CodItem: $txtCodEquipo.val()
+            , DescItem: $txtDescEquipo.val()
+            , Marca: $txtMarcaEquipo.val()
+            , FechaInstal: $txtFechaInstall.val()
+            , Modelo: $txtModeloEquipo.val()
+            , Serie: $txtNumSerie.val()
+            , Destino: $txtUbiDestino.val()
+            , Periodo: $cmbPeriodo.val()
+            , MantTotal: $MantTotales.val()
+            , MantoCompletados: $MantCompletados.val()
+            , MantPendientes: $MantPendientes.val()
+            , GarantiaAnual: $numGarantiaAnual.val()
+            , GarantiaMensual: $numGarantiaMensual.val()
+        };
+
+        var objParam = JSON.stringify(obj);
+
+
+        var fnSi = function () {
+            var fnDoneCallBack = function () {
+                app.message.success("Éxito", "Datos guardados correctamente");
+            };
+
+            var fnFailCallBack = function () {
+                app.message.error("Error", "Se presentó un error al registrar los datos, por favor revisar");
+            };
+
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+        };
+        return app.message.confirm("Confirmación", "¿Desea guardar los datos ingresados?", "Sí", "No", fnSi, null);
+    };
+
+    function GenerarCronograma() {
+        if ($txtFechaInstall.val() == "" || $txtFechaInstall.val() == undefined) {
+            app.message.error("Validación", "Es necesario registrar la fecha de instalación para poder generar el cronograma");
+            return;
+        };
+
+        if ($cmbPeriodo.val() == "" || $cmbPeriodo.val() == "0" || $cmbPeriodo.val() == undefined) {
+            app.message.error("Validación", "Es necesario registrar el campo 'Periodo' para poder generar el cronograma");
+            return;
+        };
+    };
+
+    function $openRegdateVencGarantiaClick() {
+        $dateVencGarantia.focus();
+    }
     function AgregarTecnicoExterno() {
         $txtTipoTecnico.val("Externo");
         $hdnTipoEmpleado.val("E");
@@ -289,6 +380,29 @@
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
     }
+
+
+    function ObtenerFiltrosPreventivos() {
+        method = "POST";
+        url = "BandejaPreventivo/ObtenerFiltrosPreventivos"
+
+        var fnDoneCallBack = function (data) {
+            //Cargar combo de empresas:
+            var filters = {};
+            filters.placeholder = "--Seleccionar--";
+            filters.allowClear = false;
+
+            app.llenarComboMultiResult($cmbPeriodo, data.Result.Periodos, null, "0", "--Seleccionar--", filters);
+        };
+
+        var fnFailCallBack = function () {
+            app.message.error("Validacion", "Ocurrió un problema al cargar los filtros de la bandeja. ")
+        };
+
+        app.llamarAjax(method, url, null, fnDoneCallBack, fnFailCallBack, null, null)
+    };
+
+
 
     function GuardarObservacionReqClick() {
         if ($txtObservacion.val().trim() == "" || $txtObservacion.val().trim().length == 0) {
@@ -536,6 +650,10 @@
         $txtNumFianzaPP.val(detalle.FianzaPP);
         $txtNumFianzaPA.val(detalle.FianzaPA);
         $txtPeriodicidad.text('Periodicidad: ' + detalle.Periodo)
+        if ($indMigracion.val() == "2") {
+            $cmbPeriodo.val(detalle.Periodo).trigger("change.select2");
+            $dateVencGarantia.val(detalle.FechaVencimientoGar).trigger("change.select2");
+        };
         $fechaVencGar.text(detalle.FechaVencimientoGar);
         $diasTransc.text(detalle.DiasTranscurridos);
         $diasVig.text(detalle.DiasDiff);
@@ -767,13 +885,19 @@
         $barraPendientes.css('width', pendiente.toFixed(2) + '%');
         $barraCompletado.text(completado.toFixed(0) + '%');
 
-        $MantTotales.text(total.toString());
-        $MantCompletados.text(realizados.toString());
-        $MantPendientes.text(pendientes.toString());
+        if ($indMigracion.val() == "1") {
+            $MantTotales.text(total.toString());
+            $MantCompletados.text(realizados.toString());
+            $MantPendientes.text(pendientes.toString());
+        }
+        else {
+            $MantTotales.val(total.toString());
+            $MantCompletados.val(realizados.toString());
+            $MantPendientes.val(pendientes.toString());
+        }
     };
     function cargarDatos() {
         if ($numMant.val() != "") {
-            $contadordoc.val("");
 
             var method = "POST";
             var url = "BandejaPreventivo/ObtenerMainMant"
@@ -822,26 +946,6 @@
                 cargarCuerpoEquipo(equipo);
                 logicaBarraGarantia(equipo.DiasDiff, equipo.DiasTranscurridos);
                 logicaBarras(equipo.TotalPrev, equipo.PrevCompletados, equipo.PrevPendientes)
-                //for (var i = 0; i < data.Result.Tecnicos.length; i++) {
-                //    registroPreventivos.tecnicosAsig.push({
-                //        Cod_Tecnico: data.Result.Tecnicos[i].Id_Asig,
-                //        TipoDoc: data.Result.Tecnicos[i].NomTipoDoc,
-                //        Documento: data.Result.Tecnicos[i].Documento,
-                //        Tipo_Documento: data.Result.Tecnicos[i].Tipo_Documento,
-                //        Nombres: data.Result.Tecnicos[i].Nombres,
-                //        ApePaterno: data.Result.Tecnicos[i].ApePaterno,
-                //        ApeMaterno: data.Result.Tecnicos[i].ApeMaterno,
-                //        NombreCompleto: data.Result.Tecnicos[i].Nombres + ' ' + data.Result.Tecnicos[i].ApePaterno + ' ' + data.Result.Tecnicos[i].ApeMaterno,
-                //        TipoTecnico: data.Result.Tecnicos[i].TipoTecnico,
-                //        Telefono: data.Result.Tecnicos[i].Telefono,
-                //        Correo: data.Result.Tecnicos[i].Correo,
-                //        Empresa: data.Result.Tecnicos[i].Empresa,
-                //        Zona: data.Result.Tecnicos[i].Zona,
-                //        DescZona: data.Result.Tecnicos[i].DescZona,
-                //        Estado: data.Result.Tecnicos[i].Estado
-                //    });
-                //};
-
                 for (var i = 0; i < data.Result.MantenimientosPreventivos.length; i++) {
                     registroPreventivos.mantenimientos.push({
                         Id: data.Result.MantenimientosPreventivos[i].Id,
@@ -853,68 +957,6 @@
                 };
 
                 cargarTablaMantenimientos(registroPreventivos.mantenimientos);
-                //cargarTablaMainTecnicos(registroPreventivos.tecnicosAsig);
-
-                //registroPreventivos.contadorObservaciones = data.Result.Observaciones.length;
-                //observaciones = data.Result.Observaciones;
-                //if (registroPreventivos.contadorObservaciones > 0) {
-                //    $tbodyObservaciones.empty();
-                //    for (var i = 0; i < data.Result.Observaciones.length; i++) {
-                //        var nuevoTr = "<tr id='row" + data.Result.Observaciones[i].Id + "'>" +
-                //            "<th style='text-align: center;'>" + data.Result.Observaciones[i].Nombre_Usuario + "</th>" +
-                //            "<th style='text-align: center;'>" + data.Result.Observaciones[i].Perfil_Usuario + "</th>" +
-                //            "<th style='text-align: center;'>" + data.Result.Observaciones[i].Fecha_Registro + "</th>" +
-                //            "<th style='text-align: center;'>" + data.Result.Observaciones[i].Observacion + "</th>" +
-                //            "<th style='text-align: center;'>" + " " + "</th>" + //Controlar la modificación de observaciones por el usuario que haya registrado dicha solicitud. 
-                //            "</tr>";
-                //        $tblObservaciones.append(nuevoTr);
-                //    }
-                //    $NoExisteRegObs.hide();
-                //}
-
-                //var docs = data.Result.Adjuntos.length;
-                //adjuntos = data.Result.Adjuntos;
-                //$contadordoc.val(docs);
-                //if (docs > 0) {
-                //    $tbodyDocAdjuntos.empty()
-                //    for (i = 0; i < data.Result.Adjuntos.length; i++) {
-                //        var html = '<div class="text-center">';
-                //        //var d = "'" + data.Result.Adjuntos[i].CodigoDocumento + "','" + data.Result.Adjuntos[i].RutaDocumento + "'";
-                //        html += ' <a class="btn btn-default btn-xs" title="Descargar"  href="javascript:registroPreventivos.download(' + data.Result.Adjuntos[i].CodigoDocumento + ')"><i class="fa fa-download" aria-hidden="true"></i></a>&nbsp;';
-                //        if ($tipoproceso.val() == "U") {
-                //            html += ' <a class="btn btn-default btn-xs" title="Eliminar"  href="javascript:registroPreventivos.eliminarDocumento(' + data.Result.Adjuntos[i].CodigoDocumento + ')"><i class="fa fa-ban" aria-hidden="true"></i></a>&nbsp;';
-                //        };
-
-                //        html += '</div>';
-
-                //        var nuevoTr = "<tr id='row" + data.Result.Adjuntos[i].CodigoDocumento + "'>" +
-                //            "<th>" + data.Result.Adjuntos[i].NombreTipoDocumento + "</th>" +
-                //            "<th>" + data.Result.Adjuntos[i].NombreDocumento + "</th>" +
-                //            "<th>" + data.Result.Adjuntos[i].NombreUsuario + "</th>" +
-                //            "<th>" + data.Result.Adjuntos[i].NombrePerfil + "</th>" +
-                //            "<th>" + data.Result.Adjuntos[i].FechaRegistroFormat + "</th>" +
-                //            "<th>" + html + "</th>" +
-                //            "</tr>";
-                //        $tblDocumentosCargados.append(nuevoTr);
-                //    }
-                //    $NoExisteRegDoc.hide();
-                //}
-
-                //var seguimiento = data.Result.Seguimiento.length;
-                //if (seguimiento > 0) {
-                //    for (i = 0; i < data.Result.Seguimiento.length; i++) {
-
-                //        var nuevoTr = "<tr>" +
-                //            "<th>" + data.Result.Seguimiento[i].DescripcionEstado + "</th>" +
-                //            "<th>" + data.Result.Seguimiento[i].Cargo + "</th>" +
-                //            "<th>" + data.Result.Seguimiento[i].NombreUsuarioRegistro + "</th>" +
-                //            "<th>" + data.Result.Seguimiento[i].FechaRegistro + "</th>" +
-                //            "<th>" + data.Result.Seguimiento[i].HoraRegistro + "</th>" +
-                //            "</tr>";
-                //        $tblSeguimiento.append(nuevoTr);
-                //    }
-                //    $NoExisteRegSeg.hide();
-                //}
             };
             var fnFailCallBack = function () {
                 app.message.error("Validación", "Hubo un error en obtener el detalle del reclamo.")

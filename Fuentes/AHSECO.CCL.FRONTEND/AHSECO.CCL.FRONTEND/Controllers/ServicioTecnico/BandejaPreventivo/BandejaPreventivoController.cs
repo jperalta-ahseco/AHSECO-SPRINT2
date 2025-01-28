@@ -31,6 +31,7 @@ using static NPOI.HSSF.Util.HSSFColor;
 using AHSECO.CCL.BE.ServicioTecnico.BandejaGarantias;
 using AHSECO.CCL.BL.ServicioTecnico.BandejaGarantias;
 using Microsoft.Owin.Security.Notifications;
+using Winnovative;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
 {
@@ -42,7 +43,31 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
         {
             VariableSesion.setCadena("NumMant", "");
             VariableSesion.setCadena("TipoTarea", "");
-            VariableSesion.setCadena("Migracion", "1");
+            if (string.IsNullOrEmpty(VariableSesion.getCadena("Migracion")))
+            {
+                VariableSesion.setCadena("Migracion", "1");
+                
+            }
+            if(VariableSesion.getCadena("Migracion") == "1")
+            {
+                string[] CD_Columns =
+                {
+                    "N° Instalación","Num. Serie","Nombre Equipo","Marca","Modelo","Cliente","N° de Contrato","Prestación Principal",
+                    "Prestación Accesoria","Fecha Instalación","Fecha Próx. Mantenimiento","Cantidad de Preventivos","Prev. Realizados","Prev. Pendientes"
+                    ,"Ubigeo Destino","Acciones"
+                };
+                ViewBag.Cabecera = CD_Columns;
+            }
+            else
+            {
+                string[] CD_Columns =
+                {
+                    "Id Equipo","Num. Serie","Nombre Equipo","Marca","Modelo","Cliente","Proceso","Fecha Instalación","Fecha Próx. Mantenimiento"
+                    ,"Cantidad de Preventivos","Prev. Realizados","Prev. Pendientes"
+                    ,"Destino","Razon Social","Cronograma","Acciones"
+                };
+                ViewBag.Cabecera = CD_Columns;
+            }
 
             return View();
         }
@@ -57,6 +82,22 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
             VariableSesion.setCadena("idWorkFlow", "");
             VariableSesion.setCadena("IdMant", "");
             VariableSesion.setCadena("RucEmpresa", "");
+
+            if(VariableSesion.getCadena("TipoTarea") == "U")
+            {
+                if (VariableSesion.getCadena("Migracion") == "1")
+                {
+                    ViewBag.PermiteEditar = "disabled";
+                }
+                else if (VariableSesion.getCadena("Migracion") == "2")
+                {
+                    ViewBag.PermiteEditar = "";
+                }
+            }
+            else
+            {
+                ViewBag.PermiteEditar = "disabled";
+            }
             return View();
         }
 
@@ -90,9 +131,25 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
             }
         }
 
-        public void SetIdMigra(int tip)
+        public JsonResult SetIdMigra(int tip)
         {
-            VariableSesion.setCadena("Migracion", tip.ToString());
+            try
+            {
+                VariableSesion.setCadena("Migracion", tip.ToString());
+
+                return Json(new
+                {
+                    Status = 1
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    Status = 0,
+                    CurrentException = ex.Message
+                });
+            }
         }
 
 
@@ -133,7 +190,18 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
         public JsonResult ObtenerMainMant(long NumMant)
         {
             var preventivoBL = new PreventivosBL();
-            var result = preventivoBL.ObtenerMainMant(NumMant);
+
+            var grupo = new GrupoPrevEquipoDTO();
+            var result = new ResponseDTO<GrupoPrevEquipoDTO>(grupo);
+
+            if (VariableSesion.getCadena("Migracion") == "1")
+            {
+                result = preventivoBL.ObtenerMainMant(NumMant);
+            }
+            else if (VariableSesion.getCadena("Migracion") == "2")
+            {
+                result = preventivoBL.ObtenerMainMigrado(NumMant);
+            };
             return Json(result);
         }
         public JsonResult ObtenerDetalleInstalacion(InstalacionTecnicaDetalleDTO detalle)
