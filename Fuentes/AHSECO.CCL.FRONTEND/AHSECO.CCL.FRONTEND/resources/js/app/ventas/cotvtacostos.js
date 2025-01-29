@@ -602,7 +602,7 @@
 
     function cargarCiclosPreventivos() {
         var method = "POST";
-        var url = "BandejaSolicitudesVentas/ObtenerCiclosPreventivos";
+        var url = "Utiles/ListarCicloPreventivo";
         var oValores = {};
         var objParam = JSON.stringify(oValores);
         var fnDoneCallback = function (data) {

@@ -225,5 +225,27 @@ namespace AHSECO.CCL.FRONTEND.Controllers
             };
             return Json(rs);
         }
+
+        [HttpPost]
+        public JsonResult ListarCicloPreventivo()
+        {
+            DatosGeneralesDetalleDTO datosGeneralesDetalleDTO = new DatosGeneralesDetalleDTO();
+            DatosGeneralesDTO datosGenerales = new DatosGeneralesDTO();
+            datosGenerales.Dominio = "CICLOPREV";
+            datosGeneralesDetalleDTO.DatosGenerales = datosGenerales;
+            var datosGeneralesBL = new DatosGeneralesBL();
+            var result = datosGeneralesBL.Obtener(datosGeneralesDetalleDTO);
+            var rs = new
+            {
+                result.Status,
+                result.CurrentException,
+                Result = result.Result.Where(t => t.Habilitado == true).Select(i => new
+                {
+                    Id = i.Parametro,
+                    Text = i.Descripcion
+                })
+            };
+            return Json(rs);
+        }
     }
 }
