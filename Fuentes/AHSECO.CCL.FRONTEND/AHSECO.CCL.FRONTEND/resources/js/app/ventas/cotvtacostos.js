@@ -258,6 +258,10 @@
                 var anchor = tabActivo.childNodes;
                 var href = anchor[1].hash
 
+                var onclick = anchor[1].getAttribute("onclick");
+
+                eval(onclick);
+
                 $(href.toString()).addClass("active in");
             }
         }
