@@ -26,6 +26,7 @@ namespace AHSECO.CCL.BD
                 parameters.Add("isParametro", DatosGeneralesDetalle.Parametro);
                 if (DatosGeneralesDetalle.DatosGenerales != null) { parameters.Add("inCabeceraId", DatosGeneralesDetalle.DatosGenerales.Id); }
                 parameters.Add("inDetalleId", DatosGeneralesDetalle.Id);
+                parameters.Add("inEstado", DatosGeneralesDetalle.Estado);
 
                 var result = connection.Query(
                     sql: "USP_SEL_DATOS_GENERALES_DETALLE",

@@ -146,7 +146,8 @@
         var objDetalles = {
             DatosGenerales: {
                 Id: $cmbCabecera.val()
-            }
+                
+            }, Estado: 2
         };
 
         var m = "POST";

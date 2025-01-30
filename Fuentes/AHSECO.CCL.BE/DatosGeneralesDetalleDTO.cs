@@ -13,7 +13,7 @@ namespace AHSECO.CCL.BE
         public DatosGeneralesDTO DatosGenerales { get; set; }
         public string Parametro { get; set; }
         public string Descripcion { get; set; }
-        public int Estado { get; set; }
+        public int? Estado { get; set; }
         public string Usuario { get; set; }
         public string Valor1 { get; set; }
         public string Valor2 { get; set; }
