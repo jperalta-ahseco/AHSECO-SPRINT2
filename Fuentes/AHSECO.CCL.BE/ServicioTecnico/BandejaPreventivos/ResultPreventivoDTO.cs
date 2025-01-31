@@ -12,7 +12,7 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaPreventivos
         public long Id_Mant {get; set;}
         public string Serie {get; set;}
         public long NumInst { get; set; }
-        public DateTime FechaInstalacion   {get; set;}
+        public string FechaInstalacion   {get; set;}
         public string ProxFechaMant { get; set; }
         public DateTime FechaMantenimiento {get; set;}
         public string UbigeoDest         {get; set;}

@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace AHSECO.CCL.BE.ServicioTecnico.BandejaPreventivos
 {
-    public class GrupoPrevEquipoDTO
+    public class GrupoPrevEquipoDTO : CamposAuditoriaDTO
     {
+        public string TipoProceso { get; set; }
         public CabeceraMantDTO CabeceraCot{ get; set; }
         public EquipoPrevDTO CabeceraEquipo { get; set; }
         public List<MantPreventivoDTO> MantenimientosPreventivos { get; set; }

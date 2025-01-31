@@ -13,9 +13,11 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Net.Cache;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.XPath;
+using static AHSECO.CCL.COMUN.ConstantesDTO;
 
 namespace AHSECO.CCL.BD.ServicioTecnico.BandejaPreventivos
 {
@@ -120,12 +122,25 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaPreventivos
                         _periodos.Add(_periodo);
                     };
 
+                    reader.NextResult();
+                    List<ComboDTO> _garantias = new List<ComboDTO>();
+                    while (reader.Read())
+                    {
+                        var _garantia = new ComboDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("COD")) ? "" : reader.GetString(reader.GetOrdinal("COD")),
+                            Text = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION"))
+                        };
+                        _garantias.Add(_garantia);
+                    }
+
                     result.Clientes = _clientes;
                     result.Empresas = _listEmpresa;
                     result.Estados = _Estados;
                     result.TipoEmpleado = _tipoEmpleado;
                     result.TipoDoc = _tipoDoc;
                     result.Periodos = _periodos;
+                    result.Garantias = _garantias;
                 }
             }
             return result;
@@ -305,6 +320,10 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaPreventivos
                 {
                     parameters.Add("IndCronograma", Utilidades.ParseStringSN<bool?>(req.IndCronograma), DbType.String);
                 }
+                else
+                {
+                    parameters.Add("IndCronograma", req.IndCronograma);
+                }
                 parameters.Add("NUMPAGINAS", req.NumPagina);
                 parameters.Add("PAGINA", req.Pagina);
 
@@ -323,7 +342,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaPreventivos
                         Modelo = i.Single(d => d.Key.Equals("MODELO")).Value.Parse<string>(),
                         Cliente = i.Single(d => d.Key.Equals("NOMEMPRESA")).Value.Parse<string>(),
                         Proceso = i.Single(d => d.Key.Equals("TIPOPROCESO")).Value.Parse<string>(),
-                        FechaInstalacion = i.Single(d => d.Key.Equals("FECHAINSTAL")).Value.Parse<DateTime>(),
+                        FechaInstalacion = i.Single(d => d.Key.Equals("FECHAINSTAL")).Value.Parse<string>(),
                         ProxFechaMant = i.Single(d => d.Key.Equals("PROXFECHAMANT")).Value.Parse<string>(),
                         TotalPrevent = i.Single(d => d.Key.Equals("TOTALPREV")).Value.Parse<int>(),
                         PreventReal = i.Single(d => d.Key.Equals("REALPREV")).Value.Parse<int>(),
@@ -378,7 +397,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaPreventivos
                         Marca = i.Single(d => d.Key.Equals("MARCA")).Value.Parse<string>(),
                         Modelo = i.Single(d => d.Key.Equals("MODELO")).Value.Parse<string>(),
                         Cliente = i.Single(d => d.Key.Equals("NOMEMPRESA")).Value.Parse<string>(),
-                        FechaInstalacion = i.Single(d => d.Key.Equals("FECHAINSTALACION")).Value.Parse<DateTime>(),
+                        FechaInstalacion = i.Single(d => d.Key.Equals("FECHAINSTALACION")).Value.Parse<string>(),
                         ProxFechaMant = i.Single(d => d.Key.Equals("PROXFECHAMANT")).Value.Parse<string>(),
                         TotalPrevent = i.Single(d => d.Key.Equals("TOTALPREVE")).Value.Parse<int>(),
                         PreventReal = i.Single(d => d.Key.Equals("COMPLETADOS")).Value.Parse<int>(),
@@ -498,6 +517,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaPreventivos
                         FecGuia = reader.IsDBNull(reader.GetOrdinal("FECGUIA")) ? "" : reader.GetString(reader.GetOrdinal("FECGUIA")),
                         Val_OTM = reader.IsDBNull(reader.GetOrdinal("VAL_OTM")) ? "" : reader.GetString(reader.GetOrdinal("VAL_OTM")),
                         Val_GUIA = reader.IsDBNull(reader.GetOrdinal("VAL_GUIA")) ? "" : reader.GetString(reader.GetOrdinal("VAL_GUIA")),
+                        NumConstancia = reader.IsDBNull(reader.GetOrdinal("MIG_CONST")) ? "" : reader.GetString(reader.GetOrdinal("MIG_CONST")),
                         Estado = reader.IsDBNull(reader.GetOrdinal("ESTADO")) ? "" : reader.GetString(reader.GetOrdinal("ESTADO")),
                         CodEstado = reader.IsDBNull(reader.GetOrdinal("CODESTADO")) ? "" : reader.GetString(reader.GetOrdinal("CODESTADO"))
                     };
@@ -709,11 +729,11 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaPreventivos
                         PrevPendientes = reader.IsDBNull(reader.GetOrdinal("PEND_PREV")) ? 0 : reader.GetInt32(reader.GetOrdinal("PEND_PREV")),
                         PrevCompletados = reader.IsDBNull(reader.GetOrdinal("EJEC_PREV")) ? 0 : reader.GetInt32(reader.GetOrdinal("EJEC_PREV")),
                         FechaVencimientoGar = reader.GetDateTime(reader.GetOrdinal("FECHA_FIN_GAR")),
-                        Garantia_Anual = reader.IsDBNull(reader.GetOrdinal("GAR_ANUAL")) ? 0 : reader.GetInt32(reader.GetOrdinal("GAR_ANUAL")),
-                        Garantia_Mensual = reader.IsDBNull(reader.GetOrdinal("GAR_MESES")) ? 0 : reader.GetInt32(reader.GetOrdinal("GAR_MESES")),
+                        Garantia = reader.IsDBNull(reader.GetOrdinal("CODGARANTIA")) ? "" : reader.GetString(reader.GetOrdinal("CODGARANTIA")),
                         Periodo = reader.IsDBNull(reader.GetOrdinal("CODPERIODO")) ? "" : reader.GetString(reader.GetOrdinal("CODPERIODO")),
                         DiasDiff = reader.IsDBNull(reader.GetOrdinal("DIFDIAS")) ? 0 : reader.GetInt32(reader.GetOrdinal("DIFDIAS")),
                         DiasTranscurridos = reader.IsDBNull(reader.GetOrdinal("DIASTRANCURRIDOS")) ? 0 : reader.GetInt32(reader.GetOrdinal("DIASTRANCURRIDOS")),
+                        Observacion = reader.IsDBNull(reader.GetOrdinal("OBSERVACION")) ? "" : reader.GetString(reader.GetOrdinal("OBSERVACION"))
                     };
 
                     reader.NextResult();
@@ -737,6 +757,81 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaPreventivos
                 }
                 return result;
             }
+        }
+
+        public RespuestaDTO MantPrevMigrados(GrupoPrevEquipoDTO req)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using (var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+                var parameters = new DynamicParameters();
+                parameters.Add("IsTipoProceso", req.TipoProceso);
+                parameters.Add("IsID_MANT", req.CabeceraEquipo.Id_Mant);
+                parameters.Add("IsSERIE", req.CabeceraEquipo.Serie);
+                parameters.Add("IsDESC_EQUIPO",req.CabeceraEquipo.Descripcion);
+                parameters.Add("IsCODEQUIPO_NUEVO", req.CabeceraEquipo.CodItem);
+                parameters.Add("IsMARCA",req.CabeceraEquipo.DesMarca);
+                parameters.Add("IsMODELO",req.CabeceraEquipo.Modelo);
+                parameters.Add("IsCODGARANTIA_NUEVO", req.CabeceraEquipo.Garantia);
+                parameters.Add("IsFECHA_FIN_GAR",req.CabeceraEquipo.FechaVencimientoGar);
+                parameters.Add("IsCODPERIODO",req.CabeceraEquipo.Periodo);
+                parameters.Add("IsTOTAL_PREV",req.CabeceraEquipo.TotalPrev);
+                parameters.Add("IsEJEC_PREV",req.CabeceraEquipo.PrevCompletados);
+                parameters.Add("IsPEND_PREV",req.CabeceraEquipo.PrevPendientes);
+                parameters.Add("IsFECHA_INSTAL",req.CabeceraEquipo.FechaInstalacion);
+                parameters.Add("IsNOMEMPRESA",req.CabeceraCot.RazonSocial);
+                parameters.Add("IsRUC_NUEVO",req.CabeceraCot.Ruc);
+                parameters.Add("IsPROCESO",req.CabeceraCot.NumProceso);
+                parameters.Add("IsNOM_DESTINO",req.CabeceraEquipo.UbigeoDest);
+                parameters.Add("IsUsrEjecuta",req.UsuarioRegistra);
+
+                var result = connection.Query(
+                    sql: "USP_MANT_MIGRADOS"
+                    , param: parameters
+                    , commandType: CommandType.StoredProcedure
+                    ).Select(s => s as IDictionary<string, object>
+                    ).Select(i => new RespuestaDTO()
+                    {
+                        Codigo = i.Single(d => d.Key.Equals("COD")).Value.Parse<int>(),
+                        Mensaje = i.Single( d => d.Key.Equals("MSG")).Value.Parse<string>()
+                    }).FirstOrDefault();
+                connection.Close();
+                return result;
+            }
+        }
+
+        public RespuestaDTO GenerarCronograma(EquipoPrevDTO equipo)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using ( var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+                var parameters = new DynamicParameters();
+                parameters.Add("IsID_MANT", equipo.Id_Mant );
+                parameters.Add("IsFECHA_INSTAL", equipo.FechaInstalacion);
+                parameters.Add("IsSERIE", equipo.Serie);
+                parameters.Add("IsCODPERIODO", equipo.Periodo);
+                parameters.Add("IsTOTAL_PREV", equipo.TotalPrev);
+                parameters.Add("IsEJEC_PREV", equipo.PrevCompletados);
+                parameters.Add("IsUsrEjecuta", equipo.UsuarioRegistra);
+
+                var result = connection.Query(
+                    sql: "USP_PREV_GENERA_CRONOGRAMA"
+                    , param: parameters
+                    , commandType: CommandType.StoredProcedure
+                    ).Select(s => s as IDictionary<string, object>)
+                    .Select(i => new RespuestaDTO()
+                    {
+                        Codigo = i.Single(d => d.Key.Equals("COD")).Value.Parse<int>(),
+                        Mensaje = i.Single(d => d.Key.Equals("MSG")).Value.Parse<string>()
+                    }).FirstOrDefault();
+
+                connection.Close();
+
+                return result;
+            }
+
         }
     }
 }

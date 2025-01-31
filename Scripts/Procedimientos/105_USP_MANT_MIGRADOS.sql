@@ -1,0 +1,93 @@
+USE [DB_AHSECO]
+GO
+
+
+CREATE OR ALTER PROCEDURE [dbo].[USP_MANT_MIGRADOS]
+(
+/*=======================================================================================================
+	Nombre:				Fecha:			Descripcion:
+	Diego Bazalar		16.01.25		Se realiza los mantenimientos de los migrados. 
+	[USP_MANT_MIGRADOS]
+  =======================================================================================================*/
+	@IsTipoProceso			CHAR(1)
+	,@IsID_MANT				BIGINT
+	,@IsSERIE				VARCHAR(200)
+	,@IsDESC_EQUIPO			VARCHAR(200)
+	,@IsCODEQUIPO_NUEVO		VARCHAR(35)
+	,@IsMARCA				VARCHAR(150)
+	,@IsMODELO				VARCHAR(200)
+	,@IsCODGARANTIA_NUEVO	NVARCHAR(20)
+	,@IsFECHA_FIN_GAR		DATETIME
+	,@IsCODPERIODO			VARCHAR(10)
+	,@IsTOTAL_PREV			INT
+	,@IsEJEC_PREV			INT
+	,@IsPEND_PREV			INT
+	,@IsFECHA_INSTAL		DATETIME
+	,@IsNOMEMPRESA			VARCHAR(200)
+	,@IsRUC_NUEVO			VARCHAR(12)
+	,@IsPROCESO				VARCHAR(50)
+	,@IsNOM_DESTINO			VARCHAR(40)
+	,@IsUsrEjecuta			NVARCHAR(50)
+)
+AS
+BEGIN
+SET NOCOUNT ON
+
+	DECLARE @COD INT, @MSG VARCHAR(100),@IsID_MIG BIGINT
+
+	SELECT 
+		TOP 1 @IsID_MIG = MIG.ID
+	FROM [dbo].[TBM_MIGRACION_PREV] MIG WITH(NOLOCK)
+	LEFT JOIN [dbo].[TBM_MANT_PREV] MANT WITH(NOLOCK) ON MIG.MIG_SERIE = MANT.SERIE
+	WHERE MANT.ID_MANT = @IsID_MANT
+
+	IF (@IsID_MIG IS NULL) --En caso de no existir la correlación con serie, utilizamos el cod_equipo
+	BEGIN
+		SELECT 
+			TOP 1 @IsID_MIG = MIG.ID
+		FROM [dbo].[TBM_MIGRACION_PREV] MIG WITH(NOLOCK)
+		LEFT JOIN [dbo].[TBM_MANT_PREV] MANT WITH(NOLOCK) ON MIG.MIG_ID_EQUIPO = MANT.MIG_ID_EQUIPO
+		WHERE MANT.ID_MANT = @IsID_MANT
+	END
+
+	IF(@IsTipoProceso = 'U')
+	BEGIN
+		UPDATE [dbo].[TBM_MIGRACION_PREV]
+		SET
+			MIG_SERIE			= @IsSERIE
+			,MIG_DESC_EQUIPO	= @IsDESC_EQUIPO
+			,CODEQUIPO_NUEVO	= @IsCODEQUIPO_NUEVO
+			,MIG_MARCA			= @IsMARCA
+			,MIG_MODELO			= @IsMODELO
+			,CODGARANTIA_NUEVO	= @IsCODGARANTIA_NUEVO
+			,MIG_FECHA_FIN_GAR	= @IsFECHA_FIN_GAR
+			,MIG_CODPERIODO		= @IsCODPERIODO
+			,MIG_TOTAL_PREV		= @IsTOTAL_PREV
+			,MIG_EJEC_PREV		= @IsEJEC_PREV
+			,MIG_PEND_PREV		= @IsPEND_PREV
+			,MIG_FECHA_INSTAL	= @IsFECHA_INSTAL
+			,MIG_NOMEMPRESA		= @IsNOMEMPRESA
+			,RUC_NUEVO			= @IsRUC_NUEVO
+			,MIG_PROCESO		= @IsPROCESO
+			,MIG_NOM_DESTINO	= @IsNOM_DESTINO
+			,USR_MOD			= @IsUsrEjecuta
+			,FEC_MOD			= GETDATE()
+		WHERE ID = @IsID_MIG
+
+		IF @@ROWCOUNT = 0
+		BEGIN
+			SET @MSG = 'Error al realizar la inserción en la tabla [TBM_MIGRACION_PREV]'
+			SET @COD = 0
+		END
+		ELSE
+		BEGIN
+			SET @MSG = 'Registro realizado con éxito'
+			SET @COD = @IsID_MIG
+		END
+	END
+
+	SELECT @COD COD, @MSG MSG
+
+SET NOCOUNT OFF
+END
+

@@ -7,6 +7,7 @@ using AHSECO.CCL.COMUN;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -115,6 +116,21 @@ namespace AHSECO.CCL.BL.ServicioTecnico.BandejaPreventivos
             }
         }
 
+        public ResponseDTO<RespuestaDTO> MantPrevMigrados(GrupoPrevEquipoDTO req)
+        {
+            try
+            {
+                var result = Repository.MantPrevMigrados(req);
+                return new ResponseDTO<RespuestaDTO>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<RespuestaDTO>(ex);
+            }
+        }
+
+
         public ResponseDTO<RespuestaDTO> MantPreventivos(ReqPreventivoDTO req)
         {
             try
@@ -194,6 +210,20 @@ namespace AHSECO.CCL.BL.ServicioTecnico.BandejaPreventivos
                 return new ResponseDTO<RespuestaDTO>(result);
             }
             catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<RespuestaDTO>(ex);
+            }
+        }
+
+        public ResponseDTO<RespuestaDTO> GenerarCronograma(EquipoPrevDTO equipo)
+        {
+            try
+            {
+                var result = Repository.GenerarCronograma(equipo);
+                return new ResponseDTO<RespuestaDTO>(result);
+            }
+            catch(Exception ex)
             {
                 Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
                 return new ResponseDTO<RespuestaDTO>(ex);

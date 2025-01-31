@@ -10,6 +10,7 @@
     var estadoMant = VariableSesion.getCadena("EstadoPrev");
     var idMant = VariableSesion.getCadena("IdMant");
     var ruc = VariableSesion.getCadena("RucEmpresa");
+    var IndMigracion = VariableSesion.getCadena("Migracion");
 
     var visualizar = false;
 
@@ -26,6 +27,8 @@
 <input hidden id="estadoMant" value="@estadoMant" />
 <input hidden id="idMantPadre" value="@idMant" />
 <input hidden id="ruc" value="@ruc" />
+<input hidden id="indMigracion" value="@IndMigracion" />
+
 
 <div class="container-fluid">
     @if (numPreventivo == "")
@@ -147,6 +150,18 @@
                                         </div>
                                     </div>
                                 </div>
+
+                            }
+                            @if(IndMigracion == "2")
+                            {
+                               <div class="row container-fluid" id="rowConstancia" style="display:none">
+                                   <div class="col-md-3 col-sm-12">
+                                       <label for="txtNumConstancia">Constancia: </label>
+                                       <div class="form-group">
+                                           <input disabled placeholder="--N° de Constancia--" type="text" class="form-control input-sm" id="txtNumConstancia" value="">
+                                       </div>
+                                   </div>
+                               </div>
                             }
                         </form>
                     </div>
@@ -267,7 +282,10 @@
                                                 <div class="text-right">
                                                     <span id="hidden_fields"></span>
                                                     <button class="btn btn-primary btn-sm" type="button" id="btnNuevoContacto" data-toggle="modal" data-target="#modalModificarContacto"><i class="fa fa-plus"></i> Nuevo Contacto</button>
-                                                    <button class="btn btn-primary btn-sm" type="button" id="btnSelectContacto" data-toggle="modal" data-target="#modalContactos"><i class="fa fa-plus"></i> Seleccionar Contacto</button>
+                                                    @if (IndMigracion == "1")
+                                                    {
+                                                        <button class="btn btn-primary btn-sm" type="button" id="btnSelectContacto" data-toggle="modal" data-target="#modalContactos"><i class="fa fa-plus"></i> Seleccionar Contacto</button>
+                                                    }
                                                 </div>
                                             }
                                             <br />

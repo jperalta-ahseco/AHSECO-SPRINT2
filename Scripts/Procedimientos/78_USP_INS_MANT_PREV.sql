@@ -6,7 +6,7 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_INS_MANT_PREV]
 /*=======================================================================================================
 	Nombre:				Fecha:			Descripcion:
 	Diego Bazalar		26.11.24		Realiza el insert de los mantenimientos a realizarce después de acabar la instalación técnica.
-	EXEC [USP_INS_MANT_PREV] 2, 'admin'
+	EXEC [USP_INS_MANT_PREV] 3, 'admin'
   =======================================================================================================*/
 	@isIdSolicitud BIGINT
 	,@UsrEjecuta NVARCHAR(50)
@@ -162,7 +162,7 @@ SET NOCOUNT ON
 			--select * FROM #CostosFinal
 
 			/*Se arma los datos que se insertarán en la tabla*/---------------------------------------------------------------------------------------------------------
-			INSERT INTO [TBM_MANT_PREV](SERIE,NOMEMPRESA,ORDENCOMPRA,NUMPROCESO,TIPOPROCESO,NUMFIANZA,FECHAINSTALACION,UBIGEODEST,DIRECCION,USR_REG, FEC_REG)
+			INSERT INTO [TBM_MANT_PREV](SERIE,NOMEMPRESA,ORDENCOMPRA,NUMPROCESO,TIPOPROCESO,NUMFIANZA,FECHAINSTALACION,UBIGEODEST,DIRECCION,MIGRADO,USR_REG, FEC_REG)
 			SELECT
 				NUMSERIE
 				,RAZONSOCIAL
@@ -173,6 +173,7 @@ SET NOCOUNT ON
 				,FECHAINSTALACION
 				,CODUBIGEODEST
 				,DIRECCION
+				,'N'
 				,USR_REG
 				,FEC_REG
 			FROM #tmpDespachoParcial desp

@@ -187,6 +187,16 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
             var result = preventivoBL.MantTecnicosPrev(tecnico);
             return Json(result);
         }
+
+        public JsonResult MantPrevMigrados(GrupoPrevEquipoDTO req)
+        {
+            var preventivoBL = new PreventivosBL();
+            req.UsuarioRegistra = User.ObtenerUsuario();
+            var result = preventivoBL.MantPrevMigrados(req);
+            return Json(result);
+
+        }
+
         public JsonResult ObtenerMainMant(long NumMant)
         {
             var preventivoBL = new PreventivosBL();
@@ -713,8 +723,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
 
                 cell = row.CreateCell(cellnum++);
                 cell.CellStyle = styleDate;
-                DateTime fechaRegistro = DateTime.Parse(item.FechaInstalacion.ToString("dd/MM/yyyy"));
-                cell.SetCellValue(fechaRegistro);
+                cell.SetCellValue(item.FechaInstalacion);
 
                 cell = row.CreateCell(cellnum++);
                 cell.SetCellValue(item.ProxFechaMant);
@@ -836,6 +845,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
             return Json(result);
         }
 
+        #region Contactos
         public JsonResult EliminarContacto(ContactoPrevDTO contacto)
         {
             var preventivoBL = new PreventivosBL();
@@ -877,6 +887,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
             return Json(result);
         }
 
+        #endregion
+
         #region Tecnico/Empleados
         public JsonResult ObtenerTecnico(FiltroEmpleadosDTO filtroEmpleadosDTO)
         {
@@ -888,6 +900,225 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
 
         #endregion
 
+        #region Migracion
+
+        public JsonResult GenerarCronograma(EquipoPrevDTO equipo)
+        {
+            var preventivoBL = new PreventivosBL();
+            equipo.UsuarioRegistra = User.ObtenerUsuario();
+            var result = preventivoBL.GenerarCronograma(equipo);
+            return Json(result);
+
+        }
+
+        public void GenerarReporteMigrados(ReqPreventivoDTO req)
+        {
+            var preventivoBL = new PreventivosBL();
+            req.NumPagina = -1; //traemos todos los registros
+            var preventivos = preventivoBL.ObtenerPreventivosMigrados(req).Result.ToList();
+
+            var hssfworkbook = new HSSFWorkbook();
+            ISheet sh = hssfworkbook.CreateSheet("Mant. Preventivos Migrados");
+
+            // Creacion del estilo
+            var fontbold = hssfworkbook.CreateFont();
+            fontbold.Boldweight = (short)FontBoldWeight.Bold;
+            fontbold.Color = HSSFColor.White.Index;
+            fontbold.FontHeightInPoints = 8;
+            fontbold.FontName = "Arial";
+
+            var style = hssfworkbook.CreateCellStyle();
+            style.SetFont(fontbold);
+            style.BorderBottom = BorderStyle.Thin;
+            style.BorderTop = BorderStyle.None;
+            style.BorderRight = BorderStyle.None;
+            style.BorderLeft = BorderStyle.None;
+            style.FillForegroundColor = HSSFColor.Red.Index;
+            style.FillPattern = FillPattern.SolidForeground;
+
+            var fontBoldII = hssfworkbook.CreateFont();
+            fontBoldII.Boldweight = (short)FontBoldWeight.Bold;
+            fontBoldII.Color = HSSFColor.DarkBlue.Index;
+            fontBoldII.FontHeightInPoints = 8;
+            fontBoldII.FontName = "Arial";
+
+            var styleII = hssfworkbook.CreateCellStyle();
+            styleII.SetFont(fontBoldII);
+            styleII.BorderBottom = BorderStyle.Thin;
+            styleII.BorderTop = BorderStyle.None;
+            styleII.BorderRight = BorderStyle.None;
+            styleII.BorderLeft = BorderStyle.None;
+            styleII.FillForegroundColor = HSSFColor.Yellow.Index;
+            styleII.FillPattern = FillPattern.SolidForeground;
+
+            IDataFormat dataFormatCustom = hssfworkbook.CreateDataFormat();
+            var styleDate = hssfworkbook.CreateCellStyle();
+            styleDate.DataFormat = dataFormatCustom.GetFormat("dd/MM/yyyy");
+
+            var styleIII = hssfworkbook.CreateCellStyle();
+            styleIII.SetFont(fontbold);
+            styleIII.BorderBottom = BorderStyle.Thin;
+            styleIII.BorderTop = BorderStyle.None;
+            styleIII.BorderRight = BorderStyle.None;
+            styleIII.BorderLeft = BorderStyle.None;
+            styleIII.FillForegroundColor = HSSFColor.Red.Index;
+            styleIII.FillPattern = FillPattern.SolidForeground;
+            styleIII.DataFormat = dataFormatCustom.GetFormat("dd/MM/yyyy");
+
+
+            // Impresion de cabeceras
+            int rownum = 0;
+            int cellnum = 0;
+            IRow row = sh.CreateRow(rownum++);
+            ICell cell;
+
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
+            cell.SetCellValue("Número de Mantenimiento");
+
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
+            cell.SetCellValue("Número de ID - EQUIPO");
+
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
+            cell.SetCellValue("Número de Serie");
+
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
+            cell.SetCellValue("Nombre de Equipo");
+
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
+            cell.SetCellValue("Marca");
+
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
+            cell.SetCellValue("Modelo");
+
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
+            cell.SetCellValue("Nombre de Empresa");
+
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
+            cell.SetCellValue("Tipo de Proceso");
+
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
+            cell.SetCellValue("Fecha de Instalación");
+
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
+            cell.SetCellValue("Próxima Fecha de Mantenimiento");
+
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
+            cell.SetCellValue("Total de Preventivos");
+
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
+            cell.SetCellValue("Preventivos Completados");
+
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
+            cell.SetCellValue("Preventivos Pendientes");
+
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
+            cell.SetCellValue("Destino");
+
+            cell = row.CreateCell(cellnum++);
+            cell.CellStyle = style;
+            cell.SetCellValue("Razón Social");
+
+
+            //// Impresión de la data
+            foreach (var item in preventivos)
+            {
+                cellnum = 0;
+                row = sh.CreateRow(rownum++);
+
+
+                cell = row.CreateCell(cellnum++);
+                cell.SetCellValue(item.Id_Mant);
+
+                cell = row.CreateCell(cellnum++);
+                cell.SetCellValue(item.Id_Equipo.ToString());
+
+                cell = row.CreateCell(cellnum++);
+                cell.SetCellValue(item.Serie);
+
+                cell = row.CreateCell(cellnum++);
+                cell.SetCellValue(item.Descripcion);
+
+                cell = row.CreateCell(cellnum++);
+                cell.CellStyle = styleDate;
+                cell.SetCellValue(item.Marca);
+
+                cell = row.CreateCell(cellnum++);
+                cell.SetCellValue(item.Modelo);
+
+                cell = row.CreateCell(cellnum++);
+                cell.SetCellValue(item.Cliente);
+
+                cell = row.CreateCell(cellnum++);
+                cell.SetCellValue(item.Proceso);
+
+                cell = row.CreateCell(cellnum++);
+                cell.SetCellValue(item.FechaInstalacion);
+
+                cell = row.CreateCell(cellnum++);
+                cell.SetCellValue(item.ProxFechaMant);
+
+
+                cell = row.CreateCell(cellnum++);
+                cell.SetCellValue(item.TotalPrevent);
+
+
+                cell = row.CreateCell(cellnum++);
+                cell.SetCellValue(item.PreventReal);
+
+
+                cell = row.CreateCell(cellnum++);
+                cell.SetCellValue(item.PreventPend);
+
+
+                cell = row.CreateCell(cellnum++);
+                cell.SetCellValue(item.UbigeoDest);
+
+
+                cell = row.CreateCell(cellnum++);
+                cell.SetCellValue(item.RazonSocial);
+
+                sh.SetColumnWidth(0, 20 * 256);
+                sh.SetColumnWidth(1, 20 * 256);
+                sh.SetColumnWidth(2, 20 * 256);
+                sh.SetColumnWidth(3, 20 * 256);
+                sh.SetColumnWidth(4, 20 * 256);
+                sh.SetColumnWidth(5, 20 * 256);
+                sh.SetColumnWidth(6, 20 * 256);
+                sh.SetColumnWidth(7, 20 * 256);
+                sh.SetColumnWidth(8, 20 * 256);
+                sh.SetColumnWidth(9, 20 * 256);
+                sh.SetColumnWidth(10, 20 * 256);
+                sh.SetColumnWidth(10, 20 * 256);
+                sh.SetColumnWidth(10, 20 * 256);
+                sh.SetColumnWidth(10, 20 * 256);
+
+
+            }
+
+            var filename = "REPORTE" + DateTime.Now.ToString("ddMMyyyyHHmmss") + ".xls";
+            Response.AddHeader("content-disposition", "attachment; filename=" + filename);
+            Response.ContentType = "application/vnd.ms-excel";
+
+            Stream outStream = Response.OutputStream;
+            hssfworkbook.Write(outStream);
+            outStream.Close();
+            Response.End();
+        }
+        #endregion
 
     }
 }

@@ -72,6 +72,9 @@
     var $openRegdateVencGarantia = $('#openRegdateVencGarantia');
     var $numGarantiaAnual = $('#numGarantiaAnual');
     var $numGarantiaMensual = $('#numGarantiaMensual');
+    var $cmbGarantia = $('#cmbGarantia');
+    var $txtObservacion = $('#txtObservacion');
+    var $row_txtArea = $('#row_txtArea');
 
     //Btns
     var $searchSolVenta = $('#searchSolVenta');
@@ -225,40 +228,36 @@
     let rptaFinal = 0;
     function Initializer() {
         cargarTipoDoc();
+        CargarTipoDocumento(6);
+        if ($indMigracion.val() == "2") {
+            ObtenerFiltrosPreventivos();
+        };
         $btnRegresar.click(btnRegresarClick);
         $btnAgregarObservacion.click($modalObservacionClick);
         $btnAgregarDocumento.click($modalCargaDocumentoClick);
         $btnBuscarTecnicos.click(BuscarTecnicos);
         $btnGuardarObservacionReq.click(GuardarObservacionReqClick);
         $btnAñadirTecnico.click(AgregarTecnicoExterno);
-        $openRegdateMant.click($openRegdateMantClick);
+        //$openRegdateMant.click($openRegdateMantClick);
         $openRegdateVencGarantia.click($openRegdateVencGarantiaClick);
         $btnGuardarPrev.click(GuardarMantPreventivo);
         $btnGenCronograma.click(GenerarCronograma);
 
-        CargarTipoDocumento(6);
         registroPreventivos.contadorObservaciones = 0;
         registroPreventivos.mantenimientos = [];
         registroPreventivos.tecnicosAsig = [];
-        if ($indMigracion.val() == "2") {
-            ObtenerFiltrosPreventivos();
-        };
 
         $dateVencGarantia.datepicker({
             viewMode: 0,
             minViewMode: 0,
-            format: 'dd/mm/yyyy',
-            startDate: hoy()
+            format: 'dd/mm/yyyy'
         });
 
-        $txtFechaInstall.datepicker({
-            viewMode: 0,
-            minViewMode: 0,
-            format: 'dd/mm/yyyy',
-            startDate: hoy()
-        });
+        if ($indMigracion.val() == "1") {
+            cargarDatos();
+        };
 
-        setTimeout(cargarDatos(), 10000);
+        
     };
     function CargarTipoDocumento(codFlujo) {
         var method = "POST";
@@ -276,11 +275,19 @@
     }
 
 
-    function $openRegdateMantClick() {
-        $txtFechaInstall.focus();
-    }
-    function btnRegresarClick(){
-        app.redirectTo("BandejaPreventivo");
+    //function $openRegdateMantClick() {
+    //    $txtFechaInstall.focus();
+    //}
+    function btnRegresarClick() {
+        if ($indMigracion.val() == "1") {
+            app.redirectTo("BandejaPreventivo");
+        }
+        else if ($indMigracion.val() == "2") {
+            var fnSi = function () {
+                app.redirectTo("BandejaPreventivo");
+            };
+            return app.message.confirm("Confirmación", "Al regresar perderá todos los cambios que no hayan sido guardados, ¿Desea retroceder?", "Sí", "No", fnSi);
+        }
     }
 
     function $modalObservacionClick() {
@@ -293,28 +300,34 @@
 
     function GuardarMantPreventivo() {
         var method = "POST";
-        var url = "";
+        var url = "BandejaPreventivo/MantPrevMigrados";
         var obj = {
-            Ruc: $txtRuc.val()
-            , RazonSocial: $txtNomEmpresa.val()
-            , Proceso: $txtNumProceso.val()
-            , CodItem: $txtCodEquipo.val()
-            , DescItem: $txtDescEquipo.val()
-            , Marca: $txtMarcaEquipo.val()
-            , FechaInstal: $txtFechaInstall.val()
-            , Modelo: $txtModeloEquipo.val()
-            , Serie: $txtNumSerie.val()
-            , Destino: $txtUbiDestino.val()
-            , Periodo: $cmbPeriodo.val()
-            , MantTotal: $MantTotales.val()
-            , MantoCompletados: $MantCompletados.val()
-            , MantPendientes: $MantPendientes.val()
-            , GarantiaAnual: $numGarantiaAnual.val()
-            , GarantiaMensual: $numGarantiaMensual.val()
+            TipoProceso: "U",
+            CabeceraEquipo: {
+                  Id_Mant: $numMant.val()
+                , Serie: $txtNumSerie.val()
+                , CodItem: $txtCodEquipo.val()
+                , Descripcion: $txtDescEquipo.val()
+                , DesMarca: $txtMarcaEquipo.val()
+                , Modelo: $txtModeloEquipo.val()
+                , FechaVencimientoGar: $dateVencGarantia.val()
+                , Periodo: $cmbPeriodo.val()
+                , TotalPrev: $MantTotales.val()
+                , PrevCompletados: $MantCompletados.val()
+                , PrevPendientes: $MantPendientes.val()
+                , FechaInstalacion: $txtFechaInstall.val()
+                , UbigeoDest: $txtUbiDestino.val()
+                , Garantia: $cmbGarantia.val()
+            },
+            CabeceraCot: {
+                Ruc: $txtRuc.val()
+                , RazonSocial: $txtNomEmpresa.val()
+                , NumProceso: $txtNumProceso.val()
+            }
+            
         };
 
         var objParam = JSON.stringify(obj);
-
 
         var fnSi = function () {
             var fnDoneCallBack = function () {
@@ -336,10 +349,64 @@
             return;
         };
 
+        if ($txtNumSerie.val() == "" || $txtNumSerie.val() == undefined || $txtNumSerie.val().trim().length == 0) {
+            app.message.error("Validación", "Es necesario registrar el número de serie para generar el cronograma");
+            return;
+        };
+
         if ($cmbPeriodo.val() == "" || $cmbPeriodo.val() == "0" || $cmbPeriodo.val() == undefined) {
             app.message.error("Validación", "Es necesario registrar el campo 'Periodo' para poder generar el cronograma");
             return;
         };
+
+        if ($MantTotales.val() == 0 || $MantTotales.val() == undefined || $MantTotales.val() < 0) {
+            app.message.error("Validación", "El número de mantenimientos totales debe de ser mayor a 0");
+            return;
+        };
+
+        if ($MantCompletados.val() > $MantTotales.val()) {
+            app.message.error("Validación", "El número de mantenimientos completados debe ser menor que el número de preventivos totales")
+            return;
+        };
+
+        var method = "POST";
+        var url = "BandejaPreventivo/GenerarCronograma";
+        var objMant = {
+            Id_Mant: $numMant.val()
+            , FechaInstalacion: $txtFechaInstall.val()
+            , Serie: $txtNumSerie.val()
+            , TotalPrev: $MantTotales.val()
+            , PrevCompletados: $MantCompletados.val()
+            , Periodo: $cmbPeriodo.val()
+        };
+
+        var objParam = JSON.stringify(objMant);
+
+        var fnSi = function () {
+            var fnDoneCallBack = function (data) {
+
+                var redirect = function () {
+                    location.reload();
+                };
+
+                if (data.Result.Codigo == -1) {
+                    app.message.error("Validación", "El número de serie ya ha sido registrado");
+                    return;
+                } else if (data.Result.Codigo == 0) {
+                    app.message.error("Validación", "Ocurrió un error al generar el cronograma");
+                }
+                else {
+                    app.message.success("Éxito", "Se realizó la generación del cronograma", "Aceptar", redirect);
+                };
+            };
+
+            var fnFailCallBack = function () {
+                app.message.error("Error", "Se produción un error al generar el cronograma, por favor revisar");
+            };
+
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null);
+        };
+        return app.message.confirm("Confirmación", "¿Desea generar el cronograma de mantenimientos preventivos?", "Sí", "No", fnSi, null);
     };
 
     function $openRegdateVencGarantiaClick() {
@@ -393,13 +460,16 @@
             filters.allowClear = false;
 
             app.llenarComboMultiResult($cmbPeriodo, data.Result.Periodos, null, "0", "--Seleccionar--", filters);
+            app.llenarComboMultiResult($cmbGarantia, data.Result.Garantias, null, "", "--Seleccionar--", filters);
+
+            cargarDatos();
         };
 
         var fnFailCallBack = function () {
             app.message.error("Validacion", "Ocurrió un problema al cargar los filtros de la bandeja. ")
         };
 
-        app.llamarAjax(method, url, null, fnDoneCallBack, fnFailCallBack, null, null)
+        return app.llamarAjax(method, url, null, fnDoneCallBack, fnFailCallBack, null, null)
     };
 
 
@@ -640,6 +710,22 @@
         $txtPrevFaltEquipo.val(detalle.PrevPendientes);
         $txtNumSerie.val(detalle.Serie);
         $txtFechaInstall.val(app.obtenerFecha(detalle.FechaInstalacion));
+
+        $txtFechaInstall.datepicker('destroy');
+
+        $txtFechaInstall.datepicker({
+            viewMode: 0,
+            minViewMode: 0,
+            format: 'dd/mm/yyyy'
+        });
+
+        $txtFechaInstall.on('focusout', function () {
+            var defaultvalue = app.obtenerFecha(detalle.FechaInstalacion);
+            if ($txtFechaInstall.val() == null || $txtFechaInstall.val() == "") {
+                $txtFechaInstall.val(defaultvalue); 
+            };
+        });
+
         //$txtFinGarantia.val(app.obtenerFecha(detalle.FechaVencimiento));
         $txtFinGarantia.val(detalle.FechaVencimiento);
         $txtEstadoGarantia.val(detalle.EstadoGarant);
@@ -652,13 +738,66 @@
         $txtPeriodicidad.text('Periodicidad: ' + detalle.Periodo)
         if ($indMigracion.val() == "2") {
             $cmbPeriodo.val(detalle.Periodo).trigger("change.select2");
-            $dateVencGarantia.val(detalle.FechaVencimientoGar).trigger("change.select2");
+
+            if (detalle.Periodo != "") {
+                $cmbPeriodo.prop('disabled', true);
+            };
+
+            $dateVencGarantia.val(detalle.FechaVencimientoGar);
+
+            $cmbGarantia.val(detalle.Garantia).trigger("change.select2");
+
+            $txtFechaInstall.on('change', ajustarFechaVencGaran);
+            $cmbGarantia.on('change', ajustarFechaVencGaran);
         };
+
         $fechaVencGar.text(detalle.FechaVencimientoGar);
         $diasTransc.text(detalle.DiasTranscurridos);
         $diasVig.text(detalle.DiasDiff);
+        if (detalle.Observacion != "") {
+            $txtObservacion.val(detalle.Observacion);
+            $row_txtArea.css("display", "block");
+        };
         $titleNomProducto.html('<p id="titleNomProducto"><i class="fa fa-cube" aria-hidden="true" style="color:brown"></i> Equipo: ' + detalle.Descripcion +'</p>');
     };
+
+    function ajustarFechaVencGaran() {
+        var periodo = $("#cmbGarantia option:selected").text();
+        var numMeses = periodo.substring(0, periodo.indexOf(" ", 0));
+
+        const partes = $txtFechaInstall.val().split('/');  // Separar la fecha por '/'
+        // Cambiar el formato a yyyy-mm-dd
+        var fecha = `${partes[2]}/${partes[1]}/${partes[0]}`;
+
+        var fechaParseada = new Date(fecha);
+
+        var meses = fechaParseada.getMonth() + 1;
+        var años = fechaParseada.getFullYear();
+        var dias = partes[0];
+
+        var fechaVenGar;
+
+        if (numMeses > 12) {
+            if (numMeses % 12 == 0) {
+                años += Math.floor(numMeses / 12)
+            } else {
+                años += Math.floor(numMeses / 12)
+                meses += (numMeses % 12)
+            }
+        } else {
+            meses += numMeses;
+        };
+
+        if (meses > 12) {
+            años += Math.floor(meses / 12);
+            meses = meses % 12;
+        };
+
+        fechaVenGar = dias + '/' + (meses < 10 ? "0" + meses : meses) + '/' + años
+
+        $dateVencGarantia.val(fechaVenGar);
+    }
+
     function limpiarCuerpoEquipo() {
         $txtCodEquipo.val("");
         $txtDescEquipo.val("");
@@ -894,6 +1033,13 @@
             $MantTotales.val(total.toString());
             $MantCompletados.val(realizados.toString());
             $MantPendientes.val(pendientes.toString());
+            if (realizados > 0) {
+                $MantTotales.prop('disabled', true);
+            };
+
+            if (total > 0) {
+                $MantCompletados.prop('disabled', true);
+            };
         }
     };
     function cargarDatos() {
@@ -940,7 +1086,14 @@
                     Garantia: data.Result.CabeceraEquipo.Garantia,
                     DiasDiff: data.Result.CabeceraEquipo.DiasDiff,
                     DiasTranscurridos: data.Result.CabeceraEquipo.DiasTranscurridos,
+                    Observacion: data.Result.CabeceraEquipo.Observacion
                 };
+
+                if ($indMigracion.val() == "2") {
+                    equipo.Garantia_Anual = data.Result.CabeceraEquipo.Garantia_Anual;
+                    equipo.Garantia_Mensual = data.Result.CabeceraEquipo.Garantia_Mensual;
+                };
+
 
                 cargarCabecera(cabecera);
                 cargarCuerpoEquipo(equipo);
@@ -957,6 +1110,10 @@
                 };
 
                 cargarTablaMantenimientos(registroPreventivos.mantenimientos);
+
+                if (registroPreventivos.mantenimientos.length > 0) {
+                    $btnGenCronograma.css('display', 'none');
+                }
             };
             var fnFailCallBack = function () {
                 app.message.error("Validación", "Hubo un error en obtener el detalle del reclamo.")

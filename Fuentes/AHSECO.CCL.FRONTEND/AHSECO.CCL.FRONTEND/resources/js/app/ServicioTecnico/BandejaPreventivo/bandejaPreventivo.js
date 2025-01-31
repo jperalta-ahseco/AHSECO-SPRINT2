@@ -47,6 +47,9 @@
     /*Buttons*/
     var $btnBuscar = $('#btnBuscar');
     var $btnExportar = $('#btnExportar');
+    var $btnExportarMigrados = $('#btnExportarMigrados');
+
+    var btnCronograma = true;
 
     var $tblMantenimientos = $('#tblMantenimientos');
 
@@ -74,6 +77,7 @@
             startDate: $periodoIni.val()
         });
         $btnExportar.click(btnExportarClick);
+        $btnExportarMigrados.click(btnExportarMigradosClick);
         $periodoIni.datepicker().on("changeDate", changeDateFechaInicialRegFecIni);
 
         $spanSi.on('click', function () {
@@ -87,6 +91,33 @@
 
         if ($indMigracion.val() == "2") {
             $DI_radTieneCronograma_Si.prop('checked', true);
+            $DI_radTieneCronograma_Si.click(function () {
+                if (btnCronograma) {
+                    $DI_radTieneCronograma_Si.prop('checked', false);
+                    btnCronograma = null;
+                } else if (btnCronograma == null) {
+                    $DI_radTieneCronograma_Si.prop('checked', true);
+                    btnCronograma = true;
+                }
+                else {
+                    $DI_radTieneCronograma_Si.prop('checked', true);
+                    btnCronograma = true;
+                }
+            });
+            $DI_radTieneCronograma_No.click(function () {
+                if (btnCronograma) {
+                    $DI_radTieneCronograma_No.prop('checked', true);
+                    btnCronograma = false;
+                }
+                else if (btnCronograma == null) {
+                    $DI_radTieneCronograma_No.prop('checked', true);
+                    btnCronograma = false;
+                }
+                else {
+                    $DI_radTieneCronograma_No.prop('checked', false);
+                    btnCronograma = null;
+                }
+            });
         };
 
         BuscarPreventivos();
@@ -295,21 +326,13 @@
                 NomDestino: $txtDestinoUbi.val() == undefined ? "" : $txtDestinoUbi.val(),
                 Modelo: $txtModelo.val() == undefined ? "" : $txtModelo.val(),
                 NumPagina: 500,
-                Pagina: 1
+                Pagina: 1,
+                IndCronograma: btnCronograma
                 //Estado: $cmbEstado.val() == "" || $cmbEstado.val() == 0 ? "" : $cmbEstado.val(),
             };
         };
 
-        
-
-        if ($indMigracion.val() == "2") {
-            var btnCronograma;
-            if ($DI_radTieneCronograma_Si.is(':checked')) { btnCronograma = true }
-            if ($DI_radTieneCronograma_No.is(':checked')) { btnCronograma = false }
-
-            objConsulta.IndCronograma = btnCronograma;
-        };
-
+       
         var objParam = JSON.stringify(objConsulta);
 
         var fnDoneCallBack = function (data) {
@@ -327,6 +350,37 @@
         app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
 
     }
+
+    function btnExportarMigradosClick(e) {
+
+        var self = jQuery(this);
+        var href = self.attr('href');
+        e.preventDefault();
+        var cant = $tblMantenimientos.DataTable().rows().data().length;
+
+        if (cant === 0) {
+            app.message.error("Reporte de Mantenimientos", "La búsqueda no produjo resultados", "Aceptar");
+            return false;
+        }
+        $("#hidden_fields").empty();
+        $("<input>", { type: "hidden", name: "Id_Equipo", value: $txtIdEquipo.val() == undefined ? "" : $txtIdEquipo.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "NumSerie", value: $txtSerie.val() == undefined ? "" : $txtSerie.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "NumProc", value: $txtNumProc.val() == undefined ? "" : $txtNumProc.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "Empresa", value: $cmbempresa.val() == undefined ? "" : $cmbempresa.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "PeriodoInicio", value: $periodoIni.val().replace("/", ".") }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "PeriodoFinal", value: $periodoFin.val().replace("/", ".") }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "NombreCliente", value: $txtNomCliente.val() == undefined ? "" : $txtNomCliente.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "NomEquipo", value: $txtNomEquipo.val() == undefined ? "" : $txtNomEquipo.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "Marca", value: $txtMarca.val() == undefined ? "" : $txtMarca.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "NomDestino", value: $txtDestinoUbi.val() == undefined ? "" : $txtDestinoUbi.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "Modelo", value: $txtModelo.val() == undefined ? "" : $txtModelo.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "Pagina", value: 1 }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "IndCronograma", value: btnCronograma }).appendTo("#hidden_fields");
+
+        $formPreventivo.attr('action', href);
+        $formPreventivo.submit();
+    };
+
     function btnExportarClick(e) {
 
         var codDepartamento = sessionStorage.getItem('codDepartamento');
@@ -416,7 +470,7 @@
             {
                 data: "FechaInstalacion",
                 render: function (data, type, row) {
-                    return '<center>' + app.obtenerFecha(data) + '</center>'
+                    return '<center>' + data + '</center>'
                 }
             },
             {
@@ -557,7 +611,7 @@
             {
                 data: "FechaInstalacion",
                 render: function (data, type, row) {
-                    return '<center>' + app.obtenerFecha(data) + '</center>'
+                    return '<center>' + data + '</center>'
                 }
             },
             {

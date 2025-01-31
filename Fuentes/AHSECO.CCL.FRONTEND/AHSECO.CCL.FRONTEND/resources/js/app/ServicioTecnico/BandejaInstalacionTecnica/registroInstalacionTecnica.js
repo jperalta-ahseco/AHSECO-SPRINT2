@@ -1704,6 +1704,11 @@
             return;
         };
 
+        if (contactos.length == 0) {
+            app.message.error("Validación", "Es necesario que vincule por lo menos un contacto")
+            return;
+        };
+
         //var fechaHoy = hoy();
 
         //if ($dateSolicitud.val() < fechaHoy) {

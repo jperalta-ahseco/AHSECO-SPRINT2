@@ -48,6 +48,11 @@
     var $colFechaGuia = $('#colFechaGuia');
     var $colNumFact = $('#colNumFact');
     var $colFechaFact = $('#colFechaFact');
+    var $indMigracion = $('#indMigracion');
+    var $txtNumConstancia = $('#txtNumConstancia');
+    var $rowConstancia = $('#rowConstancia');
+
+
 
     var $txtidContacto = $('#txtidContacto');
     var $btnCerrar = $('#btnCerrar');
@@ -241,12 +246,16 @@
         BuscarContactos();
         $spanSi.on('click', function () {
             botonSi();
+            if ($indMigracion.val() == "2") {
+                $txtMontoAcce.prop('disabled', false);
+            };
             $txtMontoAcce.val(detallePreventivo.MantPreventivo.MontoPrestAcce);
         });
 
         $spanNo.on('click', function () {
             botonNo(); 
             $txtMontoAcce.val("0.00");
+            $txtMontoAcce.prop('disabled', true);
         });
 
         $spanCon.on('click', function () {
@@ -742,6 +751,7 @@
         }
 
         $dateFechaMant.prop("disabled", true);
+        $txtMontoAcce.prop('disabled', true);
         //$txtNumOTM.prop('disabled', true);
         $btnFinalizarMant.css('display', 'inline-block');
         $spanSi.css('pointer-events', 'none');
@@ -925,7 +935,11 @@
         if (btnEditr != null) {
             $btnFinalizarMant.css('display', 'none');
             $dateFechaMant.prop('disabled', false);
-            //$txtNumOTM.prop('disabled', false);
+
+            if (indPrest == 1 && $indMigracion.val() == "2") {
+                $txtMontoAcce.prop('disabled', false);
+            };
+
             $spanSi.css('pointer-events', 'auto')
             $spanNo.css('pointer-events', 'auto')
             $spanCon.css('pointer-events', 'auto')
@@ -982,9 +996,9 @@
             Id_Mant: $idMantPadre.val(),
             Id_WorkFlow: 0,
             FechaMantenimiento: $dateFechaMant.val(),
-            //MontoPrestAcce: ($txtMontoAcce.val()).replaceAll(",", ""),
             IndPrestAcce: indPrest,
             IndRepuesto: indRepuesto,
+            MontoPrestAcce: ($txtMontoAcce.val()).replaceAll(",", ""),
             //valOTM: $txtNumOTM.val(),
             Estado: $estadoMant.val()
         };
@@ -1876,29 +1890,33 @@
             {
                 data: "Empresa",
                 render: function (data, type, row) {
-                    if (row.TipoTecnico == "I") {
-                        if (data == "" || data == null) {
-                            return '<center>No definido</center>';
-                        } else {
-                            return '<center>' + data + '</center>';
+                    if (row.TipoTecnico == "" || row.TipoTecnico == null) {
+                        return '<center> No definido </center>'
+                    } else {
+                        if (row.TipoTecnico == "I") {
+                            if (data == "" || data == null) {
+                                return '<center>No definido</center>';
+                            } else {
+                                return '<center>' + data + '</center>';
+                            }
                         }
-                    }
-                    else if (row.TipoTecnico == "E") {
-                        if (data == "" || data == null) {
-                            if ($tipoAccion.val() == "U") {
-                                var html = '';
-                                html += '<div class="form-group">' + '<div class="input-group input-group-sm date">'
-                                    + '<input placeholder="--Empresa--" type="text" class="form-control input-sm" id="txtNomEmpresa' + row.Id + '">';
-                                html += '<a class="input-group-addon input-sm" id="saveEmpresaTecnico' + row.Id + '" href="javascript:detallePreventivo.saveEmpresaTecnico(' + row.Id + ')"" >' +
-                                    '<i class="fa fa-save" aria-hidden="true"></i>' +
-                                    '</a>';
-                                return '<center>' + html + '</center>';
+                        else if (row.TipoTecnico == "E") {
+                            if (data == "" || data == null) {
+                                if ($tipoAccion.val() == "U") {
+                                    var html = '';
+                                    html += '<div class="form-group">' + '<div class="input-group input-group-sm date">'
+                                        + '<input placeholder="--Empresa--" type="text" class="form-control input-sm" id="txtNomEmpresa' + row.Id + '">';
+                                    html += '<a class="input-group-addon input-sm" id="saveEmpresaTecnico' + row.Id + '" href="javascript:detallePreventivo.saveEmpresaTecnico(' + row.Id + ')"" >' +
+                                        '<i class="fa fa-save" aria-hidden="true"></i>' +
+                                        '</a>';
+                                    return '<center>' + html + '</center>';
+                                }
+                                else {
+                                    return '<center>' + 'No definido' + '</center>';
+                                }
+                            } else {
+                                return '<center>' + data + '</center>';
                             }
-                            else {
-                                return '<center>' + 'No definido' + '</center>';
-                            }
-                        } else {
-                            return '<center>' + data + '</center>';
                         }
                     }
                 }
@@ -1950,6 +1968,11 @@
         $dateFechaGuia.val(mantenimiento.FecGuia);
         $txtNumGuia.val(mantenimiento.Val_GUIA);
 
+        if (mantenimiento.NumConstancia != "") {
+            $rowConstancia.css('display', 'block');
+            $txtNumConstancia.val(mantenimiento.NumConstancia);
+        };
+
 
         if ($txtNumFactura.val() != "" && $dateFechaFact.val() != "") {
             $rowFactura.css('display', 'block');
@@ -1993,7 +2016,12 @@
 
         if (mantenimiento.IndPrestacion == true) {
             botonSi();
-            $txtMontoAcce.val(mantenimiento.MontoPrestAcce);
+            if ($indMigracion.val() == "1") {
+                $txtMontoAcce.val(mantenimiento.MontoPrestAcce);
+            }
+            else if($indMigracion.val() == "2"){
+                
+            }
         }
         else if (mantenimiento.IndPrestacion == false) {
             botonNo();
@@ -2069,6 +2097,7 @@
                     MontoPrestAcce: formatoMiles(data.Result.MantPreventivo.MontoPrestAcce.toFixed(2)),
                     IndPrestacion: data.Result.MantPreventivo.IndPrestacion,
                     IndRepuesto: data.Result.MantPreventivo.IndRepuesto,
+                    NumConstancia: data.Result.MantPreventivo.NumConstancia,
                     Estado: data.Result.MantPreventivo.Estado ,
                     CodEstado: data.Result.MantPreventivo.CodEstado
                 };

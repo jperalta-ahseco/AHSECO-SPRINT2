@@ -56,7 +56,7 @@
                             <div class="col-md-4 col-sm-12">
                                 <label for="txtRuc">R.U.C:</label>
                                 <div class="form-group">
-                                    <input @ViewBag.PermiteEditar placeholder="--R.U.C--" type="text" class="form-control input-sm" id="txtRuc" value="" tabindex="1">
+                                    <input @ViewBag.PermiteEditar placeholder="--R.U.C--" type="text" class="form-control input-sm" id="txtRuc" value="" tabindex="1" maxlength="12">
                                 </div>
                             </div>
                             <div class="col-md-4 col-sm-12">
@@ -123,7 +123,7 @@
                                 <div class="col-md-4 col-sm-12">
                                     <label for="txtCodEquipo">Código Equipo:</label>
                                     <div class="form-group">
-                                        <input @ViewBag.PermiteEditar placeholder="--Código Equipo--" type="text" class="form-control input-sm" id="txtCodEquipo" value="" tabindex="7">
+                                        <input @ViewBag.PermiteEditar placeholder="--Código Equipo--" type="text" class="form-control input-sm" id="txtCodEquipo" value="" tabindex="7" maxlength="36">
                                     </div>
                                 </div>
                                 <div class="col-md-4 col-sm-12">
@@ -249,34 +249,34 @@
                             else if (IndMigracion == "2")
                             { 
                             <div class="row container-fluid">
-                                <div class="col-md-6 col-sm-12">
+                                <div class="col-md-6 col-sm-12" style="height: 60px">
                                     <div class="input-group input-group-sm">
                                         <label for="cmbPeriodo">Periodicidad: </label>
-                                        <select class="form-control select2 input-sm" style="width:100%;" id="cmbPeriodo" tabindex="17"></select>
+                                        <select  @ViewBag.PermiteEditar class="form-control select2 input-sm" style="width:100%;" id="cmbPeriodo" tabindex="17"></select>
                                     </div>
                                 </div>
                             </div>
                             <div class="row container-fluid">
-                                <div class="col-md-6 col-sm-12">
+                                <div class="col-md-6 col-sm-12" style="height: 60px">
                                     <div class="input-group input-group-sm">
                                         <label for="txtNumContrato">Total de Preventivos: </label>
-                                        <input type="number" class="form-control" id="MantTotales" placeholder="Total" tabindex="18" aria-describedby="sizing-addon1" />
+                                        <input @ViewBag.PermiteEditar type="number" class="form-control" id="MantTotales" placeholder="Total" tabindex="18" aria-describedby="sizing-addon1" />
                                     </div>
                                 </div>
                             </div>
                             <div class="row container-fluid">
-                                <div class="col-md-6 col-sm-12">
+                                <div class="col-md-6 col-sm-12" style="height: 60px">
                                     <div class="input-group input-group-sm">
                                         <label for="MantCompletados">Mantenimientos Completados: </label>
-                                        <input type="number" class="form-control" id="MantCompletados" placeholder="Mant. Completados" tabindex="19" aria-describedby="sizing-addon1" />
+                                        <input @ViewBag.PermiteEditar type="number" class="form-control" id="MantCompletados" placeholder="Mant. Completados" tabindex="19" aria-describedby="sizing-addon1" />
                                     </div>
                                 </div>
                             </div>
-                            <div class="row container-fluid">
+                            <div class="row container-fluid" style="height: 60px">
                                 <div class="col-md-6 col-sm-12">
                                     <div class="input-group input-group-sm">
                                         <label for="MantPendientes">Mantenimientos Pendientes: </label>
-                                        <input type="number" class="form-control" id="MantPendientes" placeholder="Mant. Pendientes" tabindex="20" aria-describedby="sizing-addon1" />
+                                        <input disabled type="number" class="form-control" id="MantPendientes" placeholder="Mant. Pendientes" tabindex="20" aria-describedby="sizing-addon1" />
                                     </div>
                                 </div>
                             </div>
@@ -307,7 +307,7 @@
                                         <div class="col-md-6 col-sm-12">
                                             <label for="dateVencGarantia">Fecha de Vencimiento de Garantía:</label>
                                             <div class="input-group date">
-                                                <input type="text" class="form-control input-sm" id="dateVencGarantia" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
+                                                <input disabled type="text" class="form-control input-sm" id="dateVencGarantia" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
                                                 <span class="input-group-addon input-sm" id="openRegdateVencGarantia">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
@@ -328,23 +328,15 @@
                                 }
                                 else
                                 {
+                                 <br />
                                     <div class="row container-fluid">
                                         <div class="col-md-6 col-sm-12">
                                             <div class="input-group input-group-sm">
-                                                <label for="numGarantiaAnual">Garantía Anual: </label>
-                                                <input type="number" class="form-control" id="numGarantiaAnual" placeholder="Total" tabindex="18" aria-describedby="sizing-addon1" />
+                                                <label for="cmbGarantia">Garantía: </label>
+                                                <select @ViewBag.PermiteEditar class="form-control select2 input-sm" style="width:100%;" id="cmbGarantia" tabindex="17"></select>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row container-fluid">
-                                        <div class="col-md-6 col-sm-12">
-                                            <div class="input-group input-group-sm">
-                                                <label for="numGarantiaMensual">Garantía Mensual: </label>
-                                                <input type="number" class="form-control" id="numGarantiaMensual" placeholder="Total" tabindex="18" aria-describedby="sizing-addon1" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <br />
                                     <br />
                                 }
 
@@ -355,12 +347,23 @@
                             </div>
                         </div>
                     </div>
+                    @if(IndMigracion == "2")
+                    {
+                       <div class="row container-fluid" id="row_txtArea" style="display:none">
+                           <div class="col-md-6 col-sm-12">
+                                <label for="cmbGarantia">Observaciones Migradas: </label>
+                               <div class="input-group input-group-sm">
+                                   <textarea name="textarea" rows="3" cols="70" disabled id="txtObservacion"></textarea>
+                               </div>
+                           </div>
+                       </div>
+                    }
                     <br />
                     <br />
                     <div class="row container-fluid">
                         <div class="text-right">
                             <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegresar" tabindex="14"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Regresar</button>
-                            @if (IndMigracion == "2")
+                            @if (IndMigracion == "2" && tipoProceso == "U")
                             {
                                 <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnGenCronograma" tabindex="14"><i class="fa fa-table" aria-hidden="true"></i>&nbsp; Generar Cronograma</button>
                                 <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnGuardarPrev" tabindex="15"><i class="fa fa-save" aria-hidden="true"></i>&nbsp; Guardar Cambios</button>

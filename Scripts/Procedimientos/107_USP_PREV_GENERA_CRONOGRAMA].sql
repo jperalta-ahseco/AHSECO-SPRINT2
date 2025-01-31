@@ -1,0 +1,218 @@
+USE [DB_AHSECO]
+GO
+
+
+CREATE OR ALTER PROCEDURE [dbo].[USP_PREV_GENERA_CRONOGRAMA]
+(
+/*=======================================================================================================
+	Nombre:				Fecha:			Descripcion:
+	Diego Bazalar		28.01.25		Se realiza la generación del cronograma.
+	[USP_PREV_GENERA_CRONOGRAMA]
+  =======================================================================================================*/
+	 @IsID_MANT				BIGINT
+	,@IsFECHA_INSTAL		DATETIME
+	,@IsSERIE				VARCHAR(200)
+	,@IsCODPERIODO			VARCHAR(10)
+	,@IsTOTAL_PREV			INT
+	,@IsEJEC_PREV			INT
+	,@IsUsrEjecuta			VARCHAR(50)
+)
+AS
+BEGIN
+SET NOCOUNT ON
+	
+	DECLARE @COD INT, @MSG VARCHAR(100), @SUMA INT, @I INT, @ID_MIG BIGINT, @isTipoProceso INT, @PERFIL VARCHAR(100)
+
+	IF OBJECT_ID('tempdb..#tmpParcial') IS NOT NULL 
+			DROP TABLE #tmpParcial
+	IF OBJECT_ID('tempdb..#tmpIdWorkFlows') IS NOT NULL 
+		DROP TABLE #tmpIdWorkFlows
+	IF OBJECT_ID('tempdb..#tmpPreventivos') IS NOT NULL 
+		DROP TABLE #tmpPreventivos
+
+
+	CREATE TABLE #tmpIdWorkFlows(
+		ID BIGINT IDENTITY (1,1)
+		,ID_WORKFLOW BIGINT
+	)
+
+	CREATE TABLE #tmpWorkFlows(
+		ID BIGINT IDENTITY (1,1)
+		,ID_PROCESO INT
+		,AUDIT_REG_USR NVARCHAR(50)
+		,AUDIT_REG_FEC DATETIME
+	)
+
+	CREATE TABLE #tmpPreventivos(
+		ID BIGINT IDENTITY (1,1)
+		,ID_MANT BIGINT
+		,FECHAINSTALACION DATETIME NULL
+		,FECHAMANTENIMIENTO DATETIME NULL
+	)
+
+	SET @isTipoProceso = 6
+
+	IF EXISTS( SELECT 1 FROM [dbo].[TBM_MANT_PREV] WHERE SERIE = @IsSERIE AND ID_MANT != @IsID_MANT)
+	BEGIN
+
+		SET @COD = -1
+		SET @MSG = 'El numero de serie ya ha sido registrado'
+	END
+	ELSE
+	BEGIN
+		SELECT @PERFIL=ISNULL(C.DESCRIPCION,'') FROM TBM_SEGURIDAD_USUARIO A WITH(NOLOCK) 
+		INNER JOIN TBM_SEGURIDAD_USUARIO_PERFIL B WITH(NOLOCK) ON A.ID=B.USUARIO_ID AND B.HABILITADO=1
+		INNER JOIN TBM_SEGURIDAD_PERFIL C WITH(NOLOCK) ON B.PERFIL_ID=C.ID
+		WHERE UPPER(A.USUARIO) =UPPER(@IsUsrEjecuta) 
+
+		
+	
+		SELECT 
+			TOP 1 @ID_MIG = MIG.ID
+		FROM [dbo].[TBM_MIGRACION_PREV] MIG WITH(NOLOCK)
+		LEFT JOIN [dbo].[TBM_MANT_PREV] MANT WITH(NOLOCK) ON MIG.MIG_SERIE = MANT.SERIE
+		WHERE MANT.ID_MANT = @IsID_MANT
+
+		IF (@ID_MIG IS NULL) --En caso de no existir la correlación con serie, utilizamos el cod_equipo
+		BEGIN
+			SELECT 
+				TOP 1 @ID_MIG = MIG.ID
+			FROM [dbo].[TBM_MIGRACION_PREV] MIG WITH(NOLOCK)
+			LEFT JOIN [dbo].[TBM_MANT_PREV] MANT WITH(NOLOCK) ON MIG.MIG_ID_EQUIPO = MANT.MIG_ID_EQUIPO
+			WHERE MANT.ID_MANT = @IsID_MANT
+		END
+
+
+
+		BEGIN TRY
+			UPDATE [dbo].[TBM_MIGRACION_PREV]
+				SET
+					MIG_SERIE			= @IsSERIE
+					,MIG_TOTAL_PREV		= @IsTOTAL_PREV
+					,MIG_EJEC_PREV		= @IsEJEC_PREV
+					,MIG_PEND_PREV		= @IsTOTAL_PREV - @IsEJEC_PREV
+					,MIG_FECHA_INSTAL	= @IsFECHA_INSTAL
+					,MIG_CODPERIODO     = @IsCODPERIODO
+					,USR_MOD			= @IsUsrEjecuta
+					,FEC_MOD			= GETDATE()
+				WHERE ID = @ID_MIG
+
+			UPDATE [dbo].[TBM_MANT_PREV]
+				SET
+					SERIE				= @IsSERIE
+					,FECHAINSTALACION	= @IsFECHA_INSTAL
+					,USR_MOD			= @IsUsrEjecuta
+					,FEC_MOD			= GETDATE() 
+				WHERE ID_MANT = @IsID_MANT
+
+			SELECT @SUMA = @IsTOTAL_PREV --Determinamos el número de preventivos.
+			/*Registramos en el WorkFlow y creamos tabla auxiliar donde registramos los Ids*/------------------------------------------------------------------------------
+			SET @I = 0
+			WHILE @I < @SUMA
+			BEGIN
+				INSERT INTO [dbo].[TBM_WORKFLOW](ID_PROCESO,AUDIT_REG_USR,AUDIT_REG_FEC)
+				SELECT @isTipoProceso,@IsUsrEjecuta,GETDATE()
+		
+				INSERT INTO #tmpIdWorkFlows(ID_WORKFLOW)
+				SELECT  IDENT_CURRENT('TBM_WORKFLOW')
+		
+				SET @I = @I + 1
+			END
+		
+			INSERT INTO [dbo].[TBM_WORKFLOWLOG] (ID_WORKFLOW,COD_ESTADO,CARGO,AREA,AUDIT_REG_USR,AUDIT_REG_FEC)
+			SELECT ID_WORKFLOW, 'PEND',@PERFIL,'', @IsUsrEjecuta, GETDATE() FROM #tmpIdWorkFlows
+	
+			--Realizamos la inserción en la TBD_MANT_PREV
+		
+			SELECT
+				ID_MANT
+				,MIG.MIG_SERIE
+				,MIG.MIG_FECHA_INSTAL
+				,MIG.MIG_TOTAL_PREV
+				,MIG.MIG_CODPERIODO
+				,DATOS.VALOR1			AS TIPCICLO
+				,DATOS.VALOR2			AS CANTIDAD
+			INTO #tmpParcial
+			FROM [dbo].TBM_MIGRACION_PREV MIG WITH(NOLOCK)
+			LEFT JOIN [dbo].[TBM_MANT_PREV] MANT ON  MIG.MIG_SERIE = MANT.SERIE
+			LEFT JOIN [dbo].[TBD_DATOS_GENERALES] AS DATOS WITH(NOLOCK) ON DATOS.DOMINIO = 'CICLOPREV' AND DATOS.PARAMETRO = MIG.MIG_CODPERIODO AND DATOS.ESTADO = '1'
+			WHERE MANT.ID_MANT = @IsID_MANT AND MIG.ID = @ID_MIG
+
+
+			;WITH Numeros AS (
+				SELECT ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS n
+				FROM master.dbo.spt_values
+			)
+		
+			INSERT INTO #tmpPreventivos(ID_MANT,FECHAINSTALACION,FECHAMANTENIMIENTO)
+			SELECT 
+				ID_MANT
+				,MIG_FECHA_INSTAL
+				,CASE 
+					WHEN TIPCICLO='D' THEN DATEADD(DAY,(CANTIDAD * n.n),MIG_FECHA_INSTAL)
+					WHEN TIPCICLO='M' THEN DATEADD(MONTH,(CANTIDAD * n.n),MIG_FECHA_INSTAL)
+				END AS FECHAMANTENIMIENTO
+			FROM #tmpParcial parcial
+			CROSS JOIN Numeros n
+			WHERE n.n <= parcial.MIG_TOTAL_PREV
+		
+			INSERT INTO [dbo].[TBD_MANT_PREV](ID_MANT,ID_WORKFLOW,FECHAMANTENIMIENTO,ESTADO,USR_REG,FEC_REG)
+			SELECT
+					t.ID_MANT
+					,j.ID_WORKFLOW
+					,t.FECHAMANTENIMIENTO
+					,'PEND'
+					,@IsUsrEjecuta
+					,GETDATE()
+			FROM #tmpPreventivos t
+			INNER JOIN #tmpIdWorkFlows j ON t.ID = j.ID
+
+			/*Cambiamos de estado a los mantenimientos ya ejecutados*/
+			IF(@IsEJEC_PREV > 0)
+			BEGIN
+				;WITH CTE_1 AS (
+					SELECT
+						ROW_NUMBER() OVER( ORDER BY MANTDET.ID) AS CONTADOR
+						,MANTDET.* 
+					FROM [dbo].[TBD_MANT_PREV] MANTDET
+					LEFT JOIN [dbo].[TBM_MANT_PREV] MANT ON MANTDET.ID_MANT = MANT.ID_MANT
+					WHERE MANT.ID_MANT = @IsID_MANT
+				), CTE_2 AS (
+					SELECT
+					MANTDET.ID
+					,MANTDET.ID_WORKFLOW
+					FROM [dbo].[TBD_MANT_PREV] AS MANTDET WITH(NOLOCK)
+					INNER JOIN CTE_1 AS CTE ON CTE.ID = MANTDET.ID 
+					WHERE CTE.CONTADOR <= @IsEJEC_PREV
+				)
+				SELECT 
+					ID 
+					,ID_WORKFLOW
+				INTO #tmpFinal
+				FROM CTE_2
+
+				UPDATE [TBD_MANT_PREV]
+				SET ESTADO = 'COM'
+				WHERE ID IN (SELECT ID FROM #tmpFinal)
+
+				INSERT INTO [dbo].[TBM_WORKFLOWLOG] (ID_WORKFLOW,COD_ESTADO,CARGO,AREA,AUDIT_REG_USR,AUDIT_REG_FEC)
+				SELECT ID_WORKFLOW, 'COM',@PERFIL,'', @IsUsrEjecuta, GETDATE() FROM #tmpFinal
+
+			END
+
+			SET @COD = 1
+			SET @MSG = 'USP ejecutado con éxito'
+			SELECT @COD COD, @MSG MSG
+		END TRY
+		BEGIN CATCH
+			SET @COD = 0
+			SET @MSG = 'Error en el USP: Linea:'+CAST(ERROR_LINE() AS VARCHAR)+', Mensaje de error:' + CAST(ERROR_MESSAGE() AS VARCHAR(500))
+			SELECT @COD COD, @MSG MSG
+		END CATCH
+	END
+
+	SELECT @COD COD, @MSG MSG
+
+SET NOCOUNT OFF
+END
+
