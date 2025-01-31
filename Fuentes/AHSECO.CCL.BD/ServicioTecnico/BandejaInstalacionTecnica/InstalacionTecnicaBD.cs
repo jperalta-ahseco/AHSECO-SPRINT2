@@ -303,6 +303,8 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                 parameters.Add("IsTipoProcesoVenta", filtros.TipoProceso);
                 parameters.Add("IsNumOrdenCompra", filtros.OrdenCompra); //pendiente de añadir en ventas
                 parameters.Add("IsNumFianza", filtros.NumFianza);
+                parameters.Add("IsNumFianzaApp", filtros.NumFianzaPP);
+                parameters.Add("IsNumFianzaApa", filtros.NumFianzaPA);
                 parameters.Add("IsModelo", filtros.Modelo);
 
                 var result = connection.Query(
@@ -329,6 +331,8 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                         OrdenCompra = i.Single(d => d.Key.Equals("ORDENCOMPRA")).Value.Parse<string>(),
                         NroProceso = i.Single(d => d.Key.Equals("NUMPROCESO")).Value.Parse<string>(),
                         TipoProcesoVenta = i.Single(d => d.Key.Equals("TIPOPROCESO")).Value.Parse<string>(),
+                        NumFianzaPA = i.Single(d => d.Key.Equals("NUMFIANZAPA")).Value.Parse<string>(),
+                        NumFianzaPP = i.Single(d => d.Key.Equals("NUMFIANZAPP")).Value.Parse<string>(),
                     });
                 return result;
             };

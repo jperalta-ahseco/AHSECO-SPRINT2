@@ -35,7 +35,8 @@
     var $modalBuscarContactos = $('#modalBuscarContactos');
     var $modalContactos = $('#modalContactos');
     var $tblContactos = $('#tblContactos');
-
+    var $txtNumFianzaPP = $('#txtNumFianzaPP');
+    var $txtNumFianzaPA = $('#txtNumFianzaPA');
 
 
 
@@ -1042,6 +1043,8 @@
         $txtUbiDestino.val(detalle.UbicacionDestino);
         $txtNumFianza.val(detalle.NumFianza);
         $titleNomProducto.html('<p id="titleNomProducto"><i class="fa fa-cube" aria-hidden="true" style="color:brown"></i> Equipo: ' + detalle.Descripcion + '</p>');
+        $txtNumFianzaPA.val(detalle.NumFianzaPA);
+        $txtNumFianzaPP.val(detalle.NumFianzaPP);
     }
 
     function limpiarCuerpoEquipo() {
@@ -2095,7 +2098,9 @@
                     Direccion: data.Result.Reclamo.Direccion,
                     CodUbicacionDestino: data.Result.Reclamo.CodUbigeo,
                     UbicacionDestino: data.Result.Reclamo.Ubigeo,
-                    NumFianza: data.Result.Reclamo.NumFianza
+                    NumFianza: data.Result.Reclamo.NumFianza,
+                    NumFianzaPP: data.Result.Reclamo.NumFianzaPP,
+                    NumFianzaPA: data.Result.Reclamo.NumFianzaPA
                 };
 
                 var reclamo = {

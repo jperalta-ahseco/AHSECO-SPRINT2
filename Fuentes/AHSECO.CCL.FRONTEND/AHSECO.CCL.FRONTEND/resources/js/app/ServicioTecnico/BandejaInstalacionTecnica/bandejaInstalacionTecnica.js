@@ -25,6 +25,8 @@
     var $txtNumFianza = $('#txtNumFianza');
     var $formInstallTec = $('#formInstallTec');
     var $txtModelo = $('#txtModelo');
+    var $txtNumFianzaPA = $('#txtNumFianzaPA');
+    var $txtNumFianzaPP = $('#txtNumFianzaPP');
     
     var $btnGuardarUbigeo = $('#btnGuardarUbigeo');
     var $txtUbicacion = $('#txtUbicacion');
@@ -126,6 +128,8 @@
             TipoProceso: $txtTipProceso.val(),
             OrdenCompra: $txtNumOrdCompra.val(),
             NumFianza: $txtNumFianza.val(),
+            NumFianzaPP: $txtNumFianzaPP.val(),
+            NumFianzaPA:$txtNumFianzaPA.val()
         };
 
         var objParam = JSON.stringify(objBuscar);
@@ -170,6 +174,11 @@
         $("<input>", { type: "hidden", name: "OrdenCompra", value: $txtNumOrdCompra.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "NumFianza", value: $txtNumFianza.val() }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "Modelo", value: $txtModelo.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "NumFianzaPP", value: $txtNumFianzaPP.val() }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "NumFianzaPA", value: $txtNumFianzaPA.val() }).appendTo("#hidden_fields");
+
+
+
         $formInstallTec.attr('action', href);
         $formInstallTec.submit();
     }
@@ -532,6 +541,18 @@
             },
             {
                 data: "TipoProcesoVenta",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "NumFianzaPP",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "NumFianzaPA",
                 render: function (data, type, row) {
                     return '<center>' + data + '</center>'
                 }

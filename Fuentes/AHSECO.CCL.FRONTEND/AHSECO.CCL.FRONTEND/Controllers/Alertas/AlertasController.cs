@@ -126,7 +126,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Alertas
                 tabla += "<td>" + num_mant.Substring(num_mant.Length - 6) + "</td>";
                 tabla += "<td>" + item.Serie.ToString() + "</td>";
                 tabla += "<td>" + item.Descripcion.ToString() + "</td>";
-                tabla += "<td>" + item.FechaInstalacion.ToString("dd/MM/yyyy") + "</td>";
+                tabla += "<td>" + item.FechaInstalacion.ToString() + "</td>";
                 tabla += "<td>" + item.ProxFechaMant + "</td>";
                 tabla += "<td>" + item.TotalPrevent.ToString() + "</td>";
                 tabla += "<td>" + item.PreventReal.ToString() + "</td>";

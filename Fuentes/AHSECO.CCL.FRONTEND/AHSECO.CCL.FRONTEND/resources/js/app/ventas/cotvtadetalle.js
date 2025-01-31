@@ -1337,6 +1337,7 @@ var cotvtadet = (function ($, win, doc) {
 
             //Se configura la lógica de STOCK para ACCESORIOS
             configurarModalPorTipoItem(data.Result.TipoItem);
+            $DI_txtValorUnitario.prop('disabled', true);
             cargarLogicaAccesorios_Stock();
             cargarLogicaAccesorios_CompraLocal();
 
