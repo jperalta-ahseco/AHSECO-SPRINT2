@@ -16,5 +16,6 @@ namespace AHSECO.CCL.BE
         public List<ComboDTO> Clientes { get; set; }
         public List<ComboDTO> TipoDoc { get; set; }
         public List<ComboDTO> Periodos { get; set; }
+        public List<ComboDTO> Garantias { get; set; }
     }
 }
