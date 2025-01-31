@@ -33,6 +33,8 @@ using static AHSECO.CCL.COMUN.ConstantesDTO.Mensajes;
 using static AHSECO.CCL.COMUN.ConstantesDTO.CotizacionVentaDetalle;
 using WebGrease.Css.Extensions;
 using static AHSECO.CCL.FRONTEND.Core.MultiFlujo.Tag;
+using Azure.Core;
+using System.Web.Http.Results;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 {
@@ -5244,6 +5246,132 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             }
             catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
         }
+
+
+        [HttpPost]
+        public JsonResult ConsultaListaCostoItem()
+        {
+            List<CotDetCostoDTO> lstCostos = new List<CotDetCostoDTO>();
+            var listaCosto = (List<CotDetCostoDTO>)VariableSesion.getObject(TAG_CDCI_CotDetItem);
+
+            foreach (var item in listaCosto)
+            {
+                var strID = "";
+                var arrProp = item.Features.SubPropiedades;
+                foreach (var arr in arrProp)
+                {
+                    if (arr.Nombre == "ID") { strID = arr.Valor; }
+                }
+
+                var cotDetalle = new CotizacionDetalleDTO();
+                cotDetalle.Descripcion = item.CotizacionDetalle.Descripcion;
+
+                var dto = new CotDetCostoDTO();
+                dto.Id = item.Id;
+                dto.IdCotizacion = item.IdCotizacion;
+                dto.IdCotizacionDetalle = item.IdCotizacionDetalle;
+                dto.CotizacionDetalle= cotDetalle;
+                dto.CodCosto = item.CodCosto;
+                dto.DescCosto = item.DescCosto;
+                dto.CodUbigeoDestino = item.CodUbigeoDestino;
+                dto.DescUbigeoDestino = item.DescUbigeoDestino;
+                dto.Direccion = item.Direccion;
+                dto.NroPiso = item.NroPiso;
+                dto.CantidadCosto = item.CantidadCosto;
+                dto.AmbienteDestino = item.AmbienteDestino;
+                dto.CantPreventivo = item.CantPreventivo;
+                dto.CodCicloPreventivo = item.CodCicloPreventivo;
+                dto.DesPeriodicidad = item.DesPeriodicidad;
+                dto.CantidadCotizada = item.CantidadCotizada;
+                dto.MontoUnitarioCosto = item.MontoUnitarioCosto;
+                dto.strID = strID;
+                lstCostos.Add(dto);
+            }
+           
+
+            return Json(new ResponseDTO<List<CotDetCostoDTO>>(lstCostos));
+        }
+
+        [HttpPost]
+        public JsonResult GrabarDatosCostoItemMultiple(List<CotDetCostoDTO> ListaCostoItem, string opcGrilla)
+        {
+            try
+            {
+                //CotDetCostoDTO CostoItem
+
+                List<CotDetCostoDTO> lstCostos = new List<CotDetCostoDTO>();
+                VariableSesion.setObject(TAG_CDCI_CotDetItem, null);
+                var lstItems = GetCotDetItems(opcGrilla);
+
+                foreach(var CostoItem in ListaCostoItem)
+                {
+
+                    CotizacionDetalleDTO itemCotDet = new CotizacionDetalleDTO();
+
+
+                    itemCotDet = lstItems.FirstOrDefault(x => x.Id == CostoItem.IdCotizacionDetalle);
+                    itemCotDet.Cantidad = CostoItem.CantidadCotizada;
+                    CostoItem.Id = 0;
+                    var ventasBL = new VentasBL();
+                    if (CostoItem.Id == 0) { CostoItem.Id = (lstCostos.Count() + 1) * -1; }
+
+                    CostoItem.UsuarioRegistra = User.ObtenerUsuario();
+                    if (CostoItem.Id > 0)
+                    {
+                        CostoItem.TipoProceso = ConstantesDTO.CotizacionDetalleCostos.TipoProceso.Modificar;
+                        var oCostoAux = lstCostos.FirstOrDefault(x => x.Id == CostoItem.Id);
+                        if (oCostoAux != null) { CostoItem.NumSecuencia = oCostoAux.NumSecuencia; }
+                    }
+                    else
+                    {
+                        if (lstCostos.Where(x => x.CodCosto == CostoItem.CodCosto).Any())
+                        { CostoItem.NumSecuencia = lstCostos.Where(x => x.CodCosto == CostoItem.CodCosto).Select(y => y.NumSecuencia).Max() + 1; }
+                        else
+                        { CostoItem.NumSecuencia = 1; }
+                        CostoItem.TipoProceso = ConstantesDTO.CotizacionDetalleCostos.TipoProceso.Insertar;
+                    }
+                    if (lstCostos.Any(x => x.Id == CostoItem.Id))
+                    {
+                        lstCostos.ForEach(x =>
+                        {
+                            if (x.Id == CostoItem.Id)
+                            { CostoItem.CopyProperties(ref x); x.IsUpdated = true; }
+                        });
+                    }
+                    else
+                    {
+                        CostoItem.IsUpdated = true;
+                        lstCostos.Add(CostoItem);
+                    }
+                    //Se completa los datos de cotizacion detalle para costos
+                    lstCostos.ForEach(x =>
+                    {
+                        if (!x.MontoTotalCosto.HasValue && x.CantidadCosto.HasValue && x.MontoUnitarioCosto.HasValue)
+                        { x.MontoTotalCosto = x.CantidadCosto.Value * x.MontoUnitarioCosto.Value; }
+                        else if (!x.MontoUnitarioCosto.HasValue && x.CantidadCosto.HasValue && x.MontoTotalCosto.HasValue)
+                        { x.MontoUnitarioCosto = x.MontoTotalCosto.Value / x.CantidadCosto.Value; }
+                    });
+
+                    itemCotDet.CotizacionCostos = lstCostos.ToArray();
+                    itemCotDet.IsUpdated = true;
+                    AddModifyCDI(itemCotDet);
+                }
+
+
+                VariableSesion.setObject(TAG_CDCI_CotDetItem, lstCostos);
+
+                var idCotizacionDetalle = ListaCostoItem.FirstOrDefault().IdCotizacionDetalle;
+
+                //Solo se devuelve los costos de la grilla respectiva
+                var response = new ResponseDTO<IEnumerable<CotDetCostoDTO>>(lstCostos.Where(x => x.IdCotizacionDetalle == idCotizacionDetalle));
+                return Json(response);
+                
+            }
+            catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
+        }
+
+
+
 
         [HttpPost]
         public JsonResult EliminarCostoItem(CotDetCostoDTO cotdetCosto, string opcGrilla)

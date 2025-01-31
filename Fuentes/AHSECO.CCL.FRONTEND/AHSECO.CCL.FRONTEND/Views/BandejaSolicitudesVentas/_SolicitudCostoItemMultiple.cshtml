@@ -67,6 +67,19 @@
 
                                 </div>
                             </div>
+                            <div class="row container-fluid form-group" id="SeccionCalibracion">
+                                <div class="col-md-12 col-content-bottomleft">
+                                    <div class="col-md-8 col-right">
+                                        &nbsp;
+                                    </div>
+                                    <div class="col-md-2 col-right">
+                                        <label for="CX_txtMtoUnitarioCosto">Monto Unitario de Costo: </label>&nbsp;&nbsp;
+                                    </div>
+                                    <div class="col-md-2 ">
+                                        <input placeholder="Monto de Costo" type="text" maxlength="8" class="form-control input-sm" style="text-align:center" id="CX_txtMtoUnitarioCosto" value="" oninput="javascript:app.soloNumeroDecimal_onInput(this)" onfocus="this.value = app.formatearEnteroSinComa(this.value);" onblur="this.value = app.formatearEnteroComa(parseFloat(this.value).toFixed(2));">
+                                    </div>
+                                </div>
+                            </div>
                             <legend id="leyInfoDestino"><b>Información del Destino:</b></legend>
                             <div class="row container-fluid form-group" id="SeccionDestino">
                                 <div class="col-md-12 col-content-bottomleft">
@@ -155,7 +168,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr id="NoRegSeries">
+                                            <tr id="NoRegCostoMultiple">
                                                 <td align="center" colspan="7">No existen registros</td>
                                             </tr>
                                         </tbody>
