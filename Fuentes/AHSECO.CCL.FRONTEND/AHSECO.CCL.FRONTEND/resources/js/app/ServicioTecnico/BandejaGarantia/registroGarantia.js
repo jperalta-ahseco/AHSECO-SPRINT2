@@ -1061,6 +1061,8 @@
         $txtNumFianza.val("");
         $txtDirecInstall.val("");
         $titleNomProducto.html('<p id="titleNomProducto"><i class="fa fa-cube" aria-hidden="true" style="color:brown"></i> Equipo</p>');
+        $txtNumFianzaPP.val("");
+        $txtNumFianzaPA.val("");
     }
 
     function limpiarReclamo() {
