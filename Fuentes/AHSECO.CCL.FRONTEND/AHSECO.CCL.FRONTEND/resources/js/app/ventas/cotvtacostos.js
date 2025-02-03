@@ -424,7 +424,7 @@
         $("#CX_txtNroPiso").val('');
         $("#CX_txtCantCosteo").val('0');
         $("#CX_txtCantPrevent").val('0');
-        $("#CX_txtMtoUnitarioCosto").val('');
+        $("#CX_txtMtoUnitarioCosto").val('0.00');
         $CX_cmbCicloPreventivo.get(0).selectedIndex = 0;
         $CX_cmbCicloPreventivo.trigger("change.select2");
     }
@@ -636,6 +636,14 @@
                     desUbigeo = "";
                 }
 
+                var costoUnitario = costeo.MontoUnitarioCosto;
+                if (costeo.MontoUnitarioCosto === null || costeo.MontoUnitarioCosto === "" || costeo.MontoUnitarioCosto === "0" || costeo.MontoUnitarioCosto === "0.00") {
+                    costoUnitario = "";
+                }
+                else {
+                    costoUnitario = app.convertirNumero(costoUnitario);
+                }
+
                 var html = '<div class="text-center">';
                 html += ' <a class="btn btn-default btn-xs" title="Eliminar"  href="javascript:cotvtacostos.eliminarCosto(' + costeo.IdCotizacion + ')"><i class="fa fa-ban" aria-hidden="true"></i></a>&nbsp;';
                 html += '</div>';
@@ -647,6 +655,7 @@
                     "<th>" + costeo.CantCosteada + "</th>" +
                     "<th>" + cant_preventivos + "</th>" +
                     "<th>" + desPeriodicidad + "</th>" +
+                    "<th>" + costoUnitario + "</th>"+
                     "<th>" + html + "</th>" +
                     "</tr>";
                 $tblCostosUnitarios.append(nuevoTr);
@@ -655,7 +664,7 @@
 
             if (costeoMultiple.length === 0) {
                 var nuevoTr = "<tr id='NoRegCostoMultiple'>" +
-                    "<td align='center' colspan='7'>No existen registros</td>" +
+                    "<td align='center' colspan='8'>No existen registros</td>" +
                     "</tr>";
                 $tblCostosUnitarios.append(nuevoTr);
             }
@@ -680,6 +689,11 @@
             return;
         }
 
+        if ($CX_cmbTipoCosto.val() === "CXCD0007" && ($CX_txtMtoUnitarioCosto.val() === "0.00" || $CX_txtMtoUnitarioCosto.val() === "0")) {
+            app.message.error("Validacion", "El monto unitario de costo no debe ser cero.");
+            return;
+        }
+
         //LLave en mano, Instalacion, Mantenimiento Preventivo y Flete:
         if ($CX_cmbTipoCosto.val() === "CXCD0001" || $CX_cmbTipoCosto.val() === "CXCD0002" ||
             $CX_cmbTipoCosto.val() === "CXCD0006" || $CX_cmbTipoCosto.val() === "CXCD0008") {
@@ -689,20 +703,20 @@
                     return;
                 }
 
-                if ($CX_txtAmbDestino.val() === "" || $CX_txtAmbDestino.val() == null) {
-                    app.message.error("Validacion", "Debe ingresar el local a enviar");
-                    return;
-                }
+                //if ($CX_txtAmbDestino.val() === "" || $CX_txtAmbDestino.val() == null) {
+                //    app.message.error("Validacion", "Debe ingresar el local a enviar");
+                //    return;
+                //}
 
                 if ($CX_txtDireccion.val() === "" || $CX_txtDireccion.val() == null) {
                     app.message.error("Validacion", "Debe ingresar una dirección");
                     return;
                 }
 
-                if ($CX_txtNroPiso.val() === "" || $CX_txtNroPiso.val() == null) {
-                    app.message.error("Validacion", "Debe ingresar datos del piso");
-                    return;
-                }
+                //if ($CX_txtNroPiso.val() === "" || $CX_txtNroPiso.val() == null) {
+                //    app.message.error("Validacion", "Debe ingresar datos del piso");
+                //    return;
+                //}
 
         }
 
@@ -797,6 +811,11 @@
             cantidad_preventivos = "";
         }
 
+        var monto_unitario = mtoUnitarioCosto;
+        if (mtoUnitarioCosto === "0" || mtoUnitarioCosto === "0.00" || mtoUnitarioCosto === null) {
+            monto_unitario = "";
+        }
+
         var nuevoTr = "<tr bgcolor='FFFDC1' id='fila" + codigo + "'>" +
             "<th>" + item + "</th>" +
             "<th>" + des_TipoCosto + "</th>" +
@@ -804,6 +823,7 @@
             "<th>" + cantCosteada + "</th>" +
             "<th>" + cantidad_preventivos + "</th>" +
             "<th>" + des_Periodicidad + "</th>" +
+            "<th>" + monto_unitario + "</th>" +
             "<th>" + html + "</th>" +
             "</tr>";
         $tblCostosUnitarios.append(nuevoTr);
@@ -866,6 +886,7 @@
                         CantPreventivo: app.convertirNumero(costeo.CantPreventivos),
                         CodCicloPreventivo: costeo.CodPeriodicidad,
                         CodUbigeoDestino: costeo.Ubigeo,
+                        DescUbigeoDestino: costeo.DesUbigeo,
                         Direccion: costeo.Direccion,
                         AmbienteDestino: costeo.LocalDestino,
                         NroPiso: costeo.NroPiso,
@@ -916,7 +937,7 @@
             if (costeoMultiple.length === 0) {
                 //$('#NoRegCostoMultiple').show();
                 var nuevoTr = "<tr id='NoRegCostoMultiple'>" +
-                    "<td align='center' colspan='7'>No existen registros</td>" +
+                    "<td align='center' colspan='8'>No existen registros</td>" +
                     "</tr>";
                 $tblCostosUnitarios.append(nuevoTr);
             }
@@ -944,7 +965,7 @@
         $CX_txtNroPiso.val("");
         $CX_txtCantCosteo.val("0");
         $CX_txtCantPrevent.val("0");
-        $CX_txtMtoUnitarioCosto.val("");
+        $CX_txtMtoUnitarioCosto.val("0.00");
         $CX_cmbCicloPreventivo.get(0).selectedIndex = 0;
         $CX_cmbCicloPreventivo.trigger("change.select2");
     }
