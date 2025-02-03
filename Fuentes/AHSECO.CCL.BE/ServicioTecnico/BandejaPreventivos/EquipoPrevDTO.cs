@@ -10,7 +10,10 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaPreventivos
     {
         public long Id_Mant { get; set; }
         public string Serie { get; set; }
-        public DateTime FechaInstalacion { get; set; }
+        public DateTime? FechaInstalacion { get; set; }
+        public string FechaInstalacionMig { get; set; }
+        public string FechaVencimientoGarMig { get; set; }
+        
         public string Modelo { get; set; }
         public string Direccion { get; set; }
         public string UbigeoDest { get; set; }
@@ -23,7 +26,7 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaPreventivos
         public int PrevCompletados { get; set; }
         public int TotalPrev { get; set; }
         public string ProxFechaMant { get; set; }
-        public DateTime FechaVencimientoGar { get; set; }
+        public DateTime? FechaVencimientoGar { get; set; }
         public string Periodo { get; set; }
         public string GarantiaAdic { get; set; }
         public string Garantia { get; set; }

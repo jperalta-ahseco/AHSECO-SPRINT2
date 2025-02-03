@@ -299,6 +299,27 @@
     };
 
     function GuardarMantPreventivo() {
+
+        if ($txtRuc.val().length > 12) {
+            app.message.error("Validación", "El número RUC debe ser igual a 12 dígitos");
+            return;
+        };
+
+        if (isNaN($txtRuc.val()) && $txtRuc.val().length > 0) {
+            app.message.error("Validación", "El número RUC debe de ser un número");
+            return;
+        };
+
+        if ($txtRuc.val().trim().length > 0 && $txtRuc.val().length < 12) {
+            app.message.error("Validación", "El número RUC debe ser igual a 12 dígitos");
+            return; 
+        };
+
+        if (registroPreventivos.mantenimientos.length > 0 && $txtFechaInstall.val() == ""); {
+            app.message.error("Validación", "La fecha de instalación, no debe quedar vacía");
+            return;
+        };
+
         var method = "POST";
         var url = "BandejaPreventivo/MantPrevMigrados";
         var obj = {
@@ -709,7 +730,12 @@
         $txtPrevRealiEquipo.val(detalle.PrevCompletados);
         $txtPrevFaltEquipo.val(detalle.PrevPendientes);
         $txtNumSerie.val(detalle.Serie);
-        $txtFechaInstall.val(app.obtenerFecha(detalle.FechaInstalacion));
+        if ($indMigracion.val() == 2) {
+            $txtFechaInstall.val(detalle.FechaInstalacionMig);
+        }
+        else {
+            $txtFechaInstall.val(app.obtenerFecha(detalle.FechaInstalacion));
+        }
 
         $txtFechaInstall.datepicker('destroy');
 
@@ -719,13 +745,23 @@
             format: 'dd/mm/yyyy'
         });
 
-        $txtFechaInstall.on('focusout', function () {
-            var defaultvalue = app.obtenerFecha(detalle.FechaInstalacion);
-            if ($txtFechaInstall.val() == null || $txtFechaInstall.val() == "") {
-                $txtFechaInstall.val(defaultvalue); 
-            };
-        });
+        if (detalle.FechaInstalacionMig != "") {
+            $txtFechaInstall.on('focusout', function () {
+                var defaultvalue = "";
+                if ($indMigracion.val() == 2) {
+                    defaultvalue = $txtFechaInstall.val(detalle.FechaInstalacionMig);
+                }
+                else {
+                    defaultvalue = $txtFechaInstall.val(app.obtenerFecha(detalle.FechaInstalacion));
+                }
 
+                if ($txtFechaInstall.val() == null || $txtFechaInstall.val() == "") {
+                    $txtFechaInstall.val(defaultvalue);
+                };
+            });
+
+        };
+        
         //$txtFinGarantia.val(app.obtenerFecha(detalle.FechaVencimiento));
         $txtFinGarantia.val(detalle.FechaVencimiento);
         $txtEstadoGarantia.val(detalle.EstadoGarant);
@@ -743,7 +779,7 @@
                 $cmbPeriodo.prop('disabled', true);
             };
 
-            $dateVencGarantia.val(detalle.FechaVencimientoGar);
+            $dateVencGarantia.val(detalle.FechaVencimientoGarMig);
 
             $cmbGarantia.val(detalle.Garantia).trigger("change.select2");
 
@@ -1072,6 +1108,7 @@
                     PrevCompletados: data.Result.CabeceraEquipo.PrevCompletados,
                     PrevPendientes: data.Result.CabeceraEquipo.PrevPendientes,
                     FechaInstalacion: data.Result.CabeceraEquipo.FechaInstalacion,
+                    FechaInstalacionMig: data.Result.CabeceraEquipo.FechaInstalacionMig,
                     FechaVencimiento: data.Result.CabeceraEquipo.ProxFechaMant,
                     //EstadoGarant: data.Result.CabeceraEquipo.EstadoGarantia,
                     Direccion: data.Result.CabeceraEquipo.Direccion,
@@ -1080,7 +1117,8 @@
                     NumFianza: data.Result.CabeceraEquipo.NumFianza,
                     FianzaPP : data.Result.CabeceraEquipo.FianzaPP,
                     FianzaPA : data.Result.CabeceraEquipo.FianzaPA,
-                    FechaVencimientoGar: app.obtenerFecha(data.Result.CabeceraEquipo.FechaVencimientoGar),
+                    FechaVencimientoGarMig: data.Result.CabeceraEquipo.FechaVencimientoGarMig,
+                    FechaVencimientoGar: data.Result.CabeceraEquipo.FechaVencimientoGar == null ? "" : app.obtenerFecha(data.Result.CabeceraEquipo.FechaVencimientoGar),
                     Periodo: data.Result.CabeceraEquipo.Periodo,
                     GarantiaAdic: data.Result.CabeceraEquipo.GarantiaAdic,
                     Garantia: data.Result.CabeceraEquipo.Garantia,
