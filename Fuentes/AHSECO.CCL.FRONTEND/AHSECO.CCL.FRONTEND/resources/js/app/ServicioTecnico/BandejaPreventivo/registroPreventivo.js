@@ -315,7 +315,7 @@
             return; 
         };
 
-        if (registroPreventivos.mantenimientos.length > 0 && $txtFechaInstall.val() == ""); {
+        if (registroPreventivos.mantenimientos.length > 0 && $txtFechaInstall.val() == "") {
             app.message.error("Validación", "La fecha de instalación, no debe quedar vacía");
             return;
         };
