@@ -2016,12 +2016,7 @@
 
         if (mantenimiento.IndPrestacion == true) {
             botonSi();
-            if ($indMigracion.val() == "1") {
-                $txtMontoAcce.val(mantenimiento.MontoPrestAcce);
-            }
-            else if($indMigracion.val() == "2"){
-                
-            }
+            $txtMontoAcce.val(mantenimiento.MontoPrestAcce);
         }
         else if (mantenimiento.IndPrestacion == false) {
             botonNo();

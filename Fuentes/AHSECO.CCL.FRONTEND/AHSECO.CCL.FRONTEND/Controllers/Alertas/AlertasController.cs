@@ -22,14 +22,20 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Alertas
         //GET Alertas
         [Route("ObtenerGarantiasProximasVencer")]
         [HttpGet]
-        public void ObtenerGarantiasProximasVencer()
+        public string ObtenerGarantiasProximasVencer()
         {
             var alertasBL = new AlertasBL();
             var result = alertasBL.ObtenerGarantiasProximasVencer().Result.ToList();
+            var rpta = "";
             if(result.Count() > 0)
             {
-                EnvioAlertaGarantias(result);
+                rpta = EnvioAlertaGarantias(result);
             }
+            else
+            {
+                rpta = "No existen registros";
+            }
+            return rpta;
         }
 
         public string EnvioAlertaGarantias(List<GarantiaResultDTO> lista)
@@ -79,20 +85,27 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Alertas
             var respuesta = Utilidades.Send(datos_correo.To, datos_correo.CC, "", datos_correo.Subject, datos_correo.Body, null, "");
             CCLog Log = new CCLog();
             Log.TraceInfo("Envio de alerta de garantias:" + respuesta);
-            return "ok";
+            return "Se enviaron exitosamente " + lista.Count().ToString() + " registros"; ;
         }
 
 
         [Route("ObtenerPreventivosProxVencer")]
         [HttpGet]
-        public void ObtenerPreventivosProxVencer()
+        public string ObtenerPreventivosProxVencer()
         {
             var alertasBL = new AlertasBL();
             var resultPrev = alertasBL.ObtenerPreventivosProxVencer().Result.ToList();
+            var rpta = "";
             if (resultPrev.Count() > 0)
             {
-                EnvioAlertaPreventivos(resultPrev);
+                rpta = EnvioAlertaPreventivos(resultPrev);
             }
+            else
+            {
+                rpta = "No existen datos";
+            }
+
+            return rpta;
         }
 
         public string EnvioAlertaPreventivos (List<ResultPreventivoDTO> lista)
@@ -140,7 +153,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Alertas
             var respuesta = Utilidades.Send(datos_correo.To, datos_correo.CC, "", datos_correo.Subject, datos_correo.Body, null, "");
             CCLog Log = new CCLog();
             Log.TraceInfo("Envio de alerta de preventivos:" + respuesta);
-            return "ok";
+
+            return "Se enviaron exitosamente " + lista.Count().ToString() + " registros"; ;
         }
 
     }

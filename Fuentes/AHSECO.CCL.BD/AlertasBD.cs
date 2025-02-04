@@ -76,14 +76,34 @@ namespace AHSECO.CCL.BD
                         Id_Mant = i.Single(d => d.Key.Equals("ID_MANT")).Value.Parse<long>(),
                         Serie = i.Single(d => d.Key.Equals("SERIE")).Value.Parse<string>(),
                         Descripcion = i.Single(d => d.Key.Equals("DESCRIPCION")).Value.Parse<string>(),
-                        FechaInstalacion = i.Single(d => d.Key.Equals("FECHAINSTALACION")).Value.Parse<DateTime>(),
+                        FechaInstalacion = i.Single(d => d.Key.Equals("FECHAINSTALACION")).Value.Parse<string>(),
                         ProxFechaMant = i.Single(d => d.Key.Equals("PROXFECHAMANT")).Value.Parse<string>(),
                         TotalPrevent = i.Single(d => d.Key.Equals("TOTALPREVE")).Value.Parse<int>(),
                         PreventReal = i.Single(d => d.Key.Equals("COMPLETADOS")).Value.Parse<int>(),
                         PreventPend = i.Single(d => d.Key.Equals("PENDIENTES")).Value.Parse<int>(),
                         UbigeoDest = i.Single(d => d.Key.Equals("UBIGEODEST")).Value.Parse<string>()
                     });
-                return result;
+
+                var result2 = connection.Query(
+                    sql: "USP_SEL_PREV_PROX_VENCER_MIG",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new ResultPreventivoDTO()
+                    {
+                        Id_Mant = i.Single(d => d.Key.Equals("ID_MANT")).Value.Parse<long>(),
+                        Serie = i.Single(d => d.Key.Equals("SERIE")).Value.Parse<string>(),
+                        Descripcion = i.Single(d => d.Key.Equals("DESCRIPCION")).Value.Parse<string>(),
+                        FechaInstalacion = i.Single(d => d.Key.Equals("FECHAINSTALACION")).Value.Parse<string>(),
+                        ProxFechaMant = i.Single(d => d.Key.Equals("PROXFECHAMANT")).Value.Parse<string>(),
+                        TotalPrevent = i.Single(d => d.Key.Equals("TOTALPREVE")).Value.Parse<int>(),
+                        PreventReal = i.Single(d => d.Key.Equals("COMPLETADOS")).Value.Parse<int>(),
+                        PreventPend = i.Single(d => d.Key.Equals("PENDIENTES")).Value.Parse<int>(),
+                        UbigeoDest = i.Single(d => d.Key.Equals("UBIGEODEST")).Value.Parse<string>()
+                    });
+
+                var resultComp = result.Union(result2);
+                return resultComp;
             }
         }
     }
