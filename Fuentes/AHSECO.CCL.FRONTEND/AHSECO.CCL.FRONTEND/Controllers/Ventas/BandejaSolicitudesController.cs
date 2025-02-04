@@ -35,6 +35,7 @@ using WebGrease.Css.Extensions;
 using static AHSECO.CCL.FRONTEND.Core.MultiFlujo.Tag;
 using Azure.Core;
 using System.Web.Http.Results;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 {
@@ -345,13 +346,13 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                     if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.EnCotizacion)
                     {
-                        if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ)
+                        if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc)
                         { ViewBag.PermitirEditarCotizacion_Sec = true; }
                     }
 
                     if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion)
                     {
-                        if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ)
+                        if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc)
                         { ViewBag.PermitirEditarCotizacion_Sec = true; }
                     }
                 }
