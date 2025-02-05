@@ -21,7 +21,7 @@ var app = (function ($, win, doc) {
     $btnSalirPortal = $("#btnSalirPortal");
 
     var tiempoInactividad = 0; // En minutos
-    var maxInactividad = 10; // 10 minutos de inactividad
+    var maxInactividad = 8; // 8 minutos de inactividad
     var temporizador;
 
     
@@ -367,7 +367,7 @@ var app = (function ($, win, doc) {
     function notificarInactividad() {
         tiempoInactividad++;
         if (tiempoInactividad >= maxInactividad) {
-            alert('El usuario está inactivo desde hace más de 10 minutos.');
+            //alert('El usuario está inactivo desde hace más de 10 minutos.');
             // Llamar a una acción en el servidor (ejemplo con AJAX)
             $btnSalirPortal_click();
             
