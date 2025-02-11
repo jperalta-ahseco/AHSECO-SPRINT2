@@ -151,7 +151,7 @@
 
 
 
-        $DI_btnAgregarCosto.click(agregarCostoItem);
+        //$DI_btnAgregarCosto.click(agregarCostoItem);
 
         $CI_btnCerrar.click(cerrarModalCostosItem);
         $CX_btnCerrar.click(cerrarModalCostosItemMultiple);
@@ -181,7 +181,7 @@
 
         $CI_cmbTipoCosto.on("change", configurarModalCosto);
 
-        $CI_btnGuardar.click(guardarCostoItem);
+        //$CI_btnGuardar.click(guardarCostoItem);
         $CX_btnGuardar.click($CX_btnGuardar_click)
 
         cargarCostosItemsxTab($CI_CodCosto_LLaveMano.val());
@@ -560,8 +560,8 @@
             
         }, 1500);
 
-        ubigeo.setTxtUbigeo_Id("CX_hdnUbicacion");
-        ubigeo.setTxtUbigeo_Text("CX_txtUbicacion");
+      //  ubigeo.setTxtUbigeo_Id("CX_hdnUbicacion");
+     //   ubigeo.setTxtUbigeo_Text("CX_txtUbicacion");
         
 
         $("#modalCostoItemMultiple").modal('show');
@@ -1801,7 +1801,14 @@
             if ($CI_txtCantCosteo.val() != "" && $CI_txtMtoTotalCosto.val() != "") {
                 if (app.validaNumeroEntero($CI_txtCantCosteo.val()) && app.validaNumeroDecimal($CI_txtMtoTotalCosto.val())) {
                     var redondeo = app.obtenerCantidadDecimales($CI_txtMtoTotalCosto.val());
-                    $CI_txtMtoUnitarioCosto.val((parseFloat($CI_txtMtoTotalCosto.val()) / parseInt($CI_txtCantCosteo.val())).toFixed(redondeo));
+                    var cantidadcosteo = parseInt($CI_txtCantCosteo.val());
+                    if (cantidadcosteo === 0) {
+                        $CI_txtMtoUnitarioCosto.val(cantidadcosteo.toFixed(redondeo));
+                    }
+                    else {
+                        $CI_txtMtoUnitarioCosto.val((parseFloat($CI_txtMtoTotalCosto.val()) / cantidadcosteo).toFixed(redondeo));
+                    }
+                    
                 }
             }
         }

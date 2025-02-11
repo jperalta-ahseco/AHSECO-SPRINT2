@@ -218,6 +218,7 @@ CREATE TABLE [dbo].[TBD_COTIZACIONCOSTOS]
 	[NROPISO] [int] NULL,
 	[MONTOUNICOSTO] [decimal](18, 9) NULL,
 	[MONTOTOTCOSTO] [decimal](18, 9) NULL,
+	[ELIMINADO] [int] NULL,
 	[USR_REG] [varchar](50) NOT NULL,
 	[FEC_REG] [datetime] NOT NULL,
 	[USR_MOD] [varchar](50) NULL,

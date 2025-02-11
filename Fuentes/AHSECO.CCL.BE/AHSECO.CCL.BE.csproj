@@ -49,6 +49,7 @@
     <Compile Include="DetalleServicioDTO.cs" />
     <Compile Include="ElementosxProductoDTO.cs" />
     <Compile Include="FiltroGarantiasDTO.cs" />
+    <Compile Include="FiltroGrupoCostosVentaDTO.cs" />
     <Compile Include="FiltroGrupoEmpledosDTO.cs" />
     <Compile Include="FiltroInstalacionTecnica.cs" />
     <Compile Include="FiltroPlantillaDTO.cs" />
@@ -103,7 +104,11 @@
     <Compile Include="ServicioTecnico\BandejaPreventivos\ReqPreventivoDTO.cs" />
     <Compile Include="ServicioTecnico\BandejaPreventivos\ResultPreventivoDTO.cs" />
     <Compile Include="ServicioTecnico\BandejaPreventivos\TecnicoMantPreventivoDTO.cs" />
+    <Compile Include="Ventas\CosteoCotizacionDTO.cs" />
+    <Compile Include="Ventas\CotCostoDTO.cs" />
     <Compile Include="Ventas\CotDetActividadDTO.cs" />
+    <Compile Include="Ventas\CotDetCostoCabDTO.cs" />
+    <Compile Include="Ventas\CotDetCostoDetDTO.cs" />
     <Compile Include="Ventas\CotDetCostoDTO.cs" />
     <Compile Include="Ventas\DetalleDespachoDTO.cs" />
     <Compile Include="Ventas\CotDetDespachoDTO.cs" />
@@ -120,6 +125,7 @@
     <Compile Include="Ventas\DocumentoDetCotizacionDTO.cs" />
     <Compile Include="Ventas\HistorialCotizacionCabeceraDTO.cs" />
     <Compile Include="Ventas\CuentaBancariaDTO.cs" />
+    <Compile Include="Ventas\ItemCostoDTO.cs" />
     <Compile Include="Ventas\ObservacionDTO.cs" />
     <Compile Include="Ventas\ReqSugerenciaVentas.cs" />
     <Compile Include="Ventas\SolicitudDTO.cs" />

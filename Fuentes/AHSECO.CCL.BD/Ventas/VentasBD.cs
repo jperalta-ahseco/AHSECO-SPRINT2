@@ -2192,6 +2192,243 @@ namespace AHSECO.CCL.BD.Ventas
         }
 
         #endregion
+		
+		  public FiltroGrupoCostosVentaDTO GrupoCostosFiltro(long codDetalleCotizacion)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using (var connection = Factory.ConnectionSingle())
+            {
+                SqlCommand sqlcommand;
+                var result = new FiltroGrupoCostosVentaDTO();
+                string query = "exec USP_FILTRAR_COSTEOMULTIPLE @IDCOTIZACIONDETALLE=" + codDetalleCotizacion.ToString();
+                connection.Open();
+                sqlcommand = new SqlCommand(query, connection);
+                using (var reader = sqlcommand.ExecuteReader())
+                {
+                    List<ComboDTO> _garantiasAdicionales = new List<ComboDTO>();
+                    while (reader.Read())
+                    {
+                        var garantia = new ComboDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("CODIGO")) ? "" : reader.GetString(reader.GetOrdinal("CODIGO")),
+                            Text = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION"))
+                        };
+                        _garantiasAdicionales.Add(garantia);
+                    };
+
+                    reader.NextResult();
+
+                    List<ComboDTO> _costos = new List<ComboDTO>();
+                    while (reader.Read())
+                    {
+                        var costo = new ComboDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("CODIGO")) ? "" : reader.GetString(reader.GetOrdinal("CODIGO")),
+                            Text = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION"))
+                        };
+                        _costos.Add(costo);
+                    };
+
+                    reader.NextResult();
+                    List<ComboDTO> _cicloPreventivos = new List<ComboDTO>();
+                    while (reader.Read())
+                    {
+                        var ciclo = new ComboDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("CODIGO")) ? "" : reader.GetString(reader.GetOrdinal("CODIGO")),
+                            Text = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION"))
+                        };
+                        _cicloPreventivos.Add(ciclo);
+                    };
+
+                    reader.NextResult();
+
+                    CotDetCostoCabDTO _cabCosteoDetalle = null;
+                    if (reader.HasRows)
+                    {
+                        reader.Read();
+                        _cabCosteoDetalle = new CotDetCostoCabDTO
+                        {
+                            CodigoCotizacion = reader.IsDBNull(reader.GetOrdinal("ID_COTIZACION")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_COTIZACION")),
+                            TipoItem = reader.IsDBNull(reader.GetOrdinal("TIPOITEM")) ? "": reader.GetString(reader.GetOrdinal("TIPOITEM")),
+                            CodigoItem = reader.IsDBNull(reader.GetOrdinal("CODITEM")) ? "" : reader.GetString(reader.GetOrdinal("CODITEM")),
+                            Descripcion = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION")),
+                            Unidad = reader.IsDBNull(reader.GetOrdinal("UNDMED")) ? "" : reader.GetString(reader.GetOrdinal("UNDMED")),
+                            Cantidad = reader.IsDBNull(reader.GetOrdinal("CANTIDAD")) ? 0 : reader.GetInt32(reader.GetOrdinal("CANTIDAD")),
+                            IndicadorStock = reader.IsDBNull(reader.GetOrdinal("INDSTOCK")) ? "" : reader.GetString(reader.GetOrdinal("INDSTOCK")),
+                            IndicadorCompraLocal = reader.IsDBNull(reader.GetOrdinal("INDCOMPRALOCAL")) ? "" : reader.GetString(reader.GetOrdinal("INDCOMPRALOCAL")),
+                            Dimensiones = reader.IsDBNull(reader.GetOrdinal("DIMENSIONES")) ? "" : reader.GetString(reader.GetOrdinal("DIMENSIONES")),
+                            DescripcionAdicional = reader.IsDBNull(reader.GetOrdinal("DESCRIPADIC")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPADIC")),
+                            ObservacionCliente = reader.IsDBNull(reader.GetOrdinal("OBSCLIENTE")) ? "" : reader.GetString(reader.GetOrdinal("OBSCLIENTE")),
+                            ObservacionDespacho = reader.IsDBNull(reader.GetOrdinal("OBSDESPACHO")) ? "" : reader.GetString(reader.GetOrdinal("OBSDESPACHO")),
+                            IndicadorRequierePlaca = reader.IsDBNull(reader.GetOrdinal("INDREQPLACA")) ? "" : reader.GetString(reader.GetOrdinal("INDREQPLACA")),
+                            ExWork = reader.IsDBNull(reader.GetOrdinal("EXWORK")) ? "" : reader.GetString(reader.GetOrdinal("EXWORK")),
+                            MargenAdicional = reader.IsDBNull(reader.GetOrdinal("MARGENADICIONAL")) ? 0 : reader.GetDecimal(reader.GetOrdinal("MARGENADICIONAL")),
+                            VentaUnitaria = reader.IsDBNull(reader.GetOrdinal("VVENTAUNI")) ? 0 : reader.GetDecimal(reader.GetOrdinal("VVENTAUNI")),
+                            CodigoGarantiaAdicional = reader.IsDBNull(reader.GetOrdinal("CODGARANADIC")) ? "" : reader.GetString(reader.GetOrdinal("CODGARANADIC")),
+                            DescripcionMoneda = reader.IsDBNull(reader.GetOrdinal("DESCRIPCIONMONEDA")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCIONMONEDA"))
+                        };
+                    }
+
+                    reader.NextResult();
+
+                    List<CotDetCostoDetDTO> _listacostos = new List<CotDetCostoDetDTO>();
+
+                    while (reader.Read())
+                    {
+                        var costoitem = new CotDetCostoDetDTO
+                        {
+                            IdCosto = reader.IsDBNull(reader.GetOrdinal("ID")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID")),
+                            CodigoCosto = reader.IsDBNull(reader.GetOrdinal("CODCOSTO")) ? "" : reader.GetString(reader.GetOrdinal("CODCOSTO")),
+                            DescripcionCosto = reader.IsDBNull(reader.GetOrdinal("DESCOSTO")) ? "" : reader.GetString(reader.GetOrdinal("DESCOSTO")),
+                            CantidadCosto = reader.IsDBNull(reader.GetOrdinal("CANTCOSTO")) ? 0 : reader.GetInt32(reader.GetOrdinal("CANTCOSTO")),
+                            MontoUnitarioCosto = reader.IsDBNull(reader.GetOrdinal("MONTOUNICOSTO")) ? "" : reader.GetString(reader.GetOrdinal("MONTOUNICOSTO")),
+                            MontoTotalCosto = reader.IsDBNull(reader.GetOrdinal("MONTOTOTCOSTO")) ? "" : reader.GetString(reader.GetOrdinal("MONTOTOTCOSTO")),
+                            CodigoUbigeo = reader.IsDBNull(reader.GetOrdinal("CODUBIGEO")) ? "" : reader.GetString(reader.GetOrdinal("CODUBIGEO")),
+                            DescripcionUbigeo = reader.IsDBNull(reader.GetOrdinal("DESUBIGEO")) ? "" : reader.GetString(reader.GetOrdinal("DESUBIGEO"))
+                        };
+                        _listacostos.Add(costoitem);
+                    };
+
+
+
+                    result.Garantias = _garantiasAdicionales;
+                    result.Costos = _costos;
+                    result.CicloPreventivo = _cicloPreventivos;
+                    result.CabCosteoDetalle = _cabCosteoDetalle;
+                    result.ListaCostos = _listacostos;
+                };
+                return result;
+            };
+        }
+
+        public RespuestaDTO MantCosteoItem(CotCostoDTO costo)
+        {
+            using (var connection = Factory.ConnectionFactory())
+            {
+                var parameters = new DynamicParameters();
+                connection.Open();
+
+                parameters.Add("TIPO", costo.Tipo);
+                parameters.Add("IDCOTDETALLE", costo.CodigoCotizacionDetalle);
+                parameters.Add("CODCOSTO", costo.CodigoCosto);
+                parameters.Add("CANTCOSTO", costo.CantidadCosto);
+                parameters.Add("CANTPREVENTIVO", costo.CantidadPreventivo);
+                parameters.Add("CODCICLOPREVENTIVO", costo.CodigoCicloPreventivo);
+                parameters.Add("CODUBIGEO", costo.CodigoUbigeo);
+                parameters.Add("DIRECCION", costo.Direccion);
+                parameters.Add("AMBIENTEDESTINO", costo.AmbienteDestino);
+                parameters.Add("NROPISO", costo.NumeroPiso);
+                parameters.Add("MONTOUNITARIO", costo.MontoUnitario);
+                parameters.Add("IDCOSTO",costo.IdCosto);
+                parameters.Add("USRREG", costo.UsuarioRegistro);
+
+                var result = connection.Query(
+                    sql: "USP_MANT_COSTEOITEM",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new RespuestaDTO
+                    {
+                        Codigo = i.Single(d => d.Key.Equals("COD")).Value.Parse<int>(),
+                        Mensaje = i.Single(d => d.Key.Equals("MSG")).Value.Parse<string>()
+                    }).FirstOrDefault();
+
+                connection.Close();
+
+                return result;
+            }
+        }
+
+        public RespuestaDTO MantCosteoCotizacion(CosteoCotizacionDTO costo)
+        {
+            using (var connection = Factory.ConnectionFactory())
+            {
+                var parameters = new DynamicParameters();
+                connection.Open();
+
+                parameters.Add("TIPO", costo.Tipo);
+                parameters.Add("IDCOTIZACIONDETALLE", costo.CodigoCotizacionDetalle);
+                parameters.Add("CANTIDAD", costo.Cantidad);
+                parameters.Add("INDSTOCK", costo.IndicadorStock);
+                parameters.Add("DIMENSIONES", costo.Dimensiones);
+                parameters.Add("OBSCLIENTE", costo.ObservacionCliente);
+                parameters.Add("OBSDESPACHO", costo.ObservacionDespacho);
+                parameters.Add("DESCRIPADIC", costo.DescripcionAdicional);
+                parameters.Add("VVENTAUNI", costo.MontoUnitario);
+                parameters.Add("INDCOMPRALOCAL", costo.IndicadorCompraLocal);
+                parameters.Add("INDREQPLACA", costo.IndicadorRequierePlaca);
+                parameters.Add("CODGARANADIC", costo.CodigoGarantiaAdicional);
+                parameters.Add("PORCGANANCIA",costo.PorcentajeGanancia);
+                parameters.Add("USRREG", costo.UsuarioRegistro);
+
+                var result = connection.Query(
+                    sql: "USP_MANT_COSTEOCOTIZACION",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new RespuestaDTO
+                    {
+                        Codigo = i.Single(d => d.Key.Equals("COD")).Value.Parse<int>(),
+                        Mensaje = i.Single(d => d.Key.Equals("MSG")).Value.Parse<string>()
+                    }).FirstOrDefault();
+
+                connection.Close();
+
+                return result;
+            }
+        }
+
+        public ItemCostoDTO ConsultaItemCosto(CotCostoDTO costo)
+        {
+            var rpta = new RespuestaDTO();
+            Log.TraceInfo(Utilidades.GetCaller());
+
+
+            using (var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("CODDETALLECOTIZACION", costo.CodigoCotizacionDetalle);
+                parameters.Add("CODCOSTEO", costo.IdCosto);
+
+                var result = connection.Query
+                (
+                    sql: "USP_CONSULTA_COSTEOITEM",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure
+                )
+                 .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new ItemCostoDTO
+                    {
+                        CodigoItem = i.Single(d => d.Key.Equals("CODITEM")).Value.Parse<string>(),
+                        Descripcion = i.Single(d => d.Key.Equals("DESCRIPCION")).Value.Parse<string>(),
+                        Cantidad = i.Single(d => d.Key.Equals("CANTIDAD")).Value.Parse<int>(),
+                        UnidadMedida = i.Single(d => d.Key.Equals("UNDMED")).Value.Parse<string>(),
+                        DescripcionAdicional = i.Single(d => d.Key.Equals("DESCRIPADIC")).Value.Parse<string>(),
+                        MontoUnitario = i.Single(d => d.Key.Equals("VVENTAUNI")).Value.Parse<decimal>(),
+                        MontoTotal = i.Single(d => d.Key.Equals("VVTOTALSIGV")).Value.Parse<decimal>(),
+                        Dimensiones = i.Single(d => d.Key.Equals("DIMENSIONES")).Value.Parse<string>(),
+                        CodigoUbigeo = i.Single(d => d.Key.Equals("CODUBIGEO")).Value.Parse<string>(),
+                        DescripcionUbigeo = i.Single(d => d.Key.Equals("DESUBIGEO")).Value.Parse<string>(),
+                        Direccion = i.Single(d => d.Key.Equals("DIRECCION")).Value.Parse<string>(),
+                        AmbienteDestino = i.Single(d => d.Key.Equals("AMBIENTEDESTINO")).Value.Parse<string>(),
+                        NroPiso = i.Single(d => d.Key.Equals("NROPISO")).Value.Parse<int>(),
+                        CantidadCosto = i.Single(d => d.Key.Equals("CANTCOSTO")).Value.Parse<int>(),
+                        CantidadPreventivos = i.Single(d => d.Key.Equals("CANTPREVENTIVO")).Value.Parse<int>(),
+                        CodigoCicloPreventivo = i.Single(d => d.Key.Equals("CODCICLOPREVENT")).Value.Parse<string>(),
+                        DescripcionCicloPreventivo = i.Single(d => d.Key.Equals("DESCICLOPREVENT")).Value.Parse<string>(),
+                        CodigoCosto = i.Single(d => d.Key.Equals("CODCOSTO")).Value.Parse<string>(),
+                        DescripcionCosto = i.Single(d => d.Key.Equals("DESCOSTO")).Value.Parse<string>(),
+                        CodigoMoneda = i.Single(d => d.Key.Equals("CODMONEDA")).Value.Parse<string>(),
+                        DescripcionMoneda = i.Single(d => d.Key.Equals("DESMONEDA")).Value.Parse<string>(),
+                        SimboloMoneda = i.Single(d => d.Key.Equals("SIMBOLOMONEDA")).Value.Parse<string>()
+                    }).FirstOrDefault();
+
+                return result;
+            }
+        }
 
 
     }

@@ -468,6 +468,63 @@ namespace AHSECO.CCL.BL.Ventas
         }
         #endregion
 
+ public ResponseDTO<FiltroGrupoCostosVentaDTO> GrupoCostosFiltro(long codDetalleCotizacion)
+        {
+            try
+            {
+                var result = Repository.GrupoCostosFiltro(codDetalleCotizacion);
+                return new ResponseDTO<FiltroGrupoCostosVentaDTO>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + ":: " + ex.Message);
+                return new ResponseDTO<FiltroGrupoCostosVentaDTO>(ex);
+            };
+        }
+
+        public ResponseDTO<RespuestaDTO> MantCosteoItem(CotCostoDTO costo)
+        {
+            try
+            {
+                var result = Repository.MantCosteoItem(costo);
+
+                return new ResponseDTO<RespuestaDTO>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + ":: " + ex.Message);
+                return new ResponseDTO<RespuestaDTO>(ex);
+            };
+        }
+
+        public ResponseDTO<RespuestaDTO> MantCosteoCotizacion(CosteoCotizacionDTO costo)
+        {
+            try
+            {
+                var result = Repository.MantCosteoCotizacion(costo);
+
+                return new ResponseDTO<RespuestaDTO>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + ":: " + ex.Message);
+                return new ResponseDTO<RespuestaDTO>(ex);
+            };
+        }
+
+        public ResponseDTO<ItemCostoDTO> ConsultaItemCosto(CotCostoDTO costo)
+        {
+            try
+            {
+                var result = Repository.ConsultaItemCosto(costo);
+                return new ResponseDTO<ItemCostoDTO>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + ":: " + ex.Message);
+                return new ResponseDTO<ItemCostoDTO>(ex);
+            };
+        }
 
     }
 }

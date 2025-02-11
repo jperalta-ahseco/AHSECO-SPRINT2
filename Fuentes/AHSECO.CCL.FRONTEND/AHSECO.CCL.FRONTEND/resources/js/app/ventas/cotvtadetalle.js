@@ -87,6 +87,8 @@ var cotvtadet = (function ($, win, doc) {
     var $DI_pnlCostos_GarantAdic = $("#DI_pnlCostos_GarantAdic");
     var $DI_pnlCostos_GarantAdic_Combo = $("#DI_pnlCostos_GarantAdic_Combo");
     var $DI_pnlCostos_Flete = $("#DI_pnlCostos_Flete");
+    var $DI_pnlCostos_RequierePlaca = $("#DI_pnlCostos_RequierePlaca");
+    var $DI_pnlInfoGeneral_UnidadMedida = $("#DI_pnlInfoGeneral_UnidadMedida");
     var $DI_pnlCostos_ReqCliente = $("#DI_pnlCostos_ReqCliente");
     var $DI_pnlCostos_ObsInsta = $("#DI_pnlCostos_ObsInsta");
     var $DI_pnlDestinos = $("#DI_pnlDestinos");
@@ -164,7 +166,8 @@ var cotvtadet = (function ($, win, doc) {
 
     var mensajes = {
         BuscandoPrecios: "Buscando Precios, porfavor espere...",
-        obteniendoFiltros: "Obteniendo filtros de lista de precios..."
+        obteniendoFiltros: "Obteniendo filtros de lista de precios...",
+        GuardarCosto: "Guardando costo, por favor espere..."
     }
 
     var $DI_opcGrilla = $("#DI_opcGrilla");
@@ -172,6 +175,44 @@ var cotvtadet = (function ($, win, doc) {
 
     var $hdnCostosAgregados = $("#hdnCostosAgregados");
     var $DI_hdnHabilitado = $("#DI_hdnHabilitado");
+
+    var $DI_txtUnidadMedida = $("#DI_txtUnidadMedida");
+    var $CX_cmbTipoCosto = $("#CX_cmbTipoCosto");
+    var $CX_cmbCicloPreventivo = $("#CX_cmbCicloPreventivo");
+    var $CX_txtCantCosteo = $("#CX_txtCantCosteo");
+    var $CX_txtMtoUnitarioCosto = $("#CX_txtMtoUnitarioCosto");
+    var $CX_hdnUbicacion = $("#CX_hdnUbicacion");
+    var $CX_txtUbicacion = $("#CX_txtUbicacion");
+    var $CX_txtAmbDestino = $("#CX_txtAmbDestino");
+    var $CX_txtDireccion = $("#CX_txtDireccion");
+    var $CX_txtNroPiso = $("#CX_txtNroPiso");
+    var $CX_txtCantPrevent = $("#CX_txtCantPrevent");
+    var $DI_btnAgregarCosto = $("#DI_btnAgregarCosto");
+    var $DI_radRequierePlaca_Si = $("#DI_radRequierePlaca_Si");
+    var $DI_radRequierePlaca_No = $("#DI_radRequierePlaca_No");
+    var $CI_Item = $("#CI_Item");
+    var $CI_Descripcion = $("#CI_Descripcion");
+    var $CI_txtCantCotDet = $("#CI_txtCantCotDet");
+    var $CI_txtUnidadMedida = $("#CI_txtUnidadMedida");
+    var $CI_Dimensiones = $("#CI_Dimensiones");
+    var $CI_hdnUbicacion = $("#CI_hdnUbicacion");
+    var $CI_txtUbicacion = $("#CI_txtUbicacion");
+    var $CI_txtDireccion = $("#CI_txtDireccion");
+    var $CI_txtAmbDestino = $("#CI_txtAmbDestino");
+    var $CI_txtNroPiso = $("#CI_txtNroPiso");
+    var $CI_txtCantPrevent = $("#CI_txtCantPrevent");
+    var $CI_cmbCicloPreventivo = $("#CI_cmbCicloPreventivo");
+    var $CI_txtCantCosteo = $("#CI_txtCantCosteo");
+    var $CI_txtMtoUnitarioCosto = $("#CI_txtMtoUnitarioCosto");
+    var $CI_txtMtoTotalCosto = $("#CI_txtMtoTotalCosto");
+    var $CI_TipoCosto = $("#CI_TipoCosto");
+    var $CI_btnGuardar = $("#CI_btnGuardar");
+    var $CI_hdnCodTipoCosto = $("#CI_hdnCodTipoCosto");
+    var $CI_hdnCodCosto = $("#CI_hdnCodCosto");
+    var $CI_hdnCantidadCostearAnt = $("#CI_hdnCantidadCostearAnt");
+    var $CI_txtMoneda = $("#CI_txtMoneda");
+    var $DI_Moneda = $("#DI_Moneda");
+    var costeoMultiple = [];
 
     $(Initialize);
 
@@ -203,12 +244,17 @@ var cotvtadet = (function ($, win, doc) {
 
         $DI_radGarantAdic_Si.click(configurarGarantias);
         $DI_radGarantAdic_No.click(configurarGarantias);
+        $DI_btnAgregarCosto.click(btnAgregarCosteo);
+        $CX_cmbTipoCosto.on("change", configurarModalCostoMultiple);
+        $CI_btnGuardar.click(guardarEditarCosteo);
         //$DI_radTieneStock_Si.click(configurarTieneStock);
         //$DI_radTieneStock_No.click(configurarTieneStock);
         
         listarCotDetItems();
         cargarGarantias();
-        //CargarTablaProductos();
+
+    
+
     }
 
     function ObtenerFiltrosPrecios() {
@@ -1086,63 +1132,199 @@ var cotvtadet = (function ($, win, doc) {
 
     }
 
-    function EditarCotDet() {
-
-    };
-
-    function EditarCotDetHijo() {
-
-    }
-
-
     function editarCotDetItem(ID, opc) {
-        $DI_hdnCodigoPadre.val("");
-        $DI_opcGrilla.val(opc);
-        $CI_opcGrilla.val(opc);
+        $DI_hdnIdCotDet.val(ID);
+        ubigeo.setTxtUbigeo_Id("CX_hdnUbicacion");
+        ubigeo.setTxtUbigeo_Text("CX_txtUbicacion");
+        LimpiarFormularioCosteo();
+        configurarModalCostoMultiple();
 
+        ID = 38;
+        $DI_hdnIdCotDet.val(ID);
         method = "POST";
-        url = "BandejaSolicitudesVentas/CargarCotDetItem";
-        var objFiltros = {
-            CotizacionDetalle: { Id: ID },
-            opcGrillaItems: opc
-        };
-        var objParam = JSON.stringify(objFiltros);
-
+        url = "BandejaSolicitudesVentas/CargarCotDetItem?codDetalleCotizacion="+ ID;
+        var objFiltros = "";
+        objParam = JSON.stringify(objFiltros);
         var fnDoneCallBack = function (data) {
 
-            configurarModalPorTipoItem(data.Result.TipoItem);
 
-            LimpiarModalDetItem();
-            MostrarDatosItem(data);
+            var filters = {};
+            filters.placeholder = "-- Seleccione --";
+            filters.allowClear = false;
 
-            $hdnCostosAgregados.val("");
+            app.llenarComboMultiResult($CX_cmbTipoCosto, data.Result.Costos, null, " ", "-- Seleccione --", filters);
+            app.llenarComboMultiResult($DI_cmbGarantias, data.Result.Garantias, null, " ", "-- Ninguno --", filters);
+            app.llenarComboMultiResult($CX_cmbCicloPreventivo, data.Result.CicloPreventivo, null, " ", "-- Seleccione --", filters);
 
-            if (data.Result != null) {
-                if (data.Result.CotizacionCostos != null) {
-                    var resCostos = { Status: 1, Result: data.Result.CotizacionCostos };
-                    cotvtacostos.cargarGrillaCostosCotDet(resCostos);
-                    //Se captura el CODIGO COSTO agregado a COTIZACION DETALLE
-                    for (a = 0; a < data.Result.CotizacionCostos.length; a++) {
-                        var strCodCostoRef = data.Result.CotizacionCostos[a].Id + "_" + data.Result.CotizacionCostos[a].CodCosto;
-                        if ($hdnCostosAgregados.val() == "") { $hdnCostosAgregados.val(strCodCostoRef); }
-                        else { $hdnCostosAgregados.val(";" + strCodCostoRef); }
-                    }
+            var tipo_venta = $cmbTipo.val();
+            if (tipo_venta === "TSOL04") { //Para venta de materiales:
+                $('#CX_cmbTipoCosto option[value="CXCD0001"]').remove();
+                $('#CX_cmbTipoCosto option[value="CXCD0002"]').remove();
+                $('#CX_cmbTipoCosto option[value="CXCD0003"]').remove();
+                $('#CX_cmbTipoCosto option[value="CXCD0004"]').remove();
+                $('#CX_cmbTipoCosto option[value="CXCD0005"]').remove();
+                $('#CX_cmbTipoCosto option[value="CXCD0006"]').remove();
+                $('#CX_cmbTipoCosto option[value="CXCD0007"]').remove();
+                $DI_pnlCostos_ObsInsta.css('display', 'none');
+                $DI_pnlInfoGeneral_Dimensiones.css('display', 'none');
+                $DI_pnlCostos_RequierePlaca.css('display', 'none');
+                $DI_pnlCostos_GarantAdic_Combo.css('display', 'none');
+                $DI_pnlCostos_CompraLocal.css('display', 'none');
+                DI_pnlInfoGeneral_UnidadMedida.css('display', 'none');
+                $('#divMoneda').removeClass('col-md-5').addClass('col-md-6');
+                $('#divlblMoneda').removeClass('col-md-7').addClass('col-md-5');
+            }
+            else if (tipo_venta === "TSOL02" || tipo_venta === "TSOL03") {
+                $DI_pnlCostos_ObsInsta.css('display', 'none');
+                $DI_pnlInfoGeneral_UnidadMedida.css('display', 'none');
+                $DI_pnlInfoGeneral_Dimensiones.css('display', 'none');
+                $DI_pnlCostos_RequierePlaca.css('display', 'none');
+                $DI_pnlCostos_GarantAdic_Combo.css('display', 'none');
+                $DI_pnlCostos_CompraLocal.css('display', 'none');
+                $("#DI_pnlCostoDespacho").css('display', 'none');
+            }
+
+            if ($idRolUsuario.val() != "SGI_VENTA_GERENTE" && $idRolUsuario.val() != "SGI_VENTA_COSTOS") {
+                $DI_pnlCostos_PrecioVenta.css('display', 'none');
+            }
+            else {
+                $DI_pnlCostos_PrecioVenta.css('display', '');
+            }
+
+            if ($estadoSol.val() != "SCOT") {
+                $("#SeccionAgregarCosto").css('display', 'none');
+                $("#SeccionAgregarCostoBoton").css('display', 'none');
+                //Se bloquea controles si no es en estado "En Cotizacion":
+                $DI_txtCantidad.prop('disabled', true);
+                $DI_txtDimensiones.prop('disabled', true);
+                $DI_txtDescripcionAdic.prop('disabled', true);
+                $DI_txtReqCliente.prop('disabled', true);
+                $DI_txtObsInsta.prop('disabled', true);
+                $DI_txtCostoFOB.prop('disabled', true);
+                $DI_txtValorUnitario.prop('disabled', true);
+                $DI_radTieneStock_Si.prop('disabled', true);
+                $DI_radTieneStock_No.prop('disabled', true);
+                $DI_radCompraLocal_Si.prop('disabled', true);
+                $DI_radCompraLocal_No.prop('disabled', true);
+                $DI_txtGanancia.prop('disabled', true);
+                $DI_radRequierePlaca_Si.prop('disabled', true);
+                $DI_radRequierePlaca_No.prop('disabled', true);
+                $DI_cmbGarantias.prop('disabled', true);
+            }
+
+            if ($estadoSol.val() != "SCOT" && $estadoSol.val() != "CVAL") {
+                $DI_btnGuardar.hide();
+            }
+
+
+
+
+            $DI_txtCodigo.val(data.Result.CabCosteoDetalle.CodigoItem);
+            $DI_txtCantidad.val(data.Result.CabCosteoDetalle.Cantidad);
+            $DI_txtDescripcion.val(data.Result.CabCosteoDetalle.Descripcion);
+            $DI_txtUnidadMedida.val(data.Result.CabCosteoDetalle.Unidad);
+            $DI_txtDimensiones.val(data.Result.CabCosteoDetalle.Dimensiones);
+            $DI_txtDescripcionAdic.val(data.Result.CabCosteoDetalle.DescripcionAdicional);
+            $DI_txtReqCliente.val(data.Result.CabCosteoDetalle.ObservacionCliente);
+            $DI_txtObsInsta.val(data.Result.CabCosteoDetalle.ObservacionDespacho);
+            $DI_Moneda.val(data.Result.CabCosteoDetalle.DescripcionMoneda);
+
+            var tiene_stock = data.Result.CabCosteoDetalle.IndicadorStock;
+            if (tiene_stock === "S") {
+                $DI_radTieneStock_No.prop("checked", false);
+                $DI_radTieneStock_Si.prop("checked", true);
+            }
+            else {
+                $DI_radTieneStock_No.prop("checked", true);
+                $DI_radTieneStock_Si.prop("checked", false);
+            }
+
+
+            var es_compralocal = data.Result.CabCosteoDetalle.IndicadorCompraLocal;
+            if (es_compralocal === "S") {
+                $DI_radCompraLocal_Si.prop("checked", true);
+                $DI_radCompraLocal_No.prop("checked", false);
+            }
+            else {
+                $DI_radCompraLocal_Si.prop("checked", false);
+                $DI_radCompraLocal_No.prop("checked", true);
+            }
+
+            var es_requiereplaca = data.Result.CabCosteoDetalle.IndicadorRequierePlaca;
+            if (es_requiereplaca === "S") {
+                $DI_radRequierePlaca_Si.prop("checked", true);
+                $DI_radRequierePlaca_No.prop("checked", false);
+            }
+            else {
+                $DI_radRequierePlaca_Si.prop("checked", false);
+                $DI_radRequierePlaca_No.prop("checked", true);
+            }
+
+            $DI_txtGanancia.val(data.Result.CabCosteoDetalle.MargenAdicional);
+            $DI_txtCostoFOB.val(data.Result.CabCosteoDetalle.ExWork);
+            $DI_txtValorUnitario.val(data.Result.CabCosteoDetalle.VentaUnitaria.toFixed(2));
+
+
+            var codigo_garantia_adicional = data.Result.CabCosteoDetalle.CodigoGarantiaAdicional;
+
+            if (codigo_garantia_adicional != "") {
+                $DI_cmbGarantias.val(codigo_garantia_adicional).trigger("change.select2");
+            }
+
+
+            //Limpiar grilla de costos multiples:
+            $("#DI_tblCostos tbody tr").remove();
+
+            var lista_costos = data.Result.ListaCostos;
+
+            if (lista_costos.length === 0) {
+                var nuevoTrNew = "<tr id='NoRegCosteos'><td align='center' colspan='6'> No existen registros</td></tr>"
+                $('#DI_tblCostos').append(nuevoTrNew);
+            }
+
+
+            for (i = 0; i < lista_costos.length; i++) {
+                var html = '<div class="text-center">';
+                var sel_html = ''
+                var strID = lista_costos[i].IdCosto;
+                var hidden = '<input type="hidden" id="hdnCDCItem_' + $.trim(strID) + '" value=' + String.fromCharCode(39) + strID + String.fromCharCode(39) + '>';
+                if (($estadoSol.val() == "SCOT") && ($idRolUsuario.val() == "SGI_VENTA_ASESOR" || $idRolUsuario.val() == "SGI_VENTA_COORDINASERV" || $idRolUsuario.val() == "SGI_VENTA_COORDINAATC") ) {
+
+                    var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarCostoItem(' + strID + ',' + $DI_hdnIdCotDet.val() + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                  
+                    var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript:cotvtadet.quitarCostoItemVta(' + strID + ',' + $DI_hdnIdCotDet.val() +')"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                    html += '<center>' + hidden + editar + ' ' + quitar + '</center>';
                 }
+                else {
+                    var ver = '<a id="btnVerItem" class="btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.editarCostoItem(' + strID + ',' + $DI_hdnIdCotDet.val() + ')"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
+                    html += '<center>' + hidden + ver + '</center>';
+                }
+                html += '</div>';
+                var nuevoTr = "<tr bgcolor='d0f2f7' id='fila" + lista_costos[i].IdCosto + "'>" + sel_html +
+                    "<th>" + lista_costos[i].DescripcionCosto + "</th>" +
+                    "<th>" + lista_costos[i].DescripcionUbigeo + "</th>" +
+                    "<th>" + lista_costos[i].CantidadCosto + "</th>" +
+                    "<th>" + lista_costos[i].MontoUnitarioCosto + "</th>" +
+                    "<th>" + lista_costos[i].MontoTotalCosto + "</th>" +
+                    "<th>" + html + "</th>" +
+                    "</tr>";
+
+                $('#DI_tblCostos').append(nuevoTr);
+
+                costeoMultiple.push({
+                    Id: lista_costos[i].IdCosto,
+                    CodCosto: lista_costos[i].CodigoCosto,
+                    DesCosto: lista_costos[i].DescripcionCosto,
+                    CantCosto: parseInt(lista_costos[i].CantidadCosto),
+                    MontoUnitario: app.convertirNumero(lista_costos.MontoUnitarioCosto),
+                    MontoTotal: app.convertirNumero(lista_costos[i].MontoTotalCosto),
+                    CodUbigeo: lista_costos[i].CodigoUbigeo,
+                    DesUbigeo: lista_costos[i].DescripcionUbigeo
+                });
             }
+            
 
-            //configurarModalCotDet();
-
-            //Se habilita el MODAL según la configuración del PRODUCTO (Equipo, Material, Repuesto)
-            var oFeatures = data.Result.Features;
-            cargarPropiedadesPorCotDetItem(oFeatures);
-
-            //Se carga la configuración de la lógica de STOCK para ACCESORIOS
-            if (data.Result.TipoItem == $DI_hdnTipoItem_ACC.val()) {
-                cargarLogicaAccesorios_Stock();
-                cargarLogicaAccesorios_CompraLocal();
-            }
-
-            cotvtacostos.cargarComboCotDetItems();
+           
 
             $('#modalDetalleItem').modal('show');
         };
@@ -1150,6 +1332,555 @@ var cotvtadet = (function ($, win, doc) {
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
     }
 
+
+    function configurarModalCostoMultiple() {
+
+
+        if ($CX_cmbTipoCosto.val() == "CXCD0004" || $CX_cmbTipoCosto.val() == "CXCD0005" ||
+            $CX_cmbTipoCosto.val() == "CXCD0003") {
+
+
+            $("#SeccionDestino").css("display", "none");
+            $("#leyInfoDestino").css("display", "none");
+            $("#SeccionDireccion").css("display", "none");
+            $("#LeyPreventivo").css("display", "none");
+            $("#SeccionPreventivo").css("display", "none");
+            $CX_txtMtoUnitarioCosto.prop("disabled", true);
+
+        }
+        else if ($CX_cmbTipoCosto.val() == "CXCD0007") {
+            $("#SeccionDestino").css("display", "none");
+            $("#leyInfoDestino").css("display", "none");
+            $("#SeccionDireccion").css("display", "none");
+            $("#LeyPreventivo").css("display", "none");
+            $("#SeccionPreventivo").css("display", "none");
+            $CX_txtMtoUnitarioCosto.prop("disabled", false);
+        }
+        else if ($CX_cmbTipoCosto.val() == "CXCD0001" ||
+            $CX_cmbTipoCosto.val() == "CXCD0002" ||
+            $CX_cmbTipoCosto.val() == "CXCD0008") {
+            $("#SeccionDestino").css("display", "");
+            $("#leyInfoDestino").css("display", "");
+            $("#SeccionDireccion").css("display", "");
+            $("#LeyPreventivo").css("display", "none");
+            $("#SeccionPreventivo").css("display", "none");
+            $CX_txtMtoUnitarioCosto.prop("disabled", true);
+        }
+        else if ($CX_cmbTipoCosto.val() == "CXCD0006") { //Preventivos
+            $("#SeccionDestino").css("display", "");
+            $("#leyInfoDestino").css("display", "");
+            $("#SeccionDireccion").css("display", "");
+            $("#LeyPreventivo").css("display", "");
+            $("#SeccionPreventivo").css("display", "");
+            $CX_txtMtoUnitarioCosto.prop("disabled", true);
+        }
+        else {
+            $("#SeccionDestino").css("display", "none");
+            $("#leyInfoDestino").css("display", "none");
+            $("#SeccionDireccion").css("display", "none");
+            $("#LeyPreventivo").css("display", "none");
+            $("#SeccionPreventivo").css("display", "none");
+            $CX_txtMtoUnitarioCosto.prop("disabled", true);
+        }
+    }
+    function LimpiarFormularioCosteo() {
+        $DI_txtCantidad.val('0');
+        $DI_txtDimensiones.val('');
+        $DI_txtDescripcionAdic.val('');
+        $DI_txtReqCliente.val('');
+        $DI_txtObsInsta.val('');
+        $DI_txtCostoFOB.val('');
+        $DI_txtValorUnitario.val('');
+        $DI_radTieneStock_No.prop("checked", false);
+        $DI_radTieneStock_Si.prop("checked", true);
+        $DI_radCompraLocal_Si.prop("checked", false);
+        $DI_radCompraLocal_No.prop("checked", true);
+        $DI_txtGanancia.val('');       
+        $DI_cmbGarantias.get(0).selectedIndex = 0;
+        $DI_cmbGarantias.trigger("change.select2");
+        $CX_cmbTipoCosto.get(0).selectedIndex = 0;
+        $CX_cmbTipoCosto.trigger("change.select2");
+        $CX_txtCantCosteo.val('0');
+        $CX_txtMtoUnitarioCosto.val('0.00');
+        $CX_hdnUbicacion.val('');
+        $CX_txtUbicacion.val('');
+        $CX_txtAmbDestino.val('');
+        $CX_txtDireccion.val('');
+        $CX_txtNroPiso.val('');
+        $CX_txtCantPrevent.val('0');
+        $CX_cmbCicloPreventivo.get(0).selectedIndex = 0;
+        $CX_cmbCicloPreventivo.trigger("change.select2");
+    }
+
+    function btnAgregarCosteo() {
+        $DI_hdnIdCotDet.val('38');
+        if ($CX_cmbTipoCosto.val() === "" || $CX_cmbTipoCosto.val() == 0) {
+            app.message.error("Validacion", "Debe seleccionar una opcion del tipo de costo");
+            return;
+        }
+        if ($CX_txtCantCosteo.val() === "" || $CX_txtCantCosteo.val() == 0) {
+            app.message.error("Validacion", "Debe agregar la cantidad a costear");
+            return;
+        }
+
+        //Para calibración
+        if ($CX_cmbTipoCosto.val() === "CXCD0007" && ($CX_txtMtoUnitarioCosto.val() === "" || $CX_txtMtoUnitarioCosto.val() === null)) {
+            app.message.error("Validacion", "Debe agregar el monto unitario de costo");
+            return;
+        }
+
+        if ($CX_cmbTipoCosto.val() === "CXCD0007" && ($CX_txtMtoUnitarioCosto.val() === "0.00" || $CX_txtMtoUnitarioCosto.val() === "0")) {
+            app.message.error("Validacion", "El monto unitario de costo no debe ser cero.");
+            return;
+        }
+
+        //LLave en mano, Instalacion, Mantenimiento Preventivo y Flete:
+        if ($CX_cmbTipoCosto.val() === "CXCD0001" || $CX_cmbTipoCosto.val() === "CXCD0002" ||
+            $CX_cmbTipoCosto.val() === "CXCD0006" || $CX_cmbTipoCosto.val() === "CXCD0008") {
+
+            if ($CX_txtUbicacion.val() === "" || $CX_txtUbicacion.val() == null) {
+                app.message.error("Validacion", "Debe seleccionar una ubicacion destino");
+                return;
+            }
+
+            //if ($CX_txtAmbDestino.val() === "" || $CX_txtAmbDestino.val() == null) {
+            //    app.message.error("Validacion", "Debe ingresar el local a enviar");
+            //    return;
+            //}
+
+            if ($CX_txtDireccion.val() === "" || $CX_txtDireccion.val() == null) {
+                app.message.error("Validacion", "Debe ingresar una dirección");
+                return;
+            }
+
+            //if ($CX_txtNroPiso.val() === "" || $CX_txtNroPiso.val() == null) {
+            //    app.message.error("Validacion", "Debe ingresar datos del piso");
+            //    return;
+            //}
+
+        }
+
+        //Para preventivos:
+        if ($CX_cmbTipoCosto.val() === "CXCD0006") {
+            if ($CX_txtCantPrevent.val() === "" || $CX_txtCantPrevent.val() == null || $CX_txtCantPrevent.val() == 0) {
+                app.message.error("Validacion", "Debe ingresar la cantidad de preventivo");
+                return;
+            }
+
+            if ($CX_cmbCicloPreventivo.val() === "" || $CX_cmbCicloPreventivo.val() == null || $CX_cmbCicloPreventivo.val() == 0) {
+                app.message.error("Validacion", "Debe seleccionar el ciclo de preventivo");
+                return;
+            }
+        }
+
+
+        var cod_TipoCosto = $CX_cmbTipoCosto.val();
+        var des_TipoCosto = $("#CX_cmbTipoCosto option:selected").text();
+        var ubigeo = $CX_hdnUbicacion.val();
+        var des_ubigeo = $CX_txtUbicacion.val();
+        var cantCosteada = $CX_txtCantCosteo.val();
+        var cantPreventivos = $CX_txtCantPrevent.val();
+        var cod_Periodicidad = $CX_cmbCicloPreventivo.val();
+        var des_Periodicidad = $("#CX_cmbCicloPreventivo option:selected").text();
+        var mtoUnitarioCosto = $CX_txtMtoUnitarioCosto.val();
+        if (cod_Periodicidad == 0 || cod_Periodicidad === "") {
+            des_Periodicidad = "";
+            cod_Periodicidad = null;
+        }
+        var direccion = $CX_txtDireccion.val();
+        var nro_piso = $CX_txtNroPiso.val();
+        var local_destino = $CX_txtAmbDestino.val();
+
+        var sumaCantidades = costeoMultiple
+            .filter(item => item.CodCosto === $CX_cmbTipoCosto.val()) // Filtra solo los que son del mismo tipo
+            .reduce((total, item) => total + item.CantCosto, 0);
+
+        var restante = parseInt($DI_txtCantidad.val()) - parseInt(sumaCantidades);
+        var nueva_suma = parseInt(sumaCantidades) + parseInt($CX_txtCantCosteo.val());
+
+        if (nueva_suma > $DI_txtCantidad.val()) {
+            app.message.error("Validacion", "La cantidad ha costear sobrepada la cantidad total de los productos, tiene " + restante + " cantidad(es) para costear para " + des_TipoCosto);
+            return;
+        }
+
+        var des_TipoCosto = $("#CX_cmbTipoCosto option:selected").text();
+        var cantCosteada = $CX_txtCantCosteo.val();
+        var mtoUnitarioCosto = $CX_txtMtoUnitarioCosto.val();
+        var ubigeo = $CX_hdnUbicacion.val();
+        var des_ubigeo = $CX_txtUbicacion.val();
+
+      
+
+        var cantidad_preventivos = cantPreventivos;
+        if (cantPreventivos == 0) {
+            cantidad_preventivos = null;
+        }
+
+        var monto_unitario = mtoUnitarioCosto;
+        if (mtoUnitarioCosto === "0" || mtoUnitarioCosto === "0.00" || mtoUnitarioCosto === null) {
+            monto_unitario = "";
+        }
+
+        var fnSi = function () {
+            var m = "POST";
+            var url = "BandejaSolicitudesVentas/MantCosteoItem";
+            var obj = {
+                Tipo: "I",
+                CodigoCotizacionDetalle: $DI_hdnIdCotDet.val(),
+                CodigoCosto: cod_TipoCosto,
+                CantidadCosto: parseInt(cantCosteada),
+                CantidadPreventivo: cantidad_preventivos,
+                CodigoCicloPreventivo: cod_Periodicidad,
+                CodigoUbigeo: ubigeo,
+                Direccion: direccion,
+                AmbienteDestino: local_destino,
+                NumeroPiso: nro_piso,
+                MontoUnitario: app.convertirNumero(mtoUnitarioCosto),
+                IdCosto: 0
+            }
+            var objParam = JSON.stringify(obj);
+            var fnDoneCallback = function (data) {
+
+                if (data.Result.Codigo > 0) {
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", null);
+
+                    var html = '<div class="text-center">';
+                    var sel_html = ''
+                    var strID = data.Result.Codigo;
+                    var hidden = '<input type="hidden" id="hdnCDCItem_' + $.trim(strID) + '" value=' + String.fromCharCode(39) + strID + String.fromCharCode(39) + '>';
+                    if (($estadoSol.val() == "SCOT" || $estadoSol.val() == "CVAL") && ($idRolUsuario.val() == "SGI_VENTA_ASESOR" || $idRolUsuario.val() == "SGI_VENTA_COORDINASERV" || $idRolUsuario.val() == "SGI_VENTA_COORDINAATC")) {
+
+                        var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarCostoItem(' + strID + ',' + $DI_hdnIdCotDet.val() + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+
+                        var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript:cotvtadet.quitarCostoItemVta(' + strID + ',' + $DI_hdnIdCotDet.val() +')"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                        html += '<center>' + hidden + editar + ' ' + quitar + '</center>';
+                    }
+                    else {
+                        var ver = '<a id="btnVerItem" class="btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.editarCostoItem(' + strID + ',' + $DI_hdnIdCotDet.val() + ')"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
+                        html += '<center>' + hidden + ver + '</center>';
+                    }
+                    html += '</div>';
+                    var nuevoTr = "<tr bgcolor='d0f2f7' id='fila" + data.Result.Codigo + "'>" + sel_html +
+                        "<th>" + des_TipoCosto + "</th>" +
+                        "<th>" + des_ubigeo + "</th>" +
+                        "<th>" + cantCosteada + "</th>" +
+                        "<th>" + app.convertirNumero(mtoUnitarioCosto) + "</th>" +
+                        "<th>" + '0.00' + "</th>" +
+                        "<th>" + html + "</th>" +
+                        "</tr>";
+
+                    $('#DI_tblCostos').append(nuevoTr);
+
+                    costeoMultiple.push({
+                        Id: $DI_hdnIdCotDet.val(),
+                        IdCosto: strID,
+                        CodCosto: cod_TipoCosto,
+                        DesCosto: des_TipoCosto,
+                        CantCosto: parseInt(cantCosteada),
+                        MontoUnitario: mtoUnitarioCosto,
+                        MontoTotal: 0,
+                        CodUbigeo: ubigeo,
+                        DesUbigeo: des_ubigeo
+                    });
+
+                    if (costeoMultiple.length > 0) {
+                        $('#NoRegCosteos').hide();
+                    }
+                }
+                else {
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", null);
+                }
+
+            };
+            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.GuardarCosto);
+        }
+        return app.message.confirm("Ventas", "¿Está seguro que desea guardar el costo", "Si;", "No", fnSi, null);
+
+        //Llave en mano: CXCD0001 X
+        //Instalacion: CXCD0002 X
+        //Capacitacion: CXCD0003
+        //Manuales: CXCD0004
+        //Videos: CXCD0005
+        //Mantenimiento Preventivo: CXCD0006 X
+        //Calibracion: CXCD0007
+        //Flete: CXCD0008 X
+
+    }
+
+    function guardarEditarCosteo() {
+        var codigo_costo = $CI_hdnCodTipoCosto.val();
+
+        if ($CI_txtCantCosteo.val() === "" || $CI_txtCantCosteo.val() == 0) {
+            app.message.error("Validacion", "Debe agregar la cantidad a costear");
+            return;
+        }
+
+        //Para calibración
+        if (codigo_costo === "CXCD0007" && ($CI_txtMtoUnitarioCosto.val() === "" || $CI_txtMtoUnitarioCosto.val() === null)) {
+            app.message.error("Validacion", "Debe agregar el monto unitario de costo");
+            return;
+        }
+
+        if (codigo_costo === "CXCD0007" && ($CI_txtMtoUnitarioCosto.val() === "0.00" || $CI_txtMtoUnitarioCosto.val() === "0")) {
+            app.message.error("Validacion", "El monto unitario de costo no debe ser cero.");
+            return;
+        }
+
+        //LLave en mano, Instalacion, Mantenimiento Preventivo y Flete:
+        if (codigo_costo === "CXCD0001" || codigo_costo === "CXCD0002" ||
+            codigo_costo === "CXCD0006" || codigo_costo === "CXCD0008") {
+
+            if ($CI_txtUbicacion.val() === "" || $CI_txtUbicacion.val() == null) {
+                app.message.error("Validacion", "Debe seleccionar una ubicacion destino");
+                return;
+            }
+
+            if ($CI_txtDireccion.val() === "" || $CI_txtDireccion.val() == null) {
+                app.message.error("Validacion", "Debe ingresar una dirección");
+                return;
+            }
+
+        }
+
+        //Para preventivos:
+        if (codigo_costo=== "CXCD0006") {
+            if ($CI_txtCantPrevent.val() === "" || $CI_txtCantPrevent.val() == null || $CI_txtCantPrevent.val() == 0) {
+                app.message.error("Validacion", "Debe ingresar la cantidad de preventivo");
+                return;
+            }
+
+            if ($CI_cmbCicloPreventivo.val() === "" || $CI_cmbCicloPreventivo.val() == null || $CI_cmbCicloPreventivo.val() == 0) {
+                app.message.error("Validacion", "Debe seleccionar el ciclo de preventivo");
+                return;
+            }
+        }
+
+        var sumaCantidades = costeoMultiple
+            .filter(item => item.CodCosto === codigo_costo) // Filtra solo los que son del mismo tipo
+            .reduce((total, item) => total + item.CantCosto, 0);
+
+
+        // Convierte los valores a enteros
+        var sumaCantidadesNumerica = parseInt(sumaCantidades);
+        var cantidadAntigua = parseInt($CI_hdnCantidadCostearAnt.val());
+
+        // Verifica si la conversión fue exitosa (no es NaN)
+        if (isNaN(sumaCantidadesNumerica)) {
+            console.log("Error: sumaCantidades no es un número válido.");
+        } else if (isNaN(cantidadAntigua)) {
+            console.log("Error: El valor de $CI_hdnCantidadCostearAnt no es un número válido.");
+        } else {
+            // Realiza la resta si ambos valores son números válidos
+            var nueva_sumaCantidades = sumaCantidadesNumerica - cantidadAntigua;
+            //console.log(nueva_sumaCantidades);  // Muestra el resultado de la resta
+        }
+
+
+        var restante = parseInt($CI_txtCantCotDet.val()) - parseInt(nueva_sumaCantidades);
+        var nueva_suma = parseInt(nueva_sumaCantidades) + parseInt($CI_txtCantCosteo.val());
+        var des_TipoCosto = $CI_TipoCosto.val();
+
+        if (nueva_suma > $CI_txtCantCotDet.val()) {
+            app.message.error("Validacion", "La cantidad ha costear sobrepada la cantidad total de los productos, tiene " + restante + " cantidad(es) para costear para " + des_TipoCosto);
+            return;
+        }
+
+        var fnSi = function () {
+
+
+            var m = "POST";
+            var url = "BandejaSolicitudesVentas/MantCosteoItem";
+            var obj = {
+                Tipo: "U",
+                CantidadCosto: parseInt($CI_txtCantCosteo.val()),
+                CantidadPreventivo: $CI_txtCantPrevent.val(),
+                CodigoCicloPreventivo: $CI_cmbCicloPreventivo.val(),
+                CodigoUbigeo: $CI_hdnUbicacion.val(),
+                Direccion: $CI_txtDireccion.val(),
+                AmbienteDestino: $CI_txtAmbDestino.val(),
+                NumeroPiso: $CI_txtNroPiso.val(),
+                MontoUnitario: app.convertirNumero($CI_txtMtoUnitarioCosto.val()),
+                CodigoCotizacionDetalle: $DI_hdnIdCotDet.val(),
+                IdCosto: $CI_hdnCodCosto.val()
+            }
+            var objParam = JSON.stringify(obj);
+            var fnDoneCallback = function (data) {
+
+                if (data.Result.Codigo > 0) {
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", null);
+                    costeoMultiple = [];
+
+                    editarCotDetItem($DI_hdnIdCotDet.val(), 0);
+                    $('#modalCostoItem').modal('hide');
+                }
+                else {
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", null);
+                }
+
+            };
+            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.GuardarCosto);
+        }
+        return app.message.confirm("Ventas", "¿Está seguro que desea guardar el costo", "Si;", "No", fnSi, null);
+
+
+        
+    }
+
+    function editarCostoItem(idCosteo, codDetalleCot) {
+
+        var estado = $estadoSol.val();
+
+        method = "POST";
+        url = "BandejaSolicitudesVentas/ConsultaItemCosto";
+        var objDatos = {
+            CodigoCotizacionDetalle: codDetalleCot,
+            IdCosto: idCosteo
+        };
+        var objParam = JSON.stringify(objDatos);
+
+        var fnDoneCallBack = function (data) {
+
+            $CI_Item.val(data.Result.CodigoItem);
+            $CI_Descripcion.val(data.Result.Descripcion);
+            $CI_txtCantCotDet.val(data.Result.Cantidad);
+            $CI_txtUnidadMedida.val(data.Result.UnidadMedida);
+            $CI_Dimensiones.val(data.Result.Dimensiones);
+            $CI_hdnUbicacion.val(data.Result.CodigoUbigeo);
+            $CI_txtUbicacion.val(data.Result.DescripcionUbigeo);
+            $CI_txtDireccion.val(data.Result.Direccion);
+            $CI_txtAmbDestino.val(data.Result.AmbienteDestino);
+            $CI_txtNroPiso.val(data.Result.NroPiso);
+            $CI_txtCantPrevent.val(data.Result.CantidadPreventivos);
+            $CI_cmbCicloPreventivo.val(data.Result.CodigoCicloPreventivo).trigger("change");
+            $CI_txtCantCosteo.val(data.Result.CantidadCosto);
+            $CI_hdnCantidadCostearAnt.val(data.Result.CantidadCosto);
+            $CI_txtMtoUnitarioCosto.val(data.Result.MontoUnitario.toFixed(2));
+            $CI_txtMtoTotalCosto.val(data.Result.MontoTotal.toFixed(2));
+            $CI_TipoCosto.val(data.Result.DescripcionCosto);
+            $CI_txtMoneda.val(data.Result.DescripcionMoneda);
+            $CI_hdnCodTipoCosto.val(data.Result.CodigoCosto);
+            $CI_hdnCodCosto.val(idCosteo);
+
+
+            var codigo_costo = data.Result.CodigoCosto;
+            $CI_txtMtoTotalCosto.prop("disabled", true);
+            if (codigo_costo == "CXCD0004" || codigo_costo == "CXCD0005" ||
+                codigo_costo == "CXCD0003") {
+
+                $("#CI_pnlInfoDestino").css("display", "none");
+                $("#CI_pnlInfoPreventivos").css("display", "none");
+                $CI_txtMtoUnitarioCosto.prop("disabled", true);
+            }
+            else if (codigo_costo == "CXCD0007") { //Calibracion
+                $("#CI_pnlInfoDestino").css("display", "none");
+                $("#CI_pnlInfoPreventivos").css("display", "none");
+                $CI_txtMtoUnitarioCosto.prop("disabled", false);
+
+            }
+            else if (codigo_costo == "CXCD0001" ||
+                codigo_costo == "CXCD0002" ||
+                codigo_costo == "CXCD0008") {
+
+                $("#CI_pnlInfoDestino").css("display", "");
+                $("#CI_pnlInfoPreventivos").css("display", "none");
+                $CI_txtMtoUnitarioCosto.prop("disabled", true);
+            }
+            else if (codigo_costo == "CXCD0006") { //Preventivos
+                $("#CI_pnlInfoDestino").css("display", "");
+                $("#CI_pnlInfoPreventivos").css("display", "");
+                $CI_txtMtoUnitarioCosto.prop("disabled", true);
+            }
+            else {
+                $("#CI_pnlInfoDestino").css("display", "none");
+                $("#CI_pnlInfoPreventivos").css("display", "none");
+                $CI_txtMtoUnitarioCosto.prop("disabled", true);
+            }
+
+            var tipo_venta = $cmbTipo.val();
+            if (tipo_venta === "TSOL02" || tipo_venta === "TSOL03" || tipo_venta === "TSOL04") { //Para venta de materiales:
+                $("#divDimensionItemCosto").css('display', 'none');
+            }
+            else {
+                $("#divDimensionItemCosto").css('display', '');
+            }
+
+            if (estado != "SCOT" && estado != "CVAL") {
+
+                $("#searchUbigeo").prop("disabled", true);
+                $CI_txtUbicacion.prop("disabled", true);
+                $CI_txtDireccion.prop("disabled", true);
+                $CI_txtAmbDestino.prop("disabled", true);
+                $CI_txtNroPiso.prop("disabled", true);
+                $CI_cmbCicloPreventivo.prop("disabled", true);
+                $CI_txtCantCosteo.prop("disabled", true);
+                $CI_txtMtoUnitarioCosto.prop("disabled", true);
+                $CI_txtMtoTotalCosto.prop("disabled", true);
+                $CI_btnGuardar.hide();
+            }
+            else {
+                $("#searchUbigeo").prop("disabled", false);
+                $CI_txtUbicacion.prop("disabled", false);
+                $CI_txtDireccion.prop("disabled", false);
+                $CI_txtAmbDestino.prop("disabled", false);
+                $CI_txtNroPiso.prop("disabled", false);
+                $CI_cmbCicloPreventivo.prop("disabled", false);
+                $CI_txtCantCosteo.prop("disabled", false);
+                $CI_txtMtoUnitarioCosto.prop("disabled", false);
+                $CI_txtMtoTotalCosto.prop("disabled", false);
+                $CI_btnGuardar.show();
+            }
+
+            $('#modalCostoItem').modal('show');
+        };
+
+        var fnFailCallback = function () {
+
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallback);
+
+        
+    }
+
+    function quitarCostoItemVta(strId,codDetalle) {
+
+        method = "POST";
+        url = "BandejaSolicitudesVentas/MantCosteoItem";
+        var objDatos = {
+            Tipo: "D",
+            CodigoCotizacionDetalle: codDetalle,
+            IdCosto: strId
+        };
+        var objParam = JSON.stringify(objDatos);
+
+        var fnSi = function () {
+            var fnDoneCallBack = function (data) {
+                if (data.Result.Codigo > 0) {
+                    //Se retira del array el dato eliminado:
+                    var index = costeoMultiple.findIndex(item => item.IdCosto === strId);
+                    if (index !== -1) {
+                        costeoMultiple.splice(index, 1);
+                    }
+
+                    $("#fila" + strId).remove();
+
+                    if (costeoMultiple.length === 0) {
+                        var nuevoTrNew = "<tr id='NoRegCosteos'><td align='center' colspan='6'> No existen registros</td></tr>"
+                        $('#DI_tblCostos').append(nuevoTrNew);
+                    }
+
+                    app.message.success("Costos", "Se elimin&oacute; el costo correctamente.", "Aceptar", null);
+                }
+                else {
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", null);
+                }
+
+            };
+
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+        }
+        return app.message.confirm("Confirmaci&oacute;n", "Desea quitar el costo seleccionado?", "S&iacute;", "No", fnSi);
+    }
     function SeleccionarRowCotDet(chk) {
         var ID = ObtenerCodItemxFila(chk);
 
@@ -1379,282 +2110,62 @@ var cotvtadet = (function ($, win, doc) {
 
     function grabarDatosCotDetItem() {
 
-        var bTieneStock = null;
-        var bCompraLocal = null;
-        var bReqPlaca = null;
-        var bManuales = null;
-        var bVideos = null;
-        var bInstalacion = null;
-        var bCapacitacion = null;
-        var bGarantiaAdic = null;
-        var bMantPrevent = null;
-        var bCalib = null;
-        var bFlete = null;
-
-        if ($.trim($DI_txtCodigo.val()) == "") {
-            app.message.error("Validaci&oacute;n", "Campo C&oacute;digo no puede ser vac&iacute;o");
-            return false;
+        if ($DI_txtCantidad.val() === null || $DI_txtCantidad.val() === "" || $DI_txtCantidad.val() === "0") {
+            app.message.error("Validacion", "Ingresar la cantidad del producto.");
+            return;
         }
 
-        if ($.trim($DI_txtDescripcion.val()) == "") {
-            app.message.error("Validaci&oacute;n", "Campo Descripcion no puede ser vac&iacute;o");
-            return false;
-        }
-
-        if ($DI_txtCantidad.val() == "") {
-            app.message.error("Validaci&oacute;n", "Campo Cantidad no puede ser vac&iacute;o");
-            return false;
-        }
-        else {
-            if (!app.validaNumeroEntero($DI_txtCantidad.val())) {
-                app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Cantidad");
-                return false;
-            }
-            else {
-                if (parseInt($DI_txtCantidad.val()) <= 0) {
-                    app.message.error("Validaci&oacute;n", "La cantidad debe ser mayor a 0.");
-                    return false;
-                }
-            }
-        }
-
-        if ($DI_pnlCostos_PrecioVenta.css("display") != "none") {
-            //if ($DI_pnlCostos_CostoFOB.css("display") != "none") {
-            //    if ($DI_txtCostoFOB.attr("readonly") != "readonly" && $DI_txtCostoFOB.attr("disabled") != "disabled") {
-            //        if ($DI_txtCostoFOB.val() == null || $DI_txtCostoFOB.val() === "") {
-            //            app.message.error("Validaci&oacute;n", "El campo Ex-Work no debe estar vac&iacute;o.");
-            //                return false;
-            //        }
-                    
-            //    }
-            //}
-            if ($DI_pnlCostos_ValorUnitario.css("display") != "none") {
-                if ($DI_txtValorUnitario.attr("readonly") != "readonly" && $DI_txtValorUnitario.attr("disabled") != "disabled") {
-                    if (!app.validaNumeroDecimal($DI_txtValorUnitario.val())) {
-                        app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Valor Unitario");
-                        return false;
-                    }
-                    else {
-                        if (parseFloat($DI_txtValorUnitario.val()) <= 0) {
-                            app.message.error("Validaci&oacute;n", "el valor unitario debe ser mayor a 0.");
-                            return false;
-                        }
-                    }
-                }
-            }
-        }
-
-        if ($DI_pnlCostos_Ganancia.css("display") != "none") {
-            if ($DI_txtGanancia.attr("readonly") != "readonly" && $DI_txtGanancia.attr("disabled") != "disabled") {
-                if (!app.validaNumeroDecimal($DI_txtGanancia.val())) {
-                    app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Ganancia");
-                    return false;
-                }
-                else {
-                    if (parseFloat($DI_txtGanancia.val()) <= 0) {
-                        app.message.error("Validaci&oacute;n", "La ganancia no debe ser menor a 0.");
-                        return false;
-                    }
-                }
-            }
-        }
-
-        if ($DI_pnlCostos_GarantAdic.css("display") != "none") {
-            if ($DI_cmbGarantias.attr("readonly") != "readonly" && $DI_cmbGarantias.attr("disabled") != "disabled") {
-                if ($.trim($DI_cmbGarantias.val()) == "") {
-                    app.message.error("Validaci&oacute;n", "Se debe elegir el tipo de garant&iacute;a.");
-                    return false;
-                }
-            }
-        }
-
-        if ($DI_pnlCostos_TieneStock.css("display") != "none") {
-            if ($DI_radTieneStock_Si.attr("readonly") != "readonly" && $DI_radTieneStock_Si.attr("disabled") != "disabled" &&
-                $DI_radTieneStock_No.attr("readonly") != "readonly" && $DI_radTieneStock_No.attr("disabled") != "disabled") {
-                if (!$DI_radTieneStock_Si.is(':checked') && !$DI_radTieneStock_No.is(':checked')) {
-                    app.message.error("Validaci&oacute;n", "Elija Si o No si el producto tiene STOCK");
-                    return false;
-                }
-            }
-        }
-
-        if ($DI_pnlCostos_CompraLocal.css("display") != "none") {
-            if ($DI_radCompraLocal_Si.attr("readonly") != "readonly" && $DI_radCompraLocal_Si.attr("disabled") != "disabled" &&
-                $DI_radCompraLocal_No.attr("readonly") != "readonly" && $DI_radCompraLocal_No.attr("disabled") != "disabled") {
-                if (!$DI_radCompraLocal_Si.is(':checked') && !$DI_radCompraLocal_No.is(':checked')) {
-                    app.message.error("Validaci&oacute;n", "Elija Si o No si el producto es COMPRA LOCAL");
-                    return false;
-                }
-            }
-        }
-
-        if ($DI_pnlCostos_ReqPlaca.css("display") != "none") {
-            if ($DI_radReqPlaca_Si.attr("readonly") != "readonly" && $DI_radReqPlaca_Si.attr("disabled") != "disabled" &&
-                $DI_radReqPlaca_No.attr("readonly") != "readonly" && $DI_radReqPlaca_No.attr("disabled") != "disabled") {
-                if (!$DI_radReqPlaca_Si.is(':checked') && !$DI_radReqPlaca_No.is(':checked')) {
-                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo de Requiere placa");
-                    return false;
-                }
-            }
-        }
-
-        if ($DI_pnlCostos_Manuales.css("display") != "none") {
-            if ($DI_radManuales_Si.attr("readonly") != "readonly" && $DI_radManuales_Si.attr("disabled") != "disabled" &&
-                $DI_radManuales_No.attr("readonly") != "readonly" && $DI_radManuales_No.attr("disabled") != "disabled") {
-                if (!$DI_radManuales_Si.is(':checked') && !$DI_radManuales_No.is(':checked')) {
-                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Manuales");
-                    return false;
-                }
-            }
-        }
-
-        if ($DI_pnlCostos_Videos.css("display") != "none") {
-            if ($DI_radVideos_Si.attr("readonly") != "readonly" && $DI_radVideos_Si.attr("disabled") != "disabled" &&
-                $DI_radVideos_No.attr("readonly") != "readonly" && $DI_radVideos_No.attr("disabled") != "disabled") {
-                if (!$DI_radVideos_Si.is(':checked') && !$DI_radVideos_No.is(':checked')) {
-                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Videos");
-                    return false;
-                }
-            }
-        }
-
-        if ($DI_pnlCostos_Instalacion.css("display") != "none") {
-            if ($DI_radInstalacion_Si.attr("readonly") != "readonly" && $DI_radInstalacion_Si.attr("disabled") != "disabled" &&
-                $DI_radInstalacion_No.attr("readonly") != "readonly" && $DI_radInstalacion_No.attr("disabled") != "disabled") {
-                if (!$DI_radInstalacion_Si.is(':checked') && !$DI_radInstalacion_No.is(':checked')) {
-                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Instalaci&oacute;n");
-                    return false;
-                }
-            }
-        }
-
-        if ($DI_pnlCostos_Capacitacion.css("display") != "none") {
-            if ($DI_radCapacitacion_Si.attr("readonly") != "readonly" && $DI_radCapacitacion_Si.attr("disabled") != "disabled" &&
-                $DI_radCapacitacion_No.attr("readonly") != "readonly" && $DI_radCapacitacion_No.attr("disabled") != "disabled") {
-                if (!$DI_radCapacitacion_Si.is(':checked') && !$DI_radCapacitacion_No.is(':checked')) {
-                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Capacitaci&oacute;n");
-                    return false;
-                }
-            }
-        }
-
-        if ($DI_pnlCostos_GarantAdic.css("display") != "none") {
-            if ($DI_radGarantAdic_Si.attr("readonly") != "readonly" && $DI_radGarantAdic_Si.attr("disabled") != "disabled" &&
-                $DI_radGarantAdic_No.attr("readonly") != "readonly" && $DI_radGarantAdic_No.attr("disabled") != "disabled") {
-                if (!$DI_radGarantAdic_Si.is(':checked') && !$DI_radGarantAdic_No.is(':checked')) {
-                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Garant&iacute;a adicional");
-                    return false;
-                }
-            }
-        }
-
-        if ($DI_pnlCostos_MantPrevent.css("display") != "none") {
-            if ($DI_radMantPrevent_Si.attr("readonly") != "readonly" && $DI_radMantPrevent_Si.attr("disabled") != "disabled" &&
-                $DI_radMantPrevent_No.attr("readonly") != "readonly" && $DI_radMantPrevent_No.attr("disabled") != "disabled") {
-                if (!$DI_radMantPrevent_Si.is(':checked') && !$DI_radMantPrevent_No.is(':checked')) {
-                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Mantenimiento Preventivo");
-                    return false;
-                }
-            }
-        }
-
-        if ($DI_pnlCostos_Calibracion.css("display") != "none") {
-            if ($DI_radCalibracion_Si.attr("readonly") != "readonly" && $DI_radCalibracion_Si.attr("disabled") != "disabled" &&
-                $DI_radCalibracion_No.attr("readonly") != "readonly" && $DI_radCalibracion_No.attr("disabled") != "disabled") {
-                if (!$DI_radCalibracion_Si.is(':checked') && !$DI_radCalibracion_No.is(':checked')) {
-                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Calibraci&oacute;n");
-                    return false;
-                }
-            }
-        }
-
-        if ($DI_pnlCostos_Flete.css("display") != "none") {
-            if ($DI_radFlete_Si.attr("readonly") != "readonly" && $DI_radFlete_Si.attr("disabled") != "disabled" &&
-                $DI_radFlete_No.attr("readonly") != "readonly" && $DI_radFlete_No.attr("disabled") != "disabled") {
-                if (!$DI_radFlete_Si.is(':checked') && !$DI_radFlete_No.is(':checked')) {
-                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo Flete");
-                    return false;
-                }
-            }
-        }
-
-        if ($DI_radReqPlaca_Si.is(':checked')) { bReqPlaca = true; }
-        if ($DI_radReqPlaca_No.is(':checked')) { bReqPlaca = false; }
-
-        if ($DI_radCompraLocal_Si.is(':checked')) { bCompraLocal = true; }
-        if ($DI_radCompraLocal_No.is(':checked')) { bCompraLocal = false; }
-
-        if ($DI_radManuales_Si.is(':checked')) { bManuales = true; }
-        if ($DI_radManuales_No.is(':checked')) { bManuales = false; }
-
-        if ($DI_radVideos_Si.is(':checked')) { bVideos = true; }
-        if ($DI_radVideos_No.is(':checked')) { bVideos = false; }
-
-        if ($DI_radInstalacion_Si.is(':checked')) { bInstalacion = true; }
-        if ($DI_radInstalacion_No.is(':checked')) { bInstalacion = false; }
-
-        if ($DI_radCapacitacion_Si.is(':checked')) { bCapacitacion = true; }
-        if ($DI_radCapacitacion_No.is(':checked')) { bCapacitacion = false; }
-
-        if ($DI_radMantPrevent_Si.is(':checked')) { bMantPrevent = true; }
-        if ($DI_radMantPrevent_No.is(':checked')) { bMantPrevent = false; }
-
-        if ($DI_radGarantAdic_Si.is(':checked')) { bGarantiaAdic = true; }
-        if ($DI_radGarantAdic_No.is(':checked')) { bGarantiaAdic = false; }
-
-        if ($DI_radCalibracion_Si.is(':checked')) { bCalib = true; }
-        if ($DI_radCalibracion_No.is(':checked')) { bCalib = false; }
-
-        if ($DI_radTieneStock_Si.is(':checked')) { bTieneStock = true; }
-        if ($DI_radTieneStock_No.is(':checked')) { bTieneStock = false; }
-
-        if ($DI_radFlete_Si.is(':checked')) { bFlete = true; }
-        if ($DI_radFlete_No.is(':checked')) { bFlete = false; }
 
         var fnSi = function () {
-            method = "POST";
-            url = "BandejaSolicitudesVentas/GrabarDatosCotDetItem";
+            var tipo = "";
+            var cotizacion_detalle = $DI_hdnIdCotDet.val();
+            if (cotizacion_detalle == "-1") {
+                tipo = "I";
+            }
+            else {
+                tipo = "U";
+            }
+
+            var indicador_stock = "";
+            if ($DI_radTieneStock_Si.is(':checked')) { indicador_stock = "S"; }
+            else { indicador_stock = "N"; }
+
+            var indicador_compralocal = "";
+            if ($DI_radCompraLocal_Si.is(':checked')) { indicador_compralocal = "S"; }
+            else { indicador_compralocal = "N"; }
+
+            var indicador_requiereplaca = "";
+            if ($DI_radRequierePlaca_Si.is(':checked')) { indicador_requiereplaca = "S"; }
+            else { indicador_requiereplaca = "N"; }
+
+            var method = "POST";
+            var url = "BandejaSolicitudesVentas/MantCosteoCotizacion";
             var objDatos = {
-                CotizacionDetallePadre: { CodItem: $DI_hdnCodigoPadre.val() },
-                CotizacionDetalle: {
-                    Id: $DI_hdnIdCotDet.val(),
-                    CodItem: $DI_hdnCodigo.val(),
-                    CodItemTemp: $DI_txtCodigo.val(),
-                    Descripcion: $DI_txtDescripcion.val(),
-                    DescripcionAdicional: $DI_txtDescripcionAdic.val(),
-                    Cantidad: app.convertirNumero($DI_txtCantidad.val()),
-                    CostoFOB: $DI_txtCostoFOB.val(),
-                    VentaUnitaria: app.convertirNumero($DI_txtValorUnitario.val()),
-                    PorcentajeGanancia: app.convertirNumero($DI_txtGanancia.val()),
-                    IndStock: bTieneStock,
-                    CotizacionDespacho: {
-                        IndCompraLocal: bCompraLocal,
-                        IndRequierePlaca: bReqPlaca,
-                        Dimensiones: $DI_txtDimensiones.val(),
-                        IndInfoManual: bManuales,
-                        IndInfoVideo: bVideos,
-                        IndInfoVideo: bVideos,
-                        IndMantPreventivo: bMantPrevent,
-                        IndCalibracion: bCalib,
-                        IndGarantiaAdicional: bGarantiaAdic,
-                        CodGarantiaAdicional: $DI_cmbGarantias.val(),
-                        IndInstalacion: bInstalacion,
-                        IndCapacitacion: bCapacitacion,
-                        IndFlete: bFlete,
-                        ObsCliente: $DI_txtReqCliente.val(),
-                        ObsDespacho: $DI_txtObsInsta.val()
-                    }
-                },
-                opcGrillaItems: $DI_opcGrilla.val()
+                Tipo: tipo,
+                CodigoCotizacionDetalle: cotizacion_detalle,
+                Cantidad: $DI_txtCantidad.val(),
+                IndicadorStock: indicador_stock,
+                Dimensiones: $DI_txtDimensiones.val(),
+                ObservacionCliente: $DI_txtReqCliente.val(),
+                ObservacionDespacho: $DI_txtObsInsta.val(),
+                DescripcionAdicional: $DI_txtDescripcionAdic.val(),
+                MontoUnitario: $DI_txtValorUnitario.val(),
+                IndicadorCompraLocal: indicador_compralocal,
+                IndicadorRequierePlaca: indicador_requiereplaca,
+                CodigoGarantiaAdicional: $DI_cmbGarantias.val(),
+                PorcentajeGanancia: $DI_txtGanancia.val()
             };
             var objParam = JSON.stringify(objDatos);
 
             var fnDoneCallBack = function (data) {
-                $('#modalDetalleItem').modal('hide');
-                cargarTablaCotDet(data);
-                if ($DI_opcGrilla.val() == "2") {
-                    cargarTablaDetCotCostos(data);
+                if (data.Result.Codigo > 0) {
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", null);
+                    $('#modalDetalleItem').modal('hide');
                 }
+                else {
+                    app.message.success("Error", data.Result.Mensaje, "Aceptar", null);
+                }
+                
             };
 
             var fnFailCallback = function () {
@@ -1662,6 +2173,8 @@ var cotvtadet = (function ($, win, doc) {
             };
 
             app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallback);
+
+
         }
         return app.message.confirm("Confirmaci&oacute;n", "Desea guardar el detalle de cotizaci&oacute;n?", "S&iacute;", "No", fnSi);
     }
@@ -3642,6 +4155,8 @@ var cotvtadet = (function ($, win, doc) {
         editarExWork: editarExWork,
         guardarExWork: guardarExWork,
         //detalleHijo: detalleHijo,
-        IniciarLogicaInputs: IniciarLogicaInputs
+        IniciarLogicaInputs: IniciarLogicaInputs,
+	quitarCostoItemVta: quitarCostoItemVta,
+        editarCostoItem: editarCostoItem
     }
 })(window.jQuery, window, document);

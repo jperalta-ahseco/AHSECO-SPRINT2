@@ -36,6 +36,7 @@ using static AHSECO.CCL.FRONTEND.Core.MultiFlujo.Tag;
 using Azure.Core;
 using System.Web.Http.Results;
 using DocumentFormat.OpenXml.Drawing.Diagrams;
+using NPOI.SS.Formula.Functions;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 {
@@ -3872,49 +3873,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         }
 
         [HttpPost]
-        public JsonResult CargarCotDetItem(CotizacionDetalleDTO CotizacionDetalle, string opcGrillaItems)
+        public JsonResult CargarCotDetItem(long codDetalleCotizacion)
         {
-            try
-            {
-                var ventasBL = new VentasBL();
-
-                var lstItems = GetCotDetItems(opcTablaTemporal);
-
-                //CotizacionDetalleDTO itemCotDet = findCotDetRecord(CotizacionDetalle.CodItem, opcGrillaItems);
-
-                CotizacionDetalleDTO itemCotDet = lstItems.FirstOrDefault(x => x.Id == CotizacionDetalle.Id);
-
-                List<CotDetCostoDTO> lstCostos = new List<CotDetCostoDTO>();
-
-                if (opcGrillaItems == opcTablaTabs)
-                {
-                    //Se carga todos los costos
-                    var resCostos = ventasBL.ObtenerCotDetCostos(new CotDetCostoDTO() { IdCotizacionDetalle = itemCotDet.Id });
-                    lstCostos = resCostos.Result.ToList();
-                    itemCotDet.CotizacionCostos = lstCostos.ToArray();
-                }
-                else
-                {
-                    if (itemCotDet.CotizacionCostos != null) { lstCostos = itemCotDet.CotizacionCostos.ToList(); }
-                }
-
-                itemCotDet = configureCotDetItem(itemCotDet);
-
-                VariableSesion.setObject(TAG_CDCI_CotDetItem, lstCostos);
-
-                List<CotDetCostoDTO> lstCostosBKP = new List<CotDetCostoDTO>();
-
-                lstCostos.ForEach(x => {
-                    var oItemBKP = new CotDetCostoDTO();
-                    x.CopyProperties(ref oItemBKP);
-                    lstCostosBKP.Add(oItemBKP);
-                });
-
-                VariableSesion.setObject(TAG_CDCI_CotDetItem_BKP, lstCostosBKP);
-
-                return Json(new ResponseDTO<CotizacionDetalleDTO>(itemCotDet));
-            }
-            catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
+            var ventasBL = new VentasBL();
+            var result = ventasBL.GrupoCostosFiltro(codDetalleCotizacion);
+            return Json(result);
         }
 
         [HttpPost]
@@ -7214,6 +7177,33 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             cotdet.Eliminado = true;
             var result = ventasBL.MantenimientoCotizacionDetalle(cotdet);
             return Json(result);
+        }
+		
+		 [HttpPost]
+        public JsonResult MantCosteoItem(CotCostoDTO costo)
+        {
+            var ventasBL = new VentasBL();
+            costo.UsuarioRegistro = User.ObtenerUsuario();
+            var response = ventasBL.MantCosteoItem(costo);
+            return Json(response);
+        }
+
+        [HttpPost]
+        public JsonResult MantCosteoCotizacion(CosteoCotizacionDTO costo)
+        {
+            var ventasBL = new VentasBL();
+            costo.UsuarioRegistro = User.ObtenerUsuario();
+            var response = ventasBL.MantCosteoCotizacion(costo);
+            return Json(response);
+        }
+
+        [HttpPost]
+        public JsonResult ConsultaItemCosto(CotCostoDTO costo)
+        {
+            var ventasBL = new VentasBL();
+            costo.UsuarioRegistro = User.ObtenerUsuario();
+            var response = ventasBL.ConsultaItemCosto(costo);
+            return Json(response);
         }
 
     }
