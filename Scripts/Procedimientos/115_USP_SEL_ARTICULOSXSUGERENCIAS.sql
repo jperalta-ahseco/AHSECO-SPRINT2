@@ -1,0 +1,143 @@
+USE [DB_AHSECO]
+GO
+
+CREATE OR ALTER PROCEDURE [DBO].[USP_SEL_ARTICULOSXSUGERENCIAS]
+(
+    @pAR_CCODIGO VARCHAR(100),
+    @pAR_CDESCRI VARCHAR(100),
+    @pAR_CUNIDAD VARCHAR(100),
+    @pAR_CFAMILI VARCHAR(100),
+	@pAR_CMARCA VARCHAR(100),
+	@pSK_CALMA VARCHAR(100),
+	@pAR_CMODELO VARCHAR(100),
+	@pCANTREG INT
+)
+/*==========================================================================================
+	Nombre:						Fecha:			Descripción:
+	Diego Bazalar				10.02.2025		Consulta de Articulos .
+  ==========================================================================================*/
+
+AS
+BEGIN
+
+	DECLARE @pLinkServer VARCHAR(100) = 'AH-SRV4';
+	DECLARE @SQL VARCHAR(MAX);
+	DECLARE @TOP VARCHAR(100);
+
+	IF @pCANTREG IS NOT NULL BEGIN
+		SET @TOP = 'TOP '+CONVERT(VARCHAR(30),@pCANTREG);
+	END;
+
+	SET @SQL = '
+	SELECT '+ISNULL(@TOP,'')
+	IF ISNULL(@pAR_CCODIGO,'') <> '' 
+	BEGIN
+		SET @SQL = @SQL + ' RTRIM(A.AR_CCODIGO) AS RPTA
+		'
+	END
+	IF ISNULL(@pAR_CDESCRI,'') <> '' 
+	BEGIN
+		SET @SQL = @SQL + ' RTRIM(A.AR_CDESCRI) AS RPTA
+		'
+	END
+	IF ISNULL(@pAR_CMODELO,'') <> '' 
+	BEGIN
+		SET @SQL = @SQL + ' RTRIM(MO.TG_CDESCRI) AS RPTA
+		'
+	END
+	SET @SQL = @SQL + '
+	FROM RSFACCAR.dbo.AL0007ARTI A
+	LEFT JOIN RSFACCAR.dbo.AL0007TABL UM ON UM.TG_CCOD = ''05'' AND A.AR_CUNIDAD = UM.TG_CCLAVE
+	LEFT JOIN RSFACCAR.dbo.AL0007TABL FA ON FA.TG_CCOD = ''38'' AND A.AR_CFAMILI = FA.TG_CCLAVE
+	LEFT JOIN RSFACCAR.dbo.FT0007LINE LI ON A.AR_CLINEA = LI.LI_CCODLIN
+	LEFT JOIN RSFACCAR.dbo.AL0007TABL MA ON MA.TG_CCOD = ''V7'' AND A.AR_CMARCA = MA.TG_CCLAVE
+	LEFT JOIN RSFACCAR.dbo.AL0007TABL MO ON MO.TG_CCOD = ''39'' AND A.AR_CMODELO = MO.TG_CCLAVE
+	LEFT JOIN RSFACCAR.dbo.AL0007STOC ST ON ST.SK_CALMA IN (''0001'',''0015'',''0017'') AND A.AR_CCODIGO = ST.SK_CCODIGO
+	LEFT JOIN RSFACCAR.dbo.AL0007ALMA AL ON ST.SK_CALMA = AL.A1_CALMA
+	WHERE 1 = 1
+	';
+
+	IF ISNULL(@pAR_CCODIGO,'') <> '' BEGIN
+		IF CHARINDEX(';',@pAR_CCODIGO) > 0 BEGIN
+			SET @SQL = @SQL + ' AND (''' + @pAR_CCODIGO + ''' LIKE ''%;''+RTRIM(A.AR_CCODIGO)+'';%'' ';
+			SET @SQL = @SQL + ' OR ''' + @pAR_CCODIGO + ''' LIKE RTRIM(A.AR_CCODIGO)+'';%'' ';
+			SET @SQL = @SQL + ' OR ''' + @pAR_CCODIGO + ''' LIKE ''%;''+RTRIM(A.AR_CCODIGO)) ';
+		END
+		ELSE BEGIN
+			SET @SQL = @SQL + ' AND RTRIM(A.AR_CCODIGO) LIKE ''%'+RTRIM(@pAR_CCODIGO)+'%'' ';
+		END;
+	END;
+	
+	IF ISNULL(@pAR_CDESCRI,'') <> '' BEGIN
+		SET @SQL = @SQL + ' AND REPLACE(A.AR_CDESCRI,'' '','''') LIKE REPLACE(''%'+TRIM(@pAR_CDESCRI)+'%'','' '','''') ';
+	END;
+	
+	IF ISNULL(@pAR_CUNIDAD,'') <> '' BEGIN
+		IF CHARINDEX(';',@pAR_CUNIDAD) > 0 BEGIN
+			SET @SQL = @SQL + ' AND (''' + @pAR_CUNIDAD + ''' LIKE ''%;''+RTRIM(A.AR_CUNIDAD)+'';%'' ';
+			SET @SQL = @SQL + ' OR ''' + @pAR_CUNIDAD + ''' LIKE RTRIM(A.AR_CUNIDAD)+'';%'' ';
+			SET @SQL = @SQL + ' OR ''' + @pAR_CUNIDAD + ''' LIKE ''%;''+RTRIM(A.AR_CUNIDAD)) ';
+		END
+		ELSE BEGIN
+			SET @SQL = @SQL + ' AND RTRIM(A.AR_CUNIDAD) = '''+RTRIM(@pAR_CUNIDAD)+''' ';
+		END;
+	END;
+	
+	IF ISNULL(@pAR_CFAMILI,'') <> '' BEGIN
+		IF CHARINDEX(';',@pAR_CFAMILI) > 0 BEGIN
+			SET @SQL = @SQL + ' AND (''' + @pAR_CFAMILI + ''' LIKE ''%;''+RTRIM(A.AR_CFAMILI)+'';%'' ';
+			SET @SQL = @SQL + ' OR ''' + @pAR_CFAMILI + ''' LIKE RTRIM(A.AR_CFAMILI)+'';%'' ';
+			SET @SQL = @SQL + ' OR ''' + @pAR_CFAMILI + ''' LIKE ''%;''+RTRIM(A.AR_CFAMILI)) ';
+		END
+		ELSE BEGIN
+			SET @SQL = @SQL + ' AND RTRIM(A.AR_CFAMILI) = '''+RTRIM(@pAR_CFAMILI)+''' ';
+		END;
+	END;
+	
+	IF ISNULL(@pAR_CMARCA,'') <> '' BEGIN
+		IF CHARINDEX(';',@pAR_CMARCA) > 0 BEGIN
+			SET @SQL = @SQL + ' AND (''' + @pAR_CMARCA + ''' LIKE ''%;''+RTRIM(A.AR_CMARCA)+'';%'' ';
+			SET @SQL = @SQL + ' OR ''' + @pAR_CMARCA + ''' LIKE RTRIM(A.AR_CMARCA)+'';%'' ';
+			SET @SQL = @SQL + ' OR ''' + @pAR_CMARCA + ''' LIKE ''%;''+RTRIM(A.AR_CMARCA)) ';
+		END
+		ELSE BEGIN
+			SET @SQL = @SQL + ' AND RTRIM(A.AR_CMARCA) = '''+RTRIM(@pAR_CMARCA)+''' ';
+		END;
+	END;
+	
+	IF ISNULL(@pSK_CALMA,'') <> '' BEGIN
+		IF CHARINDEX(';',@pSK_CALMA) > 0 BEGIN
+			SET @SQL = @SQL + ' AND (''' + @pSK_CALMA + ''' LIKE ''%;''+RTRIM(ST.SK_CALMA)+'';%'' ';
+			SET @SQL = @SQL + ' OR ''' + @pSK_CALMA + ''' LIKE RTRIM(ST.SK_CALMA)+'';%'' ';
+			SET @SQL = @SQL + ' OR ''' + @pSK_CALMA + ''' LIKE ''%;''+RTRIM(ST.SK_CALMA)) ';
+		END
+		ELSE BEGIN
+			SET @SQL = @SQL + ' AND RTRIM(ST.SK_CALMA) = '''+RTRIM(@pSK_CALMA)+''' ';
+		END;
+	END;
+
+	IF ISNULL(@pAR_CMODELO,'') <> '' BEGIN
+		IF CHARINDEX(';',@pAR_CMODELO) > 0 BEGIN
+			SET @SQL = @SQL + ' AND (''' + @pAR_CMODELO + ''' LIKE ''%;''+RTRIM(MO.TG_CDESCRI)+'';%'' ';
+			SET @SQL = @SQL + ' OR ''' + @pAR_CMODELO + ''' LIKE RTRIM(MO.TG_CDESCRI)+'';%'' ';
+			SET @SQL = @SQL + ' OR ''' + @pAR_CMODELO + ''' LIKE ''%;''+RTRIM(MO.TG_CDESCRI)) ';
+		END
+		ELSE BEGIN
+			SET @SQL = @SQL + ' AND RTRIM(MO.TG_CDESCRI) LIKE ''%'+RTRIM(@pAR_CMODELO)+'%'' ';
+		END;
+	END;
+
+	
+	SET @SQL = @SQL + ' ORDER BY (CASE RTRIM(FA.TG_CCLAVE) WHEN ''08'' THEN 100 WHEN ''01'' THEN 1 ELSE 2 END) ASC, A.AR_CDESCRI ASC';
+
+	IF EXISTS(SELECT 1 FROM SYS.SERVERS WHERE UPPER(NAME) LIKE '%'+@pLinkServer+'%')
+	BEGIN
+		SET @SQL = REPLACE(@SQL,'''','''''');
+		SET @SQL = 'SELECT * FROM OPENQUERY(['+@pLinkServer+'],'''+@SQL+''')';
+	END;
+
+	PRINT(@SQL)
+
+	EXEC(@SQL);
+
+END;
