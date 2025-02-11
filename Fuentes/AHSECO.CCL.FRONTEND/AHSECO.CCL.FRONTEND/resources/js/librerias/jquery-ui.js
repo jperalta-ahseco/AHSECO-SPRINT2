@@ -6669,7 +6669,7 @@
 
             this.element
 			.addClass("ui-autocomplete-input")
-			.attr("autocomplete", "off");
+			.attr("autocomplete", "on");
 
             this._on(this.element, {
                 keydown: function (event) {

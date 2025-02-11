@@ -3047,7 +3047,7 @@ var cotvtadet = (function ($, win, doc) {
             }).api();
         }
         table.clear();
-        if (data != null) {
+        if (data.Result.length > 0 ) {
             table.rows.add(data.Result);
         } else {
             var result = GeneraTabla2();
@@ -4124,6 +4124,7 @@ var cotvtadet = (function ($, win, doc) {
 
         var fnDoneCallBack = function () {
             app.message.success("&Eacute;nxito", "Se agreg&oacute;n correctamente");
+            listarCotDetItems();
         };
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null, null, null);
