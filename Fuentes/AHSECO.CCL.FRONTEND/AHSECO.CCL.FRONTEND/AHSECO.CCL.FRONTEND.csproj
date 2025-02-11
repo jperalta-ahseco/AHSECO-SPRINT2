@@ -567,6 +567,7 @@
     <Content Include="resources\js\librerias\init-chart.js" />
     <Content Include="resources\js\librerias\jquery-1.4.2.min.js" />
     <Content Include="resources\js\librerias\jquery-1.7.2.min.js" />
+    <Content Include="resources\js\librerias\jquery-3.5.0.min.js" />
     <Content Include="resources\js\librerias\jquery-ui-1.12.1.min.js" />
     <Content Include="resources\js\librerias\jquery-ui-1.7.2.custom.css" />
     <Content Include="resources\js\librerias\jquery-ui-1.8.6.min.js" />
