@@ -6,6 +6,7 @@ using AHSECO.CCL.BE.Ventas;
 using AHSECO.CCL.COMUN;
 using Dapper;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -437,6 +438,8 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("isCODITEM", detalleCotizacion.CodItem);
                 parameters.Add("isDESCRIPCION", detalleCotizacion.Descripcion);
                 parameters.Add("isDESCRIPADIC", detalleCotizacion.DescripcionAdicional);
+                parameters.Add("isMARCA", detalleCotizacion.Marca);
+                parameters.Add("isMODELO", detalleCotizacion.Modelo);
                 if (detalleCotizacion.Stock.HasValue)
                 { parameters.Add("isSTOCK", detalleCotizacion.Stock.Value); }
                 else
@@ -445,6 +448,14 @@ namespace AHSECO.CCL.BD.Ventas
                 { parameters.Add("isINDSTOCK", Utilidades.ParseStringSN<bool?>(detalleCotizacion.IndStock)); }
                 else
                 { parameters.Add("isINDSTOCK", DBNull.Value, DbType.String); }
+                if(detalleCotizacion.Eliminado.HasValue)
+                {
+                    parameters.Add("isELIMINADO", Utilidades.ParseStringSN<bool?>(detalleCotizacion.IndStock));
+                }
+                else
+                {
+                    parameters.Add("isELIMINADO", DBNull.Value, DbType.String);
+                };
                 parameters.Add("isUNDMED", detalleCotizacion.CodUnidad);
                 parameters.Add("isCANTIDAD", detalleCotizacion.Cantidad);
                 parameters.Add("isCOSTOFOB", detalleCotizacion.CostoFOB); 
@@ -2148,6 +2159,40 @@ namespace AHSECO.CCL.BD.Ventas
                 return result;
             }
         }
+
+        #region Sugerencias
+
+        public List<string> ObtenerSugerencias(ReqSugerenciaVentas request)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using (var connection = Factory.ConnectionFactory())
+            {
+                var rpta = "";
+                connection.Open();
+                var parameters = new DynamicParameters();
+                parameters.Add("pAR_CCODIGO", request.CodProd);
+                parameters.Add("pAR_CFAMILI", request.CodFamilia);
+                parameters.Add("pSK_CALMA", request.CodAlmacen);
+                parameters.Add("pAR_CDESCRI", request.DescEquipo);
+                parameters.Add("pAR_CMARCA", request.DescMarca);
+                parameters.Add("pAR_CMODELO", request.DescModelo);
+                parameters.Add("pAR_CUNIDAD", request.CodUndMed);
+                parameters.Add("pCANTREG", request.CantidadRegistros);
+
+                var result = connection.Query(
+                    sql: "USP_SEL_ARTICULOSXSUGERENCIAS",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(d => d as IDictionary<string, object>)
+                    .Select(i => rpta = i.Single(d => d.Key.Equals("RPTA")).Value.Parse<string>());
+                connection.Close();
+
+                return result.ToList();
+            }
+        }
+
+        #endregion
+
 
     }
 }

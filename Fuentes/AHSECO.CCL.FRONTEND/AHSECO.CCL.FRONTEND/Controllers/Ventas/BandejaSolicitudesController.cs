@@ -3214,6 +3214,14 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         }
 
         [HttpPost]
+        public JsonResult ObtenerSugerencias(ReqSugerenciaVentas request)
+        {
+            var ventasBl = new VentasBL();
+            var result = ventasBl.ObtenerSugerencias(request);
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult ObtenerArticulos(FiltroArticuloDTO filtro)
         {
             var ventaBL = new VentasBL();
@@ -7181,6 +7189,31 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 result.Mensaje = ex.Message.ToString();
             }
             return Json(new ResponseDTO<RespuestaDTO>(result));
+        }
+
+        [HttpPost]
+        public JsonResult InsertCotDet(CotizacionDetalleDTO cotdet)
+        {
+            var ventasBL = new VentasBL();
+            cotdet.TipoProceso = ConstantesDTO.SolicitudVenta.TipoProceso.Insertar;
+            cotdet.UsuarioRegistra = User.ObtenerUsuario();
+            cotdet.FechaRegistro = DateTime.Now;
+            cotdet.IndStock = cotdet.Stock > 0 ? true : false;
+            cotdet.TipoItem = cotdet.EsItemPadre ? "PRO" : "ACC";
+            var result = ventasBL.MantenimientoCotizacionDetalle(cotdet);
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult EliminarCotDet(CotizacionDetalleDTO cotdet)
+        {
+            var ventasBL = new VentasBL();
+            cotdet.TipoProceso = ConstantesDTO.SolicitudVenta.TipoProceso.Modificar;
+            cotdet.UsuarioRegistra = User.ObtenerUsuario();
+            cotdet.FechaRegistro = DateTime.Now;
+            cotdet.Eliminado = true;
+            var result = ventasBL.MantenimientoCotizacionDetalle(cotdet);
+            return Json(result);
         }
 
     }

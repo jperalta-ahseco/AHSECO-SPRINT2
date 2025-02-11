@@ -17,6 +17,9 @@ namespace AHSECO.CCL.BE.Ventas
         public string CodItem { get; set; }
         public string Descripcion { get; set; }
         public string DescripcionAdicional { get; set; }
+        public string Marca { get; set; }
+        public string Modelo { get; set; }
+        public bool? Eliminado { get; set; }
         public int? Stock { get; set; }
         public bool? IndStock { get; set; }
         public string CodUnidad { get; set; }
@@ -37,8 +40,6 @@ namespace AHSECO.CCL.BE.Ventas
         public string CodItemTemp { get; set; }
 
         #region BandejaInstalacionTecnica
-        public string Marca { get; set; }
-        public string Modelo { get; set; }
         public string Serie { get; set; }
         public string NumFianza { get; set; }
         #endregion

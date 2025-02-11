@@ -450,5 +450,24 @@ namespace AHSECO.CCL.BL.Ventas
             };
         }
 
+
+        #region Sugerencias
+
+        public ResponseDTO<List<string>> ObtenerSugerencias(ReqSugerenciaVentas request)
+        {
+            try
+            {
+                var result = Repository.ObtenerSugerencias(request);
+                return new ResponseDTO<List<string>>(result);
+            }
+            catch( Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<List<string>>(ex);
+            }
+        }
+        #endregion
+
+
     }
 }

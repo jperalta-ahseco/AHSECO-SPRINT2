@@ -2477,17 +2477,20 @@
     }
 
     function $btnAgregarDetalle_click() {
-        $('#BI_cmbFamilia').get(0).selectedIndex = 0;
-        $('#BI_cmbFamilia').trigger("change.select2");
-        $BI_txtNomProducto.val("");
-        $BI_txtCodProducto.val("");
-        $('#BI_cmbTipoMedida').get(0).selectedIndex = 0;
-        $('#BI_cmbTipoMedida').trigger("change.select2");
-        $('#BI_cmbMarca').get(0).selectedIndex = 0;
-        $('#BI_cmbMarca').trigger("change.select2");
-        $('#BI_cmbAlmacen').get(0).selectedIndex = 0;
-        $('#BI_cmbAlmacen').trigger("change.select2");
-        cotvtadet.buscarItems();
+        if ($TipoSolicitud.val() != "TSOL05") {
+            $('#BI_cmbFamilia').get(0).selectedIndex = 0;
+            $('#BI_cmbFamilia').trigger("change.select2");
+            $BI_txtNomProducto.val("");
+            $BI_txtCodProducto.val("");
+            $('#BI_cmbTipoMedida').get(0).selectedIndex = 0;
+            $('#BI_cmbTipoMedida').trigger("change.select2");
+            $('#BI_cmbMarca').get(0).selectedIndex = 0;
+            $('#BI_cmbMarca').trigger("change.select2");
+            $('#BI_cmbAlmacen').get(0).selectedIndex = 0;
+            $('#BI_cmbAlmacen').trigger("change.select2");
+            cotvtadet.buscarItems();
+        }
+        //cotvtadet.CargarTablaProductos();
     }
 
     function $btnAgregarServicios_click() {
@@ -3689,7 +3692,7 @@
 
                 }
 
-                cotvtadet.ObtenerFiltrosPrecios();
+                //cotvtadet.ObtenerFiltrosPrecios();
 
                 //Carga de datos de la solicitud:
                 $txtRuc.val(data.Result.Solicitud.RUC);
@@ -3997,7 +4000,7 @@
                 }
 
 
-                cotvtadet.RecargarFiltroFamilia();
+                //cotvtadet.RecargarFiltroFamilia();
 
                 solicitud.detalleSolicitud.push({
                     flujo: data.Result.Solicitud.Id_Flujo,
