@@ -1132,15 +1132,13 @@ var cotvtadet = (function ($, win, doc) {
 
     }
 
-    function editarCotDetItem(ID, opc) {
+    function EditarCotDetItem(ID) {
         $DI_hdnIdCotDet.val(ID);
         ubigeo.setTxtUbigeo_Id("CX_hdnUbicacion");
         ubigeo.setTxtUbigeo_Text("CX_txtUbicacion");
         LimpiarFormularioCosteo();
         configurarModalCostoMultiple();
 
-        ID = 38;
-        $DI_hdnIdCotDet.val(ID);
         method = "POST";
         url = "BandejaSolicitudesVentas/CargarCotDetItem?codDetalleCotizacion="+ ID;
         var objFiltros = "";
@@ -1217,60 +1215,61 @@ var cotvtadet = (function ($, win, doc) {
             }
 
 
+            if (data.Result.CabCosteoDetalle != null) {
+
+                $DI_txtCodigo.val(data.Result.CabCosteoDetalle.CodigoItem);
+                $DI_txtCantidad.val(data.Result.CabCosteoDetalle.Cantidad);
+                $DI_txtDescripcion.val(data.Result.CabCosteoDetalle.Descripcion);
+                $DI_txtUnidadMedida.val(data.Result.CabCosteoDetalle.Unidad);
+                $DI_txtDimensiones.val(data.Result.CabCosteoDetalle.Dimensiones);
+                $DI_txtDescripcionAdic.val(data.Result.CabCosteoDetalle.DescripcionAdicional);
+                $DI_txtReqCliente.val(data.Result.CabCosteoDetalle.ObservacionCliente);
+                $DI_txtObsInsta.val(data.Result.CabCosteoDetalle.ObservacionDespacho);
+                $DI_Moneda.val(data.Result.CabCosteoDetalle.DescripcionMoneda);
+
+                var tiene_stock = data.Result.CabCosteoDetalle.IndicadorStock;
+                if (tiene_stock === "S") {
+                    $DI_radTieneStock_No.prop("checked", false);
+                    $DI_radTieneStock_Si.prop("checked", true);
+                }
+                else {
+                    $DI_radTieneStock_No.prop("checked", true);
+                    $DI_radTieneStock_Si.prop("checked", false);
+                }
 
 
-            $DI_txtCodigo.val(data.Result.CabCosteoDetalle.CodigoItem);
-            $DI_txtCantidad.val(data.Result.CabCosteoDetalle.Cantidad);
-            $DI_txtDescripcion.val(data.Result.CabCosteoDetalle.Descripcion);
-            $DI_txtUnidadMedida.val(data.Result.CabCosteoDetalle.Unidad);
-            $DI_txtDimensiones.val(data.Result.CabCosteoDetalle.Dimensiones);
-            $DI_txtDescripcionAdic.val(data.Result.CabCosteoDetalle.DescripcionAdicional);
-            $DI_txtReqCliente.val(data.Result.CabCosteoDetalle.ObservacionCliente);
-            $DI_txtObsInsta.val(data.Result.CabCosteoDetalle.ObservacionDespacho);
-            $DI_Moneda.val(data.Result.CabCosteoDetalle.DescripcionMoneda);
+                var es_compralocal = data.Result.CabCosteoDetalle.IndicadorCompraLocal;
+                if (es_compralocal === "S") {
+                    $DI_radCompraLocal_Si.prop("checked", true);
+                    $DI_radCompraLocal_No.prop("checked", false);
+                }
+                else {
+                    $DI_radCompraLocal_Si.prop("checked", false);
+                    $DI_radCompraLocal_No.prop("checked", true);
+                }
 
-            var tiene_stock = data.Result.CabCosteoDetalle.IndicadorStock;
-            if (tiene_stock === "S") {
-                $DI_radTieneStock_No.prop("checked", false);
-                $DI_radTieneStock_Si.prop("checked", true);
+                var es_requiereplaca = data.Result.CabCosteoDetalle.IndicadorRequierePlaca;
+                if (es_requiereplaca === "S") {
+                    $DI_radRequierePlaca_Si.prop("checked", true);
+                    $DI_radRequierePlaca_No.prop("checked", false);
+                }
+                else {
+                    $DI_radRequierePlaca_Si.prop("checked", false);
+                    $DI_radRequierePlaca_No.prop("checked", true);
+                }
+
+                $DI_txtGanancia.val(data.Result.CabCosteoDetalle.MargenAdicional);
+                $DI_txtCostoFOB.val(data.Result.CabCosteoDetalle.ExWork);
+                $DI_txtValorUnitario.val(data.Result.CabCosteoDetalle.VentaUnitaria.toFixed(2));
+
+
+                var codigo_garantia_adicional = data.Result.CabCosteoDetalle.CodigoGarantiaAdicional;
+
+                if (codigo_garantia_adicional != "") {
+                    $DI_cmbGarantias.val(codigo_garantia_adicional).trigger("change.select2");
+                }
+
             }
-            else {
-                $DI_radTieneStock_No.prop("checked", true);
-                $DI_radTieneStock_Si.prop("checked", false);
-            }
-
-
-            var es_compralocal = data.Result.CabCosteoDetalle.IndicadorCompraLocal;
-            if (es_compralocal === "S") {
-                $DI_radCompraLocal_Si.prop("checked", true);
-                $DI_radCompraLocal_No.prop("checked", false);
-            }
-            else {
-                $DI_radCompraLocal_Si.prop("checked", false);
-                $DI_radCompraLocal_No.prop("checked", true);
-            }
-
-            var es_requiereplaca = data.Result.CabCosteoDetalle.IndicadorRequierePlaca;
-            if (es_requiereplaca === "S") {
-                $DI_radRequierePlaca_Si.prop("checked", true);
-                $DI_radRequierePlaca_No.prop("checked", false);
-            }
-            else {
-                $DI_radRequierePlaca_Si.prop("checked", false);
-                $DI_radRequierePlaca_No.prop("checked", true);
-            }
-
-            $DI_txtGanancia.val(data.Result.CabCosteoDetalle.MargenAdicional);
-            $DI_txtCostoFOB.val(data.Result.CabCosteoDetalle.ExWork);
-            $DI_txtValorUnitario.val(data.Result.CabCosteoDetalle.VentaUnitaria.toFixed(2));
-
-
-            var codigo_garantia_adicional = data.Result.CabCosteoDetalle.CodigoGarantiaAdicional;
-
-            if (codigo_garantia_adicional != "") {
-                $DI_cmbGarantias.val(codigo_garantia_adicional).trigger("change.select2");
-            }
-
 
             //Limpiar grilla de costos multiples:
             $("#DI_tblCostos tbody tr").remove();
@@ -1413,7 +1412,7 @@ var cotvtadet = (function ($, win, doc) {
     }
 
     function btnAgregarCosteo() {
-        $DI_hdnIdCotDet.val('38');
+
         if ($CX_cmbTipoCosto.val() === "" || $CX_cmbTipoCosto.val() == 0) {
             app.message.error("Validacion", "Debe seleccionar una opcion del tipo de costo");
             return;
@@ -3258,7 +3257,7 @@ var cotvtadet = (function ($, win, doc) {
                     } else {
                         seleccionar = ""
                         if ($PermitirEditarCotDetItem.val() == "S") {
-                            seleccionar = '<a id="btnCostearItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.EditarCotDet(' + data + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Costear</a>';
+                            seleccionar = '<a id="btnCostearItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.EditarCotDetItem(' + data + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Costear</a>';
                             eliminar = ' <a class="btn btn-default btn-xs" title="Eliminar" id=btnEliminarItem  href = "javascript: cotvtadet.eliminarItemProducto(' + data + ')" ><i class="fa fa-level-down" aria-hidden="true"></i> Eliminar</a>';
                         }
                     }
@@ -3655,7 +3654,7 @@ var cotvtadet = (function ($, win, doc) {
                     } else {
                         seleccionar = ""
                         if ($PermitirEditarCotDetItem.val() == "S") {
-                            seleccionar = '<a id="btnCostearItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.EditarCotDet(' + data +')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Costear</a>';
+                            seleccionar = '<a id="btnCostearItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.EditarCotDetItem(' + data +')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Costear</a>';
                             eliminar = ' <a class="btn btn-default btn-xs" title="Eliminar" id=btnEliminarItem  href = "javascript: cotvtadet.eliminarItemProducto('+ data +')" ><i class="fa fa-level-down" aria-hidden="true"></i> Eliminar</a>';
                         }
                     }
@@ -4071,7 +4070,7 @@ var cotvtadet = (function ($, win, doc) {
         var objParam = JSON.stringify(obj);
 
         var fnDoneCallBack = function () {
-            app.message.success("&Eacute;nxito", "Se eliminó correctamente el registro");
+            app.message.success("&Eacute;xito", "Se eliminó correctamente el registro");
         };
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null, null, null);
@@ -4123,7 +4122,7 @@ var cotvtadet = (function ($, win, doc) {
         var objParam = JSON.stringify(info);
 
         var fnDoneCallBack = function () {
-            app.message.success("&Eacute;nxito", "Se agreg&oacute;n correctamente");
+            app.message.success("&Eacute;xito", "Se agreg&oacute; correctamente");
             listarCotDetItems();
         };
 
@@ -4137,7 +4136,7 @@ var cotvtadet = (function ($, win, doc) {
         agregarItemProducto: agregarItemProducto,
         agregarItemHijo: agregarItemHijo,
         quitarCotDetItem: quitarCotDetItem,
-        editarCotDetItem: editarCotDetItem,
+        EditarCotDetItem: EditarCotDetItem,
         quitarSubItem: quitarSubItem,
         editarSubItem: editarSubItem,
         SeleccionarRowCotDet: SeleccionarRowCotDet,
