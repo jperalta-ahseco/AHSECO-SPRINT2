@@ -290,6 +290,8 @@
     var $btnGuardarUbigeoSel = $("#btnGuardarUbigeoSel");
     var $txtTelefonoServ = $("#txtTelefonoServ");
     var $txtCorreoServ = $("#txtCorreoServ");
+    var $btnActualizarImportacion = $("#btnActualizarImportacion");
+    var $btnGuardarFechaIngresoImportacion = $("#btnGuardarFechaIngresoImportacion");
 
 
     /*Tecnicos:*/
@@ -600,8 +602,50 @@
         $btnGuiaPedidoTotal.click($btnGuiaPedidoTotal_click);
         $btnEnviarGuiaTotal.click($btnEnviarGuiaTotal_click);
         $btnGuiaManuscritaTotal.click($btnGuiaManuscritaTotal_click);
+        $btnActualizarImportacion.click($btnActualizarImportacion_click);
+        $btnGuardarFechaIngresoImportacion.click($btnGuardarFechaIngresoImportacion_click);
     };
 
+    function $btnGuardarFechaIngresoImportacion_click() {
+
+        if ($dateIngresoAlmacenSE.val() === "" || $dateIngresoAlmacenSE.val() == null) {
+            app.message.error("Validación", "Debe seleccionar la fecha de ingreso de almacen de los productos sin stock");
+            return false;
+        }
+
+        var fnSi = function () {
+
+            var m = "POST";
+            var url = "BandejaSolicitudesVentas/GestionFechaIngresoAlmacen";
+            var obj = {
+                Tipo: "Y",
+                CodigoSolicitud: $numeroSolicitud.val(),
+                NumeroPedido: $txtCodigoPedidoSE.val(),
+                FechaIngreso: $dateIngresoAlmacenSE.val()
+            }
+            var objParam = JSON.stringify(obj);
+            var fnDoneCallback = function (data) {
+                var fnCallback = function () {
+                    location.reload();
+                };
+                if (data.Result.Codigo > 0) {
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+                else {
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+
+            };
+            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.ActualizarImportacion);
+        }
+        return app.message.confirm("Ventas", "¿Está seguro que desea actualizar los datos de la fecha de Ingreso de Almacen?", "S&iacute;", "No", fnSi, null);
+
+    }
+    function $btnActualizarImportacion_click() {
+        $btnGuardarFechaIngresoImportacion.show();
+        $btnActualizarImportacion.hide();
+        $dateIngresoAlmacenSE.prop("disabled", false);
+    }
 
     function $btnGuiaManuscritaTotal_click() {
         var tipo_despacho = "T";
@@ -2624,10 +2668,10 @@
             app.message.error("Validación", "Debe ingresar el código de pedido de los productos sin stock");
             return false;
         }
-        if ($dateIngresoAlmacenSE.val() === "" || $dateIngresoAlmacenSE.val() == null) {
-            app.message.error("Validación", "Debe seleccionar la fecha de ingreso de almacen de los productos sin stock");
-            return false;
-        }
+        //if ($dateIngresoAlmacenSE.val() === "" || $dateIngresoAlmacenSE.val() == null) {
+        //    app.message.error("Validación", "Debe seleccionar la fecha de ingreso de almacen de los productos sin stock");
+        //    return false;
+        //}
 
         var fnSi = function () {
 

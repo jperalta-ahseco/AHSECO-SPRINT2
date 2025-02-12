@@ -143,6 +143,14 @@ VALUES('PLANOBSVTA',1,'Plantilla de Observacion de Gerencia','','','OBSERVACIÓN 
 <p>Por favor ingrese al sistema para continuar con el flujo de la venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
 
 
+INSERT INTO TBM_PLANTILLAS
+VALUES('PLANFECING',1,'Plantilla de Fecha Ingreso Almacen','','','FECHA INGRESO ALMACEN DE IMPORTACIÓN - N° SOLICITUD {NRO_SOL}',
+			   '<p>Estimado(a), {NOM_VENDEDOR}</p>
+<p>Se realizó la actualización de la fecha de ingreso de almacen de los Productos Importados de la solicitud N°{NRO_SOL} para el cliente {CLIENTE}.</p>
+<p><b>Fecha de Ingreso de Almacen: {FECHA_INGRESO}</b></p>
+<p>Por favor ingrese al sistema para continuar con el flujo de venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
+
+
 
 
 --ALERTA DE GARANTIAS:

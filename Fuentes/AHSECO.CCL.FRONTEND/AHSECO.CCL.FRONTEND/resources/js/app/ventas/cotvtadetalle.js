@@ -212,6 +212,7 @@ var cotvtadet = (function ($, win, doc) {
     var $CI_hdnCantidadCostearAnt = $("#CI_hdnCantidadCostearAnt");
     var $CI_txtMoneda = $("#CI_txtMoneda");
     var $DI_Moneda = $("#DI_Moneda");
+    var $DI_Tipo = $("#DI_Tipo");
     var costeoMultiple = [];
 
     $(Initialize);
@@ -518,7 +519,7 @@ var cotvtadet = (function ($, win, doc) {
                         if (arrProp[a].Nombre == "CodItem") { strCodItem = arrProp[a].Valor; }
                     }
                     var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
-                    var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',1)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                    var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
                     var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarCotDetItem(' + String.fromCharCode(39) + row.CodItem + String.fromCharCode(39) + ',1)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
                     return '<center>' + hidden + editar + ' ' + quitar + '</center>';
                 }
@@ -1182,7 +1183,7 @@ var cotvtadet = (function ($, win, doc) {
                 $("#DI_pnlCostoDespacho").css('display', 'none');
             }
 
-            if ($idRolUsuario.val() != "SGI_VENTA_GERENTE" && $idRolUsuario.val() != "SGI_VENTA_COSTOS") {
+            if ($idRolUsuario.val() != "SGI_VENTA_GERENTE" && $idRolUsuario.val() != "SGI_VENTA_COSTOS" && $idRolUsuario.val() != "SGI_VENTA_IMPORTACION") {
                 $DI_pnlCostos_PrecioVenta.css('display', 'none');
             }
             else {
@@ -1216,7 +1217,8 @@ var cotvtadet = (function ($, win, doc) {
 
 
             if (data.Result.CabCosteoDetalle != null) {
-
+                $DI_Tipo.val("U");
+                $("#DI_pnlCostoDespacho").css('display', '');
                 $DI_txtCodigo.val(data.Result.CabCosteoDetalle.CodigoItem);
                 $DI_txtCantidad.val(data.Result.CabCosteoDetalle.Cantidad);
                 $DI_txtDescripcion.val(data.Result.CabCosteoDetalle.Descripcion);
@@ -1269,6 +1271,13 @@ var cotvtadet = (function ($, win, doc) {
                     $DI_cmbGarantias.val(codigo_garantia_adicional).trigger("change.select2");
                 }
 
+            }
+            else {
+                $DI_Tipo.val("N");
+                $("#DI_pnlCostoDespacho").css('display', 'none');
+                $DI_Moneda.val($("#cmbTipMoneda option:selected").text());
+                $DI_radRequierePlaca_Si.prop("checked", false);
+                $DI_radRequierePlaca_No.prop("checked", true);
             }
 
             //Limpiar grilla de costos multiples:
@@ -1535,7 +1544,7 @@ var cotvtadet = (function ($, win, doc) {
                 AmbienteDestino: local_destino,
                 NumeroPiso: nro_piso,
                 MontoUnitario: app.convertirNumero(mtoUnitarioCosto),
-                IdCosto: 0
+                IdCosto: parseInt(0)
             }
             var objParam = JSON.stringify(obj);
             var fnDoneCallback = function (data) {
@@ -1558,13 +1567,20 @@ var cotvtadet = (function ($, win, doc) {
                         var ver = '<a id="btnVerItem" class="btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.editarCostoItem(' + strID + ',' + $DI_hdnIdCotDet.val() + ')"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
                         html += '<center>' + hidden + ver + '</center>';
                     }
+
+                    //Calculo de calibracion:
+                    var monto_total = (0).toFixed(2);
+                    if (cod_TipoCosto === "CXCD0007") { //Calibracion:
+                        monto_total = (app.convertirNumero(mtoUnitarioCosto) * cantCosteada).toFixed(2);
+                    }
+
                     html += '</div>';
                     var nuevoTr = "<tr bgcolor='d0f2f7' id='fila" + data.Result.Codigo + "'>" + sel_html +
                         "<th>" + des_TipoCosto + "</th>" +
                         "<th>" + des_ubigeo + "</th>" +
                         "<th>" + cantCosteada + "</th>" +
                         "<th>" + app.convertirNumero(mtoUnitarioCosto) + "</th>" +
-                        "<th>" + '0.00' + "</th>" +
+                        "<th>" + monto_total + "</th>" +
                         "<th>" + html + "</th>" +
                         "</tr>";
 
@@ -1572,18 +1588,19 @@ var cotvtadet = (function ($, win, doc) {
 
                     costeoMultiple.push({
                         Id: $DI_hdnIdCotDet.val(),
-                        IdCosto: strID,
+                        IdCosto: parseInt(strID),
                         CodCosto: cod_TipoCosto,
                         DesCosto: des_TipoCosto,
                         CantCosto: parseInt(cantCosteada),
                         MontoUnitario: mtoUnitarioCosto,
-                        MontoTotal: 0,
+                        MontoTotal: monto_total,
                         CodUbigeo: ubigeo,
                         DesUbigeo: des_ubigeo
                     });
 
                     if (costeoMultiple.length > 0) {
-                        $('#NoRegCosteos').hide();
+                        //$('#NoRegCosteos').hide();
+                        $('#DI_tblCostos tr#NoRegCosteos').remove()
                     }
                 }
                 else {
@@ -1593,7 +1610,7 @@ var cotvtadet = (function ($, win, doc) {
             };
             return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.GuardarCosto);
         }
-        return app.message.confirm("Ventas", "¿Está seguro que desea guardar el costo", "Si;", "No", fnSi, null);
+        return app.message.confirm("Ventas", "&iquest;Est&aacute; seguro que desea guardar el costo?", "Si;", "No", fnSi, null);
 
         //Llave en mano: CXCD0001 X
         //Instalacion: CXCD0002 X
@@ -1700,7 +1717,7 @@ var cotvtadet = (function ($, win, doc) {
                 NumeroPiso: $CI_txtNroPiso.val(),
                 MontoUnitario: app.convertirNumero($CI_txtMtoUnitarioCosto.val()),
                 CodigoCotizacionDetalle: $DI_hdnIdCotDet.val(),
-                IdCosto: $CI_hdnCodCosto.val()
+                IdCosto: parseInt($CI_hdnCodCosto.val())
             }
             var objParam = JSON.stringify(obj);
             var fnDoneCallback = function (data) {
@@ -1709,7 +1726,7 @@ var cotvtadet = (function ($, win, doc) {
                     app.message.success("Grabar", data.Result.Mensaje, "Aceptar", null);
                     costeoMultiple = [];
 
-                    editarCotDetItem($DI_hdnIdCotDet.val(), 0);
+                    EditarCotDetItem($DI_hdnIdCotDet.val());
                     $('#modalCostoItem').modal('hide');
                 }
                 else {
@@ -1719,7 +1736,7 @@ var cotvtadet = (function ($, win, doc) {
             };
             return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.GuardarCosto);
         }
-        return app.message.confirm("Ventas", "¿Está seguro que desea guardar el costo", "Si;", "No", fnSi, null);
+        return app.message.confirm("Ventas", "&iquest;Est&aacute; seguro que desea guardar el costo?", "Si;", "No", fnSi, null);
 
 
         
@@ -1803,7 +1820,7 @@ var cotvtadet = (function ($, win, doc) {
                 $("#divDimensionItemCosto").css('display', '');
             }
 
-            if (estado != "SCOT" && estado != "CVAL") {
+            if (estado != "SCOT") {
 
                 $("#searchUbigeo").prop("disabled", true);
                 $CI_txtUbicacion.prop("disabled", true);
@@ -1813,7 +1830,6 @@ var cotvtadet = (function ($, win, doc) {
                 $CI_cmbCicloPreventivo.prop("disabled", true);
                 $CI_txtCantCosteo.prop("disabled", true);
                 $CI_txtMtoUnitarioCosto.prop("disabled", true);
-                $CI_txtMtoTotalCosto.prop("disabled", true);
                 $CI_btnGuardar.hide();
             }
             else {
@@ -1824,8 +1840,12 @@ var cotvtadet = (function ($, win, doc) {
                 $CI_txtNroPiso.prop("disabled", false);
                 $CI_cmbCicloPreventivo.prop("disabled", false);
                 $CI_txtCantCosteo.prop("disabled", false);
-                $CI_txtMtoUnitarioCosto.prop("disabled", false);
-                $CI_txtMtoTotalCosto.prop("disabled", false);
+
+                if (codigo_costo === "CXCD0007" && $idRolUsuario.val() === "SGI_VENTA_ASESOR") {
+                    $CI_txtMtoUnitarioCosto.prop("disabled", false);
+                }
+               
+
                 $CI_btnGuardar.show();
             }
 
@@ -1856,13 +1876,12 @@ var cotvtadet = (function ($, win, doc) {
             var fnDoneCallBack = function (data) {
                 if (data.Result.Codigo > 0) {
                     //Se retira del array el dato eliminado:
-                    var index = costeoMultiple.findIndex(item => item.IdCosto === strId);
+                    var index = costeoMultiple.findIndex(item => item.IdCosto === parseInt(strId));
                     if (index !== -1) {
                         costeoMultiple.splice(index, 1);
                     }
 
                     $("#fila" + strId).remove();
-
                     if (costeoMultiple.length === 0) {
                         var nuevoTrNew = "<tr id='NoRegCosteos'><td align='center' colspan='6'> No existen registros</td></tr>"
                         $('#DI_tblCostos').append(nuevoTrNew);
@@ -2116,13 +2135,10 @@ var cotvtadet = (function ($, win, doc) {
 
 
         var fnSi = function () {
-            var tipo = "";
+            var tipo = "U";
             var cotizacion_detalle = $DI_hdnIdCotDet.val();
-            if (cotizacion_detalle == "-1") {
+            if ($DI_Tipo.val() == "N") {
                 tipo = "I";
-            }
-            else {
-                tipo = "U";
             }
 
             var indicador_stock = "";
@@ -2159,6 +2175,7 @@ var cotvtadet = (function ($, win, doc) {
             var fnDoneCallBack = function (data) {
                 if (data.Result.Codigo > 0) {
                     app.message.success("Grabar", data.Result.Mensaje, "Aceptar", null);
+                    $DI_Tipo.val("U");
                     $('#modalDetalleItem').modal('hide');
                 }
                 else {
@@ -2225,6 +2242,7 @@ var cotvtadet = (function ($, win, doc) {
     function cargarTablaDetCotCostos(data) {
 
         var columns = [];
+
 
         if ($PermitirEditarValorizacion.val() == "S") {
 
@@ -2326,8 +2344,8 @@ var cotvtadet = (function ($, win, doc) {
                             if (arrProp[a].Nombre == "CodItem") { strCodItem = arrProp[a].Valor; }
                         }
                         var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
-                        var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                        var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',2)"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
+                        var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                        var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
                         var editar_FOB = '<a id="btnEditarFOBItem' + strID + '" value="' + strID+'" name="BtnExWord" class="botonDetCot btn btn-info btn-xs" title="Editar Ex-Work" href="javascript: cotvtadet.editarExWork(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',' + String.fromCharCode(39) + row.NroItem + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Ex-Work</a>'; 
                         var guardar_FOB = '<a id="btnGuardarFOBItem' + strID + '" class="botonDetCot btn btn-info btn-xs" title="Guardar Ex-Work" href="javascript: cotvtadet.guardarExWork(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',' + String.fromCharCode(39) + row.NroItem + String.fromCharCode(39) + ')" style=' + String.fromCharCode(39) + 'display:none' + String.fromCharCode(39) +'><i class="fa fa-pencil-save" aria-hidden="true"></i>Guardar</a>'; 
 
@@ -2453,8 +2471,8 @@ var cotvtadet = (function ($, win, doc) {
                             if (arrProp[a].Nombre == "CodItem") { strCodItem = arrProp[a].Valor; }
                         }
                         var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
-                        var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                        var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',2)"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
+                        var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                        var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
                         var quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarCotDetItem(' + String.fromCharCode(39) + row.CodItem + String.fromCharCode(39) + ',2)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
 
                         if ($estadoSol.val() == "CAPR" || $estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG" ) {
@@ -2764,6 +2782,7 @@ var cotvtadet = (function ($, win, doc) {
     }
 
     function listarCotDetItems() {
+
         method = "POST";
         url = "BandejaSolicitudesVentas/ListarCotDetItems";
         var objFiltros = {

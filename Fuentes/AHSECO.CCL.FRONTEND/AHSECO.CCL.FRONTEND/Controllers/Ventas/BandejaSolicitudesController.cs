@@ -134,6 +134,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.TxtNroContrato = "disabled";
             ViewBag.ControlCalculoFechaMaxima = "disabled";
             ViewBag.VerTipoDespacho = false;
+            ViewBag.Btn_ActualizarImportacion = "none";
+            ViewBag.Btn_GuardarFechaIngreso = "none";
 
 
             ViewBag.Btn_EnviarGuiaCS = "none";
@@ -1142,6 +1144,13 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 ViewBag.VerNavSinStock = true;
                                 ViewBag.SeccionImpSS = true;
                                 ViewBag.InActiveSinStock = "in active";
+
+                                //Para la fecha de ingreso de almacen:
+                                if(validarSinStock.Result.EstadoAprobacion == "IMP" && validarSinStock.Result.FechaIngreso == "")
+                                {
+                                    ViewBag.Btn_ActualizarImportacion = "inline-block";
+                                }
+                                
                             }
                             if (validarDespacho.Result.EnvioServicio > 0)
                             {
@@ -1153,6 +1162,22 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                        soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Finalizado ||
                        soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.CotSinVenta)
                     {
+
+                        if(soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.VentaProg)
+                        {
+                            if(validarDespacho.Result != null)
+                            {
+                                if (validarDespacho.Result.ContadorSinStock > 0 && soli.Tipo_Sol != ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio)
+                                {
+                                    //Para la fecha de ingreso de almacen:
+                                    if (validarSinStock.Result.EstadoAprobacion == "IMP" && validarSinStock.Result.FechaIngreso == "")
+                                    {
+                                        ViewBag.Btn_ActualizarImportacion = "inline-block";
+                                    }
+                                }
+                            }
+                        }
+
                         if (soli.Tipo_Sol != "TSOL01")
                         {
                             ViewBag.VerFacturacion = true;
@@ -5747,6 +5772,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             return Json(new ResponseDTO<RespuestaDTO>(result));
         }
 
+        [HttpPost]
         public JsonResult GestionImportacion(DatosDespachoDTO datosDespachoDTO)
         {
             var result = new RespuestaDTO();
@@ -7204,6 +7230,63 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             costo.UsuarioRegistro = User.ObtenerUsuario();
             var response = ventasBL.ConsultaItemCosto(costo);
             return Json(response);
+        }
+
+        [HttpPost]
+        public JsonResult GestionFechaIngresoAlmacen(DatosDespachoDTO datosDespachoDTO)
+        {
+            var result = new RespuestaDTO();
+            var ventasBL = new VentasBL();
+            try
+            {
+                
+                    CCLog Log = new CCLog();
+
+                    datosDespachoDTO.UsuarioRegistro = User.ObtenerUsuario();
+                    datosDespachoDTO.NombrePerfil = User.ObtenerPerfil();
+                    var envio_log = ventasBL.MantenimientoDespacho(datosDespachoDTO);
+                    if (envio_log.Result.Codigo > 0)
+                    {
+                        var plantillasBL = new PlantillasBL();
+                        //Envio de correo:
+                        var filtros = new FiltroPlantillaDTO();
+                        filtros.CodigoProceso = 1;
+                        filtros.CodigoPlantilla = "PLANFECING";
+                        filtros.Usuario = User.ObtenerUsuario();
+                        filtros.Codigo = Convert.ToInt32(datosDespachoDTO.CodigoSolicitud);
+
+                        var datos_correo = plantillasBL.ConsultarPlantillaCorreo(filtros).Result;
+                        var respuesta = Utilidades.Send(datos_correo.To, datos_correo.CC, "", datos_correo.Subject, datos_correo.Body, null, "");
+                        if (respuesta != "OK")
+                        {
+                            Log.TraceInfo("Solicitud N° " + datosDespachoDTO.CodigoSolicitud.ToString() + ":" + respuesta);
+
+                            result.Codigo = 0;
+                            result.Mensaje = "No se pudo enviar el correo de la solicitud N° " + datosDespachoDTO.CodigoSolicitud.ToString();
+                        }
+                        else
+                        {
+                            result.Codigo = 1;
+                            result.Mensaje = "Se realizó la actualización de la fecha de ingreso de Almacen de la solicitud N° " + datosDespachoDTO.CodigoSolicitud.ToString();
+                            Log.TraceInfo("Envio exitoso de actualizacion fecha ingreso almacen de la solicitud N° " + datosDespachoDTO.CodigoSolicitud.ToString());
+                        }
+                    }
+                    else
+                    {
+                        Log.TraceInfo("Solicitud N° " + datosDespachoDTO.CodigoSolicitud.ToString() + ":" + envio_log.Result.Mensaje);
+                        result.Codigo = 0;
+                        result.Mensaje = "No se pudo actualizar la fecha de ingreso de almacen de la solicitud N° " + datosDespachoDTO.CodigoSolicitud.ToString();
+                    }
+
+                
+
+            }
+            catch (Exception ex)
+            {
+                result.Codigo = 0;
+                result.Mensaje = ex.Message.ToString();
+            }
+            return Json(new ResponseDTO<RespuestaDTO>(result));
         }
 
     }
