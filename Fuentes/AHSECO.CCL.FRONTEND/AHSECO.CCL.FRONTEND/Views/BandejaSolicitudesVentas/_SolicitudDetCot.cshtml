@@ -22,22 +22,25 @@
                     @if (tipoSol == "TSOL05")
                     {
                         <div style="overflow-x:auto; padding-left:15px">
-                            <table id="tblProductos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
-                                <thead>
+                            <table id="tblProductos" class="table table-condensed table-striped table-bordered" width="100%">
+                                <thead style="background-color: #00aeef;color: white;">
                                     <tr>
-                                        <th style="text-align:center; width:5%"><i class="fa fa-code-fork" aria-hidden="true"></i></th>
-                                        <th style="text-align:center; width:5%">Cod.Producto</th>
+                                        <th style="text-align:center; width:1%"><i class="fa fa-code-fork" aria-hidden="true"></i></th>
+                                        <th style="text-align:center; width:2%">Cod.Producto</th>
                                         <th style="text-align:center; width:20%">Familia</th>
                                         <th style="text-align:center; width:5%">Almacén</th>
                                         <th style="text-align:center; width:5%">Descripción</th>
                                         <th style="text-align:center; width:5%">Marca</th>
                                         <th style="text-align:center; width:5%">Modelo</th>
-                                        <th style="text-align:center; width:5%">Und. Med.</th>
-                                        <th style="text-align:center; width:5%">Moneda</th>
-                                        <th style="text-align:center; width:5%">Cantidad</th>
-                                        <th style="text-align:center; width:3%">Stock</th>
-                                        <th style="text-align:center; width:5%">Precio Ref.</th>
+                                        <th style="text-align:center; width:1%">Cantidad</th>
+                                        <th style="text-align:center; width:3%">Unidad de Medida</th>
                                         <th style="text-align:center; width:3%">Acción</th>
+
+                                        <!--
+    <th style="text-align:center; width:5%">Und. Med.</th>
+    <th style="text-align:center; width:5%">Moneda</th>
+    <th style="text-align:center; width:3%">Stock</th>
+    <th style="text-align:center; width:5%">Precio Ref.</th>-->
                                     </tr>
                                 </thead>
                                 <tbody id="bodyProducts">

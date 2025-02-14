@@ -221,8 +221,11 @@ var cotvtadet = (function ($, win, doc) {
     let arrayFamilias = [];
     let arrayTipMedida = [];
     let arrayAlmacen = [];
-    let cantidadProductos = [];
-    var arrayDatos = ['Casa', 'Calle', 'Casero', 'Cascada', 'Cascabel'];
+    var cantidadProductosHijo = 0;
+    var cantidadProductos = 0;
+    var nroItems = [];
+    var childProducts = [];
+    var padreProducts = [];
     function Initialize() {
 
         $btnBuscarItems.click(buscarItems);
@@ -250,7 +253,10 @@ var cotvtadet = (function ($, win, doc) {
         $CI_btnGuardar.click(guardarEditarCosteo);
         //$DI_radTieneStock_Si.click(configurarTieneStock);
         //$DI_radTieneStock_No.click(configurarTieneStock);
-        
+        //if ($TipoSolicitud.val() == "TSOL05") {
+        //    ConsultaItemDetalle();
+        //} else { 
+        //}
         listarCotDetItems();
         cargarGarantias();
 
@@ -262,39 +268,52 @@ var cotvtadet = (function ($, win, doc) {
         var method = "POST";
         var url = "CatalogoPrecios/FiltrosPrecios";
         var oValores = {
-            CodTipoSol: $cmbTipo.val()
+            CodTipoSol: $TipoSolicitud.val()
         };
         var objParam = JSON.stringify(oValores);
         var fnDoneCallback = function (data) {
 
-            //Cargar combo de marcas:
-            var filters1 = {};
-            filters1.placeholder = "--Seleccionar--";
-            filters1.allowClear = true;
+            if ($TipoSolicitud.val() == "TSOL05" || $TipoSolicitud.val() == "TSOL04") {
 
-            //Cargar combo de medidas:
-            var filters2 = {};
-            filters2.placeholder = "--Seleccionar--";
-            filters2.allowClear = true;
+                var filters1 = {};
+                filters1.placeholder = "--Seleccionar--";
+                filters1.allowClear = false;
 
-            //Cargar combo de almacenes:
-            var filters3 = {};
-            filters3.placeholder = "--Seleccionar--";
-            filters3.allowClear = false;
-            //var opcTodos = data.Result.TodosAlmacenes;
-            //if (opcTodos == "" || opcTodos == null) { opcTodos = " "; }
+                arrayMarcas = data.Result.Marcas
+                arrayTipMedida = data.Result.Medidas;
+                arrayAlmacen = data.Result.Almacenes;
+                arrayFamilias = data.Result.Familias;
 
-            arrayTipMedida = data.Result.Medidas;
-            arrayAlmacen = data.Result.Almacenes;
+                llenarCombos('#BI_cmbMarca', data.Result.Marcas, $("#modalDetalleCotizacion"), '', "--Seleccionar--", filters1, cantidadProductos);
+                llenarCombos('#BI_cmbTipoMedida', data.Result.Medidas, $("#modalDetalleCotizacion"), '', "--Seleccionar--", filters1, cantidadProductos);
+                llenarCombos('#BI_cmbAlmacen', data.Result.Almacenes, $("#modalDetalleCotizacion"), " ", "No definido", filters1, cantidadProductos);
+                llenarCombos('#BI_cmbFamilia', data.Result.Familias, $("#modalDetalleCotizacion"), '', "--Seleccionar--", filters1, cantidadProductos);
 
-            for (var i = 0; cantidadProductos > i; i++) {
-                app.llenarComboMultiResult($('#BI_cmbMarca' + i), data.Result.Marcas, $("#modalDetalleCotizacion"), '', "--Seleccionar--", filters1);
-                app.llenarComboMultiResult($('#BI_cmbTipoMedida' + i), data.Result.Medidas, $("#modalDetalleCotizacion"), '', "--Seleccionar--", filters2);
-                app.llenarComboMultiResult($('#BI_cmbAlmacen' + i), data.Result.Almacenes, $("#modalDetalleCotizacion"), " ", "No definido", filters3);
+            } else {
+                //Cargar combo de marcas:
+                var filters1 = {};
+                filters1.placeholder = "-- Todos --";
+                filters1.allowClear = false;
+                app.llenarComboMultiResult($BI_cmbMarca, data.Result.Marcas, $("#modalDetalleCotizacion"), " ", "-- Todos --", filters1);
+
+                //Cargar combo de medidas:
+                var filters2 = {};
+                filters2.placeholder = "-- Todos --";
+                filters2.allowClear = false;
+                app.llenarComboMultiResult($BI_cmbTipoMedida, data.Result.Medidas, $("#modalDetalleCotizacion"), " ", "-- Todos --", filters2);
+
+                //Cargar combo de almacenes:
+                var filters3 = {};
+                filters3.placeholder = "-- Todos --";
+                filters3.allowClear = false;
+                var opcTodos = data.Result.TodosAlmacenes;
+                if (opcTodos == "" || opcTodos == null) { opcTodos = " "; }
+                app.llenarComboMultiResult($BI_cmbAlmacen, data.Result.Almacenes, $("#modalDetalleCotizacion"), opcTodos, "-- Todos --", filters3);
             };
         }
         return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, mensajes.obteniendoFiltros);
     }
+
 
     function RecargarFiltroFamilia() {
         var method = "POST";
@@ -307,20 +326,16 @@ var cotvtadet = (function ($, win, doc) {
 
             //Cargar combo de familias:
             var filters3 = {};
-            filters3.placeholder = "--Seleccionar--";
+            filters3.placeholder = "-- Todos --";
             filters3.allowClear = false;
             var opcTodos = data.Result.TodasFamilias;
             if (opcTodos == "" || opcTodos == null) { opcTodos = " "; }
+            app.llenarComboMultiResult($BI_cmbFamilia, data.Result.Familias, $("#modalDetalleCotizacion"), opcTodos, "-- Todos --", filters3);
 
-            arrayFamilias = data.Result.Familias;
-
-            for (var i = 0; cantidadProductos > i; i++) {
-                //emparejamos con el ID;
-                app.llenarComboMultiResult($('#BI_cmbFamilia' + i), data.Result.Familias, $("#modalDetalleCotizacion"), '', "--Seleccionar--", filters3);
-            };
         }
         return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, mensajes.obteniendoFiltros);
     }
+
     
     function buscarItems() {
         method = "POST";
@@ -510,18 +525,24 @@ var cotvtadet = (function ($, win, doc) {
             {
                 data: "Features",
                 render: function (data, type, row) {
-                    var oFeatures = data;
-                    var strID = "";
-                    var strCodItem = "";
-                    var arrProp = oFeatures.SubPropiedades;
-                    for (a = 0; a < arrProp.length; a++) {
-                        if (arrProp[a].Nombre == "ID") { strID = arrProp[a].Valor; }
-                        if (arrProp[a].Nombre == "CodItem") { strCodItem = arrProp[a].Valor; }
-                    }
-                    var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
+                    if (data != null) {
+                        var oFeatures = data;
+                        var strID = "";
+                        var strCodItem = "";
+                        var arrProp = oFeatures.SubPropiedades;
+                        for (a = 0; a < arrProp.length; a++) {
+                            if (arrProp[a].Nombre == "ID") { strID = arrProp[a].Valor; }
+                            if (arrProp[a].Nombre == "CodItem") { strCodItem = arrProp[a].Valor; }
+                        }
+                        var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
                     var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                    var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarCotDetItem(' + String.fromCharCode(39) + row.CodItem + String.fromCharCode(39) + ',1)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
-                    return '<center>' + hidden + editar + ' ' + quitar + '</center>';
+                        var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarCotDetItem(' + String.fromCharCode(39) + row.CodItem + String.fromCharCode(39) + ',1)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                        return '<center>' + hidden + editar + ' ' + quitar + '</center>';
+                    }
+                    else {
+                        return '<center></center>';
+                    }
+                    
                 }
             }
         ];
@@ -1169,7 +1190,7 @@ var cotvtadet = (function ($, win, doc) {
                 $DI_pnlCostos_RequierePlaca.css('display', 'none');
                 $DI_pnlCostos_GarantAdic_Combo.css('display', 'none');
                 $DI_pnlCostos_CompraLocal.css('display', 'none');
-                DI_pnlInfoGeneral_UnidadMedida.css('display', 'none');
+                $DI_pnlInfoGeneral_UnidadMedida.css('display', 'none');
                 $('#divMoneda').removeClass('col-md-5').addClass('col-md-6');
                 $('#divlblMoneda').removeClass('col-md-7').addClass('col-md-5');
             }
@@ -2128,7 +2149,7 @@ var cotvtadet = (function ($, win, doc) {
 
     function grabarDatosCotDetItem() {
 
-        if ($DI_txtCantidad.val() === null || $DI_txtCantidad.val() === "" || $DI_txtCantidad.val() === "0") {
+        if ($DI_txtCantidad.val() === null || $DI_txtCantidad.val() === "" || $DI_txtCantidad.val() === "0" || $DI_txtCantidad.val() < 0) {
             app.message.error("Validacion", "Ingresar la cantidad del producto.");
             return;
         }
@@ -2384,7 +2405,7 @@ var cotvtadet = (function ($, win, doc) {
 
             columns = [
                 {
-                    data: "NroItem",
+                    data: "Cuenta",
                     render: function (data, type, row) {
                         if (data == null) { data = ""; }
                         return '<center>' + data + '</center>';
@@ -2462,30 +2483,43 @@ var cotvtadet = (function ($, win, doc) {
                 {
                     data: "Features",
                     render: function (data, type, row) {
-                        var oFeatures = data;
-                        var strID = "";
-                        var strCodItem = "";
-                        var arrProp = oFeatures.SubPropiedades;
-                        for (a = 0; a < arrProp.length; a++) {
-                            if (arrProp[a].Nombre == "ID") { strID = arrProp[a].Valor; }
-                            if (arrProp[a].Nombre == "CodItem") { strCodItem = arrProp[a].Valor; }
-                        }
-                        var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
-                        var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                        var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
-                        var quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarCotDetItem(' + String.fromCharCode(39) + row.CodItem + String.fromCharCode(39) + ',2)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                        if (data != null) {
+                            var oFeatures = data;
+                            var strID = "";
+                            var strCodItem = "";
+                            var arrProp = oFeatures.SubPropiedades;
+                            for (a = 0; a < arrProp.length; a++) {
+                                if (arrProp[a].Nombre == "ID") { strID = arrProp[a].Valor; }
+                                if (arrProp[a].Nombre == "CodItem") { strCodItem = arrProp[a].Valor; }
+                            }
+                            var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
+                            var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                            var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
+                            var quitar = "";
+                            if ($TipoSolicitud.val() == "TSOL05" || $TipoSolicitud.val() == "TSOL04")
+                            {
+                                quitar = "<a class='botonDetCot btn btn-danger btn-xs' title='Eliminar' id=btnQuitarItem  href = 'javascript: cotvtadet.eliminarItemProducto(" + row.Id + ")'><i class='fa fa-trash-o' aria-hidden='true'></i> Quitar</a>"
+                            }
+                            else
+                            {
+                                quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarCotDetItem(' + String.fromCharCode(39) + row.CodItem + String.fromCharCode(39) + ',2)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                            }
 
-                        if ($estadoSol.val() == "CAPR" || $estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG" ) {
-                            return '<center>' + ver + '</center>';
+                            if ($estadoSol.val() == "CAPR" || $estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG") {
+                                return '<center>' + ver + '</center>';
+                            }
+                            else {
+                                if (!oFeatures.IsEnabled) { editar = ver; quitar = ""; }
+                                else {
+                                    if (!oFeatures.IsEditable) { editar = ver; }
+                                    if (!oFeatures.IsDeletable) { quitar = ""; }
+                                }
+                                return '<center>' + hidden + editar + ' ' + quitar + '</center>';
+                            }
                         }
                         else {
-                            if (!oFeatures.IsEnabled) { editar = ver; quitar = ""; }
-                            else {
-                                if (!oFeatures.IsEditable) { editar = ver; }
-                                if (!oFeatures.IsDeletable) { quitar = ""; }
-                            }
-                            return '<center>' + hidden + editar + ' ' + quitar + '</center>';
-                        }
+                            return '<center></center>'
+                        }                        
                     }
                 }
             ];
@@ -2782,7 +2816,6 @@ var cotvtadet = (function ($, win, doc) {
     }
 
     function listarCotDetItems() {
-
         method = "POST";
         url = "BandejaSolicitudesVentas/ListarCotDetItems";
         var objFiltros = {
@@ -2792,10 +2825,11 @@ var cotvtadet = (function ($, win, doc) {
 
         var fnDoneCallBack = function (data) {
             if ($TipoSolicitud.val() == "TSOL05") {
-                CargarTablaProductos(data);
+                ConsultaItemDetalle();
+            } else {
+                cargarTablaCotDet(data);
+                cargarTablaDetCotCostos(data);
             }
-            cargarTablaCotDet(data);
-            cargarTablaDetCotCostos(data);
         };
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
@@ -2985,6 +3019,8 @@ var cotvtadet = (function ($, win, doc) {
 
 
     function InicializarLogicaHijos() {
+
+        $('#tblProductos tbody').off('click', 'td #btnAñadirChild');
         $('#tblProductos tbody').on('click', 'td #btnAñadirChild', function () {
 
             var tr = $(this).closest('tr');
@@ -3001,10 +3037,12 @@ var cotvtadet = (function ($, win, doc) {
                     tr.removeClass('shown');
                 } else {
                     childTableHtml = GeneraTabla(data.NroItem);
+                    var hijos = {}
+                    hijos.Result = childProducts.filter(d => d.NroItem == data.NroItem) == null ? [] : childProducts.filter(d => d.NroItem == data.NroItem);
                     row.child(childTableHtml).show();
                     row.child().show();
                     tr.addClass('shown');
-                    cargarTablaHijosProductos(data, '#tblAccesorios'+data.NroItem );
+                    cargarTablaHijosProductos(hijos, '#tblAccesorios' + data.NroItem, data.NroItem );
                 }
             });
             // Función para dar formato a la fila hija
@@ -3060,12 +3098,15 @@ var cotvtadet = (function ($, win, doc) {
                 //},
                 rowCallback: rowCallback,
                 drawCallback: drawCallback,
-                pageLength: 20,// filters != null ? (filters.dataTablePageLength || defaults.dataTablePageLength) : defaults.dataTablePageLength,
+                pageLength: filters.dataTablePageLength == null ? 10 : filters.dataTablePageLength,// filters != null ? (filters.dataTablePageLength || defaults.dataTablePageLength) : defaults.dataTablePageLength,
                 lengthChange: false//filters != null ? (filters.dataTableLengthChange || defaults.dataTableLengthChange) : defaults.dataTableLengthChange
             }).api();
         }
         table.clear();
         if (data.Result.length > 0 ) {
+            if ($estadoSol.val() == "SCOT") {
+                data.Result.push([]);
+            }
             table.rows.add(data.Result);
         } else {
             var result = GeneraTabla2();
@@ -3078,37 +3119,35 @@ var cotvtadet = (function ($, win, doc) {
     function GeneraTabla2() {
         var table = [];
         table.push({
-            CodItem:    null,
-            DescFamilia:     null,
+            CodItem: null,
+            CodFamilia: null,
             Descripcion:null,
-            DescAlmacen:     null,
+            CodAlmacen:null,
             Stock: null,
-            PrecioRef:       null,
-            DescMonCompra :  null,
-            DescUnidad :     null,
-            Cantidad :       null,
-            Marca :      null,
-            Modelo :     null,
+            PrecioRef: null,
+            DescMonCompra :null,
+            DescUnidad :null,
+            Cantidad :null,
+            Marca :null,
+            Modelo :null,
         });
         return table;
     };
 
     function GeneraTabla(NroItem) {
-        var table = "<table  class='table table-hover table-condensed table-striped table-bordered dataTable no-footer' id=tblAccesorios"+NroItem+" >contenido</table>";
-        var thead = "<thead>" +
+        var td = "<td colspan='10'><center>Accesorios</center></td>"
+        var table = "<center><table  class='table table-condensed table-striped table-bordered dataTable no-footer' style='width:90%'  id=tblAccesorios" + NroItem + " >contenido</table></center>";
+        var thead = "<thead style='background-color: #ef000096; color:white' >" +
                 "<tr>" +
-            "<th>Cod.Producto</th>" +
-            "<th>Familia</th>" +
-            "<th>Almac&eacute;n</th>" +
-            "<th>Descripci&oacute;n</th>" +
-            "<th>Marca</th>" +
-            "<th>Modelo</th>" +
-            "<th>Und. Med.</th>" +
-            "<th>Moneda</th>" +
-            "<th>Cantidad</th>" +
-            "<th>Stock</th>" +
-            "<th>Precio Ref.</th>" +
-            "<th>Acciones</th>" +
+            "<th style='text-align:center; width:2%'><center>Cod.Producto</center></th>" +
+            "<th style='text-align:center; width:5%'><center>Familia</center></th>" +
+            "<th style='text-align:center; width:5%'><center>Almac&eacute;n</center></th>" +
+            "<th style='text-align:center; width:5%'><center>Descripci&oacute;n</center></th>" +
+            "<th style='text-align:center; width:5%'><center>Marca</center></th>" +
+            "<th style='text-align:center; width:5%'><center>Modelo</center></th>" +
+            "<th style='text-align:center; width:1%'><center>Cantidad</center></th>" +
+            "<th style='text-align:center; width:2%'><center>Info. Adicional</center></th>" +
+            "<th style='text-align:center; width:2%'><center>Acciones</center></th>" +
                 "</tr>" +
             "</thead>";
         var tbody = "<tbody></tbody>";
@@ -3118,38 +3157,38 @@ var cotvtadet = (function ($, win, doc) {
     };
 
 
-    function cargarTablaHijosProductos(data, selector) {
+    function cargarTablaHijosProductos(data, selector, NroItem) {
         var columns = [
             {
                 data: "CodItem",
                 render: function (data, type, row) {
                     var casilla = "";
                     if (data == null) {
-                        casilla = "<input type='text' placeholder='Cod.Producto' onblur='javascript: cotvtadet.IniciarLogicaInputs(event,this, this.value)' />";
+                        casilla = "<input type='text' style='width: 100%' placeholder='Cod.Producto' onblur='javascript: cotvtadet.IniciarLogicaHijosInputs(event,this, this.value)' />";
                         //casilla = "<input type='text' placeholder='Cod.Producto'/>";
 
                     }
                     else {
-                        casilla = "<input disabled type='text' placeholder='Cod.Producto' value='" + data + "' />";
+                        casilla = "<input disabled type='text' style='width: 100%' placeholder='Cod.Producto' value='" + data + "' />";
                     }
                     return '<center>' + casilla + '</center>';
                 }
             },
             {
-                data: "DescFamilia",
+                data: "CodFamilia",
                 render: function (data, type, row) {
                     var casilla = "";
                     if (data == null) {
                         casilla = "<select class='form-control select2 input-sm' style='width: 100 %;' data-selected=''></select>"
                     }
                     else {
-                        casilla = "<select disabled class='form-control select2 input-sm' style='width: 100 %;' data-selected=''></select>"
+                        casilla = "<select disabled class='form-control select2 input-sm' style='width: 100 %;' data-selected='08'></select>"
                     }
                     return '<center>' + casilla + '</center>';
                 }
             },
             {
-                data: "DescAlmacen",
+                data: "CodAlmacen",
                 render: function (data, type, row) {
                     var casilla = "";
                     if (data == null) {
@@ -3192,37 +3231,11 @@ var cotvtadet = (function ($, win, doc) {
                 data: "Modelo",
                 render: function (data, type, row) {
                     var casilla = "";
-                    if (data == null) {
+                    if (data == null && row.Id == null) {
                         casilla = "<input placeholder='Modelo' type='text' />";
                     }
                     else {
-                        casilla = "<input disabled placeholder='Modelo' type='text' value='" + data + "' />";
-                    }
-                    return '<center>' + casilla + '</center>';
-                }
-            },
-            {
-                data: "CodUnidad",
-                render: function (data, type, row) {
-                    var casilla = "";
-                    if (data == null) {
-                        casilla = "<select class='form-control select2 input-sm' style='width: 100 %;' data-selected=''></select>"
-                    }
-                    else {
-                        casilla = "<select disabled class='form-control select2 input-sm' style='width: 100 %;' data-selected='" + data + "'></select>"
-                    }
-                    return '<center>' + casilla + '</center>';
-                }
-            },
-            {
-                data: "DescMonCompra",
-                render: function (data, type, row) {
-                    var casilla = "";
-                    if (data == null) {
-                        casilla = "<input type='text' disabled placeholder='Moneda' /> <input hidden type='text'/>"
-                    }
-                    else {
-                        casilla = "<input disabled type='text' disabled placeholder='Moneda' value='" + data + "' /> <input hidden type='text'/>"
+                        casilla = "<input disabled placeholder='Modelo' type='text' value='" + (data == null ? '' : data) + "' />";
                     }
                     return '<center>' + casilla + '</center>';
                 }
@@ -3232,40 +3245,83 @@ var cotvtadet = (function ($, win, doc) {
                 render: function (data, type, row) {
                     var casilla = "";
                     if (data == null) {
-                        casilla = "<input type='number' placeholder='Cantidad' />"
+                        casilla = "<input style='width: 100%' type='number' placeholder='Cantidad' />"
                     }
                     else {
-                        casilla = "<input disabled type='number' placeholder='Cantidad' value='" + data + "' />"
+                        casilla = "<input style='width: 100%' disabled type='number' placeholder='Cantidad' value='" + data + "' />"
                     }
                     return '<center>' + casilla + '</center>';
                 }
             },
             {
-                data: "StockDisponible",
+                data: "Cantidad",
                 render: function (data, type, row) {
                     var casilla = "";
                     if (data == null) {
-                        casilla = "<input disabled type='text' placeholder='Stock' />"
+                        casilla = "<span style='width: 100%' class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>";
                     }
                     else {
-                        casilla = "<input disabled  disabled type='text' placeholder='Stock' value='" + data + "' />"
+                        casilla = "<span style='width: 100%' class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>";
                     }
                     return '<center>' + casilla + '</center>';
                 }
             },
-            {
-                data: "PrecioRef",
-                render: function (data, type, row) {
-                    var casilla = "";
-                    if (data == null) {
-                        casilla = "<input disabled type='text' placeholder='Precio Ref' />"
-                    }
-                    else {
-                        casilla = "<input disabled disabled type='text' placeholder='Precio Ref' value='" + data.toFixed(2) + "' />"
-                    }
-                    return '<center>' + casilla + '</center>';
-                }
-            },
+
+
+
+
+            //{
+            //    data: "CodUnidad",
+            //    render: function (data, type, row) {
+            //        var casilla = "";
+            //        if (data == null) {
+            //            casilla = "<select class='form-control select2 input-sm' style='width: 100 %;' data-selected=''></select>"
+            //        }
+            //        else {
+            //            casilla = "<select disabled class='form-control select2 input-sm' style='width: 100 %;' data-selected='" + data + "'></select>"
+            //        }
+            //        return '<center>' + casilla + '</center>';
+            //    }
+            //},
+            //{
+            //    data: "DescMonCompra",
+            //    render: function (data, type, row) {
+            //        var casilla = "";
+            //        if (data == null) {
+            //            casilla = "<input type='text' disabled placeholder='Moneda' /> <input hidden type='text'/>"
+            //        }
+            //        else {
+            //            casilla = "<input disabled type='text' disabled placeholder='Moneda' value='" + data + "' /> <input hidden type='text'/>"
+            //        }
+            //        return '<center>' + casilla + '</center>';
+            //    }
+            //},
+            //{
+            //    data: "StockDisponible",
+            //    render: function (data, type, row) {
+            //        var casilla = "";
+            //        if (data == null) {
+            //            casilla = "<input disabled type='text' placeholder='Stock' />"
+            //        }
+            //        else {
+            //            casilla = "<input disabled  disabled type='text' placeholder='Stock' value='" + data + "' />"
+            //        }
+            //        return '<center>' + casilla + '</center>';
+            //    }
+            //},
+            //{
+            //    data: "PrecioRef",
+            //    render: function (data, type, row) {
+            //        var casilla = "";
+            //        if (data == null) {
+            //            casilla = "<input disabled type='text' placeholder='Precio Ref' />"
+            //        }
+            //        else {
+            //            casilla = "<input disabled disabled type='text' placeholder='Precio Ref' value='" + data.toFixed(2) + "' />"
+            //        }
+            //        return '<center>' + casilla + '</center>';
+            //    }
+            //},
             {
                 data: "Id",
                 render: function (data, type, row) {
@@ -3275,9 +3331,14 @@ var cotvtadet = (function ($, win, doc) {
                         seleccionar = '<a class="btn btn-default btn-xs" title="Agregar" id=btnAgregarItem><i class="fa fa-level-down" aria-hidden="true"></i> Agregar</a>';
                     } else {
                         seleccionar = ""
-                        if ($PermitirEditarCotDetItem.val() == "S") {
+                        if ($PermitirEditarCotDetItem.val() == 'S') {
+
+                            var dato = row.Id + "," + '"' + row.TipoItem + '"';
+
                             seleccionar = '<a id="btnCostearItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.EditarCotDetItem(' + data + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Costear</a>';
-                            eliminar = ' <a class="btn btn-default btn-xs" title="Eliminar" id=btnEliminarItem  href = "javascript: cotvtadet.eliminarItemProducto(' + data + ')" ><i class="fa fa-level-down" aria-hidden="true"></i> Eliminar</a>';
+
+
+                            eliminar = "<a class='btn btn-default btn-xs' title='Eliminar' id=btnEliminarItem  href = 'javascript: cotvtadet.eliminarItemProducto("+ dato +")'><i class='fa fa-trash' aria-hidden='true'></i> Eliminar</a>";
                         }
                     }
 
@@ -3295,96 +3356,99 @@ var cotvtadet = (function ($, win, doc) {
         var rowCallback = function (row, data, index) {
 
             // Asignar un ID único basado en el índice de datos o algún identificador único
-            cantidadProductos = index + 1;
+            nroItems.push(NroItem);
+            cantidadProductosHijos = index + 1;
+
+
             $(row).attr('id', 'row' + index);
 
             var input = $(row.cells[0])
             input = input[0];
             input = input.children[0];
             input = input.children[0];
-            $(input).attr('id', 'BI_CodProd_Child' + index);
+            $(input).attr('id', index + '_' + NroItem +'BI_CodProd_Child' );
 
             var select = $(row.cells[1])
             select = select[0];
             select = select.children[0];
             select = select.children[0];
-            $(select).attr('id', 'BI_cmbFamilia_Child' + index);
+            $(select).attr('id', NroItem + 'BI_cmbFamilia_Child' + index);
 
             var select = $(row.cells[2])
             select = select[0];
             select = select.children[0];
             select = select.children[0];
-            $(select).attr('id', 'BI_cmbAlmacen_Child' + index);
+            $(select).attr('id', NroItem + 'BI_cmbAlmacen_Child' + index);
 
             var input = $(row.cells[3])
             input = input[0];
             input = input.children[0];
             input = input.children[0];
-            $(input).attr('id', 'BI_DescEquipo_Child' + index);
+            $(input).attr('id', index + '_' + NroItem + 'BI_DescEquipo_Child');
 
 
             var select = $(row.cells[4])
             select = select[0];
             select = select.children[0];
             select = select.children[0];
-            $(select).attr('id', 'BI_cmbMarca_Child' + index);
+            $(select).attr('id', NroItem + 'BI_cmbMarca_Child' + index);
 
 
             var input = $(row.cells[5])
             input = input[0];
             input = input.children[0];
             input = input.children[0];
-            $(input).attr('id', 'BI_Modelo_Child' + index);
+            $(input).attr('id', index + '_' + NroItem + 'BI_Modelo_Child');
 
 
-            var select = $(row.cells[6])
-            select = select[0];
-            select = select.children[0];
-            select = select.children[0];
-            $(select).attr('id', 'BI_cmbTipoMedida_Child' + index);
+            //var select = $(row.cells[6])
+            //select = select[0];
+            //select = select.children[0];
+            //select = select.children[0];
+            //$(select).attr('id', 'BI_cmbTipoMedida_Child' + index);
 
-            var input = $(row.cells[7])
-            input = input[0];
-            var inputPadre = input.children[0];
-            input = inputPadre.children[0];
-            $(input).attr('id', 'BI_Moneda_Child' + index);
-            input = inputPadre.children[1];
-            $(input).attr('id', 'BI_CodMoneda_Child' + index);
+            //var input = $(row.cells[7])
+            //input = input[0];
+            //var inputPadre = input.children[0];
+            //input = inputPadre.children[0];
+            //$(input).attr('id', 'BI_Moneda_Child' + index);
+            //input = inputPadre.children[1];
+            //$(input).attr('id', 'BI_CodMoneda_Child' + index);
 
-            var input = $(row.cells[8])
-            input = input[0];
-            input = input.children[0];
-            input = input.children[0];
-            $(input).attr('id', 'BI_Cantidad_Child' + index);
-
-            var input = $(row.cells[9])
+            var input = $(row.cells[6])
             input = input[0];
             input = input.children[0];
             input = input.children[0];
-            $(input).attr('id', 'BI_Stock_Child' + index);
+            $(input).attr('id', NroItem + 'BI_Cantidad_Child' + index);
 
-            var input = $(row.cells[10])
-            input = input[0];
-            input = input.children[0];
-            input = input.children[0];
-            $(input).attr('id', 'BI_Precio_Child' + index);
+            //var input = $(row.cells[9])
+            //input = input[0];
+            //input = input.children[0];
+            //input = input.children[0];
+            //$(input).attr('id', 'BI_Stock_Child' + index);
+
+            //var input = $(row.cells[10])
+            //input = input[0];
+            //input = input.children[0];
+            //input = input.children[0];
+            //$(input).attr('id', 'BI_Precio_Child' + index);
 
 
             if (data.Id == null || data.Id == "") {
-                var btn = $(row.cells[11])
+                var btn = $(row.cells[8])
                 btn = btn[0];
                 btn = btn.children[0];
                 btn = btn.children[0];
-                $(btn).attr('href', "javascript: cotvtadet.agregarItemHijo('" + index + "')");
+                $(btn).attr('href', "javascript: cotvtadet.agregarItemHijo('" + index + "'" + ","+ "'" + NroItem + "')");
             }
 
 
-            $('#BI_CodProd_Child' + index, row).each(function () {
+            $('#' + index + '_' + NroItem + 'BI_CodProd_Child', row).each(function () {
                 $(this).autocomplete({
                     source: function (request, response) {
                         var objFiltros = {
                             CodProd: request.term,
-                            CodFamilia: $('#BI_cmbFamilia_Child' + index).val() == "" ? "08" : $('#BI_cmbFamilia_Child' + index).val(),
+                            CodFamilia: '08', //Buscar en accesorios
                             CantidadRegistros: 20
                         };
                         var objParam = JSON.stringify(objFiltros);
@@ -3413,14 +3477,14 @@ var cotvtadet = (function ($, win, doc) {
                 });
             });
 
-            $('#BI_DescEquipo_Child' + index, row).each(function () {
+            $('#' + index + '_' + NroItem + 'BI_DescEquipo_Child', row).each(function () {
                 $(this).autocomplete({
                     source: function (request, response) {
                         var objFiltros = {
                             DescEquipo: request.term,
-                            CodFamilia: $('#BI_cmbFamilia_Child' + index).val() == "" ? "08" : $('#BI_cmbFamilia_Child' + index).val(),
-                            DescMarca: $('#BI_cmbMarca_Child' + index).val(),
-                            CodUndMed: $('#BI_cmbTipoMedida_Child' + index).val(),
+                            CodFamilia: "08",
+                            DescMarca: $(NroItem + '#BI_cmbMarca_Child' + index).val(),
+                            CodUndMed: $(NroItem + '#BI_cmbTipoMedida_Child' + index).val(),
                             CantidadRegistros: 20
                         };
                         var objParam = JSON.stringify(objFiltros);
@@ -3449,14 +3513,14 @@ var cotvtadet = (function ($, win, doc) {
                 });
             });
 
-            $('#BI_Modelo_Child' + index, row).each(function () {
+            $('#' + index + '_' + NroItem + 'BI_Modelo_Child', row).each(function () {
                 $(this).autocomplete({
                     source: function (request, response) {
                         var objFiltros = {
                             DescModelo: request.term,
-                            CodFamilia: $('#BI_cmbFamilia_Child' + index).val() == "" ? "08" : $('#BI_cmbFamilia_Child' + index).val(),
-                            DescMarca: $('#BI_cmbMarca_Child' + index).val(),
-                            CodUndMed: $('#BI_cmbTipoMedida_Child' + index).val(),
+                            CodFamilia: $('#' + nroItem + 'BI_cmbFamilia_Child' + index).val() == "" ? "08" : $('#' + nroItem + 'BI_cmbFamilia_Child' + index).val(),
+                            DescMarca: $('#' + nroItem + 'BI_cmbMarca_Child' + index).val(),
+                            CodUndMed: $('#' + nroItem + 'BI_cmbTipoMedida_Child' + index).val(),
                             CantidadRegistros: 20
                         };
                         var objParam = JSON.stringify(objFiltros);
@@ -3494,13 +3558,109 @@ var cotvtadet = (function ($, win, doc) {
         filters.info = false;
         filters.ordering = false;
         filters.language = "";
+        filters.dataTablePaging = false;
+
+
 
         implementarTabla($(selector), data, columns, columnDefs, selector, rowCallback, null, filters);
+
+        cargarCombosHijos();
     };
 
 
-    function agregarItemHijo() {
+    function cargarCombosHijos() {
+        var filters1 = {};
+        filters1.placeholder = "--Seleccionar--";
+        filters1.allowClear = false;
 
+        arrayFamiliaAcc = arrayFamilias.filter(d => d.Id == "08");
+
+        for (var i = 0; nroItems.length > i; i++) {
+
+            llenarCombos('#' + nroItems[i] + 'BI_cmbMarca_Child', arrayMarcas, $("#modalDetalleCotizacion"), '', "--Seleccionar--", filters1, cantidadProductosHijos);
+            llenarCombos('#' + nroItems[i] + 'BI_cmbTipoMedida_Child', arrayTipMedida, $("#modalDetalleCotizacion"), '', "--Seleccionar--", filters1, cantidadProductosHijos);
+            llenarCombos('#' + nroItems[i] + 'BI_cmbAlmacen_Child', arrayAlmacen, $("#modalDetalleCotizacion"), " ", "No definido", filters1, cantidadProductosHijos);
+            llenarCombos('#' + nroItems[i] + 'BI_cmbFamilia_Child', arrayFamiliaAcc, $("#modalDetalleCotizacion"), '', "--Seleccionar--", filters1, cantidadProductosHijos)
+        }
+        nroItems = [];
+    };
+
+    function agregarItemHijo(index, nroItem) {
+        var descripcion = $('#' + index.toString() + '_' + nroItem + 'BI_DescEquipo_Child').val();
+        var codItem = $('#' + index.toString() + '_' + nroItem +  'BI_CodProd_Child').val();
+        var stock = $('#' + nroItem + 'BI_Stock_Child' + index.toString()).val();
+        var codMoneda = $('#' + nroItem + 'BI_CodMoneda_Child' + index.toString()).val();
+        var unidad = $('#' + nroItem + 'BI_cmbTipoMedida_Child' + index.toString()).val();
+        var descUnidad = $('#' + nroItem + 'BI_cmbTipoMedida_Child' + index.toString() + ' option:selected').text();
+        var cantidad = $('#' + nroItem + 'BI_Cantidad_Child' + index.toString()).val();
+        var marca = $('#' + nroItem + 'BI_cmbMarca_Child' + index.toString()).val();
+        var modelo = $('#' + index.toString() + '_' + nroItem + 'BI_Modelo_Child').val();
+        var familia = $('#' + nroItem + 'BI_cmbFamilia_Child' + index.toString()).val();
+        var codAlmacen = $('#' + nroItem + 'BI_cmbAlmacen_Child' + index.toString()).val();
+
+        if (codItem == "" || codItem == null || codItem == undefined || codItem.trim().length == 0) {
+            app.message.error("Validaci&oacute;n", "El campo Cod.Producto de la fila, debe estar completo");
+            return;
+        };
+
+        if (descripcion == "" || descripcion == null || descripcion == undefined || descripcion.trim().length == 0) {
+            app.message.error("Validaci&oacute;n", "El campo Descripci&oacute;n de la fila, debe estar completo");
+            return;
+        };
+
+        if (familia == "" || familia == null) {
+            app.message.error("Validaci&oacute;n", "Debe de seleccionar la familia del producto, no puede estar vac&iacute;o")
+            return;
+        };
+
+        if (cantidad < 0) {
+            app.message.error("Validaci&oacute;n", "El valor de cantidad no debe de ser menor a 0");
+            return;
+        };
+
+        var validador = 0;
+
+
+        childProducts.forEach((element) => {
+            if (element != null && element != "" && element != undefined) {
+                if (element.CodItem.trim() == codItem && element.NroItem == nroItem) {
+                    validador = 1;
+                };
+            }
+        });
+
+        if (validador == 1) {
+            app.message.error("Validaci&oacute;n", "El c&oacute;digo de producto ya ha sido ingresado, por favor revisar");
+            return;
+        }
+
+        info = {
+            IdCotizacion: $idCotizacion.val(),
+            NroItem: nroItem,
+            CodItem: codItem,
+            Descripcion: descripcion,
+            Stock: stock,
+            Cantidad: cantidad,
+            CodUnidad: unidad,
+            DescUnidad: descUnidad,
+            Marca: marca,
+            Modelo: modelo,
+            CodFamilia: familia,
+            CodAlmacen: codAlmacen,
+            EsItemPadre: false,
+            Eliminado: false,
+        };
+
+        var method = "POST";
+        var url = "BandejaSolicitudesVentas/InsertCotDet";
+        var objParam = JSON.stringify(info);
+
+        var fnDoneCallBack = function () {
+            app.message.success("&Eacute;xito", "Se agreg&oacute; correctamente");
+            listarCotDetItems();
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, null, null, null);
     }
 
     function CargarTablaProductos(data) {
@@ -3512,7 +3672,11 @@ var cotvtadet = (function ($, win, doc) {
                         return '';
                     }
                     else {
-                        return '<center><a id="btnAñadirChild" class="btn btn-green btn-xs" ><i class="fa fa-arrow-down" aria-hidden="true"></i></a></center>';
+                        if (row.CodFamilia == "08") {
+                            return '';
+                        } else {
+                            return '<center><a id="btnAñadirChild" class="btn btn-green btn-xs" ><i class="fa fa-arrow-down" aria-hidden="true"></i></a></center>';
+                        }
                     };
                 }
             },
@@ -3521,38 +3685,38 @@ var cotvtadet = (function ($, win, doc) {
                 render: function (data, type, row) {
                     var casilla = "";
                     if (data == null) {
-                        casilla = "<input type='text' placeholder='Cod.Producto' onblur='javascript: cotvtadet.IniciarLogicaInputs(event,this, this.value)' />";
+                        casilla = "<input type='text' placeholder='Cod.Producto' style='width:100%' onblur='javascript: cotvtadet.IniciarLogicaInputs(event,this, this.value)' />";
                         //casilla = "<input type='text' placeholder='Cod.Producto'/>";
                         
                     }
                     else {
-                        casilla = "<input disabled type='text' placeholder='Cod.Producto' value='" + data + "' />";
+                        casilla = "<input disabled type='text' placeholder='Cod.Producto' style='width:100%' value='" + data + "' />";
                     }
                     return '<center>' + casilla + '</center>';
                 }
             },
             {
-                data: "DescFamilia",
+                data: "CodFamilia",
                 render: function (data, type, row) {
                     var casilla = "";
                     if (data == null) {
                         casilla = "<select class='form-control select2 input-sm' style='width: 100 %;' data-selected=''></select>"
                     }
                     else {
-                        casilla = "<select disabled class='form-control select2 input-sm' style='width: 100 %;' data-selected=''></select>"
+                        casilla = "<select disabled class='form-control select2 input-sm' style='width: 100 %;' data-selected='" + data + "'></select>"
                     }
                     return '<center>' + casilla + '</center>';
                 }
             },
             {
-                data: "DescAlmacen",
+                data: "CodAlmacen",
                 render: function (data, type, row) {
                     var casilla = "";
                     if (data == null) {
                         casilla = "<select class='form-control select2 input-sm' style='width: 100 %;'  data-selected=''></select>"
                     }
                     else {
-                        casilla = "<select disabled class='form-control select2 input-sm' style='width: 100 %;'  data-selected=''></select>"
+                        casilla = "<select disabled class='form-control select2 input-sm' style='width: 100 %;'  data-selected='" + data + "'></select>"
                     }
                     return '<center>' + casilla + '</center>';
                 }
@@ -3588,37 +3752,11 @@ var cotvtadet = (function ($, win, doc) {
                 data: "Modelo",
                 render: function (data, type, row) {
                     var casilla = "";
-                    if (data == null) {
+                    if (data == null && row.NroItem == null) {
                         casilla = "<input placeholder='Modelo' type='text' />";
                     }
                     else {
-                        casilla = "<input disabled placeholder='Modelo' type='text' value='" + data + "' />";
-                    }
-                    return '<center>' + casilla + '</center>';
-                }
-            },
-            {
-                data: "CodUnidad",
-                render: function (data, type, row) {
-                    var casilla = "";
-                    if (data == null) {
-                        casilla = "<select class='form-control select2 input-sm' style='width: 100 %;' data-selected=''></select>"
-                    }
-                    else {
-                        casilla = "<select disabled class='form-control select2 input-sm' style='width: 100 %;' data-selected='" + data + "'></select>"
-                    }
-                    return '<center>' + casilla + '</center>';
-                }
-            },
-            {
-                data: "DescMonCompra",
-                render: function (data, type, row) {
-                    var casilla = "";
-                    if (data == null) {
-                        casilla = "<input type='text' disabled placeholder='Moneda' /> <input hidden type='text'/>"
-                    }
-                    else {
-                        casilla = "<input disabled type='text' disabled placeholder='Moneda' value='" + data + "' /> <input hidden type='text'/>"
+                        casilla = "<input disabled placeholder='Modelo' type='text' value='" + (data == null ? '' : data) + "' />";
                     }
                     return '<center>' + casilla + '</center>';
                 }
@@ -3629,36 +3767,23 @@ var cotvtadet = (function ($, win, doc) {
                     var casilla = "";
                     if (data == null)
                     {
-                        casilla = "<input type='number' placeholder='Cantidad' />"
+                        casilla = "<input type='number' style='width:100%' placeholder='Cantidad' />"
                     }
                     else{
-                        casilla = "<input disabled type='number' placeholder='Cantidad' value='" + data + "' />"
+                        casilla = "<input disabled type='number' style='width:100%' placeholder='Cantidad' value='" + data + "' />"
                     }
                     return '<center>' + casilla + '</center>';
                 }
             },
             {
-                data: "StockDisponible",
+                data: "CodUnidad",
                 render: function (data, type, row) {
                     var casilla = "";
                     if (data == null) {
-                        casilla = "<input disabled type='text' placeholder='Stock' />"
+                        casilla = "<select class='form-control select2 input-sm' style='width: 100 %;'  data-selected=''></select>"
                     }
                     else {
-                        casilla = "<input disabled  disabled type='text' placeholder='Stock' value='" + data + "' />"
-                    }
-                    return '<center>' + casilla + '</center>';
-                }
-            },
-            {
-                data: "PrecioRef",
-                render: function (data, type, row) {
-                    var casilla = "";
-                    if (data == null) {
-                        casilla = "<input disabled type='text' placeholder='Precio Ref' />"
-                    }
-                    else {
-                        casilla = "<input disabled disabled type='text' placeholder='Precio Ref' value='" + data.toFixed(2) + "' />"
+                        casilla = "<select disabled class='form-control select2 input-sm' style='width: 100 %;'  data-selected='" + data + "'></select>"
                     }
                     return '<center>' + casilla + '</center>';
                 }
@@ -3673,14 +3798,70 @@ var cotvtadet = (function ($, win, doc) {
                     } else {
                         seleccionar = ""
                         if ($PermitirEditarCotDetItem.val() == "S") {
-                            seleccionar = '<a id="btnCostearItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.EditarCotDetItem(' + data +')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Costear</a>';
-                            eliminar = ' <a class="btn btn-default btn-xs" title="Eliminar" id=btnEliminarItem  href = "javascript: cotvtadet.eliminarItemProducto('+ data +')" ><i class="fa fa-level-down" aria-hidden="true"></i> Eliminar</a>';
+                            var dato = row.Id + "," + '"' + row.TipoItem + '"';
+
+                            seleccionar = "<a id='btnCostearItem' class='btn btn-info btn-xs' title='Editar' href='javascript: cotvtadet.EditarCotDetItem(" + data + ")'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Costear</a>";
+
+
+                            eliminar = "<a class='btn btn-default btn-xs' title='Eliminar' id=btnEliminarItem  href = 'javascript: cotvtadet.eliminarItemProducto(" + dato + ")'><i class='fa fa-trash' aria-hidden='true'></i> Eliminar</a>";
                         }
                     }
                     
                     return '<center>' + seleccionar + eliminar + '</center>';
                 }
             }
+            //{
+            //    data: "CodUnidad",
+            //    render: function (data, type, row) {
+            //        var casilla = "";
+            //        if (data == null) {
+            //            casilla = "<select class='form-control select2 input-sm' style='width: 100 %;' data-selected=''></select>"
+            //        }
+            //        else {
+            //            casilla = "<select disabled class='form-control select2 input-sm' style='width: 100 %;' data-selected='" + data + "'></select>"
+            //        }
+            //        return '<center>' + casilla + '</center>';
+            //    }
+            //},
+            //{
+            //    data: "DescMonCompra",
+            //    render: function (data, type, row) {
+            //        var casilla = "";
+            //        if (data == null) {
+            //            casilla = "<input type='text' disabled placeholder='Moneda' /> <input hidden type='text'/>"
+            //        }
+            //        else {
+            //            casilla = "<input disabled type='text' disabled placeholder='Moneda' value='" + data + "' /> <input hidden type='text'/>"
+            //        }
+            //        return '<center>' + casilla + '</center>';
+            //    }
+            //},
+            //{
+            //    data: "StockDisponible",
+            //    render: function (data, type, row) {
+            //        var casilla = "";
+            //        if (data == null) {
+            //            casilla = "<input disabled type='text' placeholder='Stock' />"
+            //        }
+            //        else {
+            //            casilla = "<input disabled  disabled type='text' placeholder='Stock' value='" + data + "' />"
+            //        }
+            //        return '<center>' + casilla + '</center>';
+            //    }
+            //},
+            //{
+            //    data: "PrecioRef",
+            //    render: function (data, type, row) {
+            //        var casilla = "";
+            //        if (data == null) {
+            //            casilla = "<input disabled type='text' placeholder='Precio Ref' />"
+            //        }
+            //        else {
+            //            casilla = "<input disabled disabled type='text' placeholder='Precio Ref' value='" + data.toFixed(2) + "' />"
+            //        }
+            //        return '<center>' + casilla + '</center>';
+            //    }
+            //},
         ];
 
         var columnDefs =
@@ -3689,9 +3870,14 @@ var cotvtadet = (function ($, win, doc) {
             visible: true
         }
 
-        var rowCallback = function (row, data, index) {
+        var rowCallback = function (row, data, displayNum, displayIndex, dataIndex) {
 
+            var index = dataIndex;
             // Asignar un ID único basado en el índice de datos o algún identificador único
+            //if (data.NroItem > 0) {
+            //    nroItems.push(data.NroItem);
+            //}
+
             cantidadProductos = index + 1 ;
             $(row).attr('id', 'row' + index);
 
@@ -3699,7 +3885,7 @@ var cotvtadet = (function ($, win, doc) {
             input = input[0];
             input = input.children[0];
             input = input.children[0];
-            $(input).attr('id', 'BI_CodProd' + index);
+            $(input).attr('id', index + 'BI_CodProd');
 
             var select = $(row.cells[2])
             select = select[0];
@@ -3717,7 +3903,7 @@ var cotvtadet = (function ($, win, doc) {
             input = input[0];
             input = input.children[0];
             input = input.children[0];
-            $(input).attr('id', 'BI_DescEquipo' + index);
+            $(input).attr('id', index + 'BI_DescEquipo' );
 
 
             var select = $(row.cells[5])
@@ -3731,52 +3917,59 @@ var cotvtadet = (function ($, win, doc) {
             input = input[0];
             input = input.children[0];
             input = input.children[0];
-            $(input).attr('id', 'BI_Modelo' + index);
+            $(input).attr('id', index + 'BI_Modelo');
 
-
-            var select = $(row.cells[7])
-            select = select[0];
-            select = select.children[0];
-            select = select.children[0];
-            $(select).attr('id', 'BI_cmbTipoMedida' + index);
-
-            var input = $(row.cells[8])
-            input = input[0];
-            var inputPadre = input.children[0];
-            input = inputPadre.children[0];
-            $(input).attr('id', 'BI_Moneda' + index);
-            input = inputPadre.children[1];
-            $(input).attr('id', 'BI_CodMoneda' + index);
-
-            var input = $(row.cells[9])
+            var input = $(row.cells[7])
             input = input[0];
             input = input.children[0];
             input = input.children[0];
             $(input).attr('id', 'BI_Cantidad' + index);
 
-            var input = $(row.cells[10])
-            input = input[0];
-            input = input.children[0];
-            input = input.children[0];
-            $(input).attr('id', 'BI_Stock' + index);
 
-            var input = $(row.cells[11])
-            input = input[0];
-            input = input.children[0];
-            input = input.children[0];
-            $(input).attr('id', 'BI_Precio' + index);
+            var select = $(row.cells[8])
+            select = select[0];
+            select = select.children[0];
+            select = select.children[0];
+            $(select).attr('id', 'BI_cmbTipoMedida' + index);
 
 
-            if (data.Id == null || data.Id == "") {
-                var btn = $(row.cells[12])
+            if (data.Id == null || data.Id ==   "") {
+                var btn = $(row.cells[9])
                 btn = btn[0];
                 btn = btn.children[0];
                 btn = btn.children[0];
                 $(btn).attr('href', "javascript: cotvtadet.agregarItemProducto('" + index + "')");
             }
+            //var select = $(row.cells[7])
+            //select = select[0];
+            //select = select.children[0];
+            //select = select.children[0];
+            //$(select).attr('id', 'BI_cmbTipoMedida' + index);
+
+            //var input = $(row.cells[8])
+            //input = input[0];
+            //var inputPadre = input.children[0];
+            //input = inputPadre.children[0];
+            //$(input).attr('id', 'BI_Moneda' + index);
+            //input = inputPadre.children[1];
+            //$(input).attr('id', 'BI_CodMoneda' + index);
+
+            //var input = $(row.cells[10])
+            //input = input[0];
+            //input = input.children[0];
+            //input = input.children[0];
+            //$(input).attr('id', 'BI_Stock' + index);
+
+            //var input = $(row.cells[11])
+            //input = input[0];
+            //input = input.children[0];
+            //input = input.children[0];
+            //$(input).attr('id', 'BI_Precio' + index);
+
+
             
 
-            $('#BI_CodProd'+index, row).each(function () {
+            $('#' + index + 'BI_CodProd', row).each(function () {
                 $(this).autocomplete({
                     source: function (request, response) {
                         var objFiltros = {
@@ -3810,7 +4003,7 @@ var cotvtadet = (function ($, win, doc) {
                 });
             });
 
-            $('#BI_DescEquipo' + index, row).each(function () {
+            $('#' + index +'BI_DescEquipo', row).each(function () {
                 $(this).autocomplete({
                     source: function (request, response) {
                         var objFiltros = {
@@ -3846,7 +4039,7 @@ var cotvtadet = (function ($, win, doc) {
                 });
             });
 
-            $('#BI_Modelo' + index, row).each(function () {
+            $('#' + index +'BI_Modelo', row).each(function () {
                 $(this).autocomplete({
                     source: function (request, response) {
                         var objFiltros = {
@@ -3887,7 +4080,7 @@ var cotvtadet = (function ($, win, doc) {
 
         var filters = {}
         filters.dataTableInfo = true;
-        filters.dataTablePageLength = 20;
+        filters.dataTablePageLength = 7;
         filters.info = true;
         filters.ordering = false;
         filters.language = {
@@ -3911,13 +4104,91 @@ var cotvtadet = (function ($, win, doc) {
             }
         };
 
-        implementarTabla($tblProductos, data, columns, columnDefs, "#tblProductos", rowCallback, null, filters);
+        var drawCallBack = function () {
+            ObtenerFiltrosPrecios();
+        };
+
+        implementarTabla($tblProductos, data, columns, columnDefs, "#tblProductos", rowCallback, drawCallBack, filters);
 
         InicializarLogicaHijos();
-        RecargarFiltroFamilia();
-        ObtenerFiltrosPrecios();
+        
         //cargarBtnAgregarItem();
         //IniciarLogicaInputs(e, selector, valueInput);
+    };
+
+
+    function IniciarLogicaHijosInputs(event, selector, valueInput) {
+
+        //var id = selector[0].getAttribute("id");
+        var id = selector.getAttribute("id");
+        var index = id.substring(0, id.indexOf('_'))
+        var nroItem = id.substring(id.indexOf('_') + 1, id.indexOf('BI'));
+        var newid = id.substring(id.indexOf('BI'), id.length);
+
+        if (valueInput != "" && valueInput != null && valueInput != undefined) {
+            method = "POST";
+            url = "BandejaSolicitudesVentas/ObtenerArticulos";
+
+            if (newid == "BI_CodProd_Child") {
+                var objFiltros = {
+                    CodsArticulo: $('#' + index.toString() + '_' + nroItem + newid).val(),
+                    CantidadRegistros: 1
+                };
+            } else if (newid == "BI_DescEquipo_Child") {
+                var objFiltros = {
+                    DescArticulo: $('#' + index.toString() + newid).val(),
+                    CodsUnidad: $('#' + nroItem + 'BI_cmbTipoMedida_Child' + index).val() == "" ? "" : $('#' + nroItem + 'BI_cmbTipoMedida_Child' + index).val(),
+                    CodsFamilia: $('#' + nroItem + 'BI_cmbFamilia_Child' + index).val() == "" ? "08" : $('#' + nroItem + 'BI_cmbFamilia_Child' + index).val(),
+                    CodsAlma: $('#' + nroItem + 'BI_cmbAlmacen_Child' + index).val() == "" ? "0015;0001;0017" : $('#' + nroItem + 'BI_cmbAlmacen_Child' + index).val(),
+                    CantidadRegistros: 1
+                };
+            }
+            var objParam = JSON.stringify(objFiltros);
+
+            var fnDoneCallBack = function (data) {
+                if (data.Result.length == 0) {
+                    $('#' + nroItem + 'BI_cmbFamilia_Child' + index.toString()).prop('disabled', false);
+                    $('#' + nroItem + 'BI_cmbAlmacen_Child' + index.toString()).prop('disabled', false);
+                    $('#' + index.toString() + '_' + nroItem + 'BI_DescEquipo_Child').prop('disabled', false);
+                    $('#' + nroItem + 'BI_cmbMarca_Child' + index.toString()).prop('disabled', false);
+                    $('#' + index.toString() + '_' + nroItem + 'BI_Modelo_Child').prop('disabled', false);
+                    $('#' + index.toString() + '_' + nroItem + 'BI_CodProd_Child').prop('disabled', false);
+                    $('#' + nroItem + 'BI_cmbTipoMedida_Child' + index.toString()).prop('disabled', false);
+                    $('#' + nroItem + 'BI_cmbAlmacen_Child' + index.toString()).val(" ").trigger('change.select2');
+                }
+                else {
+                    var codAcceso = 0
+                    if (newid == "BI_CodProd_Child") {
+                        codAcceso = 1;
+                    }
+                    else if (newid == "BI_DescEquipo_Child") {
+                        codAcceso = 2;
+                    };
+                    rellenarInputsHijosTabla(data.Result, index, codAcceso, nroItem);
+                };
+            };
+
+            var fnFailCallback = function () {
+                app.message.error("Validaci&oacute;n", "No hay productos.");
+            };
+
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallback);
+        }
+        else {
+            $('#' + nroItem + 'BI_cmbFamilia_Child' + index.toString()).prop('disabled', false);
+            $('#' + nroItem + 'BI_cmbAlmacen_Child' + index.toString()).prop('disabled', false);
+            $('#' + index.toString() + '_' + nroItem + 'BI_DescEquipo_Child').prop('disabled', false);
+            $('#' + index.toString() + '_' + nroItem + 'BI_CodProd_Child').prop('disabled', false);
+            $('#' + nroItem + 'BI_cmbMarca_Child' + index.toString()).prop('disabled', false);
+            $('#' + index.toString() + '_' + nroItem + 'BI_Modelo_Child_Child').prop('disabled', false);
+            $('#' + nroItem + 'BI_cmbTipoMedida_Child' + index.toString()).prop('disabled', false);
+            $('#' + nroItem + 'BI_cmbAlmacen_Child' + index.toString()).val(" ").trigger('change.select2');
+            $('#' + nroItem + 'BI_Moneda_Child' + index.toString()).val("");
+            $('#' + nroItem + 'BI_Cantidad_Child' + index.toString()).val("");
+            $('#' + nroItem + 'BI_Stock_Child' + index.toString()).val("");
+            $('#' + nroItem + 'BI_Precio_Child' + index.toString()).val("");
+            $('#' + nroItem + 'BI_CodMoneda_Child' + index.toString()).val("");
+        };
     };
 
 
@@ -3925,8 +4196,8 @@ var cotvtadet = (function ($, win, doc) {
 
         //var id = selector[0].getAttribute("id");
         var id = selector.getAttribute("id");
-        var index = id.slice(-1);
-        var newid = id.substring(0, (id.length - 1));
+        var index = id.substring(0, id.indexOf('BI'))
+        var newid = id.substring(id.indexOf('BI'), id.length);
 
         if (valueInput != "" && valueInput != null && valueInput != undefined) {
             method = "POST";
@@ -3934,12 +4205,12 @@ var cotvtadet = (function ($, win, doc) {
 
             if (newid == "BI_CodProd") {
                 var objFiltros = {
-                    CodsArticulo: $('#' + newid + index.toString()).val(),
+                    CodsArticulo: $('#' + index.toString() + newid).val(),
                     CantidadRegistros: 1
                 };
             } else if (newid == "BI_DescEquipo") {
                 var objFiltros = {
-                    DescArticulo: $('#' + newid + index.toString()).val(),
+                    DescArticulo: $('#' + index.toString() + newid).val(),
                     CodsUnidad: $('#BI_cmbTipoMedida' + index).val() == "" ? "" : $('#BI_cmbTipoMedida' + index).val(),
                     CodsFamilia: $('#BI_cmbFamilia' + index).val() == "" ? "08;01;04" : $('#BI_cmbFamilia' + index).val(),
                     CodsAlma: $('#BI_cmbAlmacen' + index).val() == "" ? "0015;0001;0017" : $('#BI_cmbAlmacen' + index).val(),
@@ -3952,10 +4223,10 @@ var cotvtadet = (function ($, win, doc) {
                 if (data.Result.length == 0) {
                     $('#BI_cmbFamilia' + index.toString()).prop('disabled', false);
                     $('#BI_cmbAlmacen' + index.toString()).prop('disabled', false);
-                    $('#BI_DescEquipo' + index.toString()).prop('disabled', false);
+                    $('#' + index.toString() + 'BI_DescEquipo').prop('disabled', false);
                     $('#BI_cmbMarca' + index.toString()).prop('disabled', false);
-                    $('#BI_Modelo' + index.toString()).prop('disabled', false);
-                    $('#BI_CodProd' + index.toString()).prop('disabled', false);
+                    $('#' + index.toString() + 'BI_Modelo').prop('disabled', false);
+                    $('#' + index.toString() + 'BI_CodProd').prop('disabled', false);
                     $('#BI_cmbTipoMedida' + index.toString()).prop('disabled', false);
                     $('#BI_cmbAlmacen' + index.toString()).val(" ").trigger('change.select2');
                 }
@@ -3980,10 +4251,10 @@ var cotvtadet = (function ($, win, doc) {
         else {
             $('#BI_cmbFamilia' + index.toString()).prop('disabled', false);
             $('#BI_cmbAlmacen' + index.toString()).prop('disabled', false);
-            $('#BI_DescEquipo' + index.toString()).prop('disabled', false);
-            $('#BI_CodProd' + index.toString()).prop('disabled', false);
+            $('#' + index.toString() + 'BI_DescEquipo').prop('disabled', false);
+            $('#' + index.toString() + 'BI_CodProd').prop('disabled', false);
             $('#BI_cmbMarca' + index.toString()).prop('disabled', false);
-            $('#BI_Modelo' + index.toString()).prop('disabled', false);
+            $('#' + index.toString() + 'BI_Modelo').prop('disabled', false);
             $('#BI_cmbTipoMedida' + index.toString()).prop('disabled', false);
             $('#BI_cmbAlmacen' + index.toString()).val(" ").trigger('change.select2');
             $('#BI_Moneda' + index.toString()).val("");
@@ -3994,17 +4265,56 @@ var cotvtadet = (function ($, win, doc) {
         };
     };
 
+    function rellenarInputsHijosTabla(data, index, codAcceso, nroItem) {
+        $('#' + nroItem + 'BI_cmbFamilia_Child' + index.toString()).val(data[0].CodFamilia).trigger('change.select2');
+        $('#' + nroItem + 'BI_cmbAlmacen_Child' + index.toString()).val(data[0].CodAlmacen == "" || data[0].CodAlmacen == null ? " " : data[0].CodAlmacen).trigger('change.select2');
+        if (codAcceso == 1) {
+            $('#' + index.toString() + '_' + nroItem +'BI_DescEquipo_Child').val(data[0].DescArticulo);
+        }
+        else if (codAcceso == 2) {
+            $('#' + index.toString() + '_' + nroItem + 'BI_CodProd_Child').val(data[0].CodArticulo);
+        };
+        $('#' + nroItem + 'BI_cmbMarca_Child' + index.toString()).val(data[0].CodMarca).trigger('change.select2');
+        $('#' + + index.toString() + '_' + nroItem + 'BI_Modelo_Child').val(data[0].DescModelo);
+        $('#' + nroItem + 'BI_cmbTipoMedida_Child' + index.toString()).val(data[0].CodUnidad).trigger('change.select2');
+
+
+
+        $('#' + nroItem + 'BI_Moneda_Child' + index.toString()).val(data[0].DescMonCompra);
+        $('#' + nroItem + 'BI_CodMoneda_Child' + index.toString()).val(data[0].CodMonCompra);
+
+
+
+        $('#' + nroItem + 'BI_Cantidad_Child' + index.toString()).val(0);
+        $('#' + nroItem + 'BI_Stock_Child' + index.toString()).val(data[0].StockDisponible);
+        $('#' + nroItem + 'BI_Precio_Child' + index.toString()).val(data[0].PrecioRef.toFixed(2));
+
+
+        //Inhabilitar para que no puedan realizar modificaciones
+        if (codAcceso == 1) {
+            $('#' + index.toString() + '_' + nroItem + 'BI_DescEquipo_Child').prop('disabled', true);
+        } else if (codAcceso == 2) {
+            $('#' + index.toString() + '_' + nroItem + 'BI_CodProd_Child').prop('disabled', true);
+        }
+        $('#' + nroItem + 'BI_cmbFamilia_Child' + index.toString()).prop('disabled', true);
+        $('#' + nroItem + 'BI_cmbAlmacen_Child' + index.toString()).prop('disabled', true);
+        $('#' + nroItem + 'BI_cmbMarca_Child' + index.toString()).prop('disabled', true);
+        $('#' + index.toString() + '_' + nroItem + 'BI_Modelo_Child').prop('disabled', true);
+        $('#' + nroItem + 'BI_cmbTipoMedida_Child' + index.toString()).prop('disabled', true);
+    }
+
+
     function rellenarInputsTabla(data, index,codAcceso) { //Se ajustan los valores de la tabla según la selección.
         $('#BI_cmbFamilia' + index.toString()).val(data[0].CodFamilia).trigger('change.select2');
         $('#BI_cmbAlmacen' + index.toString()).val(data[0].CodAlmacen == "" || data[0].CodAlmacen == null ? " " : data[0].CodAlmacen).trigger('change.select2');
         if (codAcceso == 1) {
-            $('#BI_DescEquipo' + index.toString()).val(data[0].DescArticulo);
+            $('#' + index.toString() + 'BI_DescEquipo' ).val(data[0].DescArticulo);
         }
         else if (codAcceso == 2) {
-            $('#BI_CodProd' + index.toString()).val(data[0].CodArticulo);
+            $('#' + index.toString() + 'BI_CodProd').val(data[0].CodArticulo);
         };
         $('#BI_cmbMarca' + index.toString()).val(data[0].CodMarca).trigger('change.select2');
-        $('#BI_Modelo' + index.toString()).val(data[0].DescModelo);
+        $('#' + + index.toString()  + 'BI_Modelo').val(data[0].DescModelo);
         $('#BI_cmbTipoMedida' + index.toString()).val(data[0].CodUnidad).trigger('change.select2');
 
 
@@ -4021,14 +4331,14 @@ var cotvtadet = (function ($, win, doc) {
 
         //Inhabilitar para que no puedan realizar modificaciones
         if (codAcceso == 1) {
-            $('#BI_DescEquipo' + index.toString()).prop('disabled', true);
+            $('#' + index.toString() + 'BI_DescEquipo').prop('disabled', true);
         } else if (codAcceso == 2){
-            $('#BI_CodProd' + index.toString()).prop('disabled', true);
+            $('#' + index.toString() + 'BI_CodProd').prop('disabled', true);
         }
         $('#BI_cmbFamilia' + index.toString()).prop('disabled', true);
         $('#BI_cmbAlmacen' + index.toString()).prop('disabled', true);
         $('#BI_cmbMarca' + index.toString()).prop('disabled', true);
-        $('#BI_Modelo' + index.toString()).prop('disabled', true);
+        $('#' + index.toString() + 'BI_Modelo').prop('disabled', true);
         $('#BI_cmbTipoMedida' + index.toString()).prop('disabled', true);
     };
     function cargarBtnAgregarItem() {
@@ -4042,14 +4352,14 @@ var cotvtadet = (function ($, win, doc) {
             var index = row.slice(-1);
             var newid = row.substring(0, (row.length - 1));
 
-            var descripcion = $('#BI_DescEquipo' + index.toString()).val();
-            var codItem = $('#BI_CodProd' + index.toString()).val();
-            var stock = $('#BI_CodProd' + index.toString()).val();
+            var descripcion = $('#' + index.toString() + 'BI_DescEquipo').val();
+            var codItem = $('#' + index.toString() + 'BI_CodProd').val();
+            var stock = $('#' + index.toString() + 'BI_CodProd').val();
             var codMoneda = $('#BI_CodMoneda' + index.toString()).val();
             var unidad = $('#BI_cmbTipoMedida' + index.toString()).val();      
             var cantidad = $('#BI_Cantidad' + index.toString()).val(); 
             var marca = $('#BI_cmbMarca' + index.toString()).val(); 
-            var modelo = $('#BI_Modelo' + index.toString()).val(); 
+            var modelo = $('#' + index.toString() + 'BI_Modelo').val(); 
 
 
             if (descripcion == "" || descripcion == null || descripcion == undefined || descripcion.trim.length == 0) {
@@ -4065,7 +4375,7 @@ var cotvtadet = (function ($, win, doc) {
             info = {
                 IdCotizacion: $idCotizacion.val(),
                 Stock: 0,
-                NroItem: index + 1,
+                NroItem: (parseInt(index) + 1),
                 CodItem: codItem,
                 Descripcion: descripcion,
                 Stock: stock,
@@ -4080,77 +4390,192 @@ var cotvtadet = (function ($, win, doc) {
         });
     }
 
-    function eliminarItemProducto(Id) {
+    function eliminarItemProducto(Id, tipoItem) {
         var method = "POST";
         var url = "BandejaSolicitudesVentas/EliminarCotDet";
         var obj = {
-            Id: Id
+            Id: Id,
+            TipoItem: tipoItem
         }
         var objParam = JSON.stringify(obj);
 
-        var fnDoneCallBack = function () {
-            app.message.success("&Eacute;xito", "Se eliminó correctamente el registro");
-        };
+        var fnSi = function () {
+            var fnDoneCallBack = function () {
+                app.message.success("&Eacute;xito", "Se elimin&oacute; correctamente el registro");
+                ConsultaItemDetalle();
+            };
 
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, null, null, null);
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, null, null, null);
+        }
+        return app.message.confirm("Confirmaci&oacute;n", "Desea eliminar el registro seleccionado?", "Si", "No", fnSi);
     };
 
     function agregarItemProducto(index) {
 
-        var descripcion = $('#BI_DescEquipo' + index.toString()).val();
-        var codItem = $('#BI_CodProd' + index.toString()).val();
+        if (padreProducts.Result.length > 0) {
+            var mayorNroItem = padreProducts.Result.reduce((previous, current) => {
+                return current.NroItem > previous.NroItem ? current : previous;
+            });
+        }
+        
+        var descripcion = $('#' + index.toString() + 'BI_DescEquipo').val();
+        var codItem = $('#' + index.toString() + 'BI_CodProd').val();
         var stock = $('#BI_Stock' + index.toString()).val();
         var codMoneda = $('#BI_CodMoneda' + index.toString()).val();
         var unidad = $('#BI_cmbTipoMedida' + index.toString()).val();
+        var descUnidad = $('#BI_cmbTipoMedida' + index.toString() + ' option:selected').text();
         var cantidad = $('#BI_Cantidad' + index.toString()).val();
         var marca = $('#BI_cmbMarca' + index.toString()).val();
-        var modelo = $('#BI_Modelo' + index.toString()).val();
+        var modelo = $('#' + index.toString() + 'BI_Modelo').val();
         var familia = $('#BI_cmbFamilia' + index.toString()).val();
-
+        var codAlmacen = $('#BI_cmbAlmacen' + index.toString()).val();
+        
         if (codItem == "" || codItem == null || codItem == undefined || codItem.trim().length == 0) {
             app.message.error("Validaci&oacute;n", "El campo Cod.Producto de la fila, debe estar completo");
             return;
         };
-
+        
         if (descripcion == "" || descripcion == null || descripcion == undefined || descripcion.trim().length == 0) {
             app.message.error("Validaci&oacute;n", "El campo Descripci&oacute;n de la fila, debe estar completo");
             return;
         };
-
+        
         if (familia == "" || familia == null) {
-            app.message.error("Validaci&oacute;n","Debe de seleccionar la familia del producto, no puede estar vac&iacute;no")
+            app.message.error("Validaci&oacute;n","Debe de seleccionar la familia del producto, no puede estar vac&iacute;o")
             return;
         };
 
+        if (cantidad < 0) {
+            app.message.error("Validaci&oacute;n", "El valor de cantidad no debe de ser menor a 0");
+            return;
+        };
+
+        var validador = 0;
+
+        padreProducts.Result.forEach((element) => {
+            if (element != null && element != "" && element != undefined) {
+                if (element.CodItem.trim() == codItem) {
+                    validador = 1;
+                };
+            }
+        });
+
+
+        if (validador == 1) {
+            app.message.error("Validaci&oacute;n", "El c&oacute;digo de producto ya ha sido ingresado, por favor revisar");
+            return;
+        };
+
+        
         info = {
             IdCotizacion: $idCotizacion.val(),
-            NroItem: index + 1,
+            NroItem: mayorNroItem == null || mayorNroItem == undefined ? parseInt(index) + 1 : parseInt(mayorNroItem.NroItem) + 1, //Conseguimos el número más grande.
             CodItem: codItem,
             Descripcion: descripcion,
             Stock: stock,
             Cantidad: cantidad,
             CodUnidad: unidad,
+            DescUnidad: descUnidad,
             Marca: marca,
             Modelo: modelo,
+            CodFamilia: familia,
+            CodAlmacen: codAlmacen,
             EsItemPadre: true,
             Eliminado: false,
         };
-
+        
         var method = "POST";
         var url = "BandejaSolicitudesVentas/InsertCotDet";
         var objParam = JSON.stringify(info);
-
+        
         var fnDoneCallBack = function () {
             app.message.success("&Eacute;xito", "Se agreg&oacute; correctamente");
-            listarCotDetItems();
+            ConsultaItemDetalle();
         };
-
+        
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null, null, null);
     };
+
+    function ConsultaItemDetalle() {
+        var method = "POST";
+        var url = "BandejaSolicitudesVentas/ConsultaItemDetalle"
+        var obj = {
+            IdCotizacion: $idCotizacion.val()
+        };
+
+        var objParam = JSON.stringify(obj);
+
+
+        var fnDoneCallBack = function (data) {
+
+            
+            padreProducts.Result = data.Result.filter(d => d.TipoItem == "PRO") == null ? [] : data.Result.filter(d => d.TipoItem == "PRO");
+            CargarTablaProductos(padreProducts);
+            cargarTablaCotDet(data);
+            cargarTablaDetCotCostos(data);
+            childProducts = data.Result.filter(d => d.TipoItem == "ACC") == null ? [] : data.Result.filter(d => d.TipoItem == "ACC");
+
+            //cargarTablaCotDet(data);
+            //cargarTablaDetCotCostos(data);
+        };
+
+        var fnFailCallBack = function () {
+            app.message.error("Error", "Se produjo un error al realizar la consulta del detalle de cotización.");
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null);
+    };
+
+
+    function llenarCombos(selector, data, selectorParent, firstValue, firstItem, filters, cantidad) {  
+        var list = data; //Se inicializa para que no haya reinserción de datos.
+
+        if (list.length > 0) {
+            if (firstItem || (filters != null && filters.placeholder)) {
+                var item = list[0];
+                if (item.Id != null && item.Text != null) {
+                    var obj = {
+                        Id: firstValue,
+                        Text: firstItem || (filters != null ? (filters.placeholder || defaults.placeholder) : defaults.placeholder)
+                    };
+                    list.splice(0, 0, obj);
+                }
+            }
+        }
+
+        for (var i = 0; cantidad > i; i++) {
+            $(selector + i).empty();
+            $(selector + i).select2({
+                dropdownParent: selectorParent,
+                language: 'es',
+                allowClear: filters.allowClear,  // filters != null && filters.allowClear != null ? defaults.allowClear : defaults.select2AllowClear,
+                placeholder: filters.placeholder, //filters != null ? (filters.placeholder || defaults.placeholder) : defaults.placeholder,
+                data: $.map(list, function (obj, i) {
+                    if (obj.Id != null && obj.Text != null) {
+                        return {
+                            id: obj.Id,
+                            text: obj.Text
+                        };
+                    } else {
+                        return null;
+                    }
+                })
+            });
+            var selected = $(selector + i).attr('data-selected');
+            if (selected) {
+                $(selector + i).val(selected).trigger("change");
+            }
+        } 
+    }
+
+
+
+
+
     return {
         buscarItems: buscarItems,
-        //ObtenerFiltrosPrecios: ObtenerFiltrosPrecios,
-        //RecargarFiltroFamilia: RecargarFiltroFamilia,
+        ObtenerFiltrosPrecios: ObtenerFiltrosPrecios,
+        RecargarFiltroFamilia: RecargarFiltroFamilia,
         agregarItem: agregarItem,
         agregarItemProducto: agregarItemProducto,
         agregarItemHijo: agregarItemHijo,
@@ -4175,7 +4600,9 @@ var cotvtadet = (function ($, win, doc) {
         guardarExWork: guardarExWork,
         //detalleHijo: detalleHijo,
         IniciarLogicaInputs: IniciarLogicaInputs,
-	quitarCostoItemVta: quitarCostoItemVta,
+        IniciarLogicaHijosInputs: IniciarLogicaHijosInputs,
+        eliminarItemProducto: eliminarItemProducto,
+	    quitarCostoItemVta: quitarCostoItemVta,
         editarCostoItem: editarCostoItem
     }
 })(window.jQuery, window, document);

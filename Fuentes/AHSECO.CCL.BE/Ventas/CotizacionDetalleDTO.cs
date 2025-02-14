@@ -10,6 +10,7 @@ namespace AHSECO.CCL.BE.Ventas
     {
         public bool Select { get; set; }
         public string TipoProceso { get; set; }
+        public string Cuenta { get; set; }
         public long Id { get; set; }
         public long IdCotizacion { get; set; }
         public int NroItem { get; set; }
@@ -42,6 +43,8 @@ namespace AHSECO.CCL.BE.Ventas
         #region BandejaInstalacionTecnica
         public string Serie { get; set; }
         public string NumFianza { get; set; }
+        public string CodFamilia { get; set; }
+        public string CodAlmacen { get; set; }
         #endregion
 
         #region Servicios

@@ -2521,7 +2521,7 @@
     }
 
     function $btnAgregarDetalle_click() {
-        if ($TipoSolicitud.val() != "TSOL05") {
+        if ($TipoSolicitud.val() != "TSOL05" && $TipoSolicitud.val() != "TSOL04") {
             $('#BI_cmbFamilia').get(0).selectedIndex = 0;
             $('#BI_cmbFamilia').trigger("change.select2");
             $BI_txtNomProducto.val("");
@@ -3734,9 +3734,11 @@
                     $("#btnEnviarGuiaTotal").html('<i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar Guia Manuscrita');
                     $("#btnGuiaPedidoTotal").html('<i class="fa fa-file" aria-hidden="true" tabindex="113"></i>&nbsp;Generar Gu&iacute;a Manuscrita');
 
-                }
+                };
 
-                //cotvtadet.ObtenerFiltrosPrecios();
+                if ($TipoSolicitud.val() != "TSOL05" && $TipoSolicitud.val() != "TSOL04") {
+                    cotvtadet.ObtenerFiltrosPrecios();
+                };
 
                 //Carga de datos de la solicitud:
                 $txtRuc.val(data.Result.Solicitud.RUC);
@@ -4043,8 +4045,9 @@
                    
                 }
 
-
-                //cotvtadet.RecargarFiltroFamilia();
+                if ($TipoSolicitud.val() != "TSOL05" && $TipoSolicitud.val() != "TSOL04") {
+                    cotvtadet.RecargarFiltroFamilia();
+                };
 
                 solicitud.detalleSolicitud.push({
                     flujo: data.Result.Solicitud.Id_Flujo,

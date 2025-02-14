@@ -37,6 +37,8 @@ BEGIN
 	DECLARE @CODIGO BIGINT, @MSG VARCHAR(20)
 	SET NOCOUNT ON;
 	
+	SET @CODIGO = 0;
+
 	IF (@pTipoProceso = 'I') BEGIN
 		
 		INSERT INTO [dbo].[TBM_COTDET_DESPACHO]
@@ -76,7 +78,7 @@ BEGIN
 		WHERE ID = @pId
 		
 		SET @MSG ='Registro Modificado con éxito'
-		
+		SET @CODIGO = @@IDENTITY
 	END
 
 	IF (@pTipoProceso = 'D') BEGIN

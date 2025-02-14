@@ -248,7 +248,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             {
                 string[] CD_Columns =
                 {
-                    "Nro. Item", "Codigo Producto", "Descripción", "Unidad Medida", "Cantidad", "Ex-Work", "Valor Venta Unitario",
+                    "N°", "Codigo Producto", "Descripción", "Unidad Medida", "Cantidad", "Ex-Work", "Valor Venta Unitario",
                     "Valor. Venta Total Sin IGV (Sin Margen Adicional)", "Margen Adicional(%)", "Valor. Venta Total Sin IGV (Con Margen Adicional)","Acción"
                 };
                 ViewBag.CabeceraCotDet = CD_Columns;
@@ -259,7 +259,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 {
                     string[] CD_ColumnsRepuestos =
                     {
-                        "Nro. Item", "Codigo Producto", "Descripción", "Unidad Medida", "Cantidad", "Valor Venta Unitario", 
+                        "N°", "Codigo Producto", "Descripción", "Unidad Medida", "Cantidad", "Valor Venta Unitario", 
                         "Valor. Venta Total Sin IGV", "Acción"
                     };
                     ViewBag.CabeceraCotDet = CD_ColumnsRepuestos;
@@ -269,7 +269,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             {
                 string[] CD_Columns =
                 {
-                    "Nro. Item", "Codigo Producto", "Descripción", "Unidad Medida", "Cantidad", "Valor Venta Unitario",
+                    "N°", "Codigo Producto", "Descripción", "Unidad Medida", "Cantidad", "Valor Venta Unitario",
                     "Valor. Venta Total Sin IGV (Sin Margen Adicional)", "Margen Adicional(%)", "Valor. Venta Total Sin IGV (Con Margen Adicional)", "Acción"
                 };
                 ViewBag.CabeceraCotDet = CD_Columns;
@@ -280,7 +280,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 {
                     string[] CD_ColumnsRepuestos =
                     {
-                        "Nro. Item", "Codigo Producto", "Descripción", "Unidad Medida", "Cantidad", "Valor Venta Unitario", 
+                        "N°", "Codigo Producto", "Descripción", "Unidad Medida", "Cantidad", "Valor Venta Unitario", 
                         "Valor. Venta Total Sin IGV", "Acción"
                     };
                     ViewBag.CabeceraCotDet = CD_ColumnsRepuestos;
@@ -7189,18 +7189,56 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             cotdet.FechaRegistro = DateTime.Now;
             cotdet.IndStock = cotdet.Stock > 0 ? true : false;
             cotdet.TipoItem = cotdet.EsItemPadre ? "PRO" : "ACC";
-            var result = ventasBL.MantenimientoCotizacionDetalle(cotdet);
-            return Json(result);
+
+            var result = new ResponseDTO<RespuestaDTO>(new RespuestaDTO() { Codigo = 0, Mensaje = ""}); 
+
+            try
+            {
+                result = ventasBL.MantenimientoCotizacionDetalle(cotdet);
+
+                if (result.Result.Codigo != 0)
+                {
+                    var rpta = ventasBL.MantenimientoCotDetDespacho(new CotDetDespachoDTO()
+                    {
+                        IdCotizacionDetalle = result.Result.Codigo,
+                        TipoProceso = ConstantesDTO.SolicitudVenta.TipoProceso.Insertar,
+                        Id = 0,
+                        UsuarioRegistra = User.ObtenerUsuario()
+                        //IndInfoVideo = false,
+                        //IndInfoManual = false,
+                        //IndInstalacion = false,
+                        //IndCapacitacion = false,
+                        //IndGarantiaAdicional = false,
+                        //CodGarantiaAdicional= "",
+                        //IndMantPreventivo = false,
+                        //IndCalibracion = false,
+                        //IndCompraLocal = false,
+                        //IndRequierePlaca = false,
+                        //IndFlete = false,
+                    });
+
+                    if (rpta.Result.Codigo == 0 || rpta.Result == null) { throw new Exception("Se produjo un error al realizar la inserción de los costos de despacho."); };
+                };
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                result.Result.Codigo = 0;
+                result.Result.Mensaje = "Error al realizar el registro" + ex.Message;
+                return Json(result);
+            };
         }
 
         [HttpPost]
         public JsonResult EliminarCotDet(CotizacionDetalleDTO cotdet)
         {
             var ventasBL = new VentasBL();
-            cotdet.TipoProceso = ConstantesDTO.SolicitudVenta.TipoProceso.Modificar;
+            cotdet.TipoProceso = "D";
             cotdet.UsuarioRegistra = User.ObtenerUsuario();
             cotdet.FechaRegistro = DateTime.Now;
             cotdet.Eliminado = true;
+            cotdet.EsItemPadre = cotdet.TipoItem == "PRO" ? true : false;
             var result = ventasBL.MantenimientoCotizacionDetalle(cotdet);
             return Json(result);
         }
@@ -7233,6 +7271,40 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         }
 
         [HttpPost]
+        public JsonResult ConsultaItemDetalle(CotizacionDetalleDTO cotizaciondetDTO)
+        {
+            var ventasBL = new VentasBL();
+            var result = ventasBL.ObtenerCotizacionVentaDetalle(cotizaciondetDTO);
+
+            if(result.Result != null)
+            {
+                List<CotizacionDetalleDTO> list = result.Result.ToList();
+
+                for (int i = 0; list.Count() > i; i++)
+                {
+                    var resArticulos = ventasBL.ObtenerArticulosxFiltro(new FiltroArticuloDTO() { CodsArticulo = list[i].CodItem });
+                    var oArticulo = resArticulos.Result.FirstOrDefault();
+                    if (oArticulo != null) { list[i].DescUnidad = oArticulo.DescUnidad; }
+                };
+
+                result.Result = list.AsEnumerable<CotizacionDetalleDTO>();
+            };
+
+
+            List<CotizacionDetalleDTO> listAux = new List<CotizacionDetalleDTO>();
+
+            result.Result.ForEach(x =>
+            {
+                listAux.Add(configureCotDetItem(x));
+            });
+
+            ResponseDTO<List<CotizacionDetalleDTO>> rpta = new ResponseDTO<List<CotizacionDetalleDTO>>(listAux);
+
+            return Json(rpta);
+        }
+		
+		
+		[HttpPost]
         public JsonResult GestionFechaIngresoAlmacen(DatosDespachoDTO datosDespachoDTO)
         {
             var result = new RespuestaDTO();

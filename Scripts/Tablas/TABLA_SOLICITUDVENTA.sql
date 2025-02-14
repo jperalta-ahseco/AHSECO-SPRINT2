@@ -131,6 +131,8 @@ CREATE TABLE [dbo].[TBD_COTIZACIONVENTA](
 	[CODITEM] [varchar](35) NOT NULL,
 	[DESCRIPCION] [varchar](100) NOT NULL,
 	[DESCRIPADIC] [varchar](1000) NULL,
+	[CODFAMILIA] [varchar](12) NULL,
+	[CODALMACEN] [varchar](4) NULL,
 	[MARCA] [varchar](60) NULL,
 	[MODELO] [varchar](60) NULL,
 	[STOCK] [int] NULL,

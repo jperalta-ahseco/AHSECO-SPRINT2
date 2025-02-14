@@ -153,11 +153,16 @@ namespace AHSECO.CCL.BD.Ventas
                     {
                         Id = i.Single(d => d.Key.Equals("ID")).Value.Parse<int>(),
                         IdCotizacion = i.Single(d => d.Key.Equals("ID_COTIZACION")).Value.Parse<int>(),
+                        Cuenta = i.Single(d => d.Key.Equals("CONTADOR")).Value.Parse<string>(),
                         NroItem = i.Single(d => d.Key.Equals("NROITEM")).Value.Parse<int>(),
                         TipoItem = i.Single(d => d.Key.Equals("TIPOITEM")).Value.Parse<string>(),
                         CodItem = i.Single(d => d.Key.Equals("CODITEM")).Value.Parse<string>(),
                         Descripcion = i.Single(d => d.Key.Equals("DESCRIPCION")).Value.Parse<string>(),
                         DescripcionAdicional = i.Single(d => d.Key.Equals("DESCRIPADIC")).Value.Parse<string>(),
+                        Marca = i.Single(d => d.Key.Equals("MARCA")).Value.Parse<string>(),
+                        Modelo = i.Single(d => d.Key.Equals("MODELO")).Value.Parse<string>(),
+                        CodFamilia = i.Single(d => d.Key.Equals("CODFAMILIA")).Value.Parse<string>(),
+                        CodAlmacen = i.Single(d => d.Key.Equals("CODALMACEN")).Value.Parse<string>(),
                         Stock = i.Single(d => d.Key.Equals("STOCK")).Value.Parse<int?>(),
                         IndStock = Utilidades.parseObjectToBool(i.Single(d => d.Key.Equals("INDSTOCK")).Value.Parse<string>()),
                         CodUnidad = i.Single(d => d.Key.Equals("UNDMED")).Value.Parse<string>(),
@@ -440,6 +445,9 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("isDESCRIPADIC", detalleCotizacion.DescripcionAdicional);
                 parameters.Add("isMARCA", detalleCotizacion.Marca);
                 parameters.Add("isMODELO", detalleCotizacion.Modelo);
+                parameters.Add("isCODFAMILIA", detalleCotizacion.CodFamilia);
+                parameters.Add("isCODALMACEN", detalleCotizacion.CodAlmacen);
+                parameters.Add("IsITEMPADRE", Utilidades.ParseStringSN<bool?>(detalleCotizacion.EsItemPadre));
                 if (detalleCotizacion.Stock.HasValue)
                 { parameters.Add("isSTOCK", detalleCotizacion.Stock.Value); }
                 else
@@ -449,13 +457,9 @@ namespace AHSECO.CCL.BD.Ventas
                 else
                 { parameters.Add("isINDSTOCK", DBNull.Value, DbType.String); }
                 if(detalleCotizacion.Eliminado.HasValue)
-                {
-                    parameters.Add("isELIMINADO", Utilidades.ParseStringSN<bool?>(detalleCotizacion.IndStock));
-                }
+                {parameters.Add("isELIMINADO", Utilidades.ParseStringSN<bool?>(detalleCotizacion.Eliminado));}
                 else
-                {
-                    parameters.Add("isELIMINADO", DBNull.Value, DbType.String);
-                };
+                {parameters.Add("isELIMINADO", DBNull.Value, DbType.String);};
                 parameters.Add("isUNDMED", detalleCotizacion.CodUnidad);
                 parameters.Add("isCANTIDAD", detalleCotizacion.Cantidad);
                 parameters.Add("isCOSTOFOB", detalleCotizacion.CostoFOB); 
