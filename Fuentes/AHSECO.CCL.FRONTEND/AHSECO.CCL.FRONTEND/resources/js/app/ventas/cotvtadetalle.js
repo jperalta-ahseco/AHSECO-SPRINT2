@@ -3886,7 +3886,7 @@ var cotvtadet = (function ($, win, doc) {
                     source: function (request, response) {
                         var objFiltros = {
                             DescModelo: request.term,
-                            CodFamilia: $('#BI_cmbFamilia' + index).val() == "" ? "08;01;04" : $('#BI_cmbFamilia' + index).val(),
+                            CodFamilia: $('#BI_cmbFamilia' + index).val() == "" ? opcTodasFamilias : $('#BI_cmbFamilia' + index).val(),
                             DescMarca: $('#BI_cmbMarca' + index).val(),
                             CodUndMed: $('#BI_cmbTipoMedida' + index).val(),
                             CantidadRegistros: 20
@@ -4054,7 +4054,7 @@ var cotvtadet = (function ($, win, doc) {
                 var objFiltros = {
                     DescArticulo: $('#' + index.toString() + newid).val(),
                     CodsUnidad: $('#BI_cmbTipoMedida' + index).val() == "" ? "" : $('#BI_cmbTipoMedida' + index).val(),
-                    CodsFamilia: $('#BI_cmbFamilia' + index).val() == "" ? "08;01;04" : $('#BI_cmbFamilia' + index).val(),
+                    CodsFamilia: $('#BI_cmbFamilia' + index).val() == "" ? opcTodasFamilias : $('#BI_cmbFamilia' + index).val(),
                     CodsAlma: $('#BI_cmbAlmacen' + index).val() == "" ? "0015;0001;0017" : $('#BI_cmbAlmacen' + index).val(),
                     CantidadRegistros: 1
                 };

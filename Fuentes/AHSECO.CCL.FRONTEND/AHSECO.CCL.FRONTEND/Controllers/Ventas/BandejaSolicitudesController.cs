@@ -4574,7 +4574,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         }
                         else
                         {
-                            throw new Exception("Debe de registrar los costos a todos los productos seleccionados. Por favor revisar.");
+                            if(VariableSesion.getCadena("tipoSol") == ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.VentaEquipos)
+                            {
+                                throw new Exception("Debe de registrar los costos a todos los productos seleccionados. Por favor revisar.");
+                            }
                         }
                         
                     }
@@ -4613,8 +4616,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     oSolicitud.Tipo_Sol != ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
                 {
                     //Si NO TIENE STOCK se deberá solicitar su COSTO FOB
-                    if (lstItems.Where(x => x.IndStock.HasValue).Any(y => !y.IndStock.Value))
-                    { NotificarValorizacion_CostoFOB(oCotizacion.IdSolicitud); }
+
+                    NotificarValorizacion_CostoFOB(oCotizacion.IdSolicitud);
+
+                    //if (lstItems.Where(x => x.IndStock.HasValue).Any(y => !y.IndStock.Value))
+                    //{ NotificarValorizacion_CostoFOB(oCotizacion.IdSolicitud); }
 
                     //Si TIENE STOCK se deberá solicitar el VALOR UNITARIO
                     if (lstItems.Where(x => x.IndStock.HasValue).Any(y => y.IndStock.Value))
