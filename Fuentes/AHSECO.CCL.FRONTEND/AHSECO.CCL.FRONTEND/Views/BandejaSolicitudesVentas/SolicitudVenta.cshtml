@@ -410,7 +410,7 @@
                                                         </div>
                                                         <div class="row container-fluid">
                                                             <div class="text-right">
-                                                                <button style="display:none" class="btn btn-danger btn-sm" type="button" id="btnSolicitarDscto"><i class="fa fa-percent" aria-hidden="true"></i> Solicitar Descuento</button>
+                                                                <button style="@(ViewBag.PermitirVerSolicitarDscto ? "" : "display:none")" class="btn btn-danger btn-sm" type="button" id="btnSolicitarDscto"><i class="fa fa-percent" aria-hidden="true"></i> Solicitar Descuento</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1342,13 +1342,6 @@
         Html.RenderPartial("_SolicitudDetItemProducto");
     }
 </div>
-
-<div class="modal fade" id="modalDetalleItemAcc" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false">
-    @{
-        Html.RenderPartial("_SolicitudDetItem");
-    }
-</div>
-
 
 <div class="modal fade" id="modalDetalleItemServicio" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false">
     @{

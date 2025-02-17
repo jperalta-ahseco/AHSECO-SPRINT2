@@ -831,17 +831,23 @@ var cotvtadet = (function ($, win, doc) {
             $DI_txtDescripcionAdic.val(data.Result.DescripcionAdicional);
             $DI_txtCantidad.val(data.Result.Cantidad);
             $DI_txtCostoFOB.val(data.Result.CostoFOB);
-            $DI_txtValorUnitario.val(app.formatearEnteroComa(parseFloat(data.Result.VentaUnitaria).toFixed(2)));
             $DI_txtGanancia.val(data.Result.PorcentajeGanancia);
 
             $DI_radTieneStock_Si.prop("checked", false);
             $DI_radTieneStock_No.prop("checked", false);
             if (data.Result.IndStock != null) {
-                if (data.Result.IndStock == true) {
-                    $DI_radTieneStock_Si.prop("checked", true);
+                if (data.Result.TipoItem == $DI_hdnTipoItem_ACC.val() && data.Result.CotizacionDespacho.IndCompraLocal == true) {
+                    $DI_radTieneStock_Si.prop("checked", false);
+                    $DI_radTieneStock_No.prop("checked", false);
                 }
                 else {
-                    $DI_radTieneStock_No.prop("checked", true);
+
+                    if (data.Result.IndStock == true) {
+                        $DI_radTieneStock_Si.prop("checked", true);
+                    }
+                    else {
+                        $DI_radTieneStock_No.prop("checked", true);
+                    }
                 }
             }
             else {
@@ -897,8 +903,14 @@ var cotvtadet = (function ($, win, doc) {
                 configurarGarantias();
                 $DI_cmbGarantias.val(data.Result.CotizacionDespacho.CodGarantiaAdicional).trigger("change.select2");
                 if (data.Result.CotizacionDespacho.IndCompraLocal != null) {
-                    if (data.Result.CotizacionDespacho.IndCompraLocal == true) { $DI_radCompraLocal_Si.prop("checked", true); }
-                    else { $DI_radCompraLocal_No.prop("checked", true); }
+                    if (data.Result.CotizacionDespacho.IndCompraLocal == true)
+                    {
+                        $DI_radCompraLocal_Si.prop("checked", true);
+                    }
+                    else
+                    {
+                        $DI_radCompraLocal_No.prop("checked", true);
+                    }
                 }
                 if (data.Result.CotizacionDespacho.IndFlete != null) {
                     if (data.Result.CotizacionDespacho.IndFlete == true) { $DI_radFlete_Si.prop("checked", true); }
@@ -906,6 +918,9 @@ var cotvtadet = (function ($, win, doc) {
                 }
                 $DI_txtReqCliente.val(data.Result.CotizacionDespacho.ObsCliente);
                 $DI_txtObsInsta.val(data.Result.CotizacionDespacho.ObsDespacho);
+
+
+                $DI_txtValorUnitario.val(app.formatearEnteroComa(parseFloat(data.Result.VentaUnitaria).toFixed(2)));
             }
         }
     }
@@ -1260,7 +1275,6 @@ var cotvtadet = (function ($, win, doc) {
         ubigeo.setTxtUbigeo_Text("CX_txtUbicacion");
         LimpiarFormularioCosteo();
         configurarModalCostoMultiple();
-
 
         method = "POST";
         url = "BandejaSolicitudesVentas/CargarCotDetItem?codDetalleCotizacion="+ ID;
@@ -2266,7 +2280,7 @@ var cotvtadet = (function ($, win, doc) {
             cargarLogicaAccesorios_Stock();
             cargarLogicaAccesorios_CompraLocal();
 
-            $('#modalDetalleItemAcc').modal('show');
+            $('#modalDetalleItem').modal('show');
         };
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
@@ -2310,7 +2324,7 @@ var cotvtadet = (function ($, win, doc) {
                 ObservacionCliente: $DI_txtReqCliente.val(),
                 ObservacionDespacho: $DI_txtObsInsta.val(),
                 DescripcionAdicional: $DI_txtDescripcionAdic.val(),
-                MontoUnitario: $DI_txtValorUnitario.val(),
+                MontoUnitario: $DI_txtValorUnitario.val().replace(",",""),
                 IndicadorCompraLocal: indicador_compralocal,
                 IndicadorRequierePlaca: indicador_requiereplaca,
                 CodigoGarantiaAdicional: $DI_cmbGarantias.val(),
@@ -2320,7 +2334,12 @@ var cotvtadet = (function ($, win, doc) {
 
             var fnDoneCallBack = function (data) {
                 if (data.Result.Codigo > 0) {
-                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", null);
+
+                    var aceptar = function () {
+                        ConsultaItemDetalle();
+                    };
+
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", aceptar);
                     $DI_Tipo.val("U");
                     $('#modalDetalleItem').modal('hide');
                 }
@@ -2641,7 +2660,12 @@ var cotvtadet = (function ($, win, doc) {
                                 if (arrProp[a].Nombre == "CodItem") { strCodItem = arrProp[a].Valor; }
                             }
                             var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
-                            var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                            var editar = '';
+                            if (row.TipoItem == "ACC") {
+                                editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarSubItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                            } else if (row.TipoItem == "PRO") {
+                                editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                            }
                             var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
                             var quitar = "";
                             if ($TipoSolicitud.val() == "TSOL05" || $TipoSolicitud.val() == "TSOL04")
