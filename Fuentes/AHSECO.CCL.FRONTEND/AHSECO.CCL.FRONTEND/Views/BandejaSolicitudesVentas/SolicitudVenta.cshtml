@@ -123,6 +123,7 @@
 <input type="hidden" id="EnvioServicio" value="@ViewBag.EnvioServicio" />
 <input type="hidden" id="FlagStock" value="" />
 <input type="hidden" id="ContadorDetalleHistorial" value="0" />
+<input type="hidden" id="CodigoSede" value="0" />
 
 <div class="container-fluid">
     <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
@@ -181,13 +182,13 @@
                             <label for="txtRucCliente">R.U.C:</label>
                             <div class="form-group">
                                 <div class="input-group input-group-sm date">
-                                    <input hidden id="hdnIdCliente" value="@cliente.ID"/>
+                                    <input hidden id="hdnIdCliente" value="@cliente.ID" />
                                     <input disabled type="text" class="form-control input-sm" id="txtRucCliente" value="@cliente.RUC">
                                     <span style="cursor: pointer" class="input-group-addon input-sm" id="openBuscadorCliente" data-toggle="modal" data-target="#modalBusquedaClientes" @(ViewBag.disabled ? "disabled" : "")>
                                         <i class="fa fa-search"></i>
                                     </span>
                                 </div>
-                                
+
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12">
@@ -197,9 +198,9 @@
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12">
-                            <label for="txtAsesor">Representante de Ventas:</label>
+                            <label for="txtSede">Sede:</label>
                             <div class="form-group">
-                                <input disabled type="text" class="form-control input-sm" id="txtAsesor" value="@empleado.NombresCompletosEmpleado">
+                                <input disabled type="text" class="form-control input-sm" id="txtSede" value="">
                             </div>
                         </div>
                     </div>
@@ -242,6 +243,14 @@
                             </div>
                         </div>
 
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtAsesor">Representante de Ventas:</label>
+                            <div class="form-group">
+                                <input disabled type="text" class="form-control input-sm" id="txtAsesor" value="@empleado.NombresCompletosEmpleado">
+                            </div>
+                        </div>
                     </div>
                     <br />
                     <div class="row container-fluid">

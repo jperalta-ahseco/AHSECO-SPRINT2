@@ -66,7 +66,9 @@ namespace AHSECO.CCL.BD.Ventas
                         RazonSocial = i.Single(d => d.Key.Equals("RAZONSOCIAL")).Value.Parse<string>(),
                         AsesorVenta = i.Single(d => d.Key.Equals("ASESORVENTA")).Value.Parse<string>(),
                         NumeroSolicitudFormat = i.Single(d => d.Key.Equals("SOL_FORMAT")).Value.Parse<string>(),
-                        TipoVenta = i.Single(d => d.Key.Equals("TIPOVENTA")).Value.Parse<string>()
+                        TipoVenta = i.Single(d => d.Key.Equals("TIPOVENTA")).Value.Parse<string>(),
+                        IdSede = i.Single(d => d.Key.Equals("IDSEDE")).Value.Parse<int>(),
+                        NombreSede = i.Single(d => d.Key.Equals("NOMSEDE")).Value.Parse<string>()
                     });
 
                 connection.Close();
@@ -355,6 +357,7 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("IsTIPO_SOL", solicitudDTO.Tipo_Sol);
                 parameters.Add("IsCOD_MEDIOCONT", solicitudDTO.Cod_MedioCont);
                 parameters.Add("IsIDCLIENTE", solicitudDTO.IdCliente);
+                parameters.Add("isIDSEDE", solicitudDTO.IdSede);
                 parameters.Add("IsRUC", solicitudDTO.RUC);
                 parameters.Add("IsRAZONSOCIAL", solicitudDTO.RazonSocial);
                 parameters.Add("IsASESORVENTA", solicitudDTO.AsesorVenta);
@@ -1153,7 +1156,9 @@ namespace AHSECO.CCL.BD.Ventas
                             NroProceso = reader.IsDBNull(reader.GetOrdinal("NROPROCESO")) ? "" : reader.GetString(reader.GetOrdinal("NROPROCESO")),
                             TipoVenta = reader.IsDBNull(reader.GetOrdinal("TIPOVENTA")) ? "" : reader.GetString(reader.GetOrdinal("TIPOVENTA")),
                             NombreTipoVenta = reader.IsDBNull(reader.GetOrdinal("NOMTIPOVENTA")) ? "" : reader.GetString(reader.GetOrdinal("NOMTIPOVENTA")),
-                            NroCotizacionEliminado = reader.IsDBNull(reader.GetOrdinal("COTELIM")) ? 0 : reader.GetInt32(reader.GetOrdinal("COTELIM"))
+                            NroCotizacionEliminado = reader.IsDBNull(reader.GetOrdinal("COTELIM")) ? 0 : reader.GetInt32(reader.GetOrdinal("COTELIM")),
+                            IdSede = reader.IsDBNull(reader.GetOrdinal("IDSEDE")) ? 0 : reader.GetInt32(reader.GetOrdinal("IDSEDE")),
+                            NombreSede = reader.IsDBNull(reader.GetOrdinal("NOMSEDE")) ? "" : reader.GetString(reader.GetOrdinal("NOMSEDE"))
                         };
                     }
 
@@ -2701,8 +2706,9 @@ namespace AHSECO.CCL.BD.Ventas
                             NomEmpresa = i.Single(d => d.Key.Equals("NOMEMPRESA")).Value.Parse<string>(),
                             Estado = i.Single(d => d.Key.Equals("ESTADO")).Value.Parse<bool>(),
                             Categoria = i.Single(d => d.Key.Equals("CATEGORIA")).Value.Parse<string>(),
-                            SectorCliente = i.Single(d => d.Key.Equals("SECTORCLIENTE")).Value.Parse<string>()
-
+                            SectorCliente = i.Single(d => d.Key.Equals("SECTORCLIENTE")).Value.Parse<string>(),
+                            CodigoSede = i.Single(d => d.Key.Equals("IDSEDE")).Value.Parse<long>(),
+                            NombreSede = i.Single(d => d.Key.Equals("NOMSEDE")).Value.Parse<string>()
                         },
                         Empleado = new EmpleadoDTO
                         {

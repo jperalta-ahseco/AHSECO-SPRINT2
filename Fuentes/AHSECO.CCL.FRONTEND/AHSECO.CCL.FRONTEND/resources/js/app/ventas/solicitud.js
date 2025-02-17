@@ -375,6 +375,8 @@
     var $btnBuscarClientes = $("#btnBuscarClientes");
     var $txtRuc = $("#txtRuc");
     var $txtNomEmpresa = $("#txtNomEmpresa");
+    var $CodigoSede = $("#CodigoSede");
+    var $txtSede = $("#txtSede");
 
     var tecnicosAsig = [];
 
@@ -668,7 +670,7 @@
                 }
             },
             {
-                data: "Cliente.Categoria",
+                data: "Cliente.NombreSede",
                 render: function (data, type, row) {
                     return '<center>' + data + '</center>';
                 }
@@ -700,7 +702,7 @@
             {
                 data: "Cliente.ID",
                 render: function (data, type, row) {
-                    var d = "'" + row.Cliente.ID + "','" + row.Cliente.RUC + "','" + row.Cliente.NomEmpresa+"'"; 
+                    var d = "'" + row.Cliente.ID + "','" + row.Cliente.RUC + "','" + row.Cliente.NomEmpresa + "','" + row.Cliente.CodigoSede + "','" + row.Cliente.NombreSede +"'"; 
                     var seleccionar = '<a id="btnSeleccionarCliente" class="btn btn-default btn-xs" title="Seleccionar" href="javascript:solicitud.seleccionarCliente('+d+')"><i class="fa fa-level-down" aria-hidden="true"></i> Seleccionar</a>';
                     return '<center>' + seleccionar + '</center>';
                 }
@@ -715,11 +717,14 @@
         app.llenarTabla($tblClientes, data, columns, columnsDefs, "#tblClientes")
     }
 
-    function seleccionarCliente(id,ruc,nombreCliente) {
+    function seleccionarCliente(id,ruc,nombreCliente,idSede,nomSede) {
         $hdnIdCliente.val(id);
         $txtRucCliente.val(ruc);
         $txtNomEmpresaCliente.val(nombreCliente);
+        $CodigoSede.val(idSede);
+        $txtSede.val(nomSede);
         $modalBusquedaClientes.modal('toggle')
+
     }
 
     function $btnGuardarFechaIngresoImportacion_click() {
@@ -3843,6 +3848,8 @@
                 $hdnIdCliente.val(data.Result.Solicitud.IdCliente);
                 $nomEmpresa.val(data.Result.Solicitud.RazonSocial);
                 $hdnRUC.val(data.Result.Solicitud.RUC);
+                $CodigoSede.val(data.Result.Solicitud.IdSede);
+                $txtSede.val(data.Result.Solicitud.NombreSede);
                 $openBuscadorCliente.prop("disabled",true);
               
                 if ($("#idFlujo").val() == "2")//Para post-venta
@@ -5093,6 +5100,7 @@
                 Tipo_Sol: $cmbTipo.val(),
                 Cod_MedioCont: $cmbMedioContacto.val(),
                 IdCliente: $hdnIdCliente.val(),
+                IdSede: $CodigoSede.val(),
                 RUC: $txtRucCliente.val(),
                 RazonSocial: $txtNomEmpresaCliente.val(),
                 AsesorVenta: $Asesor.val(),

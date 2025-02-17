@@ -15,6 +15,7 @@ namespace AHSECO.CCL.BE.Ventas
         public string NomTipoSol { get; set; }
         public string Cod_MedioCont { get; set; }
         public int IdCliente { get; set; }
+        public int IdSede { get; set; }
         public string Ubigeo { get; set; }
         public string Cod_Ubigeo{ get; set; }
         public string RUC { get; set; }
@@ -35,6 +36,9 @@ namespace AHSECO.CCL.BE.Ventas
         public string NumeroSolicitudFormat { get; set; }
 
         public string CodigoPerfil { get;set; } 
+
+        public int CodigoSede {  get; set; }
+        public string NombreSede {  get; set; }
 
         //#region BandejaInstalacionTecnica
         //public string OrdenCompra { get; set; }
