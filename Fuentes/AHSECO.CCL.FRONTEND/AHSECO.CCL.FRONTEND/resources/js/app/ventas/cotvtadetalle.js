@@ -161,6 +161,7 @@ var cotvtadet = (function ($, win, doc) {
     var $btnGuardarCotizacion = $("#btnGuardarCotizacion");
     var $btnRecotizacion = $("#btnRecotizacion");
     var $btnGuardarValorizacion = $("#btnGuardarValorizacion");
+    var $btnSolicitarDscto = $('#btnSolicitarDscto');
     
     var $tblDetCotCostos = $('#tblDetCotCostos');
 
@@ -221,6 +222,7 @@ var cotvtadet = (function ($, win, doc) {
     let arrayFamilias = [];
     let arrayTipMedida = [];
     let arrayAlmacen = [];
+    let opcTodasFamilias = "";
     var cantidadProductosHijo = 0;
     var cantidadProductos = 0;
     var nroItems = [];
@@ -237,6 +239,7 @@ var cotvtadet = (function ($, win, doc) {
         $btnGuardarCotizacion.click(guardarCotVenta)
         $btnRecotizacion.click(recotizarSolicitud);
         $btnGuardarValorizacion.click(guardarValorizacion);
+        $btnSolicitarDscto.click(SolicitarDscto);
 
         $DI_radInstalacion_No.click(validarIndicadorCosteo);
         $DI_radCapacitacion_No.click(validarIndicadorCosteo);
@@ -283,6 +286,7 @@ var cotvtadet = (function ($, win, doc) {
                 arrayTipMedida = data.Result.Medidas;
                 arrayAlmacen = data.Result.Almacenes;
                 arrayFamilias = data.Result.Familias;
+                opcTodasFamilias = data.Result.TodasFamilias;
 
                 llenarCombos('#BI_cmbMarca', data.Result.Marcas, $("#modalDetalleCotizacion"), '', "--Seleccionar--", filters1, cantidadProductos);
                 llenarCombos('#BI_cmbTipoMedida', data.Result.Medidas, $("#modalDetalleCotizacion"), '', "--Seleccionar--", filters1, cantidadProductos);
@@ -2141,7 +2145,7 @@ var cotvtadet = (function ($, win, doc) {
             cargarLogicaAccesorios_Stock();
             cargarLogicaAccesorios_CompraLocal();
 
-            $('#modalDetalleItem').modal('show');
+            $('#modalDetalleItemAcc').modal('show');
         };
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
@@ -2824,7 +2828,7 @@ var cotvtadet = (function ($, win, doc) {
         var objParam = JSON.stringify(objFiltros);
 
         var fnDoneCallBack = function (data) {
-            if ($TipoSolicitud.val() == "TSOL05") {
+            if ($TipoSolicitud.val() == "TSOL05" || $TipoSolicitud.val() == "TSOL04") {
                 ConsultaItemDetalle();
             } else {
                 cargarTablaCotDet(data);
@@ -3042,7 +3046,7 @@ var cotvtadet = (function ($, win, doc) {
                     row.child(childTableHtml).show();
                     row.child().show();
                     tr.addClass('shown');
-                    cargarTablaHijosProductos(hijos, '#tblAccesorios' + data.NroItem, data.NroItem );
+                    cargarTablaHijosProductos(hijos, '#tblAccesorios' + data.NroItem, data.NroItem, data.CodItem );
                 }
             });
             // Función para dar formato a la fila hija
@@ -3146,7 +3150,7 @@ var cotvtadet = (function ($, win, doc) {
             "<th style='text-align:center; width:5%'><center>Marca</center></th>" +
             "<th style='text-align:center; width:5%'><center>Modelo</center></th>" +
             "<th style='text-align:center; width:1%'><center>Cantidad</center></th>" +
-            "<th style='text-align:center; width:2%'><center>Info. Adicional</center></th>" +
+            "<th style='text-align:center; width:3%'><center>Unidad de Medida</center></th>" +
             "<th style='text-align:center; width:2%'><center>Acciones</center></th>" +
                 "</tr>" +
             "</thead>";
@@ -3157,7 +3161,7 @@ var cotvtadet = (function ($, win, doc) {
     };
 
 
-    function cargarTablaHijosProductos(data, selector, NroItem) {
+    function cargarTablaHijosProductos(data, selector, NroItem, CodItemPadre) {
         var columns = [
             {
                 data: "CodItem",
@@ -3254,74 +3258,18 @@ var cotvtadet = (function ($, win, doc) {
                 }
             },
             {
-                data: "Cantidad",
+                data: "CodUnidad",
                 render: function (data, type, row) {
                     var casilla = "";
                     if (data == null) {
-                        casilla = "<span style='width: 100%' class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>";
+                        casilla = "<select class='form-control select2 input-sm' style='width: 100 %;'  data-selected=''></select>"
                     }
                     else {
-                        casilla = "<span style='width: 100%' class='glyphicon glyphicon-info-sign' aria-hidden='true'></span>";
+                        casilla = "<select disabled class='form-control select2 input-sm' style='width: 100 %;'  data-selected='" + data + "'></select>"
                     }
                     return '<center>' + casilla + '</center>';
                 }
             },
-
-
-
-
-            //{
-            //    data: "CodUnidad",
-            //    render: function (data, type, row) {
-            //        var casilla = "";
-            //        if (data == null) {
-            //            casilla = "<select class='form-control select2 input-sm' style='width: 100 %;' data-selected=''></select>"
-            //        }
-            //        else {
-            //            casilla = "<select disabled class='form-control select2 input-sm' style='width: 100 %;' data-selected='" + data + "'></select>"
-            //        }
-            //        return '<center>' + casilla + '</center>';
-            //    }
-            //},
-            //{
-            //    data: "DescMonCompra",
-            //    render: function (data, type, row) {
-            //        var casilla = "";
-            //        if (data == null) {
-            //            casilla = "<input type='text' disabled placeholder='Moneda' /> <input hidden type='text'/>"
-            //        }
-            //        else {
-            //            casilla = "<input disabled type='text' disabled placeholder='Moneda' value='" + data + "' /> <input hidden type='text'/>"
-            //        }
-            //        return '<center>' + casilla + '</center>';
-            //    }
-            //},
-            //{
-            //    data: "StockDisponible",
-            //    render: function (data, type, row) {
-            //        var casilla = "";
-            //        if (data == null) {
-            //            casilla = "<input disabled type='text' placeholder='Stock' />"
-            //        }
-            //        else {
-            //            casilla = "<input disabled  disabled type='text' placeholder='Stock' value='" + data + "' />"
-            //        }
-            //        return '<center>' + casilla + '</center>';
-            //    }
-            //},
-            //{
-            //    data: "PrecioRef",
-            //    render: function (data, type, row) {
-            //        var casilla = "";
-            //        if (data == null) {
-            //            casilla = "<input disabled type='text' placeholder='Precio Ref' />"
-            //        }
-            //        else {
-            //            casilla = "<input disabled disabled type='text' placeholder='Precio Ref' value='" + data.toFixed(2) + "' />"
-            //        }
-            //        return '<center>' + casilla + '</center>';
-            //    }
-            //},
             {
                 data: "Id",
                 render: function (data, type, row) {
@@ -3334,8 +3282,8 @@ var cotvtadet = (function ($, win, doc) {
                         if ($PermitirEditarCotDetItem.val() == 'S') {
 
                             var dato = row.Id + "," + '"' + row.TipoItem + '"';
-
-                            seleccionar = '<a id="btnCostearItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.EditarCotDetItem(' + data + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Costear</a>';
+                            var dato2 = '"' + CodItemPadre + '"' + "," + '"' + row.CodItem + '"';
+                            seleccionar = "<a id='btnCostearItem' class='btn btn-info btn-xs' title='Editar' href='javascript: cotvtadet.editarSubItem("+ dato2 +")'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Costear</a>";
 
 
                             eliminar = "<a class='btn btn-default btn-xs' title='Eliminar' id=btnEliminarItem  href = 'javascript: cotvtadet.eliminarItemProducto("+ dato +")'><i class='fa fa-trash' aria-hidden='true'></i> Eliminar</a>";
@@ -3366,7 +3314,7 @@ var cotvtadet = (function ($, win, doc) {
             input = input[0];
             input = input.children[0];
             input = input.children[0];
-            $(input).attr('id', index + '_' + NroItem +'BI_CodProd_Child' );
+            $(input).attr('id', index + '_' + NroItem + 'BI_CodProd_Child');
 
             var select = $(row.cells[1])
             select = select[0];
@@ -3400,39 +3348,18 @@ var cotvtadet = (function ($, win, doc) {
             input = input.children[0];
             $(input).attr('id', index + '_' + NroItem + 'BI_Modelo_Child');
 
-
-            //var select = $(row.cells[6])
-            //select = select[0];
-            //select = select.children[0];
-            //select = select.children[0];
-            //$(select).attr('id', 'BI_cmbTipoMedida_Child' + index);
-
-            //var input = $(row.cells[7])
-            //input = input[0];
-            //var inputPadre = input.children[0];
-            //input = inputPadre.children[0];
-            //$(input).attr('id', 'BI_Moneda_Child' + index);
-            //input = inputPadre.children[1];
-            //$(input).attr('id', 'BI_CodMoneda_Child' + index);
-
             var input = $(row.cells[6])
             input = input[0];
             input = input.children[0];
             input = input.children[0];
             $(input).attr('id', NroItem + 'BI_Cantidad_Child' + index);
 
-            //var input = $(row.cells[9])
-            //input = input[0];
-            //input = input.children[0];
-            //input = input.children[0];
-            //$(input).attr('id', 'BI_Stock_Child' + index);
 
-            //var input = $(row.cells[10])
-            //input = input[0];
-            //input = input.children[0];
-            //input = input.children[0];
-            //$(input).attr('id', 'BI_Precio_Child' + index);
-
+            var select = $(row.cells[7])
+            select = select[0];
+            select = select.children[0];
+            select = select.children[0];
+            $(select).attr('id', NroItem + 'BI_cmbTipoMedida_Child' + index);
 
             if (data.Id == null || data.Id == "") {
                 var btn = $(row.cells[8])
@@ -3441,7 +3368,6 @@ var cotvtadet = (function ($, win, doc) {
                 btn = btn.children[0];
                 $(btn).attr('href', "javascript: cotvtadet.agregarItemHijo('" + index + "'" + ","+ "'" + NroItem + "')");
             }
-
 
             $('#' + index + '_' + NroItem + 'BI_CodProd_Child', row).each(function () {
                 $(this).autocomplete({
@@ -3672,7 +3598,7 @@ var cotvtadet = (function ($, win, doc) {
                         return '';
                     }
                     else {
-                        if (row.CodFamilia == "08") {
+                        if (row.CodFamilia == "08" || $TipoSolicitud.val() == "TSOL04") {//Inhabilitado para Accesorios y para venta de materiales. 
                             return '';
                         } else {
                             return '<center><a id="btnAñadirChild" class="btn btn-green btn-xs" ><i class="fa fa-arrow-down" aria-hidden="true"></i></a></center>';
@@ -3810,58 +3736,6 @@ var cotvtadet = (function ($, win, doc) {
                     return '<center>' + seleccionar + eliminar + '</center>';
                 }
             }
-            //{
-            //    data: "CodUnidad",
-            //    render: function (data, type, row) {
-            //        var casilla = "";
-            //        if (data == null) {
-            //            casilla = "<select class='form-control select2 input-sm' style='width: 100 %;' data-selected=''></select>"
-            //        }
-            //        else {
-            //            casilla = "<select disabled class='form-control select2 input-sm' style='width: 100 %;' data-selected='" + data + "'></select>"
-            //        }
-            //        return '<center>' + casilla + '</center>';
-            //    }
-            //},
-            //{
-            //    data: "DescMonCompra",
-            //    render: function (data, type, row) {
-            //        var casilla = "";
-            //        if (data == null) {
-            //            casilla = "<input type='text' disabled placeholder='Moneda' /> <input hidden type='text'/>"
-            //        }
-            //        else {
-            //            casilla = "<input disabled type='text' disabled placeholder='Moneda' value='" + data + "' /> <input hidden type='text'/>"
-            //        }
-            //        return '<center>' + casilla + '</center>';
-            //    }
-            //},
-            //{
-            //    data: "StockDisponible",
-            //    render: function (data, type, row) {
-            //        var casilla = "";
-            //        if (data == null) {
-            //            casilla = "<input disabled type='text' placeholder='Stock' />"
-            //        }
-            //        else {
-            //            casilla = "<input disabled  disabled type='text' placeholder='Stock' value='" + data + "' />"
-            //        }
-            //        return '<center>' + casilla + '</center>';
-            //    }
-            //},
-            //{
-            //    data: "PrecioRef",
-            //    render: function (data, type, row) {
-            //        var casilla = "";
-            //        if (data == null) {
-            //            casilla = "<input disabled type='text' placeholder='Precio Ref' />"
-            //        }
-            //        else {
-            //            casilla = "<input disabled disabled type='text' placeholder='Precio Ref' value='" + data.toFixed(2) + "' />"
-            //        }
-            //        return '<center>' + casilla + '</center>';
-            //    }
-            //},
         ];
 
         var columnDefs =
@@ -3873,10 +3747,6 @@ var cotvtadet = (function ($, win, doc) {
         var rowCallback = function (row, data, displayNum, displayIndex, dataIndex) {
 
             var index = dataIndex;
-            // Asignar un ID único basado en el índice de datos o algún identificador único
-            //if (data.NroItem > 0) {
-            //    nroItems.push(data.NroItem);
-            //}
 
             cantidadProductos = index + 1 ;
             $(row).attr('id', 'row' + index);
@@ -3940,41 +3810,13 @@ var cotvtadet = (function ($, win, doc) {
                 btn = btn.children[0];
                 $(btn).attr('href', "javascript: cotvtadet.agregarItemProducto('" + index + "')");
             }
-            //var select = $(row.cells[7])
-            //select = select[0];
-            //select = select.children[0];
-            //select = select.children[0];
-            //$(select).attr('id', 'BI_cmbTipoMedida' + index);
-
-            //var input = $(row.cells[8])
-            //input = input[0];
-            //var inputPadre = input.children[0];
-            //input = inputPadre.children[0];
-            //$(input).attr('id', 'BI_Moneda' + index);
-            //input = inputPadre.children[1];
-            //$(input).attr('id', 'BI_CodMoneda' + index);
-
-            //var input = $(row.cells[10])
-            //input = input[0];
-            //input = input.children[0];
-            //input = input.children[0];
-            //$(input).attr('id', 'BI_Stock' + index);
-
-            //var input = $(row.cells[11])
-            //input = input[0];
-            //input = input.children[0];
-            //input = input.children[0];
-            //$(input).attr('id', 'BI_Precio' + index);
-
-
-            
 
             $('#' + index + 'BI_CodProd', row).each(function () {
                 $(this).autocomplete({
                     source: function (request, response) {
                         var objFiltros = {
                             CodProd: request.term,
-                            CodFamilia: $('#BI_cmbFamilia' + index).val() == "" ? "08;01;04" : $('#BI_cmbFamilia' + index).val(),
+                            CodFamilia: $('#BI_cmbFamilia' + index).val() == "" ? opcTodasFamilias : $('#BI_cmbFamilia' + index).val(),
                             CantidadRegistros: 20
                         };
                         var objParam = JSON.stringify(objFiltros);
@@ -4008,7 +3850,7 @@ var cotvtadet = (function ($, win, doc) {
                     source: function (request, response) {
                         var objFiltros = {
                             DescEquipo: request.term,
-                            CodFamilia: $('#BI_cmbFamilia' + index).val() == "" ? "08;01;04" : $('#BI_cmbFamilia' + index).val(),
+                            CodFamilia: $('#BI_cmbFamilia' + index).val() == "" ? opcTodasFamilias : $('#BI_cmbFamilia' + index).val(),
                             DescMarca: $('#BI_cmbMarca' + index).val(),
                             CodUndMed: $('#BI_cmbTipoMedida' + index).val(),
                             CantidadRegistros: 20
@@ -4566,6 +4408,34 @@ var cotvtadet = (function ($, win, doc) {
                 $(selector + i).val(selected).trigger("change");
             }
         } 
+    }
+
+
+    function SolicitarDscto() {
+        var method = "POST";
+        var url = ""
+        var obj = {
+            TipoProceso: "D",
+            IdCotizacion: $idCotizacion.val(),
+            IndDsctoRequiereAprob: true
+        }
+
+        var objParam = JSON.stringify(obj);
+
+        var fnSi = function () {
+            var fnDoneCallBack = function () {
+                app.message.success("Exito", "Se realizo la solicitud");
+            };
+
+            var fnFailCallBack = function () {
+                app.message.error("Error", "Hubo un error al solicitar el descuento, por favor revisar");
+            };
+
+            app.llamarAjax(method, url, fnDoneCallBack, fnFailCallBack, null, null, null);
+        };
+        app.message.confirm("Confirmacion", "Desea solicitar un descuento?", "Si", "No", fnSi);
+
+
     }
 
 

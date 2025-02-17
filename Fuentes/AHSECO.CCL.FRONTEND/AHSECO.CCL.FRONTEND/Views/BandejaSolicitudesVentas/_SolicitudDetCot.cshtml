@@ -19,7 +19,7 @@
         <div class="modal-body d-flex justify-content-center" align-items-center>
             <form id="formRegistro" class="d-flex flex-row">
                 <div class="row container-fluid d-flex justify-content-center">
-                    @if (tipoSol == "TSOL05")
+                    @if (tipoSol == "TSOL05" || tipoSol == "TSOL04")
                     {
                         <div style="overflow-x:auto; padding-left:15px">
                             <table id="tblProductos" class="table table-condensed table-striped table-bordered" width="100%">
@@ -35,12 +35,6 @@
                                         <th style="text-align:center; width:1%">Cantidad</th>
                                         <th style="text-align:center; width:3%">Unidad de Medida</th>
                                         <th style="text-align:center; width:3%">Acción</th>
-
-                                        <!--
-    <th style="text-align:center; width:5%">Und. Med.</th>
-    <th style="text-align:center; width:5%">Moneda</th>
-    <th style="text-align:center; width:3%">Stock</th>
-    <th style="text-align:center; width:5%">Precio Ref.</th>-->
                                     </tr>
                                 </thead>
                                 <tbody id="bodyProducts">

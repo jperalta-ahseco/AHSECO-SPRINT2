@@ -200,6 +200,21 @@ namespace AHSECO.CCL.BD.Ventas
                         }
                     });
 
+                List<CotizacionDetalleDTO> list = result.ToList();
+
+                //
+                //foreach (var element in result)
+                //{
+                //    element.CotizacionCostos = ObtenerCotDetCostos(new CotDetCostoDTO(){IdCotizacion = cotizaciondetDTO.IdCotizacion, IdCotizacionDetalle = element.Id }).ToArray<CotDetCostoDTO>();
+                //}
+                for( var i = 0; i < list.Count(); i++)
+                {
+                    list[i].CotizacionCostos = ObtenerCotDetCostos(new CotDetCostoDTO() { IdCotizacion = cotizaciondetDTO.IdCotizacion, IdCotizacionDetalle = list[i].Id }).ToArray<CotDetCostoDTO>();
+                    if(list[i].CotizacionCostos.Count() == 0){ list[i].CotizacionCostos = null; };
+                };
+
+                result = list.AsEnumerable<CotizacionDetalleDTO>();
+
                 connection.Close();
                 return result;
             };
