@@ -171,6 +171,9 @@ namespace AHSECO.CCL.BD.Ventas
                         CodUnidad = i.Single(d => d.Key.Equals("UNDMED")).Value.Parse<string>(),
                         Cantidad = i.Single(d => d.Key.Equals("CANTIDAD")).Value.Parse<int>(),
                         CostoFOB = i.Single(d => d.Key.Equals("COSTOFOB")).Value.Parse<string>(),
+                        MargenUtilidad = i.Single(d => d.Key.Equals("MARGENUTILIDAD")).Value.Parse<string>(),
+                        CodigoTransporte = i.Single(d => d.Key.Equals("CODTRANSPORTE")).Value.Parse<string>(),
+                        NombreTransporte = i.Single(d => d.Key.Equals("NOMTRANSPORTE")).Value.Parse<string>(),
                         VentaUnitaria = i.Single(d => d.Key.Equals("VVENTAUNI")).Value.Parse<decimal?>(),
                         VentaTotalSinIGV = i.Single(d => d.Key.Equals("VVTOTALSIGV")).Value.Parse<decimal?>(),
                         PorcentajeGanancia = i.Single(d => d.Key.Equals("PORCGANANCIA")).Value.Parse<decimal?>(),
@@ -1132,6 +1135,18 @@ namespace AHSECO.CCL.BD.Ventas
                     };
 
                     reader.NextResult();
+                    List<ComboDTO> _tipoTransporte = new List<ComboDTO>();
+                    while (reader.Read())
+                    {
+                        var TipoTransporte = new ComboDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("CODIGO")) ? "" : reader.GetString(reader.GetOrdinal("CODIGO")),
+                            Text = reader.IsDBNull(reader.GetOrdinal("VALOR1")) ? "" : reader.GetString(reader.GetOrdinal("VALOR1"))
+                        };
+                        _tipoTransporte.Add(TipoTransporte);
+                    };
+
+                    reader.NextResult();
                     SolicitudDTO solicitud = null;
                     if (reader.HasRows)
                     {
@@ -1426,6 +1441,7 @@ namespace AHSECO.CCL.BD.Ventas
                     result.TipoDocumento = _tipoDocumento;
                     result.TipoDocumentoTecnico = _tipoDocumentoTecnico;
                     result.TipoEmpleado = _tipoEmpleado;
+                    result.TipoTransporte = _tipoTransporte;
                     result.Solicitud = solicitud;
                     result.Adjuntos = _listaAdjuntos;
                     result.Observaciones = _listaObservaciones;
@@ -2291,7 +2307,10 @@ namespace AHSECO.CCL.BD.Ventas
                             MargenAdicional = reader.IsDBNull(reader.GetOrdinal("MARGENADICIONAL")) ? 0 : reader.GetDecimal(reader.GetOrdinal("MARGENADICIONAL")),
                             VentaUnitaria = reader.IsDBNull(reader.GetOrdinal("VVENTAUNI")) ? 0 : reader.GetDecimal(reader.GetOrdinal("VVENTAUNI")),
                             CodigoGarantiaAdicional = reader.IsDBNull(reader.GetOrdinal("CODGARANADIC")) ? "" : reader.GetString(reader.GetOrdinal("CODGARANADIC")),
-                            DescripcionMoneda = reader.IsDBNull(reader.GetOrdinal("DESCRIPCIONMONEDA")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCIONMONEDA"))
+                            DescripcionMoneda = reader.IsDBNull(reader.GetOrdinal("DESCRIPCIONMONEDA")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCIONMONEDA")),
+                            MargenUtilidad = reader.IsDBNull(reader.GetOrdinal("MARGENUTILIDAD")) ? "" : reader.GetString(reader.GetOrdinal("MARGENUTILIDAD")),
+                            CodigoTransporte = reader.IsDBNull(reader.GetOrdinal("CODTRANSPORTE")) ? "" : reader.GetString(reader.GetOrdinal("CODTRANSPORTE")),
+                            NombreTransporte = reader.IsDBNull(reader.GetOrdinal("NOMTRANSPORTE")) ? "" : reader.GetString(reader.GetOrdinal("NOMTRANSPORTE"))
                         };
                     }
 

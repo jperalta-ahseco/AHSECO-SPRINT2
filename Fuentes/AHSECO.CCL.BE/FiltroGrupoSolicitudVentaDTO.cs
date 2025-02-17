@@ -21,6 +21,7 @@ namespace AHSECO.CCL.BE
         public List<ComboDTO> TipoDocumento { get; set; }
         public List<ComboDTO> TipoDocumentoTecnico { get; set; }
         public List<ComboDTO> TipoEmpleado { get; set; }
+        public List<ComboDTO> TipoTransporte { get; set; }
         //Para traer la informacion a pintar de la solicitud de ventas:
         public SolicitudDTO Solicitud { get; set; }
         public List<DocumentoDTO> Adjuntos { get; set; }

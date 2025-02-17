@@ -61,6 +61,30 @@ namespace AHSECO.CCL.FRONTEND.Controllers
         }
 
         [HttpPost]
+        public JsonResult ListarTransportes()
+        {
+            DatosGeneralesDetalleDTO datosGeneralesDetalleDTO = new DatosGeneralesDetalleDTO();
+            DatosGeneralesDTO datosGenerales = new DatosGeneralesDTO();
+            datosGenerales.Dominio = "TIPTRAN";
+            datosGeneralesDetalleDTO.DatosGenerales = datosGenerales;
+            datosGeneralesDetalleDTO.Habilitado = true;
+            datosGeneralesDetalleDTO.Estado = 1;
+            var datosGeneralesBL = new DatosGeneralesBL();
+            var result = datosGeneralesBL.Obtener(datosGeneralesDetalleDTO);
+            var rs = new
+            {
+                result.Status,
+                result.CurrentException,
+                Result = result.Result.Where(t => t.Habilitado == true).Select(i => new
+                {
+                    Id = i.CodValor1,
+                    Text = i.Valor1
+                })
+            };
+            return Json(rs);
+        }
+
+        [HttpPost]
         public JsonResult ListarAreas()
         {
             AreaDTO areaDTO = new AreaDTO();

@@ -116,117 +116,137 @@
                         <fieldset class="form-group">
                             <legend><b>Informaci&oacute;n de Costos</b></legend>
                             <div id="DI_pnlCostos_PrecioVenta" class="row container-fluid">
-                                <div id="DI_pnlCostos_CostoFOB" class="col-md-6 col-content-middleleft form-group">
-                                    <div id="DI_pnlCostos_CostoFOB_Etiqueta" class="col-md-3">
+                                <div id="DI_pnlCostos_CostoFOB" class="col-md-4 col-content-middleleft form-group">
+                                    <div id="DI_pnlCostos_CostoFOB_Etiqueta" class="col-md-4">
                                         <label for="DI_txtCostoFOB">Ex-Work: </label>
                                     </div>
                                     <div class="col-md-6">
-                                        <input placeholder="Ingresar Ex-Work" type="text" maxlength="50" class="form-control input-sm" id="DI_txtCostoFOB" value="" disabled="disabled" readonly>
+                                        <input disabled type="text" maxlength="50" class="form-control input-sm" id="DI_txtCostoFOB" value="">
                                     </div>
                                 </div>
-                                <div id="DI_pnlCostos_ValorUnitario" class="col-md-6 col-content-middleleft form-group">
-                                    <div id="DI_pnlCostos_ValorUnitario_Etiqueta" class="col-md-3">
+                                <div id="DI_pnlCostos_MargenUtilidad" class="col-md-4 col-content-middleleft form-group">
+                                    <div id="DI_pnlCostos_MargenUtilidad_Etiqueta" class="col-md-4">
+                                        <label for="DI_txtMargenUtilidad">Margen Utilidad: </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input disabled type="text" maxlength="20" class="form-control input-sm" id="DI_txtMargenUtilidad" value="" >
+                                    </div>
+                                </div>
+                                <div id="DI_pnlCostos_Transporte" class="col-md-4 col-content-middleleft form-group">
+                                    <div id="DI_pnlCostos_Transporte_Etiqueta" class="col-md-4">
+                                        <label for="DI_txtTransporte">Transporte: </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input disabled type="text" maxlength="20" class="form-control input-sm" id="DI_txtTransporte" value="">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="DI_pnlCostos_GrpValorUnitario" class="row container-fluid col-content-middleleft">
+                                <div id="DI_pnlCostos_ValorUnitario" class="col-md-4 col-content-middleleft form-group">
+                                    <div id="DI_pnlCostos_ValorUnitario_Etiqueta" class="col-md-4">
                                         <label for="DI_txtValorUnitario">Valor Venta Unitario: </label>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <input placeholder="Ingresar Val. Unt." type="text" maxlength="20" class="form-control input-sm" id="DI_txtValorUnitario" value="" oninput="javascript:app.soloNumeroDecimal_onInput(this)" onfocus="this.value = app.formatearEnteroSinComa(this.value);" onblur="this.value = app.formatearEnteroComa(parseFloat(this.value).toFixed(2));">
                                     </div>
                                 </div>
                             </div>
-                            <div class="row container-fluid col-content-middleleft">
-                                <div id="DI_pnlCostos_TieneStock" class="col-md-4 col-content-middleleft">
-                                    <div class="col-md-5">
-                                        <label for="DI_radTieneStock">TIENE STOCK: </label>
+
+                                <div class="row container-fluid col-content-middleleft">
+                                    <div id="DI_pnlCostos_TieneStock" class="col-md-4 col-content-middleleft">
+                                        <div class="col-md-5">
+                                            <label for="DI_radTieneStock">TIENE STOCK: </label>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <table style="width:100%">
+                                                <tr>
+                                                    <td><input type="radio" name="DI_radTieneStock" class="input-sm" id="DI_radTieneStock_Si"></td>
+                                                    <td style="padding-top:5px"><label>SI</label></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <table style="width:100%">
+                                                <tr>
+                                                    <td><input type="radio" name="DI_radTieneStock" class="input-sm" id="DI_radTieneStock_No"></td>
+                                                    <td style="padding-top:5px"><label>NO</label></td>
+                                                </tr>
+                                            </table>
+                                        </div>
                                     </div>
-                                    <div class="col-md-2">
-                                        <table style="width:100%">
-                                            <tr>
-                                                <td><input type="radio" name="DI_radTieneStock" class="input-sm" id="DI_radTieneStock_Si"></td>
-                                                <td style="padding-top:5px"><label>SI</label></td>
-                                            </tr>
-                                        </table>
+                                    <div id="DI_pnlCostos_CompraLocal" class="col-md-4 col-content-middleleft">
+                                        <div class="col-md-5">
+                                            <label for="DI_radCompraLocal">Compra Local: </label>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <table style="width:100%">
+                                                <tr>
+                                                    <td><input type="radio" name="DI_radCompraLocal" class="input-sm" id="DI_radCompraLocal_Si"></td>
+                                                    <td style="padding-top:5px"><label>SI</label></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <table style="width:100%">
+                                                <tr>
+                                                    <td><input type="radio" name="DI_radCompraLocal" class="input-sm" id="DI_radCompraLocal_No"></td>
+                                                    <td style="padding-top:5px"><label>NO</label></td>
+                                                </tr>
+                                            </table>
+                                        </div>
                                     </div>
-                                    <div class="col-md-2">
-                                        <table style="width:100%">
-                                            <tr>
-                                                <td><input type="radio" name="DI_radTieneStock" class="input-sm" id="DI_radTieneStock_No"></td>
-                                                <td style="padding-top:5px"><label>NO</label></td>
-                                            </tr>
-                                        </table>
+                                    <div id="DI_pnlCostos_Ganancia" class="col-md-4 col-content-middleleft">
+                                        <div class="col-md-7">
+                                            <label for="DI_txtGanancia">Margen Adicional (%): </label>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <input placeholder="Ingrese Margen Adicional" type="text" maxlength="15" min="0" max="100" class="form-control input-sm" id="DI_txtGanancia" value="" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if (parseFloat(this.value) > 100) { this.value = this.value.slice(0, 2); }">
+                                        </div>
                                     </div>
                                 </div>
-                                <div id="DI_pnlCostos_CompraLocal" class="col-md-4 col-content-middleleft">
-                                    <div class="col-md-5">
-                                        <label for="DI_radCompraLocal">Compra Local: </label>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <table style="width:100%">
-                                            <tr>
-                                                <td><input type="radio" name="DI_radCompraLocal" class="input-sm" id="DI_radCompraLocal_Si"></td>
-                                                <td style="padding-top:5px"><label>SI</label></td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <table style="width:100%">
-                                            <tr>
-                                                <td><input type="radio" name="DI_radCompraLocal" class="input-sm" id="DI_radCompraLocal_No"></td>
-                                                <td style="padding-top:5px"><label>NO</label></td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div id="DI_pnlCostos_Ganancia" class="col-md-4 col-content-middleleft">
-                                    <div class="col-md-7">
-                                        <label for="DI_txtGanancia">Margen Adicional (%): </label>
-                                    </div>
-                                    <div class="col-md-5">
-                                        <input placeholder="Ingrese Margen Adicional" type="text" maxlength="15" min="0" max="100" class="form-control input-sm" id="DI_txtGanancia" value="" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if (parseFloat(this.value) > 100) { this.value = this.value.slice(0, 2); }">
-                                    </div>
-                                </div>
-                            </div>
 
 
-                            <div class="row container-fluid col-content-middleleft">
-                                <div id="DI_pnlCostos_RequierePlaca" class="col-md-4 col-content-middleleft">
-                                    <div class="col-md-5">
-                                        <label for="DI_radRequierePlaca">Requiere Placa: </label>
+                                <div class="row container-fluid col-content-middleleft">
+                                    <div id="DI_pnlCostos_RequierePlaca" class="col-md-4 col-content-middleleft">
+                                        <div class="col-md-5">
+                                            <label for="DI_radRequierePlaca">Requiere Placa: </label>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <table style="width:100%">
+                                                <tr>
+                                                    <td><input type="radio" name="DI_radRequierePlaca" class="input-sm" id="DI_radRequierePlaca_Si"></td>
+                                                    <td style="padding-top:5px"><label>SI</label></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <table style="width:100%">
+                                                <tr>
+                                                    <td><input type="radio" name="DI_radRequierePlaca" class="input-sm" id="DI_radRequierePlaca_No"></td>
+                                                    <td style="padding-top:5px"><label>NO</label></td>
+                                                </tr>
+                                            </table>
+                                        </div>
                                     </div>
-                                    <div class="col-md-2">
-                                        <table style="width:100%">
-                                            <tr>
-                                                <td><input type="radio" name="DI_radRequierePlaca" class="input-sm" id="DI_radRequierePlaca_Si"></td>
-                                                <td style="padding-top:5px"><label>SI</label></td>
-                                            </tr>
-                                        </table>
+                                    <div id="DI_pnlCostos_GarantAdic_Combo" class="col-md-4 col-content-middleleft">
+                                        <div class="col-md-5">
+                                            <label for="DI_cmbGarantias" style="flex: 0 0 120px">Tipo de Garantía Adicional: </label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <select class="form-control select2 input-sm" style="width:100%;" id="DI_cmbGarantias" data-selected="">
+                                            </select>
+                                        </div>
                                     </div>
-                                    <div class="col-md-2">
-                                        <table style="width:100%">
-                                            <tr>
-                                                <td><input type="radio" name="DI_radRequierePlaca" class="input-sm" id="DI_radRequierePlaca_No"></td>
-                                                <td style="padding-top:5px"><label>NO</label></td>
-                                            </tr>
-                                        </table>
+                                    <div id="DI_pnlCostos_Moneda" class="col-md-4 col-content-middleleft">
+                                        <div class="col-md-7" id="divlblMoneda">
+                                            <label for="DI_Moneda" style="flex: 0 0 120px">Moneda: </label>
+                                        </div>
+                                        <div class="col-md-5" id="divMoneda">
+                                            <input disabled type="text" class="form-control input-sm" style="text-align:center" id="DI_Moneda" value="">
+                                        </div>
                                     </div>
                                 </div>
-                                <div id="DI_pnlCostos_GarantAdic_Combo" class="col-md-4 col-content-middleleft">
-                                    <div class="col-md-5">
-                                        <label for="DI_cmbGarantias" style="flex: 0 0 120px">Tipo de Garantía Adicional: </label>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <select class="form-control select2 input-sm" style="width:100%;" id="DI_cmbGarantias" data-selected="">
-                                        </select>
-                                    </div>
-                                </div>
-                                <div id="DI_pnlCostos_Moneda" class="col-md-4 col-content-middleleft">
-                                    <div class="col-md-7" id="divlblMoneda">
-                                        <label for="DI_Moneda" style="flex: 0 0 120px">Moneda: </label>
-                                    </div>
-                                    <div class="col-md-5" id="divMoneda">
-                                        <input disabled type="text" class="form-control input-sm" style="text-align:center" id="DI_Moneda" value="" >
-                                    </div>
-                                </div>
-                            </div>
 
 
                         </fieldset>
@@ -348,6 +368,7 @@
                     </div>
                     <div class="text-center">
                         <button class="btn btn-default btn-sm" type="button" id="DI_btnGuardar"><i class="fa fa-save" aria-hidden="true"></i> Guardar</button>
+                        <button class="btn btn-default btn-sm" type="button" id="DI_btnGuardarCosteo" style="display:none;"><i class="fa fa-save" aria-hidden="true"></i> Guardar Costeo</button>
                         <button class="btn btn-danger btn-sm" type="button" id="DI_btnCerrar"><i class="fa fa-plus" aria-hidden="true"></i> Salir</button>
                     </div>
                 </div>

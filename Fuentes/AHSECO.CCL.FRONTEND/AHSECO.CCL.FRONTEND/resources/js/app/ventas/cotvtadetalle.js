@@ -214,6 +214,11 @@ var cotvtadet = (function ($, win, doc) {
     var $CI_txtMoneda = $("#CI_txtMoneda");
     var $DI_Moneda = $("#DI_Moneda");
     var $DI_Tipo = $("#DI_Tipo");
+    var $DI_txtMargenUtilidad = $("#DI_txtMargenUtilidad");
+    var $DI_txtTransporte = $("#DI_txtTransporte");
+    var $DI_btnGuardarCosteo = $("#DI_btnGuardarCosteo");
+    var $CI_btnGuardarCosteo = $("#CI_btnGuardarCosteo");
+    var $CI_hdnIdCotDet = $("#CI_hdnIdCotDet");
     var costeoMultiple = [];
 
     $(Initialize);
@@ -228,6 +233,7 @@ var cotvtadet = (function ($, win, doc) {
     var nroItems = [];
     var childProducts = [];
     var padreProducts = [];
+    var tipoTransporte = [];
     function Initialize() {
 
         $btnBuscarItems.click(buscarItems);
@@ -240,6 +246,7 @@ var cotvtadet = (function ($, win, doc) {
         $btnRecotizacion.click(recotizarSolicitud);
         $btnGuardarValorizacion.click(guardarValorizacion);
         $btnSolicitarDscto.click(SolicitarDscto);
+        $DI_btnGuardarCosteo.click(DI_btnGuardarCosteoClick);
 
         $DI_radInstalacion_No.click(validarIndicadorCosteo);
         $DI_radCapacitacion_No.click(validarIndicadorCosteo);
@@ -254,6 +261,7 @@ var cotvtadet = (function ($, win, doc) {
         $DI_btnAgregarCosto.click(btnAgregarCosteo);
         $CX_cmbTipoCosto.on("change", configurarModalCostoMultiple);
         $CI_btnGuardar.click(guardarEditarCosteo);
+        $CI_btnGuardarCosteo.click(btnGuardarCosteoClick);
         //$DI_radTieneStock_Si.click(configurarTieneStock);
         //$DI_radTieneStock_No.click(configurarTieneStock);
         //if ($TipoSolicitud.val() == "TSOL05") {
@@ -264,6 +272,94 @@ var cotvtadet = (function ($, win, doc) {
         cargarGarantias();
 
     
+
+    }
+
+
+    function btnGuardarCosteoClick() {
+
+
+        if ($CI_txtMtoUnitarioCosto.val() === "0" || $CI_txtMtoUnitarioCosto.val() === "0.00" || $CI_txtMtoUnitarioCosto.val() === "") {
+            app.message.error("Validacion", "Debe agregar el monto unitario de costo");
+            return;
+        }
+
+        var fnSi = function () {
+
+
+            var m = "POST";
+            var url = "BandejaSolicitudesVentas/MantCosteoItem";
+            var obj = {
+                Tipo: "U",
+                CantidadCosto: parseInt($CI_txtCantCosteo.val()),
+                CantidadPreventivo: $CI_txtCantPrevent.val(),
+                CodigoCicloPreventivo: $CI_cmbCicloPreventivo.val(),
+                CodigoUbigeo: $CI_hdnUbicacion.val(),
+                Direccion: $CI_txtDireccion.val(),
+                AmbienteDestino: $CI_txtAmbDestino.val(),
+                NumeroPiso: $CI_txtNroPiso.val(),
+                MontoUnitario: app.convertirNumero($CI_txtMtoUnitarioCosto.val()),
+                CodigoCotizacionDetalle: $CI_hdnIdCotDet.val(),
+                IdCosto: parseInt($CI_hdnCodCosto.val())
+            }
+            var objParam = JSON.stringify(obj);
+            var fnDoneCallback = function (data) {
+
+                if (data.Result.Codigo > 0) {
+                    location.reload();
+                }
+                else {
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", null);
+                }
+
+            };
+            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.GuardarCosto);
+        }
+        return app.message.confirm("Ventas", "&iquest;Est&aacute; seguro que desea guardar el monto unitario costo?", "Si;", "No", fnSi, null);
+
+    }
+
+    function DI_btnGuardarCosteoClick() {
+        if ($DI_txtCantidad.val() === null || $DI_txtCantidad.val() === "" || $DI_txtCantidad.val() === "0" || $DI_txtCantidad.val() < 0) {
+            app.message.error("Validacion", "Ingresar la cantidad del producto.");
+            return;
+        }
+
+
+        var fnSi = function () {
+
+            var cotizacion_detalle = $DI_hdnIdCotDet.val();
+
+            var method = "POST";
+            var url = "BandejaSolicitudesVentas/MantCosteoCotizacion";
+            var objDatos = {
+                Tipo: "C",
+                CodigoCotizacionDetalle: parseInt(cotizacion_detalle),
+                Cantidad: parseInt($DI_txtCantidad.val()),
+                MontoUnitario: app.convertirNumero($DI_txtValorUnitario.val()),
+            };
+            var objParam = JSON.stringify(objDatos);
+
+            var fnDoneCallBack = function (data) {
+                if (data.Result.Codigo > 0) {
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", null);
+                    location.reload();
+                }
+                else {
+                    app.message.success("Error", data.Result.Mensaje, "Aceptar", null);
+                }
+
+            };
+
+            var fnFailCallback = function () {
+
+            };
+
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallback);
+
+
+        }
+        return app.message.confirm("Confirmaci&oacute;n", "Desea guardar el valor venta unitario de la cotizaci&oacute;n?", "S&iacute;", "No", fnSi);
 
     }
 
@@ -1165,6 +1261,7 @@ var cotvtadet = (function ($, win, doc) {
         LimpiarFormularioCosteo();
         configurarModalCostoMultiple();
 
+
         method = "POST";
         url = "BandejaSolicitudesVentas/CargarCotDetItem?codDetalleCotizacion="+ ID;
         var objFiltros = "";
@@ -1213,7 +1310,13 @@ var cotvtadet = (function ($, win, doc) {
             }
             else {
                 $DI_pnlCostos_PrecioVenta.css('display', '');
+
+                if ($idRolUsuario.val() === "SGI_VENTA_GERENTE") {
+                    $DI_btnGuardar.hide();
+                }
             }
+
+            
 
             if ($estadoSol.val() != "SCOT") {
                 $("#SeccionAgregarCosto").css('display', 'none');
@@ -1240,6 +1343,12 @@ var cotvtadet = (function ($, win, doc) {
                 $DI_btnGuardar.hide();
             }
 
+            if ($idRolUsuario.val() === "SGI_VENTA_COSTOS" && $estadoSol.val() === "CVAL") {
+                $DI_txtValorUnitario.prop('disabled', false);
+                $DI_btnGuardar.hide();
+                $DI_btnGuardarCosteo.show();
+            }
+
 
             if (data.Result.CabCosteoDetalle != null) {
                 $DI_Tipo.val("U");
@@ -1253,6 +1362,8 @@ var cotvtadet = (function ($, win, doc) {
                 $DI_txtReqCliente.val(data.Result.CabCosteoDetalle.ObservacionCliente);
                 $DI_txtObsInsta.val(data.Result.CabCosteoDetalle.ObservacionDespacho);
                 $DI_Moneda.val(data.Result.CabCosteoDetalle.DescripcionMoneda);
+                $DI_txtMargenUtilidad.val(data.Result.CabCosteoDetalle.MargenUtilidad);
+                $DI_txtTransporte.val(data.Result.CabCosteoDetalle.NombreTransporte);
 
                 var tiene_stock = data.Result.CabCosteoDetalle.IndicadorStock;
                 if (tiene_stock === "S") {
@@ -1780,7 +1891,7 @@ var cotvtadet = (function ($, win, doc) {
         var objParam = JSON.stringify(objDatos);
 
         var fnDoneCallBack = function (data) {
-
+            $CI_hdnIdCotDet.val(codDetalleCot);
             $CI_Item.val(data.Result.CodigoItem);
             $CI_Descripcion.val(data.Result.Descripcion);
             $CI_txtCantCotDet.val(data.Result.Cantidad);
@@ -1848,6 +1959,7 @@ var cotvtadet = (function ($, win, doc) {
             if (estado != "SCOT") {
 
                 $("#searchUbigeo").prop("disabled", true);
+                $('#searchUbigeo').removeAttr('data-target');
                 $CI_txtUbicacion.prop("disabled", true);
                 $CI_txtDireccion.prop("disabled", true);
                 $CI_txtAmbDestino.prop("disabled", true);
@@ -1873,6 +1985,15 @@ var cotvtadet = (function ($, win, doc) {
 
                 $CI_btnGuardar.show();
             }
+
+
+            if ($estadoSol.val() == "CVAL" && ($idRolUsuario.val() === "SGI_VENTA_LOGISTICA" || $idRolUsuario.val() === "SGI_VENTA_SERVICIOTECNICO")) {
+                $("#searchUbigeo").css("disabled", true);
+                $('#searchUbigeo').removeAttr('data-target');
+                $CI_btnGuardarCosteo.show();
+                $CI_txtMtoUnitarioCosto.prop("disabled", false);
+            }
+
 
             $('#modalCostoItem').modal('show');
         };
@@ -2312,8 +2433,27 @@ var cotvtadet = (function ($, win, doc) {
                     render: function (data, type, row) {
                         if (data == null) { data = ""; }
                         else { data }
-                        var casilla = "<input type='text'  id='ExWork" + row.NroItem + row.Id+ "' value='" + data + "' style='border: none;background-color: transparent; outline: none;' readonly  maxlength='50'/>";
-                        return '<center>' + casilla + '</center>';
+
+                        var ex_work = "";
+                        if (row.CostoFOB != "") {
+                            ex_work = "<b>Ex-Work: </b><br>"+row.CostoFOB;
+                        } 
+
+                        var mar_utilidad = "";
+                        if (row.MargenUtilidad != "") {
+                            mar_utilidad = "<b>Margen Utilidad: </b><br>" + row.MargenUtilidad;
+                        } 
+
+                        var trans = "";
+                        if (row.NombreTransporte != "") {
+                            trans = "<b>Transporte: </b><br>" + row.NombreTransporte;
+                        } 
+
+                        var exwork = "<label id='txtExWork" + row.NroItem + row.Id + "' >" + ex_work +"</label>"+"<label id='lblExWork" + row.NroItem + row.Id + "' style='display:none;'></label><input type='text'  id='ExWork" + row.NroItem + row.Id + "' value='" + row.CostoFOB + "' style='display:none; maxlength='50'/>&nbsp;";
+                        var margenUtil = "<label id='txtMargenUtil" + row.NroItem + row.Id + "' >" + mar_utilidad + "</label><label id='lblMargenUtil" + row.NroItem + row.Id + "' style='display:none;'></label><input type='text'  id='MargenUtil" + row.NroItem + row.Id + "' value='" + row.MargenUtilidad + "' style='display:none;' maxlength='50'/>&nbsp;";
+                        var transporte = "<label id='txtTransporte" + row.NroItem + row.Id + "' >" + trans + "</label><label id='lblTransporte" + row.NroItem + row.Id + "' style='display:none;'></label><div id='divTransporte" + row.NroItem + row.Id + "' style='display:none;'><input type='hidden' id='hdTransporte" + row.NroItem + row.Id + "' value='"+row.CodigoTransporte+"' ><select id='Transporte" + row.NroItem + row.Id + "'  style='width:150px; display:none;' value='" + row.CodigoTransporte +"'/></div>";
+
+                        return exwork + margenUtil+ transporte;
                     }
                 },
                 {
@@ -2371,23 +2511,27 @@ var cotvtadet = (function ($, win, doc) {
                         var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
                         var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
                         var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
-                        var editar_FOB = '<a id="btnEditarFOBItem' + strID + '" value="' + strID+'" name="BtnExWord" class="botonDetCot btn btn-info btn-xs" title="Editar Ex-Work" href="javascript: cotvtadet.editarExWork(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',' + String.fromCharCode(39) + row.NroItem + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Ex-Work</a>'; 
-                        var guardar_FOB = '<a id="btnGuardarFOBItem' + strID + '" class="botonDetCot btn btn-info btn-xs" title="Guardar Ex-Work" href="javascript: cotvtadet.guardarExWork(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',' + String.fromCharCode(39) + row.NroItem + String.fromCharCode(39) + ')" style=' + String.fromCharCode(39) + 'display:none' + String.fromCharCode(39) +'><i class="fa fa-pencil-save" aria-hidden="true"></i>Guardar</a>'; 
+                        var editar_FOB = '<a id="btnEditarFOBItem' + strID + '" value="' + strID + '" name="BtnExWord" class="botonDetCot btn btn-info btn-xs" title="Editar Ex-Work" href="javascript: cotvtadet.editarExWork(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',' + String.fromCharCode(39) + row.NroItem + String.fromCharCode(39) + ',' + String.fromCharCode(39) + row.CodigoTransporte + String.fromCharCode(39) + ',' +  row.IndStock +  ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Editar</a>'; 
+                        var guardar_FOB = '<a id="btnGuardarFOBItem' + strID + '" class="botonDetCot btn btn-info btn-xs" title="Guardar Ex-Work" href="javascript: cotvtadet.guardarExWork(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',' + String.fromCharCode(39) + row.NroItem + String.fromCharCode(39) + ',' + row.IndStock + ')" style=' + String.fromCharCode(39) + 'display:none' + String.fromCharCode(39) +'><i class="fa fa-pencil-save" aria-hidden="true"></i>Guardar</a>'; 
 
                         if ($estadoSol.val() == "CAPR" || $estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG") {
                             return '<center>' + ver + '</center>';
                         }
                         else {
-                            
+
                             var fob = "";
                             var guardar_fob = "";
-                            if (oFeatures.IsEnabled && $idRolUsuario.val() === "SGI_VENTA_GERENTE") {
-                                fob = String.fromCharCode(32) +"<br><br>"+ editar_FOB;
+                            if ($estadoSol.val() === "CVAL" && $idRolUsuario.val() === "SGI_VENTA_GERENTE") {
+                                fob = String.fromCharCode(32) + "<br><br>" + editar_FOB;
                                 guardar_fob = guardar_FOB;
                                 editar = ver;
                             }
+                            else if (!oFeatures.IsEnabled) { editar = ver; }
+                            else {
+                                editar = ver; 
+                            }
 
-                            if (!oFeatures.IsEnabled) { editar = ver; }
+                            
                             return '<center>' + hidden + editar + fob + guardar_fob+ '</center>';
                         }
                     }
@@ -2953,15 +3097,59 @@ var cotvtadet = (function ($, win, doc) {
         return app.message.confirm("Confirmaci&oacute;n", "Desea guardar la valoraci&oacute;n?", "S&iacute;", "No", fnSi);
     }
 
-    function editarExWork(id, NroItem) {
+    function editarExWork(id, NroItem, CodTransporte, indStock) {
         $('#btnEditarFOBItem' + id).hide();
         $('#btnGuardarFOBItem' + id).show();
 
 
-        $('#ExWork' + NroItem +id).removeAttr('readonly');
-        $('#ExWork' + NroItem+id).css('border', '1px solid ');
-        $('#ExWork' + NroItem+id).css('background-color', 'white');
-        $('#ExWork' + NroItem+id).css('display', 'block');
+        //Para casilla Ex-Work:
+        if (!indStock) {
+            $('#txtExWork' + NroItem + id).hide();
+            $('#ExWork' + NroItem + id).css('display', 'block');
+            $('#lblExWork' + NroItem + id).css('display', 'block');
+            $('#lblExWork' + NroItem + id).text('Ex-Work:');
+        }
+
+
+        //Para casilla Margen Utilidad:
+        $('#txtMargenUtil' + NroItem + id).hide();
+        $('#MargenUtil' + NroItem + id).css('display', 'block');
+        $('#lblMargenUtil' + NroItem + id).css('display', 'block');
+        $('#lblMargenUtil' + NroItem + id).text('Margen Utilidad:');
+
+        //Para casilla Transporte:
+        var method = "POST";
+        var url = "Utiles/ListarTransportes";
+        var objParam = "";
+
+        var fnDoneCallback = function (data) {
+            $('#txtTransporte' + NroItem + id).hide();
+
+
+            $('#divTransporte' + NroItem + id).css('display', 'block');
+            $('#Transporte' + NroItem + id).css('display', 'block');
+            $('#lblTransporte' + NroItem + id).css('display', 'block');
+            $('#lblTransporte' + NroItem + id).text('Transporte:');
+            var filters = {};
+            filters.placeholder = "-- Seleccione --";
+            filters.allowClear = false;
+            app.llenarCombo($('#Transporte' + NroItem + id), data, null, 0, "--Seleccione--", filters);
+            var cod_transporte = $('#hdTransporte' + NroItem + id).val();
+            if (cod_transporte != null && cod_transporte != "" && cod_transporte != "0") {
+               
+                $('#Transporte' + NroItem + id).val(cod_transporte).trigger("change.select2");
+            }
+
+        };
+        app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, mensajes.obteniendoEstados);
+
+
+
+    
+        
+
+
+
         $("#btnGuardarValorizacion").prop("disabled", true);
        // $(".BtnExWord").prop("disabled", true);
 
@@ -2972,12 +3160,29 @@ var cotvtadet = (function ($, win, doc) {
         });
     }
 
-    function guardarExWork(id, NroItem) {
+    function guardarExWork(id, NroItem, indStock) {
 
-        var text_exwork = $('#ExWork' + NroItem + id).val();
-        if (text_exwork === "" || text_exwork === null) {
-            $('#ExWork' + NroItem + id).focus();
-            app.message.error("Validacion", "Debe ingresar el valor del Ex-Work.");
+        var margenUtilidad = $('#MargenUtil' + NroItem + id).val();
+        var transporte = $('#Transporte' + NroItem + id).val();
+        if (!indStock) {
+            var text_exwork = $('#ExWork' + NroItem + id).val();
+            if (text_exwork === "" || text_exwork === null) {
+                $('#ExWork' + NroItem + id).focus();
+                app.message.error("Validacion", "Debe ingresar el valor del Ex-Work.");
+                return false;
+            }
+
+        }
+
+        if (margenUtilidad === "" || margenUtilidad === null) {
+            $('#MargenUtil' + NroItem + id).focus();
+            app.message.error("Validacion", "Debe ingresar el valor del Margen de Utilidad.");
+            return false;
+        }
+
+        if (transporte === "0" || transporte === null || transporte === 0) {
+            $('#Transporte' + NroItem + id).focus();
+            app.message.error("Validacion", "Debe seleccionar el transporte.");
             return false;
         }
 
@@ -2988,16 +3193,40 @@ var cotvtadet = (function ($, win, doc) {
             var obj = {
                 Tipo: "W",
                 CodigoSolicitud: id,
-                NumeroOrden: text_exwork
+                NumeroOrden: text_exwork,
+                NumeroContrato: margenUtilidad,
+                NumeroGuiaRemision: transporte
             }
             var objParam = JSON.stringify(obj);
             var fnDoneCallback = function (data) {
                 var fnCallback = function () {
                     //location.reload();
-                    $('#ExWork' + NroItem + id).css('border', 'none');
-                    $('#ExWork' + NroItem + id).css('background-color', 'transparent');
-                    $('#ExWork' + NroItem + id).css('outline', 'none');
-                    $('#ExWork' + NroItem + id).prop('readonly', true);
+
+                    var text_transporte = $('#Transporte' + NroItem + id + ' option:selected').text();
+
+                    if (!indStock) {
+                        $('#txtExWork' + NroItem + id).show();
+                        $('#txtExWork' + NroItem + id).text('Ex-Work: ' + text_exwork);
+                        $('#ExWork' + NroItem + id).css('display', 'none');
+                        $('#lblExWork' + NroItem + id).css('display', 'none');
+                    }
+
+
+                    $('#txtMargenUtil' + NroItem + id).show();
+                    $('#txtMargenUtil' + NroItem + id).text('Margen Util: ' + margenUtilidad);
+                    $('#MargenUtil' + NroItem + id).css('display', 'none');
+                    $('#lblMargenUtil' + NroItem + id).css('display', 'none');
+
+                    $('#txtTransporte' + NroItem + id).show();
+                    $('#txtTransporte' + NroItem + id).text('Transporte: ' + text_transporte);
+                    $('#divTransporte' + NroItem + id).css('display', 'none');
+                    $('#Transporte' + NroItem + id).css('display','none');
+                    $('#lblTransporte' + NroItem + id).css('display', 'none');
+                    $('#hdTransporte' + NroItem + id).val($('#Transporte' + NroItem + id).val());
+
+                    
+
+
                     $("#btnGuardarValorizacion").prop("disabled", false);
                    // $(".BtnExWord").prop("disabled", false);
                     $("a[name='BtnExWord']").css({
@@ -3018,7 +3247,7 @@ var cotvtadet = (function ($, win, doc) {
             };
             return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.RegistrarGestionVenta);
         }
-        return app.message.confirm("Ventas", "Esta seguro que desea guardar el Ex-Work?", "Si", "No", fnSi, null);
+        return app.message.confirm("Ventas", "Esta seguro que desea guardar los datos?", "Si", "No", fnSi, null);
     };
 
 

@@ -27,5 +27,8 @@ namespace AHSECO.CCL.BE.Ventas
         public decimal VentaUnitaria { get; set; }
         public string CodigoGarantiaAdicional { get; set; }
         public string DescripcionMoneda { get; set; }
+        public string MargenUtilidad {  get; set; }
+        public string CodigoTransporte {  get; set; }
+        public string NombreTransporte { get; set; }
     }
 }

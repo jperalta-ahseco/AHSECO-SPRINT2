@@ -27,6 +27,9 @@ namespace AHSECO.CCL.BE.Ventas
         public string DescUnidad { get; set; }
         public int Cantidad { get; set; }
         public string CostoFOB { get; set; }
+        public string MargenUtilidad { get; set; }
+        public string CodigoTransporte { get; set; }
+        public string NombreTransporte { get; set; }
         public decimal? VentaUnitaria { get; set; }
         public decimal? VentaTotalSinIGV { get; set; }
         public decimal? PorcentajeGanancia { get; set; }

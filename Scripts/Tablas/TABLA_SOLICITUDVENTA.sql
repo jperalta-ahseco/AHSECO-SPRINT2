@@ -141,6 +141,8 @@ CREATE TABLE [dbo].[TBD_COTIZACIONVENTA](
 	[UNDMED] [varchar](3) NULL,
 	[CANTIDAD] [int] NOT NULL,
 	[COSTOFOB] [varchar](50) NULL,
+	[MARGENUTILIDAD][varchar](50) NULL,
+	[CODTRANSPORTE][varchar](10) NULL,
 	[VVENTAUNI] [decimal](18, 9) NULL,
 	[VVTOTALSIGV] [decimal](18, 9) NULL,
 	[PORCGANANCIA] [decimal](18, 9) NULL,

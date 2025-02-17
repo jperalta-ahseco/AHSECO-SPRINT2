@@ -256,7 +256,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             {
                 string[] CD_Columns =
                 {
-                    "N°", "Codigo Producto", "Descripción", "Unidad Medida", "Cantidad", "Ex-Work", "Valor Venta Unitario",
+                    "N°", "Codigo Producto", "Descripción", "Unidad Medida", "Cantidad", "Ex-Work / Margen Utilidad", "Valor Venta Unitario",
                     "Valor. Venta Total Sin IGV (Sin Margen Adicional)", "Margen Adicional(%)", "Valor. Venta Total Sin IGV (Con Margen Adicional)","Acción"
                 };
                 ViewBag.CabeceraCotDet = CD_Columns;

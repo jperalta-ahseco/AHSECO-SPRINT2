@@ -379,6 +379,7 @@
     var $txtSede = $("#txtSede");
 
     var tecnicosAsig = [];
+    var tipoTransporte = [];
 
     var mensajes = {
         consultaContactos: "Consultando contactos, por favor espere....",
@@ -3823,6 +3824,8 @@
             app.llenarComboMultiResult($cmbTipDocTecnico, data.Result.TipoDocumentoTecnico, null, 0, "-- Seleccione --", filters);
             app.llenarComboMultiResult($cmbTipoEmpleado, data.Result.TipoEmpleado, null, 0, "-- Seleccione --", filters);
             app.llenarComboMultiResult($cmbTipoCredencial, data.Result.TipoDocumentoTecnico, "", 0, "", false);
+
+            tipoTransporte = data.Result.TipoTransporte;
 
             if (rol == "SGI_VENTA_COORDINASERV" || rol == "SGI_VENTA_COORDINAATC" || rol == "SGI_VENTA_ASESOR") {
                 $cmbFlujo.val(codFlujo).trigger("change.select2");
