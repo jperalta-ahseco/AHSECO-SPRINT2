@@ -4,9 +4,9 @@ GO
 --SELECT * FROM TBM_PLANTILLAS
 
 INSERT INTO TBM_PLANTILLAS
-VALUES('PLANCOTGER',1,'Plantilla de cotización para gerencia','pminetti@ahsecoperu.pe','','PENDIENTE COSTO FOB - N° SOLICITUD {NRO_SOL}',
+VALUES('PLANCOTGER',1,'Plantilla de cotización para gerencia','pminetti@ahsecoperu.pe','','PENDIENTE ATENCION - VENTA - N° SOLICITUD {NRO_SOL}',
 			   '<p>Sr. Pedro Minetti,</p>
-<p>Usted tiene pendiente de ingreso del costo FOB de cotizaci&oacute;n de la solicitud N&deg; {NRO_SOL} para la empresa {NOM_EMPRESA} solicitado por {NOMBRE_VENDEDOR}.</p>
+<p>Usted tiene pendiente de atenci&oacute;n la cotizaci&oacute;n de la solicitud N&deg; {NRO_SOL} para la empresa {NOM_EMPRESA} solicitado por {NOMBRE_VENDEDOR}.</p>
 <p>Por favor ingrese al sistema para completar los datos. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
 
 INSERT INTO TBM_PLANTILLAS
