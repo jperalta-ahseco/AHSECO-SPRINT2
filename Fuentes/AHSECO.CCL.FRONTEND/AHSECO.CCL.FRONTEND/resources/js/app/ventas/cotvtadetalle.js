@@ -306,7 +306,8 @@ var cotvtadet = (function ($, win, doc) {
             var fnDoneCallback = function (data) {
 
                 if (data.Result.Codigo > 0) {
-                    location.reload();
+                    guardarValorizacion();
+                    //location.reload();
                 }
                 else {
                     app.message.error("Grabar", data.Result.Mensaje, "Aceptar", null);
