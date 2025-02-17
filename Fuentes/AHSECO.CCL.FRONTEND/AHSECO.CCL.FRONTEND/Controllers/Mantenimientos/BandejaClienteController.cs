@@ -84,6 +84,22 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Mantenimientos
             return Json(response);
         }
 
+        public JsonResult MantenimientoSede(SedeDTO sedeDTO)
+        {
+            var clienteBL = new ClienteBL();
+            sedeDTO.UsuarioRegistra = User.ObtenerUsuario();
+            var response = clienteBL.MantenimientoSede(sedeDTO);
+            return Json(response);
+        }
+
+        public JsonResult ConsultaSedes(SedeDTO sedeDTO)
+        {
+            var clienteBL = new ClienteBL();
+            var response = clienteBL.ConsultaSedes(sedeDTO);
+            return Json(response);
+        }
+
+
         public ActionResult RegistrarCliente()
         {
             return View();

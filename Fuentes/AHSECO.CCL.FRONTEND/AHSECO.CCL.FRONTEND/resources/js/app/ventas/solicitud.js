@@ -16,6 +16,7 @@
     var $idCotizacion = $("#idCotizacion");
     var $TipoSolicitud = $("#TipoSolicitud");
     var $det_nav_tabs = $('#det_nav_tabs');
+    var $openBuscadorCliente = $("#openBuscadorCliente");
 
 
     var $RolVenta_Asesor = $("#RolVenta_Asesor");
@@ -81,9 +82,9 @@
 
     /*Sección Solicitud*/
     var $btnEliminarSol = $('#btnEliminarSol');
-    var $txtRuc = $('#txtRuc');
+    var $txtRucCliente = $('#txtRucCliente');
     var $btnEditarSol = $('#btnEditarSol');
-    var $txtNomEmpresa = $('#txtNomEmpresa');
+    var $txtNomEmpresaCliente = $('#txtNomEmpresaCliente');
     var $txtAsesor = $('#txtAsesor');
     var $numeroSolicitud = $('#numeroSolicitud');
     var $openRegdateSolicitud = $('#openRegdateSolicitud');
@@ -366,6 +367,14 @@
     var $btnGuiaPedidoTotal = $('#btnGuiaPedidoTotal');
     var $btnEnviarGuiaTotal = $('#btnEnviarGuiaTotal');
     var $btnGuiaManuscritaTotal = $('#btnGuiaManuscritaTotal');
+    var $codEmpleado = $("#codEmpleado");
+    var $tblClientes = $("#tblClientes");
+    var $modalBusquedaClientes = $("#modalBusquedaClientes");
+    var $hdnIdCliente = $("#hdnIdCliente");
+    var $txtTituloClie = $("#txtTituloClie");
+    var $btnBuscarClientes = $("#btnBuscarClientes");
+    var $txtRuc = $("#txtRuc");
+    var $txtNomEmpresa = $("#txtNomEmpresa");
 
     var tecnicosAsig = [];
 
@@ -396,7 +405,8 @@
         ObteniendoTipoServicio: "Obteniendo tipo de servicios, por favor espere...",
         obteniendoServicio: "Obteniendo resultados de la busqueda, por favor espere...",
         procesandoUbigeo: "Procesando Ubigeo, por favor espere...",
-        GenerarGuiaManuscrita: "Generando Guia Manuscrita, por favor espere..."
+        GenerarGuiaManuscrita: "Generando Guia Manuscrita, por favor espere...",
+        ObtenerClientesAsignados: "Obteniendo clientes asignados, por favor espere..."
     };
 
     $(Initialize);
@@ -604,7 +614,113 @@
         $btnGuiaManuscritaTotal.click($btnGuiaManuscritaTotal_click);
         $btnActualizarImportacion.click($btnActualizarImportacion_click);
         $btnGuardarFechaIngresoImportacion.click($btnGuardarFechaIngresoImportacion_click);
+        $openBuscadorCliente.click($openBuscadorCliente_click);
+        $btnBuscarClientes.click($btnBuscarClientesClick);
     };
+
+    function $btnBuscarClientesClick() {
+        buscarClienteAsignado();
+    }
+
+    function $openBuscadorCliente_click() {
+        $txtRuc.val('');
+        $txtNomEmpresa.val('');
+        buscarClienteAsignado();
+    }
+
+    function buscarClienteAsignado() {
+        var m = "POST";
+        var url = "BandejaSolicitudesVentas/BuscarListClientevsAsesor";
+        var objConsulta = {
+            Id_Cliente: 0,
+            Id_Empleado: $codEmpleado.val(),
+            Cliente: {
+                RUC: $txtRuc.val(),
+                NomEmpresa: $txtNomEmpresa.val()
+            }
+        }
+        var objParam = JSON.stringify(objConsulta);
+        var fnDoneCallback = function (data) {
+            cargarTablaAsignacionCliente(data)
+
+        };
+        return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.ObtenerClientesAsignados);
+    }
+
+    function cargarTablaAsignacionCliente(data) {
+        var columns = [
+            {
+                data: "Cliente.ID",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "Cliente.RUC",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "Cliente.NomEmpresa",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "Cliente.Categoria",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "Ubigeo.NombreDepartamento",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "Ubigeo.NombreProvincia",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "Ubigeo.NombreDistrito",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "Cliente.SectorCliente",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "Cliente.ID",
+                render: function (data, type, row) {
+                    var d = "'" + row.Cliente.ID + "','" + row.Cliente.RUC + "','" + row.Cliente.NomEmpresa+"'"; 
+                    var seleccionar = '<a id="btnSeleccionarCliente" class="btn btn-default btn-xs" title="Seleccionar" href="javascript:solicitud.seleccionarCliente('+d+')"><i class="fa fa-level-down" aria-hidden="true"></i> Seleccionar</a>';
+                    return '<center>' + seleccionar + '</center>';
+                }
+            }
+        ];
+        var columnsDefs = [
+            {
+                targets: [0],
+                visible: true
+            }
+        ];
+        app.llenarTabla($tblClientes, data, columns, columnsDefs, "#tblClientes")
+    }
+
+    function seleccionarCliente(id,ruc,nombreCliente) {
+        $hdnIdCliente.val(id);
+        $txtRucCliente.val(ruc);
+        $txtNomEmpresaCliente.val(nombreCliente);
+        $modalBusquedaClientes.modal('toggle')
+    }
 
     function $btnGuardarFechaIngresoImportacion_click() {
 
@@ -3722,6 +3838,12 @@
             
             if ($numeroSolicitud.val() != "") {
 
+                $txtTituloClie.text("Cliente: " + data.Result.Solicitud.RazonSocial);
+                $idCliente.val(data.Result.Solicitud.IdCliente);
+                $hdnIdCliente.val(data.Result.Solicitud.IdCliente);
+                $nomEmpresa.val(data.Result.Solicitud.RazonSocial);
+                $hdnRUC.val(data.Result.Solicitud.RUC);
+                $openBuscadorCliente.prop("disabled",true);
               
                 if ($("#idFlujo").val() == "2")//Para post-venta
                 {
@@ -3741,8 +3863,8 @@
                 };
 
                 //Carga de datos de la solicitud:
-                $txtRuc.val(data.Result.Solicitud.RUC);
-                $txtNomEmpresa.val(data.Result.Solicitud.RazonSocial);
+                $txtRucCliente.val(data.Result.Solicitud.RUC);
+                $txtNomEmpresaCliente.val(data.Result.Solicitud.RazonSocial);
                 $txtAsesor.val(data.Result.Solicitud.AsesorVenta);
                 $cmbFlujo.val(data.Result.Solicitud.Id_Flujo).trigger("change.select2");
                 $cmbTipo.val(data.Result.Solicitud.Tipo_Sol).trigger("change.select2");
@@ -4925,6 +5047,11 @@
             return;
         };
 
+        if ($txtNomEmpresaCliente.val() === "") {
+            app.message.error("Validación", "Debe seleccionar un cliente para el registro.");
+            return;
+        }
+
         if ($dateSolicitud.val() === "") {
             app.message.error("Validación", "Debe ingresar la fecha de solicitud.");
             return
@@ -4965,9 +5092,9 @@
                 Fecha_Sol: $dateSolicitud.val(),
                 Tipo_Sol: $cmbTipo.val(),
                 Cod_MedioCont: $cmbMedioContacto.val(),
-                IdCliente: $idCliente.val(),
-                RUC: $hdnRUC.val(),
-                RazonSocial: $nomEmpresa.val(),
+                IdCliente: $hdnIdCliente.val(),
+                RUC: $txtRucCliente.val(),
+                RazonSocial: $txtNomEmpresaCliente.val(),
                 AsesorVenta: $Asesor.val(),
                 Cod_Empresa: $cmbempresa.val(),
                 TipoProceso: $txtTipoProceso.val(),
@@ -5143,7 +5270,7 @@
     function btnRegresarClick() {
         var btnRegresar = document.getElementById("btnRegresar");
         if (btnRegresar != null) {
-            app.redirectTo("BandejaSolicitudesVentas");
+            app.redirectTo("BandejaVentas");
         }
         else {
             var fnSi = function () {
@@ -6148,5 +6275,6 @@
         eliminarDetServ: eliminarDetServ,
         editarDetServ: editarDetServ,
         DesasignarTecnico: DesasignarTecnico,
+        seleccionarCliente: seleccionarCliente
     }
 })(window.jQuery, window, document);

@@ -1,4 +1,5 @@
 ﻿using AHSECO.CCL.BE;
+using AHSECO.CCL.BE.AsignacionManual;
 using AHSECO.CCL.BE.Mantenimiento;
 using AHSECO.CCL.BE.ServicioTecnico.BandejaGarantias;
 using AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica;
@@ -2435,5 +2436,275 @@ namespace AHSECO.CCL.BD.Ventas
         }
 
 
+        public IEnumerable<BandejaSolicitudesDTO> ConsultaBandejaSolicitudes(FiltroBandejaVentasDTO filtros)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+
+            using (var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("CODSOL", filtros.CodigoSolicitud);
+                parameters.Add("COD_FLUJO", filtros.CodigoFlujo);
+                parameters.Add("FECINISOL", filtros.FechaInicioSol);
+                parameters.Add("FECFINSOL", filtros.FechaFinSol);
+                parameters.Add("TIPOVENTA", filtros.CodigoTipoVenta);
+                parameters.Add("TIPOSOL", filtros.CodigoTipoSol);
+                parameters.Add("RUCCLIENTE", filtros.RucCliente);
+                parameters.Add("NOMCLIENTE", filtros.NombreCliente);
+                parameters.Add("NOMVENDEDOR", filtros.NombreVendedor);
+                parameters.Add("CODEMPRESA", filtros.CodigoEmpresa);
+                parameters.Add("ESTADO", filtros.CodigoEstado);
+                parameters.Add("NOMCONTACTO", filtros.NombreContacto);
+                parameters.Add("FORMAPAGO", filtros.CodigoFormaPago);
+                parameters.Add("MONEDA", filtros.CodigoMoneda);
+                parameters.Add("GARANTIA", filtros.CodigoGarantia);
+                parameters.Add("NROORDEN", filtros.NroOrden);
+                parameters.Add("NROPROCESO", filtros.NroProceso);
+                parameters.Add("NUMCONTRATO", filtros.NumeroContrato);
+                parameters.Add("NUMFIANZAPP", filtros.NumFianzaPP);
+                parameters.Add("NUMFIANZAPA", filtros.NumFianzaPA);
+                parameters.Add("FLAGGERENCIA", filtros.FlagGerencia);
+                parameters.Add("FLAGLOGISTICA", filtros.FlagLogistica);
+                parameters.Add("FLAGCOSTEO", filtros.FlagCosteo);
+                parameters.Add("FLAGSERVTEC", filtros.FlagServTec);
+                parameters.Add("FLAGIMPORT", filtros.FlagImportacion);
+                parameters.Add("FLAGFACT", filtros.FlagFacturacion);
+                parameters.Add("ROLUSUARIO", filtros.RolUsuario);
+                parameters.Add("USRREG", filtros.UsuarioRegistro);
+
+                var result = connection.Query
+                (
+                    sql: "USP_CONSULTA_BANDEJASOLICITUD",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure
+                )
+                 .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new BandejaSolicitudesDTO
+                    {
+                        NumeroSolicitud = i.Single(d => d.Key.Equals("NUMSOL")).Value.Parse<string>(),
+                        CodigoFlujo = i.Single(d => d.Key.Equals("ID_FLUJO")).Value.Parse<int>(),
+                        NombreFlujo = i.Single(d => d.Key.Equals("DESFLUJO")).Value.Parse<string>(),
+                        FechaSolicitud = i.Single(d => d.Key.Equals("FECHASOL")).Value.Parse<string>(),
+                        TipoVenta = i.Single(d => d.Key.Equals("TIPOVENTA")).Value.Parse<string>(),
+                        TipoSolicitud = i.Single(d => d.Key.Equals("TIPOSOL")).Value.Parse<string>(),
+                        MedioContacto = i.Single(d => d.Key.Equals("MEDIOCONTACTO")).Value.Parse<string>(),
+                        TipoProceso = i.Single(d => d.Key.Equals("TIPOPROCESO")).Value.Parse<string>(),
+                        NumeroProceso = i.Single(d => d.Key.Equals("NROPROCESO")).Value.Parse<string>(),
+                        RucEmpresa = i.Single(d => d.Key.Equals("RUCCLIENTE")).Value.Parse<string>(),
+                        NombreCliente = i.Single(d => d.Key.Equals("RAZONSOCIALCLIENTE")).Value.Parse<string>(),
+                        NombreVendedor = i.Single(d => d.Key.Equals("VENDEDOR")).Value.Parse<string>(),
+                        NombreEmpresa = i.Single(d => d.Key.Equals("NOMEMPRESA")).Value.Parse<string>(),
+                        NombreEstado = i.Single(d => d.Key.Equals("NOMESTADO")).Value.Parse<string>(),
+                        UsuarioRegistro = i.Single(d => d.Key.Equals("USR_REG")).Value.Parse<string>(),
+                        FechaRegistro = i.Single(d => d.Key.Equals("FEC_REG")).Value.Parse<string>(),
+                        NumeroCotizacion = i.Single(d => d.Key.Equals("NUMCOTI")).Value.Parse<string>(),
+                        FechaCotizacion = i.Single(d => d.Key.Equals("FECHACOTI")).Value.Parse<string>(),
+                        NombreContacto = i.Single(d => d.Key.Equals("NOMCONTACTO")).Value.Parse<string>(),
+                        AreaContacto = i.Single(d => d.Key.Equals("AREACONTACTO")).Value.Parse<string>(),
+                        TelefonoContacto = i.Single(d => d.Key.Equals("TELEFONOCONTACTO")).Value.Parse<string>(),
+                        EmailContacto = i.Single(d => d.Key.Equals("EMAILCONTACTO")).Value.Parse<string>(),
+                        PlazoEntrega = i.Single(d => d.Key.Equals("PLAZOENTREGA")).Value.Parse<string>(),
+                        FormaPago = i.Single(d => d.Key.Equals("FORMAPAGO")).Value.Parse<string>(),
+                        Moneda = i.Single(d => d.Key.Equals("MONEDA")).Value.Parse<string>(),
+                        Vigencia = i.Single(d => d.Key.Equals("VIGENCIA")).Value.Parse<string>(),
+                        Garantia = i.Single(d => d.Key.Equals("GARANTIA")).Value.Parse<string>(),
+                        Observacion = i.Single(d => d.Key.Equals("OBSERVACION")).Value.Parse<string>(),
+                        PorcentajeDescuento = i.Single(d => d.Key.Equals("PORCENTAJE_DSC")).Value.Parse<string>(),
+                        Subtotal = i.Single(d => d.Key.Equals("SUBTOTAL")).Value.Parse<string>(),
+                        MontoIGV = i.Single(d => d.Key.Equals("MONTOIGV")).Value.Parse<string>(),
+                        TotalVenta = i.Single(d => d.Key.Equals("TOTALVENTA")).Value.Parse<string>(),
+                        NumOrden = i.Single(d => d.Key.Equals("NUMORDEN")).Value.Parse<string>(),
+                        FechaOrden = i.Single(d => d.Key.Equals("FECHAORDEN")).Value.Parse<string>(),
+                        FechaMaxima = i.Single(d => d.Key.Equals("FECHAMAX")).Value.Parse<string>(),
+                        NumContrato = i.Single(d => d.Key.Equals("NUMCONTRATO")).Value.Parse<string>(),
+                        FechaContrato = i.Single(d => d.Key.Equals("FEC_CONTRATO")).Value.Parse<string>(),
+                        PrestacionPrincipal = i.Single(d => d.Key.Equals("PRESTPRIN")).Value.Parse<string>(),
+                        PrestacionAccesoria = i.Single(d => d.Key.Equals("PRESTACC")).Value.Parse<string>(),
+                        NroFianzaPP = i.Single(d => d.Key.Equals("NUMFIANZAPP")).Value.Parse<string>(),
+                        NroFianzaPA = i.Single(d => d.Key.Equals("NUMFIANZAPA")).Value.Parse<string>(),
+                        Fianza = i.Single(d => d.Key.Equals("FIANZA")).Value.Parse<string>(),
+                        IdSolicitud = i.Single(d => d.Key.Equals("IDSOLICITUD")).Value.Parse<long>(),
+                        IdWorkFlow = i.Single(d => d.Key.Equals("IDWORKFLOW")).Value.Parse<long>(),
+                        IdEstado = i.Single(d => d.Key.Equals("IDESTADO")).Value.Parse<string>(),
+                        EstadoAbreviado = i.Single(d => d.Key.Equals("ABREVEST")).Value.Parse<string>(),
+                        CodigoTipoSolicitud = i.Single(d => d.Key.Equals("CODTIPOSOL")).Value.Parse<string>(),
+                        IdCliente = i.Single(d => d.Key.Equals("IDCLIENTE")).Value.Parse<int>(),
+                        IdSede = i.Single(d => d.Key.Equals("IDSEDE")).Value.Parse<int>(),
+                        NomSede = i.Single(d => d.Key.Equals("NOMSEDE")).Value.Parse<string>()
+                    });
+
+                connection.Close();
+                return result;
+            }
+        }
+
+
+        public FiltroBandejaSolicitudesDTO GrupoBandejaSolicitudesFiltro()
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using (var connection = Factory.ConnectionSingle())
+            {
+                SqlCommand sqlcommand;
+                var result = new FiltroBandejaSolicitudesDTO();
+                string query = "exec USP_FILTRO_BANDEJASOLICITUDES";
+                connection.Open();
+                sqlcommand = new SqlCommand(query, connection);
+                using (var reader = sqlcommand.ExecuteReader())
+                {
+                    List<ComboDTO> _tipoVentas = new List<ComboDTO>();
+                    while (reader.Read())
+                    {
+                        var tipoVenta = new ComboDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("CODIGO")) ? "" : reader.GetString(reader.GetOrdinal("CODIGO")),
+                            Text = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION"))
+                        };
+                        _tipoVentas.Add(tipoVenta);
+                    };
+
+                    reader.NextResult();
+
+                    List<ComboDTO> _tipoSolicitudes = new List<ComboDTO>();
+                    while (reader.Read())
+                    {
+                        var tipoSol = new ComboDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("CODIGO")) ? "" : reader.GetString(reader.GetOrdinal("CODIGO")),
+                            Text = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION"))
+                        };
+                        _tipoSolicitudes.Add(tipoSol);
+                    };
+
+                    reader.NextResult();
+                    List<ComboDTO> _empresas = new List<ComboDTO>();
+                    while (reader.Read())
+                    {
+                        var empresa = new ComboDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("CODIGO")) ? "" : reader.GetString(reader.GetOrdinal("CODIGO")),
+                            Text = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION"))
+                        };
+                        _empresas.Add(empresa);
+                    };
+
+                    reader.NextResult();
+                    List<ComboDTO> _formaPagos = new List<ComboDTO>();
+                    while (reader.Read())
+                    {
+                        var formapago = new ComboDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("CODIGO")) ? "" : reader.GetString(reader.GetOrdinal("CODIGO")),
+                            Text = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION"))
+                        };
+                        _formaPagos.Add(formapago);
+                    };
+
+                    reader.NextResult();
+                    List<ComboDTO> _monedas = new List<ComboDTO>();
+                    while (reader.Read())
+                    {
+                        var moneda = new ComboDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("CODIGO")) ? "" : reader.GetString(reader.GetOrdinal("CODIGO")),
+                            Text = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION"))
+                        };
+                        _monedas.Add(moneda);
+                    };
+                    reader.NextResult();
+                    List<ComboDTO> _estados = new List<ComboDTO>();
+                    while (reader.Read())
+                    {
+                        var estado = new ComboDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("CODIGO")) ? "" : reader.GetString(reader.GetOrdinal("CODIGO")),
+                            Text = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION"))
+                        };
+                        _estados.Add(estado);
+                    };
+                    reader.NextResult();
+                    List<ComboDTO> _garantias = new List<ComboDTO>();
+                    while (reader.Read())
+                    {
+                        var garantia = new ComboDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("CODIGO")) ? "" : reader.GetString(reader.GetOrdinal("CODIGO")),
+                            Text = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION"))
+                        };
+                        _garantias.Add(garantia);
+                    };
+                    reader.NextResult();
+                    List<ComboDTO> _flujos = new List<ComboDTO>();
+                    while (reader.Read())
+                    {
+                        var flujo = new ComboDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("CODIGO")) ? "" : reader.GetString(reader.GetOrdinal("CODIGO")),
+                            Text = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION"))
+                        };
+                        _flujos.Add(flujo);
+                    };
+
+                    result.TipoVentas = _tipoVentas;
+                    result.TipoSolicitudes = _tipoSolicitudes;
+                    result.Empresas = _empresas;
+                    result.FormaPagos = _formaPagos;
+                    result.Monedas = _monedas;
+                    result.Estados = _estados;
+                    result.Garantias = _garantias;
+                    result.Flujos = _flujos;
+                };
+                return result;
+            };
+        }
+
+        public IEnumerable<ClientevsAsesorDTO> BuscarListClientevsAsesor(ClientevsAsesorDTO clientevsAsesorDTO)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using (var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+                var parameters = new DynamicParameters();
+
+                parameters.Add("ID_CLIENTE", clientevsAsesorDTO.Id_Cliente);
+                parameters.Add("ID_EMPLEADO", string.IsNullOrEmpty(clientevsAsesorDTO.Id_Empleado) ? null : clientevsAsesorDTO.Id_Empleado);
+                parameters.Add("RUC", clientevsAsesorDTO.Cliente.RUC);
+                parameters.Add("NOMBREEMPRESA", clientevsAsesorDTO.Cliente.NomEmpresa);
+
+                var result = connection.Query(
+                    sql: "USP_BUSCAR_ASIG_CLIE_MANUAL",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new ClientevsAsesorDTO
+                    {
+                        Cliente = new ClienteDTO
+                        {
+                            ID = i.Single(d => d.Key.Equals("ID")).Value.Parse<int>(),
+                            RUC = i.Single(d => d.Key.Equals("RUC")).Value.Parse<string>(),
+                            NomEmpresa = i.Single(d => d.Key.Equals("NOMEMPRESA")).Value.Parse<string>(),
+                            Estado = i.Single(d => d.Key.Equals("ESTADO")).Value.Parse<bool>(),
+                            Categoria = i.Single(d => d.Key.Equals("CATEGORIA")).Value.Parse<string>(),
+                            SectorCliente = i.Single(d => d.Key.Equals("SECTORCLIENTE")).Value.Parse<string>()
+
+                        },
+                        Empleado = new EmpleadoDTO
+                        {
+                            NombresCompletosEmpleado = i.Single(d => d.Key.Equals("ASESOR")).Value.Parse<string>()
+                        },
+                        Ubigeo = new UbigeoDTO
+                        {
+                            NombreDepartamento = i.Single(d => d.Key.Equals("NOMDEPARTAMENTO")).Value.Parse<string>(),
+                            NombreProvincia = i.Single(d => d.Key.Equals("NOMPROVINCIA")).Value.Parse<string>(),
+                            NombreDistrito = i.Single(d => d.Key.Equals("NOMDISTRITO")).Value.Parse<string>()
+                        }
+                    });
+
+                connection.Close();
+
+                return result;
+            }
+        }
     }
 }

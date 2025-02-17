@@ -19,6 +19,14 @@
     var RolVenta_CoordAtc = ConstantesDTO.WorkflowRol.Venta.CoordAtc;
     var RolVenta_Facturador = ConstantesDTO.WorkflowRol.Venta.Facturador;
     var cliente = VariableSesion.getObject("VENTA_CLIENTE") as ClienteDTO;
+    if(cliente == null)
+    {
+        var new_cliente = new ClienteDTO();
+        new_cliente.NomEmpresa = "";
+        new_cliente.ID = 0;
+        new_cliente.RUC = "";
+        cliente = new_cliente;
+    }
     var empleado = VariableSesion.getObject("VENTA_EMPLEADO") as EmpleadoDTO;
     var numSol = VariableSesion.getCadena("numSol");
     var estadoSol = VariableSesion.getCadena("estadoSol");
@@ -66,6 +74,7 @@
 }
 
 <input type="hidden" id="idFlujo" value="@idflujo" />
+<input type="hidden" id="codEmpleado" value="@empleado.CodigoEmpleado"/>
 <input type="hidden" id="nomEmpresa" value="@cliente.NomEmpresa" />
 <input type="hidden" id="codigoWorkflow" value="@idWorkFlow" />
 <input type="hidden" id="idCliente" value="@cliente.ID" />
@@ -120,7 +129,8 @@
     <div class="box-inner">
         <div class="box-header well" data-original-title="">
             <div style="display: flex;justify-content: space-between;">
-                <h2><i class="fa fa-user-circle-o" aria-hidden="true"></i> Cliente: @cliente.NomEmpresa</h2>
+                @if (cliente.NomEmpresa == "") { ViewBag.Titulo = "Nuevo Registro";  } else { ViewBag.Titulo = "Cliente: " + cliente.NomEmpresa; }
+                <h2 id="txtTituloClie"><i class="fa fa-user-circle-o" aria-hidden="true"></i> @ViewBag.Titulo</h2>
                 @if (numSol != null)
                 {
                     var numSolFormateado = ("000000" + numSol);
@@ -168,15 +178,22 @@
                     </div>
                     <div class="row container-fluid" style="background-color: #00aeef0f; border-radius: 10px;">
                         <div class="col-md-4 col-sm-12">
-                            <label for="txtRuc">R.U.C:</label>
+                            <label for="txtRucCliente">R.U.C:</label>
                             <div class="form-group">
-                                <input disabled type="text" class="form-control input-sm" id="txtRuc" value="@cliente.RUC">
+                                <div class="input-group input-group-sm date">
+                                    <input hidden id="hdnIdCliente" value="@cliente.ID"/>
+                                    <input disabled type="text" class="form-control input-sm" id="txtRucCliente" value="@cliente.RUC">
+                                    <span style="cursor: pointer" class="input-group-addon input-sm" id="openBuscadorCliente" data-toggle="modal" data-target="#modalBusquedaClientes" @(ViewBag.disabled ? "disabled" : "")>
+                                        <i class="fa fa-search"></i>
+                                    </span>
+                                </div>
+                                
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12">
-                            <label for="txtNomEmpresa">Empresa Cliente:</label>
+                            <label for="txtNomEmpresaCliente">Empresa Cliente:</label>
                             <div class="form-group">
-                                <input disabled type="text" class="form-control input-sm" id="txtNomEmpresa" value="@cliente.NomEmpresa">
+                                <input disabled type="text" class="form-control input-sm" id="txtNomEmpresaCliente" value="@cliente.NomEmpresa">
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12">
@@ -1363,6 +1380,11 @@
 <div class="modal fade" id="modalBusquedaTecnico" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     @{
         Html.RenderPartial("_BuscarTecnico");
+    }
+</div>
+<div class="modal fade" id="modalBusquedaClientes" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    @{
+        Html.RenderPartial("_BusquedaClientes");
     }
 </div>
 

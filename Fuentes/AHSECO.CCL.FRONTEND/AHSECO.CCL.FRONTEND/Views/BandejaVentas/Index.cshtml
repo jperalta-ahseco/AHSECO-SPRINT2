@@ -2,7 +2,7 @@
 @using AHSECO.CCL.BE;
 
 @{
-    ViewBag.Title = "Ventas";
+    ViewBag.Title = "Bandeja de Solicitudes";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var NombreRol = VariableSesion.getCadena("VENTA_NOMBRE_ROL");
@@ -17,56 +17,191 @@
     <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
     <div class="box-inner">
         <div class="box-header well" data-original-title="">
-            <h2><i class="glyphicon glyphicon-list"></i> Bandeja de Ventas</h2>
+            <h2><i class="glyphicon glyphicon-list"></i> Bandeja de Solicitudes:</h2>
         </div>
         <div class="box-content">
-            <form id="formMantCliente">
+            <form id="formFiltroSolicitudes">
                 <div class="row container-fluid">
-                    <div class="col-md-4 col-sm-12">
-                        <label for="txtRuc">R.U.C:</label>
-                        <div class="form-group">
-                            <input placeholder="Ingresar RUC" maxlength="11" type="text" class="form-control input-sm" id="txtRuc" value="">
+                    <div class="col-md-3 col-sm-12">
+                        <label for="dateFechaIniSol">Fecha Inicio: </label>
+                        <div class="input-group date">
+                            <input type="text" readonly class="form-control input-sm" id="dateFechaIniSol" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10" @ViewBag.FecIni>
+                            <span class="input-group-addon input-sm" id="openRegdateFechaIniSol" @ViewBag.FecIni>
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                            <span class="input-group-addon input-sm" id="LimpiardateFechaIniSol" @ViewBag.FecIni>
+                                <i class="fa fa-trash"></i>
+                            </span>
                         </div>
                     </div>
-                    <div class="col-md-4 col-sm-12">
-                        <label for="txtNomEmpresa">Nombre Empresa:</label>
-                        <div class="form-group">
-                            <input placeholder="Nombre de Empresa" type="text" class="form-control input-sm" id="txtNomEmpresa" value="">
+                    <div class="col-md-3 col-sm-12">
+                        <label for="dateFechaFinSol">Fecha Fin: </label>
+                        <div class="input-group date">
+                            <input type="text" readonly class="form-control input-sm" id="dateFechaFinSol" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10" @ViewBag.FecFin>
+                            <span class="input-group-addon input-sm" id="openRegdateFechaFinSol" @ViewBag.FecFin>
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                            <span class="input-group-addon input-sm" id="LimpiardateFechaFinSol" @ViewBag.FecFin>
+                                <i class="fa fa-trash"></i>
+                            </span>
                         </div>
                     </div>
-                    @if (NombreRol == "SGI_VENTA_JEFE" || NombreRol == "SGI_VENTA_COORDINAVENTA")
-                    {
-                        <div class="col-md-4 col-sm-7 col-xs-12">
-                            <label for="cmbAsesor">Asesor:</label>
-                            <div class="form-group">
-                                <select class="form-control select2 input-sm" style="width: 100%;" id="cmbAsesor" data-selected="">
-                                </select>
-                            </div>
+                    <div class="col-md-3 col-sm-12">
+                        <label for="cmbTipoVenta">Tipo de Venta:</label>
+                        <div class="form-group">
+                            <select class="form-control select2 input-sm" style="width: 100%;" id="cmbTipoVenta" data-selected="" @ViewBag.TipoVenta>
+                            </select>
                         </div>
-                    }
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        <label for="cmbTipoSolicitud">Tipo de Solicitud:</label>
+                        <div class="form-group">
+                            <select class="form-control select2 input-sm" style="width: 100%;" id="cmbTipoSolicitud" data-selected="" @ViewBag.TipoSolicitud>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row container-fluid">
+                    <div class="col-md-3 col-sm-12">
+                        <label for="txtRuc">R.U.C Cliente:</label>
+                        <div class="form-group">
+                            <input placeholder="Ingresar RUC" maxlength="11" type="text" class="form-control input-sm" id="txtRuc" value="" @ViewBag.Ruc>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        <label for="txtNombreCliente">Nombre Cliente:</label>
+                        <div class="form-group">
+                            <input placeholder="Ingresar Nombre" maxlength="200" type="text" class="form-control input-sm" id="txtNombreCliente" value="" @ViewBag.NombreCliente>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        <label for="txtNombreVendedor">Nombre Vendedor:</label>
+                        <div class="form-group">
+                            <input placeholder="Ingresar Vendedor" maxlength="200" type="text" class="form-control input-sm" id="txtNombreVendedor" value="" @ViewBag.NombreVendedor>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        <label for="cmbEmpresa">Empresa:</label>
+                        <div class="form-group">
+                            <select class="form-control select2 input-sm" style="width: 100%;" id="cmbEmpresa" data-selected="" @ViewBag.Empresa>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row container-fluid">
+                    <div class="col-md-3 col-sm-12">
+                        <label for="txtNombreContacto">Nombre Contacto:</label>
+                        <div class="form-group">
+                            <input placeholder="Ingresar Nombre" maxlength="150" type="text" class="form-control input-sm" id="txtNombreContacto" value="" @ViewBag.NombreContacto>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        <label for="cmbFormaPago">Forma de Pago:</label>
+                        <div class="form-group">
+                            <select class="form-control select2 input-sm" style="width: 100%;" id="cmbFormaPago" data-selected="" @ViewBag.FormaPago>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        <label for="cmbMoneda">Moneda:</label>
+                        <div class="form-group">
+                            <select class="form-control select2 input-sm" style="width: 100%;" id="cmbMoneda" data-selected="" @ViewBag.Moneda>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        <label for="cmbEstado">Estado:</label>
+                        <div class="form-group">
+                            <select class="form-control select2 input-sm" style="width: 100%;" id="cmbEstado" data-selected="" @ViewBag.Estado>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row container-fluid">
+                    <div class="col-md-3 col-sm-12">
+                        <label for="txtNumeroOrden">N° de Orden:</label>
+                        <div class="form-group">
+                            <input placeholder="Ingresar N° Orden" maxlength="50" type="text" class="form-control input-sm" id="txtNumeroOrden" value="" @ViewBag.NumeroOrden>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        <label for="txtNumeroProceso">N° de Proceso:</label>
+                        <div class="form-group">
+                            <input placeholder="Ingresar N° Proceso" maxlength="50" type="text" class="form-control input-sm" id="txtNumeroProceso" value="" @ViewBag.NumeroProceso>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        <label for="txtNumeroContrato">N° de Contrato:</label>
+                        <div class="form-group">
+                            <input placeholder="Ingresar N° Contrato" maxlength="50" type="text" class="form-control input-sm" id="txtNumeroContrato" value="" @ViewBag.NumeroContrato>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        <label for="cmbGarantia">Garantia:</label>
+                        <div class="form-group">
+                            <select class="form-control select2 input-sm" style="width: 100%;" id="cmbGarantia" data-selected="" @ViewBag.Garantia>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row container-fluid">
+                    <div class="col-md-3 col-sm-12">
+                        <label for="txtNroSol">N° Solicitud:</label>
+                        <div class="form-group">
+                            <input placeholder="Ingresar N° Solicitud" maxlength="50" type="text" class="form-control input-sm" id="txtNroSol" value="" @ViewBag.NroSol>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        <label for="txtNroFianzaPP">N° Fianza Prestaci&oacute;n Principal:</label>
+                        <div class="form-group">
+                            <input placeholder="Ingresar N° Fianza PP" maxlength="50" type="text" class="form-control input-sm" id="txtNroFianzaPP" value="" @ViewBag.NroFianzaPP>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        <label for="txtNroFianzaPA">N° Fianza Prestaci&oacute;n Accesoria:</label>
+                        <div class="form-group">
+                            <input placeholder="Ingresar N° Fianza PA" maxlength="50" type="text" class="form-control input-sm" id="txtNroFianzaPA" value="" @ViewBag.NroFianzaPA>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        <label for="cmbFlujo">Flujo:</label>
+                        <div class="form-group">
+                            <select class="form-control select2 input-sm" style="width: 100%;" id="cmbFlujo" data-selected="" @ViewBag.Flujo>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row container-fluid" style="@(ViewBag.VerGestion ? "" : "display:none");">
+                    <div class="col-md-3 col-sm-12">
+                        <div class="form-group">
+                            <input type="checkbox" name="gestion" id="chkGestion" value="1" @ViewBag.CheckGestion>
+                            <b>Pendientes de Atenci&oacute;n</b>
+                        </div>
+                    </div>
                 </div>
                 <div class="text-right">
                     <button class="btn btn-primary btn-sm" type="button" id="btnBuscar"><i class="fa fa-search"></i> Buscar</button>
+                    <button class="btn btn-info btn-sm" type="button" id="btnExportar" href="BandejaVentas/GenerarReporteVentas"><i class="fa fa-table"></i> Exportar</button>
+                    @if (NombreRol == "SGI_VENTA_ASESOR" || NombreRol == "SGI_VENTA_COORDINASERV" || NombreRol == "SGI_VENTA_COORDINAATC")
+                    {
+                        <button class="btn btn-success btn-sm" type="button" id="btnNuevo"><i class="fa fa-file"></i> Nuevo</button>
+                    }
                 </div>
             </form>
             <br />
             <div class="table-responsive">
-                <table id="tblClientes" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                <table id="tblSolicitudes" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                     <thead>
                         <tr>
-                            <th>Id</th>
-                            <th style="text-align: center; width:20%;">RUC</th>
-                            <th style="text-align: center; width:20%;">Nombre Empresa</th>
-                            <th style="text-align: center; width:20%;">Sector Cliente</th>
-                            <th style="text-align: center; width:50px;">Categor&iacute;a</th>
-                            <th style="text-align: center; width: 20%;">Direcci&oacute;n F&iacute;scal</th>
-                            <th style="text-align: center; width: 20%;">Departamento</th>
-                            <th style="text-align: center; width: 20%;">Provincia</th>
-                            <th style="text-align: center; width: 20%;">Distrito</th>
-                            @if (NombreRol == "SGI_VENTA_JEFE" || NombreRol == "SGI_VENTA_COORDINAVENTA" || NombreRol == "SGI_VENTA_ASESOR")
-                            {
-                                <th style="text-align: center; width: 20%;">Asesor</th>
-                            }
+                            <th style="text-align: center; width:10%;">N° Solicitud</th>
+                            <th style="text-align: center; width:10%;">Flujo</th>
+                            <th style="text-align: center; width:10%;">Fecha Solicitud</th>
+                            <th style="text-align: center; width:10%;">Tipo Venta</th>
+                            <th style="text-align: center; width:10%;">Tipo Solicitud</th>
+                            <th style="text-align: center; width:10%;">Cliente</th>
+                            <th style="text-align: center; width:10%;">Vendedor</th>
+                            <th style="text-align: center; width:10%;">Estado</th>
                             <th style="text-align: center;">Acciones</th>
                         </tr>
                     </thead>

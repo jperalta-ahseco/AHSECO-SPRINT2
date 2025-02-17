@@ -35,11 +35,24 @@ namespace AHSECO.CCL.BD.AsignacionManual
                             ID = i.Single(d => d.Key.Equals("ID")).Value.Parse<int>(),
                             RUC = i.Single(d => d.Key.Equals("RUC")).Value.Parse<string>(),
                             NomEmpresa = i.Single(d => d.Key.Equals("NOMEMPRESA")).Value.Parse<string>(),
-                            Estado = i.Single(d => d.Key.Equals("ESTADO")).Value.Parse<bool>()
+                            Estado = i.Single(d => d.Key.Equals("ESTADO")).Value.Parse<bool>(),
+                            Categoria = i.Single(d => d.Key.Equals("CATEGORIA")).Value.Parse<string>(),
+                            SectorCliente = i.Single(d => d.Key.Equals("SECTORCLIENTE")).Value.Parse<string>()
 
                         },
                         Empleado = new EmpleadoDTO { 
                             NombresCompletosEmpleado = i.Single(d => d.Key.Equals("ASESOR")).Value.Parse<string>()
+                        },
+                        Ubigeo = new UbigeoDTO
+                        {
+                            NombreDepartamento = i.Single(d => d.Key.Equals("NOMDEPARTAMENTO")).Value.Parse<string>(),
+                            NombreProvincia = i.Single(d => d.Key.Equals("NOMPROVINCIA")).Value.Parse<string>(),
+                            NombreDistrito = i.Single(d => d.Key.Equals("NOMDISTRITO")).Value.Parse<string>()
+                        },
+                        Sede = new SedeDTO
+                        {
+                            IdSede = i.Single(d => d.Key.Equals("IDSEDE")).Value.Parse<long>(),
+                            NomSede = i.Single(d => d.Key.Equals("NOMSEDE")).Value.Parse<string>(),
                         }
                     });
 
@@ -55,10 +68,11 @@ namespace AHSECO.CCL.BD.AsignacionManual
             using (var connection = Factory.ConnectionFactory())
             {
                 connection.Open();
-                foreach(var i in clientevsAsesorDTO.Id_ClienteList) {
+                foreach(var i in clientevsAsesorDTO.Id_LlaveList) {
                     var parameters = new DynamicParameters();
-                    parameters.Add("isId_cliente", i);
+                    parameters.Add("isId_cliente", i.IdCliente);
                     parameters.Add("isId_Asesor", clientevsAsesorDTO.Id_Empleado);
+                    parameters.Add("isId_Sede", i.IdSede);
                     parameters.Add("isUsuarioRegistra", clientevsAsesorDTO.UsuarioRegistra);
                     parameters.Add("Eliminar", clientevsAsesorDTO.Eliminar);
 

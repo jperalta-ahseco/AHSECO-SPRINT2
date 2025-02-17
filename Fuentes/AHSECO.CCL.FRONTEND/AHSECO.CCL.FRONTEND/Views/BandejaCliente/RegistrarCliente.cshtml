@@ -73,10 +73,12 @@
                     </div>
                 </div>
                 <div class="row container-fluid">
-                    <div class="col-md-2 col-sm-12">
-                        <label>Contactos</label>
+                    <div class="col-md-6 col-sm-12">
+
                         <div class="form-group">
                             <div class="input-group input-group-sm date">
+
+                                <a data-toggle="modal" data-target="#modalSedes" id="btnAbreRegistroSedes" class="btn btn-default btn-sm" title="Registrar Sedes"><i class="fa fa-home" aria-hidden="true"></i> Agregar Sedes</a>&nbsp;
                                 <a data-toggle="modal" data-target="#modalContactos" id="btnAbreRegistroContacto" class="btn btn-default btn-sm" title="Registrar Contacto"><i class="fa fa-users" aria-hidden="true"></i> Agregar Contactos</a>
                             </div>
                         </div>
@@ -101,6 +103,10 @@
 <!--No se debe poner un MODAL dentro de otro MODAL-->
 @{
     Html.RenderPartial("_Contactos");
+}
+
+@{
+    Html.RenderPartial("_Sedes");
 }
 
 <script>

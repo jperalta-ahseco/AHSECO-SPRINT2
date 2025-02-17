@@ -9,6 +9,9 @@ using AHSECO.CCL.BL.AsignacionManual;
 using System.IO;
 using System.Web.Mvc;
 using AHSECO.CCL.FRONTEND.Security;
+using AHSECO.CCL.BE.Mantenimiento;
+using DocumentFormat.OpenXml.Office2010.ExcelAc;
+using System.Collections.Generic;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.AsignacionManual
 {
@@ -31,6 +34,18 @@ namespace AHSECO.CCL.FRONTEND.Controllers.AsignacionManual
         public JsonResult Mantenimiento(ClientevsAsesorDTO clientevsAsesorDTO)
         {
             var asignacionManualBL = new AsignacionManualBL();
+            var llave_list = new List<SedeDTO>();
+
+            foreach(var item in clientevsAsesorDTO.Id_ClienteList)
+            {
+                string[] llaves = item.Split('|');
+                var sede = new SedeDTO();
+                sede.IdCliente = Convert.ToInt64(llaves[0]);
+                sede.IdSede = Convert.ToInt64(llaves[1]);
+                llave_list.Add(sede);
+            }
+
+            clientevsAsesorDTO.Id_LlaveList = llave_list;
             clientevsAsesorDTO.UsuarioRegistra = User.ObtenerUsuario();
             var response = asignacionManualBL.Mantenimiento(clientevsAsesorDTO);
             return Json(response);

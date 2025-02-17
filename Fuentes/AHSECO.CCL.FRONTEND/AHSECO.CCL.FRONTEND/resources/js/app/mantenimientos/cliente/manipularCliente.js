@@ -65,7 +65,23 @@ var manipularCliente = (function ($, win, doc) {
     var $modalUbigeo = $("#modalUbigeo");
     var $modalContacto = $('#modalContacto');
     var $modalContent = $('#modalContent');
+    var $txtNomSede = $('#txtNomSede');
+    var $txtidCliente = $('#txtidCliente');
+    var $cmbEstadoSede = $('#cmbEstadoSede');
+    var $btnAñadirSede = $('#btnAñadirSede');
+    var $btnAgregarSede = $('#btnAgregarSede');
+    var $btnActualizarSede = $('#btnActualizarSede');
+    var $tblSedes = $('#tblSedes');
+    var $contenidoTablaSede = $('#contenidoTablaSede');
+    var $NoExisteSede = $('#NoExisteSede');
+    var $btnAbreRegistroSedes = $('#btnAbreRegistroSedes');
+    var $txtSede = $('#txtSede');
+    var $btnAbreEditaSedes = $('#btnAbreEditaSedes');
+    var $tipoReg = $('#tipoReg');
     /************************** */
+
+    var $btnCerrarSede = $("#btnCerrarSede");
+    var $btnAgregarNuevaSede = $("#btnAgregarNuevaSede");
 
     var mensajes = {
         obteniendoClientes: "Obteniendo Clientes, por favor espere...",
@@ -83,6 +99,7 @@ var manipularCliente = (function ($, win, doc) {
     };
 
     function Initialize() {
+        manipularCliente.sedes = [];
         manipularCliente.contactos = [];
         manipularCliente.actualizarContacto = false;
         cargarCategorias();
@@ -108,11 +125,212 @@ var manipularCliente = (function ($, win, doc) {
         $btnAbreRegistroContacto.click(AbreRegistroContactoClick);
         $btnAbreEditaContacto.click(AbreEditaContactoClick);
         $btnConsultContacto.click(btnConsultContactoClick);
+        $btnCerrarSede.click(btnCerrarSedeClick);
+        $btnAgregarNuevaSede.click(btnAgregarNuevaSedeClick);
+        $btnAñadirSede.click(btnAñadirSedeClick);
+        $btnAbreRegistroSedes.click(btnAbreRegistroSedesClick);
+        $btnAbreEditaSedes.click(btnAbreEditaSedesClick);
         cargarDatos(ingreso, idCliente);
     }
 /***Cargar Combos***/
 
-/*Lógica Ubigeo*/
+    /*Lógica Ubigeo*/
+    function btnAñadirSedeClick() {
+        $('#tituloSedeBandeja').text('Agregar Nueva Sede');
+        $txtNomSede.val('');
+        $cmbEstadoSede.val("1");
+        $btnAgregarSede.hide();
+        $btnActualizarSede.hide();
+        $btnAgregarNuevaSede.show();
+        cargarTablaSedes();
+    }
+
+    function btnAbreEditaSedesClick() {
+        $tipoReg.val('U');
+        cargarTablaSedes();
+        $txtSede.val('');
+       
+       // $btnAñadirSede.hide();
+    }
+
+    function btnAbreRegistroSedesClick() {
+        $tipoReg.val("N");
+        cargarTablaSedes();
+        $txtSede.val('');
+        //$btnAñadirSede.show();
+    }
+
+    function cargarTablaSedes(tipo) {
+        var tipo = $tipoReg.val();
+        $('#tblSedes tbody tr').remove();
+
+        if (tipo === "N") {
+            $.each(manipularCliente.sedes, function (index, dato) {
+
+                var html = "<a id='btnEliminar' class='btn btn-primary btn-xs' title='Eliminar' href='javascript:manipularCliente.eliminarSede(" + dato.numero + ")'><i class='fa fa-trash-o' aria-hidden='true'></i></a>";
+
+                var nuevoTr = "<tr bgcolor='d0f2f7' id='fila" + dato.numero + "'>" +
+                    "<th style='text-align: center;'>" + dato.numero + "</th>" +
+                    "<th style='text-align: center;'>" + dato.nomSede + "</th>" +
+                    "<th style='text-align: center;'>" + dato.estadoText + "</th>" +
+                    "<th style='text-align: center;'>" + html + "</th>" +
+                    "</tr>";
+
+
+
+                $tblSedes.append(nuevoTr);
+
+            });
+
+            if (manipularCliente.sedes.length === 0) {
+                var tr_noreg = "<tr id='NoExisteSede'><td colspan='4' style='text-align:center'>No existen registro de sedes...</td></tr>";
+                $tblSedes.append(tr_noreg);
+            }
+        }
+        else {
+            
+            var method = "POST";
+            var url = "BandejaCliente/ConsultaSedes";
+            var sedeParam = {
+                NomSede: $txtSede.val(),
+                Estado: '',
+                IdCliente: idCliente
+            }
+            var objParams = JSON.stringify(sedeParam);
+
+            var fnDoneCallback = function (data) {
+                for (i = 0; i < data.Result.length; i++) {
+                    var html = "<a id='btnEliminar' class='btn btn-primary btn-xs' title='Eliminar' href='javascript:manipularCliente.eliminarSede(" + data.Result[i].IdSede + ")'><i class='fa fa-trash-o' aria-hidden='true'></i></a>";
+
+                    var nuevoTr = "<tr bgcolor='d0f2f7' id='fila" + data.Result[i].IdSede + "'>" +
+                        "<th style='text-align: center;'>" + data.Result[i].IdSede + "</th>" +
+                        "<th style='text-align: center;'>" + data.Result[i].NomSede + "</th>" +
+                        "<th style='text-align: center;'>" + data.Result[i].Estado + "</th>" +
+                        "<th style='text-align: center;'>" + html + "</th>" +
+                        "</tr>";
+
+                    $tblSedes.append(nuevoTr);
+                }
+
+
+                if (data.Result.length === 0) {
+                    var tr_noreg = "<tr id='NoExisteSede'><td colspan='4' style='text-align:center'>No existen registro de sedes...</td></tr>";
+                    $tblSedes.append(tr_noreg);
+                }
+
+            }
+            app.llamarAjax(method, url, objParams, fnDoneCallback, null, null, mensajes.consultandoTipDoc);
+        }
+      
+
+        
+    }
+
+    function btnAgregarNuevaSedeClick() {
+        
+        if (($txtNomSede.val().trim() === "") || !(isNaN($txtNomSede.val().trim()))) {
+            app.message.error("Validación", "Debe de agregar un nombre de la sede");
+            return
+        };
+        var fnSi = function () {
+            var tipo = $tipoReg.val();
+            if (tipo != "U") {
+                var numero = manipularCliente.sedes.length + 1;
+                var _desSede = $txtNomSede.val();
+                var _estado = $cmbEstadoSede.val();
+                var _estadoText = $("#cmbEstadoSede option:selected").text();
+
+                manipularCliente.sedes.push({
+                    numero: numero,
+                    nomSede: _desSede,
+                    estadoSede: _estado,
+                    estadoText: _estadoText
+                });
+                cargarTablaSedes();
+            }
+            else {
+
+                var estado = "";
+                if ($cmbEstadoSede.val() === "1") {
+                    estado = "A";
+                }
+                else {
+                    estado = "I";
+                }
+                var method = "POST";
+                var url = "BandejaCliente/MantenimientoSede";
+                var sedeParam = {
+                    Tipo: 'I',
+                    IdSede: 0,
+                    IdCliente: idCliente,
+                    NomSede: $txtNomSede.val(),
+                    Estado: estado
+                }
+                var objParams = JSON.stringify(sedeParam);
+
+                var fnDoneCallback = function (data) {
+                    cargarTablaSedes();
+
+                }
+                app.llamarAjax(method, url, objParams, fnDoneCallback, null, null, mensajes.consultandoTipDoc);
+            }
+           
+            $("#modalModificarSede").modal('toggle');
+          
+        app.message.success("Registro de Sede", "Se añadió la sede correctamente.");
+    };
+    return app.message.confirm("Sedes", "¿Esta seguro que desea realizar el registro de la sede?", "Si", "No", fnSi, null);
+
+    }
+
+    function eliminarSede(id) {
+
+        var tipo = $tipoReg.val();
+        var fnSi = function () {
+
+            if (tipo != "U") {
+                var index = manipularCliente.sedes.findIndex(function (item) {
+                    return item.numero === id;
+                });
+
+                // Si se encuentra el índice, usamos splice para eliminarlo
+                if (index !== -1) {
+                    manipularCliente.sedes.splice(index, 1);
+                    cargarTablaSedes();
+                }
+
+                if (manipularCliente.sedes.length === 0) {
+                    $NoExisteSede.show();
+                }
+            }
+            else {
+                var method = "POST";
+                var url = "BandejaCliente/MantenimientoSede";
+                var sedeParam = {
+                    Tipo: 'D',
+                    IdSede: id,
+                    IdCliente: idCliente
+                }
+                var objParams = JSON.stringify(sedeParam);
+
+                var fnDoneCallback = function (data) {
+                    cargarTablaSedes();
+
+                }
+                app.llamarAjax(method, url, objParams, fnDoneCallback, null, null, mensajes.consultandoTipDoc);
+
+            }
+           
+
+
+        };
+        return app.message.confirm("Sedes", "¿Esta seguro que desea eliminar la sede seleccionado?", "Si", "No", fnSi, null);        
+
+    }
+
+    function btnCerrarSedeClick() {
+        $("#modalModificarSede").modal('toggle');
+    }
     
     function logicUbigeo() {
         $cmbProvincia.prop("disabled", true);
@@ -529,10 +747,17 @@ var manipularCliente = (function ($, win, doc) {
             return
         };
 
+        if (manipularCliente.sedes < 1) {
+            app.message.error("Validación", "Debe de registrar por lo menos una sede.")
+            return
+        }
+
         if (manipularCliente.contactos < 1) {
             app.message.error("Validación","Debe de registrar por lo menos un contacto.")
             return
         }
+
+
 
 
         objCliente = {
@@ -562,6 +787,7 @@ var manipularCliente = (function ($, win, doc) {
                 }
                 else {
                     registrarContactos(data.Result[0].ID);
+                    registrarSedes(data.Result[0].ID);
                     app.message.success("Registro Realizado", "Se realizó el registro satisfactoriamente.", "Aceptar", redirect);
                 }
 
@@ -573,6 +799,42 @@ var manipularCliente = (function ($, win, doc) {
             app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, mensajes.guardarCliente);
         };
         return app.message.confirm("Validación", "¿Está seguro que desea registrar los datos ingresados?.", "Si", "No", fnSi, null);
+    }
+
+    function registrarSedes(ID) {
+
+
+
+        for (var i = 0; i < manipularCliente.sedes.length; i++) {
+            if (manipularCliente.sedes[i].estadoSede === "1") {
+                estado = "S";
+            }
+            else {
+                estado = "N";
+            }
+
+
+            method = "POST";
+            url = "BandejaCliente/MantenimientoSede";
+            var estado;
+            ObjSedes = {
+                Tipo: "I",
+                IdSede: 0,
+                IdCliente: ID,
+                NomSede: manipularCliente.sedes[i].nomSede,
+                Estado: estado
+            }
+
+            objParam = JSON.stringify(ObjSedes);
+
+            var fnDoneCallBack = function () {
+            }
+            var fnFailCallBack = function () {
+                app.message.error("Validación", "No se realizó el registro, revisar")
+            }
+
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, mensajes.guardandoContactos);
+        }
     }
 
     function btnVolverClick() {
@@ -1542,6 +1804,7 @@ var manipularCliente = (function ($, win, doc) {
     return {
         editar: editar,
         inactivar: inactivar,
-        eliminar: eliminar
+        eliminar: eliminar,
+        eliminarSede: eliminarSede
     };
 })(window.jQuery, window, document);

@@ -348,7 +348,7 @@ var asignacionTerritorial = (function ($, win, doc){
                 },
                 render: function (data, type, row) {
                     if (data.Cliente.Estado == true) {
-                        var seleccionar = '<input class="form-check-input cheks" name="checkSeleccionar" type="checkbox" value="' + data.Cliente.ID + '" id="checkSeleccionar">';
+                        var seleccionar = '<input class="form-check-input cheks" name="checkSeleccionar" type="checkbox" value="' + data.Cliente.ID + '|' + data.Sede.IdSede +'" id="checkSeleccionar">';
                     }
                     else {
                         var seleccionar = '<input disabled class="form-check-input cheks" name="" type="checkbox" title="inactivo">';
@@ -365,6 +365,12 @@ var asignacionTerritorial = (function ($, win, doc){
             },
             {
                 data: "Cliente.NomEmpresa",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "Sede.NomSede",
                 render: function (data, type, row) {
                     return '<center>' + data + '</center>';
                 }

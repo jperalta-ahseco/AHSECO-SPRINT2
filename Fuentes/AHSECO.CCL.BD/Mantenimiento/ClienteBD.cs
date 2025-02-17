@@ -297,5 +297,65 @@ namespace AHSECO.CCL.BD.Mantenimientos
             }
         }
 
+        public RespuestaDTO MantenimientoSede(SedeDTO sedeDTO)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using (var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+                var parameters = new DynamicParameters();
+                parameters.Add("TIPO", sedeDTO.Tipo);
+                parameters.Add("IDSEDE", sedeDTO.IdSede);
+                parameters.Add("IDCLIENTE", sedeDTO.IdCliente);
+                parameters.Add("NOMSEDE", sedeDTO.NomSede);
+                parameters.Add("ESTADO", sedeDTO.Estado);
+                parameters.Add("USRREG", sedeDTO.UsuarioRegistra);
+
+                var result = connection.Query(
+                    sql: "USP_MANT_SEDES",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                     .Select(s => s as IDictionary<string, object>)
+                     .Select(i => new RespuestaDTO
+                     {
+                         Codigo = i.Single(d => d.Key.Equals("COD")).Value.Parse<int>(),
+                         Mensaje = i.Single(d => d.Key.Equals("MSG")).Value.Parse<string>()
+                     }).FirstOrDefault();
+
+                connection.Close();
+                return result;
+            }
+        }
+
+        public IEnumerable<SedeDTO> ConsultaSedes(SedeDTO sedeDTO)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using (var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+                var parameters = new DynamicParameters();
+                parameters.Add("NOMSEDE", sedeDTO.NomSede== null ? "": sedeDTO.NomSede);
+                parameters.Add("ESTADO", sedeDTO.Estado == null ? "" : sedeDTO.Estado);
+                parameters.Add("IDCLIENTE", sedeDTO.IdCliente);
+
+                var result = connection.Query(
+                    sql: "USP_CONSULTA_SEDES",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                     .Select(s => s as IDictionary<string, object>)
+                     .Select(i => new SedeDTO
+                     {
+                         IdSede = i.Single(d => d.Key.Equals("ID_SEDE")).Value.Parse<long>(),
+                         NomSede = i.Single(d => d.Key.Equals("NOMSEDE")).Value.Parse<string>(),
+                         IdCliente = i.Single(d => d.Key.Equals("ID_CLIENTE")).Value.Parse<int>(),
+                         NomEmpresa = i.Single(d => d.Key.Equals("NOMEMPRESA")).Value.Parse<string>(),
+                         Estado = i.Single(d => d.Key.Equals("ESTADO")).Value.Parse<string>()
+                     });
+
+                connection.Close();
+                return result;
+            }
+        }
+
     }
 }

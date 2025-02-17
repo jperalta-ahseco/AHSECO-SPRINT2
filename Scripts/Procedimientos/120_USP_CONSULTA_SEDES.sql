@@ -1,0 +1,30 @@
+USE [DB_AHSECO]
+GO
+
+CREATE OR ALTER PROCEDURE USP_CONSULTA_SEDES
+/*====================================================================
+	NOMBRE:					FECHA:		DESCRIPCIÓN:
+	José A. Peralta		16.02.25		Se realiza consulta de sedes:
+	EXEC USP_CONSULTA_SEDES '','',10102
+  ====================================================================*/
+@NOMSEDE VARCHAR(150),
+@ESTADO CHAR(1),
+@IDCLIENTE INT
+AS
+BEGIN
+
+SET NOCOUNT ON;	
+	
+		SELECT A.ID_SEDE,
+					  A.NOMSEDE,
+					  A.ID_CLIENTE,
+					  B.NOMEMPRESA,
+					  CASE WHEN A.ESTADO='A' THEN 'ACTIVO' ELSE 'INACTIVO' END ESTADO
+					  FROM TBM_SEDES A WITH(NOLOCK)
+			LEFT JOIN TBM_CLIENTES B WITH(NOLOCK) ON A.ID_CLIENTE=B.ID
+			WHERE A.ESTADO = (CASE WHEN LEN(@ESTADO) > 0 THEN @ESTADO ELSE A.ESTADO END)
+				AND A.NOMSEDE LIKE '%'+@NOMSEDE+'%'
+				AND B.ID = @IDCLIENTE
+
+SET NOCOUNT OFF;	
+END

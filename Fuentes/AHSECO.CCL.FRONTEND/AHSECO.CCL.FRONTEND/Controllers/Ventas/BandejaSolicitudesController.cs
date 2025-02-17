@@ -37,6 +37,7 @@ using Azure.Core;
 using System.Web.Http.Results;
 using DocumentFormat.OpenXml.Drawing.Diagrams;
 using NPOI.SS.Formula.Functions;
+using AHSECO.CCL.BE.AsignacionManual;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 {
@@ -80,6 +81,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             return sw;
         }
 
+        [Permissions(Permissions = "BANDEJAVENTAS")]
         public ActionResult SolicitudVenta()
         {
             var ventasBL = new VentasBL();
@@ -677,6 +679,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                     if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.VentaProg)
                     {
+                        ViewBag.Disabled_TipoDespacho = "disabled";
                         if (soli.TipoVenta == "TVEN02")
                         {
                             ViewBag.VerContrato = true;
@@ -741,6 +744,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                     if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Finalizado)
                     {
+                        ViewBag.Disabled_TipoDespacho = "disabled";
                         if (soli.TipoVenta == "TVEN02")
                         {
                             ViewBag.VerContrato = true;
@@ -798,6 +802,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 }
                 else if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Gerente)
                 {
+                    ViewBag.Disabled_TipoDespacho = "disabled";
                     if (soli.TipoVenta == "TVEN02")
                     {
                         ViewBag.VerContrato = true;
@@ -908,6 +913,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 }
                 else if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Logistica)
                 {
+                    ViewBag.Disabled_TipoDespacho = "disabled";
                     ViewBag.Btn_GuardarDespacho = "none";
                     ViewBag.FechaEntregaPedidoSE = "";
                     ViewBag.TxtNumeroFacturaSE = "";
@@ -1106,6 +1112,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 }
                 else if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Importacion)
                 {
+                    ViewBag.Disabled_TipoDespacho = "disabled";
                     ViewBag.TxtCodigoPedido = "";
                     if (soli.TipoVenta == "TVEN02")
                     {
@@ -1221,6 +1228,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 }
                 else if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Facturador)
                 {
+                    ViewBag.Disabled_TipoDespacho = "disabled";
                     if (soli.TipoVenta == "TVEN02")
                     {
                         ViewBag.VerContrato = true;
@@ -2769,6 +2777,15 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 VariableSesion.setCadena("idFlujo", solicitud.Id_Flujo.ToString());
                 VariableSesion.setCadena("estadoAbrev", solicitud.abrevEstado);
 
+                var clienteDTO = new ClienteDTO();
+
+                clienteDTO.NomEmpresa = solicitud.RazonSocial;
+                clienteDTO.ID = solicitud.IdCliente;
+                clienteDTO.RUC = solicitud.RUC;
+
+
+                VariableSesion.setObject("VENTA_CLIENTE", clienteDTO);
+
                 return Json(new
                 {
                     Status = 1
@@ -2857,6 +2874,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 var result2 = procesoBL.InsertarWorkflowLog(log);
 
                 ViewBag.EstadoSolicitud = ConstantesDTO.EstadosProcesos.ProcesoVenta.Registrado;
+
+                //Se reasigna cliente a variable de sesion:
+                solicitudVentaGrupoDTO.Solicitud.Id_Solicitud = mainSolicitudes.Result.Codigo;
+                ObtenerDetallexSolicitud(solicitudVentaGrupoDTO.Solicitud);
 
                 return Json(new
                 {
@@ -7360,6 +7381,19 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             }
             return Json(new ResponseDTO<RespuestaDTO>(result));
         }
+
+
+        [HttpPost]
+        public JsonResult BuscarListClientevsAsesor(ClientevsAsesorDTO clientevsAsesorDTO)
+        {
+            var ventasBL = new VentasBL();
+            var response = ventasBL.BuscarListClientevsAsesor(clientevsAsesorDTO);
+            return Json(response);
+        }
+
+
+
+
 
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AHSECO.CCL.BD;
 using AHSECO.CCL.BD.Ventas;
 using AHSECO.CCL.BE;
+using AHSECO.CCL.BE.AsignacionManual;
 using AHSECO.CCL.BE.Mantenimiento;
 using AHSECO.CCL.BE.ServicioTecnico.BandejaGarantias;
 using AHSECO.CCL.BE.Ventas;
@@ -523,6 +524,50 @@ namespace AHSECO.CCL.BL.Ventas
             {
                 Log.TraceError(Utilidades.GetCaller() + ":: " + ex.Message);
                 return new ResponseDTO<ItemCostoDTO>(ex);
+            };
+        }
+
+        public ResponseDTO<IEnumerable<BandejaSolicitudesDTO>> ConsultaBandejaSolicitudes(FiltroBandejaVentasDTO filtros)
+        {
+            try
+            {
+                var result = Repository.ConsultaBandejaSolicitudes(filtros);
+
+                return new ResponseDTO<IEnumerable<BandejaSolicitudesDTO>>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + ":: " + ex.Message);
+                return new ResponseDTO<IEnumerable<BandejaSolicitudesDTO>>(ex);
+            };
+        }
+
+        public ResponseDTO<FiltroBandejaSolicitudesDTO>  GrupoBandejaSolicitudesFiltro()
+        {
+            try
+            {
+                var result = Repository.GrupoBandejaSolicitudesFiltro();
+                return new ResponseDTO<FiltroBandejaSolicitudesDTO>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + ":: " + ex.Message);
+                return new ResponseDTO<FiltroBandejaSolicitudesDTO>(ex);
+            };
+        }
+
+        public ResponseDTO<IEnumerable<ClientevsAsesorDTO>> BuscarListClientevsAsesor(ClientevsAsesorDTO clientevsAsesorDTO)
+        {
+            try
+            {
+                var result = Repository.BuscarListClientevsAsesor(clientevsAsesorDTO);
+
+                return new ResponseDTO<IEnumerable<ClientevsAsesorDTO>>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + ":: " + ex.Message);
+                return new ResponseDTO<IEnumerable<ClientevsAsesorDTO>>(ex);
             };
         }
 

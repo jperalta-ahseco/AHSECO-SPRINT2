@@ -121,5 +121,33 @@ namespace AHSECO.CCL.BL.Mantenimientos
                 return new ResponseDTO<IEnumerable<ClienteDTO>>(ex);
             }
         }
+
+        public ResponseDTO<RespuestaDTO> MantenimientoSede(SedeDTO sedeDTO)
+        {
+            try
+            {
+                var result = Repository.MantenimientoSede(sedeDTO);
+                return new ResponseDTO<RespuestaDTO>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<RespuestaDTO>(ex);
+            }
+        }
+
+        public ResponseDTO<IEnumerable<SedeDTO>> ConsultaSedes(SedeDTO sedeDTO)
+        {
+            try
+            {
+                var result = Repository.ConsultaSedes(sedeDTO);
+                return new ResponseDTO<IEnumerable<SedeDTO>>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<IEnumerable<SedeDTO>>(ex);
+            }
+        }
     }
 }

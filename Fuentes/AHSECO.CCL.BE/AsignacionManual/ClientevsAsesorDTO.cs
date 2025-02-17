@@ -8,6 +8,7 @@ namespace AHSECO.CCL.BE.AsignacionManual
     {
         public int Id_Cliente { get; set; }
         public List<string> Id_ClienteList { get; set; }
+        public List<SedeDTO> Id_LlaveList { get; set; }
         public string Id_Empleado { get; set; }
         public ClienteDTO Cliente { get; set; }
         public EmpleadoDTO Empleado { get; set; }
@@ -15,6 +16,8 @@ namespace AHSECO.CCL.BE.AsignacionManual
         public string Eliminado { get; set; }
         public string FecRegistro { get; set; }
         public string FechaModificacion{ get; set; }
+        public UbigeoDTO Ubigeo { get; set; }
+        public SedeDTO Sede { get; set; }
 
     }
 }
