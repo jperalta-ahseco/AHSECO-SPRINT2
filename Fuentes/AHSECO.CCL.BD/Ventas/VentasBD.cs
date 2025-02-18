@@ -2310,7 +2310,9 @@ namespace AHSECO.CCL.BD.Ventas
                             DescripcionMoneda = reader.IsDBNull(reader.GetOrdinal("DESCRIPCIONMONEDA")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCIONMONEDA")),
                             MargenUtilidad = reader.IsDBNull(reader.GetOrdinal("MARGENUTILIDAD")) ? "" : reader.GetString(reader.GetOrdinal("MARGENUTILIDAD")),
                             CodigoTransporte = reader.IsDBNull(reader.GetOrdinal("CODTRANSPORTE")) ? "" : reader.GetString(reader.GetOrdinal("CODTRANSPORTE")),
-                            NombreTransporte = reader.IsDBNull(reader.GetOrdinal("NOMTRANSPORTE")) ? "" : reader.GetString(reader.GetOrdinal("NOMTRANSPORTE"))
+                            NombreTransporte = reader.IsDBNull(reader.GetOrdinal("NOMTRANSPORTE")) ? "" : reader.GetString(reader.GetOrdinal("NOMTRANSPORTE")),
+                            IndicadorCosteo = reader.IsDBNull(reader.GetOrdinal("INDCOSTEADO")) ? "" : reader.GetString(reader.GetOrdinal("INDCOSTEADO")),
+                            IndicadorValorizado = reader.IsDBNull(reader.GetOrdinal("INDVALORIZADO")) ? "" : reader.GetString(reader.GetOrdinal("INDVALORIZADO"))
                         };
                     }
 

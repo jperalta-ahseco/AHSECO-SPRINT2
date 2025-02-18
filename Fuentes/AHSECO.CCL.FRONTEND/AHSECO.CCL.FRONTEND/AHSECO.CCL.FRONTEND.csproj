@@ -441,11 +441,14 @@
     <Content Include="resources\css\datepicker.css" />
     <Content Include="resources\css\elfinder.min.css" />
     <Content Include="resources\css\elfinder.theme.css" />
+    <Content Include="resources\css\fixedColumns.dataTables.min.css" />
     <Content Include="resources\css\font-awesome.min.css" />
     <Content Include="resources\css\fullcalendar.css" />
     <Content Include="resources\css\fullcalendar.print.css" />
     <Content Include="resources\css\jquery-ui-1.8.21.custom.css" />
+    <Content Include="resources\css\jquery-ui.css" />
     <Content Include="resources\css\jquery-ui.min.css" />
+    <Content Include="resources\css\jquery.dataTables.min.css" />
     <Content Include="resources\css\jquery.iphone.toggle.css" />
     <Content Include="resources\css\jquery.noty.css" />
     <Content Include="resources\css\noty_theme_default.css" />
@@ -561,6 +564,7 @@
     <Content Include="resources\js\librerias\chosen.jquery.js" />
     <Content Include="resources\js\librerias\chosen.jquery.min.js" />
     <Content Include="resources\js\librerias\ckeditor.js" />
+    <Content Include="resources\js\librerias\dataTables.fixedColumns.min.js" />
     <Content Include="resources\js\librerias\es.js" />
     <Content Include="resources\js\librerias\fullcalendar.min.js" />
     <Content Include="resources\js\librerias\funciones.js" />
@@ -731,6 +735,7 @@
     <Content Include="resources\plugins\ckeditor\styles.js" />
     <Content Include="resources\plugins\dataTables\css\dataTables.bootstrap.min.css" />
     <Content Include="resources\plugins\dataTables\css\select.dataTables.min.css" />
+    <Content Include="resources\plugins\dataTables\js\1.12.1\jquery.dataTables.min.js" />
     <Content Include="resources\plugins\dataTables\js\dataTables.bootstrap.min.js" />
     <Content Include="resources\plugins\dataTables\js\dataTables.select.min.js" />
     <Content Include="resources\plugins\dataTables\js\jquery.dataTables.min.js" />

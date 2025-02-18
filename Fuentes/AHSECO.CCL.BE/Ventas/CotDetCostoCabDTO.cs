@@ -30,5 +30,8 @@ namespace AHSECO.CCL.BE.Ventas
         public string MargenUtilidad {  get; set; }
         public string CodigoTransporte {  get; set; }
         public string NombreTransporte { get; set; }
+
+        public string IndicadorCosteo { get; set; }
+        public string IndicadorValorizado { get; set; }
     }
 }
