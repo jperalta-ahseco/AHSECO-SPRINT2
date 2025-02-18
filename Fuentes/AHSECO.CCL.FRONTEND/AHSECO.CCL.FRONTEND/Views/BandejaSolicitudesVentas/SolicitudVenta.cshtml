@@ -399,14 +399,17 @@
                                                                     </select>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-6 col-sm-12" style="@(ViewBag.PermitirVerPorcentDscto ? "" : "display:none")">
-                                                                <label for="txtObs">Porcentaje de Descuento (%): </label>
-                                                                <div class="col-md-12">
-                                                                    <div class="form-group">
-                                                                        <input @(ViewBag.PermitirEditarPorcentDscto ? "" : "disabled") placeholder="<Optional>" type="number" min="0" max="100" class="form-control input-sm" id="txtPorcentajeDscto" maxlength="6" value="@ViewBag.PorcentajeDscto" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if (parseFloat(this.value) > 100) { this.value = this.value.slice(0, 2); }">
+                                                            @if (ViewBag.PermitirVerDscto)
+                                                            {
+                                                                <div class="col-md-6 col-sm-12">
+                                                                    <label for="txtObs">Porcentaje de Descuento (%): </label>
+                                                                    <div class="col-md-12">
+                                                                        <div class="form-group">
+                                                                            <input disabled placeholder="<Optional>" type="number" min="0" max="100" class="form-control input-sm" id="txtPorcentajeDscto" maxlength="6" value="@ViewBag.PorcentajeDscto" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if (parseFloat(this.value) > 100) { this.value = this.value.slice(0, 2); }">
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
+                                                            }
                                                         </div>
                                                         <div class="row container-fluid">
                                                             <div class="text-right">

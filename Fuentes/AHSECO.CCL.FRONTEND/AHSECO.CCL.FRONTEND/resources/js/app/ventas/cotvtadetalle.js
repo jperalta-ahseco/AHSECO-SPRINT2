@@ -4668,34 +4668,29 @@ var cotvtadet = (function ($, win, doc) {
 
     function SolicitarDscto() {
         var method = "POST";
-        var url = ""
+        var url = "BandejaSolicitudesVentas/SolicitarDscto";
         var obj = {
             TipoProceso: "D",
             IdCotizacion: $idCotizacion.val(),
             IndDsctoRequiereAprob: true
-        }
+        };
 
         var objParam = JSON.stringify(obj);
 
         var fnSi = function () {
             var fnDoneCallBack = function () {
-                app.message.success("Exito", "Se realizo la solicitud");
+                app.message.success("&Eacute;xito", "Se realiz&oacute; la solicitud");
+                $btnSolicitarDscto.css('display', 'none');
             };
 
             var fnFailCallBack = function () {
                 app.message.error("Error", "Hubo un error al solicitar el descuento, por favor revisar");
             };
 
-            app.llamarAjax(method, url, fnDoneCallBack, fnFailCallBack, null, null, null);
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null, null);
         };
         app.message.confirm("Confirmacion", "Desea solicitar un descuento?", "Si", "No", fnSi);
-
-
-    }
-
-
-
-
+    };
 
     return {
         buscarItems: buscarItems,

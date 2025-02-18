@@ -38,6 +38,7 @@ using System.Web.Http.Results;
 using DocumentFormat.OpenXml.Drawing.Diagrams;
 using NPOI.SS.Formula.Functions;
 using AHSECO.CCL.BE.AsignacionManual;
+using DocumentFormat.OpenXml.Office2016.Drawing.Command;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 {
@@ -199,6 +200,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.PermitirActualizarCotizacion = false;
             ViewBag.PermitirEditarPorcentDscto = false;
             ViewBag.PermitirVerPorcentDscto = false;
+            ViewBag.PermitirVerDscto = false;
             ViewBag.PermitirVerSolicitarDscto = false;
             ViewBag.PermitirAprobarCotizacion = false;
             ViewBag.DsctoRequiereAprobacion = false;
@@ -247,7 +249,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Gerente) 
             { 
-                //ViewBag.PermitirAprobarDscto = true; 
+                ViewBag.PermitirAprobarDscto = true; 
                 //ViewBag.PermitirEditarPorcentDscto = true;
                 //ViewBag.PermitirVerPorcentDscto = true;
             }
@@ -1592,10 +1594,27 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                                         ViewBag.PermitirAprobarCotizacion = true;
                                         ViewBag.PermitirEditarGanancia = true;
-                                        if (oCotizacion.IndDsctoRequiereAprob == false)
+
+                                        if (oCotizacion.IndDsctoAprob.HasValue)
+                                        {
+                                            if (oCotizacion.IndDsctoAprob == true)
+                                            {
+                                                ViewBag.PermitirVerDscto = true;
+                                            };
+                                        };
+
+                                        if (oCotizacion.IndDsctoRequiereAprob.HasValue)
+                                        {
+                                            if (oCotizacion.IndDsctoRequiereAprob == false)
+                                            {
+                                                ViewBag.PermitirVerSolicitarDscto = true;
+                                            }
+                                        }
+                                        else
                                         {
                                             ViewBag.PermitirVerSolicitarDscto = true;
-                                        }
+                                        };
+
                                         //ViewBag.PermitirEditarPorcentDscto = true;
                                         //ViewBag.PermitirVerPorcentDscto = true;
                                         ViewBag.PermitirGuardarValorizacion = true;
@@ -1603,10 +1622,20 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                     else if (swEsCotizacionValorizada && (!swReqCosteo || (swReqCosteo && swEsCotizacionCosteada))
                                         && NombreRol == ConstantesDTO.WorkflowRol.Venta.Gerente)
                                     {
-                                        if (ViewBag.DsctoRequiereAprobacion)
+                                        if (oCotizacion.IndDsctoRequiereAprob.HasValue)
                                         {
-                                            ViewBag.PermitirVerPorcentDscto = true;
-                                            ViewBag.PermitirEditarPorcentDscto = true;
+                                            if (oCotizacion.IndDsctoRequiereAprob == true)
+                                            {
+                                                ViewBag.PermitirEditarPorcentDscto = true;
+                                                ViewBag.PermitirVerPorcentDscto = true;
+                                            }
+                                        };
+                                        if (oCotizacion.IndDsctoAprob.HasValue)
+                                        {
+                                            if (oCotizacion.IndDsctoAprob == true)
+                                            {
+                                                ViewBag.PermitirVerDscto = true;
+                                            };
                                         };
                                     }
                                 }
@@ -1625,12 +1654,48 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                                         ViewBag.PermitirAprobarCotizacion = true;
                                         ViewBag.PermitirEditarGanancia = true;
-                                        if (oCotizacion.IndDsctoRequiereAprob == false)
+
+                                        if (oCotizacion.IndDsctoAprob.HasValue)
                                         {
-                                            ViewBag.PermitirVerSolicitarDscto = true; // Solo puede solicitar cuando esté en "N" 
+                                            if (oCotizacion.IndDsctoAprob == true)
+                                            {
+                                                ViewBag.PermitirVerDscto = true;
+                                            };
+                                        };
+
+                                        if (oCotizacion.IndDsctoRequiereAprob.HasValue)
+                                        {
+                                            if (oCotizacion.IndDsctoRequiereAprob == false)
+                                            {
+                                                ViewBag.PermitirVerSolicitarDscto = true;
+                                            }
                                         }
+                                        else
+                                        {
+                                            ViewBag.PermitirVerSolicitarDscto = true;
+                                        };
+
                                         //ViewBag.PermitirEditarPorcentDscto = true;
                                         //ViewBag.PermitirVerPorcentDscto = true;
+                                    }
+                                    else if (swEsCotizacionValorizada && (!swReqCosteo || (swReqCosteo && swEsCotizacionCosteada))
+                                        && NombreRol == ConstantesDTO.WorkflowRol.Venta.Gerente)
+                                    {
+                                        if (oCotizacion.IndDsctoRequiereAprob.HasValue)
+                                        {
+                                            if (oCotizacion.IndDsctoRequiereAprob == true)
+                                            {
+                                                ViewBag.PermitirEditarPorcentDscto = true;
+                                                ViewBag.PermitirVerPorcentDscto = true;
+                                            }
+                                        };
+                                        if (oCotizacion.IndDsctoAprob.HasValue)
+                                        {
+                                            if (oCotizacion.IndDsctoAprob == true)
+                                            {
+                                                ViewBag.PermitirVerDscto = true;
+                                            };
+                                        };
                                     }
                                 }
 
@@ -4928,16 +4993,16 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     }
                 }
 
-                if (cotActualDTO.IndDsctoRequiereAprob.HasValue)
-                {
-                    if (cotActualDTO.IndDsctoRequiereAprob.Value)
-                    {
-                        if (cotActualDTO.IndDsctoAprob.HasValue == false)
-                        {
-                            NotificarDescuentoPendienteAprobacion(cotActualDTO.IdSolicitud);
-                        }
-                    }
-                }
+                //if (cotActualDTO.IndDsctoRequiereAprob.HasValue)
+                //{
+                //    if (cotActualDTO.IndDsctoRequiereAprob.Value)
+                //    {
+                //        if (cotActualDTO.IndDsctoAprob.HasValue == false)
+                //        {
+                //            NotificarDescuentoPendienteAprobacion(cotActualDTO.IdSolicitud);
+                //        }
+                //    }
+                //}
 
                 return Json(new { Status = 1, Mensaje = "Cotización guardada correctamente" });
             }
@@ -5815,6 +5880,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             var oCotizacion = resCotizacion.Result.First();
 
             oCotizacion.IndDsctoAprob = cot.IndDsctoAprob;
+            oCotizacion.PorcentajeDescuento = cot.PorcentajeDescuento;
             if (cot.IndDsctoAprob.HasValue)
             {
                 if (!cot.IndDsctoAprob.Value) { 
@@ -7640,7 +7706,14 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             {
                 cotizacion.UsuarioRegistra = User.ObtenerUsuario();
                 cotizacion.FechaRegistro = DateTime.Now;
+                cotizacion.IdContacto = 0;
+                
                 result = ventasBL.MantenimientoCotizacion(cotizacion);
+
+                if(result.Result.Codigo > 0)
+                {
+                    NotificarDescuentoPendienteAprobacion(long.Parse(VariableSesion.getCadena("numSol")));
+                };
             }
             catch (Exception ex)
             {

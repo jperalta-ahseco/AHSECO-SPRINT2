@@ -6169,14 +6169,22 @@
             return false;
         }
 
-        if ($AD_radRpta_Si.is(':checked')) { vAprobDscto = true; }
-        if ($AD_radRpta_No.is(':checked')) { vAprobDscto = false; }
+        if ($AD_radRpta_Si.is(':checked') && $.trim($txtPorcentajeDscto.val()) == "" ) {
+            app.message.error("Validaci&oacute;n", "Debe de ingresar el porcentaje de descuento.");
+            return false;
+        }
+
+        var dscto = parseFloat($txtPorcentajeDscto.val());
+
+        if ($AD_radRpta_Si.is(':checked')) { vAprobDscto = true;}
+        if ($AD_radRpta_No.is(':checked')) { vAprobDscto = false; dscto = 0}
 
         method = "POST";
         url = "BandejaSolicitudesVentas/GrabarAprobDscto";
         var objDatos = {
             IdCotizacion: $idCotizacion.val(),
             IndDsctoAprob: vAprobDscto,
+            PorcentajeDescuento: dscto,
             AprobDsctoComentario: {
                 Id_WorkFlow: $codigoWorkflow.val(),
                 Observacion: $AD_txtComentarios.val()
@@ -6187,7 +6195,12 @@
         var fnDoneCallBack = function (data) {
             $btnAprobarDscto.css("display", "none");
             $modalAprobDscto.modal('hide');
-            app.message.success("Validaci&oacute;n", "Se grab&oacute; el registro correctamente");
+
+            var aceptar = function () {
+                location.reload();
+            };
+
+            app.message.success("Validaci&oacute;n", "Se grab&oacute; el registro correctamente","Aceptar",aceptar);
         };
 
         var fnFailCallback = function () {
