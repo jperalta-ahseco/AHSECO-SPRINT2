@@ -3,7 +3,7 @@
     cursor: pointer
 }
 
-    table.dataTable td.dt-control:before {
+    table.dataTable td.dt-control:before { 
         height: 1em;
         width: 1em;
         margin-top: -9px;
