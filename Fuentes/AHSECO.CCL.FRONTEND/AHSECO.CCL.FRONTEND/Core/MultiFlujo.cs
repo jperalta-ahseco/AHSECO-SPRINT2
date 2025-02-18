@@ -93,6 +93,9 @@ namespace AHSECO.CCL.FRONTEND.Core
                     public static string CostoFOB = "CD07";
                     public static string ValUni = "CD08";
                     public static string PorcGanan = "CD09";
+                    public static string UnidadMedida = "CD10";
+                    public static string Moneda = "CD11";
+                    public static string ReqPlaca = "CD12";
                 }
             }
             public struct CotDetDespacho
