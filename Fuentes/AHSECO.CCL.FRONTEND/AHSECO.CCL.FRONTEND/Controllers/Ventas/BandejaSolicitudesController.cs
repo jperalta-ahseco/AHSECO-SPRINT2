@@ -7691,6 +7691,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         public JsonResult BuscarListClientevsAsesor(ClientevsAsesorDTO clientevsAsesorDTO)
         {
             var ventasBL = new VentasBL();
+            clientevsAsesorDTO.UsuarioRegistra = User.ObtenerUsuario();
             var response = ventasBL.BuscarListClientevsAsesor(clientevsAsesorDTO);
             return Json(response);
         }
