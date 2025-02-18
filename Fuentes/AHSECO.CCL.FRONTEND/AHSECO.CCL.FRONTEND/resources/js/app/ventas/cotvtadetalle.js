@@ -1292,6 +1292,7 @@ var cotvtadet = (function ($, win, doc) {
             app.llenarComboMultiResult($DI_cmbGarantias, data.Result.Garantias, null, " ", "-- Ninguno --", filters);
             app.llenarComboMultiResult($CX_cmbCicloPreventivo, data.Result.CicloPreventivo, null, " ", "-- Seleccione --", filters);
 
+            $DI_txtValorUnitario.prop('disabled', true);
             var tipo_venta = $cmbTipo.val();
             if (tipo_venta === "TSOL04") { //Para venta de materiales:
                 $('#CX_cmbTipoCosto option[value="CXCD0001"]').remove();
