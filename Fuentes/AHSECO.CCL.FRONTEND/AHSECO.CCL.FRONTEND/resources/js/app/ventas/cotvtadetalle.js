@@ -3221,7 +3221,9 @@ var cotvtadet = (function ($, win, doc) {
                 CodigoSolicitud: id,
                 NumeroOrden: text_exwork,
                 NumeroContrato: margenUtilidad,
-                NumeroGuiaRemision: transporte
+                NumeroGuiaRemision: transporte,
+                EstadoAprobacion: $estadoSol.val(),
+                CodigoWorkFlow: $idWorkFlow.val()
             }
             var objParam = JSON.stringify(obj);
             var fnDoneCallback = function (data) {

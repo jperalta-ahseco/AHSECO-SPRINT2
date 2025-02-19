@@ -16,6 +16,7 @@ namespace AHSECO.CCL.BE.Ventas
         public int NroItem { get; set; }
         public string TipoItem { get; set; }
         public string CodItem { get; set; }
+        public string CodItemPadre { get; set; }
         public string Descripcion { get; set; }
         public string DescripcionAdicional { get; set; }
         public string Marca { get; set; }

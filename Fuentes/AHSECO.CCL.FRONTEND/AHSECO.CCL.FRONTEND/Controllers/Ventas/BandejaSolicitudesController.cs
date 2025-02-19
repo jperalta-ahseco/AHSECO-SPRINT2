@@ -5004,6 +5004,16 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 //    }
                 //}
 
+                var log = new FiltroWorkflowLogDTO();
+
+                //Se registra el workflow para Cotización
+                log.CodigoWorkflow = long.Parse(VariableSesion.getCadena("idWorkFlow")); ;
+                log.Usuario = User.ObtenerUsuario();
+                log.CodigoEstado = ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion;
+                log.UsuarioRegistro = User.ObtenerUsuario();
+                procesoBL.InsertarWorkflowLog(log);
+
+
                 return Json(new { Status = 1, Mensaje = "Cotización guardada correctamente" });
             }
             catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
@@ -5487,6 +5497,21 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                 }
 
+                var log = new FiltroWorkflowLogDTO();
+                var procesoBL = new ProcesosBL();
+                //Se registra el workflow para Cotización
+                log.CodigoWorkflow = long.Parse(VariableSesion.getCadena("idWorkFlow")); ;
+                log.Usuario = User.ObtenerUsuario();
+                log.CodigoEstado = ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion;
+                log.UsuarioRegistro = User.ObtenerUsuario();
+                procesoBL.InsertarWorkflowLog(log);
+
+
+
+
+
+
+
                 //Solo se devuelve los costos de la grilla respectiva
                 if (opcGrilla == opcTablaTabs)
                 {
@@ -5498,6 +5523,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     var response = new ResponseDTO<IEnumerable<CotDetCostoDTO>>(lstCostos.Where(x => x.IdCotizacionDetalle == CostoItem.IdCotizacionDetalle));
                     return Json(response);
                 }
+
+                
+
             }
             catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
         }
@@ -7622,6 +7650,14 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             {
                 listAux.Add(configureCotDetItem(x));
             });
+
+            for (var i = 0; listAux.Count() > i; i++)
+            {
+                if (listAux[i].TipoItem == "ACC")
+                {
+                    listAux[i].CodItemPadre = listAux.FirstOrDefault(x => x.NroItem == listAux[i].NroItem && x.EsItemPadre == true).CodItem;
+                }
+            };
 
             ResponseDTO<List<CotizacionDetalleDTO>> rpta = new ResponseDTO<List<CotizacionDetalleDTO>>(listAux);
 
