@@ -7551,7 +7551,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             {
                 result = ventasBL.MantenimientoCotizacionDetalle(cotdet);
 
-                if (result.Result.Codigo != 0 && cotdet.TipoItem == "PRO")
+                if (result.Result.Codigo != 0 && (cotdet.TipoItem == "PRO" || cotdet.TipoItem == "ACC"))
                 {
                     var rpta = ventasBL.MantenimientoCotDetDespacho(new CotDetDespachoDTO()
                     {

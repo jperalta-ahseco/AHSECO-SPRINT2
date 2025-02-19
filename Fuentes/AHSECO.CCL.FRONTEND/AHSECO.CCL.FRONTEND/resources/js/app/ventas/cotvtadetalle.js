@@ -219,6 +219,10 @@ var cotvtadet = (function ($, win, doc) {
     var $DI_btnGuardarCosteo = $("#DI_btnGuardarCosteo");
     var $CI_btnGuardarCosteo = $("#CI_btnGuardarCosteo");
     var $CI_hdnIdCotDet = $("#CI_hdnIdCotDet");
+    var $DA_btnGuardar = $("#DA_btnGuardar");
+    var $DA_radCompraLocal_Si = $("#DA_radCompraLocal_Si");
+    var $DA_radCompraLocal_No = $("#DA_radCompraLocal_No");
+    var $DA_btnCerrar = $("#DA_btnCerrar");
     var costeoMultiple = [];
 
     $(Initialize);
@@ -262,6 +266,10 @@ var cotvtadet = (function ($, win, doc) {
         $CX_cmbTipoCosto.on("change", configurarModalCostoMultiple);
         $CI_btnGuardar.click(guardarEditarCosteo);
         $CI_btnGuardarCosteo.click(btnGuardarCosteoClick);
+        $DA_btnGuardar.click(btnGuardarCosteoAccesorioClick);
+        $DA_radCompraLocal_Si.click(validarcompraLocalClick);
+        $DA_radCompraLocal_No.click(validarcompraLocalClick);
+        $DA_btnCerrar.click(DAbtnCerrarClick);
         //$DI_radTieneStock_Si.click(configurarTieneStock);
         //$DI_radTieneStock_No.click(configurarTieneStock);
         //if ($TipoSolicitud.val() == "TSOL05") {
@@ -275,6 +283,87 @@ var cotvtadet = (function ($, win, doc) {
 
     }
 
+    function DAbtnCerrarClick() {
+        $('#modalDetalleItemAccesorio').modal('hide');
+    }
+
+    function validarcompraLocalClick() {
+        if ($DA_radCompraLocal_Si.is(':checked')) {
+            $("#DA_txtValorUnitario").removeAttr("disabled");
+            $("#DA_txtValorUnitario").val("0.00");
+        }
+        else {
+            $("#DA_txtValorUnitario").attr("disabled", "disabled");
+        }
+    }
+
+    function btnGuardarCosteoAccesorioClick() {
+       // var codigo_costo = $CI_hdnCodTipoCosto.val();
+
+        //if ($CI_txtCantCosteo.val() === "" || $CI_txtCantCosteo.val() == 0) {
+        //    app.message.error("Validacion", "Debe agregar la cantidad a costear");
+        //    return;
+        //}
+
+        if ($("#DA_txtCantidad").val() === "" || $("#DA_txtCantidad").val() === "0") {
+            app.message.error("Validacion", "Debe agregar la cantidad del accesorio");
+            return;
+        }
+
+        if ($("#DA_radCompraLocal_Si").is(':checked') && ($("#DA_txtValorUnitario").val() === "" || $("#DA_txtValorUnitario").val() === null || $("#DA_txtValorUnitario").val() === "0")) {
+               app.message.error("Validacion", "Debe agregar el valor venta unitario para la compra local");
+               return;
+        }
+
+     
+
+        var fnSi = function () {
+
+            var ind_stock = "";
+            if ($("#DA_radTieneStock_Si").is(':checked')) {
+                ind_stock = "S";
+            }
+            else {
+                ind_stock = "N";
+            }
+
+            var ind_compralocal = "";
+            if ($("#DA_radCompraLocal_Si").is(':checked')) {
+                ind_compralocal = "S";
+            }
+            else {
+                ind_compralocal = "N";
+            }
+
+
+            var m = "POST";
+            var url = "BandejaSolicitudesVentas/MantCosteoItem";
+            var obj = {
+                Tipo: "X",
+                CodigoUbigeo: ind_stock,
+                CantidadCosto: parseInt($("#DA_txtCantidad").val()),
+                MontoUnitario: app.convertirNumero($("#DA_txtValorUnitario").val()),
+                CodigoCicloPreventivo: ind_compralocal,
+                CodigoCotizacionDetalle: $("#DA_hdnCodigoPadre").val()
+            }
+            var objParam = JSON.stringify(obj);
+            var fnDoneCallback = function (data) {
+
+                if (data.Result.Codigo > 0) {
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", null);
+
+                    $('#modalDetalleItemAccesorio').modal('hide');
+                }
+                else {
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", null);
+                }
+
+            };
+            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.GuardarCosto);
+        }
+        return app.message.confirm("Ventas", "&iquest;Est&aacute; seguro que desea guardar el costo?", "Si;", "No", fnSi, null);
+
+    }
 
     function btnGuardarCosteoClick() {
 
@@ -1333,7 +1422,7 @@ var cotvtadet = (function ($, win, doc) {
             }
 
             
-
+            $DI_txtGanancia.prop('disabled', true);
             if ($estadoSol.val() != "SCOT") {
                 $("#SeccionAgregarCosto").css('display', 'none');
                 $("#SeccionAgregarCostoBoton").css('display', 'none');
@@ -1363,6 +1452,12 @@ var cotvtadet = (function ($, win, doc) {
                 $DI_txtValorUnitario.prop('disabled', false);
                 $DI_btnGuardar.hide();
                 $DI_btnGuardarCosteo.show();
+            }
+
+            if (($idRolUsuario.val() === "SGI_VENTA_ASESOR" || $idRolUsuario.val() === "SGI_VENTA_COORDINASERV"
+                || $idRolUsuario.val() === "SGI_VENTA_COORDINAATC") && $estadoSol.val() === "CVAL" &&
+                data.Result.CabCosteoDetalle.IndicadorCosteo === "S" && data.Result.CabCosteoDetalle.IndicadorCosteo === "S") {
+                $DI_txtGanancia.prop('disabled', false);
             }
 
 
@@ -2231,10 +2326,10 @@ var cotvtadet = (function ($, win, doc) {
         return app.message.confirm("Confirmaci&oacute;n", "Desea eliminar el accesorio seleccionado?", "Si", "No", fnSi);
     }
 
-    function editarSubItem(CodigoItemPadre, CodigoItem) {
+    function editarSubItem(CodigoItemPadre, CodigoItem,codCotizacionDetalle) {
 
-        $DI_hdnCodigoPadre.val(CodigoItemPadre);
-
+        $("#DA_hdnCodigoPadre").val(codCotizacionDetalle);
+        $("#DA_txtValorUnitario").attr("disabled", "disabled");
         method = "POST";
         url = "BandejaSolicitudesVentas/CargarCotDetSubItem";
         var objFiltros = {
@@ -2242,50 +2337,111 @@ var cotvtadet = (function ($, win, doc) {
             CotizacionDetalle: { CodItem: CodigoItem }
         };
         var objParam = JSON.stringify(objFiltros);
-
         var fnDoneCallBack = function (data) {
+            var moneda = $('#cmbTipMoneda option:selected').text();
+            $("#DA_Moneda").val(moneda);
+            $("#DA_txtCodigo").val(data.Result.CodItem);
+            $("#DA_txtDescripcion").val(data.Result.Descripcion);
+            $("#DA_txtCantidad").val(data.Result.Cantidad);
+            var valorventaUnitario = data.Result.VentaUnitaria;
+            var ventaUnitario = 0;
+            if (valorventaUnitario != null) {
+                ventaUnitario = app.convertirNumero(valorventaUnitario).toFixed(2);
+                $("#DA_txtValorUnitario").val(ventaUnitario);
+            }
+            else {
+                $("#DA_txtValorUnitario").val('0.00');
+            }
 
-            $DI_opcGrilla.val("1");
-            LimpiarModalDetItem();
-            MostrarDatosItem(data);
 
-            //$DI_pnlInfoGeneral_Dimensiones.css("display", "none");
-            //$DI_pnlInfoGeneral_DescripcionAdic.css("display", "none");
-            //$DI_pnlCostos_PrecioVenta.css("display", "");
-            //$DI_pnlCostos_CostoFOB.css("display", "none");
-            //$DI_pnlCostos_ValorUnitario.css("display", "");
-            //$DI_txtValorUnitario.removeAttr("disabled");
-            //$DI_pnlCostos_TieneStock.css("display", "");
-            //$DI_pnlCostos_Calibracion.css("display", "none");
-            //$DI_pnlCostos_Ganancia.css("display", "none");
-            //$DI_pnlCostos_CompraLocal.css("display", "");
-            //$DI_pnlCostos_ReqPlaca.css("display", "none");
-            //$DI_pnlCostos_MantPrevent.css("display", "none");
-            //$DI_pnlCostos_Manuales.css("display", "none");
-            //$DI_pnlCostos_Videos.css("display", "none");
-            //$DI_pnlCostos_Instalacion.css("display", "none");
-            //$DI_pnlCostos_Capacitacion.css("display", "none");
-            //$DI_pnlCostos_GarantAdic.css("display", "none");
-            //$DI_pnlCostos_GarantAdic_Combo.css("display", "none");
-            //$DI_pnlCostos_Flete.css("display", "none");
-            //$DI_pnlCostos_ReqCliente.css("display", "none");
-            //$DI_pnlCostos_ObsInsta.css("display", "none");
-            //$DI_pnlDestinos.css("display", "none");
+            var tiene_stock = data.Result.IndStock;
+            if (tiene_stock) {
+                $("#DA_radTieneStock_No").prop("checked", false);
+                $("#DA_radTieneStock_Si").prop("checked", true);
+            }
+            else {
+                $("#DA_radTieneStock_No").prop("checked", true);
+                $("#DA_radTieneStock_Si").prop("checked", false);
+            }
 
-            //Se habilita el MODAL según la configuración del PRODUCTO (Equipo, Material, Repuesto)
-            var oFeatures = data.Result.Features;
-            cargarPropiedadesPorCotDetItem(oFeatures);
+            var compra_local = data.Result.CotizacionDespacho.IndCompraLocal
 
-            //Se configura la lógica de STOCK para ACCESORIOS
-            configurarModalPorTipoItem(data.Result.TipoItem);
-            $DI_txtValorUnitario.prop('disabled', true);
-            cargarLogicaAccesorios_Stock();
-            cargarLogicaAccesorios_CompraLocal();
+            if (compra_local != null) {
+                if (compra_local == true) {
+                    $("#DA_radCompraLocal_Si").prop("checked", true);
+                    $("#DA_radCompraLocal_No").prop("checked", false);
+                    $("#DA_txtValorUnitario").removeAttr("disabled");
+                }
+                else {
+                    $("#DA_radCompraLocal_Si").prop("checked", false);
+                    $("#DA_radCompraLocal_No").prop("checked", true);
+                    $("#DA_txtValorUnitario").attr("disabled", "disabled");
+                }
+            }
+            else {
+                $("#DA_radCompraLocal_Si").prop("checked", false);
+                $("#DA_radCompraLocal_No").prop("checked", true);
+                $("#DA_txtValorUnitario").attr("disabled", "disabled");
+            }
 
-            $('#modalDetalleItem').modal('show');
-        };
-
+        }
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+
+
+        $('#modalDetalleItemAccesorio').modal('show');
+        return
+
+        //method = "POST";
+        //url = "BandejaSolicitudesVentas/CargarCotDetSubItem";
+        //var objFiltros = {
+        //    CotizacionDetallePadre: { CodItem: CodigoItemPadre },
+        //    CotizacionDetalle: { CodItem: CodigoItem }
+        //};
+        //var objParam = JSON.stringify(objFiltros);
+
+        //var fnDoneCallBack = function (data) {
+
+        //    $DI_opcGrilla.val("1");
+        //    LimpiarModalDetItem();
+        //    MostrarDatosItem(data);
+
+        //    //$DI_pnlInfoGeneral_Dimensiones.css("display", "none");
+        //    //$DI_pnlInfoGeneral_DescripcionAdic.css("display", "none");
+        //    //$DI_pnlCostos_PrecioVenta.css("display", "");
+        //    //$DI_pnlCostos_CostoFOB.css("display", "none");
+        //    //$DI_pnlCostos_ValorUnitario.css("display", "");
+        //    //$DI_txtValorUnitario.removeAttr("disabled");
+        //    //$DI_pnlCostos_TieneStock.css("display", "");
+        //    //$DI_pnlCostos_Calibracion.css("display", "none");
+        //    //$DI_pnlCostos_Ganancia.css("display", "none");
+        //    //$DI_pnlCostos_CompraLocal.css("display", "");
+        //    //$DI_pnlCostos_ReqPlaca.css("display", "none");
+        //    //$DI_pnlCostos_MantPrevent.css("display", "none");
+        //    //$DI_pnlCostos_Manuales.css("display", "none");
+        //    //$DI_pnlCostos_Videos.css("display", "none");
+        //    //$DI_pnlCostos_Instalacion.css("display", "none");
+        //    //$DI_pnlCostos_Capacitacion.css("display", "none");
+        //    //$DI_pnlCostos_GarantAdic.css("display", "none");
+        //    //$DI_pnlCostos_GarantAdic_Combo.css("display", "none");
+        //    //$DI_pnlCostos_Flete.css("display", "none");
+        //    //$DI_pnlCostos_ReqCliente.css("display", "none");
+        //    //$DI_pnlCostos_ObsInsta.css("display", "none");
+        //    //$DI_pnlDestinos.css("display", "none");
+
+        //    //Se habilita el MODAL según la configuración del PRODUCTO (Equipo, Material, Repuesto)
+        //    var oFeatures = data.Result.Features;
+        //    cargarPropiedadesPorCotDetItem(oFeatures);
+
+        //    //Se configura la lógica de STOCK para ACCESORIOS
+        //    configurarModalPorTipoItem(data.Result.TipoItem);
+        //    $DI_txtValorUnitario.prop('disabled', true);
+        //    cargarLogicaAccesorios_Stock();
+        //    cargarLogicaAccesorios_CompraLocal();
+
+        //    $('#modalDetalleItem').modal('show');
+        //};
+
+        //app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
     }
 
     function grabarDatosCotDetItem() {
@@ -2664,7 +2820,9 @@ var cotvtadet = (function ($, win, doc) {
                             var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
                             var editar = '';
                             if (row.TipoItem == "ACC") {
-                                editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarSubItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                                //editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarSubItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                                var dato2 = '"' + row.CodItemPadre + '"' + "," + '"' + row.CodItem + '","' + row.Id + '"';
+                                editar = "<a id='btnEditarItem' class='botonDetCot btn btn-info btn-xs' title='Editar' href='javascript: cotvtadet.editarSubItem(" + dato2 + ")'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Editar</a>";
                             } else if (row.TipoItem == "PRO") {
                                 editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
                             }
@@ -3539,7 +3697,7 @@ var cotvtadet = (function ($, win, doc) {
                         if ($PermitirEditarCotDetItem.val() == 'S') {
 
                             var dato = row.Id + "," + '"' + row.TipoItem + '"';
-                            var dato2 = '"' + CodItemPadre + '"' + "," + '"' + row.CodItem + '"';
+                            var dato2 = '"' + CodItemPadre + '"' + "," + '"' + row.CodItem + '","'+row.Id+'"';
                             seleccionar = "<a id='btnCostearItem' class='btn btn-info btn-xs' title='Editar' href='javascript: cotvtadet.editarSubItem("+ dato2 +")'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Costear</a>";
 
 
