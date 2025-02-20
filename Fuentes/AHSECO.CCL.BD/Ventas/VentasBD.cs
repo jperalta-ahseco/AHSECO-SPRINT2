@@ -639,6 +639,7 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("pCodUbigeoDest", detCotCosto.CodUbigeoDestino);
                 parameters.Add("pDireccion", detCotCosto.Direccion);
                 parameters.Add("pAmbienteDest", detCotCosto.AmbienteDestino);
+                parameters.Add("ELIMINADO", detCotCosto.Eliminado);
                 if (detCotCosto.NroPiso.HasValue)
                 {
                     parameters.Add("pNroPiso", detCotCosto.NroPiso.Value);

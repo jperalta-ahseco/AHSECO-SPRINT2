@@ -2244,6 +2244,7 @@
         var objFiltros = {
             datos: {
             Id: $DS_hdnIdCotDetServ.val(),
+            Descripcion: $DS_txtDescripcion.val(),
             Cantidad: $DS_txtCantidad.val(),
             VentaUnitaria: parseFloat(($DS_txtPrecio.val()).replaceAll(",", "")),
             VentaTotalSinIGV:parseFloat(($DS_txtTotalVenta.val()).replaceAll(",", "")),
@@ -4454,6 +4455,12 @@
         var file = fileInput.files[0];
         var req = new XMLHttpRequest();
         var ext = fileInput.files[0].name.split('.').pop();
+
+        if (file.size > 4000000) {
+            app.message.error("Validación", "El documento cargado no debe de superar los 4mb, por favor revisar");
+            return;
+        };
+
         req.open("POST", "UploadFiles?extension=" + ext, true);
         req.setRequestHeader("File-Name", file.name);
         req.setRequestHeader("X-Requested-With", "XMLHttpRequest");
@@ -6014,6 +6021,7 @@
         var objParam = JSON.stringify(objFiltros);
         var fnDoneCallBack = function (data) {
             $('#modalDetalleItemServicio').modal('show');
+            $DS_txtDescripcion.prop('disabled', false);
             $DS_hdnIdCotDetServ.val(data.Result.Id);
             var codigo = "000000" + data.Result.CodItem
             $DS_txtCodigo.val(codigo.substring(codigo.length - 6));

@@ -17,7 +17,8 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_MANT_TBD_COTIZACIONCOSTOS]
 @pNroPiso INT,
 @pMontoUniCosto DECIMAL(18,9),
 @pMontoTotCosto DECIMAL(18,9),
-@pUsuarioRegistro VARCHAR(50)
+@pUsuarioRegistro VARCHAR(50),
+@ELIMINADO INT
 )
 /*=======================================================================================================
 	Nombre:				Fecha:			Descripcion:
@@ -57,13 +58,13 @@ BEGIN
 		([ID_COTDETALLE],
 		[NUMSEC],[CODCOSTO],[CANTCOSTO],
 		[CANTPREVENTIVO],[CODCICLOPREVENT],[CODUBIGEODEST],
-		[DIRECCION],[AMBIENTEDEST],[NROPISO],
+		[DIRECCION],[AMBIENTEDEST],[NROPISO],[ELIMINADO],
 		[MONTOUNICOSTO],[MONTOTOTCOSTO],[USR_REG],[FEC_REG])
 		VALUES
 		(@pId_CotDetalle,
 		@pNumSec,@pCodCosto,@pCantCosto,
 		@pCantPreventivo,@pCodCicloPrevent,@pCodUbigeoDest,
-		@pDireccion,@pAmbienteDest,@pNroPiso,
+		@pDireccion,@pAmbienteDest,@pNroPiso,@ELIMINADO,
 		@pMontoUniCosto,@pMontoTotCosto,@pUsuarioRegistro,GETDATE())
 		
 		SET  @CODIGO = @@IDENTITY
@@ -88,10 +89,13 @@ BEGIN
 
 	IF (@pTipoProceso = 'D') BEGIN
 		
-		DELETE FROM [dbo].[TBD_COTIZACIONCOSTOS] WHERE 
-		(ISNULL(@pId,0) = 0 OR ID = @pId)
+		UPDATE [dbo].[TBD_COTIZACIONCOSTOS]
+		SET 
+			ELIMINADO = @ELIMINADO,
+			USR_MOD = @pUsuarioRegistro, FEC_MOD = GETDATE()
+		WHERE (ISNULL(@pId,0) = 0 OR ID = @pId)
 		AND (ISNULL(@pId_CotDetalle,0) = 0 OR ID_COTDETALLE = @pId_CotDetalle)
-
+		--SET @MSG ='Registro Modificado con éxito'
 	END
 	
 	IF (@pTipoProceso IN ('I','U','D')) BEGIN

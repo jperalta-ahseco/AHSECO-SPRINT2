@@ -92,6 +92,8 @@ var cotvtadet = (function ($, win, doc) {
     var $DI_pnlCostos_ReqCliente = $("#DI_pnlCostos_ReqCliente");
     var $DI_pnlCostos_ObsInsta = $("#DI_pnlCostos_ObsInsta");
     var $DI_pnlDestinos = $("#DI_pnlDestinos");
+    var $DI_pnlCostos_Moneda = $('#DI_pnlCostos_Moneda');
+    var $DI_pnlCostoDespacho = $('#DI_pnlCostoDespacho');
 
     var $CI_CodCosto_LLaveMano = $("#CI_CodCosto_LLaveMano");
     var $CI_CodCosto_Instalacion = $("#CI_CodCosto_Instalacion");
@@ -724,10 +726,19 @@ var cotvtadet = (function ($, win, doc) {
                             if (arrProp[a].Nombre == "ID") { strID = arrProp[a].Valor; }
                             if (arrProp[a].Nombre == "CodItem") { strCodItem = arrProp[a].Valor; }
                         }
-                        var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
-                    var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                        var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarCotDetItem(' + String.fromCharCode(39) + row.CodItem + String.fromCharCode(39) + ',1)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
-                        return '<center>' + hidden + editar + ' ' + quitar + '</center>';
+
+                        if ($TipoSolicitud.val() == "TSOL05" || $TipoSolicitud.val() == "TSOL04") {
+                            var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
+                            var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                            var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarCotDetItem(' + String.fromCharCode(39) + row.CodItem + String.fromCharCode(39) + ',1)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                            return '<center>' + hidden + editar + ' ' + quitar + '</center>';
+                        }
+                        else {
+                            var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
+                            var editar = '<a id="btnEditarItem" class="btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',1)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                            var quitar = '<a id="btnQuitarItem" class="btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarCotDetItem(' + String.fromCharCode(39) + row.CodItem + String.fromCharCode(39) + ',1)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                            return '<center>' + hidden + editar + ' ' + quitar + '</center>';
+                        };
                     }
                     else {
                         return '<center></center>';
@@ -1358,6 +1369,203 @@ var cotvtadet = (function ($, win, doc) {
         }
 
     }
+
+    function editarCotDetItem(ID, opc) {
+
+        LimpiarFormularioCosteo();
+        $DI_hdnCodigoPadre.val("");
+        $DI_opcGrilla.val(opc);
+        $CI_opcGrilla.val(opc);
+
+        method = "POST";
+        url = "BandejaSolicitudesVentas/CargarCotDetItemAnt";
+        var objFiltros = {
+            CotizacionDetalle: { Id: ID },
+            opcGrillaItems: opc
+        };
+        var objParam = JSON.stringify(objFiltros);
+
+        var fnDoneCallBack = function (data) {
+
+            $('#modalDetalleItem').modal('show');
+
+            if ($TipoSolicitud.val() === "TSOL04") { //Para venta de materiales:
+                $('#CX_cmbTipoCosto option[value="CXCD0001"]').remove();
+                $('#CX_cmbTipoCosto option[value="CXCD0002"]').remove();
+                $('#CX_cmbTipoCosto option[value="CXCD0003"]').remove();
+                $('#CX_cmbTipoCosto option[value="CXCD0004"]').remove();
+                $('#CX_cmbTipoCosto option[value="CXCD0005"]').remove();
+                $('#CX_cmbTipoCosto option[value="CXCD0006"]').remove();
+                $('#CX_cmbTipoCosto option[value="CXCD0007"]').remove();
+                $DI_pnlCostos_ObsInsta.css('display', 'none');
+                $DI_pnlInfoGeneral_Dimensiones.css('display', 'none');
+                $DI_pnlCostos_RequierePlaca.css('display', 'none');
+                $DI_pnlCostos_GarantAdic_Combo.css('display', 'none');
+                $DI_pnlCostos_CompraLocal.css('display', 'none');
+                $DI_pnlInfoGeneral_UnidadMedida.css('display', 'none');
+                $('#divMoneda').removeClass('col-md-5').addClass('col-md-6');
+                $('#divlblMoneda').removeClass('col-md-7').addClass('col-md-5');
+            }
+            else if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03") {
+                $('#DI_pnlCostos_ValorUnitario').css('display', 'none');
+                $DI_pnlCostos_Moneda.css('display', 'none');
+                $DI_pnlCostos_Ganancia.css('display', 'none');
+                $('#DI_pnlCostoDespacho').css('display', 'none');
+                $DI_pnlCostos_ObsInsta.css('display', 'none');
+                $DI_pnlInfoGeneral_UnidadMedida.css('display', 'none');
+                $DI_pnlInfoGeneral_Dimensiones.css('display', 'none');
+                $DI_pnlCostos_RequierePlaca.css('display', 'none');
+                $DI_pnlCostos_GarantAdic_Combo.css('display', 'none');
+                $DI_pnlCostos_CompraLocal.css('display', 'none');
+            };
+            
+            $hdnCostosAgregados.val("");
+
+            if ($idRolUsuario.val() != "SGI_VENTA_GERENTE" && $idRolUsuario.val() != "SGI_VENTA_COSTOS" && $idRolUsuario.val() != "SGI_VENTA_IMPORTACION") {
+                $DI_pnlCostos_PrecioVenta.css('display', 'none');
+            }
+            else {
+                $DI_pnlCostos_PrecioVenta.css('display', '');
+
+                if ($idRolUsuario.val() === "SGI_VENTA_GERENTE") {
+                    $DI_btnGuardar.hide();
+                }
+            }
+
+            if (data.Result.Id != 0) {
+                $DI_hdnIdCotDet.val(data.Result.Id);
+            }
+
+            if (data.Result != null) {
+                $DI_Tipo.val("U");
+                //$("#DI_pnlCostoDespacho").css('display', '');
+                $DI_txtCodigo.val(data.Result.CodItem);
+                $DI_txtCantidad.val(data.Result.Cantidad);
+                $DI_txtDescripcion.val(data.Result.Descripcion);
+                $DI_txtUnidadMedida.val(data.Result.Unidad);
+                $DI_txtDimensiones.val(data.Result.Dimensiones);
+                $DI_txtDescripcionAdic.val(data.Result.DescripcionAdicional);
+                $DI_txtObsInsta.val(data.Result.ObservacionDespacho);
+                $DI_Moneda.val(data.Result.DescripcionMoneda);
+                $DI_txtMargenUtilidad.val(data.Result.MargenUtilidad);
+                $DI_txtTransporte.val(data.Result.NombreTransporte);
+
+                if (data.Result.CotizacionDespacho != null) {
+                    $DI_txtReqCliente.val(data.Result.CotizacionDespacho.ObsCliente);
+                }
+
+                var tiene_stock = data.Result.IndStock;
+                if (tiene_stock == true) {
+                    $DI_radTieneStock_No.prop("checked", false);
+                    $DI_radTieneStock_Si.prop("checked", true);
+                }
+                else {
+                    $DI_radTieneStock_No.prop("checked", true);
+                    $DI_radTieneStock_Si.prop("checked", false);
+                }
+
+
+                var es_compralocal = data.Result.IndicadorCompraLocal;
+                if (es_compralocal === "S") {
+                    $DI_radCompraLocal_Si.prop("checked", true);
+                    $DI_radCompraLocal_No.prop("checked", false);
+                }
+                else {
+                    $DI_radCompraLocal_Si.prop("checked", false);
+                    $DI_radCompraLocal_No.prop("checked", true);
+                }
+
+                var es_requiereplaca = data.Result.IndicadorRequierePlaca;
+                if (es_requiereplaca === "S") {
+                    $DI_radRequierePlaca_Si.prop("checked", true);
+                    $DI_radRequierePlaca_No.prop("checked", false);
+                }
+                else {
+                    $DI_radRequierePlaca_Si.prop("checked", false);
+                    $DI_radRequierePlaca_No.prop("checked", true);
+                }
+
+                $DI_txtGanancia.val(data.Result.MargenAdicional);
+                $DI_txtCostoFOB.val(data.Result.ExWork);
+                $DI_txtValorUnitario.val(data.Result.VentaUnitaria == null ? "" : data.Result.VentaUnitaria.toFixed(2));
+
+
+                var codigo_garantia_adicional = data.Result.CodigoGarantiaAdicional;
+
+            }
+            else {
+                $DI_Tipo.val("N");
+                $("#DI_pnlCostoDespacho").css('display', 'none');
+                $DI_Moneda.val($("#cmbTipMoneda option:selected").text());
+                $DI_radRequierePlaca_Si.prop("checked", false);
+                $DI_radRequierePlaca_No.prop("checked", true);
+            }
+
+            //Limpiar grilla de costos multiples:
+            $("#DI_tblCostos tbody tr").remove();
+
+            $DI_txtGanancia.prop('disabled', true);
+            if ($estadoSol.val() != "SCOT") {
+                $("#SeccionAgregarCosto").css('display', 'none');
+                $("#SeccionAgregarCostoBoton").css('display', 'none');
+                //Se bloquea controles si no es en estado "En Cotizacion":
+                $DI_txtCantidad.prop('disabled', true);
+                $DI_txtDimensiones.prop('disabled', true);
+                $DI_txtDescripcionAdic.prop('disabled', true);
+                $DI_txtReqCliente.prop('disabled', true);
+                $DI_txtObsInsta.prop('disabled', true);
+                $DI_txtCostoFOB.prop('disabled', true);
+                $DI_txtValorUnitario.prop('disabled', true);
+                $DI_radTieneStock_Si.prop('disabled', true);
+                $DI_radTieneStock_No.prop('disabled', true);
+                $DI_radCompraLocal_Si.prop('disabled', true);
+                $DI_radCompraLocal_No.prop('disabled', true);
+                $DI_txtGanancia.prop('disabled', true);
+                $DI_radRequierePlaca_Si.prop('disabled', true);
+                $DI_radRequierePlaca_No.prop('disabled', true);
+                $DI_cmbGarantias.prop('disabled', true);
+            }
+
+            if ($estadoSol.val() != "SCOT" && $estadoSol.val() != "CVAL") {
+                $DI_btnGuardar.hide();
+            }
+
+            if ($idRolUsuario.val() === "SGI_VENTA_COSTOS" && $estadoSol.val() === "CVAL") {
+                $DI_txtValorUnitario.prop('disabled', false);
+                $DI_btnGuardar.hide();
+                $DI_btnGuardarCosteo.show();
+            }
+
+            if (($idRolUsuario.val() === "SGI_VENTA_ASESOR" || $idRolUsuario.val() === "SGI_VENTA_COORDINASERV"
+                || $idRolUsuario.val() === "SGI_VENTA_COORDINAATC") && $estadoSol.val() === "CVAL" &&
+                data.Result.CabCosteoDetalle.IndicadorCosteo === "S" && data.Result.CabCosteoDetalle.IndicadorCosteo === "S") {
+                $DI_txtGanancia.prop('disabled', false);
+            }
+
+
+
+            if (data.Result != null) {
+                if (data.Result.CotizacionCostos != null && data.Result.CotizacionCostos.length > 0) {
+                    var resCostos = { Status: 1, Result: data.Result.CotizacionCostos };
+                    cotvtacostos.cargarGrillaCostosCotDet(resCostos);
+                    //Se captura el CODIGO COSTO agregado a COTIZACION DETALLE
+                    for (a = 0; a < data.Result.CotizacionCostos.length; a++) {
+                        var strCodCostoRef = data.Result.CotizacionCostos[a].Id + "_" + data.Result.CotizacionCostos[a].CodCosto;
+                        if ($hdnCostosAgregados.val() == "") { $hdnCostosAgregados.val(strCodCostoRef); }
+                        else { $hdnCostosAgregados.val(";" + strCodCostoRef); }
+                    }
+                }
+            }
+
+            cotvtacostos.cargarComboCotDetItems();
+
+            
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+    }
+
+
 
     function EditarCotDetItem(ID) {
         $DI_hdnIdCotDet.val(ID);
@@ -2451,60 +2659,252 @@ var cotvtadet = (function ($, win, doc) {
             return;
         }
 
+        if ($TipoSolicitud.val() == "TSOL02" || $TipoSolicitud.val() == "TSOL03") {
+            grabarDatosCotDetRepyServ();
+        }
+        else {
+            var fnSi = function () {
+                var tipo = "U";
+                var cotizacion_detalle = $DI_hdnIdCotDet.val();
+                if ($DI_Tipo.val() == "N") {
+                    tipo = "I";
+                }
+
+                var indicador_stock = "";
+                if ($DI_radTieneStock_Si.is(':checked')) { indicador_stock = "S"; }
+                else { indicador_stock = "N"; }
+
+                var indicador_compralocal = "";
+                if ($DI_radCompraLocal_Si.is(':checked')) { indicador_compralocal = "S"; }
+                else { indicador_compralocal = "N"; }
+
+                var indicador_requiereplaca = "";
+                if ($DI_radRequierePlaca_Si.is(':checked')) { indicador_requiereplaca = "S"; }
+                else { indicador_requiereplaca = "N"; }
+
+                var method = "POST";
+                var url = "BandejaSolicitudesVentas/MantCosteoCotizacion";
+                var objDatos = {
+                    Tipo: tipo,
+                    CodigoCotizacionDetalle: cotizacion_detalle,
+                    Cantidad: $DI_txtCantidad.val(),
+                    IndicadorStock: indicador_stock,
+                    Dimensiones: $DI_txtDimensiones.val(),
+                    ObservacionCliente: $DI_txtReqCliente.val(),
+                    ObservacionDespacho: $DI_txtObsInsta.val(),
+                    DescripcionAdicional: $DI_txtDescripcionAdic.val(),
+                    MontoUnitario: $DI_txtValorUnitario.val().replace(",", ""),
+                    IndicadorCompraLocal: indicador_compralocal,
+                    IndicadorRequierePlaca: indicador_requiereplaca,
+                    CodigoGarantiaAdicional: $DI_cmbGarantias.val(),
+                    PorcentajeGanancia: $DI_txtGanancia.val()
+                };
+                var objParam = JSON.stringify(objDatos);
+
+                var fnDoneCallBack = function (data) {
+                    if (data.Result.Codigo > 0) {
+
+                        var aceptar = function () {
+                            ConsultaItemDetalle();
+                        };
+
+                        app.message.success("Grabar", data.Result.Mensaje, "Aceptar", aceptar);
+                        $DI_Tipo.val("U");
+                        $('#modalDetalleItem').modal('hide');
+                    }
+                    else {
+                        app.message.success("Error", data.Result.Mensaje, "Aceptar", null);
+                    }
+
+                };
+
+                var fnFailCallback = function () {
+
+                };
+
+                app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallback);
+
+
+            }
+            return app.message.confirm("Confirmaci&oacute;n", "Desea guardar el detalle de cotizaci&oacute;n?", "S&iacute;", "No", fnSi);
+        };
+    };
+
+
+    function grabarDatosCotDetRepyServ() {
+
+        var bTieneStock = null;
+        var bCompraLocal = null;
+        var bReqPlaca = null;
+        var bManuales = null;
+        var bVideos = null;
+        var bInstalacion = null;
+        var bCapacitacion = null;
+        var bGarantiaAdic = null;
+        var bMantPrevent = null;
+        var bCalib = null;
+        var bFlete = null;
+
+        if ($.trim($DI_txtCodigo.val()) == "") {
+            app.message.error("Validaci&oacute;n", "Campo C&oacute;digo no puede ser vac&iacute;o");
+            return false;
+        }
+
+        if ($.trim($DI_txtDescripcion.val()) == "") {
+            app.message.error("Validaci&oacute;n", "Campo Descripcion no puede ser vac&iacute;o");
+            return false;
+        }
+
+        if ($DI_txtCantidad.val() == "") {
+            app.message.error("Validaci&oacute;n", "Campo Cantidad no puede ser vac&iacute;o");
+            return false;
+        }
+        else {
+            if (!app.validaNumeroEntero($DI_txtCantidad.val())) {
+                app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Cantidad");
+                return false;
+            }
+            else {
+                if (parseInt($DI_txtCantidad.val()) <= 0) {
+                    app.message.error("Validaci&oacute;n", "La cantidad debe ser mayor a 0.");
+                    return false;
+                }
+            }
+        }
+
+        if ($DI_pnlCostos_PrecioVenta.css("display") != "none") {
+            //if ($DI_pnlCostos_CostoFOB.css("display") != "none") {
+            //    if ($DI_txtCostoFOB.attr("readonly") != "readonly" && $DI_txtCostoFOB.attr("disabled") != "disabled") {
+            //        if ($DI_txtCostoFOB.val() == null || $DI_txtCostoFOB.val() === "") {
+            //            app.message.error("Validaci&oacute;n", "El campo Ex-Work no debe estar vac&iacute;o.");
+            //                return false;
+            //        }
+
+            //    }
+            //}
+            if ($DI_pnlCostos_ValorUnitario.css("display") != "none") {
+                if ($DI_txtValorUnitario.attr("readonly") != "readonly" && $DI_txtValorUnitario.attr("disabled") != "disabled") {
+                    if (!app.validaNumeroDecimal($DI_txtValorUnitario.val())) {
+                        app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Valor Unitario");
+                        return false;
+                    }
+                    else {
+                        if (parseFloat($DI_txtValorUnitario.val()) <= 0) {
+                            app.message.error("Validaci&oacute;n", "el valor unitario debe ser mayor a 0.");
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+
+        if ($DI_pnlCostos_Ganancia.css("display") != "none") {
+            if ($DI_txtGanancia.attr("readonly") != "readonly" && $DI_txtGanancia.attr("disabled") != "disabled") {
+                if (!app.validaNumeroDecimal($DI_txtGanancia.val())) {
+                    app.message.error("Validaci&oacute;n", "N&uacute;mero inv&aacute;lido en campo Ganancia");
+                    return false;
+                }
+                else {
+                    if (parseFloat($DI_txtGanancia.val()) <= 0) {
+                        app.message.error("Validaci&oacute;n", "La ganancia no debe ser menor a 0.");
+                        return false;
+                    }
+                }
+            }
+        }
+
+        if ($DI_pnlCostos_GarantAdic_Combo.css("display") != "none") {
+            if ($DI_cmbGarantias.attr("readonly") != "readonly" && $DI_cmbGarantias.attr("disabled") != "disabled") {
+                if ($.trim($DI_cmbGarantias.val()) == "") {
+                    app.message.error("Validaci&oacute;n", "Se debe elegir el tipo de garant&iacute;a.");
+                    return false;
+                }
+            }
+        }
+
+        if ($DI_pnlCostos_TieneStock.css("display") != "none") {
+            if ($DI_radTieneStock_Si.attr("readonly") != "readonly" && $DI_radTieneStock_Si.attr("disabled") != "disabled" &&
+                $DI_radTieneStock_No.attr("readonly") != "readonly" && $DI_radTieneStock_No.attr("disabled") != "disabled") {
+                if (!$DI_radTieneStock_Si.is(':checked') && !$DI_radTieneStock_No.is(':checked')) {
+                    app.message.error("Validaci&oacute;n", "Elija Si o No si el producto tiene STOCK");
+                    return false;
+                }
+            }
+        }
+
+        if ($DI_pnlCostos_CompraLocal.css("display") != "none") {
+            if ($DI_radCompraLocal_Si.attr("readonly") != "readonly" && $DI_radCompraLocal_Si.attr("disabled") != "disabled" &&
+                $DI_radCompraLocal_No.attr("readonly") != "readonly" && $DI_radCompraLocal_No.attr("disabled") != "disabled") {
+                if (!$DI_radCompraLocal_Si.is(':checked') && !$DI_radCompraLocal_No.is(':checked')) {
+                    app.message.error("Validaci&oacute;n", "Elija Si o No si el producto es COMPRA LOCAL");
+                    return false;
+                }
+            }
+        }
+
+        if ($DI_pnlCostos_RequierePlaca.css("display") != "none") {
+            if ($DI_radReqPlaca_Si.attr("readonly") != "readonly" && $DI_radReqPlaca_Si.attr("disabled") != "disabled" &&
+                $DI_radReqPlaca_No.attr("readonly") != "readonly" && $DI_radReqPlaca_No.attr("disabled") != "disabled") {
+                if (!$DI_radReqPlaca_Si.is(':checked') && !$DI_radReqPlaca_No.is(':checked')) {
+                    app.message.error("Validaci&oacute;n", "Elija Si o No en campo de Requiere placa");
+                    return false;
+                }
+            }
+        }
+
+        if ($DI_radCompraLocal_Si.is(':checked')) { bCompraLocal = true; }
+        if ($DI_radCompraLocal_No.is(':checked')) { bCompraLocal = false; }
+
+        if ($DI_radTieneStock_Si.is(':checked')) { bTieneStock = true; }
+        if ($DI_radTieneStock_No.is(':checked')) { bTieneStock = false; }
+
+        if ($DI_radFlete_Si.is(':checked')) { bFlete = true; }
+        if ($DI_radFlete_No.is(':checked')) { bFlete = false; }
 
         var fnSi = function () {
-            var tipo = "U";
-            var cotizacion_detalle = $DI_hdnIdCotDet.val();
-            if ($DI_Tipo.val() == "N") {
-                tipo = "I";
-            }
-
-            var indicador_stock = "";
-            if ($DI_radTieneStock_Si.is(':checked')) { indicador_stock = "S"; }
-            else { indicador_stock = "N"; }
-
-            var indicador_compralocal = "";
-            if ($DI_radCompraLocal_Si.is(':checked')) { indicador_compralocal = "S"; }
-            else { indicador_compralocal = "N"; }
-
-            var indicador_requiereplaca = "";
-            if ($DI_radRequierePlaca_Si.is(':checked')) { indicador_requiereplaca = "S"; }
-            else { indicador_requiereplaca = "N"; }
-
-            var method = "POST";
-            var url = "BandejaSolicitudesVentas/MantCosteoCotizacion";
+            method = "POST";
+            url = "BandejaSolicitudesVentas/GrabarDatosCotDetItem";
             var objDatos = {
-                Tipo: tipo,
-                CodigoCotizacionDetalle: cotizacion_detalle,
-                Cantidad: $DI_txtCantidad.val(),
-                IndicadorStock: indicador_stock,
-                Dimensiones: $DI_txtDimensiones.val(),
-                ObservacionCliente: $DI_txtReqCliente.val(),
-                ObservacionDespacho: $DI_txtObsInsta.val(),
-                DescripcionAdicional: $DI_txtDescripcionAdic.val(),
-                MontoUnitario: $DI_txtValorUnitario.val().replace(",",""),
-                IndicadorCompraLocal: indicador_compralocal,
-                IndicadorRequierePlaca: indicador_requiereplaca,
-                CodigoGarantiaAdicional: $DI_cmbGarantias.val(),
-                PorcentajeGanancia: $DI_txtGanancia.val()
+                CotizacionDetallePadre: { CodItem: $DI_hdnCodigoPadre.val() },
+                CotizacionDetalle: {
+                    Id: $DI_hdnIdCotDet.val(),
+                    CodItem: $DI_hdnCodigo.val(),
+                    CodItemTemp: $DI_txtCodigo.val(),
+                    Descripcion: $DI_txtDescripcion.val(),
+                    DescripcionAdicional: $DI_txtDescripcionAdic.val(),
+                    Cantidad: app.convertirNumero($DI_txtCantidad.val()),
+                    CostoFOB: $DI_txtCostoFOB.val(),
+                    VentaUnitaria: app.convertirNumero($DI_txtValorUnitario.val()),
+                    PorcentajeGanancia: app.convertirNumero($DI_txtGanancia.val()),
+                    IndStock: bTieneStock,
+                    CotizacionDespacho: {
+                        IndCompraLocal: bCompraLocal,
+                        IndRequierePlaca: bReqPlaca,
+                        Dimensiones: $DI_txtDimensiones.val(),
+                        IndInfoManual: bManuales,
+                        IndInfoVideo: bVideos,
+                        IndInfoVideo: bVideos,
+                        IndMantPreventivo: bMantPrevent,
+                        IndCalibracion: bCalib,
+                        IndGarantiaAdicional: bGarantiaAdic,
+                        CodGarantiaAdicional: $DI_cmbGarantias.val(),
+                        IndInstalacion: bInstalacion,
+                        IndCapacitacion: bCapacitacion,
+                        IndFlete: bFlete,
+                        ObsCliente: $DI_txtReqCliente.val(),
+                        ObsDespacho: $DI_txtObsInsta.val()
+                    }
+                },
+                opcGrillaItems: $DI_opcGrilla.val()
             };
             var objParam = JSON.stringify(objDatos);
 
             var fnDoneCallBack = function (data) {
-                if (data.Result.Codigo > 0) {
-
-                    var aceptar = function () {
-                        ConsultaItemDetalle();
-                    };
-
-                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", aceptar);
-                    $DI_Tipo.val("U");
-                    $('#modalDetalleItem').modal('hide');
+                $('#modalDetalleItem').modal('hide');
+                cargarTablaCotDet(data);
+                if ($DI_opcGrilla.val() == "2") {
+                    cargarTablaDetCotCostos(data);
                 }
-                else {
-                    app.message.success("Error", data.Result.Mensaje, "Aceptar", null);
-                }
-                
             };
 
             var fnFailCallback = function () {
@@ -2512,12 +2912,9 @@ var cotvtadet = (function ($, win, doc) {
             };
 
             app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallback);
-
-
         }
         return app.message.confirm("Confirmaci&oacute;n", "Desea guardar el detalle de cotizaci&oacute;n?", "S&iacute;", "No", fnSi);
     }
-
     function cerrarModalDetItem() {
 
         var fnSi = function () {
@@ -2613,24 +3010,24 @@ var cotvtadet = (function ($, win, doc) {
 
                         var ex_work = "";
                         if (row.CostoFOB != "") {
-                            ex_work = "<b>Ex-Work: </b><br>"+row.CostoFOB;
-                        } 
+                            ex_work = "<b>Ex-Work: </b><br>" + row.CostoFOB;
+                        }
 
                         var mar_utilidad = "";
                         if (row.MargenUtilidad != "") {
                             mar_utilidad = "<b>Margen Utilidad: </b><br>" + row.MargenUtilidad;
-                        } 
+                        }
 
                         var trans = "";
                         if (row.NombreTransporte != "") {
                             trans = "<b>Transporte: </b><br>" + row.NombreTransporte;
-                        } 
+                        }
 
-                        var exwork = "<label id='txtExWork" + row.NroItem + row.Id + "' >" + ex_work +"</label>"+"<label id='lblExWork" + row.NroItem + row.Id + "' style='display:none;'></label><input type='text'  id='ExWork" + row.NroItem + row.Id + "' value='" + row.CostoFOB + "' style='display:none; maxlength='50'/>&nbsp;";
+                        var exwork = "<label id='txtExWork" + row.NroItem + row.Id + "' >" + ex_work + "</label>" + "<label id='lblExWork" + row.NroItem + row.Id + "' style='display:none;'></label><input type='text'  id='ExWork" + row.NroItem + row.Id + "' value='" + row.CostoFOB + "' style='display:none; maxlength='50'/>&nbsp;";
                         var margenUtil = "<label id='txtMargenUtil" + row.NroItem + row.Id + "' >" + mar_utilidad + "</label><label id='lblMargenUtil" + row.NroItem + row.Id + "' style='display:none;'></label><input type='text'  id='MargenUtil" + row.NroItem + row.Id + "' value='" + row.MargenUtilidad + "' style='display:none;' maxlength='50'/>&nbsp;";
-                        var transporte = "<label id='txtTransporte" + row.NroItem + row.Id + "' >" + trans + "</label><label id='lblTransporte" + row.NroItem + row.Id + "' style='display:none;'></label><div id='divTransporte" + row.NroItem + row.Id + "' style='display:none;'><input type='hidden' id='hdTransporte" + row.NroItem + row.Id + "' value='"+row.CodigoTransporte+"' ><select id='Transporte" + row.NroItem + row.Id + "'  style='width:150px; display:none;' value='" + row.CodigoTransporte +"'/></div>";
+                        var transporte = "<label id='txtTransporte" + row.NroItem + row.Id + "' >" + trans + "</label><label id='lblTransporte" + row.NroItem + row.Id + "' style='display:none;'></label><div id='divTransporte" + row.NroItem + row.Id + "' style='display:none;'><input type='hidden' id='hdTransporte" + row.NroItem + row.Id + "' value='" + row.CodigoTransporte + "' ><select id='Transporte" + row.NroItem + row.Id + "'  style='width:150px; display:none;' value='" + row.CodigoTransporte + "'/></div>";
 
-                        return exwork + margenUtil+ transporte;
+                        return exwork + margenUtil + transporte;
                     }
                 },
                 {
@@ -2685,32 +3082,59 @@ var cotvtadet = (function ($, win, doc) {
                             if (arrProp[a].Nombre == "ID") { strID = arrProp[a].Valor; }
                             if (arrProp[a].Nombre == "CodItem") { strCodItem = arrProp[a].Valor; }
                         }
-                        var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
-                        var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                        var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
-                        var editar_FOB = '<a id="btnEditarFOBItem' + strID + '" value="' + strID + '" name="BtnExWord" class="botonDetCot btn btn-info btn-xs" title="Editar Ex-Work" href="javascript: cotvtadet.editarExWork(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',' + String.fromCharCode(39) + row.NroItem + String.fromCharCode(39) + ',' + String.fromCharCode(39) + row.CodigoTransporte + String.fromCharCode(39) + ',' +  row.IndStock +  ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Editar</a>'; 
-                        var guardar_FOB = '<a id="btnGuardarFOBItem' + strID + '" class="botonDetCot btn btn-info btn-xs" title="Guardar Ex-Work" href="javascript: cotvtadet.guardarExWork(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',' + String.fromCharCode(39) + row.NroItem + String.fromCharCode(39) + ',' + row.IndStock + ')" style=' + String.fromCharCode(39) + 'display:none' + String.fromCharCode(39) +'><i class="fa fa-pencil-save" aria-hidden="true"></i>Guardar</a>'; 
 
-                        if ($estadoSol.val() == "CAPR" || $estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG") {
-                            return '<center>' + ver + '</center>';
+                        if ($TipoSolicitud.val() == "TSOL05" || $TipoSolicitud.val() == "TSOL04") {
+                            var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
+                            var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                            var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
+                            var editar_FOB = '<a id="btnEditarFOBItem' + strID + '" value="' + strID + '" name="BtnExWord" class="botonDetCot btn btn-info btn-xs" title="Editar Ex-Work" href="javascript: cotvtadet.editarExWork(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',' + String.fromCharCode(39) + row.NroItem + String.fromCharCode(39) + ',' + String.fromCharCode(39) + row.CodigoTransporte + String.fromCharCode(39) + ',' + row.IndStock + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Editar</a>';
+                            var guardar_FOB = '<a id="btnGuardarFOBItem' + strID + '" class="botonDetCot btn btn-info btn-xs" title="Guardar Ex-Work" href="javascript: cotvtadet.guardarExWork(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',' + String.fromCharCode(39) + row.NroItem + String.fromCharCode(39) + ',' + row.IndStock + ')" style=' + String.fromCharCode(39) + 'display:none' + String.fromCharCode(39) + '><i class="fa fa-pencil-save" aria-hidden="true"></i>Guardar</a>';
+
+                            if ($estadoSol.val() == "CAPR" || $estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG") {
+                                return '<center>' + ver + '</center>';
+                            }
+                            else {
+
+                                var fob = "";
+                                var guardar_fob = "";
+                                if ($estadoSol.val() === "CVAL" && $idRolUsuario.val() === "SGI_VENTA_GERENTE") {
+                                    fob = String.fromCharCode(32) + "<br><br>" + editar_FOB;
+                                    guardar_fob = guardar_FOB;
+                                    editar = ver;
+                                }
+                                else if (!oFeatures.IsEnabled) { editar = ver; }
+                                else {
+                                    editar = ver;
+                                }
+
+
+                                return '<center>' + hidden + editar + fob + guardar_fob + '</center>';
+                            }
                         }
                         else {
+                            var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
+                            var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                            var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',2)"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
+                            var editar_FOB = '<a id="btnEditarFOBItem' + strID + '" value="' + strID + '" name="BtnExWord" class="botonDetCot btn btn-info btn-xs" title="Editar Ex-Work" href="javascript: cotvtadet.editarExWork(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',' + String.fromCharCode(39) + row.NroItem + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Ex-Work</a>';
+                            var guardar_FOB = '<a id="btnGuardarFOBItem' + strID + '" class="botonDetCot btn btn-info btn-xs" title="Guardar Ex-Work" href="javascript: cotvtadet.guardarExWork(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',' + String.fromCharCode(39) + row.NroItem + String.fromCharCode(39) + ')" style=' + String.fromCharCode(39) + 'display:none' + String.fromCharCode(39) + '><i class="fa fa-pencil-save" aria-hidden="true"></i>Guardar</a>';
 
-                            var fob = "";
-                            var guardar_fob = "";
-                            if ($estadoSol.val() === "CVAL" && $idRolUsuario.val() === "SGI_VENTA_GERENTE") {
-                                fob = String.fromCharCode(32) + "<br><br>" + editar_FOB;
-                                guardar_fob = guardar_FOB;
-                                editar = ver;
+                            if ($estadoSol.val() == "CAPR" || $estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG") {
+                                return '<center>' + ver + '</center>';
                             }
-                            else if (!oFeatures.IsEnabled) { editar = ver; }
                             else {
-                                editar = ver; 
-                            }
 
-                            
-                            return '<center>' + hidden + editar + fob + guardar_fob+ '</center>';
-                        }
+                                var fob = "";
+                                var guardar_fob = "";
+                                if (oFeatures.IsEnabled && $idRolUsuario.val() === "SGI_VENTA_GERENTE") {
+                                    fob = String.fromCharCode(32) + "<br><br>" + editar_FOB;
+                                    guardar_fob = guardar_FOB;
+                                    editar = ver;
+                                }
+
+                                if (!oFeatures.IsEnabled) { editar = ver; }
+                                return '<center>' + hidden + editar + fob + guardar_fob + '</center>';
+                            };
+                        };
                     }
                 }
             ];
@@ -2817,37 +3241,59 @@ var cotvtadet = (function ($, win, doc) {
                                 if (arrProp[a].Nombre == "ID") { strID = arrProp[a].Valor; }
                                 if (arrProp[a].Nombre == "CodItem") { strCodItem = arrProp[a].Valor; }
                             }
-                            var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
-                            var editar = '';
-                            if (row.TipoItem == "ACC") {
-                                //editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarSubItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                                var dato2 = '"' + row.CodItemPadre + '"' + "," + '"' + row.CodItem + '","' + row.Id + '"';
-                                editar = "<a id='btnEditarItem' class='botonDetCot btn btn-info btn-xs' title='Editar' href='javascript: cotvtadet.editarSubItem(" + dato2 + ")'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Editar</a>";
-                            } else if (row.TipoItem == "PRO") {
-                                editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
-                            }
-                            var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
-                            var quitar = "";
-                            if ($TipoSolicitud.val() == "TSOL05" || $TipoSolicitud.val() == "TSOL04")
-                            {
-                                quitar = "<a class='botonDetCot btn btn-danger btn-xs' title='Eliminar' id=btnQuitarItem  href = 'javascript: cotvtadet.eliminarItemProducto(" + row.Id + ")'><i class='fa fa-trash-o' aria-hidden='true'></i> Quitar</a>"
-                            }
-                            else
-                            {
-                                quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarCotDetItem(' + String.fromCharCode(39) + row.CodItem + String.fromCharCode(39) + ',2)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
-                            }
 
-                            if ($estadoSol.val() == "CAPR" || $estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG") {
-                                return '<center>' + ver + '</center>';
+                            if ($TipoSolicitud.val() == "TSOL05" || $TipoSolicitud.val() == "TSOL04") {
+                                var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
+                                var editar = '';
+                                if (row.TipoItem == "ACC") {
+                                    //editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarSubItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                                    var dato2 = '"' + row.CodItemPadre + '"' + "," + '"' + row.CodItem + '","' + row.Id + '"';
+                                    editar = "<a id='btnEditarItem' class='botonDetCot btn btn-info btn-xs' title='Editar' href='javascript: cotvtadet.editarSubItem(" + dato2 + ")'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Editar</a>";
+                                } else if (row.TipoItem == "PRO") {
+                                    editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                                }
+                                var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
+                                var quitar = "";
+                                if ($TipoSolicitud.val() == "TSOL05" || $TipoSolicitud.val() == "TSOL04") {
+                                    quitar = "<a class='botonDetCot btn btn-danger btn-xs' title='Eliminar' id=btnQuitarItem  href = 'javascript: cotvtadet.eliminarItemProducto(" + row.Id + ")'><i class='fa fa-trash-o' aria-hidden='true'></i> Quitar</a>"
+                                }
+                                else {
+                                    quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarCotDetItem(' + String.fromCharCode(39) + row.CodItem + String.fromCharCode(39) + ',2)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+                                }
+
+                                if ($estadoSol.val() == "CAPR" || $estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG") {
+                                    return '<center>' + ver + '</center>';
+                                }
+                                else {
+                                    if (!oFeatures.IsEnabled) { editar = ver; quitar = ""; }
+                                    else {
+                                        if (!oFeatures.IsEditable) { editar = ver; }
+                                        if (!oFeatures.IsDeletable) { quitar = ""; }
+                                    }
+                                    return '<center>' + hidden + editar + ' ' + quitar + '</center>';
+                                }
                             }
                             else {
-                                if (!oFeatures.IsEnabled) { editar = ver; quitar = ""; }
-                                else {
-                                    if (!oFeatures.IsEditable) { editar = ver; }
-                                    if (!oFeatures.IsDeletable) { quitar = ""; }
+                                var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
+                                var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                                var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.editarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',2)"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
+                                var quitar = '<a id="btnQuitarItem" class="botonDetCot btn btn-danger btn-xs" title="Quitar" href="javascript: cotvtadet.quitarCotDetItem(' + String.fromCharCode(39) + row.CodItem + String.fromCharCode(39) + ',2)"><i class="fa fa-trash-o" aria-hidden="true"></i> Quitar</a>';
+
+                                if ($estadoSol.val() == "CAPR" || $estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG") {
+                                    return '<center>' + ver + '</center>';
                                 }
-                                return '<center>' + hidden + editar + ' ' + quitar + '</center>';
+                                else {
+                                    if (!oFeatures.IsEnabled) { editar = ver; quitar = ""; }
+                                    else {
+                                        if (!oFeatures.IsEditable) { editar = ver; }
+                                        if (!oFeatures.IsDeletable) { quitar = ""; }
+                                    }
+                                    return '<center>' + hidden + editar + ' ' + quitar + '</center>';
+                                }
                             }
+
+
+                            
                         }
                         else {
                             return '<center></center>'
@@ -4861,6 +5307,7 @@ var cotvtadet = (function ($, win, doc) {
         agregarItemHijo: agregarItemHijo,
         quitarCotDetItem: quitarCotDetItem,
         EditarCotDetItem: EditarCotDetItem,
+        editarCotDetItem: editarCotDetItem,
         quitarSubItem: quitarSubItem,
         editarSubItem: editarSubItem,
         SeleccionarRowCotDet: SeleccionarRowCotDet,

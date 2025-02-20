@@ -3771,6 +3771,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     item.Cantidad = datos.Cantidad;
                     item.VentaUnitaria = datos.VentaUnitaria;
                     item.VentaTotalSinIGV = datos.VentaTotalSinIGV;
+                    item.Descripcion = datos.Descripcion;
                     if (opcGrillaItems == opcTablaTemporal) { item.IsTempRecord = true; }
                     else { item.IsTempRecord = false; }
                     item.IsUpdated = true;
@@ -4083,6 +4084,53 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         }
 
         [HttpPost]
+        public JsonResult CargarCotDetItemAnt(CotizacionDetalleDTO CotizacionDetalle, string opcGrillaItems)
+        {
+            try
+            {
+                var ventasBL = new VentasBL();
+
+                var lstItems = GetCotDetItems(opcTablaTemporal);
+
+                //CotizacionDetalleDTO itemCotDet = findCotDetRecord(CotizacionDetalle.CodItem, opcGrillaItems);
+
+                CotizacionDetalleDTO itemCotDet = lstItems.FirstOrDefault(x => x.Id == CotizacionDetalle.Id);
+
+                List<CotDetCostoDTO> lstCostos = new List<CotDetCostoDTO>();
+
+                if (opcGrillaItems == opcTablaTabs)
+                {
+                    //Se carga todos los costos
+                    var resCostos = ventasBL.ObtenerCotDetCostos(new CotDetCostoDTO() { IdCotizacionDetalle = itemCotDet.Id });
+                    lstCostos = resCostos.Result.ToList();
+                    itemCotDet.CotizacionCostos = lstCostos.ToArray();
+                }
+                else
+                {
+                    if (itemCotDet.CotizacionCostos != null) { lstCostos = itemCotDet.CotizacionCostos.ToList(); }
+                }
+
+                itemCotDet = configureCotDetItem(itemCotDet);
+
+                VariableSesion.setObject(TAG_CDCI_CotDetItem, lstCostos);
+
+                List<CotDetCostoDTO> lstCostosBKP = new List<CotDetCostoDTO>();
+
+                lstCostos.ForEach(x => {
+                    var oItemBKP = new CotDetCostoDTO();
+                    x.CopyProperties(ref oItemBKP);
+                    lstCostosBKP.Add(oItemBKP);
+                });
+
+                VariableSesion.setObject(TAG_CDCI_CotDetItem_BKP, lstCostosBKP);
+
+                return Json(new ResponseDTO<CotizacionDetalleDTO>(itemCotDet));
+            }
+            catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
+        }
+
+
+        [HttpPost]
         public JsonResult ObtenerSubItems(CotizacionDetalleDTO CotizacionDetalle)
         {
             try
@@ -4245,6 +4293,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     if (indInstalacion || indCapacitacion || indManuales || indVideos || indMantPrevent || indCalibracion || indFlete)
                     { swCompleto = false; }
                 }
+
+                oCotDetItem.CotizacionDespacho = new CotDetDespachoDTO() { ObsCliente = oCotDesp.ObsCliente };
 
                 if (!swCompleto)
                 { throw new Exception("Se debe completar los costos indicados en pantalla"); }
@@ -4619,6 +4669,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                     itemCDC.TipoProceso = ConstantesDTO.CotizacionDetalleCostos.TipoProceso.Eliminar;
                                     itemCDC.IdCotizacionDetalle = itemCD.Id;
                                     itemCDC.UsuarioRegistra = User.ObtenerUsuario();
+                                    itemCDC.Eliminado = 1;
                                     itemCDC.FechaRegistro = DateTime.Now;
                                     ventasBL.MantenimientoCotDetCosto(itemCDC);
                                 }
@@ -4635,6 +4686,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 itemCD.TipoProceso = ConstantesDTO.CotizacionVentaDetalle.TipoProceso.Eliminar;
                                 itemCD.UsuarioRegistra = User.ObtenerUsuario();
                                 itemCD.FechaRegistro = DateTime.Now;
+                                itemCD.Eliminado = true;
                                 ventasBL.MantenimientoCotizacionDetalle(itemCD);
                             }
                         }
@@ -4647,6 +4699,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         itemCD.IdCotizacion = oCotizacion.IdCotizacion;
                         itemCD.UsuarioRegistra = User.ObtenerUsuario();
                         itemCD.FechaRegistro = DateTime.Now;
+                        itemCD.Eliminado = false;
                         var resCD = ventasBL.MantenimientoCotizacionDetalle(itemCD);
                         if (itemCD.CotizacionDespacho != null)
                         {
@@ -4665,6 +4718,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 itemCDC.TipoProceso = ConstantesDTO.CotizacionDetalleDespacho.TipoProceso.Insertar;
                                 itemCDC.IdCotizacionDetalle = resCD.Result.Codigo;
                                 itemCDC.UsuarioRegistra = User.ObtenerUsuario();
+                                itemCDC.Eliminado = 0;
                                 itemCDC.FechaRegistro = DateTime.Now;
                                 var resCDC = ventasBL.MantenimientoCotDetCosto(itemCDC);
                             }
@@ -5004,16 +5058,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 //    }
                 //}
 
-                var log = new FiltroWorkflowLogDTO();
-
-                //Se registra el workflow para Cotización
-                log.CodigoWorkflow = long.Parse(VariableSesion.getCadena("idWorkFlow")); ;
-                log.Usuario = User.ObtenerUsuario();
-                log.CodigoEstado = ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion;
-                log.UsuarioRegistro = User.ObtenerUsuario();
-                procesoBL.InsertarWorkflowLog(log);
-
-
                 return Json(new { Status = 1, Mensaje = "Cotización guardada correctamente" });
             }
             catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
@@ -5167,113 +5211,104 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 var oResSolicitud = ventasBL.ObtenerSolicitudes(new SolicitudDTO { Id_Solicitud = int.Parse(numSol) });
                 var oSolicitudActual = oResSolicitud.Result.First();
 
-                //if (lstItems != null)
-                //{
-                //    var swProductos = lstItems.Any(x => x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Producto && x.Cantidad > 0);
-                //    var swServicios = lstItems.Any(x => x.TipoItem == ConstantesDTO.CotizacionVentaDetalle.TipoItem.Servicio && x.Cantidad > 0);
-                //    if (oSolicitudActual.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio ||
-                //        oSolicitudActual.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
-                //    {
-                //        if (!swServicios) { throw new Exception("La cotización no contiene servicios para la venta."); }
-                //    }
-                //    if (oSolicitudActual.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaEquipos ||
-                //        oSolicitudActual.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaMateriales ||
-                //        oSolicitudActual.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.RepuestosoConsumibles ||
-                //        oSolicitudActual.Tipo_Sol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
-                //    {
-                //        if (!swProductos) { throw new Exception("La cotización no contiene productos para la venta."); }
-                //    }
-                //}
-                //else { throw new Exception("La cotización no contiene servicios o productos para la venta."); }
-
                 ActualizarCotizacion(oCotizacion);
 
-                //Se elimina los datos actuales para solo grabar lo que está en pantalla
-                var resCotDetAux = ventasBL.ObtenerCotizacionVentaDetalle(new CotizacionDetalleDTO() { IdCotizacion = oCotizacion.IdCotizacion });
-                if (resCotDetAux.Result != null)
+                if (
+                    VariableSesion.getCadena("tipoSol") != ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.VentaEquipos &&
+                    VariableSesion.getCadena("tipoSol") != ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.VentaMateriales
+                    )
                 {
-                    if (resCotDetAux.Result.Any())
+                    //Se elimina los datos actuales para solo grabar lo que está en pantalla
+                    var resCotDetAux = ventasBL.ObtenerCotizacionVentaDetalle(new CotizacionDetalleDTO() { IdCotizacion = oCotizacion.IdCotizacion });
+                    if (resCotDetAux.Result != null)
                     {
-                        var lstCotDetAux = resCotDetAux.Result.ToList();
-                        foreach (CotizacionDetalleDTO itemCD in lstCotDetAux)
+                        if (resCotDetAux.Result.Any())
                         {
-                            if (itemCD.CotizacionDespacho != null)
+                            var lstCotDetAux = resCotDetAux.Result.ToList();
+                            foreach (CotizacionDetalleDTO itemCD in lstCotDetAux)
                             {
-                                var itemCDD = itemCD.CotizacionDespacho;
-                                itemCDD.TipoProceso = ConstantesDTO.CotizacionDetalleDespacho.TipoProceso.Eliminar;
-                                ventasBL.MantenimientoCotDetDespacho(itemCDD);
+                                if (itemCD.CotizacionDespacho != null)
+                                {
+                                    var itemCDD = itemCD.CotizacionDespacho;
+                                    itemCDD.TipoProceso = ConstantesDTO.CotizacionDetalleDespacho.TipoProceso.Eliminar;
+                                    ventasBL.MantenimientoCotDetDespacho(itemCDD);
+                                }
+                                var resCotDetCos = ventasBL.ObtenerCotDetCostos(new CotDetCostoDTO() { IdCotizacionDetalle = itemCD.Id });
+                                if (resCotDetCos.Result != null)
+                                {
+                                    var itemCDC = new CotDetCostoDTO();
+                                    itemCDC.TipoProceso = ConstantesDTO.CotizacionDetalleCostos.TipoProceso.Eliminar;
+                                    itemCDC.UsuarioRegistra = User.ObtenerUsuario();
+                                    itemCDC.Eliminado = 1;
+                                    itemCDC.FechaRegistro = DateTime.Now;
+                                    itemCDC.IdCotizacionDetalle = itemCD.Id;
+                                    ventasBL.MantenimientoCotDetCosto(itemCDC);
+                                }
+                                var resCotDetAct = ventasBL.ObtenerCotDetActividades(new CotDetActividadDTO() { IdCotizacionDetalle = itemCD.Id });
+                                if (resCotDetAct.Result != null)
+                                {
+                                    var itemActividad = new CotDetActividadDTO();
+                                    itemActividad.TipoProceso = ConstantesDTO.CotizacionDetalleCostos.TipoProceso.Eliminar;
+                                    itemActividad.UsuarioRegistra = User.ObtenerUsuario();
+                                    itemActividad.FechaRegistro = DateTime.Now;
+                                    itemActividad.IdCotizacionDetalle = itemCD.Id;
+                                    ventasBL.MantenimientoCotDetActividad(itemActividad);
+                                }
+                                itemCD.UsuarioRegistra = User.ObtenerUsuario();
+                                itemCD.Eliminado = true;
+                                itemCD.FechaRegistro = DateTime.Now;
+                                itemCD.TipoProceso = ConstantesDTO.CotizacionVentaDetalle.TipoProceso.Eliminar;
+                                ventasBL.MantenimientoCotizacionDetalle(itemCD);
                             }
-                            var resCotDetCos = ventasBL.ObtenerCotDetCostos(new CotDetCostoDTO() { IdCotizacionDetalle = itemCD.Id });
-                            if (resCotDetCos.Result != null)
+                        }
+                    }
+
+                    //Se graba el Detalle de la Cotización
+                    foreach (CotizacionDetalleDTO itemCD in lstItems)
+                    {
+                        itemCD.TipoProceso = ConstantesDTO.CotizacionVentaDetalle.TipoProceso.Insertar;
+                        itemCD.IdCotizacion = oCotizacion.IdCotizacion;
+                        itemCD.UsuarioRegistra = User.ObtenerUsuario();
+                        itemCD.FechaRegistro = DateTime.Now;
+                        itemCD.Eliminado = false;
+                        var resCD = ventasBL.MantenimientoCotizacionDetalle(itemCD);
+                        itemCD.Id = resCD.Result.Codigo;
+                        if (itemCD.CotizacionDespacho != null)
+                        {
+                            var itemCDD = itemCD.CotizacionDespacho;
+                            itemCDD.TipoProceso = ConstantesDTO.CotizacionDetalleDespacho.TipoProceso.Insertar;
+                            itemCDD.IdCotizacionDetalle = itemCD.Id;
+                            itemCDD.UsuarioRegistra = User.ObtenerUsuario();
+                            itemCDD.FechaRegistro = DateTime.Now;
+                            var resCDD = ventasBL.MantenimientoCotDetDespacho(itemCDD);
+                        }
+                        if (itemCD.CotizacionCostos != null)
+                        {
+                            for (int a = 0; a < itemCD.CotizacionCostos.Length; a++)
                             {
-                                var itemCDC = new CotDetCostoDTO();
-                                itemCDC.TipoProceso = ConstantesDTO.CotizacionDetalleCostos.TipoProceso.Eliminar;
-                                itemCDC.UsuarioRegistra = User.ObtenerUsuario();
-                                itemCDC.FechaRegistro = DateTime.Now;
+                                var itemCDC = itemCD.CotizacionCostos[a];
+                                itemCDC.TipoProceso = ConstantesDTO.CotizacionDetalleDespacho.TipoProceso.Insertar;
                                 itemCDC.IdCotizacionDetalle = itemCD.Id;
-                                ventasBL.MantenimientoCotDetCosto(itemCDC);
+                                itemCDC.UsuarioRegistra = User.ObtenerUsuario();
+                                itemCDC.Eliminado = 0;
+                                itemCDC.FechaRegistro = DateTime.Now;
+                                var resCDC = ventasBL.MantenimientoCotDetCosto(itemCDC);
                             }
-                            var resCotDetAct = ventasBL.ObtenerCotDetActividades(new CotDetActividadDTO() { IdCotizacionDetalle = itemCD.Id });
-                            if (resCotDetAct.Result != null)
+                        }
+                        if (itemCD.CotizacionActividades != null)
+                        {
+                            for (int a = 0; a < itemCD.CotizacionActividades.Length; a++)
                             {
-                                var itemActividad = new CotDetActividadDTO();
-                                itemActividad.TipoProceso = ConstantesDTO.CotizacionDetalleCostos.TipoProceso.Eliminar;
+                                var itemActividad = itemCD.CotizacionActividades[a];
+                                itemActividad.TipoProceso = ConstantesDTO.CotizacionDetalleDespacho.TipoProceso.Insertar;
+                                itemActividad.IdCotizacionDetalle = itemCD.Id;
                                 itemActividad.UsuarioRegistra = User.ObtenerUsuario();
                                 itemActividad.FechaRegistro = DateTime.Now;
-                                itemActividad.IdCotizacionDetalle = itemCD.Id;
-                                ventasBL.MantenimientoCotDetActividad(itemActividad);
-                            }
-                            itemCD.UsuarioRegistra = User.ObtenerUsuario();
-                            itemCD.FechaRegistro = DateTime.Now;
-                            itemCD.TipoProceso = ConstantesDTO.CotizacionVentaDetalle.TipoProceso.Eliminar;
-                            ventasBL.MantenimientoCotizacionDetalle(itemCD);
-                        }
-                    }
-                }
-
-                //Se graba el Detalle de la Cotización
-                foreach (CotizacionDetalleDTO itemCD in lstItems)
-                {
-                    itemCD.TipoProceso = ConstantesDTO.CotizacionVentaDetalle.TipoProceso.Insertar;
-                    itemCD.IdCotizacion = oCotizacion.IdCotizacion;
-                    itemCD.UsuarioRegistra = User.ObtenerUsuario();
-                    itemCD.FechaRegistro = DateTime.Now;
-                    var resCD = ventasBL.MantenimientoCotizacionDetalle(itemCD);
-                    itemCD.Id = resCD.Result.Codigo;
-                    if (itemCD.CotizacionDespacho != null)
-                    {
-                        var itemCDD = itemCD.CotizacionDespacho;
-                        itemCDD.TipoProceso = ConstantesDTO.CotizacionDetalleDespacho.TipoProceso.Insertar;
-                        itemCDD.IdCotizacionDetalle = itemCD.Id;
-                        itemCDD.UsuarioRegistra = User.ObtenerUsuario();
-                        itemCDD.FechaRegistro = DateTime.Now;
-                        var resCDD = ventasBL.MantenimientoCotDetDespacho(itemCDD);
-                    }
-                    if (itemCD.CotizacionCostos != null)
-                    {
-                        for (int a = 0; a < itemCD.CotizacionCostos.Length; a++)
-                        {
-                            var itemCDC = itemCD.CotizacionCostos[a];
-                            itemCDC.TipoProceso = ConstantesDTO.CotizacionDetalleDespacho.TipoProceso.Insertar;
-                            itemCDC.IdCotizacionDetalle = itemCD.Id;
-                            itemCDC.UsuarioRegistra = User.ObtenerUsuario();
-                            itemCDC.FechaRegistro = DateTime.Now;
-                            var resCDC = ventasBL.MantenimientoCotDetCosto(itemCDC);
-                        }
-                    }
-                    if (itemCD.CotizacionActividades != null)
-                    {
-                        for (int a = 0; a < itemCD.CotizacionActividades.Length; a++)
-                        {
-                            var itemActividad = itemCD.CotizacionActividades[a];
-                            itemActividad.TipoProceso = ConstantesDTO.CotizacionDetalleDespacho.TipoProceso.Insertar;
-                            itemActividad.IdCotizacionDetalle = itemCD.Id;
-                            itemActividad.UsuarioRegistra = User.ObtenerUsuario();
-                            itemActividad.FechaRegistro = DateTime.Now;
-                            var resCDC = ventasBL.MantenimientoCotDetActividad(itemActividad);
-                        }
-                    }
-                }
+                                var resCDC = ventasBL.MantenimientoCotDetActividad(itemActividad);
+                            };
+                        };
+                    };
+                };
 
                 return Json(new { Status = 1, Mensaje = "Cotización Guardada correctamente" });
             }
@@ -7600,6 +7635,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         public JsonResult MantCosteoCotizacion(CosteoCotizacionDTO costo)
         {
             var ventasBL = new VentasBL();
+            var procesoBL = new ProcesosBL();
             costo.UsuarioRegistro = User.ObtenerUsuario();
 
             //Validamos sí ya se ha ingresado costos para accesorios
@@ -7611,6 +7647,31 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             };
 
             var response = ventasBL.MantCosteoCotizacion(costo);
+
+            result = ventasBL.ObtenerCotizacionVentaDetalle(new CotizacionDetalleDTO() { IdCotizacion = Int64.Parse(VariableSesion.getCadena("IdCotizacion")) });
+
+            var total = result.Result.Count();
+            var real = 0;
+            foreach (var element in result.Result)
+            {
+                if(element.VentaUnitaria > 0)
+                {
+                    real += 1;
+                };
+            };
+
+            if(total == real) 
+            {
+                var log = new FiltroWorkflowLogDTO();
+
+                //Se registra el workflow para Cotización
+                log.CodigoWorkflow = long.Parse(VariableSesion.getCadena("idWorkFlow")); ;
+                log.Usuario = User.ObtenerUsuario();
+                log.CodigoEstado = ConstantesDTO.EstadosProcesos.ProcesoVenta.Valorizacion;
+                log.UsuarioRegistro = User.ObtenerUsuario();
+                procesoBL.InsertarWorkflowLog(log);
+            };
+
             return Json(response);
         }
 

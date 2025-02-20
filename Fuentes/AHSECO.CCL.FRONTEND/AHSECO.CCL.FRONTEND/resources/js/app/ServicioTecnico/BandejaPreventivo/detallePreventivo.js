@@ -321,7 +321,7 @@
         var req = new XMLHttpRequest();
         var ext = fileInput.files[0].name.split('.').pop();
 
-        if (file.size > 5000000) {
+        if (file.size > 4000000) {
             app.message.error("Validación", "El documento cargado no debe de superar los 4mb, por favor revisar");
             return;
         };

@@ -175,6 +175,12 @@
         var file = fileInput.files[0];
         var req = new XMLHttpRequest();
         var ext = fileInput.files[0].name.split('.').pop();
+
+        if (file.size > 4000000) {
+            app.message.error("Validación", "El documento cargado no debe de superar los 4mb, por favor revisar");
+            return;
+        };
+
         req.open("POST", "UploadFiles?extension="+ext, true);
         req.setRequestHeader("File-Name", file.name);
         req.setRequestHeader("X-Requested-With", "XMLHttpRequest");

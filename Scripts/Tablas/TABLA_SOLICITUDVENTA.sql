@@ -130,7 +130,7 @@ CREATE TABLE [dbo].[TBD_COTIZACIONVENTA](
 	[NROITEM] [int] NOT NULL,
 	[TIPOITEM] [varchar](5) NOT NULL,
 	[CODITEM] [varchar](35) NOT NULL,
-	[DESCRIPCION] [varchar](100) NOT NULL,
+	[DESCRIPCION] [varchar](200) NOT NULL,
 	[DESCRIPADIC] [varchar](1000) NULL,
 	[CODFAMILIA] [varchar](12) NULL,
 	[CODALMACEN] [varchar](4) NULL,
