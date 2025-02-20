@@ -10,6 +10,7 @@ var cotvtadet = (function ($, win, doc) {
 
     /*Implementación tabla multifunción*/
     var $bodyProducts = $('#bodyProducts');
+    var $DI_bodyCostos = $('#DI_bodyCostos');
     var $NoExisteRegProd = $('#NoExisteRegProd');
     var $tblProductos = $('#tblProductos');
 
@@ -25,6 +26,7 @@ var cotvtadet = (function ($, win, doc) {
     var $DI_hdnTipoItem_PRO = $("#DI_hdnTipoItem_PRO");
     var $DI_hdnTipoItem_ACC = $("#DI_hdnTipoItem_ACC");
     var $DI_hdnTipoItem_SER = $("#DI_hdnTipoItem_SER");
+    var $DI_hdnCantidad = $('#DI_hdnCantidad');
 
     var $idCliente = $("#idCliente");
     var $numeroSolicitud = $("#numeroSolicitud");
@@ -1673,6 +1675,7 @@ var cotvtadet = (function ($, win, doc) {
                 $DI_Tipo.val("U");
                 $("#DI_pnlCostoDespacho").css('display', '');
                 $DI_txtCodigo.val(data.Result.CabCosteoDetalle.CodigoItem);
+                $DI_hdnCantidad.val(data.Result.CabCosteoDetalle.Cantidad);
                 $DI_txtCantidad.val(data.Result.CabCosteoDetalle.Cantidad);
                 $DI_txtDescripcion.val(data.Result.CabCosteoDetalle.Descripcion);
                 $DI_txtUnidadMedida.val(data.Result.CabCosteoDetalle.Unidad);
@@ -1775,7 +1778,8 @@ var cotvtadet = (function ($, win, doc) {
                 $('#DI_tblCostos').append(nuevoTr);
 
                 costeoMultiple.push({
-                    Id: lista_costos[i].IdCosto,
+                    IdCosto: lista_costos[i].IdCosto, 
+                    Id: $DI_hdnIdCotDet.val(),
                     CodCosto: lista_costos[i].CodigoCosto,
                     DesCosto: lista_costos[i].DescripcionCosto,
                     CantCosto: parseInt(lista_costos[i].CantidadCosto),
@@ -1795,7 +1799,35 @@ var cotvtadet = (function ($, win, doc) {
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
     }
 
+    function validar(argument, value) {
+        if (costeoMultiple.length > 0) {
+            var fnSi = function () {
+                
+                for (var i = 0; costeoMultiple.length > i; i++) {
+                    method = "POST";
+                    url = "BandejaSolicitudesVentas/MantCosteoItem";
+                    var objDatos = {
+                        Tipo: "D",
+                        CodigoCotizacionDetalle: $DI_hdnIdCotDet.val(),
+                        IdCosto: costeoMultiple[i].IdCosto
+                    };
+                    var objParam = JSON.stringify(objDatos);
+                    var fnDoneCallBack = function (data) {
+                    };
 
+                    app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+                };
+
+                costeoMultiple = [];
+                $("#DI_tblCostos tbody tr").remove();
+
+            };
+            var fnNo = function () {
+                $DI_txtCantidad.val($DI_hdnCantidad.val());
+            };
+            return app.message.confirm("Confirmaci&oacute;n", "Ya existen costos registrados, al cambiar la cantidad eliminar&aacute; los costos, &iquest;Est&aacute; seguro que desea realizar el cambio?", "S&iacute;", "No", fnSi, fnNo);
+        };
+    };
     function configurarModalCostoMultiple() {
 
 
@@ -2916,7 +2948,10 @@ var cotvtadet = (function ($, win, doc) {
         return app.message.confirm("Confirmaci&oacute;n", "Desea guardar el detalle de cotizaci&oacute;n?", "S&iacute;", "No", fnSi);
     }
     function cerrarModalDetItem() {
-
+        if ($DI_txtCantidad.val() != $DI_hdnCantidad.val()) {
+            app.message.error("Validaci&oacute;n", "Ha cambiado la cantidad de productos, debe de 'Guardar' para poder continuar");
+            return
+        };
         var fnSi = function () {
             method = "POST";
             url = "BandejaSolicitudesVentas/CancelarCotDetItem";
@@ -5330,6 +5365,7 @@ var cotvtadet = (function ($, win, doc) {
         IniciarLogicaHijosInputs: IniciarLogicaHijosInputs,
         eliminarItemProducto: eliminarItemProducto,
 	    quitarCostoItemVta: quitarCostoItemVta,
-        editarCostoItem: editarCostoItem
+        editarCostoItem: editarCostoItem,
+        validar: validar
     }
 })(window.jQuery, window, document);
