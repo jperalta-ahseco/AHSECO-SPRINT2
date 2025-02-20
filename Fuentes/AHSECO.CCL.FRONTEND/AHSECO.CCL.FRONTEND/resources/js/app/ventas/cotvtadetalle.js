@@ -1745,7 +1745,7 @@ var cotvtadet = (function ($, win, doc) {
                 $('#DI_tblCostos').append(nuevoTrNew);
             }
 
-
+            costeoMultiple = [];
             for (i = 0; i < lista_costos.length; i++) {
                 var html = '<div class="text-center">';
                 var sel_html = ''
@@ -2065,7 +2065,7 @@ var cotvtadet = (function ($, win, doc) {
             };
             return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.GuardarCosto);
         }
-        return app.message.confirm("Ventas", "&iquest;Est&aacute; seguro que desea guardar el costo?", "Si;", "No", fnSi, null);
+        return app.message.confirm("Ventas", "&iquest;Est&aacute; seguro que desea guardar el costo?", "Si", "No", fnSi, null);
 
         //Llave en mano: CXCD0001 X
         //Instalacion: CXCD0002 X
