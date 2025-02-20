@@ -5,7 +5,7 @@ CREATE OR ALTER PROCEDURE USP_CONSULTA_COSTEOITEM
 /*================================================================================================
 	NOMBRE:					FECHA:		DESCRIPCIÓN:
 	Jose A. Peralta		10.02.25		Consulta del detalle por item del costeo
-	EXEC USP_CONSULTA_COSTEOITEM 38,94
+	EXEC USP_CONSULTA_COSTEOITEM 166,55
   ================================================================================================*/
   @CODDETALLECOTIZACION BIGINT,
   @CODCOSTEO BIGINT

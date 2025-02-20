@@ -39,5 +39,6 @@ BEGIN
 	AND (ISNULL(@pId_CotDetalle,0) = 0 OR ID_COTDETALLE = @pId_CotDetalle)
 	AND (ISNULL(@pNumSec,0) = 0 OR NUMSEC = @pNumSec)
 	AND (@pCodCosto IS NULL OR CODCOSTO = @pCodCosto)
+	AND ISNULL(CC.ELIMINADO,0) != 1
 
 END

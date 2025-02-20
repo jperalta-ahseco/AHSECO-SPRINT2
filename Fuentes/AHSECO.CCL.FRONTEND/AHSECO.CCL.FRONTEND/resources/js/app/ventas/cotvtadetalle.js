@@ -4145,10 +4145,10 @@ var cotvtadet = (function ($, win, doc) {
                 render: function (data, type, row) {
                     var casilla = "";
                     if (data == null) {
-                        casilla = "<input style='width: 100%' type='number' placeholder='Cantidad' />"
+                        casilla = "<input style='width: 100%' type='number' min='0' placeholder='Cantidad' />"
                     }
                     else {
-                        casilla = "<input style='width: 100%' disabled type='number' placeholder='Cantidad' value='" + data + "' />"
+                        casilla = "<input style='width: 100%' disabled type='number' min='0' placeholder='Cantidad' value='" + data + "' />"
                     }
                     return '<center>' + casilla + '</center>';
                 }
@@ -4589,10 +4589,10 @@ var cotvtadet = (function ($, win, doc) {
                     var casilla = "";
                     if (data == null)
                     {
-                        casilla = "<input type='number' style='width:100%' placeholder='Cantidad' />"
+                        casilla = "<input type='number' min='0' style='width:100%' placeholder='Cantidad' />"
                     }
                     else{
-                        casilla = "<input disabled type='number' style='width:100%' placeholder='Cantidad' value='" + data + "' />"
+                        casilla = "<input disabled type='number' min='0' style='width:100%' placeholder='Cantidad' value='" + data + "' />"
                     }
                     return '<center>' + casilla + '</center>';
                 }
