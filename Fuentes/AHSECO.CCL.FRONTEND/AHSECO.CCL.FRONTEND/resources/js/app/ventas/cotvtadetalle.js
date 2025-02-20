@@ -470,7 +470,7 @@ var cotvtadet = (function ($, win, doc) {
 
                 var filters1 = {};
                 filters1.placeholder = "--Seleccionar--";
-                filters1.allowClear = false;
+                filters1.allowClear = true;
 
                 arrayMarcas = data.Result.Marcas
                 arrayTipMedida = data.Result.Medidas;
@@ -4105,7 +4105,7 @@ var cotvtadet = (function ($, win, doc) {
                 render: function (data, type, row) {
                     var casilla = "";
                     if (data == null) {
-                        casilla = "<input placeholder='Nombre Equipo' type='text' onblur='javascript: cotvtadet.IniciarLogicaInputs(event,this, this.value)' />";
+                        casilla = "<input placeholder='Nombre Equipo' type='text' onblur='javascript: cotvtadet.IniciarLogicaHijosInputs(event,this, this.value)' />";
                         //casilla = "<input placeholder='Nombre Equipo' type='text'/>";
                     }
                     else {
@@ -4305,8 +4305,8 @@ var cotvtadet = (function ($, win, doc) {
                         var objFiltros = {
                             DescEquipo: request.term,
                             CodFamilia: "08",
-                            DescMarca: $(NroItem + '#BI_cmbMarca_Child' + index).val(),
-                            CodUndMed: $(NroItem + '#BI_cmbTipoMedida_Child' + index).val(),
+                            DescMarca: $('#'+NroItem + 'BI_cmbMarca_Child' + index).val(),
+                            CodUndMed: $('#'+NroItem + 'BI_cmbTipoMedida_Child' + index).val(),
                             CantidadRegistros: 20
                         };
                         var objParam = JSON.stringify(objFiltros);
@@ -4393,7 +4393,7 @@ var cotvtadet = (function ($, win, doc) {
     function cargarCombosHijos() {
         var filters1 = {};
         filters1.placeholder = "--Seleccionar--";
-        filters1.allowClear = false;
+        filters1.allowClear = true;
 
         arrayFamiliaAcc = arrayFamilias.filter(d => d.Id == "08");
 
@@ -4874,7 +4874,7 @@ var cotvtadet = (function ($, win, doc) {
                 };
             } else if (newid == "BI_DescEquipo_Child") {
                 var objFiltros = {
-                    DescArticulo: $('#' + index.toString() + newid).val(),
+                    DescArticulo: $('#' + index.toString() + '_' + nroItem + newid).val(),
                     CodsUnidad: $('#' + nroItem + 'BI_cmbTipoMedida_Child' + index).val() == "" ? "" : $('#' + nroItem + 'BI_cmbTipoMedida_Child' + index).val(),
                     CodsFamilia: $('#' + nroItem + 'BI_cmbFamilia_Child' + index).val() == "" ? "08" : $('#' + nroItem + 'BI_cmbFamilia_Child' + index).val(),
                     CodsAlma: $('#' + nroItem + 'BI_cmbAlmacen_Child' + index).val() == "" ? "0015;0001;0017" : $('#' + nroItem + 'BI_cmbAlmacen_Child' + index).val(),
