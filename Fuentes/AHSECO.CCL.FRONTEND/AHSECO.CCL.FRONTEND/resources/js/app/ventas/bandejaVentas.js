@@ -485,7 +485,7 @@
             if (data.Status === 1) {
                 cargarTabla(data);
             } else if (data.Status === 0) {
-                message.error("Error", data.CurrentException, "Aceptar", null);
+                app.message.error("Error", data.CurrentException, "Aceptar", null);
             }
         }).fail(function (jqXhr, textStatus, errorThrow) {
             message.error("Error inesperado", errorThrow, "Aceptar", null);
@@ -580,7 +580,10 @@
 
                         var detalle = "'" + row.IdWorkFlow + "','" + row.IdSolicitud + "','" + row.IdEstado + "','" + row.NombreEstado + "','" + row.EstadoAbreviado + "','" + row.CodigoTipoSolicitud + "','" + row.CodigoFlujo + "','" + row.IdCliente + "','" + row.NombreCliente + "','" + row.RucEmpresa+"'";
                         var seleccionar = '<a id="btnSeleccionar" class="btn btn-default btn-xs" title="Seleccionar" href="javascript: bandejaVentas.seleccionar(' + detalle + ')"><i class="fa fa-book" aria-hidden="true"></i> Ver Solicitud</a>';
-                        return '<center>' + seleccionar + '</center>';
+                        var despacho = '<a id="btnDespacho" class="btn btn-primary btn-xs" title="Despacho" href="javascript: bandejaVentas.despachar(' + "'" + row.IdSolicitud + "','" + (row.NumeroCotizacion != null ? row.NumeroCotizacion.substring(row.NumeroCotizacion.indexOf('-')+1, row.NumeroCotizacion.length) : 0) + "'" +')"><i class="fa fa-usd" aria-hidden="true"></i> Despacho</a>';
+                        var finalizar = '<a id="btnFinalizar" class="btn btn-danger btn-xs" title="Finalizar" href="javascript: bandejaVentas.finalizar(' + "'" + row.IdSolicitud + "','" + + "'" +')"><i class="fa fa-check-square" aria-hidden="true"></i> Finalizar</a>';
+
+                        return '<center>' + seleccionar + '</center>' + '\n \n' + '<center>' + despacho + '</center>' + '\n \n' + '<center>' + finalizar + '</center>';
                     }
                 }
             ];
@@ -632,8 +635,37 @@
         app.llamarAjaxNoLoading(method, url, objParam, fnDoneCallBackSol, fnFailCallBackSol, null, null);
     };
 
+    function despachar(idSolicitud, idCotizacion) {
+
+        var method = "POST";
+        var url = "BandejaSolicitudesVentas/InicializarDespacho";
+        var obj = {
+            Solicitud: idSolicitud,
+            IdCotizacion: idCotizacion
+        };
+        var objParam = JSON.stringify(obj);
+
+        var fnDoneCallBack = function () {
+            app.redirectTo("BandejaSolicitudesVentas/BandejaDespacho");
+        };
+
+        var fnFailCallBack = function () {
+            app.message.error("Validación", "Se presentó un error al tratar de acceder a la bandeja de despacho.");
+            return;
+        };
+
+        app.llamarAjaxNoLoading(method, url, objParam, fnDoneCallBack, fnFailCallBack);
+    };
+
+    function finalizar(idSolicitud) {
+        var method = "POST";
+        var url = "";
+    };
+
     return {
         solicitud: solicitud,
-        seleccionar: seleccionar
+        seleccionar: seleccionar,
+        despachar: despachar,
+        finalizar: finalizar
     };
 })(window.jQuery, window, document);

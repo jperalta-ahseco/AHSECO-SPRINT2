@@ -571,5 +571,19 @@ namespace AHSECO.CCL.BL.Ventas
             };
         }
 
+        public ResponseDTO<GrupoFiltroDespacho> FiltrosDespacho()
+        {
+            try
+            {
+                var result = Repository.FiltrosDespacho();
+                return new ResponseDTO<GrupoFiltroDespacho>(result);
+            }
+            catch( Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<GrupoFiltroDespacho>(ex);
+            }
+        }
+
     }
 }

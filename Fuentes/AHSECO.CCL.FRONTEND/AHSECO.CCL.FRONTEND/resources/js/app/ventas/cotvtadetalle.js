@@ -1442,6 +1442,7 @@ var cotvtadet = (function ($, win, doc) {
                 $DI_Tipo.val("U");
                 //$("#DI_pnlCostoDespacho").css('display', '');
                 $DI_txtCodigo.val(data.Result.CodItem);
+                $DI_hdnCantidad.val(data.Result.Cantidad);
                 $DI_txtCantidad.val(data.Result.Cantidad);
                 $DI_txtDescripcion.val(data.Result.Descripcion);
                 $DI_txtUnidadMedida.val(data.Result.Unidad);

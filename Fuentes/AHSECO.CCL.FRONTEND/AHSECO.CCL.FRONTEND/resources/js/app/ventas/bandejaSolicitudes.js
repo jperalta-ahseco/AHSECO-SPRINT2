@@ -210,7 +210,10 @@
                 render: function (data, type, row) {
                     var detalle = "'" + row.Id_WorkFlow + "','" + row.Id_Solicitud + "','" + row.Estado + "','" + row.nomEstado + "','" + row.abrevEstado + "','" + row.Tipo_Sol + "','" + row.Id_Flujo+"'";
                     var seleccionar = '<a id="btnSeleccionar" class="btn btn-primary btn-xs" title="Seleccionar" href="javascript: bandejaSolicitudes.seleccionar(' + detalle + ')"><i class="fa fa-plus" aria-hidden="true"></i> Seleccionar</a>';
-                    return '<center>' + seleccionar + '</center>';
+                    var despacho = '<a id="btnDespacho" class="btn btn-secondary btn-xs" title="Despacho" href="javascript: bandejaSolicitudes.despachar(' + detalle + ')"><i class="fa fa-usd" aria-hidden="true"></i> Despacho</a>';
+                    var finalizar = '<a id="btnFinalizar" class="btn btn-danger btn-xs" title="Finalizar" href="javascript: bandejaSolicitudes.finalizar(' + detalle + ')"><i class="fa fa-check-square" aria-hidden="true"></i> Finalizar</a>';
+
+                    return '<center>' + seleccionar + '' + despacho +  '' + finalizar + '</center>';
                 }
             }
         ];
@@ -265,7 +268,17 @@
         app.redirectTo("BandejaSolicitudesVentas/SolicitudVenta");
     };
 
+    function despachar() {
+        app.redirectTo("BandejaSolicitudesVentas/BandejaDespacho");
+    };
+
+    function finalizar() {
+
+    };
+
     return {
         seleccionar: seleccionar
+        , despachar: despachar
+        , finalizar: finalizar
     };    
 })(window.jQuery, window, document);

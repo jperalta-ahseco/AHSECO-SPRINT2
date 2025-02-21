@@ -6,6 +6,7 @@ using AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica;
 using AHSECO.CCL.BE.Ventas;
 using AHSECO.CCL.COMUN;
 using Dapper;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -2750,5 +2751,38 @@ namespace AHSECO.CCL.BD.Ventas
                 return result;
             }
         }
+
+        public GrupoFiltroDespacho FiltrosDespacho()
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+
+            using(var connection = Factory.ConnectionSingle())
+            {
+                SqlCommand sqlcommand;
+                var result = new GrupoFiltroDespacho();
+                string query = "exec USP_DESP_SEL_FILTROS";
+                connection.Open();
+                sqlcommand = new SqlCommand(query, connection);
+                using (var reader = sqlcommand.ExecuteReader())
+                {
+                    var _listTipDespacho = new List<ComboDTO>();
+                    while (reader.Read())
+                    {
+                        var _tipDespacho = new ComboDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("COD")) ? "" : reader.GetString(reader.GetOrdinal("COD")),
+                            Text = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION"))
+                        };
+                        _listTipDespacho.Add(_tipDespacho);
+                    };
+
+                    connection.Close();
+                    result.TipDespacho = _listTipDespacho;
+                    return result;
+                };
+            };
+        }
+
+
     }
 }

@@ -7821,8 +7821,64 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult ObtenerCotizacionVentaDetalle(CotizacionDetalleDTO cotizaciondetDTO)
+        {
+            var ventasBL = new VentasBL();
+
+            var result = ventasBL.ObtenerCotizacionVentaDetalle(cotizaciondetDTO);
+
+            return Json(result);
+        }
 
 
+        [HttpPost]
+        public JsonResult InicializarDespacho(long Solicitud, long IdCotizacion)
+        {
+            try
+            {
+                VariableSesion.setCadena("numSol", Solicitud.ToString());
+                VariableSesion.setCadena("idCotizacion", IdCotizacion.ToString());
 
+                return Json(new
+                {
+                    Status = 1
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    Status = 0,
+                    CurrentException = "Error en la asignación de valores en InicializarDespacho" + ex.Message
+                });
+            };
+        }
+
+        [Permissions(Permissions = "BANDEJAVENTAS")]
+        public ActionResult BandejaDespacho()
+        {
+            
+
+            return View();
+        }
+
+
+        [Permissions(Permissions = "BANDEJAVENTAS")]
+        public ActionResult DetalleDespacho()
+        {
+            ViewBag.PermiteSeleccionarProductos = true;
+            ViewBag.PermiteGuardarProductos = true;
+            ViewBag.PermiteGestionarDespacho = true;
+            return View();
+        }
+
+        public JsonResult FiltrosDespacho()
+        {
+            var ventasBL = new VentasBL();
+            var result = ventasBL.FiltrosDespacho();
+
+            return Json(result);
+        }
     }
 }

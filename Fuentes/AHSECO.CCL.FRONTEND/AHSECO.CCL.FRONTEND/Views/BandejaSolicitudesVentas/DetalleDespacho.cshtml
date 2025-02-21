@@ -1,0 +1,140 @@
+﻿@using AHSECO.CCL.FRONTEND.Core;
+
+@{
+    ViewBag.Title = "Detalle Despachos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var numSol = VariableSesion.getCadena("numSol");
+    var idCotizacion = VariableSesion.getCadena("idCotizacion");
+}
+
+<input hidden id="IdCotizacion" value="@idCotizacion" />
+<input hidden id="NumSol" value="@numSol" />
+
+<div class="container-fluid">
+    <h4><i class="fa fa-comment" aria-hidden="true"></i> @ViewBag.Title</h4>
+
+    <div class="box-inner">
+        <div class="box-header well" data-original-title="">
+            <div style="display: flex;justify-content: space-between;">
+                <h2>N&uacute;mero de Orden / Contrato: </h2> <!--- Aquí tendremos que controlar-->
+            </div>
+        </div>
+        <div class="box-content">
+            <div class="container-fluid" style="margin-right: 15px;">
+                <div class="box-inner" id="">
+                    <div class="box-header well" data-original-title="" style="background-color: #0080ff7a;">
+                        <div>
+                            <p id="titleCoti"><i class="fa fa-circle-o" aria-hidden="true"></i> Detalle Despacho:</p>
+                        </div>
+                    </div>
+                    <div class="box-content">
+                        <div class="row container-fluid">
+                            <div class="col-md-4 col-sm-7 col-xs-12">
+                                <label for="cmbTipoDespacho">Tipo Despacho: </label>
+                                <div class="form-group">
+                                    <select class="form-control select2 input-sm" style="width:100%;" id="cmbTipoDespacho" data-selected="">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12" id="divNumOrden">
+                                <label for="txtNumOrden">N° Orden:</label>
+                                <div class="form-group">
+                                    <input placeholder="Número Orden" type="text" class="form-control input-sm" id="txtNumOrden" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12" id="divContrato" style=" display:none">
+                                <label for="txtNumContrato">N° Contrato:</label>
+                                <div class="form-group">
+                                    <input placeholder="Número Contrato" type="text" class="form-control input-sm" id="txtNumContrato" value="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row container-fluid">
+                            <div class="col-md-4 col-sm-7 col-xs-12">
+                                <div class="form-group">
+                                    <select disabled class="form-control select2 input-sm" style="width:100%;" id="cmbTipo" data-selected="">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <button class="btn btn-success btn-sm" type="button" id="btnRegistrarDespacho"><i class="fa fa-plus"></i> Nuevo</button>
+                            <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegresar" tabindex="14"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Regresar</button>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="box-inner" id="boxDetalleCotizacion" style="@(ViewBag.PermiteSeleccionarProductos ? "" : "display:none" ) ">
+                    <div class="box-header well" data-original-title="" style="background-color: beige;">
+                        <div>
+                            <p id="titleNomProducto"><i class="fa fa-list" aria-hidden="true" style="color:yellow"></i> Lista Productos</p>
+                        </div>
+                    </div>
+                    <div class="box-content" style="background-color: #f5f5dc30; ">
+                        <div class="container-fluid">
+                            <div class="table-responsive">
+                                <table id="tblDetalleCotizacion" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align:center; width: 5%">Todos</th>
+                                            <th style="text-align:center; width: 10%">Código Producto</th>
+                                            <th style="text-align:center; width: 10%">Descripción</th>
+                                            <th style="text-align:center; width: 10%">Cantidad</th>
+                                            <th style="text-align:center; width: 10%">Valor Venta Unitario</th>
+                                            <th style="text-align:center; width: 10%">Valor. Venta Total Sin IGV (Sin Margen Adicional)</th>
+                                            <th style="text-align:center; width: 10%">Margen Adicional(%)</th>
+                                            <th style="text-align:center; width: 10%">Valor. Venta Total Sin IGV (Con Margen Adicional)</th>
+                                            <th style="text-align:center; width: 5%">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyDetalleCot">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-right">
+                                <button style="@(ViewBag.PermiteGuardarProductos ? "" : "display:none") " class="btn btn-success btn-sm" type="button" id="btnRegistrarProductos"><i class="fa fa-plus"></i> Registrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="box-inner" id="boxDespacho" style="@(ViewBag.PermiteGestionarDespacho ? "" : "display:none")">
+                    <div class="box-header well" data-original-title="" style="background-color: beige;">
+                        <div>
+                            <p id="titleNomProducto"><i class="fa fa-cube" aria-hidden="true" style="color:brown"></i> Despacho</p>
+                        </div>
+                    </div>
+                    <div class="box-content" style="background-color: #f5f5dc30;">
+                        <div class="container-fluid">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modalCostoItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_SolicitudCostoItem");
+    }
+</div>
+<div class="modal fade" id="modalDetalleItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_SolicitudDetItemProducto");
+    }
+</div>
+
+
+@section scripts{
+    <script type="text/javascript" src="~/resources/js/app/ventas/DetalleDespacho.js"></script>
+    <script type="text/javascript" src="~/resources/js/app/ventas/cotvtadetalle.js"></script>
+    <script type="text/javascript" src="~/resources/js/app/ubigeo/ubigeo.js"></script>
+
+}
+
+
