@@ -121,6 +121,7 @@
     <Compile Include="Ventas\DatosActualizarSerieSTO.cs" />
     <Compile Include="Ventas\FiltroBandejaSolicitudesDTO.cs" />
     <Compile Include="Ventas\FiltroBandejaVentasDTO.cs" />
+    <Compile Include="Ventas\GrupoFiltroDespacho.cs" />
     <Compile Include="Ventas\GuiaDTO.cs" />
     <Compile Include="Ventas\GuiaDetDTO.cs" />
     <Compile Include="Ventas\GuiaCabDTO.cs" />

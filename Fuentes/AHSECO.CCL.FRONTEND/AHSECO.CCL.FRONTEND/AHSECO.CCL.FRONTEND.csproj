@@ -976,6 +976,8 @@
     <Content Include="Views\Shared\_Sedes.cshtml" />
     <Content Include="Views\Shared\_ModificarSede.cshtml" />
     <Content Include="Views\BandejaSolicitudesVentas\_SolicitudDetItemAccesorio.cshtml" />
+    <Content Include="Views\BandejaSolicitudesVentas\BandejaDespacho.cshtml" />
+    <Content Include="Views\BandejaSolicitudesVentas\DetalleDespacho.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\css\font\" />

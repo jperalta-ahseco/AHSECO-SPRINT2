@@ -1,7 +1,7 @@
 ﻿@using AHSECO.CCL.FRONTEND.Core;
 
 @{
-    ViewBag.Title = "Detalle Despachos";
+    ViewBag.Title = "Detalle del Despacho";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var numSol = VariableSesion.getCadena("numSol");
@@ -17,7 +17,7 @@
     <div class="box-inner">
         <div class="box-header well" data-original-title="">
             <div style="display: flex;justify-content: space-between;">
-                <h2>N&uacute;mero de Orden / Contrato: </h2> <!--- Aquí tendremos que controlar-->
+                <h2>Detalle del Despacho: </h2> <!--- Aquí tendremos que controlar-->
             </div>
         </div>
         <div class="box-content">
@@ -38,9 +38,9 @@
                                 </div>
                             </div>
                             <div class="col-md-4 col-sm-12" id="divNumOrden">
-                                <label for="txtNumOrden">N° Orden:</label>
+                                <label for="txtNumOrden">N° Orden o Contrato:</label>
                                 <div class="form-group">
-                                    <input placeholder="Número Orden" type="text" class="form-control input-sm" id="txtNumOrden" value="">
+                                    <input placeholder="Número Orden o Contrato" type="text" class="form-control input-sm" id="txtNumOrden" value="">
                                 </div>
                             </div>
                             <div class="col-md-4 col-sm-12" id="divContrato" style=" display:none">
