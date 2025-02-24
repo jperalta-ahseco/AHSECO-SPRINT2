@@ -4,7 +4,7 @@
     var numSol = VariableSesion.getCadena("numSol");
     var idCotizacion = VariableSesion.getCadena("idCotizacion");
 
-    ViewBag.Title = "Bandeja Despachos";
+    ViewBag.Title = "Bandeja de Despachos";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -16,10 +16,26 @@
     <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
     <div class="box-inner">
         <div class="box-header well" data-original-title="">
-            <!--<h2><i class="fa fa-user-circle-o" aria-hidden="true"></i> Cliente:</h2>-->
+           <h2><i class="fa fa-user-circle-o" aria-hidden="true"></i> Bandeja de Despachos:</h2>
         </div>
         <div class="box-content">
             <form id="formDespacho">
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <label for="cmbTipoDespacho">Tipo Despacho: </label>
+                        <div class="form-group">
+                            <select class="form-control select2 input-sm" style="width:100%;" id="cmbTipoDespacho" data-selected="">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="cmbEstadoDespacho">Estado: </label>
+                        <div class="form-group">
+                            <select class="form-control select2 input-sm" style="width:100%;" id="cmbEstadoDespacho" data-selected="">
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 <div class="row container-fluid">
                     <div class="col-md-4 col-sm-12">
                         <label for="txtOrdenCompra">N&uacute;mero de Orden de Compra: </label>
@@ -28,21 +44,7 @@
                         </div>
                     </div>
                     <div class="col-md-4 col-sm-12">
-                        <label for="txt">N&uacute;mero de Contrato: </label>
-                        <div class="form-group">
-                            <input placeholder="Ingresar Contrato" type="text" class="form-control input-sm" id="txtNumContrato" value="">
-                        </div>
-                    </div>
-                </div>
-                <div class="row container-fluid">
-                    <div class="col-md-4 col-sm-12">
-                        <label for="txt">N&uacute;mero de Contrato: </label>
-                        <div class="form-group">
-                            <input placeholder="Ingresar Contrato" type="text" class="form-control input-sm" id="txtNumContrato" value="">
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-sm-12">
-                        <label for="txt">N&uacute;mero de Contrato: </label>
+                        <label for="txtNumContrato">N&uacute;mero de Contrato: </label>
                         <div class="form-group">
                             <input placeholder="Ingresar Contrato" type="text" class="form-control input-sm" id="txtNumContrato" value="">
                         </div>
@@ -59,12 +61,12 @@
                 <table id="tblDespacho" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                     <thead>
                         <tr>
-                            <th>Id</th>
                             <th style="text-align: center; width:20%;">N°Solicitud</th>
-                            <th style="text-align: center; width:20%;">N° de Orden Compra</th>
-                            <th style="text-align: center; width:20%;">Contrato</th>
-                            <th style="text-align: center; width:20%;">Fecha de Registro</th>
-                            <th style="text-align: center; width: 20%;">Estado</th>
+                            <th style="text-align: center; width:20%;">Tipo Despacho</th>
+                            <th style="text-align: center; width:20%;">N° Orden Pago / N° Contrato</th>
+                            <th style="text-align: center; width:20%;">Fecha Orden Pago / Fecha Contrato</th>
+                            <th style="text-align: center; width:20%;">Fecha Maxima</th>
+                            <th style="text-align: center; width:20%;">Estado</th>
                             <th style="text-align: center;">Acciones</th>
                         </tr>
                     </thead>

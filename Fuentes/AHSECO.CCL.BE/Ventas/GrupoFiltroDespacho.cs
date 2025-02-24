@@ -10,5 +10,6 @@ namespace AHSECO.CCL.BE.Ventas
     {
         public List<ComboDTO> TipDespacho { get; set; }
         public List<ComboDTO> Tipo { get; set; }
+        public List<ComboDTO> Estados { get; set; }
     }
 }

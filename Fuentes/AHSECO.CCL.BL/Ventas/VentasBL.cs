@@ -585,5 +585,20 @@ namespace AHSECO.CCL.BL.Ventas
             }
         }
 
+        public ResponseDTO<IEnumerable<FiltroBandejaDespachoDTO>> ConsultaBandejaDespacho(FiltroBandejaDespachoDTO despacho)
+        {
+            try
+            {
+                var result = Repository.ConsultaBandejaDespacho(despacho);
+
+                return new ResponseDTO<IEnumerable<FiltroBandejaDespachoDTO>>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + ":: " + ex.Message);
+                return new ResponseDTO<IEnumerable<FiltroBandejaDespachoDTO>>(ex);
+            };
+        }
+
     }
 }

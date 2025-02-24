@@ -2775,12 +2775,63 @@ namespace AHSECO.CCL.BD.Ventas
                         };
                         _listTipDespacho.Add(_tipDespacho);
                     };
+                    reader.NextResult();
+                    var _listaEstados = new List<ComboDTO>();
+                    while(reader.Read())
+                    {
+                        var _estado = new ComboDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("COD")) ? "" : reader.GetString(reader.GetOrdinal("COD")),
+                            Text = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION"))
+                        };
+                        _listaEstados.Add(_estado);
+                    }
 
                     connection.Close();
                     result.TipDespacho = _listTipDespacho;
+                    result.Estados = _listaEstados;
                     return result;
                 };
             };
+        }
+
+
+        public IEnumerable<FiltroBandejaDespachoDTO> ConsultaBandejaDespacho(FiltroBandejaDespachoDTO despacho)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using (var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+                var parameters = new DynamicParameters();
+
+                parameters.Add("ID_SOLICITUD", despacho.IdSolicitud);
+                parameters.Add("TIPODESP", despacho.TipoDespacho == null ? "": despacho.TipoDespacho);
+                parameters.Add("NUMORDEN", despacho.NumeroOrden == null ? "": despacho.NumeroOrden);
+                parameters.Add("NUMCONTRATO", despacho.NumeroContrato == null ? "" : despacho.NumeroContrato);
+                parameters.Add("CODESTADO", despacho.Estado == null ? "" : despacho.Estado);
+
+                var result = connection.Query(
+                    sql: "USP_BANDEJA_DESPACHOS",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new FiltroBandejaDespachoDTO
+                    {
+                            IdDespacho = i.Single(d => d.Key.Equals("ID")).Value.Parse<long>(),
+                            TipoDespacho = i.Single(d => d.Key.Equals("TIPODESP")).Value.Parse<string>(),
+                            NombreTipoDespacho = i.Single(d => d.Key.Equals("TIPODESP_NOM")).Value.Parse<string>(),
+                            Numero = i.Single(d => d.Key.Equals("NUM")).Value.Parse<string>(),
+                            Fecha = i.Single(d => d.Key.Equals("FEC")).Value.Parse<string>(),
+                            FechaMaxima = i.Single(d => d.Key.Equals("FECHAMAX")).Value.Parse<string>(),
+                            Estado = i.Single(d => d.Key.Equals("CODESTADO")).Value.Parse<string>(),
+                            NombreEstado = i.Single(d => d.Key.Equals("NOMESTADO")).Value.Parse<string>(),
+                            AbreviaturaEstado = i.Single(d => d.Key.Equals("ABREVESTADO")).Value.Parse<string>()
+                    });
+
+                connection.Close();
+
+                return result;
+            }
         }
 
 

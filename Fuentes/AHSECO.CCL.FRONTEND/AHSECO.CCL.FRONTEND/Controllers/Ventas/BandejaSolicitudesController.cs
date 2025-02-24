@@ -7870,6 +7870,91 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.PermiteSeleccionarProductos = true;
             ViewBag.PermiteGuardarProductos = true;
             ViewBag.PermiteGestionarDespacho = true;
+            ViewBag.VerFacturacion = true;
+            ViewBag.VerObservacionGerencia = true;
+            //ViewBag.Btn_GuiaManuscritaTotal = "none";
+            // ViewBag.Btn_EnviarServicio = "none";
+            // ViewBag.Btn_Aprobar = "none";
+            //ViewBag.Btn_Observar = "none";
+            // ViewBag.Btn_GuardarDespacho = "none";
+            // ViewBag.Btn_EditarDespacho = "none";
+            // ViewBag.Btn_EnviarGuiaTotal = "none";
+            //ViewBag.Btn_GuiaPedidoTotal = "none";
+            // ViewBag.Btn_EnviarGuiaBOTotal = "none";
+            // ViewBag.Btn_GuiaBOTotal= "none";
+            // ViewBag.Btn_FinalizarVenta = "none";
+            // ViewBag.Btn_EditarFacturaLogistica = "none";
+            // ViewBag.Btn_GuardarFacturaLogistica = "none";
+            //            ViewBag.Btn_EnviarGuiaCS = "none";
+            //            ViewBag.Btn_GuiaPedidoCS = "none";
+            //            ViewBag.Btn_EditarGestionLogistica = "none";
+            //            ViewBag.Btn_GuardarGestionLogistica = "none";
+            //            ViewBag.Btn_RegistrarDespacho = "none";
+            //            ViewBag.Btn_EnviarGestionDespacho = "none";
+            //       ViewBag.Btn_EnviarGuiaSS = "none";
+            // ViewBag.Btn_EnviarGuiaBO = "none";
+            //  ViewBag.Btn_GuiaBO = "none";
+            //  ViewBag.Btn_GuiaPedidoSS = "none";
+            //   ViewBag.Btn_ActualizarImportacion = "none";
+            //       ViewBag.Btn_GuardarFechaIngreso = "none";
+            //  ViewBag.Btn_GuardarImportacion = "none";
+            //         ViewBag.Btn_EditarGestionLogisticaSE = "none";
+            //           ViewBag.Btn_GuardarGestionLogisticaSE = "none";
+            // ViewBag.Btn_RegistrarDespachoSinStock ="none";
+            // ViewBag.Btn_EnviarGestionDespachoSE = "none";
+            // ViewBag.Btn_GuardarFactura = "none";
+            ViewBag.Btn_GuiaManuscritaTotal = "";
+            ViewBag.Btn_EnviarServicio = "";
+            ViewBag.Btn_Aprobar = "";
+            ViewBag.Btn_Observar = "";
+            ViewBag.Btn_GuardarDespacho = "";
+            ViewBag.Btn_EditarDespacho = "";
+            ViewBag.Btn_EnviarGuiaTotal = "";
+            ViewBag.Btn_GuiaPedidoTotal = "";
+            ViewBag.Btn_EnviarGuiaBOTotal = "";
+            ViewBag.Btn_GuiaBOTotal = "";
+            ViewBag.Btn_FinalizarVenta = "";
+            ViewBag.Btn_EditarFacturaLogistica = "";
+            ViewBag.Btn_GuardarFacturaLogistica = "";
+            ViewBag.VerGestionLogistica = true;
+            ViewBag.VerNavConStock = true;
+            ViewBag.VerNavSinStock = true;
+            ViewBag.VerNavServicio = true;
+            ViewBag.Btn_EnviarGuiaCS = "";
+            ViewBag.Btn_GuiaPedidoCS = "";
+            ViewBag.SeccionLogCS = true;
+            ViewBag.TxtNumeroGuiaRemisionCE = "";
+            ViewBag.Btn_EditarGestionLogistica = "";
+            ViewBag.Btn_GuardarGestionLogistica = "";
+            ViewBag.Btn_RegistrarDespacho = "";
+            ViewBag.Btn_EnviarGestionDespacho = "";
+            ViewBag.InActiveSinStock = "";
+
+            ViewBag.Btn_EnviarGuiaSS = "";
+            ViewBag.Btn_EnviarGuiaBO = "";
+            ViewBag.Btn_GuiaBO = "";
+            ViewBag.Btn_GuiaPedidoSS = "";
+            ViewBag.SeccionImpSS = true;
+            ViewBag.TxtCodigoPedido = "";
+            ViewBag.IngresoAlmacen = "";
+            ViewBag.SeccionLogSS = true;
+            ViewBag.TxtNumeroGuiaRemisionSE = "";
+
+            ViewBag.Btn_ActualizarImportacion = "";
+            ViewBag.Btn_GuardarFechaIngreso = "";
+            ViewBag.Btn_GuardarImportacion = "";
+            ViewBag.Btn_EditarGestionLogisticaSE = "";
+            ViewBag.Btn_GuardarGestionLogisticaSE = "";
+            ViewBag.Btn_RegistrarDespachoSinStock = "";
+            ViewBag.Btn_EnviarGestionDespachoSE = "";
+
+            ViewBag.InActiveServicio = "";
+            ViewBag.FechaFactura = "";
+            ViewBag.TxtNumeroFacturaServ = "";
+            ViewBag.Btn_GuardarFactura = "";
+            ViewBag.InActiveTecnico = "";
+
+
             return View();
         }
 
@@ -7878,6 +7963,14 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             var ventasBL = new VentasBL();
             var result = ventasBL.FiltrosDespacho();
 
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult ConsultaBandejaDespacho(FiltroBandejaDespachoDTO despacho)
+        {
+            var ventasBL = new VentasBL();
+            var result = ventasBL.ConsultaBandejaDespacho(despacho);
             return Json(result);
         }
     }

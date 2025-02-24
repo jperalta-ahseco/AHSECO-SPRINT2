@@ -544,10 +544,12 @@
     <Content Include="resources\js\app\ServicioTecnico\BandejaInstalacionTecnica\registroInstalacionTecnica.js" />
     <Content Include="resources\js\app\ubigeo\ubigeo.js" />
     <Content Include="resources\js\app\uploadFile.js" />
+    <Content Include="resources\js\app\ventas\bandejaDespacho.js" />
     <Content Include="resources\js\app\ventas\bandejaSolicitudes.js" />
     <Content Include="resources\js\app\ventas\bandejaVentas.js" />
     <Content Include="resources\js\app\ventas\cotvtacostos.js" />
     <Content Include="resources\js\app\ventas\cotvtadetalle.js" />
+    <Content Include="resources\js\app\ventas\DetalleDespacho.js" />
     <Content Include="resources\js\app\ventas\solicitud.js" />
     <Content Include="resources\js\app\viaticos\registroviaticos.js" />
     <Content Include="resources\js\app\viaticos\bandejaviaticos.js" />
