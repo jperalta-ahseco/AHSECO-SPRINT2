@@ -112,6 +112,9 @@
     <Compile Include="Ventas\CotDetCostoCabDTO.cs" />
     <Compile Include="Ventas\CotDetCostoDetDTO.cs" />
     <Compile Include="Ventas\CotDetCostoDTO.cs" />
+    <Compile Include="Ventas\Despacho\GrupoReqDespacho.cs" />
+    <Compile Include="Ventas\Despacho\ReqDespachoCabecera.cs" />
+    <Compile Include="Ventas\Despacho\ReqDespachoDetalle.cs" />
     <Compile Include="Ventas\FiltroBandejaDespachoDTO.cs" />
     <Compile Include="Ventas\DetalleDespachoDTO.cs" />
     <Compile Include="Ventas\CotDetDespachoDTO.cs" />

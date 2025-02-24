@@ -5,10 +5,12 @@ using AHSECO.CCL.BE.AsignacionManual;
 using AHSECO.CCL.BE.Mantenimiento;
 using AHSECO.CCL.BE.ServicioTecnico.BandejaGarantias;
 using AHSECO.CCL.BE.Ventas;
+using AHSECO.CCL.BE.Ventas.Despacho;
 using AHSECO.CCL.COMUN;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -597,6 +599,34 @@ namespace AHSECO.CCL.BL.Ventas
             {
                 Log.TraceError(Utilidades.GetCaller() + ":: " + ex.Message);
                 return new ResponseDTO<IEnumerable<FiltroBandejaDespachoDTO>>(ex);
+            };
+        }
+		
+		public ResponseDTO<RespuestaDTO> MantDespacho(ReqDespachoCabecera req)
+        {
+            try
+            {
+                var result = Repository.MantDespacho(req);
+                return new ResponseDTO<RespuestaDTO>(result);
+            }
+            catch(Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<RespuestaDTO>(ex);
+            };
+        }
+
+        public ResponseDTO<RespuestaDTO> MantDespachoDetalle(ReqDespachoDetalle req)
+        {
+            try
+            {
+                var result = Repository.MantDespachoDetalle(req);
+                return new ResponseDTO<RespuestaDTO>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<RespuestaDTO>(ex);
             };
         }
 

@@ -147,8 +147,25 @@
         app.redirectTo("BandejaVentas")
     };
 
+    
     function Nuevo() {
-        app.redirectTo("BandejaSolicitudesVentas/DetalleDespacho")  
+        var method = "POST";
+        var url = "BandejaSolicitudesVentas/InicializarNumDespacho";
+        var obj = {
+            NumDespacho: ""
+        };
+
+        var objParam = JSON.stringify(obj);
+
+        var fnDoneCallBack = function () {
+            app.redirectTo("BandejaSolicitudesVentas/DetalleDespacho")  
+        };
+
+        var fnFailCallBack = function () {
+
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
     };
 
     return {

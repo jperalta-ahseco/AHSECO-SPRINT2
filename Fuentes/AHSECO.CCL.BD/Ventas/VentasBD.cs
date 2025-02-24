@@ -4,6 +4,7 @@ using AHSECO.CCL.BE.Mantenimiento;
 using AHSECO.CCL.BE.ServicioTecnico.BandejaGarantias;
 using AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica;
 using AHSECO.CCL.BE.Ventas;
+using AHSECO.CCL.BE.Ventas.Despacho;
 using AHSECO.CCL.COMUN;
 using Dapper;
 using Microsoft.Extensions.DependencyInjection;
@@ -2830,6 +2831,103 @@ namespace AHSECO.CCL.BD.Ventas
 
                 connection.Close();
 
+                return result;
+            }
+        }
+		
+		public RespuestaDTO MantDespacho(ReqDespachoCabecera req)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using( var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+                var parameters = new DynamicParameters();
+
+                parameters.Add("IsTipoProceso",  req.TipoProceso);
+                parameters.Add("IsID",           req.Id);
+                parameters.Add("IsID_SOLICITUD", req.Id_Solicitud);
+                parameters.Add("IsID_COTIZACION",req.Id_Cotizacion);
+                parameters.Add("IsID_WORKFLOW",  req.Id_WorkFlow);
+                parameters.Add("IsTIPODESP",     req.TipoDesp);
+                parameters.Add("IsNUMORDEN",     req.NumOrden);
+                parameters.Add("IsFECHAORDEN",   req.FechaOrden);
+                parameters.Add("IsFECHAMAX",     req.FechaMax);
+                parameters.Add("IsNUMFACTURA",   req.NumFactura);
+                parameters.Add("IsFECHAFACTURA", req.FechaFactura);
+                parameters.Add("IsNUMCONTRATO",  req.NumContrato);
+                parameters.Add("IsFEC_CONTRATO", req.FecContrato);
+                parameters.Add("IsCALCULO",      req.Calculo);
+                if (req.Fianza.HasValue)
+                {
+                    parameters.Add("IsFIANZA", Utilidades.ParseStringSN<bool?>(req.Fianza), DbType.String);
+                }
+                else { parameters.Add("IsFIANZA", DBNull.Value, DbType.String); }
+                if (req.PrestPrin.HasValue)
+                {
+                    parameters.Add("IsPRESTPRIN", Utilidades.ParseStringSN<bool?>(req.PrestPrin), DbType.String);
+                }
+                else { parameters.Add("IsPRESTPRIN", DBNull.Value, DbType.String); }
+                if (req.PrestAcc.HasValue)
+                {
+                    parameters.Add("IsPRESTACC", Utilidades.ParseStringSN<bool?>(req.PrestAcc), DbType.String);
+                }
+                else { parameters.Add("IsPRESTACC", DBNull.Value, DbType.String); }
+                parameters.Add("IsNUMFIANZAPP",  req.NumFianzaApp);
+                parameters.Add("IsNUMFIANZAPA",  req.NumFianzaApa);
+                parameters.Add("IsPORCDSCTO",    req.PorDscto);
+                parameters.Add("IsSUBTOTALVENTA",req.SubTotalVenta);
+                parameters.Add("IsMONTOIGV",     req.MontoIgV);
+                parameters.Add("IsTOTALVENTA",   req.TotalVenta);
+                parameters.Add("IsUsrEjecuta", req.UsuarioRegistra);
+
+                var result = connection.Query(
+                    sql: "USP_MANT_TBM_SOLDESPACHO"
+                    , param: parameters
+                    , commandType: CommandType.StoredProcedure)
+                    .Select(d => d as IDictionary<string, object>)
+                    .Select(i => new RespuestaDTO()
+                    {
+                        Codigo = i.Single(d => d.Key.Equals("COD")).Value.Parse<int>(),
+                        Mensaje = i.Single(d => d.Key.Equals("MSG")).Value.Parse<string>()
+                    }).FirstOrDefault();
+                connection.Close();
+                return result;
+            };
+        }
+
+        public RespuestaDTO MantDespachoDetalle(ReqDespachoDetalle req)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using (var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+                var parameters = new DynamicParameters();
+
+                parameters.Add("IsTipoProceso", req.TipoProceso);
+                parameters.Add("IsID",req.Id);
+                parameters.Add("IsID_SOLDEPACHO",req.Id_SolDepacho);
+                parameters.Add("IsID_COTDETALLE",req.IdCotDetalle);
+                parameters.Add("IsCANTIDAD",req.Cantidad);
+                parameters.Add("IsVALORUNITARIO",req.ValorUnitario);
+                parameters.Add("IsVALORTOTAL",req.ValorTotal);
+                parameters.Add("IsMARGENADICIONAL",req.MargenAdicional);
+                parameters.Add("IsVVTOTALSIGVCGAN",req.VvTotalSigVcgan);
+                parameters.Add("IsMONTODSCTO",req.MontoDscto);
+                parameters.Add("IsVVTOTALSIGVDSCTO",req.VvTotalSigVDscto);
+                parameters.Add("IsUsrEjecuta",req.UsuarioRegistra);
+
+                var result = connection.Query(
+                    sql: "USP_MANT_TBD_DESPACHO_COTIZACION",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new RespuestaDTO()
+                    {
+                        Codigo = i.Single(d => d.Key.Equals("COD")).Value.Parse<int>(),
+                        Mensaje = i.Single(d => d.Key.Equals("MSG")).Value.Parse<string>()
+                    }).FirstOrDefault();
+
+                connection.Close();
                 return result;
             }
         }

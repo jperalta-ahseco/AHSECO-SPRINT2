@@ -39,6 +39,9 @@ using DocumentFormat.OpenXml.Drawing.Diagrams;
 using NPOI.SS.Formula.Functions;
 using AHSECO.CCL.BE.AsignacionManual;
 using DocumentFormat.OpenXml.Office2016.Drawing.Command;
+using AHSECO.CCL.BE.Ventas.Despacho;
+using AHSECO.CCL.BL.ServicioTecnico.BandejaGarantias;
+using DocumentFormat.OpenXml;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 {
@@ -7855,11 +7858,32 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             };
         }
 
+
+        [HttpPost]
+        public JsonResult InicializarNumDespacho( string NumDespacho)
+        {
+            try
+            {
+                VariableSesion.setCadena("numDespacho", NumDespacho);
+
+                return Json( new {
+                    Status = 1
+                });
+            }
+            catch(Exception ex)
+            {
+                return Json(new
+                {
+                    Status = 0,
+                    CurrentException = ex.Message
+                });
+            };
+        }
+
         [Permissions(Permissions = "BANDEJAVENTAS")]
         public ActionResult BandejaDespacho()
         {
-            
-
+            VariableSesion.setCadena("numDespacho", "");
             return View();
         }
 
@@ -7917,6 +7941,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.Btn_EditarFacturaLogistica = "";
             ViewBag.Btn_GuardarFacturaLogistica = "";
             ViewBag.VerGestionLogistica = true;
+            ViewBag.PermiteVerFianza = true;
             ViewBag.VerNavConStock = true;
             ViewBag.VerNavSinStock = true;
             ViewBag.VerNavServicio = true;
@@ -7973,5 +7998,102 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             var result = ventasBL.ConsultaBandejaDespacho(despacho);
             return Json(result);
         }
+		
+		public JsonResult InsertDespacho(GrupoReqDespacho grupo)
+        {
+            try
+            {
+                var procesoBL = new ProcesosBL();
+                var ventasBL = new VentasBL();
+                var documentosBL = new DocumentosBL();
+
+                var workflow = new FiltroWorkflowDTO();
+                workflow.CodigoProceso = 8; //Código de proceso de Despacho
+                workflow.UsuarioRegistro = User.ObtenerUsuario();
+                workflow.SubTipo = "";
+
+                var rpta = procesoBL.InsertarWorkflow(workflow);
+                grupo.Cabecera.Id_WorkFlow = rpta.Result;
+                grupo.Cabecera.UsuarioRegistra = User.ObtenerUsuario();
+                grupo.Cabecera.TipoProceso = ConstantesDTO.SolicitudVenta.TipoProceso.Insertar;
+
+                var resCot = ventasBL.ObtenerCotizacionVenta(new CotizacionDTO() { IdCotizacion = grupo.Cabecera.Id_Cotizacion });
+
+                grupo.Cabecera.PorDscto = resCot.Result.FirstOrDefault().PorcentajeDescuento;
+                grupo.Cabecera.SubTotalVenta = resCot.Result.FirstOrDefault().SubtotalVenta;
+                grupo.Cabecera.MontoIgV = resCot.Result.FirstOrDefault().MontoIGV;
+                grupo.Cabecera.TotalVenta = resCot.Result.FirstOrDefault().TotalVenta;
+
+                var result = ventasBL.MantDespacho(grupo.Cabecera);
+
+
+                //RegistraDetalle
+                if (grupo.ListDespachoDetalle.Count() > 0)
+                {
+                    foreach( var elemento in grupo.ListDespachoDetalle)
+                    {
+                        var elementoIngresado = ventasBL.MantDespachoDetalle(elemento);
+
+                        if(elementoIngresado.Result.Codigo == 0)
+                        {
+                            return Json(new
+                            {
+                                Status = 0,
+                                CurrentException = elementoIngresado.Result.Mensaje
+                            });
+                        };
+                    };
+                };
+
+                //Registra documentos
+                if (grupo.Documentos != null)
+                {
+                    foreach (var documento in grupo.Documentos)
+                    {
+                        documento.Accion = "I";
+                        documento.CodigoWorkFlow = rpta.Result;
+                        documento.NombreUsuario = User.ObtenerNombresCompletos();
+                        documento.NombrePerfil = User.ObtenerPerfil();
+                        documento.UsuarioRegistra = User.ObtenerUsuario();
+                        documentosBL.MantenimientoDocumentos(documento);
+                    };
+                };
+
+                if (grupo.Observaciones != null)
+                {
+                    foreach (var observacion in grupo.Observaciones)
+                    {
+                        observacion.Id_WorkFlow = rpta.Result;
+                        observacion.Nombre_Usuario = User.ObtenerUsuario();
+                        observacion.UsuarioRegistra = User.ObtenerUsuario();
+                        observacion.Perfil_Usuario = User.ObtenerPerfil();
+
+                        var resultObservacion = ventasBL.MantenimientoObservaciones(observacion);
+                    };
+                };
+
+                //Se realiza el registro de seguimiento de workflow:
+                var log = new FiltroWorkflowLogDTO();
+                log.CodigoWorkflow = rpta.Result;
+                log.Usuario = User.ObtenerUsuario();
+                log.CodigoEstado = "DREG";
+                log.UsuarioRegistro = User.ObtenerUsuario();
+                var result2 = procesoBL.InsertarWorkflowLog(log);
+
+                return Json(new
+                {
+                    Status = 1
+                });
+            }
+            catch(Exception ex)
+            {
+                return Json(new
+                {
+                    Status = 0,
+                    CurrentException = ex.Message,
+                });
+            }
+        }
+		
     }
 }
