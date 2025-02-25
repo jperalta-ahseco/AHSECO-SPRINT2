@@ -578,10 +578,19 @@
                     data: "NumeroSolicitud",
                     render: function (data, type, row) {
 
-                        var detalle = "'" + row.IdWorkFlow + "','" + row.IdSolicitud + "','" + row.IdEstado + "','" + row.NombreEstado + "','" + row.EstadoAbreviado + "','" + row.CodigoTipoSolicitud + "','" + row.CodigoFlujo + "','" + row.IdCliente + "','" + row.NombreCliente + "','" + row.RucEmpresa+"'";
+                        var detalle = "'" + row.IdWorkFlow + "','" + row.IdSolicitud + "','" + row.IdEstado + "','" + row.NombreEstado + "','" + row.EstadoAbreviado + "','" + row.CodigoTipoSolicitud + "','" + row.CodigoFlujo + "','" + row.IdCliente + "','" + row.NombreCliente + "','" + row.RucEmpresa + "'";
+                        var detalle_finalizar = "'" + row.IdSolicitud + "'";
+
+                        var finalizar = "";
+                        if (row.IdEstado === "VTPG") {
+                            finalizar = '<a id="btnFinalizar" class="btn btn-danger btn-xs" title="Finalizar" href="javascript: bandejaVentas.finalizar(' + detalle_finalizar + ')"><i class="fa fa-check-square" aria-hidden="true"></i> Finalizar</a>';
+                        }
+
                         var seleccionar = '<a id="btnSeleccionar" class="btn btn-default btn-xs" title="Seleccionar" href="javascript: bandejaVentas.seleccionar(' + detalle + ')"><i class="fa fa-book" aria-hidden="true"></i> Ver Solicitud</a>';
-                        var despacho = '<a id="btnDespacho" class="btn btn-primary btn-xs" title="Despacho" href="javascript: bandejaVentas.despachar(' + "'" + row.IdSolicitud + "','" + (row.NumeroCotizacion != null ? row.NumeroCotizacion.substring(row.NumeroCotizacion.indexOf('-')+1, row.NumeroCotizacion.length) : 0) + "'" +')"><i class="fa fa-usd" aria-hidden="true"></i> Despacho</a>';
-                        var finalizar = '<a id="btnFinalizar" class="btn btn-danger btn-xs" title="Finalizar" href="javascript: bandejaVentas.finalizar(' + "'" + row.IdSolicitud + "','" + + "'" +')"><i class="fa fa-check-square" aria-hidden="true"></i> Finalizar</a>';
+                        var despacho = "";
+                        if (row.IdEstado === "CAPR" || row.IdEstado === "PRVT" || row.IdEstado === "VTPG" || row.IdEstado === "SFIN") {
+                            despacho = '<a id="btnDespacho" class="btn btn-primary btn-xs" title="Despacho" href="javascript: bandejaVentas.despachar(' + "'" + row.IdSolicitud + "','" + (row.NumeroCotizacion != null ? row.NumeroCotizacion.substring(row.NumeroCotizacion.indexOf('-') + 1, row.NumeroCotizacion.length) : 0) + "'" + ')"><i class="fa fa-usd" aria-hidden="true"></i> Despacho</a>';
+                        }
 
                         return '<center>' + seleccionar + '</center>' + '\n \n' + '<center>' + despacho + '</center>' + '\n \n' + '<center>' + finalizar + '</center>';
                     }
@@ -658,8 +667,32 @@
     };
 
     function finalizar(idSolicitud) {
-        var method = "POST";
-        var url = "";
+        var fnSi = function () {
+
+            var m = "POST";
+            var url = "BandejaSolicitudesVentas/FinalizarVenta";
+            var obj = {
+                CodigoSolicitud: idSolicitud
+            }
+            var objParam = JSON.stringify(obj);
+            var fnDoneCallback = function (data) {
+                var fnCallback = function () {
+
+
+                    location.reload();
+                };
+                if (data.Result.Codigo > 0) {
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+                else {
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", null);
+                }
+
+            };
+            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.FinalizandoVenta);
+        }
+        return app.message.confirm("Ventas", "¿Está seguro que desea finalizar la venta?", "S&iacute;", "No", fnSi, null);
+
     };
 
     return {
