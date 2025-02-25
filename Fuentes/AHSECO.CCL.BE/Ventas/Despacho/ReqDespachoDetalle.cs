@@ -9,16 +9,15 @@ namespace AHSECO.CCL.BE.Ventas.Despacho
     public class ReqDespachoDetalle : CamposAuditoriaDTO
     {
         public string TipoProceso {  get; set; }	
-        public string Id {  get; set; }				
-        public string Id_SolDepacho {  get; set; }
-        public string IdCotDetalle {  get; set; }
-        public string Cantidad {  get; set; }
-        public string ValorUnitario {  get; set; }
-        public string ValorTotal {  get; set; }
-        public string MargenAdicional {  get; set; }
-        public string VvTotalSigVcgan {  get; set; }
-        public string MontoDscto {  get; set; }
-        public string VvTotalSigVDscto {  get; set; }
-        public string UsrEjecuta { get; set; }
+        public long Id {  get; set; }				
+        public long Id_SolDepacho {  get; set; }
+        public long IdCotDetalle {  get; set; }
+        public int Cantidad {  get; set; }
+        public decimal? ValorUnitario {  get; set; }
+        public decimal? ValorTotal {  get; set; }
+        public decimal? MargenAdicional {  get; set; }
+        public decimal? VvTotalSigVcgan {  get; set; }
+        public decimal? MontoDscto {  get; set; }
+        public decimal? VvTotalSigVDscto {  get; set; }
     }
 }

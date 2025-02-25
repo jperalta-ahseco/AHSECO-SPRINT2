@@ -15,12 +15,13 @@ namespace AHSECO.CCL.BE.Ventas.Despacho
         public long Id_WorkFlow {  get; set; }
         public string TipoDesp {  get; set; }
         public string NumOrden {  get; set; }
-        public string FechaOrden {  get; set; }
-        public DateTime FechaMax {  get; set; }
+        public string Estado { get; set; }
+        public DateTime? FechaOrden {  get; set; }
+        public DateTime? FechaMax {  get; set; }
         public string NumFactura {  get; set; }
-        public DateTime FechaFactura {  get; set; }
+        public DateTime? FechaFactura {  get; set; }
         public string NumContrato {  get; set; }
-        public DateTime FecContrato { get; set; }
+        public DateTime? FecContrato { get; set; }
         public bool? Calculo {  get; set; }
         public bool? Fianza {  get; set; }
         public bool? PrestPrin {  get; set; }

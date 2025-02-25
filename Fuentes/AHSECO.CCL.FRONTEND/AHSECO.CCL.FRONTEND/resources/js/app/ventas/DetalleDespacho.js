@@ -85,6 +85,7 @@
 
     function Initialize() {
         detalleDespacho.xComprar = [];
+        detalleDespacho.Productos = [];
         CargarDatosDetalle()
         CargarCombos();
         CargarTipoDocumento(8); //Despacho ventas 
@@ -107,7 +108,7 @@
         });
 
         $cmbTipoDespacho.on('change', function () {
-            if ($(this).val() == "TIPDESPA01") {
+            if ($(this).val() == "DESP01") {
                 $divNumOrden.css('display', 'block');
                 $divFecOrden.css('display', 'block');
                 $divFecContrato.css('display', 'none');
@@ -118,7 +119,7 @@
                 $dateFechaContrato.val("");
 
             }
-            else if ($(this).val() == "TIPDESPA02") {
+            else if ($(this).val() == "DESP02") {
                 $divNumOrden.css('display', 'none');
                 $divContrato.css('display', 'block');
                 $divFecOrden.css('display', 'none');
@@ -184,9 +185,7 @@
 
             app.llenarComboMultiResult($cmbTipoDespacho, data.Result.TipDespacho, null, "", "-- Seleccione --", filters);
 
-            $cmbTipoDespacho.val("TIPDESPA01").trigger('change.select2');
-
-            
+            $cmbTipoDespacho.val("DESP01").trigger('change.select2');
         };
 
         var fnFailCallBack = function () {
@@ -212,6 +211,7 @@
 
 
         var fnDoneCallBack = function (data) {
+            detalleDespacho.Productos = data.Result;
             CargarTablaDetalleCot(data);
             btnCheck();
         };
@@ -250,7 +250,7 @@
             {
                 data: "Cantidad",
                 render: function (data, type, row) {
-                    var casilla = "<input type='number' min='0' style='width:100%' placeholder='Cantidad' value='" + data + "' />"
+                    var casilla = "<input type='number' id='cantidad_"+row.Id+"' min='0' style='width:100%' placeholder='Cantidad' value='" + data + "' />"
                     return '<center>' + casilla + '</center>';
                 }
             },
@@ -674,10 +674,41 @@
     }
 
     function RegistrarNuevo() {
+        if ($cmbTipoDespacho.val() == "" || $cmbTipoDespacho.val() == null) {
+            app.message.error("Validación", "Es necesario seleccionar el tipo de despacho");
+            return;
+        };
+
+        if ($txtNumOrden.val() == "" || $txtNumOrden.val() == null || $txtNumOrden.val().trim().length == 0) {
+            app.message.error("Validación", "Es necesario que ingrese ingrese el número de Orden");
+            return;
+        };
+
+        if (detalleDespacho.xComprar.length == 0) {
+            app.message.error("Validación", "Debe de seleccionar por lo menos un producto");
+            return;
+        };
+
         var method = "POST";
         var url = "BandejaSolicitudesVentas/InsertDespacho";
 
-        console.log(detalleDespacho.xComprar);
+        var ProductosxVender = [];
+        for (var i = 0; detalleDespacho.Productos.length > i; i++) // Obtenemos solo los seleccionados con la cantidad modificada.
+        {
+            if (detalleDespacho.xComprar.includes(detalleDespacho.Productos[i].Id.toString())) {
+                detalleDespacho.Productos[i].Cantidad = $("#cantidad_" + detalleDespacho.Productos[i].Id.toString()).val() //referenciamos al input cantidad dinamico de cada ROW para obtener su valor y utilizarlo.
+                ProductosxVender.push({
+                    IdCotDetalle: detalleDespacho.Productos[i].Id
+                    , Cantidad: detalleDespacho.Productos[i].Cantidad
+                    , ValorUnitario: detalleDespacho.Productos[i].VentaUnitaria
+                    , ValorTotal: detalleDespacho.Productos[i].VentaTotalSinIGV
+                    , MargenAdicional: detalleDespacho.Productos[i].PorcentajeGanancia
+                    , VvTotalSigVcgan: detalleDespacho.Productos[i].VentaTotalSinIGVConGanacia
+                    , MontoDscto: detalleDespacho.Productos[i].MontoDescuento
+                    , VvTotalSigVDscto: detalleDespacho.Productos[i].VentaTotalSinIGVDscto
+                });
+            };
+        };
 
         var fianza = false;
         var indFianzaApp = false; 
@@ -717,7 +748,7 @@
                 , PrestAcc: indFianzaApa
                 , NumFianzaApa: $txtNroFianzaPA.val()
             },
-            ListDespachoDetalle: detalleDespacho.xComprar,
+            ListDespachoDetalle: ProductosxVender,
             Documentos: adjuntos,
             Observaciones: observaciones            
         };
@@ -725,7 +756,10 @@
         var objParam = JSON.stringify(obj);
 
         var fnDoneCallBack = function () {
-            app.message.success("Éxito", "Se realizó la inserción correctamente");
+            var fnAceptar = function () {
+                Regresar()
+            };
+            app.message.success("Éxito", "Se realizó la inserción correctamente","Aceptar",fnAceptar);
         };
 
 

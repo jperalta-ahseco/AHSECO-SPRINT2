@@ -2850,12 +2850,40 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("IsID_WORKFLOW",  req.Id_WorkFlow);
                 parameters.Add("IsTIPODESP",     req.TipoDesp);
                 parameters.Add("IsNUMORDEN",     req.NumOrden);
-                parameters.Add("IsFECHAORDEN",   req.FechaOrden);
-                parameters.Add("IsFECHAMAX",     req.FechaMax);
+                if (req.FechaOrden.HasValue)
+                {
+                    parameters.Add("IsFECHAORDEN", req.FechaOrden.Value, DbType.DateTime, ParameterDirection.Input);
+                }
+                else
+                {
+                    parameters.Add("IsFECHAORDEN", DBNull.Value, DbType.DateTime, ParameterDirection.Input);
+                };
+                if (req.FechaMax.HasValue)
+                {
+                    parameters.Add("IsFECHAMAX", req.FechaMax.Value, DbType.DateTime, ParameterDirection.Input);
+                }
+                else
+                {
+                    parameters.Add("IsFECHAMAX", DBNull.Value, DbType.DateTime, ParameterDirection.Input);
+                };
                 parameters.Add("IsNUMFACTURA",   req.NumFactura);
-                parameters.Add("IsFECHAFACTURA", req.FechaFactura);
+                if (req.FechaFactura.HasValue)
+                {
+                    parameters.Add("IsFECHAFACTURA", req.FechaFactura.Value, DbType.DateTime, ParameterDirection.Input);
+                }
+                else
+                {
+                    parameters.Add("IsFECHAFACTURA", DBNull.Value, DbType.DateTime, ParameterDirection.Input);
+                };
                 parameters.Add("IsNUMCONTRATO",  req.NumContrato);
-                parameters.Add("IsFEC_CONTRATO", req.FecContrato);
+                if (req.FecContrato.HasValue)
+                {
+                    parameters.Add("IsFEC_CONTRATO", req.FecContrato.Value, DbType.DateTime, ParameterDirection.Input);
+                }
+                else
+                {
+                    parameters.Add("IsFEC_CONTRATO", DBNull.Value, DbType.DateTime, ParameterDirection.Input);
+                };
                 parameters.Add("IsCALCULO",      req.Calculo);
                 if (req.Fianza.HasValue)
                 {
@@ -2878,6 +2906,7 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("IsSUBTOTALVENTA",req.SubTotalVenta);
                 parameters.Add("IsMONTOIGV",     req.MontoIgV);
                 parameters.Add("IsTOTALVENTA",   req.TotalVenta);
+                parameters.Add("IsESTADO", req.Estado);
                 parameters.Add("IsUsrEjecuta", req.UsuarioRegistra);
 
                 var result = connection.Query(

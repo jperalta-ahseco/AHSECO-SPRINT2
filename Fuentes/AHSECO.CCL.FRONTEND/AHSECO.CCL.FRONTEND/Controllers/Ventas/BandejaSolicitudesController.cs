@@ -7891,6 +7891,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         [Permissions(Permissions = "BANDEJAVENTAS")]
         public ActionResult DetalleDespacho()
         {
+            ViewBag.PermiteVerFianza = true;
             ViewBag.PermiteSeleccionarProductos = true;
             ViewBag.PermiteGuardarProductos = true;
             ViewBag.PermiteGestionarDespacho = true;
@@ -7941,7 +7942,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.Btn_EditarFacturaLogistica = "";
             ViewBag.Btn_GuardarFacturaLogistica = "";
             ViewBag.VerGestionLogistica = true;
-            ViewBag.PermiteVerFianza = true;
             ViewBag.VerNavConStock = true;
             ViewBag.VerNavSinStock = true;
             ViewBag.VerNavServicio = true;
@@ -8019,10 +8019,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                 var resCot = ventasBL.ObtenerCotizacionVenta(new CotizacionDTO() { IdCotizacion = grupo.Cabecera.Id_Cotizacion });
 
-                grupo.Cabecera.PorDscto = resCot.Result.FirstOrDefault().PorcentajeDescuento;
-                grupo.Cabecera.SubTotalVenta = resCot.Result.FirstOrDefault().SubtotalVenta;
-                grupo.Cabecera.MontoIgV = resCot.Result.FirstOrDefault().MontoIGV;
-                grupo.Cabecera.TotalVenta = resCot.Result.FirstOrDefault().TotalVenta;
+                grupo.Cabecera.PorDscto = resCot.Result.FirstOrDefault().PorcentajeDescuento; // Se tiene que realizar el cálculo en base de los productos seleccionados
+                grupo.Cabecera.SubTotalVenta = resCot.Result.FirstOrDefault().SubtotalVenta; // Se tiene que realizar el cálculo en base de los productos seleccionados
+                grupo.Cabecera.MontoIgV = resCot.Result.FirstOrDefault().MontoIGV; // Se tiene que realizar el cálculo en base de los productos seleccionados
+                grupo.Cabecera.TotalVenta = resCot.Result.FirstOrDefault().TotalVenta; //se tiene
+                grupo.Cabecera.Estado = "DREG";
 
                 var result = ventasBL.MantDespacho(grupo.Cabecera);
 
@@ -8032,6 +8033,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 {
                     foreach( var elemento in grupo.ListDespachoDetalle)
                     {
+                        elemento.TipoProceso = "I";
+                        elemento.Id_SolDepacho = result.Result.Codigo;
+                        elemento.UsuarioRegistra = User.ObtenerUsuario();
                         var elementoIngresado = ventasBL.MantDespachoDetalle(elemento);
 
                         if(elementoIngresado.Result.Codigo == 0)
