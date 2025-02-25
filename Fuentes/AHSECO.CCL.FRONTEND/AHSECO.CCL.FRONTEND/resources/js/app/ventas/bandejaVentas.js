@@ -582,7 +582,7 @@
                         var detalle_finalizar = "'" + row.IdSolicitud + "'";
 
                         var finalizar = "";
-                        if (row.IdEstado === "VTPG") {
+                        if (row.IdEstado === "VTPG" && ($RolUsuario.val() === "SGI_VENTA_ASESOR" || $RolUsuario.val() === "SGI_VENTA_COORDINASERV" || $RolUsuario.val() === "SGI_VENTA_COORDINAATC")) {
                             finalizar = '<a id="btnFinalizar" class="btn btn-danger btn-xs" title="Finalizar" href="javascript: bandejaVentas.finalizar(' + detalle_finalizar + ')"><i class="fa fa-check-square" aria-hidden="true"></i> Finalizar</a>';
                         }
 
