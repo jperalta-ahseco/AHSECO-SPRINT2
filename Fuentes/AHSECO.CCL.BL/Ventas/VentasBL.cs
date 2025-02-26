@@ -573,11 +573,11 @@ namespace AHSECO.CCL.BL.Ventas
             };
         }
 
-        public ResponseDTO<GrupoFiltroDespacho> FiltrosDespacho()
+        public ResponseDTO<GrupoFiltroDespacho> FiltrosDespacho(long idDespacho, string rolUsuario)
         {
             try
             {
-                var result = Repository.FiltrosDespacho();
+                var result = Repository.FiltrosDespacho(idDespacho, rolUsuario);
                 return new ResponseDTO<GrupoFiltroDespacho>(result);
             }
             catch( Exception ex)
@@ -657,6 +657,20 @@ namespace AHSECO.CCL.BL.Ventas
                 Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
                 return new ResponseDTO<RespuestaDTO>(ex);
             }
+        }
+		
+		  public ResponseDTO<ReqDespachoCabecera> DatosGeneralesDespacho(ReqDespachoCabecera req)
+        {
+            try
+            {
+                var result = Repository.DatosGeneralesDespacho(req);
+                return new ResponseDTO<ReqDespachoCabecera>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<ReqDespachoCabecera>(ex);
+            };
         }
 
     }

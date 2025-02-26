@@ -9,6 +9,7 @@
     var $cmbEstadoDespacho = $('#cmbEstadoDespacho');
     var $NumSol = $('#NumSol');
     var $IdCotizacion = $('#IdCotizacion');
+    var $nombreRol = $('#nombreRol');
 
 
     /*Tabla*/
@@ -79,8 +80,8 @@
             {
                 data: "IdDespacho",
                 render: function (data, type, row) {
-                    var params = "'" + row.IdDespacho + "','" + $NumSol.val() + "','" + $IdCotizacion.val() + "'" 
-                    var seleccionar = '<a id="btnVerDespacho" class="btn btn-default btn-xs" title="Ver Despacho" href="javascript: solicitud.seleccionar(' + params + ')"><i class="fa fa-plus" aria-hidden="true"></i> Ver</a>';
+                    var params = "'" + row.IdDespacho + "'"; 
+                    var seleccionar = '<a id="btnVerDespacho" class="btn btn-default btn-xs" title="Ver Despacho" href="javascript: bandejaDespacho.verDespacho(' + params + ')"><i class="fa fa-plus" aria-hidden="true"></i> Ver</a>';
                     return '<center>' + seleccionar + '</center>';
                 }
             }
@@ -101,9 +102,26 @@
         app.llenarTabla($tblDespacho, data, columns, columnDefs, "#tblDespacho", rowCallback);
     };
 
+    function verDespacho(IdDespacho) {
+       
+        method = "POST";
+        url = "BandejaSolicitudesVentas/VerDetalleDespacho?IdDespacho=" + IdDespacho;
+        var objComb = "";
+        objComb = JSON.stringify(objComb);
+        var fnDoneCallback = function (data) {
+
+            app.redirectTo("BandejaSolicitudesVentas/DetalleDespacho")  
+        }
+        var fnFailCallback = function () {
+            app.message.error("Validación", "Error al guardar la variable.");
+        };
+
+        app.llamarAjax(method, url, objComb, fnDoneCallback, fnFailCallback, null, null);
+    }
+
     function CargarCombos() {
         method = "POST";
-        url = "BandejaSolicitudesVentas/FiltrosDespacho";
+        url = "BandejaSolicitudesVentas/FiltrosDespacho?idDespacho=0" + "&rolUsuario=" + $nombreRol.val() ;
         var objComb = "";
         objComb = JSON.stringify(objComb);
         var fnDoneCallback = function (data) {
@@ -152,7 +170,7 @@
         var method = "POST";
         var url = "BandejaSolicitudesVentas/InicializarNumDespacho";
         var obj = {
-            NumDespacho: ""
+            NumDespacho: "0"
         };
 
         var objParam = JSON.stringify(obj);
@@ -169,7 +187,7 @@
     };
 
     return {
-
+        verDespacho: verDespacho
 
     };
 })(window.jQuery, window, document);

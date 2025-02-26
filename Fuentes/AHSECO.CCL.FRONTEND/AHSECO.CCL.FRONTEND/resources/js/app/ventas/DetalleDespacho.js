@@ -1,7 +1,7 @@
 ﻿var detalleDespacho = (function ($, win, doc) {
     /***/
     var $nombreusuario = $('#nombreusuario');
-
+    var $contadordoc = $("#contadordoc");
 
     var $chkPrestacionPrincipal = $('#chkPrestacionPrincipal');
     var $chkPrestacionAccesoria = $('#chkPrestacionAccesoria');
@@ -79,9 +79,24 @@
     var $btnRegresar = $('#btnRegresar');
     var $NumSol = $('#NumSol');
     var $IdCotizacion = $('#IdCotizacion');
+    var $NumDespacho = $('#NumDespacho');
+
+
+    var $tblSeguimiento = $('#tblSeguimiento');
+    var $NoExisteRegSeg = $('#NoExisteRegSeg');
+
+    var $btnGuardarObservacionReq = $('#btnGuardarObservacionReq');
+    var $txtObservacion = $('#txtObservacion');
+    var $ValidaBtnObservacion = $('#ValidaBtnObservacion');
+    var $codigoWorkflow = $('#codigoWorkflow');
+    var $perfilnombre = $('#perfilnombre');
+    var $estadoSol = $('#estadoSol');
+    var $nombreRol = $('#nombreRol');
+
+
     /*Mensajes*/
     var mensajes = {
-
+        guardandoObservacion: "Por favor espere, se esta guardando la observación."
     };
 
     let observaciones = [];
@@ -91,6 +106,7 @@
 
     function Initialize() {
         detalleDespacho.contadorObservaciones = 0;
+        detalleDespacho.observaciones = [];
         detalleDespacho.xComprar = [];
         detalleDespacho.Productos = [];
         if ($NumDespacho.val() != "") {
@@ -235,7 +251,7 @@
 
     function CargarCombos() {
         var method = "POST";
-        var url = "BandejaSolicitudesVentas/FiltrosDespacho";
+        var url = "BandejaSolicitudesVentas/FiltrosDespacho?idDespacho=" + $NumDespacho.val() + "&rolUsuario=" + $nombreRol.val();
 
         var fnDoneCallBack = function (data) {
             var filters = {};
@@ -243,8 +259,125 @@
             filters.allowClear = false;
 
             app.llenarComboMultiResult($cmbTipoDespacho, data.Result.TipDespacho, null, "", "-- Seleccione --", filters);
+            app.llenarComboMultiResult($cmbTipoDocumentoCarga, data.Result.TipoDocumento, null, 0, "-- Seleccione --", filters);
 
             $cmbTipoDespacho.val("DESP01").trigger('change.select2');
+
+            if (data.Result.DespachoCabecera != null) {
+
+
+
+                $codigoWorkflow.val(data.Result.DespachoCabecera.Id_WorkFlow);
+                $estadoSol.val(data.Result.DespachoCabecera.Estado);
+
+                var tipo_despacho = data.Result.DespachoCabecera.TipoDesp;
+                $cmbTipoDespacho.val(tipo_despacho);
+                if (tipo_despacho === "DESP01") {
+                    $txtNumOrden.val(data.Result.DespachoCabecera.NumOrden);
+                    $dateFechaOrdenCompra.val(data.Result.DespachoCabecera.FechaOrdenFormat);
+                    $divNumOrden.css('display', 'block');
+                    $divContrato.css('display', 'none');
+                    $divFecOrden.css('display', 'block');
+                    $divFecContrato.css('display', 'none');
+                }
+                else {
+                    $txtNumContrato.val(data.Result.DespachoCabecera.NumContrato);
+                    $dateFechaContrato.val(data.Result.DespachoCabecera.FechaContratoFormat);
+                    $divNumOrden.css('display', 'none');
+                    $divContrato.css('display', 'block');
+                    $divFecOrden.css('display', 'none');
+                    $divFecContrato.css('display', 'block');
+                }
+                $dateFechaMax.val(data.Result.DespachoCabecera.FechaMaximaFormat);
+
+                var fianza = data.Result.DespachoCabecera.FianzaFormat;
+                if (fianza === "S") {
+                    $radFianza.prop("checked", true);
+                    $radFianza2.prop("checked", false);
+                }
+                else {
+                    $radFianza.prop("checked", false);
+                    $radFianza2.prop("checked", true);
+                    $chkPrestacionPrincipal.prop("disabled", true);
+                    $chkPrestacionAccesoria.prop("disabled", true);
+                    $txtNroFianzaPP.prop("disabled", true);
+                    $txtNroFianzaPA.prop("disabled", true);
+                }
+
+                if (data.Result.DespachoCabecera.PrestPrinFormat === "S") {
+                    $chkPrestacionPrincipal.prop("checked", true);
+                }
+
+                if (data.Result.DespachoCabecera.PrestAccFormat === "S") {
+                    $chkPrestacionAccesoria.prop("checked", true);
+                }
+
+                $txtNroFianzaPP.val(data.Result.DespachoCabecera.NumFianzaApp);
+                $txtNroFianzaPA.val(data.Result.DespachoCabecera.NumFianzaApa);
+
+                var seguimiento = data.Result.Seguimiento.length;
+                if (seguimiento > 0) {
+                    for (i = 0; i < data.Result.Seguimiento.length; i++) {
+
+                        var nuevoTr = "<tr>" +
+                            "<th style='text-align: center;'>" + data.Result.Seguimiento[i].DescripcionEstado + "</th>" +
+                            "<th style='text-align: center;'>" + data.Result.Seguimiento[i].Cargo + "</th>" +
+                            "<th style='text-align: center;'>" + data.Result.Seguimiento[i].NombreUsuarioRegistro + "</th>" +
+                            "<th style='text-align: center;'>" + data.Result.Seguimiento[i].FechaRegistro + "</th>" +
+                            "<th style='text-align: center;'>" + data.Result.Seguimiento[i].HoraRegistro + "</th>" +
+                            "</tr>";
+                        $tblSeguimiento.append(nuevoTr);
+                    }
+                    $NoExisteRegSeg.hide();
+                }
+
+                detalleDespacho.contadorObservaciones = data.Result.Observaciones.length;
+                detalleDespacho.observaciones = data.Result.Observaciones;
+                if (detalleDespacho.contadorObservaciones > 0) {
+                    for (var i = 0; i < data.Result.Observaciones.length; i++) {
+                        var nuevoTr = "<tr id='row" + data.Result.Observaciones[i].Id + "'>" +
+                            "<th style='text-align: center;'>" + data.Result.Observaciones[i].Nombre_Usuario + "</th>" +
+                            "<th style='text-align: center;'>" + data.Result.Observaciones[i].Perfil_Usuario + "</th>" +
+                            "<th style='text-align: center;'>" + data.Result.Observaciones[i].Fecha_Registro + "</th>" +
+                            "<th style='text-align: center;'>" + data.Result.Observaciones[i].Observacion + "</th>" +
+                            "<th style='text-align: center;'>" + " " + "</th>" + //Controlar la modificación de observaciones por el usuario que haya registrado dicha solicitud. 
+                            "</tr>";
+                        $tblObservaciones.append(nuevoTr);
+                    }
+                    $NoExisteRegObs.hide();
+                }
+
+                var docs = data.Result.Adjuntos.length;
+                adjuntos = data.Result.Adjuntos;
+
+                $contadordoc.val(docs);
+                if (docs > 0) {
+                    for (i = 0; i < data.Result.Adjuntos.length; i++) {
+                        var html = '<div class="text-center">';
+                        //var d = "'" + data.Result.Adjuntos[i].CodigoDocumento + "','" + data.Result.Adjuntos[i].RutaDocumento + "'";
+                        html += ' <a class="btn btn-default btn-xs" title="Descargar"  href="javascript:solicitud.download(' + data.Result.Adjuntos[i].CodigoDocumento + ')"><i class="fa fa-download" aria-hidden="true"></i></a>&nbsp;';
+                        if (($estadoSol.val() == "DREG") && $idRolUsuario.val() != "SGI_VENTA_FACTURA") {
+                            html += ' <a class="btn btn-default btn-xs" title="Eliminar"  href="javascript:solicitud.eliminarDocumento(' + data.Result.Adjuntos[i].CodigoDocumento + ')"><i class="fa fa-ban" aria-hidden="true"></i></a>&nbsp;';
+                        }
+                        html += '</div>';
+
+                        var nuevoTr = "<tr id='row" + data.Result.Adjuntos[i].CodigoDocumento + "'>" +
+                            "<th>" + data.Result.Adjuntos[i].NombreTipoDocumento + "</th>" +
+                            "<th>" + data.Result.Adjuntos[i].NombreDocumento + "</th>" +
+                            "<th>" + data.Result.Adjuntos[i].NombreUsuario + "</th>" +
+                            "<th>" + data.Result.Adjuntos[i].NombrePerfil + "</th>" +
+                            "<th>" + data.Result.Adjuntos[i].FechaRegistroFormat + "</th>" +
+                            "<th>" + html + "</th>" +
+                            "</tr>";
+                        $tblDocumentosCargados.append(nuevoTr);
+                    }
+                    $NoExisteRegDoc.hide();
+
+                }
+
+               
+            }
+
         };
 
         var fnFailCallBack = function () {

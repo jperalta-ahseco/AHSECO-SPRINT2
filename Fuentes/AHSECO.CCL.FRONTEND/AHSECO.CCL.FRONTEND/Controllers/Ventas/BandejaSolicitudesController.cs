@@ -7921,7 +7921,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         [Permissions(Permissions = "BANDEJAVENTAS")]
         public ActionResult BandejaDespacho()
         {
-            VariableSesion.setCadena("numDespacho", "");
+            VariableSesion.setCadena("numDespacho", "0");
             VariableSesion.setCadena("porcentajeDscto", "");
             VariableSesion.setCadena("vigencia", "");
             return View();
@@ -7931,7 +7931,24 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         [Permissions(Permissions = "BANDEJAVENTAS")]
         public ActionResult DetalleDespacho()
         {
-            ViewBag.PermiteVerFianza = true;
+            var ventasBL = new VentasBL();
+            var numSol = VariableSesion.getCadena("numSol");
+            var NombreRol = VariableSesion.getCadena("VENTA_NOMBRE_ROL");
+            var idDespacho = VariableSesion.getCadena("VENTA_NOMBRE_ROL");
+            var validarDespacho = ventasBL.ValidarDespacho(int.Parse(idDespacho));
+            //var datosDespacho = ventasBL.DatosGeneralesDespacho()
+
+            //if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor
+            //       || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ
+            //       || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc)
+            //{
+            //    if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Finalizado)
+            //    {
+
+            //    }
+            //}
+
+                ViewBag.PermiteVerFianza = true;
             ViewBag.PermiteSeleccionarProductos = true;
             ViewBag.PermiteGuardarProductos = true;
             ViewBag.PermiteGestionarDespacho = true;
@@ -8053,10 +8070,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             return View();
         }
 
-        public JsonResult FiltrosDespacho()
+        public JsonResult FiltrosDespacho(long idDespacho, string rolUsuario)
         {
             var ventasBL = new VentasBL();
-            var result = ventasBL.FiltrosDespacho();
+            var result = ventasBL.FiltrosDespacho(idDespacho, rolUsuario);
 
             return Json(result);
         }
@@ -8177,11 +8194,42 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             }
         }
 
+        public JsonResult VerDetalleDespacho(long IdDespacho)
+        {
+           
+            try
+            {
+                VariableSesion.setCadena("numDespacho", IdDespacho.ToString());
+
+                return Json(new
+                {
+                    Status = 1
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    Status = 0,
+                    CurrentException = ex.Message
+                });
+            };
+        }
+
+
         [HttpPost]
         public JsonResult ListaDetalleDespacho(ReqDespachoDetalle req)
         {
             var ventasBL = new VentasBL();
             var result = ventasBL.ListaDetalleDespacho(req);
+            return Json(result);
+        }
+		
+		    [HttpPost]
+        public JsonResult DatosGeneralesDespacho(ReqDespachoCabecera req)
+        {
+            var ventasBL = new VentasBL();
+            var result = ventasBL.DatosGeneralesDespacho(req);
             return Json(result);
         }
     }

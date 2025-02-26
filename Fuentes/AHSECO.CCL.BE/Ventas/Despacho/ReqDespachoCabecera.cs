@@ -22,7 +22,7 @@ namespace AHSECO.CCL.BE.Ventas.Despacho
         public DateTime? FechaFactura {  get; set; }
         public string NumContrato {  get; set; }
         public DateTime? FecContrato { get; set; }
-        public bool? Calculo {  get; set; }
+        public string Calculo {  get; set; }
         public bool? Fianza {  get; set; }
         public bool? PrestPrin {  get; set; }
         public string NumFianzaApp {  get; set; }
@@ -32,5 +32,15 @@ namespace AHSECO.CCL.BE.Ventas.Despacho
         public decimal? SubTotalVenta {  get; set; }
         public decimal? MontoIgV {  get; set; }
         public decimal? TotalVenta { get; set; }
+
+        public string NombreEstado { get; set; }
+        public string FechaOrdenFormat {  get; set; }
+        public string FechaMaximaFormat { get; set; }
+        public string FechaFacturaFormat { get; set; }
+        public string FechaContratoFormat { get; set; } 
+        public string FianzaFormat { get; set; }
+        public string PrestPrinFormat { get; set; }
+        public string PrestAccFormat { get; set; }
+
     }
 }

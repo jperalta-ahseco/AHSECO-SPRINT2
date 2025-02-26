@@ -22,5 +22,7 @@ namespace AHSECO.CCL.BE.Ventas.Despacho
         public decimal? MontoDscto {  get; set; }
         public decimal? VvTotalSigVDscto {  get; set; }
         public decimal? PorcentajeDscto { get; set; }
+ 		public string CodigoItem {  get; set; }
+     	public string DescripcionItem { get; set; }
     }
 }

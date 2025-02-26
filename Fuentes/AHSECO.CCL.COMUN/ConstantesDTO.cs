@@ -280,6 +280,17 @@ namespace AHSECO.CCL.COMUN
                 public static string VentaProg { get { return "VTPG"; } }
                 public static string Finalizado { get { return "SFIN"; } }
             }
+
+            public struct Despacho
+            {
+                public static string Registrado { get { return "DREG"; } }
+                public static string PorAprobar { get { return "DPAP"; } }
+                public static string Aprobado { get { return "DAPR"; } }
+                public static string Observado { get { return "DOBS"; } }
+                public static string Importado { get { return "DIMP"; } }
+                public static string EnLogistica { get { return "DLOG"; } }
+                public static string Finalizado { get { return "DFIN"; } }
+            }
         }
 
         public struct Articulos
