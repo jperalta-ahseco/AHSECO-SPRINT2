@@ -42,6 +42,8 @@ using DocumentFormat.OpenXml.Office2016.Drawing.Command;
 using AHSECO.CCL.BE.Ventas.Despacho;
 using AHSECO.CCL.BL.ServicioTecnico.BandejaGarantias;
 using DocumentFormat.OpenXml;
+using System.Security.RightsManagement;
+using DocumentFormat.OpenXml.ExtendedProperties;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 {
@@ -7934,8 +7936,15 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             var ventasBL = new VentasBL();
             var numSol = VariableSesion.getCadena("numSol");
             var NombreRol = VariableSesion.getCadena("VENTA_NOMBRE_ROL");
-            var idDespacho = VariableSesion.getCadena("VENTA_NOMBRE_ROL");
-            var validarDespacho = ventasBL.ValidarDespacho(int.Parse(idDespacho));
+            var idDespacho = VariableSesion.getCadena("numDespacho");
+            var validarDespacho = ventasBL.ValidarDespacho(int.Parse(numSol));
+
+            ViewBag.PermiteEditarCabecera = true;
+
+            if(idDespacho != "0")
+            {
+                ViewBag.PermiteEditarCabecera = false;
+            }
             //var datosDespacho = ventasBL.DatosGeneralesDespacho()
 
             //if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor
@@ -7947,8 +7956,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             //    }
             //}
-
-                ViewBag.PermiteVerFianza = true;
+            ViewBag.PermiteVerFianza = false;
             ViewBag.PermiteSeleccionarProductos = true;
             ViewBag.PermiteGuardarProductos = true;
             ViewBag.PermiteGestionarDespacho = true;
@@ -8035,7 +8043,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.TxtNumeroFacturaServ = "";
             ViewBag.Btn_GuardarFactura = "";
             ViewBag.InActiveTecnico = "";
-            if (VariableSesion.getCadena("NumDespacho") != "")
+            if (VariableSesion.getCadena("NumDespacho") != "0")
             {
                 string[] Columnas =
                 {
@@ -8066,7 +8074,12 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 ViewBag.Columnas = Columnas;
             };
 
+            var rptaSoli = ventasBL.ObtenerSolicitudes(new SolicitudDTO() { Id_Solicitud = int.Parse(numSol) }).Result.FirstOrDefault();
 
+            if (rptaSoli.TipoVenta == "TVEN02") //se habilita la row de fianza solo para licitaciones
+            {
+                ViewBag.PermiteVerFianza = true;
+            };
             return View();
         }
 
@@ -8230,6 +8243,15 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         {
             var ventasBL = new VentasBL();
             var result = ventasBL.DatosGeneralesDespacho(req);
+            return Json(result);
+        }
+
+        public JsonResult ActualizarCabeceraDespacho(ReqDespachoCabecera req)
+        {
+            var ventasBL = new VentasBL();
+            req.TipoProceso = ConstantesDTO.SolicitudVenta.TipoProceso.Modificar;
+            req.UsuarioRegistra = User.ObtenerUsuario();
+            var result = ventasBL.MantDespacho(req);
             return Json(result);
         }
     }

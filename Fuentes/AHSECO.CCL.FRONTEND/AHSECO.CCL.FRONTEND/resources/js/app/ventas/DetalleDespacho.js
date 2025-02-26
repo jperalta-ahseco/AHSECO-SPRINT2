@@ -11,8 +11,9 @@
     var $estadoDespacho = $('#estadoDespacho');
     var $codigoWorkflow = $('#codigoWorkflow');
     var $perfilnombre = $('#perfilnombre');
-
+    var $txtEstado = $('#txtEstado');
     var $btnRegistrar = $('#btnRegistrar');
+    var $btnGuardarCabecera = $('#btnGuardarCabecera');
     var $cmbTipoDespacho = $('#cmbTipoDespacho');
     var $txtNumOrden = $('#txtNumOrden');
     var $txtNumContrato = $('#txtNumContrato');
@@ -109,11 +110,8 @@
         detalleDespacho.observaciones = [];
         detalleDespacho.xComprar = [];
         detalleDespacho.Productos = [];
-        if ($NumDespacho.val() != "") {
-            CargarDatosDespacho();
-        }
-        else {
-            CargarDatosDetalle()
+        if ($NumDespacho.val() == "0") {
+            CargarDatosDetalle();
         };
         CargarCombos();
         CargarTipoDocumento(8); //Despacho ventas 
@@ -167,6 +165,7 @@
         $openRegdateMax.click($openRegdateMaxClick);
         $radFianza.click($radFianza_click);
         $radFianza2.click($radFianza2_click);
+        $btnGuardarCabecera.click(GuardarCabecera);
         $btnRegistrar.click(RegistrarNuevo);
         $btnAgregarObservacion.click($modalObservacionClick);
         $btnAgregarDocumento.click($modalCargaDocumentoClick);
@@ -249,6 +248,61 @@
         $dateFechaMax.focus();
     };
 
+    function GuardarCabecera() {
+        var fnSi = function () {
+
+            var fianza = false;
+            var indFianzaApp = false;
+            var indFianzaApa = false;
+
+            if ($radFianza.is(':checked')) {
+                fianza = true;
+            };
+
+            if ($radFianza2.is(':checked')) {
+                fianza = false;
+            };
+            if ($chkPrestacionPrincipal.is(':checked')) {
+                indFianzaApp = true;
+            };
+            if ($chkPrestacionAccesoria.is(':checked')) {
+                indFianzaApa = true;
+            };
+
+
+            var method = "POST";
+            var url = "BandejaSolicitudesVentas/ActualizarCabeceraDespacho";
+            var obj = {
+                NumOrden: $txtNumOrden.val()
+                , Id: $NumDespacho.val()
+                , FechaOrden: $dateFechaOrdenCompra.val()
+                , FechaMax: $dateFechaMax.val()
+                , TipoDesp: $cmbTipoDespacho.val()
+                , Estado: $txtEstado.val()
+                , NumContrato: $txtNumContrato.val()
+                , FecContrato: $dateFechaContrato.val()
+                , Fianza: fianza
+                , PrestPrin: indFianzaApp
+                , NumFianzaApp: $txtNroFianzaPP.val()
+                , PrestAcc: indFianzaApa
+                , NumFianzaApa: $txtNroFianzaPA.val()
+                , PorDscto: $PorcentajeDscto.val()
+            };
+            var objParam = JSON.stringify(obj);
+
+            var fnDoneCallBack = function () {
+                app.message.success("Éxito", "Se actualizó el registro con éxito");
+            };
+
+            var fnFailCallBack = function () {
+                app.message.error("Error", "Se presentó un error al realizar la actualización de la información");
+            };
+
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+
+        };
+        return app.message.confirm("Confirmación", "¿Desea guardar los cambios realizados en la cabecera de despacho?", "Sí", "No", fnSi);
+    };
     function CargarCombos() {
         var method = "POST";
         var url = "BandejaSolicitudesVentas/FiltrosDespacho?idDespacho=" + $NumDespacho.val() + "&rolUsuario=" + $nombreRol.val();
@@ -261,17 +315,16 @@
             app.llenarComboMultiResult($cmbTipoDespacho, data.Result.TipDespacho, null, "", "-- Seleccione --", filters);
             app.llenarComboMultiResult($cmbTipoDocumentoCarga, data.Result.TipoDocumento, null, 0, "-- Seleccione --", filters);
 
-            $cmbTipoDespacho.val("DESP01").trigger('change.select2');
+            if ($NumDespacho.val() == "0") {
+                $cmbTipoDespacho.val("DESP01").trigger('change.select2'); //se inicializa en orden de compra por defecto
+            };
 
             if (data.Result.DespachoCabecera != null) {
-
-
-
                 $codigoWorkflow.val(data.Result.DespachoCabecera.Id_WorkFlow);
                 $estadoSol.val(data.Result.DespachoCabecera.Estado);
 
                 var tipo_despacho = data.Result.DespachoCabecera.TipoDesp;
-                $cmbTipoDespacho.val(tipo_despacho);
+                $cmbTipoDespacho.val(tipo_despacho).trigger('change.select2');
                 if (tipo_despacho === "DESP01") {
                     $txtNumOrden.val(data.Result.DespachoCabecera.NumOrden);
                     $dateFechaOrdenCompra.val(data.Result.DespachoCabecera.FechaOrdenFormat);
@@ -312,9 +365,11 @@
                     $chkPrestacionAccesoria.prop("checked", true);
                 }
 
+                CargarTablaDespacho(data.Result.ListaDespachoDetalle);
+
                 $txtNroFianzaPP.val(data.Result.DespachoCabecera.NumFianzaApp);
                 $txtNroFianzaPA.val(data.Result.DespachoCabecera.NumFianzaApa);
-
+                $txtEstado.val(data.Result.DespachoCabecera.Estado);
                 var seguimiento = data.Result.Seguimiento.length;
                 if (seguimiento > 0) {
                     for (i = 0; i < data.Result.Seguimiento.length; i++) {
@@ -372,12 +427,8 @@
                         $tblDocumentosCargados.append(nuevoTr);
                     }
                     $NoExisteRegDoc.hide();
-
                 }
-
-               
             }
-
         };
 
         var fnFailCallBack = function () {
@@ -415,17 +466,21 @@
         app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null);
     };
 
-    function CargarTablaDespacho(data) {
+    function CargarTablaDespacho(list) {
+        var data = {}
+        data.Result = []
+        data.Result = list;
+
         var columns = [
             {
-                data: "CodItem",
+                data: "CodigoItem",
                 render: function (data, type, row) {
                     if (data == null) { data = ""; }
                     return '<center>' + data + '</center>';
                 }
             },
             {
-                data: "Descripcion",
+                data: "DescripcionItem",
                 render: function (data, type, row) {
                     if (data == null) { data = ""; }
                     return '<center>' + data + '</center>';
@@ -452,7 +507,7 @@
                 }
             },
             {
-                data: "VentaUnitaria",
+                data: "ValorUnitario",
                 render: function (data, type, row) {
                     if (data == null)
                     {
@@ -460,19 +515,13 @@
                     }
                     else
                     {
-                        if ($NumDespacho.val() != "") {
-                            data = app.formatearEnteroComa(parseFloat(data).toFixed(2));
-                            return '<center>' + data + '</center>';
-                        }
-                        else {
-                            data = app.formatearEnteroComa(parseFloat(data).toFixed(2));
-                            return '<center id="ventaUnitaria_'+row.Id+'">'+ data +'</center>';
-                        }
+                        data = app.formatearEnteroComa(parseFloat(data).toFixed(2));
+                        return '<center>' + data + '</center>';MontoDscto
                     }
                 }
             },
             {
-                data: "MontoDescuento",
+                data: "MontoDscto",
                 render: function (data, type, row) {
                     if (data == null)
                     {
@@ -480,53 +529,38 @@
                     }
                     else
                     {
-                        if ($NumDespacho.val() != "") {
-                            data = app.formatearEnteroComa(parseFloat(data).toFixed(2));
-                            return '<center>' + data + '</center>';
-                        }
-                        else {
-                            return '<center id="montoDscto_' + row.Id + '"></center>';
-                        }
+                        data = app.formatearEnteroComa(parseFloat(data).toFixed(2));
+                        return '<center>' + data + '</center>';
                     }
                 }
             },
             {
-                data: "VentaTotalSinIGV",
+                data: "ValorTotal",
                 render: function (data, type, row) {
-                    if (row.VentaTotalSinIGVDscto == null) {
+                    if (row.VvTotalSigVDscto == null) {
                         if (data == null) {
                             return '<center></center>';
                         }
                         else {
-                            if ($NumDespacho.val() != "") {
-                                data = app.formatearEnteroComa(parseFloat(data).toFixed(2));
-                                return '<center>' + data + '</center>';
-                            }
-                            else {
-                                return '<center id="ventaTotalSinIGV_' + row.Id + '"></center>';
-                            };
+                            data = app.formatearEnteroComa(parseFloat(data).toFixed(2));
+                            return '<center>' + data + '</center>';
                         }
                     }
                     else {
-                        if ($NumDespacho.val() != "") {
-                            data = app.formatearEnteroComa(parseFloat(row.VentaTotalSinIGVDscto).toFixed(2));
-                            return '<center>' + data + '</center>';
-                        }
-                        else {
-                            return '<center id="ventaTotalSinIGV_' + row.Id + '"></center>';
-                        };
+                        data = app.formatearEnteroComa(parseFloat(row.VvTotalSigVDscto).toFixed(2));
+                        return '<center>' + data + '</center>';
                     };
                 }
             },
             {
-                data: "PorcentajeGanancia",
+                data: "MargenAdicional",
                 render: function (data, type, row) {
                     if (data == null) { data = ""; }
                     return '<center>' + data + '</center>';
                 }
             },
             {
-                data: "VentaTotalSinIGVConGanacia",
+                data: "VvTotalSigVcgan",
                 render: function (data, type, row) {
                     if (data == null)
                     {
@@ -534,19 +568,14 @@
                     }
                     else
                     {
-                        if ($NumDespacho.val() != "") {
-                            data = app.formatearEnteroComa(parseFloat(data).toFixed(2));
-                            return '<center>' + data + '</center>';
-                        }
-                        else {
-                            return '<center id="ventaTotalSinIGVCGanan_' + row.Id + '"></center>';
-                        }
+                        data = app.formatearEnteroComa(parseFloat(data).toFixed(2));
+                        return '<center>' + data + '</center>';
                     }
                     return '<center>' + data + '</center>';
                 }
             },
             {
-                data: "Id",
+                data: "IdCotDetalle",
                 render: function (data, type, row) {
                     var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.EditarCotDetItem(' + data + ')"><i class="fa fa-info-circle" aria-hidden="true"></i> Ver</a>';
                     return '<center>' + ver + '</center>';
@@ -615,7 +644,7 @@
                         return '<center></center>';
                     }
                     else {
-                        if ($NumDespacho.val() != "") {
+                        if ($NumDespacho.val() != "0") {
                             data = app.formatearEnteroComa(parseFloat(data).toFixed(2));
                             return '<center>' + data + '</center>';
                         }
@@ -1138,7 +1167,7 @@
             return;
         }
 
-        if ($NumDespacho.val() != "") {
+        if ($NumDespacho.val() != "0") {
             var method = "POST";
             var url = "BandejaSolicitudesVentas/GuardarObservacion"
             var objObservacion = {
@@ -1221,26 +1250,6 @@
         $txtObservacion.val("");
     }
 
-    function CargarDatosDespacho()
-    {
-        var method = "POST";
-        var url = ""; 
-        var obj = {
-
-        };
-        var objParam = JSON.string(obj);
-
-        var fnDoneCallBack = function (data) {
-            CargarTablaDespacho(data);
-        };
-
-        var fnFailCallBack = function () {
-
-        };
-
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
-    };
-
 
     function download(IdDocumento) {
 
@@ -1254,7 +1263,7 @@
     }
 
     function eliminarDocumento(idDocumento) {
-        if ($NumDespacho.val() != "") {
+        if ($NumDespacho.val() != "0") {
             var fnSi = function () {
                 var method = "POST";
                 var url = "BandejaSolicitudesVentas/EliminarAdjunto";

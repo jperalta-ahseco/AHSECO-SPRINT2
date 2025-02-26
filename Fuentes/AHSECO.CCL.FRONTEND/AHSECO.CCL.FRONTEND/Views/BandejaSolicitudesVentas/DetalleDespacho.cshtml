@@ -24,7 +24,7 @@
 <input type="hidden" id="contadordoc" value="0" />
 <input hidden id="nombreRol" value="@NombreRol"/>
 <input hidden id="PorcentajeDscto" value="@porcentajeDscto"/>
-
+<input hidden id="txtEstado"/>
 <div class="container-fluid">
     <h4><i class="fa fa-comment" aria-hidden="true"></i> @ViewBag.Title</h4>
 
@@ -40,7 +40,7 @@
                     <div class="col-md-4 col-sm-7 col-xs-12">
                         <label for="cmbTipoDespacho">Tipo Despacho: </label>
                         <div class="form-group">
-                            <select class="form-control select2 input-sm" style="width:100%;" id="cmbTipoDespacho" data-selected="">
+                            <select @(ViewBag.PermiteEditarCabecera ? "" : "disabled") class="form-control select2 input-sm" style="width:100%;" id="cmbTipoDespacho" data-selected="">
                             </select>
                         </div>
                     </div>
@@ -122,13 +122,22 @@
                         </div>
                     </div>
                 </div>
+                @if (numDespacho != "0")
+                {
+                    <div class="row container-fluid">
+                        <div class="text-right">
+                            <button class="btn btn-success btn-sm" type="button" id="btnGuardarCabecera"><i class="fa fa-save"></i> Guardar</button>
+                        </div>
+                    </div>
+                }
+
                 <br />
 
                 <ul class="nav nav-tabs" style="padding-top: 5px;">
                     <li class="" id="tabDetalle">
                         <a href="#navDetalle" data-toggle="tab" style="font-weight:bold; color: black;" tabindex="22"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Detalle</a>
                     </li>
-                    @if (numDespacho != "")
+                    @if (numDespacho != "0")
                     {
                         <li class="" id="tabSeguimiento">
                             <a href="#navSeguimiento" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-code-fork" aria-hidden="true"></i>  Seguimiento</a>
@@ -157,7 +166,7 @@
                             Html.RenderPartial("~/Views/Modelos/_Observaciones.cshtml");
 
 
-}
+                        }
                     </div>
                     <div id="navDetalle" class="tab-pane fade in active">
                         <div class="panel-group" id="accordion7401210" role="tablist" aria-multiselectable="false">
@@ -173,7 +182,7 @@
                                             <table id="tblDetalleCotizacion" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                                 <thead>
                                                     <tr>
-                                                        @if(numDespacho == "")
+                                                        @if (numDespacho == "0")
                                                         {
                                                             <th style="text-align: center; width: 5%;">Todos: <input class="form-check-input" type="checkbox" value="" id="checkSeleccionarTodos"></th>
                                                         }
@@ -181,7 +190,7 @@
                                                         {
                                                             <th style="text-align: center;">@ViewBag.Columnas[i]</th>
                                                         }
-                                                        
+
                                                     </tr>
                                                 </thead>
                                                 <tbody id="tbodyDetalleCot">
@@ -191,14 +200,18 @@
                                     </div>
                                     <div class="text-right">
                                         <div class="text-right">
-                                            <button class="btn btn-success btn-sm" type="button" id="btnRegistrar"><i class="fa fa-plus"></i> Registrar</button>
+                                            @if (numDespacho == "0")
+                                            {
+                                                <button class="btn btn-success btn-sm" type="button" id="btnRegistrar"><i class="fa fa-plus"></i> Registrar</button>
+                                            }
+
                                             <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegresar" tabindex="14"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Regresar</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <br />
-                            @if (numDespacho != "")
+                            @if (numDespacho != "0")
                             {
                                 <div class="box-inner" id="boxDespacho">
                                     <div class="box-header well" data-original-title="" style="background-color: beige;">

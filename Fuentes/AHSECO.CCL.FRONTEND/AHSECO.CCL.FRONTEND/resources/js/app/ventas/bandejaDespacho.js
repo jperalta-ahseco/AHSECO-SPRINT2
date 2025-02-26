@@ -105,7 +105,7 @@
     function verDespacho(IdDespacho) {
        
         method = "POST";
-        url = "BandejaSolicitudesVentas/VerDetalleDespacho?IdDespacho=" + IdDespacho;
+        url = "BandejaSolicitudesVentas/InicializarNumDespacho?NumDespacho=" + IdDespacho;
         var objComb = "";
         objComb = JSON.stringify(objComb);
         var fnDoneCallback = function (data) {
