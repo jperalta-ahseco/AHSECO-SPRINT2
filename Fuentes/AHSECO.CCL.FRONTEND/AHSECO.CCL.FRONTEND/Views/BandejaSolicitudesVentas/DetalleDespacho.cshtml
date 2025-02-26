@@ -50,7 +50,7 @@
             <div class="row container-fluid">
                 <div class="text-right">
                     <!--- Aquí tendremos que controlar-->
-                    <label>ESTADO: <span id="spanEstadoSol">@NombreEstadoDesp</span></label>
+                    <label>ESTADO: <span id="spanEstadoSol" style="color:red">@NombreEstadoDesp</span></label>
                 </div>
             </div>
             <div class="container-fluid" style="margin-right: 15px;">
@@ -140,15 +140,15 @@
                         </div>
                     </div>
                 </div>
-                @if (numDespacho != "0")
-                {
-                    <div class="row container-fluid">
-                        <div class="text-right">
-                            <button class="btn btn-success btn-sm" type="button" id="btnGuardarCabecera"><i class="fa fa-save"></i> Guardar</button>
-                        </div>
+                <div class="row container-fluid">
+                    <div class="text-right">
+                        @if (numDespacho != "0")
+                        {
+                            <button class="btn btn-success btn-sm" type="button" id="btnGuardarCabecera" style="display:@ViewBag.Btn_EditarDespacho"><i class="fa fa-save"></i> Guardar</button>
+                        }
+                        <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegresar" tabindex="14"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Regresar</button>
                     </div>
-                }
-
+                </div>
                 <br />
 
                 <ul class="nav nav-tabs" style="padding-top: 5px;">
@@ -222,9 +222,6 @@
                                             {
                                                 <button class="btn btn-success btn-sm" type="button" id="btnRegistrar"><i class="fa fa-plus"></i> Registrar</button>
                                             }
-
-                                            <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegresar" tabindex="14"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Regresar</button>
-
                                             <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnEnviarGuiaTotal" style="display:@ViewBag.Btn_EnviarGuiaTotal"><i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar Guia de Pedido</button>
                                             <button class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnGuiaPedidoTotal" style="display:@ViewBag.Btn_GuiaPedidoTotal"><i class="fa fa-file" aria-hidden="true" tabindex="113"></i>&nbsp;Generar Gu&iacute;a de Pedido</button>
 
@@ -274,10 +271,8 @@
                                                 <button class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnGuiaManuscritaTotal" style="display:@ViewBag.Btn_GuiaManuscritaTotal"><i class="fa fa-file" aria-hidden="true" tabindex="110"></i>&nbsp;Generar Gu&iacute;a Manuscrita</button>
                                                 <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnEnviarServicio" style="display:@ViewBag.Btn_EnviarServicio"><i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar a Facturaci&oacute;n</button>
 
-                      
-                                                <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnGuardarGestion" tabindex="116" style="display:@ViewBag.Btn_GuardarDespacho"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar</button>
 
-                                                <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnEditarGestion" tabindex="118" style="display:@ViewBag.Btn_EditarDespacho"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Editar</button>
+                                                <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnGuardarGestion" tabindex="116" style="display:@ViewBag.Btn_GuardarDespacho"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar</button>
                                                 <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnActualizarGestion" tabindex="119" style="display:none"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar</button>
 
                                                 <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnEnviarGuiaBOTotal" style="display:@ViewBag.Btn_EnviarGuiaBOTotal"><i class="fa fa-envelope" aria-hidden="true" tabindex="111"></i>&nbsp;Enviar Guia de BO</button>
