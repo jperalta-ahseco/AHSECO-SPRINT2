@@ -7943,13 +7943,15 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             var despacho = ventasBL.FiltrosDespacho(Convert.ToInt64(idDespacho), NombreRol);
 
-            var cod_estado = despacho.Result.DespachoCabecera.Estado;
+            var cod_estado = despacho.Result.DespachoCabecera.Estado; // del despacho
             var nom_estado = despacho.Result.DespachoCabecera.NombreEstado;
-            var cod_workflow = despacho.Result.DespachoCabecera.Id_WorkFlow;
-            var estadoSolicitud = despacho.Result.DespachoCabecera.EstadoSolicitud;
+            var cod_workflow = despacho.Result.DespachoCabecera.Id_WorkFlow; // del despacho
+            var estadoSolicitud = despacho.Result.DespachoCabecera.EstadoSolicitud; // de la solicitud
             var IdCotizacion = despacho.Result.DespachoCabecera.Id_Cotizacion;
-            var idSolicitud = despacho.Result.DespachoCabecera.Id_Solicitud;
-            var tipoSolicitud = despacho.Result.DespachoCabecera.TipoSolicitud;
+            var idSolicitud = despacho.Result.DespachoCabecera.Id_Solicitud; 
+            var tipoSolicitud = despacho.Result.DespachoCabecera.TipoSolicitud; //equipo o materiales
+            var cod_workflowSol = despacho.Result.DespachoCabecera.IdWorkflowSol; // de solicitud
+            var idFlujo = despacho.Result.DespachoCabecera.IdFlujo;
 
             var validarDespacho = ventasBL.ValidarDespachoSolicitud(idSolicitud, Convert.ToInt64(idDespacho));
 
@@ -7959,6 +7961,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             VariableSesion.setCadena("estadoSol", estadoSolicitud);
             VariableSesion.setCadena("idCotizacion", IdCotizacion.ToString());
             VariableSesion.setCadena("tipoSol", tipoSolicitud);
+            VariableSesion.setCadena("idFlujo", idFlujo.ToString());
 
             //Botones:
             ViewBag.Btn_EnviarGuiaTotal = "none";
@@ -7976,6 +7979,13 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.Btn_EditarFacturaLogistica = "none";
             ViewBag.Btn_GuardarFacturaLogistica = "none";
             ViewBag.Btn_RegistrarDespachoFlujo = "none";
+
+            ViewBag.PermiteEditarCabecera = true;
+
+            if(idDespacho != "0")
+            {
+                ViewBag.PermiteEditarCabecera = false;
+            }
 
 
             if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor
@@ -8014,6 +8024,15 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         }
                     }
                 }
+            }
+
+            if(NombreRol == ConstantesDTO.WorkflowRol.Venta.Gerente)
+            {
+                if(cod_estado == ConstantesDTO.EstadosProcesos.Despacho.PorAprobar)
+                {
+                    ViewBag.Btn_Aprobar = "";
+                    ViewBag.Btn_Observar = "";
+                } 
             }
 
             //    }

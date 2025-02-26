@@ -98,7 +98,13 @@
 
     var $btnEnviarGuiaTotal = $('#btnEnviarGuiaTotal');
     var $btnGuiaPedidoTotal = $('#btnGuiaPedidoTotal');
-
+    var $FlagStock = $('#FlagStock');
+    var $hdnDocumentoCargadoIdGuia = $('#hdnDocumentoCargadoIdGuia');
+    var $cmbDocumentoCargaGuia = $('#cmbDocumentoCargaGuia');
+    var $txtDescripcionDocumentoCargaGuia = $('#txtDescripcionDocumentoCargaGuia');
+    var $cmbTipoDocumentoCargaGuia = $('#cmbTipoDocumentoCargaGuia');
+    var $lblNombreArchivoGuia = $('#lblNombreArchivoGuia');
+    var $modalCargaDocumentoGuia = $('#modalCargaDocumentoGuia');
 
     /*Mensajes*/
     var mensajes = {
@@ -210,6 +216,24 @@
         });
 
 
+    };
+
+
+    function $modalCargaDocumentoGuiaClick() {
+        $hdnDocumentoCargadoIdGuia.val("GP");
+        //$cmbTipoDocumentoCarga.empty();
+        $cmbDocumentoCargaGuia.empty();
+        $txtDescripcionDocumentoCargaGuia.val("");
+        if ($("#idFlujo").val() == "1") {
+            $cmbTipoDocumentoCargaGuia.val("DVT07").trigger("change.select2");
+        }
+        else {
+            $cmbTipoDocumentoCargaGuia.val("DVT05").trigger("change.select2");
+        }
+
+        $cmbTipoDocumentoCargaGuia.prop('disabled', true);
+        $lblNombreArchivoGuia.text("");
+        $modalCargaDocumentoGuia.modal("show");
     };
 
     function $btnEnviarGuiaTotal_click() {
@@ -379,6 +403,10 @@
             app.llenarComboMultiResult($cmbTipoDespacho, data.Result.TipDespacho, null, "", "-- Seleccione --", filters);
             app.llenarComboMultiResult($cmbTipoDocumentoCarga, data.Result.TipoDocumento, null, 0, "-- Seleccione --", filters);
 
+            app.llenarComboMultiResult($cmbTipoDocumentoCargaGuia, data.Result.TipoDocumento, null, 0, "-- Seleccione --", filters);
+
+
+            
             if ($NumDespacho.val() == "0") {
                 $cmbTipoDespacho.val("DESP01").trigger('change.select2'); //se inicializa en orden de compra por defecto
             };

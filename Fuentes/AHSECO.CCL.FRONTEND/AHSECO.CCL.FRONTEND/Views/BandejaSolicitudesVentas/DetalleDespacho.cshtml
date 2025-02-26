@@ -15,9 +15,10 @@
     var NombreEstadoDesp = VariableSesion.getCadena("NomestadoDesp");
     var CodigoWorkFlowDesp = VariableSesion.getCadena("CodigoWorkFlowDesp");
     var estadoSol = VariableSesion.getCadena("estadoSol");
+    var idFlujo = VariableSesion.getCadena("idFlujo");
 }
 
-<input hidden id="vigencia" value="@vigencia"/>
+<input hidden id="vigencia" value="@vigencia" />
 <input hidden id="IdCotizacion" value="@idCotizacion" />
 <input hidden id="NumSol" value="@numSol" />
 <input hidden id="NumDespacho" value="@numDespacho" />
@@ -26,13 +27,16 @@
 <input hidden id="estadoDesp" value="@estadoDesp" />
 <input hidden id="numeroSolicitud" value="@numSol" />
 <input hidden id="TipoSolicitud" value="@tipoSol" />
+<input hidden id="FlagStock" value="" />
+<input hidden id="idFlujo" value="@idFlujo" />
+
 
 
 
 <input type="hidden" id="contadordoc" value="0" />
-<input hidden id="nombreRol" value="@NombreRol"/>
-<input hidden id="PorcentajeDscto" value="@porcentajeDscto"/>
-<input hidden id="txtEstado"/>
+<input hidden id="nombreRol" value="@NombreRol" />
+<input hidden id="PorcentajeDscto" value="@porcentajeDscto" />
+<input hidden id="txtEstado" />
 <div class="container-fluid">
     <h4><i class="fa fa-comment" aria-hidden="true"></i> @ViewBag.Title</h4>
 
@@ -223,6 +227,9 @@
 
                                             <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnEnviarGuiaTotal" style="display:@ViewBag.Btn_EnviarGuiaTotal"><i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar Guia de Pedido</button>
                                             <button class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnGuiaPedidoTotal" style="display:@ViewBag.Btn_GuiaPedidoTotal"><i class="fa fa-file" aria-hidden="true" tabindex="113"></i>&nbsp;Generar Gu&iacute;a de Pedido</button>
+
+                                            <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnAprobarGestionSS" tabindex="114" style="display:@ViewBag.Btn_Aprobar"><i class="fa fa-handshake-o" aria-hidden="true"></i>&nbsp;Aprobar</button>
+                                            <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnObservarGestionSS" tabindex="115" style="display:@ViewBag.Btn_Observar"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Observar</button>
                                         </div>
                                     </div>
                                 </div>
@@ -267,8 +274,7 @@
                                                 <button class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnGuiaManuscritaTotal" style="display:@ViewBag.Btn_GuiaManuscritaTotal"><i class="fa fa-file" aria-hidden="true" tabindex="110"></i>&nbsp;Generar Gu&iacute;a Manuscrita</button>
                                                 <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnEnviarServicio" style="display:@ViewBag.Btn_EnviarServicio"><i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar a Facturaci&oacute;n</button>
 
-                                                <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnAprobarGestionSS" tabindex="114" style="display:@ViewBag.Btn_Aprobar"><i class="fa fa-handshake-o" aria-hidden="true"></i>&nbsp;Aprobar</button>
-                                                <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnObservarGestionSS" tabindex="115" style="display:@ViewBag.Btn_Observar"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Observar</button>
+                      
                                                 <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnGuardarGestion" tabindex="116" style="display:@ViewBag.Btn_GuardarDespacho"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar</button>
 
                                                 <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnEditarGestion" tabindex="118" style="display:@ViewBag.Btn_EditarDespacho"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Editar</button>
@@ -579,6 +585,56 @@
     @{
         Html.RenderPartial("_SolicitudDetItemProducto");
     }
+</div>
+
+<div class="modal fade" id="modalCargaDocumentoGuia" tabindex="-1" role="dialog" aria-labelledby="titleModal"
+     aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Cargar documento</h4>
+            </div>
+            <div class="modal-body">
+                <form id="formDocumento">
+                    <div class="row container-fluid">
+                        <div class="col-md-6" style="display: block;">
+                            <div class="form-group">
+                                <input type="hidden" id="hdnDocumentoCargadoIdGuia" />
+                                <label for="cmbTipoDocumentoCargaGuia">Tipo de documento</label>
+                                <select class="form-control select2 input-sm" style="width:100%;" id="cmbTipoDocumentoCargaGuia"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-6" style="display: none;">
+                            <div class="form-group">
+                                <label for="cmbDocumentoCargaGuia">Documento</label>
+                                <select class="form-control select2 input-sm" style="width:100%;" id="cmbDocumentoCargaGuia"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-12" style="display: none;">
+                            <div class="form-group">
+                                <label for="txtDescripcionDocumentoCargaGuia">Descripci&oacute;n</label>
+                                <input type="text" class="form-control" placeholder="Descripción del documento" maxlength="100" id="txtDescripcionDocumentoCargaGuia" />
+                            </div>
+                        </div>
+                        <div class=" col-md-12">
+                            @*<div id="objCargaArchivo">Cargar Archivo</div>*@
+                            <button class="btn btn-danger btn-sm" type="button" id="btnAdjuntarDocumentoGuia"><i class="fa fa-folder" aria-hidden="true"></i>&nbsp;Cargar Archivo</button>
+                            <b><label id="lblNombreArchivoGuia" value=""></label></b>
+                            <input type="file" class="btn btn-danger btn-sm" id="fileCargaDocumentoSustentoGuia" value="Cargar Adjunto" style="display:none;"><br />
+                            <span id="tipoDocAdjuntosGuia" style="font-size:10px;color:gray">Archivos permitidos: .xls,.xlsx,.pdf,.doc,.docx,.zip,.rar,.ppt,.pptx</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-warning btn-sm pull-left" type="button" data-dismiss="modal">Cerrar</button>
+                <button class="btn btn-danger btn-sm" type="button" id="btnCargarDocumentoGuia">Cargar</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 
