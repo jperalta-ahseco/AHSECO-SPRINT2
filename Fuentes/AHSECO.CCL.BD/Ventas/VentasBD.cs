@@ -2937,6 +2937,11 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("IsID_SOLDEPACHO",req.Id_SolDepacho);
                 parameters.Add("IsID_COTDETALLE",req.IdCotDetalle);
                 parameters.Add("IsCANTIDAD",req.Cantidad);
+                if (req.IndStock.HasValue)
+                {
+                    parameters.Add("IsINDSTOCK", Utilidades.ParseStringSN<bool?>(req.IndStock), DbType.String);
+                }
+                else { parameters.Add("IsINDSTOCK", DBNull.Value, DbType.String); }
                 parameters.Add("IsVALORUNITARIO",req.ValorUnitario);
                 parameters.Add("IsVALORTOTAL",req.ValorTotal);
                 parameters.Add("IsMARGENADICIONAL",req.MargenAdicional);
@@ -2944,6 +2949,7 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("IsMONTODSCTO",req.MontoDscto);
                 parameters.Add("IsVVTOTALSIGVDSCTO",req.VvTotalSigVDscto);
                 parameters.Add("IsUsrEjecuta",req.UsuarioRegistra);
+                parameters.Add("IsPorcentajeDscto", req.PorcentajeDscto);
 
                 var result = connection.Query(
                     sql: "USP_MANT_TBD_DESPACHO_COTIZACION",
@@ -2961,6 +2967,64 @@ namespace AHSECO.CCL.BD.Ventas
             }
         }
 
+        public IEnumerable<ResultDespachoDetalle> ListaDetalleDespacho(ReqDespachoDetalle req)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using (var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+                var parameters = new DynamicParameters();
 
+                parameters.Add("IsID_DESPACHO"    , req.Id_SolDepacho);
+                parameters.Add("IsID_COTIZACION"  , req.Id_Cotizacion);
+                parameters.Add("IsID"             , req.Id);
+                parameters.Add("IsID_COTDETALLE", req.IdCotDetalle);
+
+                var result = connection.Query(
+                    sql: "USP_SEL_TBD_DESPACHO_COTIZACION",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new ResultDespachoDetalle()
+                    {
+                        Id = i.Single(d => d.Key.Equals("ID")).Value.Parse<long>(),
+                        ID_SolDespacho = i.Single(d => d.Key.Equals("ID_SOLDESPACHO")).Value.Parse<long>(),
+                        Id_CotDetalle = i.Single(d => d.Key.Equals("ID_COTDETALLE")).Value.Parse<long>(),
+                        Cantidad = i.Single(d => d.Key.Equals("CANTIDAD")).Value.Parse<int>(),
+                        ValorUnitario = i.Single(d => d.Key.Equals("VALORUNITARIO")).Value.Parse<decimal>(),
+                        ValorTotal = i.Single(d => d.Key.Equals("VALORTOTAL")).Value.Parse<decimal>(),
+                        MargenAdicional = i.Single(d => d.Key.Equals("MARGENADICIONAL")).Value.Parse<decimal>(),
+                        VvTotalSIGVCGAN = i.Single(d => d.Key.Equals("VVTOTALSIGVCGAN")).Value.Parse<decimal>(),
+                        MontoDscto = i.Single(d => d.Key.Equals("MONTODSCTO")).Value.Parse<decimal>(),
+                        VVTotalSIGVDscto = i.Single(d => d.Key.Equals("VVTOTALSIGVDSCTO")).Value.Parse<decimal>()
+                    });
+                connection.Close();
+                return result;
+            }
+        }
+
+        public RespuestaDTO TotalizarDespacho(long CodDespacho)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using(var connection = Factory.ConnectionFactory())
+            {
+                var parameters = new DynamicParameters();
+                parameters.Add("IsCodSolDespacho", CodDespacho);
+
+
+                var result = connection.Query(
+                    sql: "USP_TOTAL_DESPACHO"
+                    , param: parameters
+                    , commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new RespuestaDTO()
+                    {
+                        Codigo = i.Single(d => d.Key.Equals("COD")).Value.Parse<int>(),
+                        Mensaje = i.Single(d => d.Key.Equals("MSG")).Value.Parse<string>()
+                    }).FirstOrDefault();
+
+                return result;
+            }
+        }
     }
 }

@@ -116,6 +116,8 @@
     <Compile Include="Ventas\Despacho\ReqDespachoCabecera.cs" />
     <Compile Include="Ventas\Despacho\ReqDespachoDetalle.cs" />
     <Compile Include="Ventas\FiltroBandejaDespachoDTO.cs" />
+    <Compile Include="Ventas\Despacho\ResultDespachoCabecera.cs" />
+    <Compile Include="Ventas\Despacho\ResultDespachoDetalle.cs" />
     <Compile Include="Ventas\DetalleDespachoDTO.cs" />
     <Compile Include="Ventas\CotDetDespachoDTO.cs" />
     <Compile Include="Ventas\CabeceraDespachoDTO.cs" />
@@ -123,6 +125,7 @@
     <Compile Include="Ventas\CotizacionDetalleDTO.cs" />
     <Compile Include="Ventas\CotizacionDTO.cs" />
     <Compile Include="Ventas\DatosActualizarSerieSTO.cs" />
+    <Compile Include="Ventas\FiltroBandejaDespachoDTO.cs" />
     <Compile Include="Ventas\FiltroBandejaSolicitudesDTO.cs" />
     <Compile Include="Ventas\FiltroBandejaVentasDTO.cs" />
     <Compile Include="Ventas\GrupoFiltroDespacho.cs" />

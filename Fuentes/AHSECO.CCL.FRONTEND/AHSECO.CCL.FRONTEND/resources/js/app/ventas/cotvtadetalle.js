@@ -2587,7 +2587,7 @@ var cotvtadet = (function ($, win, doc) {
             var valorventaUnitario = data.Result.VentaUnitaria;
             var ventaUnitario = 0;
             if (valorventaUnitario != null) {
-                ventaUnitario = app.convertirNumero(valorventaUnitario).toFixed(2);
+                ventaUnitario = valorventaUnitario.toFixed(2);
                 $("#DA_txtValorUnitario").val(ventaUnitario);
             }
             else {

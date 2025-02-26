@@ -11,7 +11,9 @@ namespace AHSECO.CCL.BE.Ventas.Despacho
         public string TipoProceso {  get; set; }	
         public long Id {  get; set; }				
         public long Id_SolDepacho {  get; set; }
+        public long Id_Cotizacion { get; set; }
         public long IdCotDetalle {  get; set; }
+        public bool? IndStock { get; set; }
         public int Cantidad {  get; set; }
         public decimal? ValorUnitario {  get; set; }
         public decimal? ValorTotal {  get; set; }
@@ -19,5 +21,6 @@ namespace AHSECO.CCL.BE.Ventas.Despacho
         public decimal? VvTotalSigVcgan {  get; set; }
         public decimal? MontoDscto {  get; set; }
         public decimal? VvTotalSigVDscto {  get; set; }
+        public decimal? PorcentajeDscto { get; set; }
     }
 }

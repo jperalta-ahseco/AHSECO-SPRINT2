@@ -7,7 +7,11 @@
     var $chkPrestacionAccesoria = $('#chkPrestacionAccesoria');
     var $txtNroFianzaPA = $('#txtNroFianzaPA');
     var $txtNroFianzaPP = $('#txtNroFianzaPP');
-    
+    var $vigencia = $('#vigencia');
+    var $estadoDespacho = $('#estadoDespacho');
+    var $codigoWorkflow = $('#codigoWorkflow');
+    var $perfilnombre = $('#perfilnombre');
+
     var $btnRegistrar = $('#btnRegistrar');
     var $cmbTipoDespacho = $('#cmbTipoDespacho');
     var $txtNumOrden = $('#txtNumOrden');
@@ -27,6 +31,8 @@
     var $LimpiardateFechaContrato = $('#LimpiardateFechaContrato');
     var $radFianza = $("#radFianza");
     var $radFianza2 = $('#radFianza2');
+    var $NumDespacho = $('#NumDespacho'); 
+    var $PorcentajeDscto = $('#PorcentajeDscto');
 
     /*Modales*/
     var $modalCargaDocumento = $('#modalCargaDocumento');
@@ -84,9 +90,15 @@
     $(Initialize);
 
     function Initialize() {
+        detalleDespacho.contadorObservaciones = 0;
         detalleDespacho.xComprar = [];
         detalleDespacho.Productos = [];
-        CargarDatosDetalle()
+        if ($NumDespacho.val() != "") {
+            CargarDatosDespacho();
+        }
+        else {
+            CargarDatosDetalle()
+        };
         CargarCombos();
         CargarTipoDocumento(8); //Despacho ventas 
         $dateFechaMax.datepicker({
@@ -145,10 +157,55 @@
         $fileCargaDocumentoSustento.on("change", $fileCargaDocumentoSustento_change);
         $btnAdjuntarDocumento.click($adjuntarDocumento_click);
         $btnCargarDocumento.click($btnCargarDocumento_click);
+        $btnGuardarObservacionReq.click(GuardarObservacionReqClick);
         $chkPrestacionPrincipal.click($chkPrestacionPrincipal_click);
         $chkPrestacionAccesoria.click($chkPrestacionAccesoria_click);
+        $dateFechaOrdenCompra.on('change', function () {
+            if ($(this).val() != "") {
+                
+                var fechaFin = calcularFechaMax($(this).val());
+
+                $dateFechaMax.val(fechaFin);
+            }
+            else {
+                $dateFechaMax.val("");
+            }
+            
+        });
+
+        $dateFechaContrato.on('change', function () {
+            if ($(this).val() != "") {
+
+                var fechaFin = calcularFechaMax($(this).val());
+
+                $dateFechaMax.val(fechaFin)
+            }
+            else {
+                $dateFechaMax.val("");
+            }
+        });
+
 
     };
+
+    function calcularFechaMax(valor) {
+        const partes = valor.split('/');  // Separar la fecha por '/'
+
+        var fecha = `${partes[2]}/${partes[1]}/${partes[0]}`;
+
+        var nuevaFecha = new Date(fecha);
+        var dias = parseInt($vigencia.val());
+        nuevaFecha.setDate(nuevaFecha.getDate() + dias);
+
+        var dia = nuevaFecha.getDate() < 10 ? '0' + nuevaFecha.getDate() : nuevaFecha.getDate();
+        var mesActual = (nuevaFecha.getMonth() + 1);
+        var mes = mesActual < 10 ? '0' + mesActual : mesActual;
+        var year = nuevaFecha.getFullYear();
+
+        var fechaFin = dia + '/' + mes + '/' + year;
+
+        return fechaFin;
+    }
 
     function LimpiarFechaMax() {
         $dateFechaMax.val("")
@@ -156,10 +213,12 @@
 
     function LimpiarFechaContrato() {
         $dateFechaContrato.val("")
+        LimpiarFechaMax()
     };
 
     function LimpiarOrdenCompra() {
         $dateFechaOrdenCompra.val("")
+        LimpiarFechaMax()
     };
 
     function $openRegdateOrdenCompraClick() {
@@ -202,7 +261,7 @@
 
     function CargarDatosDetalle() {
         var method = "POST";
-        var url = "BandejaSolicitudesVentas/ObtenerCotizacionVentaDetalle"
+        var url = "BandejaSolicitudesVentas/ObtenerCotizacionVentaDetalle_Despacho"
         var obj = {
             IdCotizacion: $IdCotizacion.val()
         };
@@ -222,6 +281,155 @@
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null);
     };
+
+    function CargarTablaDespacho(data) {
+        var columns = [
+            {
+                data: "CodItem",
+                render: function (data, type, row) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "Descripcion",
+                render: function (data, type, row) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "IndStock",
+                render: function (data, type, row) {
+                    var rpta = "";
+                    if (data) {
+                        rpta = "Sí";
+                    }
+                    else {
+                        rpta = "No";
+                    }
+                    return '<center>' + rpta + '</center>'; 
+                }
+            },
+            {
+                data: "Cantidad",
+                render: function (data, type, row) {
+                    var casilla = "<input disabled type='number' id='cantidad_"+row.Id+"' min='0' max='"+data+"' style='width:100%' placeholder='Cantidad' value='" + data + "' />"
+                    return '<center>' + casilla + '</center>';
+                }
+            },
+            {
+                data: "VentaUnitaria",
+                render: function (data, type, row) {
+                    if (data == null)
+                    {
+                        return '<center></center>';
+                    }
+                    else
+                    {
+                        if ($NumDespacho.val() != "") {
+                            data = app.formatearEnteroComa(parseFloat(data).toFixed(2));
+                            return '<center>' + data + '</center>';
+                        }
+                        else {
+                            data = app.formatearEnteroComa(parseFloat(data).toFixed(2));
+                            return '<center id="ventaUnitaria_'+row.Id+'">'+ data +'</center>';
+                        }
+                    }
+                }
+            },
+            {
+                data: "MontoDescuento",
+                render: function (data, type, row) {
+                    if (data == null)
+                    {
+                        return '<center></center>';
+                    }
+                    else
+                    {
+                        if ($NumDespacho.val() != "") {
+                            data = app.formatearEnteroComa(parseFloat(data).toFixed(2));
+                            return '<center>' + data + '</center>';
+                        }
+                        else {
+                            return '<center id="montoDscto_' + row.Id + '"></center>';
+                        }
+                    }
+                }
+            },
+            {
+                data: "VentaTotalSinIGV",
+                render: function (data, type, row) {
+                    if (row.VentaTotalSinIGVDscto == null) {
+                        if (data == null) {
+                            return '<center></center>';
+                        }
+                        else {
+                            if ($NumDespacho.val() != "") {
+                                data = app.formatearEnteroComa(parseFloat(data).toFixed(2));
+                                return '<center>' + data + '</center>';
+                            }
+                            else {
+                                return '<center id="ventaTotalSinIGV_' + row.Id + '"></center>';
+                            };
+                        }
+                    }
+                    else {
+                        if ($NumDespacho.val() != "") {
+                            data = app.formatearEnteroComa(parseFloat(row.VentaTotalSinIGVDscto).toFixed(2));
+                            return '<center>' + data + '</center>';
+                        }
+                        else {
+                            return '<center id="ventaTotalSinIGV_' + row.Id + '"></center>';
+                        };
+                    };
+                }
+            },
+            {
+                data: "PorcentajeGanancia",
+                render: function (data, type, row) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "VentaTotalSinIGVConGanacia",
+                render: function (data, type, row) {
+                    if (data == null)
+                    {
+                        return '<center></center>';
+                    }
+                    else
+                    {
+                        if ($NumDespacho.val() != "") {
+                            data = app.formatearEnteroComa(parseFloat(data).toFixed(2));
+                            return '<center>' + data + '</center>';
+                        }
+                        else {
+                            return '<center id="ventaTotalSinIGVCGanan_' + row.Id + '"></center>';
+                        }
+                    }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "Id",
+                render: function (data, type, row) {
+                    var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.EditarCotDetItem(' + data + ')"><i class="fa fa-info-circle" aria-hidden="true"></i> Ver</a>';
+                    return '<center>' + ver + '</center>';
+                }
+            }
+        ];
+
+        var columnDefs =
+        {
+            targets: [0],
+            visible: false
+        };
+
+        app.llenarTabla($tblDetalleCotizacion, data, columns, columnDefs, "#tblDetalleCotizacion", null, null, null);
+    };
+
 
     function CargarTablaDetalleCot(data) {
         var columns = [
@@ -248,51 +456,41 @@
                 }
             },
             {
+                data: "IndStock",
+                render: function (data, type, row) {
+                    var rpta = "";
+                    if (data) {
+                        rpta = "Sí";
+                    }
+                    else {
+                        rpta = "No";
+                    }
+                    return '<center>' + rpta + '</center>';
+                }
+            },
+            {
                 data: "Cantidad",
                 render: function (data, type, row) {
-                    var casilla = "<input type='number' id='cantidad_"+row.Id+"' min='0' style='width:100%' placeholder='Cantidad' value='" + data + "' />"
+                    var casilla = "<input disabled type='number' onblur='if(parseFloat(this.value) > " + data + ") { this.value = " + data +"}'  oninput='if(parseFloat(this.value) > " + data + ") { this.value = "+ data +"}'   id='cantidad_" + row.Id + "' min='0' max='" + data + "' style='width:100%' placeholder='Cantidad' value='" + data + "' />"
                     return '<center>' + casilla + '</center>';
                 }
             },
             {
                 data: "VentaUnitaria",
                 render: function (data, type, row) {
-                    if (data == null) { data = ""; }
-                    else { data = app.formatearEnteroComa(parseFloat(data).toFixed(2)); }
-                    return '<center>' + data + '</center>';
-                }
-            },
-            {
-                data: "VentaTotalSinIGV",
-                render: function (data, type, row) {
-                    var valor;
-                    if (row.VentaTotalSinIGVDscto == null) {
-                        if (data == null) {
-                            valor = "";
-                        }
-                        else {
-                            valor = app.formatearEnteroComa(parseFloat(data).toFixed(2));
-                        }
+                    if (data == null) {
+                        return '<center></center>';
                     }
                     else {
-                        valor = app.formatearEnteroComa(parseFloat(row.VentaTotalSinIGVDscto).toFixed(2));
-                    };
-                    return '<center>' + valor + '</center>';
-                }
-            },
-            {
-                data: "PorcentajeGanancia",
-                render: function (data, type, row) {
-                    if (data == null) { data = ""; }
-                    return '<center>' + data + '</center>';
-                }
-            },
-            {
-                data: "VentaTotalSinIGVConGanacia",
-                render: function (data, type, row) {
-                    if (data == null) { data = ""; }
-                    else { data = app.formatearEnteroComa(parseFloat(data).toFixed(2)); }
-                    return '<center>' + data + '</center>';
+                        if ($NumDespacho.val() != "") {
+                            data = app.formatearEnteroComa(parseFloat(data).toFixed(2));
+                            return '<center>' + data + '</center>';
+                        }
+                        else {
+                            data = app.formatearEnteroComa(parseFloat(data).toFixed(2));
+                            return '<center id="ventaUnitaria_' + row.Id + '">' + data + '</center>';
+                        }
+                    }
                 }
             },
             {
@@ -312,6 +510,8 @@
 
         app.llenarTabla($tblDetalleCotizacion, data, columns, columnDefs, "#tblDetalleCotizacion", null, null, null);
     };
+
+
 
     function Regresar() {
         var method = "POST";
@@ -347,9 +547,11 @@
         $(document).on('change', '#checkSeleccionar', function (e) {
             if (this.checked) {
                 detalleDespacho.xComprar.push(this.value);
+                $('#cantidad_' + this.value).prop('disabled', false);
             }
             else {
                 detalleDespacho.xComprar = detalleDespacho.xComprar.filter(valor => valor != this.value);
+                $('#cantidad_' + this.value).prop('disabled', true);
             }
         });
 
@@ -358,14 +560,19 @@
                 $checkSeleccionar.prop('checked', true);
                 $('input').filter('#checkSeleccionar').prop('checked', true);
                 var ids = document.querySelectorAll("input[name='checkSeleccionar']:checked");
-                var a = [];
                 for (var i = 0; i < ids.length; i++) {
                     detalleDespacho.xComprar.push(ids[i].value);
+                    $('#cantidad_' + ids[i].value).prop('disabled', false);
                 }
             }
             else {
-                $('input').filter('#checkSeleccionar').prop('checked', false);
                 detalleDespacho.xComprar = []
+                var ids = document.querySelectorAll("input[name='checkSeleccionar']:checked");
+                for (var i = 0; i < ids.length; i++) {
+                    detalleDespacho.xComprar.push(ids[i].value);
+                    $('#cantidad_' + ids[i].value).prop('disabled', true);
+                };
+                $('input').filter('#checkSeleccionar').prop('checked', false);
             }
         });
     }
@@ -521,7 +728,7 @@
                 if ($numReclamo.val() != "") {
 
                     var method = "POST";
-                    var url = "BandejaGarantia/GuardarAdjunto";
+                    var url = "BandejaSolicitudesVentas/GuardarAdjunto";
                     var obj = {
                         Accion: "I",
                         CodigoDocumento: 0,
@@ -549,8 +756,8 @@
                                 }
                             );
                             var html = '<div class="text-center">';
-                            html += ' <a class="btn btn-default btn-xs" title="Descargar"  href="javascript:garantias.download(' + data.Result.Codigo + ')"><i class="fa fa-download" aria-hidden="true"></i></a>&nbsp;';
-                            html += ' <a class="btn btn-default btn-xs" title="Eliminar"  href="javascript:garantias.eliminarDocumento(' + data.Result.Codigo + ')"><i class="fa fa-ban" aria-hidden="true"></i></a>';
+                            html += ' <a class="btn btn-default btn-xs" title="Descargar"  href="javascript:detalleDespacho.download(' + data.Result.Codigo + ')"><i class="fa fa-download" aria-hidden="true"></i></a>&nbsp;';
+                            html += ' <a class="btn btn-default btn-xs" title="Eliminar"  href="javascript:detalleDespacho.eliminarDocumento(' + data.Result.Codigo + ')"><i class="fa fa-ban" aria-hidden="true"></i></a>';
                             html += '</div>';
 
 
@@ -591,7 +798,7 @@
                     });
 
                     var html = '<div class="text-center">';
-                    html += ' <a class="btn btn-default btn-xs" title="Eliminar"  href="javascript:garantias.eliminarDocTemp(' + cont + ')"><i class="fa fa-ban" aria-hidden="true"></i></a>';
+                    html += ' <a class="btn btn-default btn-xs" title="Eliminar"  href="javascript:detalleDespacho.eliminarDocTemp(' + cont + ')"><i class="fa fa-ban" aria-hidden="true"></i></a>';
                     html += '</div>';
 
 
@@ -684,9 +891,37 @@
             return;
         };
 
+        var validador = 0;
+        if ($cmbTipoDespacho.val() == "DESP01") {
+            if ($dateFechaOrdenCompra.val() == "" || $dateFechaOrdenCompra.val() == undefined|| $dateFechaOrdenCompra.val().trim().length == 0) {
+                validador = 1; 
+            };
+        };
+
+        if ($cmbTipoDespacho.val() == "DESP02") {
+            if ($dateFechaContrato.val() == "" || $dateFechaContrato.val() == undefined || $dateFechaContrato.val().trim().length == 0) {
+                validador = 2;
+            };
+        };
+
+        if (validador == 1) {
+            app.message.error("Validación", "Debe de ingresar la fecha de orden de compra");
+            return;
+        };
+
+        if (validador == 2) {
+            app.message.error("Validación", "Debe de ingresar la fecha de contrato");
+            return;
+        };
+
         if (detalleDespacho.xComprar.length == 0) {
             app.message.error("Validación", "Debe de seleccionar por lo menos un producto");
             return;
+        };
+
+        if ($dateFechaMax.val() == "" || $dateFechaMax.val() == undefined) {
+            app.message.error("Validación", "La fecha máxima está vacia, por favor revisar");
+            return; 
         };
 
         var method = "POST";
@@ -701,11 +936,9 @@
                     IdCotDetalle: detalleDespacho.Productos[i].Id
                     , Cantidad: detalleDespacho.Productos[i].Cantidad
                     , ValorUnitario: detalleDespacho.Productos[i].VentaUnitaria
-                    , ValorTotal: detalleDespacho.Productos[i].VentaTotalSinIGV
+                    , PorcentajeDscto: $PorcentajeDscto.val()
                     , MargenAdicional: detalleDespacho.Productos[i].PorcentajeGanancia
-                    , VvTotalSigVcgan: detalleDespacho.Productos[i].VentaTotalSinIGVConGanacia
-                    , MontoDscto: detalleDespacho.Productos[i].MontoDescuento
-                    , VvTotalSigVDscto: detalleDespacho.Productos[i].VentaTotalSinIGVDscto
+                    , IndStock: detalleDespacho.Productos[i].IndStock
                 });
             };
         };
@@ -766,7 +999,201 @@
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null, null, null);
     };
 
+    function GuardarObservacionReqClick() {
+        if ($txtObservacion.val().trim() == "" || $txtObservacion.val().trim().length == 0) {
+            app.message.error("Validación", "Es necesario que ingrese la observación.");
+            return;
+        }
+
+        if ($NumDespacho.val() != "") {
+            var method = "POST";
+            var url = "BandejaSolicitudesVentas/GuardarObservacion"
+            var objObservacion = {
+                TipoProceso: "I",
+                Observacion: $txtObservacion.val(),
+                Id_WorkFlow: $codigoWorkflow.val(),
+                Nombre_Usuario: $nombreusuario.val(),
+                Estado_Instancia: $estadoDespacho.val()
+            };
+
+            var objParamObs = JSON.stringify(objObservacion);
+
+            var fnSi = function () {
+                var fnDoneCallBack = function (data) {
+
+                    detalleDespacho.contadorObservaciones += 1;
+
+                    observaciones.push(
+                        {
+                            TipoProceso: "I",
+                            Observacion: $txtObservacion.val(),
+                            Nombre_Usuario: $nombreusuario.val(),
+                            Id_WorkFlow: $codigoWorkflow.val(),
+                            Estado_Instancia: $estadoReq.val
+                        }
+                    );
+                    var nuevoTr = "<tr id=row" + detalleDespacho.contadorObservaciones + ">" +
+                        "<th style='text-align: center;'>" + $nombreusuario.val() + "</th>" +
+                        "<th style='text-align: center;'>" + $perfilnombre.val() + "</th>" +
+                        "<th style='text-align: center;'>" + hoy() + "</th>" +
+                        "<th style='text-align: center;'>" + objObservacion.Observacion + "</th>" +
+                        "<th style='text-align: center;'>" +
+                        //                    "<a id='btnEliminarObs' class='btn btn-default btn-xs' title='Eliminar' href='javascript: detalleDespacho.eliminarObsTmp(" + detalleDespacho.contadorObservaciones + ")' > <i class='fa fa-trash' aria-hidden='true'></i></a>" +
+                        "</th> " +
+                        "</tr>";
+                    $tblObservaciones.append(nuevoTr);
+                    $NoExisteRegObs.hide();
+                    $modalObservacion.modal('toggle');
+
+                    var redirectTo = function () {
+                        if (rptaFinal == 1) {
+                            establecerVariablesSession();
+                        };
+                    };
+
+                    app.message.success("Éxito", "Se registró la observación satisfactoriamente", "Aceptar", redirectTo);
+                };
+
+                var fnFailCallBack = function () {
+                    app.message.error("Validación", "Ocurrió un error al registrar la observación.");
+                };
+                app.llamarAjax(method, url, objParamObs, fnDoneCallBack, fnFailCallBack, null, mensajes.guardandoObservacion);
+            };
+            return app.message.confirm("Confirmación", "¿Desea registrar la observación?", "Sí", "No", fnSi, null);
+        }
+        else {
+            detalleDespacho.contadorObservaciones += 1;
+
+            observaciones.push({
+                Id: detalleDespacho.contadorObservaciones,
+                TipoProceso: "I",
+                Estado_Instancia: "REG",
+                Observacion: $txtObservacion.val(),
+                Nombre_Usuario: $nombreusuario.val(),
+                Perfil_Usuario: $perfilnombre.val()
+            })
+            var nuevoTr = "<tr id=row" + detalleDespacho.contadorObservaciones + ">" +
+                "<th style='text-align: center;'>" + $nombreusuario.val() + "</th>" +
+                "<th style='text-align: center;'>" + $perfilnombre.val() + "</th>" +
+                "<th style='text-align: center;'>" + hoy() + "</th>" +
+                "<th style='text-align: center;'>" + $txtObservacion.val() + "</th>" +
+                "<th style='text-align: center;'>" +
+                "<a id='btnEliminarObs' class='btn btn-default btn-xs' title='Eliminar' href='javascript: detalleDespacho.eliminarObsTmp(" + detalleDespacho.contadorObservaciones + ")' ><i class='fa fa-trash' aria-hidden='true'></i></a>" +
+                "</th> " +
+                "</tr>";
+            $tblObservaciones.append(nuevoTr);
+            $NoExisteRegObs.hide();
+            $modalObservacion.modal('toggle');
+        };
+        $txtObservacion.val("");
+    }
+
+    function CargarDatosDespacho()
+    {
+        var method = "POST";
+        var url = ""; 
+        var obj = {
+
+        };
+        var objParam = JSON.string(obj);
+
+        var fnDoneCallBack = function (data) {
+            CargarTablaDespacho(data);
+        };
+
+        var fnFailCallBack = function () {
+
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+    };
+
+
+    function download(IdDocumento) {
+
+        var documento = adjuntos.find(documento => documento.CodigoDocumento == IdDocumento);
+
+        var ruta = documento.RutaDocumento;
+
+        var nombre = documento.NombreDocumento;
+
+        app.abrirVentana("BandejaSolicitudesVentas/DescargarFile?url=" + ruta + "&nombreDoc=" + nombre);
+    }
+
+    function eliminarDocumento(idDocumento) {
+        if ($NumDespacho.val() != "") {
+            var fnSi = function () {
+                var method = "POST";
+                var url = "BandejaSolicitudesVentas/EliminarAdjunto";
+                var obj = {
+                    Accion: "D",
+                    CodigoDocumento: idDocumento,
+                    CodigoWorkFlow: 0,
+                    CodigoTipoDocumento: "",
+                    NombreDocumento: "",
+                    VerDocumento: true,
+                    RutaDocumento: "",
+                    Eliminado: 1
+                }
+                var objParam = JSON.stringify(obj);
+                var fnDoneCallback = function (data) {
+
+                    if (data.Result.Codigo > 0) {
+
+                        const child = document.getElementById("row" + idDocumento);
+                        document.getElementById("tbodyDocAdjuntos").removeChild(child);
+                        adjuntos = adjuntos.filter(documento => documento.CodigoDocumento != idDocumento);
+                        if (adjuntos.length == 0) {
+                            $NoExisteRegDoc.show();
+                        }
+                        //location.reload();
+                    }
+                    else {
+                        app.message.error("Error en la Actualización", data.Result.Mensaje);
+
+                    }
+
+                };
+                return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, null);
+            };
+            return app.message.confirm("Solicitud de Venta", "¿Está seguro(a) que desea eliminar el documento adjunto?", "Sí", "No", fnSi, null);
+        };
+    };
+
+    function eliminarDocTemp(cont) {
+
+        adjuntos.forEach(function (currentValue, index, arr) {
+            if (adjuntos[index].Id == cont) {
+                adjuntos.splice(index, 1);
+            }
+        });
+        $("#filadoc" + cont).remove();
+
+        if (adjuntos.length == 0) {
+            $NoExisteRegDoc.show();
+        }
+    };
+
+    function eliminarObsTmp(idObs) {
+        var fnSi = function () {
+            observaciones = observaciones.filter(observacion => observacion.Id !== Number(idObs));
+            $("#row" + idObs).remove();
+            detalleDespacho.contadorObservaciones -= 1
+            if (detalleDespacho.contadorObservaciones == 0) {
+                $NoExisteRegObs.show();
+            };
+        };
+
+        return app.message.confirm("Confirmación", "Está seguro(a) que desea eliminar esta observación?", "Si", "No", fnSi, null);
+
+    };
+
 
     return {
+        download: download,
+        eliminarDocumento: eliminarDocumento,
+        eliminarDocTemp: eliminarDocTemp,
+        eliminarObsTmp: eliminarObsTmp,
+
     };
 })(window.jQuery, window, document);

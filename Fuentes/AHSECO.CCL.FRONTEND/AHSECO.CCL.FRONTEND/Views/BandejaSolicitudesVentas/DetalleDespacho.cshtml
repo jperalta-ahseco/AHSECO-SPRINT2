@@ -10,11 +10,15 @@
     var NombreRol = VariableSesion.getCadena("VENTA_NOMBRE_ROL");
     var estadoSol = VariableSesion.getCadena("estadoSol");
     var numDespacho = VariableSesion.getCadena("numDespacho");
+    var porcentajeDscto = VariableSesion.getCadena("porcentajeDscto");
+    var vigencia = VariableSesion.getCadena("vigencia");
 }
 
+<input hidden id="vigencia" value="@vigencia"/>
 <input hidden id="IdCotizacion" value="@idCotizacion" />
 <input hidden id="NumSol" value="@numSol" />
 <input hidden id="NumDespacho" value="@numDespacho" />
+<input hidden id="PorcentajeDscto" value="@porcentajeDscto"/>
 
 <div class="container-fluid">
     <h4><i class="fa fa-comment" aria-hidden="true"></i> @ViewBag.Title</h4>
@@ -74,15 +78,9 @@
                 </div>
                 <div class="row container-fluid">
                     <div class="col-md-4 col-sm-12">
-                        <label for="dateFechaMax">Fecha Entrega Máxima: </label>
-                        <div class="input-group date">
-                            <input type="text" readonly class="form-control input-sm" id="dateFechaMax" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
-                            <span class="input-group-addon input-sm" id="openRegdateMax">
-                                <i class="fa fa-calendar"></i>
-                            </span>
-                            <span class="input-group-addon input-sm" id="LimpiardateFechaMax">
-                                <i class="fa fa-trash"></i>
-                            </span>
+                        <label for="dateFechaMax">Fecha Máxima:</label>
+                        <div class="form-group">
+                            <input disabled type="text" class="form-control input-sm" id="dateFechaMax" value="">
                         </div>
                     </div>
                     <div class="col-md-2 col-sm-12" style=" @(ViewBag.PermiteVerFianza ? "" : "display:none" )">
@@ -152,7 +150,9 @@
                     <div id="navObservaciones" class="tab-pane fade">
                         @{
                             Html.RenderPartial("~/Views/Modelos/_Observaciones.cshtml");
-                        }
+
+
+}
                     </div>
                     <div id="navDetalle" class="tab-pane fade in active">
                         <div class="panel-group" id="accordion7401210" role="tablist" aria-multiselectable="false">
@@ -168,15 +168,15 @@
                                             <table id="tblDetalleCotizacion" class="table table-hover table-condensed table-striped table-bordered" width="100%">
                                                 <thead>
                                                     <tr>
-                                                        <th style="text-align: center; width: 5%;">Todos: <input class="form-check-input" type="checkbox" value="" id="checkSeleccionarTodos"></th>
-                                                        <th style="text-align:center; width: 10%">Código Producto</th>
-                                                        <th style="text-align:center; width: 10%">Descripción</th>
-                                                        <th style="text-align:center; width: 5%">Cantidad</th>
-                                                        <th style="text-align:center; width: 10%">Valor Venta Unitario</th>
-                                                        <th style="text-align:center; width: 10%">Valor. Venta Total Sin IGV (Sin Margen Adicional)</th>
-                                                        <th style="text-align:center; width: 10%">Margen Adicional(%)</th>
-                                                        <th style="text-align:center; width: 10%">Valor. Venta Total Sin IGV (Con Margen Adicional)</th>
-                                                        <th style="text-align:center; width: 5%">Acciones</th>
+                                                        @if(numDespacho == "")
+                                                        {
+                                                            <th style="text-align: center; width: 5%;">Todos: <input class="form-check-input" type="checkbox" value="" id="checkSeleccionarTodos"></th>
+                                                        }
+                                                        @for (var i = 0; ViewBag.Columnas.Length > i; i++)
+                                                        {
+                                                            <th style="text-align: center;">@ViewBag.Columnas[i]</th>
+                                                        }
+                                                        
                                                     </tr>
                                                 </thead>
                                                 <tbody id="tbodyDetalleCot">
