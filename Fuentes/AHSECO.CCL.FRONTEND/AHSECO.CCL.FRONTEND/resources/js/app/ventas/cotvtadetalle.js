@@ -2265,6 +2265,8 @@ var cotvtadet = (function ($, win, doc) {
             $CI_hdnCodTipoCosto.val(data.Result.CodigoCosto);
             $CI_hdnCodCosto.val(idCosteo);
 
+            ubigeo.setTxtUbigeo_Id("CI_hdnUbicacion");
+            ubigeo.setTxtUbigeo_Text("CI_txtUbicacion");
 
             var codigo_costo = data.Result.CodigoCosto;
             $CI_txtMtoTotalCosto.prop("disabled", true);
