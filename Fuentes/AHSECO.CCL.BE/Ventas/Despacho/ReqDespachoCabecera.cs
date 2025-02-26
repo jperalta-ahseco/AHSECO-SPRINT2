@@ -41,6 +41,11 @@ namespace AHSECO.CCL.BE.Ventas.Despacho
         public string FianzaFormat { get; set; }
         public string PrestPrinFormat { get; set; }
         public string PrestAccFormat { get; set; }
+        public long IdWorkflowSol { get; set; }
+        public int IdFlujo {  get; set; }
+        public string TipoVenta { get; set; }
+        public string TipoSolicitud { get; set; }
+        public string EstadoSolicitud { get; set; }
 
     }
 }

@@ -2831,7 +2831,12 @@ namespace AHSECO.CCL.BD.Ventas
                             MontoIgV = reader.IsDBNull(reader.GetOrdinal("MONTOIGV")) ? 0 : reader.GetDecimal(reader.GetOrdinal("MONTOIGV")),
                             TotalVenta = reader.IsDBNull(reader.GetOrdinal("TOTALVENTA")) ? 0 : reader.GetDecimal(reader.GetOrdinal("TOTALVENTA")),
                             Estado = reader.IsDBNull(reader.GetOrdinal("CODESTADO")) ? "" : reader.GetString(reader.GetOrdinal("CODESTADO")),
-                            NombreEstado = reader.IsDBNull(reader.GetOrdinal("NOMESTADO")) ? "" : reader.GetString(reader.GetOrdinal("NOMESTADO"))
+                            NombreEstado = reader.IsDBNull(reader.GetOrdinal("NOMESTADO")) ? "" : reader.GetString(reader.GetOrdinal("NOMESTADO")),
+                            IdWorkflowSol = reader.IsDBNull(reader.GetOrdinal("ID_WORKFLOWSOL")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_WORKFLOWSOL")),
+                            IdFlujo = reader.IsDBNull(reader.GetOrdinal("ID_FLUJO")) ? 0 : reader.GetInt32(reader.GetOrdinal("ID_FLUJO")),
+                            TipoVenta = reader.IsDBNull(reader.GetOrdinal("TIPOVENTA")) ? "" : reader.GetString(reader.GetOrdinal("TIPOVENTA")),
+                            TipoSolicitud = reader.IsDBNull(reader.GetOrdinal("TIPOSOL")) ? "" : reader.GetString(reader.GetOrdinal("TIPOSOL")),
+                            EstadoSolicitud = reader.IsDBNull(reader.GetOrdinal("ESTADOSOL")) ? "" : reader.GetString(reader.GetOrdinal("ESTADOSOL"))
                         };
                     }
 
@@ -3411,7 +3416,51 @@ namespace AHSECO.CCL.BD.Ventas
             }
         }
 		
-		
-		
+        public ContadorCabeceraDespacho ValidarDespachoSolicitud(long CodigoSolicitud, long IdDespachoSol)
+        {
+            var rpta = new RespuestaDTO();
+            Log.TraceInfo(Utilidades.GetCaller());
+
+
+            using (var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("isIdSolicitud", CodigoSolicitud);
+                parameters.Add("IdDespachoSol", IdDespachoSol);
+
+                var result = connection.Query
+                (
+                    sql: "USP_VAL_DESPACHO_SOL",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure
+                )
+                 .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new ContadorCabeceraDespacho
+                    {
+                        CodigoSolicitud = i.Single(d => d.Key.Equals("ID_SOLICITUD")).Value.Parse<long>(),
+                        NumeroOrden = i.Single(d => d.Key.Equals("NUMORDEN")).Value.Parse<string>(),
+                        FechaOrden = i.Single(d => d.Key.Equals("FECHAORDEN")).Value.Parse<string>(),
+                        FechaMaxima = i.Single(d => d.Key.Equals("FECHAMAX")).Value.Parse<string>(),
+                        ContadorConStock = i.Single(d => d.Key.Equals("CONT_CS")).Value.Parse<int>(),
+                        ContadorSinStock = i.Single(d => d.Key.Equals("CONT_SS")).Value.Parse<int>(),
+                        NumeroConStock = i.Single(d => d.Key.Equals("NUM_CS")).Value.Parse<int>(),
+                        NumeroSinStock = i.Single(d => d.Key.Equals("NUM_SS")).Value.Parse<int>(),
+                        EnvioGPConStock = i.Single(d => d.Key.Equals("ENVIOGP_CS")).Value.Parse<int>(),
+                        EnvioGPSinStock = i.Single(d => d.Key.Equals("ENVIOGP_SS")).Value.Parse<int>(),
+                        EnvioBOSinStock = i.Single(d => d.Key.Equals("ENVIOBO_SS")).Value.Parse<int>(),
+                        GestionLogConStock = i.Single(d => d.Key.Equals("GESLOG_CS")).Value.Parse<int>(),
+                        GestionLogSinStock = i.Single(d => d.Key.Equals("GESLOG_SS")).Value.Parse<int>(),
+                        ContadorSeriesConStock = i.Single(d => d.Key.Equals("SERIE_CS")).Value.Parse<int>(),
+                        ContadorSeriesSinStock = i.Single(d => d.Key.Equals("SERIE_SS")).Value.Parse<int>(),
+                        EnvioServicio = i.Single(d => d.Key.Equals("ENVIOFC")).Value.Parse<int>(),
+                        GestionLogServicio = i.Single(d => d.Key.Equals("GESFAC")).Value.Parse<int>(),
+                        EnvioVentaConStock = i.Single(d => d.Key.Equals("ENVIOVT_CS")).Value.Parse<int>(),
+                        EnvioVentaSinStock = i.Single(d => d.Key.Equals("ENVIOVT_SS")).Value.Parse<int>(),
+                        GenerarGuiaPedidoConStock = i.Single(d => d.Key.Equals("GENGP_CS")).Value.Parse<int>(),
+                        GenerarGuiaPedidoSinStock = i.Single(d => d.Key.Equals("GENGP_SS")).Value.Parse<int>(),
+                        GenerarGuiaBOSinStock = i.Single(d => d.Key.Equals("GENBO_SS")).Value.Parse<int>(),
+                        TipoDespacho = i.Single(d => d.Key.Equals("TIPODESPACHO")).Value.Parse<string>(),
     }
 }

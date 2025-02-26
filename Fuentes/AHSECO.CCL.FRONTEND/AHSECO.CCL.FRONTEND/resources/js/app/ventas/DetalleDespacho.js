@@ -91,8 +91,13 @@
     var $ValidaBtnObservacion = $('#ValidaBtnObservacion');
     var $codigoWorkflow = $('#codigoWorkflow');
     var $perfilnombre = $('#perfilnombre');
-    var $estadoSol = $('#estadoSol');
+    var $estadoDesp = $('#estadoDesp');
     var $nombreRol = $('#nombreRol');
+    var $numeroSolicitud = $('#numeroSolicitud');
+    var $TipoSolicitud = $('#TipoSolicitud');
+
+    var $btnEnviarGuiaTotal = $('#btnEnviarGuiaTotal');
+    var $btnGuiaPedidoTotal = $('#btnGuiaPedidoTotal');
 
 
     /*Mensajes*/
@@ -175,6 +180,10 @@
         $btnGuardarObservacionReq.click(GuardarObservacionReqClick);
         $chkPrestacionPrincipal.click($chkPrestacionPrincipal_click);
         $chkPrestacionAccesoria.click($chkPrestacionAccesoria_click);
+
+        $btnEnviarGuiaTotal.click($btnEnviarGuiaTotal_click);
+        $btnGuiaPedidoTotal.click($btnGuiaPedidoTotal_click);
+
         $dateFechaOrdenCompra.on('change', function () {
             if ($(this).val() != "") {
                 
@@ -202,6 +211,61 @@
 
 
     };
+
+    function $btnEnviarGuiaTotal_click() {
+
+        if ($TipoSolicitud.val() === "TSOL03") //Validaciones para tipos de ventas servicio y repuestos:
+        {
+            if ($dateProgramacionServ.val() === null || $dateProgramacionServ.val() === "") {
+                app.message.error("Validación", "Debe seleccionar una fecha de programación del técnico.");
+                return;
+            }
+
+            if (tecnicosAsig.length == 0) {
+                app.message.error("Validación", "Debe seleccionar un técnico para realizar el servicio.");
+                return;
+            };
+        }
+
+
+        var mensaje = "";
+        if ($("#idFlujo").val() == "1") {
+            mensaje = "¿Está seguro que desea enviar la Guia de Pedido?";
+        }
+        else {
+            mensaje = "¿Está seguro que desea enviar la Guia Manuscrita?";
+        }
+        var fnSi = function () {
+            $FlagStock.val("X");
+            $modalCargaDocumentoGuiaClick();
+        }
+        return app.message.confirm("Ventas", mensaje, "S&iacute;", "No", fnSi, null);
+    }
+    function $btnGuiaPedidoTotal_click() {
+        var tipo_despacho = "T";
+
+        var num_solicitud = $numeroSolicitud.val();
+        var tipo = "GP"
+        if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03") //para repuestos y servicio y repuestos:
+        {
+            tipo = "MI";
+        }
+        method = 'POST';
+        url = 'BandejaHistorialCotizacion/ExportarDocumentosVentas?tipo=' + tipo + "&codSolicitud=" + num_solicitud + "&stock=X" + "&tipoDespacho=" + tipo_despacho + "&idDespacho=" + $NumDespacho.val();
+
+        objParam = '';
+
+        var fnDoneCallBack = function (data) {
+            app.abrirVentana("BandejaHistorialCotizacion/ExportarFileGuiaPedido?nombreDoc=" + data.Archivo);
+            app.message.success("Ventas", "Se generó la guía de pedidos correctamente.");
+            $btnEnviarGuiaTotal.show();
+        }
+        var fnFailCallBack = function () {
+
+        }
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, mensajes.GenerarGuiaPedidos);
+    }
+
 
     function calcularFechaMax(valor) {
         const partes = valor.split('/');  // Separar la fecha por '/'
@@ -321,7 +385,7 @@
 
             if (data.Result.DespachoCabecera != null) {
                 $codigoWorkflow.val(data.Result.DespachoCabecera.Id_WorkFlow);
-                $estadoSol.val(data.Result.DespachoCabecera.Estado);
+                $estadoDesp.val(data.Result.DespachoCabecera.Estado);
 
                 var tipo_despacho = data.Result.DespachoCabecera.TipoDesp;
                 $cmbTipoDespacho.val(tipo_despacho).trigger('change.select2');
@@ -411,7 +475,7 @@
                         var html = '<div class="text-center">';
                         //var d = "'" + data.Result.Adjuntos[i].CodigoDocumento + "','" + data.Result.Adjuntos[i].RutaDocumento + "'";
                         html += ' <a class="btn btn-default btn-xs" title="Descargar"  href="javascript:solicitud.download(' + data.Result.Adjuntos[i].CodigoDocumento + ')"><i class="fa fa-download" aria-hidden="true"></i></a>&nbsp;';
-                        if (($estadoSol.val() == "DREG") && $idRolUsuario.val() != "SGI_VENTA_FACTURA") {
+                        if (($estadoDesp.val() == "DREG") && $idRolUsuario.val() != "SGI_VENTA_FACTURA") {
                             html += ' <a class="btn btn-default btn-xs" title="Eliminar"  href="javascript:solicitud.eliminarDocumento(' + data.Result.Adjuntos[i].CodigoDocumento + ')"><i class="fa fa-ban" aria-hidden="true"></i></a>&nbsp;';
                         }
                         html += '</div>';

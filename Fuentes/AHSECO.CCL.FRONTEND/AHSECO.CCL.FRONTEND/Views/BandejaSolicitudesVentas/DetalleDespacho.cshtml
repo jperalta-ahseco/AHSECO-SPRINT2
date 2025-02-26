@@ -8,10 +8,13 @@
     var idCotizacion = VariableSesion.getCadena("idCotizacion");
     var tipoSol = VariableSesion.getCadena("tipoSol");
     var NombreRol = VariableSesion.getCadena("VENTA_NOMBRE_ROL");
-    var estadoSol = VariableSesion.getCadena("estadoSol");
+    var estadoDesp = VariableSesion.getCadena("estadoDesp");
     var numDespacho = VariableSesion.getCadena("numDespacho");
     var porcentajeDscto = VariableSesion.getCadena("porcentajeDscto");
     var vigencia = VariableSesion.getCadena("vigencia");
+    var NombreEstadoDesp = VariableSesion.getCadena("NomestadoDesp");
+    var CodigoWorkFlowDesp = VariableSesion.getCadena("CodigoWorkFlowDesp");
+    var estadoSol = VariableSesion.getCadena("estadoSol");
 }
 
 <input hidden id="vigencia" value="@vigencia"/>
@@ -19,8 +22,13 @@
 <input hidden id="NumSol" value="@numSol" />
 <input hidden id="NumDespacho" value="@numDespacho" />
 <input hidden id="ValidaBtnObservacion" value="0" />
-<input hidden id="codigoWorkflow" value="0" />
-<input hidden id="estadoSol" value="@estadoSol" />
+<input hidden id="codigoWorkflow" value="@CodigoWorkFlowDesp" />
+<input hidden id="estadoDesp" value="@estadoDesp" />
+<input hidden id="numeroSolicitud" value="@numSol" />
+<input hidden id="TipoSolicitud" value="@tipoSol" />
+
+
+
 <input type="hidden" id="contadordoc" value="0" />
 <input hidden id="nombreRol" value="@NombreRol"/>
 <input hidden id="PorcentajeDscto" value="@porcentajeDscto"/>
@@ -35,6 +43,12 @@
             </div>
         </div>
         <div class="box-content">
+            <div class="row container-fluid">
+                <div class="text-right">
+                    <!--- Aquí tendremos que controlar-->
+                    <label>ESTADO: <span id="spanEstadoSol">@NombreEstadoDesp</span></label>
+                </div>
+            </div>
             <div class="container-fluid" style="margin-right: 15px;">
                 <div class="row container-fluid">
                     <div class="col-md-4 col-sm-7 col-xs-12">
@@ -206,6 +220,9 @@
                                             }
 
                                             <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegresar" tabindex="14"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Regresar</button>
+
+                                            <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnEnviarGuiaTotal" style="display:@ViewBag.Btn_EnviarGuiaTotal"><i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar Guia de Pedido</button>
+                                            <button class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnGuiaPedidoTotal" style="display:@ViewBag.Btn_GuiaPedidoTotal"><i class="fa fa-file" aria-hidden="true" tabindex="113"></i>&nbsp;Generar Gu&iacute;a de Pedido</button>
                                         </div>
                                     </div>
                                 </div>
@@ -213,7 +230,7 @@
                             <br />
                             @if (numDespacho != "0")
                             {
-                                <div class="box-inner" id="boxDespacho">
+                                <div class="box-inner" id="boxDespacho" style="@(ViewBag.VerDespacho ? "" : "display:none");">
                                     <div class="box-header well" data-original-title="" style="background-color: beige;">
                                         <div>
                                             <p id="titleNomProducto"><i class="fa fa-cube" aria-hidden="true" style="color:brown"></i> Despacho</p>
@@ -257,8 +274,6 @@
                                                 <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnEditarGestion" tabindex="118" style="display:@ViewBag.Btn_EditarDespacho"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Editar</button>
                                                 <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnActualizarGestion" tabindex="119" style="display:none"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar</button>
 
-                                                <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnEnviarGuiaTotal" style="display:@ViewBag.Btn_EnviarGuiaTotal"><i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar Guia de Pedido</button>
-                                                <button class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnGuiaPedidoTotal" style="display:@ViewBag.Btn_GuiaPedidoTotal"><i class="fa fa-file" aria-hidden="true" tabindex="113"></i>&nbsp;Generar Gu&iacute;a de Pedido</button>
                                                 <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnEnviarGuiaBOTotal" style="display:@ViewBag.Btn_EnviarGuiaBOTotal"><i class="fa fa-envelope" aria-hidden="true" tabindex="111"></i>&nbsp;Enviar Guia de BO</button>
                                                 <button class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnGuiaBOTotal" style="display:@ViewBag.Btn_GuiaBOTotal"><i class="fa fa-file" aria-hidden="true" tabindex="112"></i>&nbsp;Generar Gu&iacute;a de BO</button>
 

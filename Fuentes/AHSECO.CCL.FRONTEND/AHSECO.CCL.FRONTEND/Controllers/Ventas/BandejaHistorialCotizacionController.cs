@@ -1017,7 +1017,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         }
 
         [HttpPost]
-        public JsonResult ExportarDocumentosVentas(string tipo, long codSolicitud, string stock, string tipoDespacho)
+        public JsonResult ExportarDocumentosVentas(string tipo, long codSolicitud, string stock, string tipoDespacho, long idDespacho)
         {
             var ventasBL = new VentasBL();
             var datosGuia = ventasBL.ConsultaGuia(codSolicitud,tipo, stock).Result;
@@ -2069,6 +2069,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 datosDespachoDTO.CodigoSolicitud = codSolicitud;
                 datosDespachoDTO.Stock = stock;
                 datosDespachoDTO.TipoDespacho = tipoDespacho;
+                datosDespachoDTO.Observacion = idDespacho.ToString();
                 datosDespachoDTO.UsuarioRegistro = User.ObtenerUsuario();
                 datosDespachoDTO.NombrePerfil = User.ObtenerPerfil();
                 var envio_log = ventasBL.MantenimientoDespacho(datosDespachoDTO);

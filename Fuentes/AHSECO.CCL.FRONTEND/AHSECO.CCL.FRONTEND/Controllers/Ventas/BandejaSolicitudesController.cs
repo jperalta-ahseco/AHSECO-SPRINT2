@@ -44,6 +44,7 @@ using AHSECO.CCL.BL.ServicioTecnico.BandejaGarantias;
 using DocumentFormat.OpenXml;
 using System.Security.RightsManagement;
 using DocumentFormat.OpenXml.ExtendedProperties;
+using static AHSECO.CCL.COMUN.ConstantesDTO.EstadosProcesos;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 {
@@ -7875,6 +7876,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             {
                 VariableSesion.setCadena("numSol", Solicitud.ToString());
                 VariableSesion.setCadena("idCotizacion", IdCotizacion.ToString());
+                VariableSesion.setCadena("numDespacho", "0");
 
                 return Json(new
                 {
@@ -7937,22 +7939,82 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             var numSol = VariableSesion.getCadena("numSol");
             var NombreRol = VariableSesion.getCadena("VENTA_NOMBRE_ROL");
             var idDespacho = VariableSesion.getCadena("numDespacho");
-            var validarDespacho = ventasBL.ValidarDespacho(int.Parse(numSol));
 
-            ViewBag.PermiteEditarCabecera = true;
 
-            if(idDespacho != "0")
+            var despacho = ventasBL.FiltrosDespacho(Convert.ToInt64(idDespacho), NombreRol);
+
+            var cod_estado = despacho.Result.DespachoCabecera.Estado;
+            var nom_estado = despacho.Result.DespachoCabecera.NombreEstado;
+            var cod_workflow = despacho.Result.DespachoCabecera.Id_WorkFlow;
+            var estadoSolicitud = despacho.Result.DespachoCabecera.EstadoSolicitud;
+            var IdCotizacion = despacho.Result.DespachoCabecera.Id_Cotizacion;
+            var idSolicitud = despacho.Result.DespachoCabecera.Id_Solicitud;
+            var tipoSolicitud = despacho.Result.DespachoCabecera.TipoSolicitud;
+
+            var validarDespacho = ventasBL.ValidarDespachoSolicitud(idSolicitud, Convert.ToInt64(idDespacho));
+
+            VariableSesion.setCadena("estadoDesp", cod_estado);
+            VariableSesion.setCadena("NomestadoDesp", nom_estado);
+            VariableSesion.setCadena("CodigoWorkFlowDesp", cod_workflow.ToString());
+            VariableSesion.setCadena("estadoSol", estadoSolicitud);
+            VariableSesion.setCadena("idCotizacion", IdCotizacion.ToString());
+            VariableSesion.setCadena("tipoSol", tipoSolicitud);
+
+            //Botones:
+            ViewBag.Btn_EnviarGuiaTotal = "none";
+            ViewBag.Btn_GuiaPedidoTotal = "none";
+            ViewBag.Btn_EnviarServicio = "none";
+            ViewBag.Btn_GuiaManuscritaTotal = "none";
+            ViewBag.Btn_Aprobar = "none";
+            ViewBag.Btn_Observar = "none";
+            ViewBag.Btn_GuardarDespacho = "none";
+            ViewBag.Btn_EditarDespacho = "none";
+
+            ViewBag.Btn_EnviarGuiaBOTotal = "none";
+            ViewBag.Btn_GuiaBOTotal = "none";
+            ViewBag.Btn_FinalizarVenta = "none";
+            ViewBag.Btn_EditarFacturaLogistica = "none";
+            ViewBag.Btn_GuardarFacturaLogistica = "none";
+            ViewBag.Btn_RegistrarDespachoFlujo = "none";
+
+
+            if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor
+                   || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ
+                   || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc)
             {
-                ViewBag.PermiteEditarCabecera = false;
-            }
-            //var datosDespacho = ventasBL.DatosGeneralesDespacho()
+                ViewBag.Btn_RegistrarDespachoFlujo = "";
+                ViewBag.VerDespacho = true;
 
-            //if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor
-            //       || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ
-            //       || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordAtc)
-            //{
-            //    if (soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Finalizado)
-            //    {
+                if (cod_estado == ConstantesDTO.EstadosProcesos.Despacho.Registrado)
+                {
+                    ViewBag.VerDespacho = false;
+                    ViewBag.VerFacturacion = false;
+                    ViewBag.VerObservacionGerencia = false;
+                   
+
+                    if(validarDespacho != null)
+                    {
+                        if(validarDespacho.Result.ContadorConStock > 0 && validarDespacho.Result.ContadorSinStock == 0)
+                        {
+                            if(validarDespacho.Result.GenerarGuiaPedidoConStock > 0)
+                            {
+                                ViewBag.Btn_EnviarGuiaTotal = "";
+                            }
+                            ViewBag.Btn_GuiaPedidoTotal = "";
+                        }
+
+                        if ((validarDespacho.Result.ContadorConStock > 0 && validarDespacho.Result.ContadorSinStock > 0) ||
+                            (validarDespacho.Result.ContadorConStock == 0 && validarDespacho.Result.ContadorSinStock > 0))
+                        {
+                            if(validarDespacho.Result.GenerarGuiaBOSinStock > 0)
+                            {
+                                ViewBag.Btn_EnviarGuiaBOTotal = "";
+                            }
+                            ViewBag.Btn_GuiaBOTotal = "";
+                        }
+                    }
+                }
+            }
 
             //    }
             //}
@@ -7960,8 +8022,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.PermiteSeleccionarProductos = true;
             ViewBag.PermiteGuardarProductos = true;
             ViewBag.PermiteGestionarDespacho = true;
-            ViewBag.VerFacturacion = true;
-            ViewBag.VerObservacionGerencia = true;
+           
+           
             //ViewBag.Btn_GuiaManuscritaTotal = "none";
             // ViewBag.Btn_EnviarServicio = "none";
             // ViewBag.Btn_Aprobar = "none";
@@ -7993,19 +8055,13 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             // ViewBag.Btn_RegistrarDespachoSinStock ="none";
             // ViewBag.Btn_EnviarGestionDespachoSE = "none";
             // ViewBag.Btn_GuardarFactura = "none";
-            ViewBag.Btn_GuiaManuscritaTotal = "";
-            ViewBag.Btn_EnviarServicio = "";
-            ViewBag.Btn_Aprobar = "";
-            ViewBag.Btn_Observar = "";
-            ViewBag.Btn_GuardarDespacho = "";
-            ViewBag.Btn_EditarDespacho = "";
-            ViewBag.Btn_EnviarGuiaTotal = "";
-            ViewBag.Btn_GuiaPedidoTotal = "";
-            ViewBag.Btn_EnviarGuiaBOTotal = "";
-            ViewBag.Btn_GuiaBOTotal = "";
-            ViewBag.Btn_FinalizarVenta = "";
-            ViewBag.Btn_EditarFacturaLogistica = "";
-            ViewBag.Btn_GuardarFacturaLogistica = "";
+
+
+      
+
+
+         
+
             ViewBag.VerGestionLogistica = true;
             ViewBag.VerNavConStock = true;
             ViewBag.VerNavSinStock = true;

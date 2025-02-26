@@ -673,5 +673,19 @@ namespace AHSECO.CCL.BL.Ventas
             };
         }
 
+        public ResponseDTO<ContadorCabeceraDespacho> ValidarDespachoSolicitud(long CodigoSolicitud, long IdDespachoSol)
+        {
+            try
+            {
+                var result = Repository.ValidarDespachoSolicitud(CodigoSolicitud, IdDespachoSol);
+                return new ResponseDTO<ContadorCabeceraDespacho>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<ContadorCabeceraDespacho>(ex);
+            };
+        }
+
     }
 }
