@@ -380,11 +380,11 @@ namespace AHSECO.CCL.BL.Ventas
             };
         }
 
-        public ResponseDTO<RespuestaDTO> ActualizarEnvioDespacho(long CodigoSolicitud, string Stock, int EnvioGP, int EnvioBO,int EnvioFC, string Usuario)
+        public ResponseDTO<RespuestaDTO> ActualizarEnvioDespacho(long CodigoSolicitud, string Stock, int EnvioGP, int EnvioBO,int EnvioFC, string Usuario, long idDespacho = 0)
         {
             try
             {
-                var result = Repository.ActualizarEnvioDespacho(CodigoSolicitud,Stock,EnvioGP,EnvioBO, EnvioFC,Usuario);
+                var result = Repository.ActualizarEnvioDespacho(CodigoSolicitud, Stock, EnvioGP,EnvioBO, EnvioFC,Usuario, idDespacho);
                 return new ResponseDTO<RespuestaDTO>(result);
             }
             catch (Exception ex)
@@ -408,11 +408,11 @@ namespace AHSECO.CCL.BL.Ventas
             };
         }
 
-        public ResponseDTO<CabeceraDespachoDTO> ValidarAprobacionSinStock(long CodigoSolicitud)
+        public ResponseDTO<CabeceraDespachoDTO> ValidarAprobacionSinStock(long CodigoSolicitud, long IdDespacho = 0)
         {
             try
             {
-                var result = Repository.ValidarAprobacionSinStock(CodigoSolicitud);
+                var result = Repository.ValidarAprobacionSinStock(CodigoSolicitud, IdDespacho);
 
                 return new ResponseDTO<CabeceraDespachoDTO>(result);
             }
@@ -609,7 +609,7 @@ namespace AHSECO.CCL.BL.Ventas
                 var result = Repository.MantDespacho(req);
                 return new ResponseDTO<RespuestaDTO>(result);
             }
-            catch(Exception ex)
+                catch(Exception ex)
             {
                 Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
                 return new ResponseDTO<RespuestaDTO>(ex);

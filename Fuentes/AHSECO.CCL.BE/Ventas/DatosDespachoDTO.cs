@@ -34,7 +34,7 @@ namespace AHSECO.CCL.BE.Ventas
         public string NumeroFianzaPP { get; set; }
         public string NumeroFianzaPA { get; set; }
         public string TipoVenta { get; set; }
-
+        public long? IdDespacho { get; set; }
         public string TipoDespacho { get; set; }
     }
 }

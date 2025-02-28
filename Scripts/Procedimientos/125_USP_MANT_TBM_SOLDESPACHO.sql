@@ -55,48 +55,6 @@ BEGIN
 			SET @CODIGO = @@IDENTITY
 			SET @MSG = 'Se insertó en la tabla [TBM_SOLDESPACHO]' 
 
-
-			DECLARE @WORKFLOW_SOL BIGINT 
-			SELECT @WORKFLOW_SOL=ID_WORKFLOW FROM TBM_SOLICITUDVENTA WHERE ID_SOLICITUD=@IsID_SOLICITUD
-
-				IF OBJECT_ID('tempdb..#TMP_DESPACHO') IS NOT NULL
-					DROP TABLE #TMP_DESPACHO
-
-
-					CREATE TABLE #TMP_DESPACHO(COD INT, MENSAJE VARCHAR(250))
-
-
-			-- SE INSERTA A DESPACHOS:
-			INSERT INTO #TMP_DESPACHO
-			EXEC USP_MANT_DESPACHOVENTAS @TIPO='I',
-						@CODSOLICITUD=@IsID_SOLICITUD,
-						@CODCOTIZACION=@IsID_COTIZACION,
-						@ID_WORKFLOW=@WORKFLOW_SOL,
-						@NOMPERFIL = 'VENDEDOR',
-						@NUMRODEN='',
-						@FECHAORDEN= NULL,
-						@FECHAMAX=NULL,
-						@STOCK =NULL,
-						@FECHAENTREGA =NULL,
-						@NUMFACTURA='',
-						@NUMGUIAREM='',
-						@NUMPEDIDO ='',
-						@FECHAINGRESO =NULL,
-						@ESTAPROB ='',
-						@OBSERVACION =@CODIGO,
-						@NUMCONTRATO ='',
-						@FECHACONTRATO =NULL,
-						@CALCULO ='',
-						@FIANZA ='',
-						@PRESTPRIN ='',
-						@NUMFIANZAPP ='',
-						@PRESTACC ='',
-						@NUMFIANZAPA ='',
-						@TIPODESP ='',
-						@USRREG =@IsUsrEjecuta
-
-						SET @CODIGO =(SELECT DISTINCT COD FROM #TMP_DESPACHO )
-
 		END
 	END
 	IF(@IsTipoProceso = 'U')
@@ -136,6 +94,28 @@ BEGIN
 			SET @MSG = 'Se realizó la actualización de la tabla [TBM_SOLDESPACHO]'
 		END
 	END
+
+	IF(@IsTipoProceso = 'F')
+	BEGIN
+		UPDATE [dbo].[TBM_SOLDESPACHO]
+		SET	
+		ESTADO			= @IsESTADO 
+		,USR_MOD		= @IsUsrEjecuta		
+		,FEC_MOD		= GETDATE()
+		WHERE ID = @IsID 
+
+		IF(@@ROWCOUNT = 0)
+		BEGIN
+			SET @CODIGO = 0
+			SET @MSG = 'Ocurrió un error al actualizar la tabla [TBM_SOLDESPACHO]'
+		END
+		ELSE
+		BEGIN
+			SET @CODIGO = @IsID
+			SET @MSG = 'Se realizó la actualización de la tabla [TBM_SOLDESPACHO]'
+		END
+
+	END 
 
 	SELECT @CODIGO COD ,@MSG MSG
 	SET NOCOUNT OFF;

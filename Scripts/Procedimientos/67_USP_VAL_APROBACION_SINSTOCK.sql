@@ -6,9 +6,9 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_VAL_APROBACION_SINSTOCK]
 /*=======================================================================================================
 	Nombre:				Fecha:			Descripcion:
 	Jose Peralta		14.11.24		Realiza consulta de la validacion del APROBACION.
-	EXEC [USP_VAL_APROBACION_SINSTOCK]  20
+	EXEC [USP_VAL_APROBACION_SINSTOCK]  1, 3
 =======================================================================================================*/
-	@isIdSolicitud BIGINT
+	@isIdSolicitud BIGINT, @Is_IdDespacho BIGINT = 0
 )
 AS
 BEGIN
@@ -18,6 +18,6 @@ BEGIN
 	ISNULL(OBSERVACION,'') OBSERVACION,
 	ISNULL(NUMPEDIDO,'') NUMPEDIDO,
 	ISNULL(CONVERT(VARCHAR,FECHAINGRESO,103),'') FECHAINGRESO
-	FROM TBM_DESPACHO WITH(NOLOCK) WHERE ID_SOLICITUD=@isIdSolicitud AND STOCK='N'
+	FROM TBM_DESPACHO WITH(NOLOCK) WHERE ID_SOLICITUD=@isIdSolicitud AND STOCK='N' AND ID_SOLDESPACHO = IIF(@Is_IdDespacho = 0, ID_SOLDESPACHO, @Is_IdDespacho)
 
 END

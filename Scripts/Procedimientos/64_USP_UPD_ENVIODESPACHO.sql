@@ -9,6 +9,7 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_UPD_ENVIODESPACHO]
 	EXEC [USP_UPD_ENVIODESPACHO]  20,'',1,1,'jperalta'
 =======================================================================================================*/
 	@isIdSolicitud BIGINT,
+	@IsId_Despacho BIGINT = 0,
 	@STOCK CHAR(1),
 	@ENVIOGP INT,
 	@ENVIOBO INT,
@@ -31,10 +32,29 @@ DECLARE @CODIGO BIGINT,@MSG VARCHAR(250)
 		   USR_MOD = @USER,
 		   FEC_MOD = GETDATE()
 		   WHERE ID_SOLICITUD  =@isIdSolicitud
-		   AND STOCK = CASE WHEN LEN(@STOCK)>0 THEN @STOCK ELSE STOCK END;
+		   AND STOCK = CASE WHEN LEN(@STOCK)>0 THEN @STOCK ELSE STOCK END
+		   AND ID_SOLDESPACHO = IIF(@IsId_Despacho = 0, ID_SOLDESPACHO, @IsId_Despacho);
 
-	   		SET  @CODIGO = 1
-			SET @MSG ='Se realizo la actualizacion del registro'
+		IF(@IsId_Despacho > 0 AND @ENVIOBO = 1)
+		BEGIN
+			UPDATE [dbo].[TBM_SOLDESPACHO]
+			SET ESTADO = 'DPAP'
+				,USR_MOD = @USER
+				,FEC_MOD = GETDATE()
+			WHERE ID =	@IsId_Despacho
+		END
+
+		IF(@IsId_Despacho > 0 AND @ENVIOGP = 1)
+		BEGIN
+			UPDATE [dbo].[TBM_SOLDESPACHO]
+			SET ESTADO = 'DLOG'
+				,USR_MOD = @USER
+				,FEC_MOD = GETDATE()
+			WHERE ID =	@IsId_Despacho
+		END
+		
+		SET  @CODIGO = 1
+		SET @MSG ='Se realizo la actualizacion del registro'
 	END TRY
 	BEGIN CATCH
 			SET @CODIGO = 0

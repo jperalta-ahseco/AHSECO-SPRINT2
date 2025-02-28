@@ -252,11 +252,10 @@ SET NOCOUNT ON;
 							ISNULL(A.CODITEM,'') 
 							END CATALOGO,
 							CASE WHEN  A.TIPOITEM = 'SER' THEN
-								--	''+UPPER(RTRIM(ISNULL(SV.VALOR1,'')))+  '\r\n' +
-								--	'EQUIPO: '+RTRIM(ISNULL(SERV.DESCRIPCIONEQUIPO,'')) +  '\r\n' +
-								--	'MARCA: '+RTRIM(ISNULL(SERV.NOMBREMARCA,''))  +  '\r\n' +
-								--	'MODELO: '+RTRIM(ISNULL(SERV.NOMBREMODELO,''))  + '\r\n'  +
-										''+REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(UPPER(RTRIM(ISNULL(A.DESCRIPCION,''))),',','\r\n'),',','\r\n'),',','\r\n'),',','\r\n'),'SERVICIO:','')+  '\r\n' +
+									''+UPPER(RTRIM(ISNULL(SV.VALOR1,'')))+  '\r\n' +
+									'EQUIPO: '+RTRIM(ISNULL(SERV.DESCRIPCIONEQUIPO,'')) +  '\r\n' +
+									'MARCA: '+RTRIM(ISNULL(SERV.NOMBREMARCA,''))  +  '\r\n' +
+									'MODELO: '+RTRIM(ISNULL(SERV.NOMBREMODELO,''))  + '\r\n'  +
 									CASE WHEN(LEN(ACT.DESCRIPCION) >0) THEN 
 										'\r\n'+
 										'CARACTERISTICAS:' + '\r\n'  +

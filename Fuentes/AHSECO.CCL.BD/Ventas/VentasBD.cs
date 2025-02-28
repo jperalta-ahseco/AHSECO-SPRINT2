@@ -1856,6 +1856,7 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("PRESTACC", datosDespachoDTO.PrestacionAccesoria);
                 parameters.Add("NUMFIANZAPA", datosDespachoDTO.NumeroFianzaPA);
                 parameters.Add("TIPODESP", datosDespachoDTO.TipoDespacho);
+                parameters.Add("ID_SOLDESPACHO", datosDespachoDTO.IdDespacho);
                 parameters.Add("USRREG", datosDespachoDTO.UsuarioRegistro);
 
                 var result = connection.Query
@@ -2009,7 +2010,7 @@ namespace AHSECO.CCL.BD.Ventas
             }
         }
 
-        public RespuestaDTO ActualizarEnvioDespacho(long CodigoSolicitud, string Stock, int EnvioGP, int EnvioBO, int EnvioFC, string Usuario)
+        public RespuestaDTO ActualizarEnvioDespacho(long CodigoSolicitud,  string Stock, int EnvioGP, int EnvioBO, int EnvioFC, string Usuario, long idDespacho = 0)
         {
             var rpta = new RespuestaDTO();
             Log.TraceInfo(Utilidades.GetCaller());
@@ -2021,6 +2022,7 @@ namespace AHSECO.CCL.BD.Ventas
 
                 var parameters = new DynamicParameters();
                 parameters.Add("isIdSolicitud", CodigoSolicitud);
+                parameters.Add("IsId_Despacho", idDespacho);
                 parameters.Add("STOCK", Stock);
                 parameters.Add("ENVIOGP", EnvioGP);
                 parameters.Add("ENVIOBO", EnvioBO);
@@ -2074,7 +2076,7 @@ namespace AHSECO.CCL.BD.Ventas
             }
         }
 
-        public CabeceraDespachoDTO ValidarAprobacionSinStock(long CodigoSolicitud)
+        public CabeceraDespachoDTO ValidarAprobacionSinStock(long CodigoSolicitud, long IdDespacho = 0)
         {
             var rpta = new RespuestaDTO();
             Log.TraceInfo(Utilidades.GetCaller());
@@ -2086,6 +2088,7 @@ namespace AHSECO.CCL.BD.Ventas
 
                 var parameters = new DynamicParameters();
                 parameters.Add("isIdSolicitud", CodigoSolicitud);
+                parameters.Add("Is_IdDespacho", IdDespacho);
 
                 var result = connection.Query
                 (

@@ -2069,7 +2069,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 datosDespachoDTO.CodigoSolicitud = codSolicitud;
                 datosDespachoDTO.Stock = stock;
                 datosDespachoDTO.TipoDespacho = tipoDespacho;
-                datosDespachoDTO.Observacion = idDespacho.ToString();
+                datosDespachoDTO.IdDespacho = idDespacho;
                 datosDespachoDTO.UsuarioRegistro = User.ObtenerUsuario();
                 datosDespachoDTO.NombrePerfil = User.ObtenerPerfil();
                 var envio_log = ventasBL.MantenimientoDespacho(datosDespachoDTO);
