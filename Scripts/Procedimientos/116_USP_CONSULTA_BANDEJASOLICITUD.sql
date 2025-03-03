@@ -210,7 +210,7 @@ BEGIN
 																										SELECT C.ID_SOLICITUD FROM TBD_COTIZACIONVENTA A WITH(NOLOCK) 
 																										INNER JOIN TBM_COTIZACIONVENTA B WITH(NOLOCK) ON A.ID_COTIZACION=B.ID_COTIZACION AND B.ESTADO=''A''
 																										INNER JOIN TBM_SOLICITUDVENTA C WITH(NOLOCK) ON  C.ID_SOLICITUD =B.ID_SOLICITUD
-																										WHERE C.ESTADO=''CVAL''
+																										WHERE C.ESTADO=''CVAL'' AND C.TIPO_SOL IN (''TSOL05'', ''TSOL04'')
 																										AND ISNULL(A.MARGENUTILIDAD,'''')='''' AND ELIMINADO=''N'' 
 																										) '
 END
@@ -239,7 +239,7 @@ BEGIN
 																					INNER JOIN TBM_COTIZACIONVENTA B WITH(NOLOCK) ON A.ID_COTIZACION=B.ID_COTIZACION
 																					INNER JOIN TBM_SOLICITUDVENTA C WITH(NOLOCK) ON B.ID_SOLICITUD=C.ID_SOLICITUD
 																					WHERE 
-																					ISNULL(A.VVENTAUNI,0)=0 AND LEN(A.COSTOFOB) >0 AND C.ESTADO=''CVAL''
+																					ISNULL(A.VVENTAUNI,0)=0 AND (LEN(A.COSTOFOB) >0 OR C.TIPO_SOL IN (''TSOL02'', ''TSOL03'')) AND C.ESTADO=''CVAL''
 																					AND A.ELIMINADO=''N''
 																		) '
 END

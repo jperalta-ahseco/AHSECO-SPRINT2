@@ -442,8 +442,10 @@ var cotvtadet = (function ($, win, doc) {
 
             var fnDoneCallBack = function (data) {
                 if (data.Result.Codigo > 0) {
-                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", null);
-                    location.reload();
+                    var fnSuccess = function () {
+                        location.reload();
+                    };
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnSuccess);
                 }
                 else {
                     app.message.success("Error", data.Result.Mensaje, "Aceptar", null);
@@ -1541,15 +1543,16 @@ var cotvtadet = (function ($, win, doc) {
 
             if ($idRolUsuario.val() === "SGI_VENTA_COSTOS" && $estadoSol.val() === "CVAL") {
                 $DI_txtValorUnitario.prop('disabled', false);
+                $('#DI_pnlCostos_ValorUnitario').css('display', '');
                 $DI_btnGuardar.hide();
                 $DI_btnGuardarCosteo.show();
             }
 
-            if (($idRolUsuario.val() === "SGI_VENTA_ASESOR" || $idRolUsuario.val() === "SGI_VENTA_COORDINASERV"
-                || $idRolUsuario.val() === "SGI_VENTA_COORDINAATC") && $estadoSol.val() === "CVAL" &&
-                data.Result.CabCosteoDetalle.IndicadorCosteo === "S" && data.Result.CabCosteoDetalle.IndicadorCosteo === "S") {
-                $DI_txtGanancia.prop('disabled', false);
-            }
+            //if (($idRolUsuario.val() === "SGI_VENTA_ASESOR" || $idRolUsuario.val() === "SGI_VENTA_COORDINASERV"
+            //    || $idRolUsuario.val() === "SGI_VENTA_COORDINAATC") && $estadoSol.val() === "CVAL" &&
+            //    data.Result.CabCosteoDetalle.IndicadorCosteo === "S" && data.Result.CabCosteoDetalle.IndicadorCosteo === "S") {
+            //    $DI_txtGanancia.prop('disabled', false);
+            //}
 
 
 
