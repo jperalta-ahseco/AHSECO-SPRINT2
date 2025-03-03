@@ -53,6 +53,7 @@ namespace AHSECO.CCL.BE.Ventas
         public string EstadoAbreviado { get; set; }
         public string CodigoTipoSolicitud { get; set; }
         public int IdCliente { get; set; }
+        public string NombreEquipo { get; set; }
 
         public int IdSede { get; set; }
         public string NomSede { get; set; }

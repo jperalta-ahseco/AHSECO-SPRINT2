@@ -65,7 +65,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.NombreCliente = "";
             ViewBag.NombreVendedor = "";
             ViewBag.Empresa = "";
-            ViewBag.NombreContacto = "";
+            ViewBag.NombreEquipo = "";
             ViewBag.FormaPago = "";
             ViewBag.Moneda = "";
             ViewBag.Estado = "";
@@ -106,7 +106,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     ViewBag.NombreCliente = "disabled";
                     ViewBag.NombreVendedor = "disabled";
                     ViewBag.Empresa = "disabled";
-                    ViewBag.NombreContacto = "disabled";
+                    ViewBag.NombreEquipo = "disabled";
                     ViewBag.FormaPago = "disabled";
                     ViewBag.Moneda = "disabled";
                     ViewBag.Estado = "disabled";

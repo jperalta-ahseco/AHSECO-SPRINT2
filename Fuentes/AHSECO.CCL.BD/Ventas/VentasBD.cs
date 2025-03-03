@@ -2504,7 +2504,7 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("NOMVENDEDOR", filtros.NombreVendedor);
                 parameters.Add("CODEMPRESA", filtros.CodigoEmpresa);
                 parameters.Add("ESTADO", filtros.CodigoEstado);
-                parameters.Add("NOMCONTACTO", filtros.NombreContacto);
+                parameters.Add("NOMEQUIPO", filtros.NombreEquipo);
                 parameters.Add("FORMAPAGO", filtros.CodigoFormaPago);
                 parameters.Add("MONEDA", filtros.CodigoMoneda);
                 parameters.Add("GARANTIA", filtros.CodigoGarantia);

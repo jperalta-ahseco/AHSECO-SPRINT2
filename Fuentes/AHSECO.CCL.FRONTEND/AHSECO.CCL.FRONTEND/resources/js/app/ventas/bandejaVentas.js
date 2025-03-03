@@ -28,7 +28,7 @@
     var $txtRuc = $("#txtRuc");
     var $txtNombreCliente = $("#txtNombreCliente");
     var $txtNombreVendedor = $("#txtNombreVendedor");
-    var $txtNombreContacto = $("#txtNombreContacto");
+    var $txtNombreEquipo = $("#txtNombreEquipo");
     var $txtNumeroOrden = $("#txtNumeroOrden");
     var $txtNumeroProceso = $("#txtNumeroProceso");
     var $txtNumeroContrato = $("#txtNumeroContrato");
@@ -106,7 +106,7 @@
         $txtNombreCliente.val('');
         $txtNombreVendedor.val('');
         $cmbEmpresa.val('').trigger("change");
-        $txtNombreContacto.val('');
+        $txtNombreEquipo.val('');
         $cmbFormaPago.val('').trigger("change");
         $cmbMoneda.val('').trigger("change");
         $cmbEstado.val('').trigger("change");
@@ -130,7 +130,7 @@
             $txtNombreCliente.prop('disabled', true);
             $txtNombreVendedor.prop('disabled', true);
             $cmbEmpresa.prop('disabled', true);
-            $txtNombreContacto.prop('disabled', true);
+            $txtNombreEquipo.prop('disabled', true);
             $cmbFormaPago.prop('disabled', true);
             $cmbMoneda.prop('disabled', true);
             $cmbEstado.prop('disabled', true);
@@ -154,7 +154,7 @@
             $txtNombreCliente.prop('disabled', false);
             $txtNombreVendedor.prop('disabled', false);
             $cmbEmpresa.prop('disabled', false);
-            $txtNombreContacto.prop('disabled', false);
+            $txtNombreEquipo.prop('disabled', false);
             $cmbFormaPago.prop('disabled', false);
             $cmbMoneda.prop('disabled', false);
             $cmbEstado.prop('disabled', false);
@@ -182,7 +182,7 @@
         var nombreVendedor = $txtNombreVendedor.val();
         var codEmpresa = $cmbEmpresa.val();
         var codEstado = $cmbEstado.val();
-        var nombreContacto = $txtNombreContacto.val();
+        var nombreContacto = $txtNombreEquipo.val();
         var codFormaPago= $cmbFormaPago.val();
         var codMoneda = $cmbMoneda.val();
         var codGarantia = $cmbGarantia.val();
@@ -373,7 +373,7 @@
             NombreVendedor: $txtNombreVendedor.val(),
             CodigoEmpresa: $cmbEmpresa.val(),
             CodigoEstado: $cmbEstado.val(),
-            NombreContacto: $txtNombreContacto.val(),
+            NombreEquipo: $txtNombreEquipo.val(),
             CodigoFormaPago: $cmbFormaPago.val(),
             CodigoMoneda: $cmbMoneda.val(),
             CodigoGarantia: $cmbGarantia.val(),
@@ -448,7 +448,7 @@
             NombreVendedor: $txtNombreVendedor.val(),
             CodigoEmpresa: $cmbEmpresa.val(),
             CodigoEstado: $cmbEstado.val(),
-            NombreContacto: $txtNombreContacto.val(),
+            NombreContacto: $txtNombreEquipo.val(),
             CodigoFormaPago: $cmbFormaPago.val(),
             CodigoMoneda: $cmbMoneda.val(),
             CodigoGarantia: $cmbGarantia.val(),

@@ -16,7 +16,7 @@ namespace AHSECO.CCL.BE.Ventas
         public string NombreVendedor { get; set; }
         public string CodigoEmpresa { get; set; }
         public string CodigoEstado { get; set; }
-        public string NombreContacto { get; set; }
+        public string NombreEquipo { get; set; }
         public string CodigoFormaPago { get; set; }
         public string CodigoMoneda { get; set; }
         public string CodigoGarantia { get; set; }
