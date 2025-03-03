@@ -6436,7 +6436,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         }
 
         [HttpPost]
-        public JsonResult EnviarServicios(long codigoSolicitud, long codigoWorkFlow)
+        public JsonResult EnviarServicios(long codigoSolicitud, long codigoWorkFlow, long idDespacho)
         {
             var result = new RespuestaDTO();
             var ventasBL = new VentasBL();
@@ -6502,11 +6502,25 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 {
                     Log.TraceInfo("Envio exitoso del servicio de la solicitud N° " + codigoSolicitud.ToString());
 
-                    var envio_log = ventasBL.ActualizarEnvioDespacho(codigoSolicitud, "X", 1, 2, 1, User.ObtenerUsuario());
+                    var envio_log = ventasBL.ActualizarEnvioDespacho(codigoSolicitud, "X", 1, 2, 1, User.ObtenerUsuario(), idDespacho);
                     if (envio_log.Result.Codigo > 0)
                     {
                         result.Codigo = 1;
                         result.Mensaje = "Se realizó el envio del servicio de la solicitud N° " + codigoSolicitud.ToString();
+
+                        if (idDespacho > 0)
+                        {
+                            var procesoBL = new ProcesosBL();
+                            //Se realiza el registro de seguimiento de workflow:
+                            var CodWorkFlow = VariableSesion.getCadena("CodigoWorkFlowDesp");
+                            var log = new FiltroWorkflowLogDTO();
+                            log.CodigoWorkflow = long.Parse(CodWorkFlow);
+                            log.Usuario = User.ObtenerUsuario();
+                            log.CodigoEstado = ConstantesDTO.EstadosProcesos.Despacho.PorAprobar;
+                            log.UsuarioRegistro = User.ObtenerUsuario();
+                            var result2 = procesoBL.InsertarWorkflowLog(log);
+                        }
+
                     }
                     else
                     {
@@ -7974,12 +7988,13 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
 
         [HttpPost]
-        public JsonResult InicializarDespacho(long Solicitud, long IdCotizacion)
+        public JsonResult InicializarDespacho(long Solicitud, long IdCotizacion, string TipoSol)
         {
             try
             {
                 VariableSesion.setCadena("numSol", Solicitud.ToString());
                 VariableSesion.setCadena("idCotizacion", IdCotizacion.ToString());
+                VariableSesion.setCadena("tipoSol", TipoSol);
                 VariableSesion.setCadena("numDespacho", "0");
 
                 return Json(new
@@ -8049,7 +8064,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             VariableSesion.setCadena("estadoDesp", "");
             VariableSesion.setCadena("NomestadoDesp", "");
             VariableSesion.setCadena("estadoSol", "");
-            VariableSesion.setCadena("tipoSol", "");
             VariableSesion.setCadena("idFlujo", "");
             VariableSesion.setCadena("tipoVenta", "");
 
@@ -8058,7 +8072,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 var despacho = ventasBL.FiltrosDespacho(Convert.ToInt64(idDespacho), NombreRol);
                 var estadoSolicitud = despacho.Result.DespachoCabecera.EstadoSolicitud; // de la solicitud
                 var idSolicitud = despacho.Result.DespachoCabecera.Id_Solicitud;
-                var tipoSolicitud = despacho.Result.DespachoCabecera.TipoSolicitud; //equipo o materiales
+                //var tipoSolicitud = despacho.Result.DespachoCabecera.TipoSolicitud; //equipo o materiales
                 var cod_workflowSol = despacho.Result.DespachoCabecera.IdWorkflowSol; // de solicitud
                 var tipoVenta = despacho.Result.DespachoCabecera.TipoVenta; // de solicitud
                 var idFlujo = despacho.Result.DespachoCabecera.IdFlujo;
@@ -8072,7 +8086,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 /*Se inicializan variables globales */
                 VariableSesion.setCadena("NomestadoDesp", nom_estado);
                 VariableSesion.setCadena("estadoSol", estadoSolicitud);
-                VariableSesion.setCadena("tipoSol", tipoSolicitud);
+                //VariableSesion.setCadena("tipoSol", tipoSolicitud);
                 VariableSesion.setCadena("idFlujo", idFlujo.ToString());
                 VariableSesion.setCadena("tipoVenta", tipoVenta.ToString());
             };
@@ -8132,7 +8146,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.Btn_GuardarGestionLogisticaSE = "none";
             ViewBag.Btn_RegistrarDespachoSinStock = "none";
             ViewBag.Btn_EnviarGestionDespachoSE = "none";
-
+            ViewBag.EnvioServicio = 0;
             ViewBag.InActiveServicio = "none";
             ViewBag.FechaFactura = "disabled";
             ViewBag.TxtNumFactura = "disabled";
@@ -8187,7 +8201,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         {
             var ventasBL = new VentasBL();
             var result = ventasBL.FiltrosDespacho(idDespacho, rolUsuario);
-
             return Json(result);
         }
 
@@ -8384,6 +8397,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             var validarDespacho = ventasBL.ValidarDespachoSolicitud(long.Parse(idSolicitud), Convert.ToInt64(idDespacho));
             var validarSinStock = ventasBL.ValidarAprobacionSinStock(long.Parse(idSolicitud), long.Parse(idDespacho));
+
+            ViewBag.EnvioServicio = validarDespacho.Result.EnvioServicio;
 
             if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Asesor
                    || NombreRol == ConstantesDTO.WorkflowRol.Venta.CoordServ

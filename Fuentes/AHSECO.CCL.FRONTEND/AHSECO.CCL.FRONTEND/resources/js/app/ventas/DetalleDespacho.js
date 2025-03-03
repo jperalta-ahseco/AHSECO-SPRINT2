@@ -71,7 +71,6 @@
     var $hdnDocumentoCargadoId = $('#hdnDocumentoCargadoId');
     var $cmbDocumentoCarga = $('#cmbDocumentoCarga');
     var $lblNombreArchivo = $('#lblNombreArchivo');
-
     /* Modal Seguimiento */
     var $tblSeguimiento = $('#tblSeguimiento');
     var $NoExisteRegSeg = $('#NoExisteRegSeg');
@@ -175,6 +174,43 @@
     var $RegStock = $('#RegStock');
     var $tblSeriesGuia = $('#tblSeriesGuia');
     var $dateEntregaPedidoSE = $('#dateEntregaPedidoSE');
+    var $btnBuscarTecnicos = $('#btnBuscarTecnicos');
+    var $btnAñadirTecnico = $('#btnAñadirTecnico'); 
+    var $btnGuardarProg = $('#btnGuardarProg');
+    var $dateProg = $('#dateProg');
+    var $btnRegistrarFechaProg = $("#btnRegistrarFechaProg");
+    var $cmbTipDocTecnico = $('#cmbTipDocTecnico')
+    var $txtNumDocTec = $('#txtNumDocTec')
+    var $cmbTipoEmpleado = $('#cmbTipoEmpleado')
+    var $txtNombres = $('#txtNombres')
+    var $txtApePat = $('#txtApePat')
+    var $txtApeMat = $('#txtApeMat')
+    var $tblTecnicos = $('#tblTecnicos ');
+    var tecnicosAsig = [];
+    var $NoExisteTec = $('#NoExisteTec ');
+    var $tblMainTecnicos = $('#tblMainTecnicos');
+    var $EnvioServicio = $('#EnvioServicio ');
+    var $dateProgramacionServ = $('#dateProgramacionServ');
+    var $btnGuiaManuscritaTotal = $('#btnGuiaManuscritaTotal');
+    var $btnRegistrarTecnicoExterno = $('#btnRegistrarTecnicoExterno');
+    var $cmbTipoCredencial = $('#cmbTipoCredencial');
+    var $txtNombreTecnico = $('#txtNombreTecnico')
+    var $txtApellidoPaternoTec = $('#txtApellidoPaternoTec')
+    var $txtApellidoMaternoTec = $('#txtApellidoMaternoTec')
+    var $txtNumDocumento = $('#txtNumDocumento')
+    var $txtTelefonoServ = $('#txtTelefonoServ')
+    var $txtCorreoServ = $('#txtCorreoServ')
+    var $txtZona = $('#txtZona')
+    var $hdnIdZona = $("#hdnIdZona");
+    var $searchZona = $("#searchZona");
+    var $hdnIdTecnico = $('#hdnIdTecnico')
+    var $cmbTipoCredencial = $('#cmbTipoCredencial');
+    var $txtTipoTecnico = $('#txtTipoTecnico');
+    var $hdnTipoEmpleado = $('#hdnTipoEmpleado');
+    var $añadirTecnico = $('#añadirTecnico');
+    var $btnBuscarTecnico = $('#btnBuscarTecnico');
+    var $modalBusquedaTecnico = $('#modalBusquedaTecnico');
+    var $btnEnviarServicio = $('#btnEnviarServicio ');
 
     /*Mensajes*/
     var mensajes = {
@@ -200,7 +236,7 @@
             CargarDatosDetalle();
         };
         CargarCombos();
-        CargarTipoDocumento(8); //Despacho ventas 
+        //CargarTipoDocumento(8); //Despacho ventas 
         $dateFechaMax.datepicker({
             viewMode: 0,
             minViewMode: 0,
@@ -280,8 +316,11 @@
         $btnCargarDocumentoGuia.click($btnCargarDocumentoGuia_click);
         $btnAprobarGestionSS.click($btnAprobarGestion_click);
         $btnRegistrar.click(RegistrarNuevo);
+        $btnRegistrarFechaProg.click($btnRegistrarFechaProg_click);
         $btnAgregarObservacion.click($modalObservacionClick);
+        $btnGuardarProg.click($btnGuardarProg_click);
         $btnGuardarImportacion.click($btnGuardarImportacion_click);
+        $btnBuscarTecnicos.click(BuscarTecnicosClick);
         $btnAdjuntarDocumentoDespacho.click($AdjuntarDocumentoDespacho_click);
         $btnAgregarDocumento.click($modalCargaDocumentoClick);
         $fileCargaDocumentoSustento.on("change", $fileCargaDocumentoSustento_change);
@@ -300,9 +339,14 @@
         $chkPrestacionAccesoria.click($chkPrestacionAccesoria_click);
         $btnObservarGestionSS.click($btnObservarGestion_click);
         $btnEnviarGuiaTotal.click($btnEnviarGuiaTotal_click);
+        $btnGuiaManuscritaTotal.click($btnGuiaManuscritaTotal_click);
         $btnGuiaPedidoTotal.click($btnGuiaPedidoTotal_click);
         $btnRegistrarDespachoSE.click($btnRegistrarDespachoSE_click);
-
+        $btnRegistrarTecnicoExterno.click(CrearTecnico3ro_a_Producto);
+        $btnAñadirTecnico.click(AgregarTecnicoExterno);
+        $searchZona.click(logicUbigeoTecnico);
+        $btnBuscarTecnico.click(BuscarTecnicos);
+        $btnEnviarServicio.click(btnEnviarServicioClick);
 
         $dateFechaOrdenCompra.on('change', function () {
             if ($(this).val() != "") {
@@ -329,7 +373,7 @@
             }
         });
 
-
+        IniciarBotonSeleccionarTecnico();
     };
 
     function seleccionarUbiDespacho() {
@@ -570,10 +614,10 @@
 
             app.llenarComboMultiResult($cmbTipoDespacho, data.Result.TipDespacho, null, "", "-- Seleccione --", filters);
             app.llenarComboMultiResult($cmbTipoDocumentoCarga, data.Result.TipoDocumento, null, 0, "-- Seleccione --", filters);
-
+            app.llenarComboMultiResult($cmbTipoCredencial, data.Result.TipoDocumentoTecnico, "", 0, "", false);
             app.llenarComboMultiResult($cmbTipoDocumentoCargaGuia, data.Result.TipoDocumento, null, 0, "-- Seleccione --", filters);
-
-
+            app.llenarComboMultiResult($cmbTipDocTecnico, data.Result.TipoDocumentoTecnico, null, 0, "-- Seleccione --", filters);
+            app.llenarComboMultiResult($cmbTipoEmpleado, data.Result.TipoEmpleado, null, 0, "-- Seleccione --", filters);
             
             if ($NumDespacho.val() == "0") {
                 $cmbTipoDespacho.val("DESP01").trigger('change.select2'); //se inicializa en orden de compra por defecto
@@ -629,6 +673,7 @@
 
                 $txtNroFianzaPP.val(data.Result.DespachoCabecera.NumFianzaApp);
                 $txtNroFianzaPA.val(data.Result.DespachoCabecera.NumFianzaApa);
+                $dateProgramacionServ.val(data.Result.ContadorCabecera.FechaProgramacionTecnico);
                 $txtEstado.val(data.Result.DespachoCabecera.Estado);
                 var seguimiento = data.Result.Seguimiento.length;
                 if (seguimiento > 0) {
@@ -785,9 +830,48 @@
                         $opendateEntregaPedidoCE.prop('disabled', true);
                     }
                 }
-
-
             }
+
+            if (data.Result.TecnicosDespacho.length > 0) {
+
+                for (i = 0; i < data.Result.TecnicosDespacho.length; i++) {
+                    tecnicosAsig.push({
+                        Cod_Tecnico: data.Result.TecnicosDespacho[i].Cod_Tecnico,
+                        TipoDoc: data.Result.TecnicosDespacho[i].Nom_TipDocumento,
+                        Documento: data.Result.TecnicosDespacho[i].Documento,
+                        Tipo_Documento: "",
+                        Nombres: data.Result.TecnicosDespacho[i].NombreTecnico,
+                        ApePaterno: data.Result.TecnicosDespacho[i].ApellidoPaterno,
+                        ApeMaterno: data.Result.TecnicosDespacho[i].ApellidoMaterno,
+                        NombreCompleto: data.Result.TecnicosDespacho[i].NombreTecnico + " " + data.Result.TecnicosDespacho[i].ApellidoPaterno + " " + data.Result.TecnicosDespacho[i].ApellidoMaterno,
+                        TipoTecnico: data.Result.TecnicosDespacho[i].TipoTecnico,
+                        Telefono: data.Result.TecnicosDespacho[i].Telefono,
+                        Correo: data.Result.TecnicosDespacho[i].Correo,
+                        Empresa: data.Result.TecnicosDespacho[i].Empresa,
+                        Zona: data.Result.TecnicosDespacho[i].Zona,
+                        DescZona: "",
+                        Estado: data.Result.TecnicosDespacho[i].Estado
+                    });
+                }
+
+                cargarTablaMainTecnicos(tecnicosAsig);
+            }
+            else {
+                if (($nombreRol.val() === "SGI_VENTA_COORDINASERV" || $nombreRol.val() === "SGI_VENTA_COORDINAATC")) {
+                    $btnBuscarTecnicos.show();
+                    $btnAñadirTecnico.show();
+                }
+
+            };
+
+            if (($nombreRol.val() === "SGI_VENTA_COORDINASERV" || $nombreRol.val() === "SGI_VENTA_COORDINAATC") && $estadoDesp.val() === "DREG") {
+                if (data.Result.ContadorCabecera.EnvioServicio < 1) {
+                    $btnGuardarProg.show();
+                }
+
+            };
+
+
         };
 
         var fnFailCallBack = function () {
@@ -798,8 +882,137 @@
     };
 
 
-    function Registrar() {
+    function cargarTablaMainTecnicos(tecnicos) {
 
+        var data = {}
+        data.Result = [];
+        data.Result = tecnicos;
+
+        if (tecnicos.length > 0) {
+            $NoExisteTec.hide();
+        }
+
+        if ($nombreRol.val() === "SGI_VENTA_COORDINASERV" ||
+            $nombreRol.val() === "SGI_VENTA_COORDINAATC") {
+            if (tecnicos.length > 0) {
+                $btnBuscarTecnicos.hide();
+                $btnAñadirTecnico.hide();
+            }
+            else {
+                $btnBuscarTecnicos.show();
+                $btnAñadirTecnico.show();
+            }
+        }
+
+
+
+        var columns = [
+            {
+                data: "Cod_Tecnico",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "TipoDoc",
+                render: function (data, type, row) {
+                    if (data == "" || data == null) {
+                        return '<center>No definido</center>';
+                    } else {
+                        return '<center>' + data + '</center>';
+                    }
+                }
+            },
+            {
+                data: "Documento",
+                render: function (data, type, row) {
+                    if (data == "" || data == null) {
+                        return '<center>No definido</center>';
+                    } else {
+                        return '<center>' + data + '</center>';
+                    }
+                }
+            },
+            {
+                data: "NombreCompleto",
+                render: function (data, type, row) {
+                    if (data == "" || data == null) {
+                        return '<center>No definido</center>';
+                    } else {
+                        return '<center>' + data + '</center>';
+                    }
+                }
+            },
+            {
+                data: "Telefono",
+                render: function (data, type, row) {
+                    if (data == "" || data == null) {
+                        return '<center>No definido</center>';
+                    } else {
+                        return '<center>' + data + '</center>';
+                    }
+                }
+            },
+            {
+                data: "Correo",
+                render: function (data, type, row) {
+                    if (data == "" || data == null) {
+                        return '<center>No definido</center>';
+                    } else {
+                        return '<center>' + data + '</center>';
+                    }
+                }
+            },
+            {
+                data: "Empresa",
+                render: function (data, type, row) {
+                    if (row.TipoTecnico == "I") {
+                        if (data == "" || data == null) {
+                            return '<center>No definido</center>';
+                        } else {
+                            return '<center>' + data + '</center>';
+                        }
+                    }
+                    else if (row.TipoTecnico == "E") {
+                        if (data == "" || data == null) {
+                            var html = '';
+                            html += '<div class="form-group">' + '<div class="input-group input-group-sm date">'
+                                + '<input placeholder="--Empresa--" type="text" class="form-control input-sm" id="txtNomEmpresa' + row.Cod_Tecnico + '">';
+                            html += '<a class="input-group-addon input-sm" id="saveEmpresaTecnico' + row.Cod_Tecnico + '" href="javascript:garantias.saveEmpresaTecnico(' + row.Cod_Tecnico + ')"" >' +
+                                '<i class="fa fa-save" aria-hidden="true"></i>' +
+                                '</a>';
+                            return '<center>' + html + '</center>';
+
+                        } else {
+                            return '<center>' + data + '</center>';
+                        }
+                    }
+                }
+            },
+            {
+                data: "Cod_Tecnico",
+                render: function (data, type, row) {
+                    var retirar = "";
+                    if ($EnvioServicio.val() == 0 && ($nombreRol.val() === "SGI_VENTA_ASESOR" ||
+                        $nombreRol.val() === "SGI_VENTA_COORDINASERV" ||
+                        $nombreRol.val() === "SGI_VENTA_COORDINAATC")) {
+                        retirar = '<a id="btnDesasignarTecnico" class="btn btn-danger btn-xs" title="Desasignar Tecnico" href="javascript:detalleDespacho.DesasignarTecnico(' + data + ')"><i class="fa fa-minus-square-o" aria-hidden="true"></i></a>';
+                    }
+                    return '<center>' + retirar + '</center>';
+
+
+                }
+            }
+        ];
+
+        var columnDefs = [
+            {
+                targets: [0],
+                visible: false
+            }
+        ];
+
+        app.llenarTabla($tblMainTecnicos, data, columns, columnDefs, "#tblMainTecnicos");
     };
 
     function CargarDatosDetalle() {
@@ -936,7 +1149,14 @@
             {
                 data: "IdCotDetalle",
                 render: function (data, type, row) {
-                    var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.EditarCotDetItem(' + data + ')"><i class="fa fa-info-circle" aria-hidden="true"></i> Ver</a>';
+                    var d = "'" + row.CodigoItem + "','" + 2 + "'";
+                    var ver = '';
+                    if ($TipoSolicitud.val() == "TSOL04" || $TipoSolicitud.val() == "TSOL05") {
+                        ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.EditarCotDetItem(' + data + ')"><i class="fa fa-info-circle" aria-hidden="true"></i> Ver</a>';
+                    }
+                    else {
+                        ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: solicitud.editarItemServ(' + d + ')"><i class="fa fa-info-circle" aria-hidden="true"></i> Ver</a>';
+                    }
                     return '<center>' + ver + '</center>';
                 }
             }
@@ -1023,7 +1243,14 @@
             {
                 data: "Id",
                 render: function (data, type, row) {
-                    var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.EditarCotDetItem(' + data + ')"><i class="fa fa-info-circle" aria-hidden="true"></i> Ver</a>';
+                    var d = "'" + row.CodItem + "','" + 2 + "'"; 
+                    var ver = '';
+                    if ($TipoSolicitud.val() == "TSOL04" || $TipoSolicitud.val() == "TSOL05") {
+                        ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.EditarCotDetItem(' + data + ')"><i class="fa fa-info-circle" aria-hidden="true"></i> Ver</a>';
+                    }
+                    else {
+                        ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: solicitud.editarItemServ(' + d + ')"><i class="fa fa-info-circle" aria-hidden="true"></i> Ver</a>';
+                    }
                     return '<center>' + ver + '</center>';
                 }
             }
@@ -1044,8 +1271,9 @@
         var method = "POST";
         var url = "BandejaSolicitudesVentas/InicializarDespacho";
         var obj = {
-            Solicitud: $NumSol.val(),
-            IdCotizacion: $IdCotizacion.val()
+            Solicitud:$NumSol.val(),
+            IdCotizacion:$IdCotizacion.val(),
+            TipoSol: $TipoSolicitud.val()
         };
         var objParam = JSON.stringify(obj);
 
@@ -1131,20 +1359,20 @@
         $modalCargaDocumento.modal("show");
     };
 
-    function CargarTipoDocumento(codFlujo) {
-        var method = "POST";
-        var url = "Utiles/ListarTipoDocumentos?codFlujo=" + codFlujo;
-        var objParam = '';
-        var fnDoneCallback = function (data) {
-
-            var filters = {};
-            filters.placeholder = "-- Seleccione --";
-            filters.allowClear = false;
-            app.llenarCombo($cmbTipoDocumentoCarga, data, null, 0, "--Seleccione--", filters);
-
-        };
-        return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, null);
-    }
+    //function CargarTipoDocumento(codFlujo) {
+    //    var method = "POST";
+    //    var url = "Utiles/ListarTipoDocumentos?codFlujo=" + codFlujo;
+    //    var objParam = '';
+    //    var fnDoneCallback = function (data) {
+    //
+    //        var filters = {};
+    //        filters.placeholder = "-- Seleccione --";
+    //        filters.allowClear = false;
+    //        app.llenarCombo($cmbTipoDocumentoCarga, data, null, 0, "--Seleccione--", filters);
+    //
+    //    };
+    //    return app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, null);
+    //}
 
     function $fileCargaDocumentoSustento_change() {
 
@@ -1409,7 +1637,7 @@
 
                 $contadordoc.val(cont);
 
-                if ($numReclamo.val() != "") {
+                if ($NumDespacho.val() != "") {
 
                     var method = "POST";
                     var url = "BandejaSolicitudesVentas/GuardarAdjunto";
@@ -2474,6 +2702,17 @@
         $cmbDistritoServ.prop("disabled", true);
     };
 
+    function logicUbigeoTecnico() {
+        $btnGuardarUbigeoDespachoSel.hide();
+        $btnGuardarUbigeoSel.show();
+        getDepartamentosServ();
+        $cmbProvinciaServ.val('').trigger("change");
+        $cmbDistritoServ.val('').trigger("change");
+        $cmbProvinciaServ.prop("disabled", true);
+        $cmbDistritoServ.prop("disabled", true);
+
+    }
+
     function getDepartamentosServ() {
         var method = "POST";
         var url = "Ubigeo/ObtenerUbigeo";
@@ -2784,6 +3023,557 @@
         return app.message.confirm("Ventas", "¿Está seguro que desea enviar a gestión?", "S&iacute;", "No", fnSi, null);
     }
 
+    function editarItemServ(CodigoItem, opc) {
+        $DS_hdnOpcGrillaItems.val(opc);
+        method = "POST";
+        url = "BandejaSolicitudesVentas/CargarCotDetItemServicio";
+        var objFiltros = {
+            CodItem: CodigoItem,
+            opcGrillaItems: opc
+        };
+        var objParam = JSON.stringify(objFiltros);
+        var fnDoneCallBack = function (data) {
+            $('#modalDetalleItemServicio').modal('show');
+            $DS_txtDescripcion.prop('disabled', false);
+            $DS_hdnIdCotDetServ.val(data.Result.Id);
+            var codigo = "000000" + data.Result.CodItem
+            $DS_txtCodigo.val(codigo.substring(codigo.length - 6));
+            $DS_txtDescripcion.val(data.Result.Descripcion);
+            $DS_txtCantidad.val(data.Result.Cantidad);
+            if (data.Result.VentaUnitaria != null) { $DS_txtPrecio.val(app.formatearEnteroComa(data.Result.VentaUnitaria.toFixed(2))); }
+            else { $DS_txtPrecio.val(""); }
+            if (data.Result.VentaTotalSinIGV != null) { $DS_txtTotalVenta.val(app.formatearEnteroComa(data.Result.VentaTotalSinIGV.toFixed(2))); }
+            else { $DS_txtTotalVenta.val(""); }
+            //detalleServicios = data.Result.DetallesServicio;
+            if (data.Result.DetallesServicio != null) { contadorDetalle = data.Result.DetallesServicio.length; }
+            contadorDetalle = 0;
+            cargarTablaDetalleServicios(data.Result.CotizacionActividades);
+            if ($PermitirEditarCotDetItem.val() != "S") {
+                $btnAgregarDetServ.css("display", "none");
+                $DS_btnGuardar.css("display", "none");
+            }
+        }
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+    }
+
+    function $btnRegistrarFechaProg_click() {
+        if ($dateProg.val() === "" || $dateProg.val() === null) {
+            app.message.error("Validación", "Debe ingresar una Fecha de Programación.");
+            return false;
+        }
+
+        var fnSi = function () {
+
+            var m = "POST";
+            var url = "BandejaSolicitudesVentas/MantenimientoDespacho";
+            var obj = {
+                Tipo: "T",
+                CodigoSolicitud: $numeroSolicitud.val(),
+                IdDespacho: $NumDespacho.val(),
+                FechaEntrega: $dateProg.val()
+            }
+            console.log(obj);
+            var objParam = JSON.stringify(obj);
+            var fnDoneCallback = function (data) {
+                var fnCallback = function () {
+                    location.reload();
+                };
+                if (data.Result.Codigo > 0) {
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+                else {
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+
+            };
+            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.RegistrarGestionVenta);
+        }
+        return app.message.confirm("Ventas", "¿Está seguro que desea guardar la fecha de programación?", "S&iacute;", "No", fnSi, null);
+
+    }
+
+    function $btnGuardarProg_click() {
+        $dateProg.val(hoy());
+    }
+
+    function BuscarTecnicosClick() {
+        $cmbTipDocTecnico.val("").trigger("change");
+        $txtNumDocTec.val('');
+        $cmbTipoEmpleado.val(0).trigger("change");
+        $txtNombres.val('');
+        $txtApePat.val('');
+        $txtApeMat.val('');
+        BuscarTecnicos();
+    }
+    function BuscarTecnicos() {
+        var method = "POST";
+        var url = "BandejaGarantia/ObtenerTecnico"
+        var objTecnico = {
+            CodigoEmpleado: 0,
+            NombreEmpleado: $txtNombres.val() == null ? "" : $txtNombres.val().trim(),
+            ApellidoPaternoEmpleado: $txtApePat.val() == null ? "" : $txtApePat.val().trim(),
+            ApellidoMaternoEmpleado: $txtApeMat.val() == null ? "" : $txtApeMat.val().trim(),
+            CodigoCargo: 8,//-->8 es Técnico
+            TipoDocumento: $cmbTipDocTecnico.val(),
+            TipoEmpleado: $cmbTipoEmpleado.val() == 0 ? "" : $cmbTipoEmpleado.val(),
+            NumeroDocumento: $txtNumDocTec.val() == null ? "" : $txtNumDocTec.val(),
+            Estado: 1,
+            FechaInicio: "",
+            FechaFinal: ""
+        };
+
+        var objParam = JSON.stringify(objTecnico);
+
+        var fnDoneCallBack = function (data) {
+            //limpiarAsignacionTecnicos();
+            cargarBandejaTecnicos(data);
+        };
+
+        var fnFailCallBack = function () {
+            app.message.error("Validación", "Error al cargar la bandeja de técnicos.");
+            cargarBandejaTecnicos()
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+    }
+
+
+    function cargarBandejaTecnicos(data) {
+        var columns = [
+            {
+                data: "CodigoEmpleado",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
+                data: "NumeroDocumento",
+                render: function (data, type, row) {
+                    if (data == "" || data == null) {
+                        return '<center>No definido</center>';
+                    } else {
+                        return '<center>' + data + '</center>';
+                    }
+                }
+            },
+            {
+                data: "Documento.Descripcion",
+                render: function (data, type, row) {
+                    if (data == "" || data == null) {
+                        return '<center>No definido</center>';
+                    } else {
+                        return '<center>' + data + '</center>';
+                    }
+                }
+            },
+            {
+                data: "NombresCompletosEmpleado",
+                render: function (data, type, row) {
+                    if (data == "") {
+                        return '<center>No definido</center>';
+                    } else {
+                        return '<center>' + data + '</center>';
+                    }
+                }
+            },
+            {
+                data: "TelefonoEmpleado",
+                render: function (data, type, row) {
+                    if (data == "") {
+                        return '<center>No definido</center>';
+                    } else {
+                        return '<center>' + data + '</center>';
+                    }
+                }
+            },
+            {
+                data: "EmailEmpleado",
+                render: function (data, type, row) {
+                    if (data == "") {
+                        return '<center>No definido</center>';
+                    } else {
+                        return '<center>' + data + '</center>';
+                    }
+                }
+            },
+            {
+                data: "LugarLaboral.UbigeoId",
+                render: function (data, type, row) {
+                    var zona = row.LugarLaboral.NombreDepartamento + '/' + row.LugarLaboral.NombreProvincia + '/' + row.LugarLaboral.NombreDistrito;
+                    return '<center>' + zona + '</center>'
+                }
+            },
+            {
+                data: "TipoEmpleado",
+                render: function (data, type, row) {
+                    if (data == "") {
+                        return '<center>No definido</center>';
+                    } else {
+                        return '<center>' + data + '</center>';
+                    }
+                }
+            },
+            {
+                data: "CodigoEmpleado",
+                render: function (data, type, row) {
+                    var d = "'" + row.CodigoEmpleado + "','" + row.NombresCompletosEmpleado + "','" + row.Empresa.Valor1 + "'";
+                    var seleccionar = '<a id="btnSeleccionarTecnico" class="btn btn-default btn-xs" title="Seleccionar"><i class="fa fa-level-down" aria-hidden="true"></i> Seleccionar</a>';
+                    return '<center>' + seleccionar + '</center>';
+                }
+            }
+        ]
+        var columnDefs = [
+            {
+                targets: [0],
+                visible: false
+            }
+        ]
+
+        var filters = {};
+        filters.dataTablePageLength = 5;
+        filters.dataTableInfo = true;
+
+        app.llenarTabla($tblTecnicos, data, columns, columnDefs, "#tblTecnicos", null, null, filters);
+    }
+
+
+    function $btnGuiaManuscritaTotal_click() {
+        var tipo_despacho = "T";
+
+        var num_solicitud = $numeroSolicitud.val();
+        var tipo = "MA"
+        method = 'POST';
+        url = 'BandejaHistorialCotizacion/ExportarDocumentosVentas?tipo=' + tipo + "&codSolicitud=" + num_solicitud + "&stock=X" + "&tipoDespacho=" + tipo_despacho + "&idDespacho=" + $NumDespacho.val();
+
+        objParam = '';
+
+        var fnDoneCallBack = function (data) {
+            app.abrirVentana("BandejaHistorialCotizacion/ExportarFileGuiaPedido?nombreDoc=" + data.Archivo);
+            app.message.success("Ventas", "Se generó la guía manuscrita correctamente.");
+            $btnEnviarServicio.show();
+        }
+        var fnFailCallBack = function () {
+
+        }
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, mensajes.GenerarGuiaManuscrita);
+    }
+
+    function IniciarBotonSeleccionarTecnico() {
+        $('#tblTecnicos tbody').on('click', 'td #btnSeleccionarTecnico', function () {
+
+
+            //limpiarDetalleInfoAdcional()
+            var tr = $(this).closest('tr');
+            var row = $('#tblTecnicos').dataTable().api().row(tr);
+            var info = row.data();
+            asignarTecnico(info)
+        });
+    };
+
+    function DesasignarTecnico(CodAsignacion) {
+        var method = "POST";
+        var url = "BandejaSolicitudesVentas/MantTecnicosDespacho";
+
+        var objTecnico = {
+            TipoProceso: "D",
+            Id_Reclamo: $numeroSolicitud.val(),
+            Cod_Tecnico: CodAsignacion,
+            Estado: false
+        };
+
+        var objParam = JSON.stringify(objTecnico);
+
+
+        var fnSi = function () {
+            var fnDoneCallback = function () {
+                app.message.success("Éxito", "Se realizó la desasignación del técnico.");
+                tecnicosAsig = tecnicosAsig.filter(tecnico => tecnico.Cod_Tecnico != CodAsignacion);
+                cargarTablaMainTecnicos(tecnicosAsig);
+            };
+
+            var fnFailCallBack = function () {
+                app.message.error("Error", "Ocurrió un problema al modificar al técnico, por favor revisar.");
+            };
+
+            app.llamarAjax(method, url, objParam, fnDoneCallback, fnFailCallBack, null, null);
+        };
+
+        return app.message.confirm("Confirmación", "¿Desea desasignar al técnico del despacho?", "S&iacute;", "No", fnSi, null);
+    }
+
+
+    function asignarTecnico(data) {
+
+        var method = "POST";
+        var url = "BandejaSolicitudesVentas/MantTecnicosDespacho";
+
+        var objReclamo = {
+            TipoProceso: "I",
+            Id_Asig: 0,
+            Id_Reclamo: $numeroSolicitud.val(),
+            Cod_Tecnico: data.CodigoEmpleado,
+            Nombres: data.NombresEmpleado,
+            ApePaterno: data.ApellidoPaternoEmpleado,
+            ApeMaterno: data.ApellidoMaternoEmpleado,
+            Documento: data.NumeroDocumento,
+            Tipo_Documento: data.Documento.Parametro,
+            Correo: data.EmailEmpleado,
+            Telefono: data.TelefonoEmpleado,
+            Zona: data.LugarLaboral.UbigeoId,
+            Empresa: data.Empresa.Valor1,
+            TipoTecnico: data.CodigoTipoEmpleado,
+            Estado: true,
+        };
+
+        var objParam = JSON.stringify(objReclamo);
+
+        var fnSi = function () {
+            var fnDoneCallBack = function (data2) {
+
+                if (data2.Result.Codigo > 0) {
+                    app.message.success("Éxito", "Se realizó la asignación de manera correcta");
+
+                    tecnicosAsig.push({
+                        Cod_Tecnico: data.CodigoEmpleado,
+                        TipoDoc: data.Documento.Descripcion,
+                        Documento: data.NumeroDocumento,
+                        Tipo_Documento: data.Documento.Parametro,
+                        Nombres: data.NombresEmpleado,
+                        ApePaterno: data.ApellidoPaternoEmpleado,
+                        ApeMaterno: data.ApellidoMaternoEmpleado,
+                        NombreCompleto: data.NombresCompletosEmpleado,
+                        TipoTecnico: data.CodigoTipoEmpleado,
+                        Telefono: data.TelefonoEmpleado,
+                        Correo: data.EmailEmpleado,
+                        Empresa: data.Empresa.Valor1,
+                        Zona: data.LugarLaboral.UbigeoId,
+                        DescZona: data.LugarLaboral.NombreDepartamento + data.LugarLaboral.NombreProvincia + data.LugarLaboral.NombreDistrito,
+                        Estado: true
+                    });
+
+                    cargarTablaMainTecnicos(tecnicosAsig);
+
+                    $modalBusquedaTecnico.modal('toggle');
+                }
+                else {
+                    app.message.error("Validación", data2.Result.Mensaje);
+                }
+            };
+
+            var fnFailCallBack = function () {
+                app.message.error("Error", "Ocurrió un problema al realizar la inserción.");
+            };
+
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+        };
+        return app.message.confirm("Confirmación", "¿Desea asignar el técnico seleccionado al despacho de ventas?", "S&iacute;", "No", fnSi, null);
+    };
+
+    function CrearTecnico3ro_a_Producto() {
+        //var idProducto = $hdnIdProduct.val();
+        if ($txtNombreTecnico.val() == "" || $txtNombreTecnico.val() == null || $txtNombreTecnico.val().trim().length == 0) {
+            app.message.error("Validación", "Debe ingresar el nombre del técnico.");
+            return;
+        };
+
+        if ($txtApellidoPaternoTec.val() == "" || $txtApellidoPaternoTec.val() == null || $txtApellidoPaternoTec.val().trim().length == 0) {
+            app.message.error("Validación", "Debe ingresar el apellido paterno del técnico.");
+            return;
+        };
+
+        if ($txtApellidoMaternoTec.val() == "" || $txtApellidoMaternoTec.val() == null || $txtApellidoMaternoTec.val().trim().length == 0) {
+            app.message.error("Validación", "Debe ingresar el apellido materno del técnico.");
+            return;
+        };
+
+        if ($txtTipoTecnico.val() == "") {
+            app.message.error("Validación", "Debe de seleccionar un técnico o realizar el ingreso de uno nuevo.");
+            return;
+        };
+
+        if ($cmbTipoCredencial.val() == "" || $cmbTipoCredencial.val() == "0" || $cmbTipoCredencial.val() == null) {
+            app.message.error("Validación", "Debe de seleccionar un tipo de documento.");
+            return;
+        };
+
+        if ($txtNumDocumento.val() == "" || $txtNumDocumento.val().trim().length == 0) {
+            app.message.error("Validación", "Debe de ingresar el número de documento.");
+            return;
+        };
+
+
+        if (isNaN($txtNumDocumento.val())) {
+            app.message.error("Validación", "El número de documento debe de ser un número");
+            return;
+        };
+
+
+        if ($cmbTipoCredencial.val() == "GETD0001" && $txtNumDocumento.val().trim().length != 8) {
+            app.message.error("Validación", "El número de documento no es un DNI");
+            return;
+        };
+
+        if ($cmbTipoCredencial.val() == "GETD0002" && $txtNumDocumento.val().trim().length != 12) {
+            app.message.error("Validación", "El número de documento no es un Carnet de Extranjería");
+            return;
+        };
+
+        if ($txtTelefonoServ.val() == "" && $txtCorreoServ.val() == "") {
+            app.message.error("Validación", "Debe de tener por lo menos un medio de contacto, ingresar teléfono o email.");
+            return;
+        };
+
+        if (!app.validarEmail($txtCorreoServ.val().trim()) && $txtCorreoServ.val() != "") {
+            app.message.error("Validación", "El formato del correo es inválido");
+            return;
+        };
+
+        if ($txtZona.val() == "") {
+            app.message.error("Validación", "Debe de ingresar la zona");
+            return;
+        };
+
+
+        var method = "POST";
+        var url = "BandejaEmpleados/MantenimientoEmpleados";
+
+        var objParam = {
+            TipoMantenimiento: '1',
+            CodigoEmpleado: 0,
+            NombresEmpleado: $txtNombreTecnico.val().trim(), //agregar campo para nombres
+            ApellidoPaternoEmpleado: $txtApellidoPaternoTec.val().trim(), //agregar campo para apellido paterno
+            ApellidoMaternoEmpleado: $txtApellidoMaternoTec.val().trim(), //agregar campo para apellido materno
+            Cargo: {
+                CodigoCargo: 8,//Técnico
+                Area: {
+                    CodigoArea: ""
+                }
+            },
+            FechaNacimiento: null,
+            LugarLaboral: {
+                UbigeoId: $txtCodUbicacionServ.val(),
+            },
+            TelefonoEmpleado: $txtTelefonoServ.val(),
+            EmailEmpleado: $txtCorreoServ.val(),
+            DireccionEmpleado: "",
+            SexoEmpleado: "",
+            Documento: {
+                Parametro: $cmbTipoCredencial.val(),
+            },
+            NumeroDocumento: $txtNumDocumento.val(),
+            Empresa: {
+                CodValor1: null,
+            },
+            CodigoJefe: "",
+            FechaIngreso: "",
+            TipoEmpleado: "E",
+            Estado: 1,
+            FechaRegistroFormat: null,
+            UsuarioRegistro: null
+        }
+        var objEmpleado = JSON.stringify(objParam);
+
+        var fnDoneCallback = function (data) {
+            if (data.Codigo > 0) {
+                app.message.success("Éxito", "Se realizó la creación del técnico satisfactoriamente.");
+                $añadirTecnico.modal('toggle');
+            }
+            else {
+                app.message.error("Validación", data.Mensaje);
+            }
+
+        };
+        var fnFailCallback = function (data) {
+            app.message.error("Error", data.Result.Mensaje);
+        };
+
+        app.llamarAjax(method, url, objEmpleado, fnDoneCallback, fnFailCallback, null, null);
+    };
+
+    function AgregarTecnicoExterno() {
+        limpiarAsignacionTecnicos();
+        $txtTipoTecnico.val("Externo");
+        $hdnTipoEmpleado.val("E");
+    };
+
+    function limpiarAsignacionTecnicos() {
+        $txtNombreTecnico.val("");
+        $txtApellidoPaternoTec.val("");
+        $txtApellidoMaternoTec.val("");
+        $txtNumDocumento.val("");
+        $txtTelefonoServ.val("");
+        $txtCorreoServ.val("");
+        $txtZona.val("");
+        $hdnIdTecnico.val("");
+        $cmbTipoCredencial.val('0').trigger("change.select2");
+
+        //getDepartamentos();
+        // $cmbDepartamento.val("").trigger('change.select2');
+        // $cmbProvincia.val("").trigger('change.select2');
+        // $cmbDistrito.val("").trigger('change.select2');
+    };
+
+    function btnEnviarServicioClick() {
+        var documento_actaConformidad = 0;
+        var documento_constanciaServicio = 0;
+        var documento_guiaManuscrita = 0;
+
+        if ($dateProgramacionServ.val() === null || $dateProgramacionServ.val() === "") {
+            app.message.error("Validación", "Debe seleccionar una fecha de programación del técnico.");
+            return;
+        }
+
+        if (tecnicosAsig.length == 0) {
+            app.message.error("Validación", "Debe seleccionar un técnico para realizar el servicio.");
+            return;
+        };
+        adjuntos.forEach(function (currentValue, index, arr) {
+            if (adjuntos[index].CodigoTipoDocumento == "DVT01") {
+                documento_actaConformidad = 1;
+            }
+        });
+
+        adjuntos.forEach(function (currentValue, index, arr) {
+            if (adjuntos[index].CodigoTipoDocumento == "DVT02") {
+                documento_constanciaServicio = 1;
+            }
+        });
+
+        adjuntos.forEach(function (currentValue, index, arr) {
+            if (adjuntos[index].CodigoTipoDocumento == "DVT05") { //Se cambia por guia manuscrita
+                documento_guiaManuscrita = 1;
+            }
+        });
+
+        if (documento_guiaManuscrita === 0 && documento_constanciaServicio === 0 &&
+            documento_actaConformidad === 0) {
+            app.message.error("Validación", "Debe adjuntar por lo menos uno de estos documentos para enviar a Facturación: (Acta de Conformidad o Constancia de Servicio Técnico o Guía Manuscrita de Servicios).");
+            return false;
+        }
+
+        var fnSi = function () {
+
+            var m = "POST";
+            var url = "BandejaSolicitudesVentas/EnviarServicios?codigoSolicitud=" + $numeroSolicitud.val() + "&codigoWorkFlow=" + $codigoWorkflow.val() + "&idDespacho="+$NumDespacho.val();
+            var objParam = '';
+            var fnDoneCallback = function (data) {
+                var fnCallback = function () {
+                    location.reload();
+                };
+                if (data.Result.Codigo > 0) {
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+                else {
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+
+            };
+            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.EnvioGuiaPedido);
+        }
+        return app.message.confirm("Ventas", "¿Está seguro que desea enviar el servicio a Facturaci&oacute;n?", "S&iacute;", "No", fnSi, null);
+    }
+
+
 
     return {
         download: download,
@@ -2791,7 +3581,8 @@
         eliminarDocTemp: eliminarDocTemp,
         eliminarObsTmp: eliminarObsTmp,
         verSeries: verSeries,
-        editarSeries: editarSeries
-
+        editarSeries: editarSeries,
+        editarItemServ: editarItemServ,
+        DesasignarTecnico: DesasignarTecnico
     };
 })(window.jQuery, window, document);

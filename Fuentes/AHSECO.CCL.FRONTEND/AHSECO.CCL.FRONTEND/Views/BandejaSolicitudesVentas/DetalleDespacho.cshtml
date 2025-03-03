@@ -29,7 +29,7 @@
 <input hidden id="TipoSolicitud" value="@tipoSol" />
 <input hidden id="FlagStock" value="" />
 <input hidden id="idFlujo" value="@idFlujo" />
-
+<input type="hidden" id="EnvioServicio" value="@ViewBag.EnvioServicio" />
 
 
 
@@ -580,6 +580,120 @@
     }
 </div>
 
+<div class="modal fade" id="modalBusquedaTecnico" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_BuscarTecnico");
+    }
+</div>
+
+
+<div class="modal fade" id="añadirTecnico" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    @{
+        ViewBag.Title = "Creación de Técnicos de Externos";
+    }
+
+    <div class="modal-dialog modal-lg container-fluid" role="document">
+        <!-- Modal content -->
+        <div class="modal-content" id="modalContent">
+            <!-- Modal content header -->
+            <div class="modal-header box-header well well-sm" style="padding-bottom: 30px;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="tituloModal"><i class="fa fa-handshake-o" aria-hidden="true"></i> @ViewBag.Title</h4>
+            </div>
+            <!-- Modal content body -->
+            <div class="modal-body d-flex justify-content-center" align-items-center>
+                <form id="formRegistro" class="d-flex flex-row">
+                    <div class="row container-fluid d-flex justify-content-center">
+                        <div class="text-right">
+                            <button class="btn btn-primary btn-sm" type="button" id="btnRegistrarTecnicoExterno"><i class="fa fa-handshake-o"></i> Agregar</button>
+                        </div>
+                        <div class="row container-fluid">
+                            <div class="col-md-4 col-sm-12">
+                                <label for="txtNombreTecnico">Nombre: </label>
+                                <div class="form-group">
+                                    <input placeholder="--Ingresar Apellido Paterno---" type="text" class="form-control input-sm" id="txtNombreTecnico" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <label for="txtApellidoPaternoTec">Apellido Paterno: </label>
+                                <div class="form-group">
+                                    <input placeholder="--Ingresar Apellido Paterno---" type="text" class="form-control input-sm" id="txtApellidoPaternoTec" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <label for="txtApellidoMaternoTec">Apellido Materno: </label>
+                                <div class="form-group">
+                                    <input placeholder="--Ingresar Apellido Materno---" type="text" class="form-control input-sm" id="txtApellidoMaternoTec" value="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row container-fluid">
+                            <div class="col-md-4 col-sm-12">
+                                <label for="txtTipoTecnico">Tipo de T&eacute;cnico: </label>
+                                <div class="form-group">
+                                    <input hidden id="hdnTipoEmpleado" />
+                                    <input type="text" class="form-control input-sm" id="txtTipoTecnico" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <label for="cmbTipoCredencial">Tipo de Documento: </label>
+                                <div class="form-group">
+                                    <select class="form-control select2 input-sm" style="width:100%;" id="cmbTipoCredencial"></select>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <label for="txtNumDocumento">N° Documento: </label>
+                                <input hidden id="hdnTipoDoc" />
+                                <div class="form-group">
+                                    <input placeholder="--Ingresar número de Documento---" type="text" class="form-control input-sm" id="txtNumDocumento" value="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row container-fluid">
+                            <div class="col-md-4 col-sm-12">
+                                <label for="txtTelefonoServ">Tel&eacute;fono:</label>
+                                <div class="form-group">
+                                    <input placeholder="--Ingresar Teléfono---" type="text" class="form-control input-sm" id="txtTelefonoServ" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <label for="txtCorreoServ">Correo: </label>
+                                <div class="form-group">
+                                    <input placeholder="--Ingresar Correo---" type="text" class="form-control input-sm" id="txtCorreoServ" value="">
+                                </div>
+                            </div>
+                            <input type="hidden" id="txtCodUbicacionServ" value="" />
+                            <div class="col-md-4 col-sm-12" id="colEmpresa" style="display:none">
+                                <label for="txtEmpresa">Empresa: </label>
+                                <div class="form-group">
+                                    <input placeholder="--Ingresar Empresa---" type="text" class="form-control input-sm" id="txtEmpresaTecExterno" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <label for="txtZona">Zona:</label>
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm date">
+                                        <input hidden id="hdnIdZona" />
+                                        <input disabled maxlength="6" type="text" class="form-control input-sm" id="txtZona" placeholder="--Seleccionar Zona--" aria-describedby="sizing-addon3" />
+                                        <span style="cursor: pointer" class="input-group-addon input-sm" id="searchZona" data-toggle="modal" data-target="#modalZonaTecSol">
+                                            <i class="fa fa-search"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 <div class="modal fade" id="modalCargaDocumentoGuia" tabindex="-1" role="dialog" aria-labelledby="titleModal"
      aria-hidden="true" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog modal-lg" role="document">
@@ -817,6 +931,48 @@
     </div>
 </div>
 
+
+<div class="modal fade" id="añadirFecProg" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-sm container-fluid" role="document">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <!-- Modal content header -->
+            <div class="modal-header box-header well well-large">
+                <h5 class="modal-title" id="tituloModal"><b>Fecha de Programaci&oacute;n:</b></h5>
+            </div>
+            <!-- Modal content body -->
+            <div class="modal-body d-flex justify-content-center" align-items-center>
+                <form id="formRegistroFecProg" class="d-flex flex-row">
+                    <div class="row container-fluid d-flex justify-content-center">
+
+
+                        <!--1ra fila:-->
+                        <div class="row container-fluid">
+                            <div class="col-md-12 col-sm-12">
+                                <div class="input-group date">
+                                    <input type="text" class="form-control input-sm" id="dateProg" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" readonly maxlength="10">
+                                    <span class="input-group-addon input-sm" id="opendateProg">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <!-- Modal content footer -->
+            <div class="modal-footer">
+                <button class="btn btn-default btn-sm pull-left" type="button" data-dismiss="modal" id="btnCerrarDetalle"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Cerrar</button>
+                <button class="btn btn-primary btn-sm" type="button" id="btnRegistrarFechaProg"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
 <div class="modal fade" id="modalZonaTecSol" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
 
     @{
@@ -902,6 +1058,7 @@
 @section scripts{
     <script type="text/javascript" src="~/resources/js/app/ventas/DetalleDespacho.js"></script>
     <script type="text/javascript" src="~/resources/js/app/ventas/cotvtadetalle.js"></script>
+
     <script type="text/javascript" src="~/resources/js/app/ubigeo/ubigeo.js"></script>
 
 }

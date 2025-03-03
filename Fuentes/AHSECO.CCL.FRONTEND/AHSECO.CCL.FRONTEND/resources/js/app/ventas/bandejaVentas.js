@@ -589,7 +589,7 @@
                         var seleccionar = '<a id="btnSeleccionar" class="btn btn-default btn-xs" title="Seleccionar" href="javascript: bandejaVentas.seleccionar(' + detalle + ')"><i class="fa fa-book" aria-hidden="true"></i> Ver Solicitud</a>';
                         var despacho = "";
                         if (row.IdEstado === "CAPR" || row.IdEstado === "PRVT" || row.IdEstado === "VTPG" || row.IdEstado === "SFIN") {
-                            despacho = '<a id="btnDespacho" class="btn btn-primary btn-xs" title="Despacho" href="javascript: bandejaVentas.despachar(' + "'" + row.IdSolicitud + "','" + (row.NumeroCotizacion != null ? row.NumeroCotizacion.substring(row.NumeroCotizacion.indexOf('-') + 1, row.NumeroCotizacion.length) : 0) + "'" + ')"><i class="fa fa-usd" aria-hidden="true"></i> Despacho</a>';
+                            despacho = '<a id="btnDespacho" class="btn btn-primary btn-xs" title="Despacho" href="javascript: bandejaVentas.despachar(' + "'" + row.IdSolicitud + "','" + (row.NumeroCotizacion != null ? row.NumeroCotizacion.substring(row.NumeroCotizacion.indexOf('-') + 1, row.NumeroCotizacion.length) : 0) + "','" + row.CodigoTipoSolicitud + "'" +')"><i class="fa fa-usd" aria-hidden="true"></i> Despacho</a>';
                         }
 
                         return '<center>' + seleccionar + '</center>' + '\n \n' + '<center>' + despacho + '</center>' + '\n \n' + '<center>' + finalizar + '</center>';
@@ -644,13 +644,14 @@
         app.llamarAjaxNoLoading(method, url, objParam, fnDoneCallBackSol, fnFailCallBackSol, null, null);
     };
 
-    function despachar(idSolicitud, idCotizacion) {
+    function despachar(idSolicitud, idCotizacion, tipoSolicitud) {
 
         var method = "POST";
         var url = "BandejaSolicitudesVentas/InicializarDespacho";
         var obj = {
             Solicitud: idSolicitud,
-            IdCotizacion: idCotizacion
+            IdCotizacion: idCotizacion,
+            TipoSol: tipoSolicitud
         };
         var objParam = JSON.stringify(obj);
 

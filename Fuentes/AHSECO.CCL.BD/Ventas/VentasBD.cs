@@ -3113,7 +3113,29 @@ namespace AHSECO.CCL.BD.Ventas
                         };
                     }
 
+                    reader.NextResult();
+                    List<ComboDTO> _tipoDocumentoTecnico = new List<ComboDTO>();
+                    while (reader.Read())
+                    {
+                        var docTec = new ComboDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("CODIGO")) ? "" : reader.GetString(reader.GetOrdinal("CODIGO")),
+                            Text = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION"))
+                        };
+                        _tipoDocumentoTecnico.Add(docTec);
+                    };
 
+                    reader.NextResult();
+                    List<ComboDTO> _tipoEmpleado = new List<ComboDTO>();
+                    while (reader.Read())
+                    {
+                        var Tipoempleado = new ComboDTO()
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("COD_VALOR1")) ? "" : reader.GetString(reader.GetOrdinal("COD_VALOR1")),
+                            Text = reader.IsDBNull(reader.GetOrdinal("VALOR1")) ? "" : reader.GetString(reader.GetOrdinal("VALOR1"))
+                        };
+                        _tipoEmpleado.Add(Tipoempleado);
+                    };
 
                     connection.Close();
                     result.TipDespacho = _listTipDespacho;
@@ -3130,6 +3152,8 @@ namespace AHSECO.CCL.BD.Ventas
                     result.DespachoCabeceraSinStock = cabeceraDespachosinStock;
                     result.DespachoDetalleSinStock = _listaDetalleDespachosinStock;
                     result.TecnicosDespacho = _listaTecnicosDespacho;
+                    result.TipoDocumentoTecnico = _tipoDocumentoTecnico;
+                    result.TipoEmpleado = _tipoEmpleado;
                     return result;
                 };
             };

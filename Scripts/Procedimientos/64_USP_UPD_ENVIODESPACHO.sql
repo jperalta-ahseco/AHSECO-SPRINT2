@@ -44,10 +44,19 @@ DECLARE @CODIGO BIGINT,@MSG VARCHAR(250)
 			WHERE ID =	@IsId_Despacho
 		END
 
-		IF(@IsId_Despacho > 0 AND @ENVIOGP = 1)
+		IF(@IsId_Despacho > 0 AND @ENVIOGP = 1 AND @ENVIOFC > 1)
 		BEGIN
 			UPDATE [dbo].[TBM_SOLDESPACHO]
 			SET ESTADO = 'DLOG'
+				,USR_MOD = @USER
+				,FEC_MOD = GETDATE()
+			WHERE ID =	@IsId_Despacho
+		END
+
+		IF(@IsId_Despacho > 0 AND @ENVIOGP = 1 AND @ENVIOFC = 1)
+		BEGIN
+			UPDATE [dbo].[TBM_SOLDESPACHO]
+			SET ESTADO = 'DFAC'
 				,USR_MOD = @USER
 				,FEC_MOD = GETDATE()
 			WHERE ID =	@IsId_Despacho

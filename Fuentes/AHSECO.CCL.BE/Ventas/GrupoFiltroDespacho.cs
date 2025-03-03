@@ -14,6 +14,9 @@ namespace AHSECO.CCL.BE.Ventas
         public List<ComboDTO> Tipo { get; set; }
         public List<ComboDTO> Estados { get; set; }
         public List<ComboDTO> TipoDocumento { get; set; }
+        public List<ComboDTO> TipoDocumentoTecnico { get; set; }
+        public List<ComboDTO> TipoEmpleado { get; set; }
+
         public ReqDespachoCabecera DespachoCabecera { get; set; }
         public List<ReqDespachoDetalle> ListaDespachoDetalle { get; set; }
         public List<DocumentoDTO> Adjuntos { get; set; }
