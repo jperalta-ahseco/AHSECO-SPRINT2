@@ -8392,9 +8392,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 ViewBag.Btn_RegistrarDespachoFlujo = "";
                 ViewBag.VerGestionLogistica = true;
                 ViewBag.VerDespacho = true;
+                ViewBag.PermiteEditarCabecera = true;
 
                 if (cod_estado == ConstantesDTO.EstadosProcesos.Despacho.Registrado)
                 {
+                    ViewBag.PermiteEditarCabecera = true;
                     ViewBag.PermiteEditarTipDespacho = false;
                     ViewBag.Btn_EditarDespacho = "inline-block";
                     ViewBag.VerFacturacion = false;
@@ -8633,8 +8635,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 }
                 else if (cod_estado == ConstantesDTO.EstadosProcesos.Despacho.Observado)
                 {
-                    ViewBag.PermiteEditarTipDespacho = false;
-                    ViewBag.PermiteEditarCabecera = false;
+                    ViewBag.PermiteEditarTipDespacho = true;
+                    ViewBag.PermiteEditarCabecera = true;
                     ViewBag.VerDespacho = true;
                     ViewBag.Btn_EditarDespacho = "inline-block";
                     if (validarDespacho != null)
@@ -8707,7 +8709,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 }
                 else if (cod_estado == ConstantesDTO.EstadosProcesos.Despacho.Finalizado)
                 {
-                    if(validarDespacho != null)
+                    ViewBag.PermiteEditarTipDespacho = false;
+                    ViewBag.PermiteEditarCabecera = false;
+
+                    if (validarDespacho != null)
                     {
                         if (validarDespacho.Result.ContadorConStock > 0)
                         {
