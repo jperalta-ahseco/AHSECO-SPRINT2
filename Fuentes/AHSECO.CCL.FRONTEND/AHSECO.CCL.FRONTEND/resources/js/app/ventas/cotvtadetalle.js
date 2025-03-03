@@ -357,6 +357,12 @@ var cotvtadet = (function ($, win, doc) {
                     app.message.success("Grabar", data.Result.Mensaje, "Aceptar", null);
 
                     $('#modalDetalleItemAccesorio').modal('hide');
+                    if ($estadoSol.val() == "SCOT") {
+                        ConsultaItemDetalle();
+                    };
+
+
+
                 }
                 else {
                     app.message.error("Grabar", data.Result.Mensaje, "Aceptar", null);
