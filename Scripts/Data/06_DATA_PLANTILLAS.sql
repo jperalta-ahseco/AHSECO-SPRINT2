@@ -62,17 +62,18 @@ VALUES('PLANINSTEC',3,'Plantilla de instalación técnica para vendedor','','pmine
 <p>Ingrese al siguiente link para más información: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
 
 -- para despacho:
+
 INSERT INTO TBM_PLANTILLAS
 VALUES('PLANGUIAPE',1,'Plantilla de Envio de Guia de Pedidos','logistica@ahsecoperu.com','','GUIA DE PEDIDOS - N° SOLICITUD {NRO_SOL}',
 			   '<p>Estimada Área de Logistica,</p>
-<p>Se realiza el envio de la guía de pedidos de la solicitud N°{NRO_SOL} para el cliente {CLIENTE}.</p>
+<p>Se realiza el envio de la guía de pedidos del {TIPO_PROCESO} de la solicitud N°{NRO_SOL} para el cliente {CLIENTE}.</p>
 <p>Su apoyo con la atención de lo solicitado.</p>
 <p>Por favor ingrese al sistema para continuar con el flujo de venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
 
 INSERT INTO TBM_PLANTILLAS
 VALUES('PLANATLOCS',1,'Plantilla de Atencion de Logistica Con Stock','','','ATENCION PRODUCTOS CON STOCK - N° SOLICITUD {NRO_SOL}',
 			   '<p>Estimado</p>
-<p>Se realiza la atención del despacho de la solicitud N°{NRO_SOL} para el cliente {CLIENTE}.</p>
+<p>Se realiza la atención del despacho con {TIPO_PROCESO} de la solicitud N°{NRO_SOL} para el cliente {CLIENTE}.</p>
 <p>Por favor ingrese al sistema para continuar con el flujo de venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
 
 INSERT INTO TBM_PLANTILLAS
@@ -91,7 +92,7 @@ VALUES('PLANSTECV',1,'Plantilla de Envio de Servicio Tecnico','serviciotecnico@a
 INSERT INTO TBM_PLANTILLAS
 VALUES('PLANGUIABO',1,'Plantilla de Envio de Guia de BO','pminetti@ahsecoperu.pe','','GUIA DE BO - N° SOLICITUD {NRO_SOL}',
 			   '<p>Estimado Sr. {NOM_GERENTE},</p>
-<p>Se realiza el envio de la guía de BO de la solicitud N°{NRO_SOL} para el cliente {CLIENTE}.</p>
+<p>Se realiza el envio de la guía de BO del {TIPO_PROCESO} de la solicitud N°{NRO_SOL} para el cliente {CLIENTE}.</p>
 <p>Para su aprobación.</p>
 <p>Por favor ingrese al sistema para continuar con el flujo de venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
 
@@ -106,14 +107,14 @@ VALUES('PLANAPRIMP',1,'Plantilla de Envio de Aprobacion a Importar','importacion
 INSERT INTO TBM_PLANTILLAS
 VALUES('PLANFACTUR',1,'Plantilla de Envio de Facturacion','facturacion@ahsecoperu.com','','ATENCIÓN DE FACTURACIÓN - N° SOLICITUD {NRO_SOL}',
 			   '<p>Estimada Área de Facturación,</p>
-<p>Se realiza el envío de la solicitud N°{NRO_SOL} para el cliente {CLIENTE}.</p>
+<p>Se realiza el envío del {TIPO_PROCESO} de la solicitud N°{NRO_SOL} para el cliente {CLIENTE}.</p>
 <p>Su apoyo con la atención del ingreso de datos de la factura de servicio.</p>
 <p>Por favor ingrese al sistema para continuar con el flujo de venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
 
 INSERT INTO TBM_PLANTILLAS
 VALUES('PLANATFACT',1,'Plantilla de Atencion de Facturacion','','','ATENCION DE FACTURACIÓN - N° SOLICITUD {NRO_SOL}',
 			   '<p>Sr. Coordinador de Servicios</p>
-<p>Se realiza el ingreso de la facturación de la solicitud N°{NRO_SOL} para el cliente {CLIENTE}.</p>
+<p>Se realiza el ingreso de la facturación del {TIPO_PROCESO} de la solicitud N°{NRO_SOL} para el cliente {CLIENTE}.</p>
 <p>Por favor ingrese al sistema para continuar con el flujo de venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
 
 INSERT INTO TBM_PLANTILLAS

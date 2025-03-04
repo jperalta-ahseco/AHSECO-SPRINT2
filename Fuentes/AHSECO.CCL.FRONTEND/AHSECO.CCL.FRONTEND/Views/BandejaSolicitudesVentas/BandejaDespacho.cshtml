@@ -17,7 +17,7 @@
     <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
     <div class="box-inner">
         <div class="box-header well" data-original-title="">
-           <h2><i class="fa fa-user-circle-o" aria-hidden="true"></i> Bandeja de Despachos:</h2>
+           <h2><i class="fa fa-circle-o" aria-hidden="true"></i> N° de Solicitud: @numSol </h2>
         </div>
         <div class="box-content">
             <form id="formDespacho">
@@ -53,7 +53,11 @@
                 </div>
                 <div class="text-right">
                     <button class="btn btn-primary btn-sm" type="button" id="btnBuscar"><i class="fa fa-search"></i> Buscar</button>
-                    <button class="btn btn-success btn-sm" type="button" id="btnNuevo"><i class="fa fa-plus"></i> Nuevo</button>
+                    @if (NombreRol == "SGI_VENTA_ASESOR" || NombreRol == "SGI_VENTA_COORDINASERV" || NombreRol == "SGI_VENTA_COORDINAATC")
+                    {
+                        <button class="btn btn-default btn-sm" type="button" id="btnFinalizar"><i class="fa fa-check"></i> Finalizar Despacho</button>
+                        <button class="btn btn-success btn-sm" type="button" id="btnNuevo"><i class="fa fa-plus"></i> Nuevo</button>
+                    }
                     <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegresar" tabindex="14"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Regresar</button>
                 </div>
             </form>

@@ -6360,7 +6360,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 filtros.CodigoProceso = 1;
                 filtros.CodigoPlantilla = "PLANGUIAPE";
                 filtros.Usuario = User.ObtenerUsuario();
-                filtros.Codigo = Convert.ToInt32(codigoSolicitud);
+                filtros.Codigo = Convert.ToInt32(idDespacho);
 
                 var datos_correo = plantillasBL.ConsultarPlantillaCorreo(filtros).Result;
 
@@ -6516,7 +6516,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             var log = new FiltroWorkflowLogDTO();
                             log.CodigoWorkflow = long.Parse(CodWorkFlow);
                             log.Usuario = User.ObtenerUsuario();
-                            log.CodigoEstado = ConstantesDTO.EstadosProcesos.Despacho.PorAprobar;
+                            log.CodigoEstado = ConstantesDTO.EstadosProcesos.Despacho.PorFacturar;
                             log.UsuarioRegistro = User.ObtenerUsuario();
                             var result2 = procesoBL.InsertarWorkflowLog(log);
                         }
@@ -6553,7 +6553,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 filtros.CodigoProceso = 1;
                 filtros.CodigoPlantilla = "PLANGUIABO";
                 filtros.Usuario = User.ObtenerUsuario();
-                filtros.Codigo = Convert.ToInt32(codigoSolicitud);
+                filtros.Codigo = Convert.ToInt32(idDespacho);
 
                 var datos_correo = plantillasBL.ConsultarPlantillaCorreo(filtros).Result;
 
@@ -6637,7 +6637,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 filtros.CodigoProceso = 1;
                 filtros.CodigoPlantilla = "PLANATLOCS";
                 filtros.Usuario = User.ObtenerUsuario();
-                filtros.Codigo = Convert.ToInt32(datosDespachoDTO.CodigoSolicitud);
+                filtros.Codigo = Convert.ToInt32(datosDespachoDTO.IdDespacho);
 
                 var datos_correo = plantillasBL.ConsultarPlantillaCorreo(filtros).Result;
 
@@ -7648,7 +7648,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 filtros.CodigoProceso = 1;
                 filtros.CodigoPlantilla = "PLANATFACT";
                 filtros.Usuario = User.ObtenerUsuario();
-                filtros.Codigo = Convert.ToInt32(datosDespachoDTO.CodigoSolicitud);
+                filtros.Codigo = Convert.ToInt32(datosDespachoDTO.IdDespacho);
 
                 var datos_correo = plantillasBL.ConsultarPlantillaCorreo(filtros).Result;
 
@@ -7674,12 +7674,25 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     {
                         result.Codigo = 1;
                         result.Mensaje = "Se realizó el envio de la gestión de la solicitud N° " + datosDespachoDTO.CodigoSolicitud.ToString();
+
+                        if (datosDespachoDTO.IdDespacho > 0)
+                        {
+                            var procesoBL = new ProcesosBL();
+                            //Se realiza el registro de seguimiento de workflow:
+                            var CodWorkFlow = VariableSesion.getCadena("CodigoWorkFlowDesp");
+                            var log = new FiltroWorkflowLogDTO();
+                            log.CodigoWorkflow = long.Parse(CodWorkFlow);
+                            log.Usuario = User.ObtenerUsuario();
+                            log.CodigoEstado = ConstantesDTO.EstadosProcesos.Despacho.Finalizado;
+                            log.UsuarioRegistro = User.ObtenerUsuario();
+                            var result2 = procesoBL.InsertarWorkflowLog(log);
+                        }
                     }
                     else
                     {
                         Log.TraceInfo("Solicitud N° " + datosDespachoDTO.CodigoSolicitud.ToString() + ":" + envio_log.Result.Mensaje);
                         result.Codigo = 0;
-                        result.Mensaje = "No se pudo enviar el correo de la solicitud N° " + datosDespachoDTO.CodigoSolicitud.ToString();
+                        result.Mensaje = "No se pudo actualizar el despacho de la solicitud N° " + datosDespachoDTO.CodigoSolicitud.ToString();
                     }
 
                 }
@@ -8109,7 +8122,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.Btn_EditarFacturaLogistica = "none";  //OK
             ViewBag.Btn_GuardarFacturaLogistica = "none"; // OK
             ViewBag.Btn_RegistrarDespachoFlujo = "none"; // OK
-            ViewBag.PermiteEditarTipDespacho = true;
+            ViewBag.PermiteEditarTipDespacho = false;
             ViewBag.PermiteEditarCabecera = false;
             ViewBag.PermiteVerFianza = false; //OK
             ViewBag.VerFacturacion = false;
@@ -8170,6 +8183,18 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     ,"Acciones"
                 };
                 ViewBag.Columnas = Columnas;
+
+                string[] ColumnasServicios =
+                {
+                    "Código Servicio"
+                    ,"Descripción"
+                    ,"Cantidad"
+                    ,"Precio"
+                    ,"Valor Venta Total"
+                    ,"Acciones"
+                };
+                ViewBag.ColumnasServicios = ColumnasServicios;
+
             }
             else
             {
@@ -8183,6 +8208,18 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     ,"Acciones"
                 };
                 ViewBag.Columnas = Columnas;
+
+
+                string[] ColumnasServicios =
+                {
+                    "Código Servicio"
+                    ,"Descripción"
+                    ,"Stock"
+                    ,"Cantidad"
+                    ,"Precio"
+                    ,"Acciones"
+                };
+                ViewBag.ColumnasServicios = ColumnasServicios;
             };
 
 
@@ -8408,6 +8445,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 ViewBag.VerGestionLogistica = true;
                 ViewBag.VerDespacho = true;
                 ViewBag.PermiteEditarCabecera = true;
+                ViewBag.PermiteEditarTipDespacho = true;
 
                 if (cod_estado == ConstantesDTO.EstadosProcesos.Despacho.Registrado)
                 {
@@ -8419,13 +8457,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     ViewBag.Btn_GuardarDespacho = "inline-block";
                     ViewBag.TxtOrdenCompra = "";
                     ViewBag.TxtFecOrdenCompra = "";
-                    if (tipoVenta == "TVEN02")
-                    {
-                        ViewBag.VerContrato = true;
-                        ViewBag.FechaContrato = "";
-                        ViewBag.ControlCalculoFechaMaxima = "";
-                        ViewBag.TxtNroContrato = "";
-                    }
 
                     if (validarDespacho != null)
                     {
@@ -8521,18 +8552,18 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 }
 
 
-                                if (validarDespacho.Result.ContadorConStock > 0 && validarDespacho.Result.ContadorSinStock > 0)
+                                //if (validarDespacho.Result.ContadorConStock > 0 && validarDespacho.Result.ContadorSinStock > 0)
+                                //{
+                                if (validarDespacho.Result.GestionLogConStock > 0 && validarDespacho.Result.GestionLogSinStock > 0)
                                 {
-                                    if (validarDespacho.Result.GestionLogConStock > 0 && validarDespacho.Result.GestionLogSinStock > 0)
-                                    {
-                                        ViewBag.Btn_GuiaManuscritaTotal = "inline-block";
-                                        if (tipoSol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio && validarDespacho.Result.GenerarGuiaManuscrita > 0)
-                                        {
-                                            ViewBag.Btn_EnviarServicio = "inline-block";
-                                        }
+                                    ViewBag.Btn_GuiaManuscritaTotal = "inline-block";
+                                    //if (tipoSol == C  onstantesDTO.SolicitudVenta.TipoSolicitud.Servicio && validarDespacho.Result.GenerarGuiaManuscrita > 0)
+                                    //{
+                                    //    ViewBag.Btn_EnviarServicio = "inline-block";
+                                    //}
 
-                                    }
                                 }
+                                //}
 
                                 if (validarDespacho.Result.ContadorConStock > 0 && validarDespacho.Result.GestionLogConStock > 0)
                                 {
@@ -8563,11 +8594,14 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             }
 
                         }
+
+                        
                     }
                 }
                 else if (cod_estado == ConstantesDTO.EstadosProcesos.Despacho.Importado)
                 {
                     ViewBag.PermiteEditarCabecera = false;
+                    ViewBag.PermiteEditarTipDespacho = false;
 
                     if (validarDespacho != null)
                     {
@@ -8648,10 +8682,93 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     }
 
                 }
+                else if (cod_estado == ConstantesDTO.EstadosProcesos.Despacho.EnLogistica)
+                {
+                    ViewBag.PermiteEditarCabecera = false;
+                    ViewBag.PermiteEditarTipDespacho = false;
+
+                    if (validarDespacho != null)
+                    {
+                        if (validarDespacho.Result.ContadorConStock == 0 && validarDespacho.Result.ContadorSinStock > 0
+                                && (tipoSol != ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio &&
+                                tipoSol != ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos))
+                        {
+                            ViewBag.VerNavSinStock = true;
+                            ViewBag.InActiveSinStock = "in active";
+
+                            if (validarDespacho.Result.TipoDespacho == "T")
+                            {
+                                if (validarDespacho.Result.EnvioBOSinStock > 0 &&
+                                (validarDespacho.Result.EnvioGPConStock == 0 || validarDespacho.Result.EnvioGPSinStock == 0))
+                                {
+                                    ViewBag.Btn_GuiaPedidoTotal = "";
+                                    if (validarDespacho.Result.GenerarGuiaPedidoConStock > 0 ||
+                                        validarDespacho.Result.GenerarGuiaPedidoSinStock > 0)
+                                    {
+                                        ViewBag.Btn_EnviarGuiaTotal = "";
+                                    }
+                                }
+                            }
+                        }
+
+                        if (validarDespacho.Result.ContadorConStock > 0)
+                        {
+                            ViewBag.VerNavConStock = true;
+                        }
+                    }
+
+                    if (tipoSol != ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio)
+                    {
+                        if (validarDespacho.Result.EnvioGPSinStock == 0)
+                        {
+                            if (validarDespacho.Result.TipoDespacho == "P" && validarDespacho.Result.GenerarGuiaPedidoSinStock > 0)
+                            {
+                                ViewBag.Btn_EnviarGuiaSS = "inline-block";
+                            }
+
+                            if (validarDespacho.Result.TipoDespacho == "P")
+                            {
+                                ViewBag.Btn_GuiaPedidoSS = "inline-block";
+                            }
+
+                        }
+                    }
+                    else if (tipoSol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
+                    {
+                        //Para respuestos sin stock:
+                        if (validarDespacho.Result.ContadorSinStock > 0 && validarDespacho.Result.ContadorConStock == 0)
+                        {
+                            if (validarDespacho.Result.EnvioBOSinStock == 1 && validarDespacho.Result.ContadorSinStock > 0
+                                && validarDespacho.Result.EnvioGPSinStock == 0)
+                            {
+                                ViewBag.Btn_GuiaPedidoTotal = "";
+                                if (validarDespacho.Result.GenerarGuiaPedidoSinStock > 0)
+                                {
+                                    ViewBag.Btn_EnviarGuiaTotal = "";
+                                }
+                            }
+                        }
+
+                        //Para respuestos mixtos con y sin stock:
+                        if (validarDespacho.Result.ContadorSinStock > 0 && validarDespacho.Result.ContadorConStock > 0)
+                        {
+                            if (validarDespacho.Result.EnvioBOSinStock == 1 && validarDespacho.Result.ContadorSinStock > 0
+                            && (validarDespacho.Result.EnvioGPSinStock == 0 || validarDespacho.Result.EnvioGPConStock == 0))
+                            {
+                                ViewBag.Btn_GuiaPedidoTotal = "";
+                                if (validarDespacho.Result.GenerarGuiaPedidoConStock > 0 ||
+                                    validarDespacho.Result.GenerarGuiaPedidoSinStock > 0)
+                                {
+                                    ViewBag.Btn_EnviarGuiaTotal = "";
+                                }
+                            }
+                        }
+                    }
+                }
                 else if (cod_estado == ConstantesDTO.EstadosProcesos.Despacho.Observado)
                 {
-                    ViewBag.PermiteEditarTipDespacho = true;
                     ViewBag.PermiteEditarCabecera = true;
+                    ViewBag.PermiteEditarTipDespacho = false;
                     ViewBag.VerDespacho = true;
                     ViewBag.Btn_EditarDespacho = "inline-block";
                     if (validarDespacho != null)
@@ -8750,6 +8867,14 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             ViewBag.Btn_GuiaBOTotal = "inline-block";
                         }
                     }
+
+                    ViewBag.VerNavServicio = true;
+                    if (tipoSol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio)
+                    {
+                        ViewBag.InActiveServicio = "in active";
+                    }
+
+                    ViewBag.InActiveTecnico = "";
                 }
             }
             else if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Gerente)
@@ -8806,7 +8931,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 ViewBag.PermiteEditarCabecera = false;
 
                 ViewBag.VerDespacho = true;
-                ViewBag.Disabled_TipoDespacho = "disabled";
                 ViewBag.Btn_GuardarDespacho = "none";
                 ViewBag.FechaEntregaPedidoSE = "";
                 ViewBag.TxtNumeroFacturaSE = "";
@@ -9046,7 +9170,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 ViewBag.PermiteEditarCabecera = false;
 
                 ViewBag.VerDespacho = true;
-                ViewBag.Disabled_TipoDespacho = "disabled";
                 ViewBag.TxtCodigoPedido = "";
                 if (tipoVenta == "TVEN02")
                 {
@@ -9156,7 +9279,86 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     }
 
                 };
-            };
+            }
+            else if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Facturador)
+            {
+                ViewBag.PermiteEditarTipDespacho = false;
+                ViewBag.PermiteEditarCabecera = false;
+                ViewBag.VerDespacho = true;
+
+                if (cod_estado == ConstantesDTO.EstadosProcesos.Despacho.PorFacturar)
+                {
+                    if (tipoSol != "TSOL01")
+                    {
+                        ViewBag.VerFacturacion = true;
+                    }
+                    ViewBag.VerGestionLogistica = true;
+                    if (tipoSol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio
+                        || tipoSol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
+                    {
+
+                        if (validarDespacho.Result != null)
+                        {
+                            if (validarDespacho.Result.ContadorConStock > 0 && validarDespacho.Result.ContadorSinStock > 0
+                                && (tipoSol != ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio &&
+                            tipoSol != ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos))
+                            {
+                                ViewBag.VerTipoDespacho = true;
+                                if (validarDespacho.Result.GenerarGuiaBOSinStock > 0 ||
+                                       validarDespacho.Result.GenerarGuiaPedidoConStock > 0 ||
+                                       validarDespacho.Result.GenerarGuiaPedidoSinStock > 0)
+                                {
+                                    ViewBag.Disabled_TipoDespacho = "disabled";
+                                }
+                            }
+                            if (validarDespacho.Result.EnvioServicio > 0)
+                            {
+                                ViewBag.VerNavServicio = true;
+                                ViewBag.InActiveServicio = "in active";
+                                if (validarDespacho.Result.GestionLogServicio == 0)
+                                {
+                                    ViewBag.FechaFactura = "";
+                                    ViewBag.TxtNumeroFacturaServ = "";
+                                }
+
+                            }
+                            else
+                            {
+                                ViewBag.InActiveTecnico = "in active";
+                            }
+
+                        }
+
+                        if (validarDespacho.Result != null)
+                        {
+                            if (validarDespacho.Result.EnvioServicio > 0 && validarDespacho.Result.GestionLogServicio == 0)
+                            {
+                                ViewBag.Btn_GuardarFactura = "inline-block";
+                            }
+                        }
+                    }
+
+
+                }
+                else if (cod_estado == ConstantesDTO.EstadosProcesos.Despacho.Finalizado)
+                {
+                    if (tipoSol != "TSOL01")
+                    {
+                        ViewBag.VerFacturacion = true;
+                    }
+
+
+
+                    ViewBag.VerGestionLogistica = true;
+                    if (tipoSol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio
+                       || tipoSol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
+                    {
+                        ViewBag.VerNavServicio = true;
+                        ViewBag.InActiveServicio = "in active";
+                    }
+                }
+            }
+
         }
 
     }

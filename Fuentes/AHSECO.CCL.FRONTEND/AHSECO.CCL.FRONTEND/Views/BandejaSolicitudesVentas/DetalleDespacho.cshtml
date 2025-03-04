@@ -47,12 +47,16 @@
             </div>
         </div>
         <div class="box-content">
-            <div class="row container-fluid">
-                <div class="text-right">
-                    <!--- Aquí tendremos que controlar-->
-                    <label>ESTADO: <span id="spanEstadoSol" style="color:red">@NombreEstadoDesp</span></label>
+            @if (numDespacho != "0")
+            {
+                <div class="row container-fluid">
+                    <div class="text-right">
+                        <!--- Aquí tendremos que controlar-->
+                        <label>ESTADO: <span id="spanEstadoSol" style="color:red">@NombreEstadoDesp</span></label>
+                    </div>
                 </div>
-            </div>
+
+            }
             <div class="container-fluid" style="margin-right: 15px;">
                 <div class="row container-fluid">
                     <div class="col-md-4 col-sm-7 col-xs-12">
@@ -146,6 +150,10 @@
                         {
                             <button class="btn btn-success btn-sm" type="button" id="btnGuardarCabecera" style="display:@ViewBag.Btn_EditarDespacho"><i class="fa fa-save"></i> Guardar</button>
                         }
+                        else
+                        {
+                            <button class="btn btn-success btn-sm" type="button" id="btnRegistrar"><i class="fa fa-plus"></i> Registrar</button>
+                        }
                         <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegresar" tabindex="14"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Regresar</button>
                     </div>
                 </div>
@@ -188,10 +196,10 @@
                     </div>
                     <div id="navDetalle" class="tab-pane fade in active">
                         <div class="panel-group" id="accordion7401210" role="tablist" aria-multiselectable="false">
-                            <div class="box-inner" id="boxDetalleCotizacion">
+                            <div class="box-inner" id="boxDetalleCotizacion" style="display:none">
                                 <div class="box-header well" data-original-title="" style="background-color: beige;">
                                     <div>
-                                        <p id="titleNomProducto"><i class="fa fa-list" aria-hidden="true" style="color:yellow"></i> Lista Productos</p>
+                                        <p id="titleNomProducto"><i class="fa fa-list" aria-hidden="true"></i> Lista Productos</p>
                                     </div>
                                 </div>
                                 <div class="box-content" style="background-color: #f5f5dc30; ">
@@ -216,17 +224,35 @@
                                             </table>
                                         </div>
                                     </div>
-                                    <div class="text-right">
-                                        <div class="text-right">
-                                            @if (numDespacho == "0")
-                                            {
-                                                <button class="btn btn-success btn-sm" type="button" id="btnRegistrar"><i class="fa fa-plus"></i> Registrar</button>
-                                            }
-                                            <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnEnviarGuiaTotal" style="display:@ViewBag.Btn_EnviarGuiaTotal"><i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar Guia de Pedido</button>
-                                            <button class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnGuiaPedidoTotal" style="display:@ViewBag.Btn_GuiaPedidoTotal"><i class="fa fa-file" aria-hidden="true" tabindex="113"></i>&nbsp;Generar Gu&iacute;a de Pedido</button>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="box-inner" id="boxDetalleServicios" style="display:none">
+                                <div class="box-header well" data-original-title="" style="background-color: #68a9ffc4;">
+                                    <div>
+                                        <p id="titleServicios"><i class="fa fa-cogs" aria-hidden="true"></i></i> Lista Servicios</p>
+                                    </div>
+                                </div>
+                                <div class="box-content" style="background-color: #f5f5dc30; ">
+                                    <div class="container-fluid">
+                                        <div class="table-responsive">
+                                            <table id="tblDetalleServicios" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                <thead>
+                                                    <tr>
+                                                        @if (numDespacho == "0")
+                                                        {
+                                                            <th style="text-align: center; width: 5%;">Todos: <input class="form-check-input" type="checkbox" value="" id="checkSeleccionarTodosServ"></th>
+                                                        }
+                                                        @for (var i = 0; ViewBag.ColumnasServicios.Length > i; i++)
+                                                        {
+                                                            <th style="text-align: center;">@ViewBag.ColumnasServicios[i]</th>
+                                                        }
 
-                                            <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnAprobarGestionSS" tabindex="114" style="display:@ViewBag.Btn_Aprobar"><i class="fa fa-handshake-o" aria-hidden="true"></i>&nbsp;Aprobar</button>
-                                            <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnObservarGestionSS" tabindex="115" style="display:@ViewBag.Btn_Observar"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Observar</button>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tbodyDetalleCot">
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
@@ -268,6 +294,13 @@
                                         </div>
                                         <div class="row container-fluid">
                                             <div class="text-right">
+
+                                                <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnEnviarGuiaTotal" style="display:@ViewBag.Btn_EnviarGuiaTotal"><i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar Guia de Pedido</button>
+                                                <button class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnGuiaPedidoTotal" style="display:@ViewBag.Btn_GuiaPedidoTotal"><i class="fa fa-file" aria-hidden="true" tabindex="113"></i>&nbsp;Generar Gu&iacute;a de Pedido</button>
+
+                                                <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnAprobarGestionSS" tabindex="114" style="display:@ViewBag.Btn_Aprobar"><i class="fa fa-handshake-o" aria-hidden="true"></i>&nbsp;Aprobar</button>
+                                                <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnObservarGestionSS" tabindex="115" style="display:@ViewBag.Btn_Observar"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Observar</button>
+
                                                 <button class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnGuiaManuscritaTotal" style="display:@ViewBag.Btn_GuiaManuscritaTotal"><i class="fa fa-file" aria-hidden="true" tabindex="110"></i>&nbsp;Generar Gu&iacute;a Manuscrita</button>
                                                 <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnEnviarServicio" style="display:@ViewBag.Btn_EnviarServicio"><i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar a Facturaci&oacute;n</button>
 

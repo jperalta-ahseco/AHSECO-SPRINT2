@@ -31,11 +31,16 @@
     var $LimpiardateOrdenCompra = $('#LimpiardateOrdenCompra');
     var $LimpiardateFechaContrato = $('#LimpiardateFechaContrato');
     var $radFianza = $("#radFianza");
+    var $btnRegistrarDespacho = $("#btnRegistrarDespacho");
     var $btnRegistrarDespachoSE = $("#btnRegistrarDespachoSE");
     var $radFianza2 = $('#radFianza2');
     var $NumDespacho = $('#NumDespacho');
     var $PorcentajeDscto = $('#PorcentajeDscto');
     var $txtCodigoPedidoSE = $('#txtCodigoPedidoSE'); // Agregado
+    var $checkSeleccionarTodosServ = $('#checkSeleccionarTodosServ');
+    var $tblDetalleServicios = $('#tblDetalleServicios');
+    var $boxDetalleCotizacion = $('#boxDetalleCotizacion');
+    var $boxDetalleServicios = $('#boxDetalleServicios');
 
     /* Modales */
     var $modalCargaDocumento = $('#modalCargaDocumento');
@@ -211,6 +216,14 @@
     var $btnBuscarTecnico = $('#btnBuscarTecnico');
     var $modalBusquedaTecnico = $('#modalBusquedaTecnico');
     var $btnEnviarServicio = $('#btnEnviarServicio ');
+    var $dateFactura = $("#dateFactura");
+    var $opendateFactura = $("#opendateFactura");
+    var $txtNumeroFacturaServ = $("#txtNumeroFacturaServ");
+    var $btnGuardarFactura = $("#btnGuardarFactura");
+    var $txtCodigoPedidoCE = $('#txtCodigoPedidoCE');
+    var $opendateIngresoAlmacenCE = $('#opendateIngresoAlmacenCE');
+    var $dateIngresoAlmacenCE = $('#dateIngresoAlmacenCE');
+
 
     /*Mensajes*/
     var mensajes = {
@@ -231,6 +244,7 @@
         detalleDespacho.contadorObservaciones = 0;
         detalleDespacho.observaciones = [];
         detalleDespacho.xComprar = [];
+        detalleDespacho.xComprarServ = [];
         detalleDespacho.Productos = [];
         if ($NumDespacho.val() == "0") {
             CargarDatosDetalle();
@@ -253,6 +267,13 @@
             viewMode: 0,
             minViewMode: 0,
             format: 'dd/mm/yyyy'
+        });
+
+        $dateFactura.datepicker({
+            viewMode: 0,
+            minViewMode: 0,
+            format: 'dd/mm/yyyy',
+            startDate: hoy()
         });
 
         $dateIngresoAlmacenSE.datepicker({
@@ -329,6 +350,9 @@
         $btnRegistrarSerie.click($btnRegistrarSerie_click);
         $btnGuardarUbigeoDespachoSel.click(seleccionarUbiDespacho);
         $searchZonaDespacho.click(logicUbigeoDespacho);
+        $btnEnviarGestionDespacho.click($btnEnviarGestionDespacho_click);
+        $btnGuardarGestionLogistica.click($btnGuardarGestionLogistica_click);
+        $btnRegistrarDespacho.click($btnRegistrarDespacho_click);
         $btnGuardarGestionLogisticaSE.click($btnGuardarGestionLogisticaSE_click);
         $btnGuardarUbigeoSel.click(seleccionarUbi);
         $fileCargaDocumentoSustentoDespacho.on("change", $fileCargaDocumentoSustentoDespacho_change);
@@ -347,6 +371,7 @@
         $searchZona.click(logicUbigeoTecnico);
         $btnBuscarTecnico.click(BuscarTecnicos);
         $btnEnviarServicio.click(btnEnviarServicioClick);
+        $btnGuardarFactura.click($btnGuardarFactura_click);
 
         $dateFechaOrdenCompra.on('change', function () {
             if ($(this).val() != "") {
@@ -403,6 +428,91 @@
         $hdnIdZonaDespacho.val(codDistrito);
         $modalZonaTecSol.modal('toggle');
     };
+
+    function $btnGuardarGestionLogistica_click() {
+        if ($dateEntregaPedido.val() === "" || $dateEntregaPedido.val() == null) {
+            app.message.error("Validación", "Debe seleccionar la fecha de entrega de pedido.");
+            return false;
+        };
+
+        //if ($txtNumeroFacturaCE.val() === "" || $txtNumeroFacturaCE.val() == null) {
+        //    app.message.error("Validación", "Debe ingresar el N° de Factura de los productos con stock");
+        //    return false;
+        //}
+
+
+        //Validación de numero de series agregadas:
+        //if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03" || $TipoSolicitud.val() === "TSOL05") {
+
+        //    if ($TotalSeriesCS.val() != $ContadorSeriesCS.val()) {
+        //        app.message.error("Validación", "Debe ingresar la series y/o lotes completas.");
+        //        return false;
+        //    }
+
+        //} else {
+        //    if ($txtNumeroGuiaRemisionCE.val() === "" || $txtNumeroGuiaRemisionCE.val() == null) {
+        //        app.message.error("Validación", "Debe ingresar el N° de Guia de Remision de los productos con stock");
+        //        return false;
+        //    }
+        //}
+
+        //Validación de documentación adjunta:
+        //if ($TipoSolicitud.val() === "TSOL04") //Para ventas de materiales y venta de equipos:
+        //{
+        //    var documento_guiaRemision = 0;
+        //    //var documento_factura = 0;
+        //    //adjuntos.forEach(function (currentValue, index, arr) {
+        //    //    if (adjuntos[index].CodigoTipoDocumento == "DVT03") { //Factura
+        //    //        documento_factura = 1;
+        //    //    }
+        //    //});
+
+        //    //if (documento_factura === 0) {
+        //    //    app.message.error("Validación", "Debe adjuntar un documento de Factura.");
+        //    //    return false;
+        //    //}
+        //    adjuntos.forEach(function (currentValue, index, arr) {
+        //        if (adjuntos[index].CodigoTipoDocumento == "DVT08") { //Guia de Remision
+        //            documento_guiaRemision = 1;
+        //        }
+        //    });
+
+        //    if (documento_guiaRemision === 0) {
+        //        app.message.error("Validación", "Debe adjuntar un documento de Guía de Remisión.");
+        //        return false;
+        //    }
+        //}
+        var fnSi = function () {
+            var m = "POST";
+            var url = "BandejaSolicitudesVentas/GestionLogistica";
+            var obj = {
+                CodigoSolicitud: $numeroSolicitud.val(),
+                Stock: "S",
+                EstadoAprobacion: $TipoSolicitud.val(),
+                CodigoWorkFlow: $codigoWorkflow.val(),
+                NumeroGuiaRemision: $txtNumeroGuiaRemisionCE.val(),
+                NumeroFactura: $txtNumeroFactura.val(),
+                FechaEntrega: $dateEntregaPedido.val()
+            }
+            var objParam = JSON.stringify(obj);
+            var fnDoneCallback = function (data) {
+                var fnCallback = function () {
+                    location.reload();
+                };
+                if (data.Result.Codigo > 0) {
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+                else {
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+
+            };
+            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.RegistrarGestionVenta);
+        }
+        return app.message.confirm("Ventas", "¿Está seguro que desea actualizar los datos de despacho?", "Si", "No", fnSi, null);
+    }
+
+
 
     function $modalCargaDocumentoGuiaClick() {
         $hdnDocumentoCargadoIdGuia.val("GP");
@@ -669,11 +779,35 @@
                     $chkPrestacionAccesoria.prop("checked", true);
                 }
 
-                CargarTablaDespacho(data.Result.ListaDespachoDetalle);
+                detalleDespacho.Productos = data.Result.ListaDespachoDetalle.filter(x => x.TipoItem != "SER");
+                detalleDespacho.Servicios = data.Result.ListaDespachoDetalle.filter(x => x.TipoItem == "SER");
 
+                var productos = detalleDespacho.Productos;
+
+                
+                var servicios = detalleDespacho.Servicios;
+
+                if (productos.length > 0) {
+                    $boxDetalleCotizacion.css('display', '');
+                    CargarTablaDespacho(productos);
+                };
+
+                if (servicios.length > 0) {
+                    $boxDetalleServicios.css('display', '');
+                    CargarTablaDespachoServ(servicios);
+                };
                 $txtNroFianzaPP.val(data.Result.DespachoCabecera.NumFianzaApp);
                 $txtNroFianzaPA.val(data.Result.DespachoCabecera.NumFianzaApa);
+
+                if (data.Result.ContadorCabecera.FechaFactura != "") {
+                    $dateFactura.val(data.Result.ContadorCabecera.FechaFactura);
+                }
+                else {
+                    $dateFactura.val("");
+                }
+                $txtNumeroFacturaServ.val(data.Result.ContadorCabecera.NumeroFactura);
                 $dateProgramacionServ.val(data.Result.ContadorCabecera.FechaProgramacionTecnico);
+
                 $txtEstado.val(data.Result.DespachoCabecera.Estado);
                 var seguimiento = data.Result.Seguimiento.length;
                 if (seguimiento > 0) {
@@ -738,6 +872,57 @@
                     }
                     $NoExisteRegDoc.hide();
                 }
+
+                if (data.Result.ContadorCabecera.ContadorConStock > 0) {
+                    
+                    if (data.Result.DespachoCabeceraConStock.EstadoAprobacion == "APR") {
+                        $txtCodigoPedidoCE.val("");
+                    } else {
+                        $txtCodigoPedidoCE.val(data.Result.DespachoCabeceraConStock.NumeroPedido);
+                        var fechaIngresoAlmacen = data.Result.DespachoCabeceraConStock.FechaIngreso;
+                        if (fechaIngresoAlmacen != null && fechaIngresoAlmacen != "") {
+                            $dateIngresoAlmacenCE.val(data.Result.DespachoCabeceraConStock.FechaIngreso);
+                        }
+
+                        $txtCodigoPedidoCE.prop('disabled', true);
+                        $opendateIngresoAlmacenCE.prop('disabled', true);
+                        $dateIngresoAlmacenCE.prop('disabled', true);
+                    }
+
+                    for (var i = 0; data.Result.DespachoDetalleConStock.length > i; i++) {
+                        var html = '<div class="text-center">';
+                        var sel_html = ''
+                        if (($estadoDesp.val() == "DLOG" || $estadoDesp.val() == "DFIN" || $estadoDesp.val() == "DFAC")&& $nombreRol.val() == "SGI_VENTA_LOGISTICA") {
+
+                            html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleConStock[i].Id + '" href="javascript:detalleDespacho.editarSeries(' + data.Result.DespachoDetalleConStock[i].Id + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';
+                            /* html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleConStock[i].Id + '" data-toggle="modal" data-target="#modalSeries"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';*/
+                            html += ' <a class="btn btn-default btn-xs" title="Guardar" id="Boton' + data.Result.DespachoDetalleConStock[i].Id + '" style="display:none"  href="javascript:detalleDespacho.guardarSeries(' + data.Result.DespachoDetalleConStock[i].Id + ',\'S\')"><i class="fa fa-save" aria-hidden="true"></i></a>&nbsp;';
+                            sel_html = '<th><div class="text-center">';
+                            if (data.Result.DespachoDetalleConStock[i].NumeroSerie.length == 0) {
+                                sel_html += '<input type="checkbox" id="chk"' + data.Result.DespachoDetalleConStock[i].Id + ' class="chkCS" value="' + data.Result.DespachoDetalleConStock[i].Id + '">'
+                            }
+                            sel_html += '</div></th>';
+                        }
+                        html += ' <a class="btn btn-default btn-xs" title="Ver" id="Ver' + data.Result.DespachoDetalleConStock[i].Id + '" href="javascript:detalleDespacho.verSeries(' + data.Result.DespachoDetalleConStock[i].Id + ')"><i class="fa fa-eye" aria-hidden="true"></i></a>&nbsp;';
+                        html += '</div>';
+
+                        var nuevoTr = "<tr bgcolor='d0f2f7' id='fila" + data.Result.DespachoDetalleConStock[i].Id + "'>" + sel_html +
+                            "<th>" + data.Result.DespachoDetalleConStock[i].RowNumber + "</th>" +
+                            "<th>" + data.Result.DespachoDetalleConStock[i].CodigoEquipo + "</th>" +
+                            "<th>" + data.Result.DespachoDetalleConStock[i].DescripcionEquipo + "</th>" +
+                            "<th>" + data.Result.DespachoDetalleConStock[i].Marca + "</th>" +
+                            "<th>" + data.Result.DespachoDetalleConStock[i].NombreUbigeo + "</th>" +
+                            "<th>" + data.Result.DespachoDetalleConStock[i].NumeroGuia + "</th>" +
+                            "<th>" + data.Result.DespachoDetalleConStock[i].NumeroSerie + "</th>" +
+                            "<th>" + html + "</th>" +
+                            "</tr>";
+
+                        $NoRegSeries.hide();
+                        $tblSeriesCS.append(nuevoTr);
+                    }
+                }
+
+
 
 
 
@@ -1026,8 +1211,24 @@
 
 
         var fnDoneCallBack = function (data) {
-            detalleDespacho.Productos = data.Result;
-            CargarTablaDetalleCot(data);
+            detalleDespacho.Productos = data.Result.filter(x => x.TipoItem != "SER");
+            detalleDespacho.Servicios = data.Result.filter(x => x.TipoItem == "SER");
+
+            var productos = {};
+            productos.Result = detalleDespacho.Productos;
+
+            var servicios = {};
+            servicios.Result = detalleDespacho.Servicios;
+
+            if (productos.Result.length > 0) {
+                $boxDetalleCotizacion.css('display', '');
+                CargarTablaDetalleCot(productos);
+            };
+
+            if (servicios.Result.length > 0) {
+                $boxDetalleServicios.css('display', '');
+                CargarTablaDetalleServ(servicios);
+            };
             btnCheck();
         };
 
@@ -1036,6 +1237,83 @@
         };
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null);
+    };
+
+    function CargarTablaDespachoServ(list) {
+        var data = {}
+        data.Result = []
+        data.Result = list;
+
+        var columns = [
+            {
+                data: "CodigoItem",
+                render: function (data, type, row) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "DescripcionItem",
+                render: function (data, type, row) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "Cantidad",
+                render: function (data, type, row) {
+                    var casilla = "<input disabled type='number' id='cantidad_" + row.Id + "' min='0' max='" + data + "' style='width:100%' placeholder='Cantidad' value='" + data + "' />"
+                    return '<center>' + casilla + '</center>';
+                }
+            },
+            {
+                data: "ValorUnitario",
+                render: function (data, type, row) {
+                    if (data == null) {
+                        return '<center></center>';
+                    }
+                    else {
+                        data = app.formatearEnteroComa(parseFloat(data).toFixed(2));
+                        return '<center>' + data + '</center>'; MontoDscto
+                    }
+                }
+            },
+            {
+                data: "ValorTotal",
+                render: function (data, type, row) {
+                    if (row.VvTotalSigVDscto == null || row.VvTotalSigVDscto == 0) {
+                        if (data == null) {
+                            return '<center></center>';
+                        }
+                        else {
+                            data = app.formatearEnteroComa(parseFloat(data).toFixed(2));
+                            return '<center>' + data + '</center>';
+                        }
+                    }
+                    else {
+                        data = app.formatearEnteroComa(parseFloat(row.VvTotalSigVDscto).toFixed(2));
+                        return '<center>' + data + '</center>';
+                    };
+                }
+            },
+            {
+                data: "IdCotDetalle",
+                render: function (data, type, row) {
+                    var d = "'" + row.CodigoItem + "','" + 2 + "'";
+                    var ver = '';
+                    ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: solicitud.editarItemServ(' + d + ')"><i class="fa fa-info-circle" aria-hidden="true"></i> Ver</a>';
+                    return '<center>' + ver + '</center>';
+                }
+            }
+        ];
+
+        var columnDefs =
+        {
+            targets: [0],
+            visible: false
+        };
+
+        app.llenarTabla($tblDetalleServicios, data, columns, columnDefs, "#tblDetalleServicios", null, null, null);
     };
 
     function CargarTablaDespacho(list) {
@@ -1109,7 +1387,7 @@
             {
                 data: "ValorTotal",
                 render: function (data, type, row) {
-                    if (row.VvTotalSigVDscto == null) {
+                    if (row.VvTotalSigVDscto == null || row.VvTotalSigVDscto == 0 ) {
                         if (data == null) {
                             return '<center></center>';
                         }
@@ -1149,14 +1427,7 @@
             {
                 data: "IdCotDetalle",
                 render: function (data, type, row) {
-                    var d = "'" + row.CodigoItem + "','" + 2 + "'";
-                    var ver = '';
-                    if ($TipoSolicitud.val() == "TSOL04" || $TipoSolicitud.val() == "TSOL05") {
-                        ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.EditarCotDetItem(' + data + ')"><i class="fa fa-info-circle" aria-hidden="true"></i> Ver</a>';
-                    }
-                    else {
-                        ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: solicitud.editarItemServ(' + d + ')"><i class="fa fa-info-circle" aria-hidden="true"></i> Ver</a>';
-                    }
+                    var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.EditarCotDetItem(' + data + ')"><i class="fa fa-info-circle" aria-hidden="true"></i> Ver</a>';
                     return '<center>' + ver + '</center>';
                 }
             }
@@ -1169,6 +1440,95 @@
         };
 
         app.llenarTabla($tblDetalleCotizacion, data, columns, columnDefs, "#tblDetalleCotizacion", null, null, null);
+    };
+
+
+    function CargarTablaDetalleServ(data) {
+        var columns = [
+            {
+                data: "Id",
+                render: function (data, type, row) {
+                    var seleccionar = "";
+                    if (row.Cantidad > 0) {
+                        seleccionar = '<input class="form-check-input cheks" name="checkSeleccionarServ" type="checkbox" value="' + data + '" id="checkSeleccionarServ">';
+                    }
+                    else {
+                        seleccionar = ""
+                    }
+                    return '<center>' + seleccionar + '</center>';
+                }
+
+            },
+            {
+                data: "CodItem",
+                render: function (data, type, row) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "Descripcion",
+                render: function (data, type, row) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "IndStock",
+                render: function (data, type, row) {
+                    var rpta = "";
+                    if (data) {
+                        rpta = "Sí";
+                    }
+                    else {
+                        rpta = "No";
+                    }
+                    return '<center>' + rpta + '</center>';
+                }
+            },
+            {
+                data: "Cantidad",
+                render: function (data, type, row) {
+                    var casilla = "<input disabled type='number' onblur='if(parseInt(this.value) > " + data + " || parseInt(this.value) < 0) { this.value = " + data + "}'  oninput='if(parseFloat(this.value) > " + data + ") { this.value = " + data + "}'   id='cantidad_" + row.Id + "' min='0' max='" + data + "' style='width:100%' placeholder='Cantidad' value='" + data + "' />"
+                    return '<center>' + casilla + '</center>';
+                }
+            },
+            {
+                data: "VentaUnitaria",
+                render: function (data, type, row) {
+                    if (data == null) {
+                        return '<center></center>';
+                    }
+                    else {
+                        if ($NumDespacho.val() != "0") {
+                            data = app.formatearEnteroComa(parseFloat(data).toFixed(2));
+                            return '<center>' + data + '</center>';
+                        }
+                        else {
+                            data = app.formatearEnteroComa(parseFloat(data).toFixed(2));
+                            return '<center id="ventaUnitaria_' + row.Id + '">' + data + '</center>';
+                        }
+                    }
+                }
+            },
+            {
+                data: "Id",
+                render: function (data, type, row) {
+                    var d = "'" + row.CodItem + "','" + 2 + "'";
+                    var ver = '';
+                    ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: solicitud.editarItemServ(' + d + ')"><i class="fa fa-info-circle" aria-hidden="true"></i> Ver</a>';
+                    return '<center>' + ver + '</center>';
+                }
+            }
+        ];
+
+        var columnDefs =
+        {
+            targets: [0],
+            visible: false
+        };
+
+        app.llenarTabla($tblDetalleServicios, data, columns, columnDefs, "#tblDetalleServicios", null, null, null);
     };
 
 
@@ -1245,12 +1605,7 @@
                 render: function (data, type, row) {
                     var d = "'" + row.CodItem + "','" + 2 + "'"; 
                     var ver = '';
-                    if ($TipoSolicitud.val() == "TSOL04" || $TipoSolicitud.val() == "TSOL05") {
-                        ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.EditarCotDetItem(' + data + ')"><i class="fa fa-info-circle" aria-hidden="true"></i> Ver</a>';
-                    }
-                    else {
-                        ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: solicitud.editarItemServ(' + d + ')"><i class="fa fa-info-circle" aria-hidden="true"></i> Ver</a>';
-                    }
+                    ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.EditarCotDetItem(' + data + ')"><i class="fa fa-info-circle" aria-hidden="true"></i> Ver</a>';
                     return '<center>' + ver + '</center>';
                 }
             }
@@ -1309,6 +1664,43 @@
                 $('#cantidad_' + this.value).prop('disabled', true);
             }
         });
+
+
+        $(document).on('change', '#checkSeleccionarServ', function (e) {
+            if (this.checked) {
+                detalleDespacho.xComprarServ.push(this.value);
+                $('#cantidad_' + this.value).prop('disabled', false);
+            }
+            else {
+                detalleDespacho.xComprarServ = detalleDespacho.xComprarServ.filter(valor => valor != this.value);
+                $('#cantidad_' + this.value).prop('disabled', true);
+            }
+        });
+
+        $(document).on('change', '#checkSeleccionarTodosServ', function (e) {
+            if (this.checked) {
+                $checkSeleccionar.prop('checked', true);
+                $('input').filter('#checkSeleccionarServ').prop('checked', true);
+                var ids = document.querySelectorAll("input[name='checkSeleccionarServ']:checked");
+                for (var i = 0; i < ids.length; i++) {
+                    detalleDespacho.xComprarServ.push(ids[i].value);
+                    $('#cantidad_' + ids[i].value).prop('disabled', false);
+                }
+            }
+            else {
+                detalleDespacho.xComprarServ = []
+                var ids = document.querySelectorAll("input[name='checkSeleccionarServ']:checked");
+                for (var i = 0; i < ids.length; i++) {
+                    detalleDespacho.xComprarServ.push(ids[i].value);
+                    $('#cantidad_' + ids[i].value).prop('disabled', true);
+                };
+                $('input').filter('#checkSeleccionarServ').prop('checked', false);
+            }
+        });
+
+
+        
+
 
         $(document).on('change', '#checkSeleccionarTodos', function (e) {
             if (this.checked) {
@@ -1832,11 +2224,6 @@
             return;
         };
 
-        if (detalleDespacho.xComprar.length == 0) {
-            app.message.error("Validación", "Debe de seleccionar por lo menos un producto");
-            return;
-        };
-
         if ($dateFechaMax.val() == "" || $dateFechaMax.val() == undefined) {
             app.message.error("Validación", "La fecha máxima está vacia, por favor revisar");
             return; 
@@ -1846,19 +2233,46 @@
         var url = "BandejaSolicitudesVentas/InsertDespacho";
 
         var ProductosxVender = [];
-        for (var i = 0; detalleDespacho.Productos.length > i; i++) // Obtenemos solo los seleccionados con la cantidad modificada.
-        {
-            if (detalleDespacho.xComprar.includes(detalleDespacho.Productos[i].Id.toString())) {
-                detalleDespacho.Productos[i].Cantidad = $("#cantidad_" + detalleDespacho.Productos[i].Id.toString()).val() //referenciamos al input cantidad dinamico de cada ROW para obtener su valor y utilizarlo.
-                ProductosxVender.push({
-                    IdCotDetalle: detalleDespacho.Productos[i].Id
-                    , Cantidad: detalleDespacho.Productos[i].Cantidad
-                    , ValorUnitario: detalleDespacho.Productos[i].VentaUnitaria
-                    , PorcentajeDscto: $PorcentajeDscto.val()
-                    , MargenAdicional: detalleDespacho.Productos[i].PorcentajeGanancia
-                    , IndStock: detalleDespacho.Productos[i].IndStock
-                });
+
+        if (detalleDespacho.Productos.length > 0) {
+            for (var i = 0; detalleDespacho.Productos.length > i; i++) // Obtenemos solo los seleccionados con la cantidad modificada.
+            {
+                if (detalleDespacho.xComprar.includes(detalleDespacho.Productos[i].Id.toString())) {
+                    detalleDespacho.Productos[i].Cantidad = $("#cantidad_" + detalleDespacho.Productos[i].Id.toString()).val() //referenciamos al input cantidad dinamico de cada ROW para obtener su valor y utilizarlo.
+                    ProductosxVender.push({
+                        IdCotDetalle: detalleDespacho.Productos[i].Id
+                        , Cantidad: detalleDespacho.Productos[i].Cantidad
+                        , ValorUnitario: detalleDespacho.Productos[i].VentaUnitaria
+                        , PorcentajeDscto: $PorcentajeDscto.val()
+                        , MargenAdicional: detalleDespacho.Productos[i].PorcentajeGanancia
+                        , IndStock: detalleDespacho.Productos[i].IndStock
+                    });
+                };
             };
+        }
+        
+        if (detalleDespacho.Servicios.length > 0) {
+            for (var i = 0; detalleDespacho.Servicios.length > i; i++) // Obtenemos solo los seleccionados con la cantidad modificada.
+            {
+                if (detalleDespacho.xComprarServ.includes(detalleDespacho.Servicios[i].Id.toString())) {
+                    detalleDespacho.Servicios[i].Cantidad = $("#cantidad_" + detalleDespacho.Servicios[i].Id.toString()).val() //referenciamos al input cantidad dinamico de cada ROW para obtener su valor y utilizarlo.
+                    ProductosxVender.push({
+                        IdCotDetalle: detalleDespacho.Servicios[i].Id
+                        , Cantidad: detalleDespacho.Servicios[i].Cantidad
+                        , ValorUnitario: detalleDespacho.Servicios[i].VentaUnitaria
+                        , PorcentajeDscto: $PorcentajeDscto.val()
+                        , MargenAdicional: detalleDespacho.Servicios[i].PorcentajeGanancia
+                        , IndStock: detalleDespacho.Servicios[i].IndStock
+                    });
+                };
+            };
+        }
+
+        
+
+        if (ProductosxVender.length == 0) {
+            app.message.error("Validación", "Debe de seleccionar por lo menos un producto");
+            return;
         };
 
         var fianza = false;
@@ -1953,7 +2367,7 @@
 
         }
         else {
-            if ($numeroSolicitud.val() != "") {
+            if ($NumDespacho.val() != "0") {
                 var method = "POST";
                 var url = "BandejaSolicitudesVentas/GuardarObservacion"
                 var objObservacion = {
@@ -1961,7 +2375,7 @@
                     Observacion: $txtObservacion.val(),
                     Id_WorkFlow: $codigoWorkflow.val(),
                     Nombre_Usuario: $nombreusuario.val(),
-                    Estado_Instancia: $estadoSol.val()
+                    Estado_Instancia: $estadoDesp.val()
                 };
 
                 var objParamObs = JSON.stringify(objObservacion);
@@ -3573,6 +3987,206 @@
         return app.message.confirm("Ventas", "¿Está seguro que desea enviar el servicio a Facturaci&oacute;n?", "S&iacute;", "No", fnSi, null);
     }
 
+    function $btnGuardarFactura_click() {
+        if ($dateFactura.val() === "" || $dateFactura.val() === null) {
+            app.message.error("Validación", "Debe ingresar la Fecha de la Factura.");
+            return false;
+        }
+        if ($txtNumeroFacturaServ.val() === "" || $txtNumeroFacturaServ.val() === null) {
+            app.message.error("Validación", "Debe ingresar el N° de la Factura.");
+            return false;
+        }
+
+        var fnSi = function () {
+
+            var m = "POST";
+            var url = "BandejaSolicitudesVentas/EnviarGestionFacturacion";
+            var obj = {
+                Tipo: "F",
+                CodigoSolicitud: $numeroSolicitud.val(),
+                CodigoWorkFlow: $codigoWorkflow.val(),
+                IdDespacho: $NumDespacho.val(),
+                FechaEntrega: $dateFactura.val(),
+                NumeroFactura: $txtNumeroFacturaServ.val()
+            }
+            var objParam = JSON.stringify(obj);
+            var fnDoneCallback = function (data) {
+                var fnCallback = function () {
+                    location.reload();
+                };
+                if (data.Result.Codigo > 0) {
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+                else {
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+
+            };
+            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.RegistrarGestionVenta);
+        }
+        return app.message.confirm("Ventas", "¿Está seguro que desea guardar los datos de la facturación?", "S&iacute;", "No", fnSi, null);
+    }
+
+    function $btnRegistrarDespacho_click() {
+
+        let ubigeos = [];
+
+        // Recorrer cada checkbox marcado
+        $("#tblSeriesCS tbody tr").each(function () {
+            // Verificar si el checkbox de esta fila está marcado
+            if ($(this).find(".chkCS").is(":checked")) {
+                // Obtener el texto de la segunda celda (Nombre de Ubigeos)
+                let nombre = $(this).find("th:eq(5)").text();
+                ubigeos.push(nombre.trim());
+            }
+        });
+
+        // Usando .filter() para eliminar duplicados
+        let ubigeosOri = ubigeos.filter((valor, indice, self) => {
+            return self.indexOf(valor) === indice;
+        });
+
+        const itemCheckboxes = document.querySelectorAll(".chkCS");
+        // Crear un array con los valores de los checkboxes seleccionados
+        const selectedCodes = Array.from(itemCheckboxes)
+            .filter(checkbox => checkbox.checked) // Filtrar solo los seleccionados
+            .map(checkbox => checkbox.value);    // Obtener los valores
+
+        // Concatenar los códigos en una cadena, separados por comas
+        const concatenatedCodes = selectedCodes.join(", ");
+
+        if (concatenatedCodes === "") {
+            app.message.error("Validacion", "Debe seleccionar por lo menos un producto.");
+            return;
+        }
+
+        if (ubigeosOri.length > 1) {
+            app.message.error("Validacion", "Debe seleccionar productos de un único destino para ejecutar esta opción.");
+            return;
+        }
+
+
+        const arrayResult = concatenatedCodes.split(",").map(item => item.trim());
+
+        $rowSerieGuia.hide();
+        $rowTablaSeriesGuias.show();
+        $modalSeries.modal("show");
+        var m = "POST";
+        var url = "BandejaSolicitudesVentas/VerDetalleItemDespacho?codDetalleDespacho=" + arrayResult[0];
+        var objParam = "";
+        var fnDoneCallback = function (data) {
+            $codDetalleDespacho.val(data.Result.Id);
+            $txtCodigoProductoSerie.val(data.Result.CodigoEquipo);
+            $txtMarcaSerie.val(data.Result.Marca);
+            $txtDescripcion.val(data.Result.DescripcionEquipo);
+            $txtSerie.val('');
+            $ArchivoBase64.val('');
+            var codUbigeo = data.Result.CodigoUbigeo;
+            $hdnIdZonaDespacho.val(codUbigeo);
+
+            $searchZonaDespacho.css("visibility", "visible");
+
+            if (codUbigeo != "" && codUbigeo != null && codUbigeo.length > 0) {
+                $searchZonaDespacho.css("visibility", "hidden");
+            }
+            $txtZonaDepacho.val(data.Result.NombreUbigeo);
+            var direccion = data.Result.Direccion;
+            $txtDireccion.val(direccion);
+
+
+            $txtDireccion.prop("disabled", false);
+            if (direccion != "" && direccion != null && direccion.length > 0) {
+                $txtDireccion.prop("disabled", true);
+
+            }
+
+
+            $txtGuia.val('');
+            $lblNombreArchivoDespacho.text('');
+            $codigosIds.val(concatenatedCodes);
+            $TipoReg.val("T");
+            $RegStock.val("S");
+            $FlagCargaDocumentoDespacho.val("1");
+            $CodigoDocumentoDespacho.val("0");
+            $("#rowTablaSeriesCargar").show();
+            $("#rowTablaSeriesDescarga").hide();
+
+            $("#tblSeriesGuia tbody tr").remove();
+
+            //Se construye tabla de series y guias por registros seleccionados
+            for (i = 0; i < arrayResult.length; i++) {
+                var contador = 0;
+                contador = 1 + i;
+                var nuevoTr = "<tr id='rowSerieGuia" + i + "'>" +
+                    "<th style='text-align:center'>" + contador + "</th>" +
+                    "<th>" + "<input type='text' value='' id='SerieCS" + i + "' style='width:100%' class='SerieCS'>" + "</th>" +
+                    "<th>" + "<input type='text' value='' id='Guia" + i + "' style='width:100%' class='GuiaCS'>" + "</th>" +
+                    "</tr>";
+                $tblSeriesGuia.append(nuevoTr);
+            }
+
+        };
+        return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.consultaDetalleDespacho);
+    }
+
+    function $btnEnviarGestionDespacho_click() {
+        if ($dateEntregaPedido.val() === "" || $dateEntregaPedido.val() == null) {
+            app.message.error("Validación", "Debe seleccionar la fecha de entrega de pedido");
+            return false;
+        }
+        //if ($txtNumeroFacturaCE.val() === "" || $txtNumeroFacturaCE.val() == null) {
+        //    app.message.error("Validación", "Debe ingresar el N° de Factura de los productos con stock");
+        //    return false;
+        //}
+
+        if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03" || $TipoSolicitud.val() === "TSOL05") {
+            if (parseInt($ContadorSeriesCS.val()) != parseInt($TotalSeriesCS.val())) {
+                app.message.error("Validación", "Debe ingresar todas las series y/o lotes de los productos con stock antes de enviar a gestión.");
+                return false;
+            }
+
+        }
+        //else {
+        //    if ($txtNumeroGuiaRemisionCE.val() === "" || $txtNumeroGuiaRemisionCE.val() == null) {
+        //        app.message.error("Validación", "Debe ingresar el N° de Guia de Remision de los productos con stock");
+        //        return false;
+        //    }
+        //}
+
+
+        var fnSi = function () {
+
+            var m = "POST";
+            var url = "BandejaSolicitudesVentas/EnviarGestionVentaConStock";
+            var obj = {
+                CodigoSolicitud: $numeroSolicitud.val(),
+                CodigoWorkFlow: $codigoWorkflow.val(),
+                IdDespacho: $NumDespacho.val(),
+                TipoVenta: $TipoSolicitud.val(),
+                NumeroGuiaRemision: $txtNumeroGuiaRemisionCE.val(),
+                NumeroFactura: $txtNumeroFactura.val(),
+                FechaEntrega: $dateEntregaPedido.val()
+            }
+            var objParam = JSON.stringify(obj);
+            var fnDoneCallback = function (data) {
+                var fnCallback = function () {
+
+
+                    location.reload();
+                };
+                if (data.Result.Codigo > 0) {
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+                else {
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+
+            };
+            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.EnvioGestionLogistica);
+        }
+        return app.message.confirm("Ventas", "¿Está seguro que desea enviar a gestión?", "S&iacute;", "No", fnSi, null);
+
+    }
 
 
     return {

@@ -2851,6 +2851,7 @@ namespace AHSECO.CCL.BD.Ventas
                         {
                             IdCotDetalle = reader.IsDBNull(reader.GetOrdinal("ID_COTDETALLE")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_COTDETALLE")),
                             CodigoItem = reader.IsDBNull(reader.GetOrdinal("CODITEM")) ? "" : reader.GetString(reader.GetOrdinal("CODITEM")),
+                            TipoItem = reader.IsDBNull(reader.GetOrdinal("TIPOITEM")) ? "" : reader.GetString(reader.GetOrdinal("TIPOITEM")),
                             DescripcionItem = reader.IsDBNull(reader.GetOrdinal("DESCRIPCION")) ? "" : reader.GetString(reader.GetOrdinal("DESCRIPCION")),
                             Cantidad = reader.IsDBNull(reader.GetOrdinal("CANTIDAD")) ? 0 : reader.GetInt32(reader.GetOrdinal("CANTIDAD")),
                             ValorUnitario = reader.IsDBNull(reader.GetOrdinal("VALORUNITARIO")) ? 0 : reader.GetDecimal(reader.GetOrdinal("VALORUNITARIO")),

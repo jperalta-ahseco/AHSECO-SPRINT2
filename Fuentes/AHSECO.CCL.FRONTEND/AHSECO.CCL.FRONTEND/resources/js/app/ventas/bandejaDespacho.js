@@ -2,6 +2,7 @@
     /***/
     var $btnBuscar = $('#btnBuscar');
     var $btnNuevo = $('#btnNuevo');
+    var $btnFinalizar = $('#btnFinalizar');
     var $btnRegresar = $('#btnRegresar');
     var $txtOrdenCompra = $('#txtOrdenCompra');
     var $txtNumContrato = $('#txtNumContrato');
@@ -21,16 +22,16 @@
 
     };
 
-
+    
     $(Initialize);
 
     function Initialize() {
+        bandejaDespacho.despachos = [] 
         CargarCombos();
-     
         $btnBuscar.click(Buscar);
         $btnRegresar.click(Regresar);
         $btnNuevo.click(Nuevo);
-
+        $btnFinalizar.click(Finalizar);
         setTimeout(function () {
             Buscar();
         }, 1000);
@@ -102,6 +103,36 @@
         app.llenarTabla($tblDespacho, data, columns, columnDefs, "#tblDespacho", rowCallback);
     };
 
+    function Finalizar() {
+
+        if (bandejaDespacho.despachos.some(x => x.Estado != "DFIN")) {
+            app.message.error("Validación", "Todos los despachos registrados deben de encontrarse en el estado finalizado");
+            return;
+        };
+
+        var fnSi = function () {
+            var method = "POST";
+            var url = "";
+            var obj = {
+
+            };
+
+            var objParam = JSON.stringify(obj);
+
+            var fnDoneCallBack = function () {
+
+            };
+
+            var fnFailCallBack = function () {
+
+            };
+
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null);
+
+        };
+        return app.message.confirm("Confirmación", "¿Está seguro que desea finalizar el proceso de despacho?", "Sí", "No", fnSi, null);
+    };
+
     function verDespacho(IdDespacho) {
        
         method = "POST";
@@ -151,6 +182,7 @@
         };
         obj = JSON.stringify(obj);
         var fnDoneCallback = function (data) {
+            bandejaDespacho.despachos = data.Result;
             cargarTablaDespachos(data.Result)
         };
         var fnFailCallback = function () {
