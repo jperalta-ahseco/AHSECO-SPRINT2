@@ -8,6 +8,7 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_UPD_TOTALIZAR_COTDET]
 /*=======================================================================================================
 	Nombre:				Fecha:			Descripcion:
 	Samuel Gómez		28.11.24		Realiza la totalizacion de la cotización.
+	Diego Bazalar		05.03.25		Se ajusta el cálculo del subtotal del TBM_COTIZACIONVENTA, no se consideran Accesorios
   =======================================================================================================*/
 AS
 BEGIN
@@ -135,7 +136,7 @@ BEGIN
 	SELECT @SUBTOTALVENTA = SUM(CASE WHEN ISNULL(MONTODSCTO,0) > 0 THEN ISNULL(VVTOTALSIGVDSCTO,0) 
 								WHEN ISNULL(PORCGANANCIA,0) > 0 THEN ISNULL(VVTOTALSIGVCGAN,0) 
 								ELSE ISNULL(VVTOTALSIGV,0) END) 
-	FROM TBD_COTIZACIONVENTA WHERE ID_COTIZACION = @IDCOTIZACION AND ISNULL(ELIMINADO,'N') != 'S';
+	FROM TBD_COTIZACIONVENTA WHERE ID_COTIZACION = @IDCOTIZACION AND ISNULL(ELIMINADO,'N') != 'S' AND TIPOITEM != 'ACC';
 
 		DECLARE @VAL_IGV DECIMAL(18,9)
 
