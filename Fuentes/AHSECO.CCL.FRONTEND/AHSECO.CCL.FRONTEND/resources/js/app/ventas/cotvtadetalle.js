@@ -3095,11 +3095,22 @@ var cotvtadet = (function ($, win, doc) {
                                 valor = "";
                             }
                             else {
-                                valor = app.formatearEnteroComa(parseFloat(data).toFixed(2));
+                                if (row.TipoItem == "PRO" || row.TipoItem == "SER") {
+                                    valor = app.formatearEnteroComa(parseFloat(data).toFixed(2));
+                                }
+                                else {
+                                    valor = "";
+                                };
                             }
                         }
                         else {
-                            valor = app.formatearEnteroComa(parseFloat(row.VentaTotalSinIGVDscto).toFixed(2));
+
+                            if (row.TipoItem == "PRO" || row.TipoItem == "SER") {
+                                valor = app.formatearEnteroComa(parseFloat(row.VentaTotalSinIGVDscto).toFixed(2));
+                            }
+                            else {
+                                valor = "";
+                            };
                         };
                         return '<center>' + valor + '</center>';
                     }
@@ -3253,11 +3264,22 @@ var cotvtadet = (function ($, win, doc) {
                                 valor = "";
                             }
                             else {
-                                valor = app.formatearEnteroComa(parseFloat(data).toFixed(2));
+                                if (row.TipoItem == "PRO" || row.TipoItem == "SER") {
+                                    valor = app.formatearEnteroComa(parseFloat(data).toFixed(2));
+                                }
+                                else {
+                                    valor = "";
+                                };
                             }
                         }
                         else {
-                            valor = app.formatearEnteroComa(parseFloat(row.VentaTotalSinIGVDscto).toFixed(2));
+
+                            if (row.TipoItem == "PRO" || row.TipoItem == "SER") {
+                                valor = app.formatearEnteroComa(parseFloat(row.VentaTotalSinIGVDscto).toFixed(2));
+                            }
+                            else {
+                                valor = "";
+                            };
                         };
                         return '<center>' + valor + '</center>';
                     }

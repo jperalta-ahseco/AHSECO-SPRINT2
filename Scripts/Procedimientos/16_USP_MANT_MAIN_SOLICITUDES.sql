@@ -44,28 +44,38 @@ BEGIN
 			SET @CODSOL = @@IDENTITY;
 			SET @MSG = 'REGISTRO REALIZADO CON EXITO'
 		END
-	ELSE
-		IF(@IsTipoProceso = 'U')
-			BEGIN
-				UPDATE TBM_SOLICITUDVENTA
-				SET ID_FLUJO		 = @IsID_FLUJO
-					,TIPOVENTA = @IsTipoVenta
-					,FECHA_SOL		 = @IsFECHA_SOL
-					,TIPO_SOL		 = @IsTIPO_SOL
-					,COD_MEDIOCONT	 = @IsCOD_MEDIOCONT
-					,IDCLIENTE		 = @IsIDCLIENTE
-					,RUC			 = @IsRUC
-					,RAZONSOCIAL	 = @IsRAZONSOCIAL
-					,ASESORVENTA	 = @IsASESORVENTA
-					,ESTADO			 = @IsESTADO --Cuestionarse si es necesario esta opción. 
-					,COD_EMPRESA	 = @IsCOD_EMPRESA
-					,NROPROCESO = @NumProceso
-					,TIPOPROCESO= @TipoProceso
-					,USR_MOD		 = @isUsrEjecuta
-					,FEC_MOD		 = GETDATE()
-					,IP_MOD			 = @isIP_Ejecuta
-				WHERE ID_SOLICITUD = @isCodSolicitud
-			END
+	IF(@IsTipoProceso = 'U')
+		BEGIN
+			UPDATE TBM_SOLICITUDVENTA
+			SET ID_FLUJO		 = @IsID_FLUJO
+				,TIPOVENTA = @IsTipoVenta
+				,FECHA_SOL		 = @IsFECHA_SOL
+				,TIPO_SOL		 = @IsTIPO_SOL
+				,COD_MEDIOCONT	 = @IsCOD_MEDIOCONT
+				,IDCLIENTE		 = @IsIDCLIENTE
+				,RUC			 = @IsRUC
+				,RAZONSOCIAL	 = @IsRAZONSOCIAL
+				,ASESORVENTA	 = @IsASESORVENTA
+				,ESTADO			 = @IsESTADO --Cuestionarse si es necesario esta opción. 
+				,COD_EMPRESA	 = @IsCOD_EMPRESA
+				,NROPROCESO		= @NumProceso
+				,TIPOPROCESO	= @TipoProceso
+				,USR_MOD		 = @isUsrEjecuta
+				,FEC_MOD		 = GETDATE()
+				,IP_MOD			 = @isIP_Ejecuta
+			WHERE ID_SOLICITUD = @isCodSolicitud
+		END
+
+	IF(@IsTipoProceso = 'C') --Cambia de estado
+	BEGIN
+		UPDATE TBM_SOLICITUDVENTA
+		SET	ESTADO = 'VTPG'
+			,USR_MOD		 = @isUsrEjecuta
+			,FEC_MOD		 = GETDATE()
+			,IP_MOD			 = @isIP_Ejecuta
+		WHERE ID_SOLICITUD = @isCodSolicitud
+	END
+
 	SELECT @CODSOL COD, @MSG MSG
 	SET NOCOUNT ON;
 END

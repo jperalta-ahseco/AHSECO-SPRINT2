@@ -52,6 +52,22 @@ BEGIN
 		END
 		ELSE
 		BEGIN
+			IF (SELECT COUNT(ID) FROM TBM_SOLDESPACHO WHERE ID_COTIZACION = @IsID_COTIZACION) = 1 --Se cambia a estado en proceso de ventas cuando se crea el primer despacho.
+			BEGIN
+				DECLARE @idWorkFlowLog bigint, @idWorkFlowSol BIGINT
+
+				SELECT @idWorkFlowSol = ID_WORKFLOW FROM TBM_SOLICITUDVENTA WHERE ID_SOLICITUD = @IsID_SOLICITUD
+
+				UPDATE [dbo].[TBM_SOLICITUDVENTA]
+				SET ESTADO = 'PRVT',
+					USR_MOD = @IsUsrEjecuta,
+					FEC_MOD = GETDATE()
+				WHERE ID_SOLICITUD = @IsID_SOLICITUD
+
+				EXEC [USP_CREAR_WORKFLOWLOG] @IdWorkflow = @idWorkFlowSol, @Usuario = @IsUsrEjecuta, @CodEstado = 'PRVT', @UsrRegistro = @IsUsrEjecuta, @IdWorkflowLog = @idWorkFlowLog
+
+			END 
+
 			SET @CODIGO = @@IDENTITY
 			SET @MSG = 'Se insertó en la tabla [TBM_SOLDESPACHO]' 
 

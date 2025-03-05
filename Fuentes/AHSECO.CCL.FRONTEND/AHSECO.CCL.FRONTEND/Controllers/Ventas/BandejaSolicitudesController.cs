@@ -6087,7 +6087,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         result.Mensaje = "Se realizó el envio de la observación de gerencia de la solicitud N° " + datosDespachoDTO.CodigoSolicitud.ToString();
                     }
 
-                    if(datosDespachoDTO.IdDespacho.HasValue)
+                    if (datosDespachoDTO.IdDespacho.HasValue)
                     {
                         if (datosDespachoDTO.IdDespacho > 0)
                         {
@@ -6518,7 +6518,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         result.Codigo = 1;
                         result.Mensaje = "Se realizó el envio de guia de BO de la solicitud N° " + codigoSolicitud.ToString();
 
-                        if(idDespacho > 0)
+                        if (idDespacho > 0)
                         {
                             var procesoBL = new ProcesosBL();
                             //Se realiza el registro de seguimiento de workflow:
@@ -6685,14 +6685,14 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     //datosDespachoDTO.UsuarioRegistro = User.ObtenerUsuario();
                     //datosDespachoDTO.NombrePerfil = User.ObtenerPerfil();
                     //datosDespachoDTO.Stock = "N";
-                    
+
                     /*Se actualiza la tabla TBM_SOLDESPACHO a estado "FINALIZADO"*/
-                    var envio_log = ventasBL.MantDespacho( new ReqDespachoCabecera
+                    var envio_log = ventasBL.MantDespacho(new ReqDespachoCabecera
                     {
                         TipoProceso = "F"
-                        ,Id = datosDespachoDTO.IdDespacho
-                        ,UsuarioRegistra = User.ObtenerUsuario()
-                        ,Estado = ConstantesDTO.EstadosProcesos.Despacho.Finalizado
+                        , Id = datosDespachoDTO.IdDespacho
+                        , UsuarioRegistra = User.ObtenerUsuario()
+                        , Estado = ConstantesDTO.EstadosProcesos.Despacho.Finalizado
                     });
 
                     if (envio_log.Result.Codigo > 0)
@@ -6846,7 +6846,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                         if (datosDespachoDTO.IdDespacho.HasValue)
                         {
-                            if(datosDespachoDTO.IdDespacho > 0)
+                            if (datosDespachoDTO.IdDespacho > 0)
                             {
                                 var procesoBL = new ProcesosBL();
                                 var codWorkFlow = VariableSesion.getCadena("CodigoWorkFlowDesp");
@@ -7643,7 +7643,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                 var result2 = procesoBL.InsertarWorkflowLog(log);
                             }
                         }
-                        
+
                     }
                     else
                     {
@@ -7958,7 +7958,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
 
         [HttpPost]
-        public JsonResult InicializarDespacho(long Solicitud, long IdCotizacion, string TipoSol)
+        public JsonResult InicializarDespacho(long Solicitud, long IdCotizacion, string TipoSol, string estadoSol)
         {
             try
             {
@@ -7966,7 +7966,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 VariableSesion.setCadena("idCotizacion", IdCotizacion.ToString());
                 VariableSesion.setCadena("tipoSol", TipoSol);
                 VariableSesion.setCadena("numDespacho", "0");
-
+                VariableSesion.setCadena("estadoSol", estadoSol);
                 return Json(new
                 {
                     Status = 1
@@ -8033,14 +8033,14 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             VariableSesion.setCadena("CodigoWorkFlowDesp", "");
             VariableSesion.setCadena("estadoDesp", "");
             VariableSesion.setCadena("NomestadoDesp", "");
-            VariableSesion.setCadena("estadoSol", "");
+            //VariableSesion.setCadena("estadoSol", "");
             VariableSesion.setCadena("idFlujo", "");
             VariableSesion.setCadena("tipoVenta", "");
 
             if (VariableSesion.getCadena("NumDespacho") != "0")
             {
                 var despacho = ventasBL.FiltrosDespacho(Convert.ToInt64(idDespacho), NombreRol);
-                var estadoSolicitud = despacho.Result.DespachoCabecera.EstadoSolicitud; // de la solicitud
+                //var estadoSolicitud = despacho.Result.DespachoCabecera.EstadoSolicitud; // de la solicitud
                 var idSolicitud = despacho.Result.DespachoCabecera.Id_Solicitud;
                 //var tipoSolicitud = despacho.Result.DespachoCabecera.TipoSolicitud; //equipo o materiales
                 var cod_workflowSol = despacho.Result.DespachoCabecera.IdWorkflowSol; // de solicitud
@@ -8055,7 +8055,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 VariableSesion.setCadena("estadoDesp", cod_estado);
                 /*Se inicializan variables globales */
                 VariableSesion.setCadena("NomestadoDesp", nom_estado);
-                VariableSesion.setCadena("estadoSol", estadoSolicitud);
+                //VariableSesion.setCadena("estadoSol", estadoSolicitud);
                 //VariableSesion.setCadena("tipoSol", tipoSolicitud);
                 VariableSesion.setCadena("idFlujo", idFlujo.ToString());
                 VariableSesion.setCadena("tipoVenta", tipoVenta.ToString());
@@ -8113,7 +8113,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             ViewBag.IngresoAlmacen = "none";
             ViewBag.SeccionLogSS = false;
             ViewBag.TxtNumeroGuiaRemisionSE = "none";
-
+            ViewBag.PermitirEditarCotDetItem = false;
             ViewBag.Btn_ActualizarImportacion = "none";
             ViewBag.Btn_GuardarFechaIngreso = "none";
             ViewBag.Btn_GuardarImportacion = "none";
@@ -8268,12 +8268,12 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 var mantRpta = ventasBL.MantenimientoDespacho(new DatosDespachoDTO()
                 {
                     Tipo = ConstantesDTO.SolicitudVenta.TipoProceso.Insertar
-                    ,CodigoSolicitud = grupo.Cabecera.Id_Solicitud
-                    ,CodigoCotizacion = grupo.Cabecera.Id_Cotizacion
-                    ,CodigoWorkFlow = rpta.Result
-                    ,IdDespacho = result.Result.Codigo
-                    ,UsuarioRegistro = User.ObtenerUsuario()
-                    ,NombrePerfil = "VENDEDOR"
+                    , CodigoSolicitud = grupo.Cabecera.Id_Solicitud
+                    , CodigoCotizacion = grupo.Cabecera.Id_Cotizacion
+                    , CodigoWorkFlow = rpta.Result
+                    , IdDespacho = result.Result.Codigo
+                    , UsuarioRegistro = User.ObtenerUsuario()
+                    , NombrePerfil = "VENDEDOR"
                 });
 
                 var total = ventasBL.TotalizarDespacho(result.Result.Codigo);
@@ -8569,7 +8569,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                         }
 
-                        
+
                     }
                 }
                 else if (cod_estado == ConstantesDTO.EstadosProcesos.Despacho.Importado)
@@ -8750,7 +8750,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
                     }
 
-                    
+
                 }
                 else if (cod_estado == ConstantesDTO.EstadosProcesos.Despacho.Observado)
                 {
@@ -8928,7 +8928,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                                             ViewBag.Btn_EnviarGuiaBOTotal = "";
                                         }
                                     }
-                                }   
+                                }
                             }
 
                             if (tipoSol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio)
@@ -8974,12 +8974,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         {
                             ViewBag.VerNavSinStock = true;
                             ViewBag.InActiveSinStock = "in active";
-
-                            if (validarDespacho.Result.GenerarGuiaBOSinStock > 0)
-                            {
-                                ViewBag.Btn_EnviarGuiaBOTotal = "";
-                            }
-                            ViewBag.Btn_GuiaBOTotal = "inline-block";
                         }
                     }
 
@@ -9043,6 +9037,42 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             ViewBag.InActiveSinStock = "in active";
                         };
                     }
+                }
+                else if (cod_estado == ConstantesDTO.EstadosProcesos.Despacho.Finalizado)
+                {
+                    ViewBag.PermiteEditarTipDespacho = false;
+                    ViewBag.PermiteEditarCabecera = false;
+
+                    if (validarDespacho != null)
+                    {
+                        if (validarDespacho.Result.ContadorConStock > 0)
+                        {
+                            ViewBag.VerNavConStock = true;
+
+                            ViewBag.SeccionLogCS = true;
+                        }
+
+
+                        if ((validarDespacho.Result.ContadorConStock > 0 && validarDespacho.Result.ContadorSinStock > 0) ||
+                            (validarDespacho.Result.ContadorConStock == 0 && validarDespacho.Result.ContadorSinStock > 0))
+                        {
+                            ViewBag.VerNavSinStock = true;
+                            ViewBag.InActiveSinStock = "in active";
+                        }
+                    }
+
+                    if (tipoSol != "TSOL01")
+                    {
+                        ViewBag.VerFacturacion = true;
+                    }
+
+                    ViewBag.VerNavServicio = true;
+                    if (tipoSol == ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio)
+                    {
+                        ViewBag.InActiveServicio = "in active";
+                    }
+
+                    ViewBag.InActiveTecnico = "";
                 }
             }
             else if (NombreRol == ConstantesDTO.WorkflowRol.Venta.Logistica)
@@ -9491,5 +9521,25 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
         }
 
+        [HttpPost]
+        public JsonResult VerServicios(long CodDetalle, long IdCotizacion)
+        {
+            try
+            {
+                var ventasBL = new VentasBL();
+                var result = ventasBL.ObtenerCotizacionVentaDetalle(new CotizacionDetalleDTO()
+                {
+                    IdCotizacion = IdCotizacion
+                }).Result.Where(d => d.Id == CodDetalle).FirstOrDefault();
+
+
+                var resCotDetAct = ventasBL.ObtenerCotDetActividades(new CotDetActividadDTO() { IdCotizacion = IdCotizacion, IdCotizacionDetalle = CodDetalle }).Result.ToArray();
+                result.CotizacionActividades = resCotDetAct;
+
+                return Json(new ResponseDTO<CotizacionDetalleDTO>(result));
+            }
+            catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
+
+        }
     }
 }

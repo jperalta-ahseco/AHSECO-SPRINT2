@@ -112,19 +112,25 @@
 
         var fnSi = function () {
             var method = "POST";
-            var url = "";
+            var url = "BandejaSolicitudesVentas/MantenimientoSolicitudes";
             var obj = {
-
+                IsTipoProceso:'C'
+                , Id_Solicitud:$NumSol.val()
             };
 
             var objParam = JSON.stringify(obj);
 
             var fnDoneCallBack = function () {
+                var fnreload = function () {
+                    app.redirectTo("BandejaVentas")
+                };
+
+                app.message.success("Éxito", "La solicitud cambió de estado a 'Venta Programada'", "Aceptar", fnreload);
 
             };
 
             var fnFailCallBack = function () {
-
+                app.message.error("Error", "Ocurrió un error al actualizar el estado de la solicitud, por favor revisar");
             };
 
             app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null);

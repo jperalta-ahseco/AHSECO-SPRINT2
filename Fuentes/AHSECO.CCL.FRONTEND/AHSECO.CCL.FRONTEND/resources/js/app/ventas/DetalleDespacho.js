@@ -2,6 +2,10 @@
     /***/
     var $nombreusuario = $('#nombreusuario');
     var $contadordoc = $("#contadordoc");
+    var $PermitirEditarCotDetItem = $("#PermitirEditarCotDetItem");
+    var $btnAgregarDetServ = $("#btnAgregarDetServ");
+    var $DS_btnGuardar = $("#DS_btnGuardar");
+    var $DS_btnCerrar = $('#DS_btnCerrar');
 
     var $chkPrestacionPrincipal = $('#chkPrestacionPrincipal');
     var $chkPrestacionAccesoria = $('#chkPrestacionAccesoria');
@@ -224,6 +228,13 @@
     var $opendateIngresoAlmacenCE = $('#opendateIngresoAlmacenCE');
     var $dateIngresoAlmacenCE = $('#dateIngresoAlmacenCE');
     var $opendateEntregaPedidoCE = $('#opendateEntregaPedidoCE');
+    var $DS_txtCodigo = $("#DS_txtCodigo");
+    var $DS_txtDescripcion = $("#DS_txtDescripcion");
+    var $DS_txtCantidad = $("#DS_txtCantidad");
+    var $DS_txtPrecio = $("#DS_txtPrecio");
+    var $DS_hdnIdCotDetServ = $('#DS_hdnIdCotDetServ');
+    var $DS_txtTotalVenta = $('#DS_txtTotalVenta');
+    var $DS_tblServiciosDetalle = $("#DS_tblServiciosDetalle");
 
     /*Mensajes*/
     var mensajes = {
@@ -331,7 +342,8 @@
         $radFianza2.click($radFianza2_click);
         $btnGuiaBOTotal.click($btnGuiaBOTotal_click);
         $btnEnviarGuiaBOTotal.click($btnEnviarGuiaBOTotal_click);
-        $btnAdjuntarDocumentoGuia.click($adjuntarDocumentoGuia_click)
+        $btnAdjuntarDocumentoGuia.click($adjuntarDocumentoGuia_click);
+        $DS_btnCerrar.click($DS_btnCerrar_click);
         $btnGuardarCabecera.click(GuardarCabecera);
         $fileCargaDocumentoSustentoGuia.on("change", $fileCargaDocumentoSustentoGuia_change);
         $btnCargarDocumentoGuia.click($btnCargarDocumentoGuia_click);
@@ -944,7 +956,7 @@
 
 
 
-                    $txtNumeroFactura.val(data.Result.ContadorCabecera.NumeroFacturaDespacho);
+                    //$txtNumeroFactura.val(data.Result.ContadorCabecera.NumeroFacturaDespacho);
                     //$txtNumeroFactura.val(data.Result.DespachoCabeceraSinStock.NumeroFactura);
                     $txtNumeroGuiaRemisionSE.val(data.Result.DespachoCabeceraSinStock.NumeroGuiaRemision);
 
@@ -1260,9 +1272,7 @@
             {
                 data: "IdCotDetalle",
                 render: function (data, type, row) {
-                    var d = "'" + row.CodigoItem + "','" + 2 + "'";
-                    var ver = '';
-                    ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: solicitud.editarItemServ(' + d + ')"><i class="fa fa-info-circle" aria-hidden="true"></i> Ver</a>';
+                    var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: detalleDespacho.editarItemServ(' + data + ')"><i class="fa fa-info-circle" aria-hidden="true"></i> Ver</a>';
                     return '<center>' + ver + '</center>';
                 }
             }
@@ -3398,18 +3408,18 @@
         return app.message.confirm("Ventas", "¿Está seguro que desea enviar a gestión?", "S&iacute;", "No", fnSi, null);
     }
 
-    function editarItemServ(CodigoItem, opc) {
-        $DS_hdnOpcGrillaItems.val(opc);
-        method = "POST";
-        url = "BandejaSolicitudesVentas/CargarCotDetItemServicio";
+    function editarItemServ(CodDetalle) {
+        //$DS_hdnOpcGrillaItems.val(opc);
+        var method = "POST";
+        var url = "BandejaSolicitudesVentas/VerServicios";
         var objFiltros = {
-            CodItem: CodigoItem,
-            opcGrillaItems: opc
+            CodDetalle: CodDetalle,
+            IdCotizacion: $IdCotizacion.val()
         };
         var objParam = JSON.stringify(objFiltros);
         var fnDoneCallBack = function (data) {
             $('#modalDetalleItemServicio').modal('show');
-            $DS_txtDescripcion.prop('disabled', false);
+            $DS_txtDescripcion.prop('disabled', true);
             $DS_hdnIdCotDetServ.val(data.Result.Id);
             var codigo = "000000" + data.Result.CodItem
             $DS_txtCodigo.val(codigo.substring(codigo.length - 6));
@@ -3429,6 +3439,33 @@
             }
         }
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
+    }
+
+    function cargarTablaDetalleServicios(detalle) {
+        $('#DS_tblServiciosDetalle tbody').empty();
+        var swDetalle = false;
+        if (detalle != null) {
+            for (i = 0; i < detalle.length; i++) {
+                var indice = i + 1;
+                var html = '<div class="text-center">';
+                html += '<a class="btn btn-primary btn-xs" title="Editar"><i class="fa fa-pencil-square-o"></i></a>&nbsp;';
+                html += '<a class="btn btn-primary btn-xs" title="Eliminar"><i class="fa fa-trash"></i></a>&nbsp;';
+                html += '</div>';
+                var nuevoTr = '<tr id="rowDetalle" name="rowDetalle">' +
+                    '<td><center>' + indice + '</center></td>' +
+                    '<td><center>' + detalle[i].DescripcionActividad + '</center></td>';
+                if ($PermitirEditarCotDetItem.val() == "S") {
+                    nuevoTr += '<td><center>' + html + '</center></td>';
+                }
+                nuevoTr += '</tr>';
+                $DS_tblServiciosDetalle.append(nuevoTr);
+                swDetalle = true;
+            }
+        }
+        if (!swDetalle) {
+            var nuevoTr = '<tr id="rowDetalle" name="rowDetalle"><td colspan=3><center>No existen registros</center></td></tr>';
+            $DS_tblServiciosDetalle.append(nuevoTr);
+        };
     }
 
     function $btnRegistrarFechaProg_click() {
@@ -4147,6 +4184,9 @@
         }
         return app.message.confirm("Ventas", "¿Está seguro que desea enviar a gestión?", "S&iacute;", "No", fnSi, null);
 
+    }
+    function $DS_btnCerrar_click() {
+        $('#modalDetalleItemServicio').modal('hide');
     }
 
 

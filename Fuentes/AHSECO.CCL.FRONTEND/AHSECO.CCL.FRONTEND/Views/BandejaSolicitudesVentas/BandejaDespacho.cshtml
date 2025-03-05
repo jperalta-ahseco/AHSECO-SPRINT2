@@ -4,20 +4,23 @@
     var numSol = VariableSesion.getCadena("numSol");
     var idCotizacion = VariableSesion.getCadena("idCotizacion");
     var NombreRol = VariableSesion.getCadena("VENTA_NOMBRE_ROL");
+    var estadoSol = VariableSesion.getCadena("estadoSol");
 
     ViewBag.Title = "Bandeja de Despachos";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<input hidden id="NumSol" value="@numSol"/>
+<input hidden id="NumSol" value="@numSol" />
 <input hidden id="IdCotizacion" value="@idCotizacion" />
 <input hidden id="nombreRol" value="@NombreRol" />
+<input hidden id="estadoSol" value="@estadoSol" />
+
 
 <div class="container-fluid" style="margin-right: 15px;">
     <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
     <div class="box-inner">
         <div class="box-header well" data-original-title="">
-           <h2><i class="fa fa-circle-o" aria-hidden="true"></i> N° de Solicitud: @numSol </h2>
+            <h2><i class="fa fa-circle-o" aria-hidden="true"></i> N° de Solicitud: @numSol </h2>
         </div>
         <div class="box-content">
             <form id="formDespacho">
@@ -55,8 +58,11 @@
                     <button class="btn btn-primary btn-sm" type="button" id="btnBuscar"><i class="fa fa-search"></i> Buscar</button>
                     @if (NombreRol == "SGI_VENTA_ASESOR" || NombreRol == "SGI_VENTA_COORDINASERV" || NombreRol == "SGI_VENTA_COORDINAATC")
                     {
-                        <button class="btn btn-default btn-sm" type="button" id="btnFinalizar"><i class="fa fa-check"></i> Finalizar Despacho</button>
-                        <button class="btn btn-success btn-sm" type="button" id="btnNuevo"><i class="fa fa-plus"></i> Nuevo</button>
+                        if (estadoSol != "VTPG")
+                        {
+                            <button class="btn btn-default btn-sm" type="button" id="btnFinalizar"><i class="fa fa-check"></i> Finalizar Despacho</button>
+                            <button class="btn btn-success btn-sm" type="button" id="btnNuevo"><i class="fa fa-plus"></i> Nuevo</button>
+                        }
                     }
                     <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegresar" tabindex="14"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Regresar</button>
                 </div>

@@ -3532,17 +3532,17 @@
         return app.message.confirm("Ventas", "¿Está seguro que desea iniciar el proceso de ventas?", "S&iacute;", "No", fnSi, null);
     }
 
-    function CalcularFechaEntregaMaxima() {
-        var dias = Number($txtPlazoEntrega.val());
-        var fecha = $dateOrdenCompra.val();
-        const partes = fecha.split('/');
-        let nuevaFecha = new Date(partes[2], partes[1] - 1, partes[0]);
-        nuevaFecha.setDate(nuevaFecha.getDate() + dias);
-        var dia = String(nuevaFecha.getDate()).padStart(2, '0');
-        var mes = String(nuevaFecha.getMonth() + 1).padStart(2, '0');
-        var year = nuevaFecha.getFullYear();
-        $txtFechaEntregaMax.val(`${dia}/${mes}/${year}`);
-    }
+    //function CalcularFechaEntregaMaxima() {
+    //    var dias = Number($txtPlazoEntrega.val());
+    //    var fecha = $dateOrdenCompra.val();
+    //    const partes = fecha.split('/');
+    //    let nuevaFecha = new Date(partes[2], partes[1] - 1, partes[0]);
+    //    nuevaFecha.setDate(nuevaFecha.getDate() + dias);
+    //    var dia = String(nuevaFecha.getDate()).padStart(2, '0');
+    //    var mes = String(nuevaFecha.getMonth() + 1).padStart(2, '0');
+    //    var year = nuevaFecha.getFullYear();
+    //    $txtFechaEntregaMax.val(`${dia}/${mes}/${year}`);
+    //}
 
     function $dateOrdenCompra_change() {
         if ($cmbTipoVenta.val() == "TVEN01") {
@@ -3897,7 +3897,7 @@
                 if ($estadoSol.val() == "CAPR") {
                     if ($cmbTipoVenta.val() == "TVEN01") {
                         $dateOrdenCompra.val(hoy());
-                        CalcularFechaEntregaMaxima();
+                        //CalcularFechaEntregaMaxima();
                     } else {
                         $('#dateOrdenCompra').prop('disabled', true);
                         $('#dateFechaContrato').prop('disabled', true);
