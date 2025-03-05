@@ -3070,11 +3070,12 @@ var cotvtadet = (function ($, win, doc) {
                             trans = "<b>Transporte: </b><br>" + row.NombreTransporte;
                         }
 
+                        var ind = "<input type='hidden' id='hdIndStock" + row.NroItem + row.Id + "' value='" + row.IndStock + "' >"
                         var exwork = "<label id='txtExWork" + row.NroItem + row.Id + "' >" + ex_work + "</label>" + "<label id='lblExWork" + row.NroItem + row.Id + "' style='display:none;'></label><input type='text'  id='ExWork" + row.NroItem + row.Id + "' value='" + row.CostoFOB + "' style='display:none; maxlength='50'/>&nbsp;";
                         var margenUtil = "<label id='txtMargenUtil" + row.NroItem + row.Id + "' >" + mar_utilidad + "</label><label id='lblMargenUtil" + row.NroItem + row.Id + "' style='display:none;'></label><input type='text'  id='MargenUtil" + row.NroItem + row.Id + "' value='" + row.MargenUtilidad + "' style='display:none;' maxlength='50'/>&nbsp;";
                         var transporte = "<label id='txtTransporte" + row.NroItem + row.Id + "' >" + trans + "</label><label id='lblTransporte" + row.NroItem + row.Id + "' style='display:none;'></label><div id='divTransporte" + row.NroItem + row.Id + "' style='display:none;'><input type='hidden' id='hdTransporte" + row.NroItem + row.Id + "' value='" + row.CodigoTransporte + "' ><select id='Transporte" + row.NroItem + row.Id + "'  style='width:150px; display:none;' value='" + row.CodigoTransporte + "'/></div>";
 
-                        return exwork + margenUtil + transporte;
+                        return ind + exwork + margenUtil + transporte;
                     }
                 },
                 {
@@ -3698,15 +3699,11 @@ var cotvtadet = (function ($, win, doc) {
             // Recorrer cada checkbox marcado
             $("#tblDetCotCostos tbody tr").each(function () {
                 const fila = $(this).closest('tr');
-                // Verificar si el boton de esta fila existe
-                if ($(this).find("a[name='BtnExWord']").length > 0) {
-                    // Obtener el texto de la sexta celda (Nombre de ex-works)
-                    let item = $(this).find("td:eq(0)").text();
-                    const id_boton = fila.find("a[name='BtnExWord']").attr('id');
-                    let id = id_boton.replace("btnEditarFOBItem", "");
-                    let valor_fob = $("#ExWork" + item+id).val();
-                    fobs.push(valor_fob.trim());
-                }
+                let item = $(this).find("td:eq(0)").text();
+                const id_boton = fila.find("a[name='BtnExWord']").attr('id');
+                let id = id_boton.replace("btnEditarFOBItem", "");
+                let margen_util = $("#MargenUtil" + item + id).val();
+                fobs.push(margen_util.trim());
             });
 
             // Usando .filter() para eliminar duplicados
@@ -3718,7 +3715,7 @@ var cotvtadet = (function ($, win, doc) {
 
 
             if (tieneVacio) {
-                app.message.error("Validacion", "Debe ingresar todos los valores de Ex-Work de la cotizacion.");
+                app.message.error("Validacion", "Debe ingresar todos los valores del margen de utilidad de la cotizacion.");
                 return;
             }
 
@@ -3779,12 +3776,43 @@ var cotvtadet = (function ($, win, doc) {
         $('#btnGuardarFOBItem' + id).show();
 
 
-        //Para casilla Ex-Work:
+        //Si es detalle sin stock
         if (!indStock) {
+            //Para casilla Ex-Work:
             $('#txtExWork' + NroItem + id).hide();
             $('#ExWork' + NroItem + id).css('display', 'block');
             $('#lblExWork' + NroItem + id).css('display', 'block');
             $('#lblExWork' + NroItem + id).text('Ex-Work:');
+
+
+            //Para casilla Transporte:
+            var method = "POST";
+            var url = "Utiles/ListarTransportes";
+            var objParam = "";
+
+            var fnDoneCallback = function (data) {
+                $('#txtTransporte' + NroItem + id).hide();
+
+
+                $('#divTransporte' + NroItem + id).css('display', 'block');
+                $('#Transporte' + NroItem + id).css('display', 'block');
+                $('#lblTransporte' + NroItem + id).css('display', 'block');
+                $('#lblTransporte' + NroItem + id).text('Transporte:');
+                var filters = {};
+                filters.placeholder = "-- Seleccione --";
+                filters.allowClear = false;
+                app.llenarCombo($('#Transporte' + NroItem + id), data, null, 0, "--Seleccione--", filters);
+                var cod_transporte = $('#hdTransporte' + NroItem + id).val();
+                if (cod_transporte != null && cod_transporte != "" && cod_transporte != "0") {
+
+                    $('#Transporte' + NroItem + id).val(cod_transporte).trigger("change.select2");
+                }
+
+            };
+            app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, mensajes.obteniendoEstados);
+
+
+
         }
 
 
@@ -3794,31 +3822,6 @@ var cotvtadet = (function ($, win, doc) {
         $('#lblMargenUtil' + NroItem + id).css('display', 'block');
         $('#lblMargenUtil' + NroItem + id).text('Margen Utilidad:');
 
-        //Para casilla Transporte:
-        var method = "POST";
-        var url = "Utiles/ListarTransportes";
-        var objParam = "";
-
-        var fnDoneCallback = function (data) {
-            $('#txtTransporte' + NroItem + id).hide();
-
-
-            $('#divTransporte' + NroItem + id).css('display', 'block');
-            $('#Transporte' + NroItem + id).css('display', 'block');
-            $('#lblTransporte' + NroItem + id).css('display', 'block');
-            $('#lblTransporte' + NroItem + id).text('Transporte:');
-            var filters = {};
-            filters.placeholder = "-- Seleccione --";
-            filters.allowClear = false;
-            app.llenarCombo($('#Transporte' + NroItem + id), data, null, 0, "--Seleccione--", filters);
-            var cod_transporte = $('#hdTransporte' + NroItem + id).val();
-            if (cod_transporte != null && cod_transporte != "" && cod_transporte != "0") {
-               
-                $('#Transporte' + NroItem + id).val(cod_transporte).trigger("change.select2");
-            }
-
-        };
-        app.llamarAjax(method, url, objParam, fnDoneCallback, null, null, mensajes.obteniendoEstados);
 
 
 
@@ -3849,6 +3852,12 @@ var cotvtadet = (function ($, win, doc) {
                 return false;
             }
 
+            if (transporte === "0" || transporte === null || transporte === 0) {
+                $('#Transporte' + NroItem + id).focus();
+                app.message.error("Validacion", "Debe seleccionar el transporte.");
+                return false;
+            }
+
         }
 
         if (margenUtilidad === "" || margenUtilidad === null) {
@@ -3857,11 +3866,7 @@ var cotvtadet = (function ($, win, doc) {
             return false;
         }
 
-        if (transporte === "0" || transporte === null || transporte === 0) {
-            $('#Transporte' + NroItem + id).focus();
-            app.message.error("Validacion", "Debe seleccionar el transporte.");
-            return false;
-        }
+      
 
         var fnSi = function () {
 
@@ -3888,6 +3893,13 @@ var cotvtadet = (function ($, win, doc) {
                         $('#txtExWork' + NroItem + id).text('Ex-Work: ' + text_exwork);
                         $('#ExWork' + NroItem + id).css('display', 'none');
                         $('#lblExWork' + NroItem + id).css('display', 'none');
+
+                        $('#txtTransporte' + NroItem + id).show();
+                        $('#txtTransporte' + NroItem + id).text('Transporte: ' + text_transporte);
+                        $('#divTransporte' + NroItem + id).css('display', 'none');
+                        $('#Transporte' + NroItem + id).css('display', 'none');
+                        $('#lblTransporte' + NroItem + id).css('display', 'none');
+                        $('#hdTransporte' + NroItem + id).val($('#Transporte' + NroItem + id).val());
                     }
 
 
@@ -3896,12 +3908,7 @@ var cotvtadet = (function ($, win, doc) {
                     $('#MargenUtil' + NroItem + id).css('display', 'none');
                     $('#lblMargenUtil' + NroItem + id).css('display', 'none');
 
-                    $('#txtTransporte' + NroItem + id).show();
-                    $('#txtTransporte' + NroItem + id).text('Transporte: ' + text_transporte);
-                    $('#divTransporte' + NroItem + id).css('display', 'none');
-                    $('#Transporte' + NroItem + id).css('display','none');
-                    $('#lblTransporte' + NroItem + id).css('display', 'none');
-                    $('#hdTransporte' + NroItem + id).val($('#Transporte' + NroItem + id).val());
+                   
 
                     
 

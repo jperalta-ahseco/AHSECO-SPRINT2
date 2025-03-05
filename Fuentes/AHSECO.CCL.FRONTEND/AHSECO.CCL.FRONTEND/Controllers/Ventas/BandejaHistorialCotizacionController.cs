@@ -1020,7 +1020,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         public JsonResult ExportarDocumentosVentas(string tipo, long codSolicitud, string stock, string tipoDespacho, long idDespacho)
         {
             var ventasBL = new VentasBL();
-            var datosGuia = ventasBL.ConsultaGuia(codSolicitud,tipo, stock).Result;
+            var datosGuia = ventasBL.ConsultaGuia(codSolicitud,tipo, stock, idDespacho).Result;
 
             #region Construccion de Guia:
             var hssfworkbook = new HSSFWorkbook();
