@@ -290,6 +290,8 @@ namespace AHSECO.CCL.COMUN
                 public static string Importado { get { return "DIMP"; } }
                 public static string EnLogistica { get { return "DLOG"; } }
                 public static string Finalizado { get { return "DFIN"; } }
+                public static string PorFacturar { get { return "DFAC"; } }
+
             }
         }
 
