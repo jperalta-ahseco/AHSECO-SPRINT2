@@ -223,7 +223,7 @@
     var $txtCodigoPedidoCE = $('#txtCodigoPedidoCE');
     var $opendateIngresoAlmacenCE = $('#opendateIngresoAlmacenCE');
     var $dateIngresoAlmacenCE = $('#dateIngresoAlmacenCE');
-
+    var $opendateEntregaPedidoCE = $('#opendateEntregaPedidoCE');
 
     /*Mensajes*/
     var mensajes = {
@@ -435,53 +435,6 @@
             return false;
         };
 
-        //if ($txtNumeroFacturaCE.val() === "" || $txtNumeroFacturaCE.val() == null) {
-        //    app.message.error("Validación", "Debe ingresar el N° de Factura de los productos con stock");
-        //    return false;
-        //}
-
-
-        //Validación de numero de series agregadas:
-        //if ($TipoSolicitud.val() === "TSOL02" || $TipoSolicitud.val() === "TSOL03" || $TipoSolicitud.val() === "TSOL05") {
-
-        //    if ($TotalSeriesCS.val() != $ContadorSeriesCS.val()) {
-        //        app.message.error("Validación", "Debe ingresar la series y/o lotes completas.");
-        //        return false;
-        //    }
-
-        //} else {
-        //    if ($txtNumeroGuiaRemisionCE.val() === "" || $txtNumeroGuiaRemisionCE.val() == null) {
-        //        app.message.error("Validación", "Debe ingresar el N° de Guia de Remision de los productos con stock");
-        //        return false;
-        //    }
-        //}
-
-        //Validación de documentación adjunta:
-        //if ($TipoSolicitud.val() === "TSOL04") //Para ventas de materiales y venta de equipos:
-        //{
-        //    var documento_guiaRemision = 0;
-        //    //var documento_factura = 0;
-        //    //adjuntos.forEach(function (currentValue, index, arr) {
-        //    //    if (adjuntos[index].CodigoTipoDocumento == "DVT03") { //Factura
-        //    //        documento_factura = 1;
-        //    //    }
-        //    //});
-
-        //    //if (documento_factura === 0) {
-        //    //    app.message.error("Validación", "Debe adjuntar un documento de Factura.");
-        //    //    return false;
-        //    //}
-        //    adjuntos.forEach(function (currentValue, index, arr) {
-        //        if (adjuntos[index].CodigoTipoDocumento == "DVT08") { //Guia de Remision
-        //            documento_guiaRemision = 1;
-        //        }
-        //    });
-
-        //    if (documento_guiaRemision === 0) {
-        //        app.message.error("Validación", "Debe adjuntar un documento de Guía de Remisión.");
-        //        return false;
-        //    }
-        //}
         var fnSi = function () {
             var m = "POST";
             var url = "BandejaSolicitudesVentas/GestionLogistica";
@@ -489,6 +442,7 @@
                 CodigoSolicitud: $numeroSolicitud.val(),
                 Stock: "S",
                 EstadoAprobacion: $TipoSolicitud.val(),
+                IdDespacho: $NumDespacho.val(),
                 CodigoWorkFlow: $codigoWorkflow.val(),
                 NumeroGuiaRemision: $txtNumeroGuiaRemisionCE.val(),
                 NumeroFactura: $txtNumeroFactura.val(),
@@ -808,6 +762,9 @@
                 $txtNumeroFacturaServ.val(data.Result.ContadorCabecera.NumeroFactura);
                 $dateProgramacionServ.val(data.Result.ContadorCabecera.FechaProgramacionTecnico);
 
+                $txtNumeroFactura.val(data.Result.DespachoCabecera.NumFactura);
+                $dateEntregaPedido.val(data.Result.DespachoCabecera.FechaFacturaFormat);
+
                 $txtEstado.val(data.Result.DespachoCabecera.Estado);
                 var seguimiento = data.Result.Seguimiento.length;
                 if (seguimiento > 0) {
@@ -874,7 +831,11 @@
                 }
 
                 if (data.Result.ContadorCabecera.ContadorConStock > 0) {
-                    
+
+                    if ($TipoSolicitud.val() == "TSOL03" && data.Result.ContadorCabecera.NumeroFactura == "") {
+                        $btnGuiaPedidoTotal.css('display', 'none');
+                    }
+
                     if (data.Result.DespachoCabeceraConStock.EstadoAprobacion == "APR") {
                         $txtCodigoPedidoCE.val("");
                     } else {
