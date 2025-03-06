@@ -377,6 +377,8 @@
     var $txtNomEmpresa = $("#txtNomEmpresa");
     var $CodigoSede = $("#CodigoSede");
     var $txtSede = $("#txtSede");
+    var $txtNomSede = $("#txtNomSede");
+    var $DivSede = $("#DivSede");
 
     var tecnicosAsig = [];
     var tipoTransporte = [];
@@ -628,6 +630,8 @@
     function $openBuscadorCliente_click() {
         $txtRuc.val('');
         $txtNomEmpresa.val('');
+        $txtNomSede.val('');
+        $DivSede.css('display', 'block');
         buscarClienteAsignado();
     }
 
@@ -639,7 +643,8 @@
             Id_Empleado: $codEmpleado.val(),
             Cliente: {
                 RUC: $txtRuc.val(),
-                NomEmpresa: $txtNomEmpresa.val()
+                NomEmpresa: $txtNomEmpresa.val(),
+                NombreSede: $txtNomSede.val()
             }
         }
         var objParam = JSON.stringify(objConsulta);

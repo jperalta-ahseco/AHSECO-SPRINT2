@@ -2719,6 +2719,7 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("ID_EMPLEADO", string.IsNullOrEmpty(clientevsAsesorDTO.Id_Empleado) ? null : clientevsAsesorDTO.Id_Empleado);
                 parameters.Add("RUC", clientevsAsesorDTO.Cliente.RUC);
                 parameters.Add("NOMBREEMPRESA", clientevsAsesorDTO.Cliente.NomEmpresa);
+                parameters.Add("NOMSEDE", clientevsAsesorDTO.Cliente.NombreSede);
                 parameters.Add("IsUsuarioConsulta", clientevsAsesorDTO.UsuarioRegistra);
 
                 var result = connection.Query(

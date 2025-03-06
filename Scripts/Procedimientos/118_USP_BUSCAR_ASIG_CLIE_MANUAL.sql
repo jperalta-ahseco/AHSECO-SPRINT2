@@ -1,7 +1,6 @@
 USE [DB_AHSECO]
 GO
 
-
 CREATE OR ALTER PROCEDURE [dbo].[USP_BUSCAR_ASIG_CLIE_MANUAL]
 /*=================================================================================================
 	José A. Peralta 	16.02.25	 busca clientes asignados en la tabla TBM_ASIG_CLIE_MANUAL
@@ -12,6 +11,7 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_BUSCAR_ASIG_CLIE_MANUAL]
   @ID_EMPLEADO	 INT = NULL,
   @RUC VARCHAR(11),
   @NOMBREEMPRESA VARCHAR(200),
+  @NOMSEDE VARCHAR(150) = '',
   @IsUsuarioConsulta VARCHAR(50)
   AS
   BEGIN
@@ -149,6 +149,10 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_BUSCAR_ASIG_CLIE_MANUAL]
 			IF(LEN(RTRIM(ISNULL(@NOMBREEMPRESA,'')))>0)
 			BEGIN
 				SET @Sql = @Sql + ' AND CLI.NOMEMPRESA LIKE ''%'+RTRIM(ISNULL(@NOMBREEMPRESA,''))+'%'''
+			END
+			IF(LEN(RTRIM(ISNULL(@NOMSEDE,''))) >0)
+			BEGIN
+				SET @Sql = @Sql + ' AND SEDE.NOMSEDE LIKE ''%'+RTRIM(ISNULL(@NOMSEDE,''))+'%''' 
 			END
 			--PRINT @Sql
 	EXEC(@Sql)
