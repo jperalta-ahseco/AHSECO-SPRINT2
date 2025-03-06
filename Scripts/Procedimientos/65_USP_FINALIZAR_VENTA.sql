@@ -31,16 +31,16 @@ BEGIN
 	SELECT @ID_WORKFLOW=ID_WORKFLOW FROM TBM_SOLICITUDVENTA WITH(NOLOCK) WHERE ID_SOLICITUD=@isIdSolicitud
 	SELECT @CODIGO=0,@MSG='Error al finalizar la venta',@INDINSTALACION='N'
 
-	SELECT 
-	@NUMFACTURA=ISNULL(MAX(NUMFACTURA),'') 
-	FROM TBM_DESPACHO WHERE  ID_SOLICITUD=@isIdSolicitud;
+	--SELECT 
+	--@NUMFACTURA=ISNULL(MAX(NUMFACTURA),'') 
+	--FROM TBM_DESPACHO WHERE  ID_SOLICITUD=@isIdSolicitud;
 
-		SELECT  @FECHAINGRESOALMACEN=ISNULL(CONVERT(VARCHAR(10),FECHAINGRESO,103),'') FROM 
-								TBM_DESPACHO WITH(NOLOCK) WHERE ID_SOLICITUD=@isIdSolicitud AND STOCK='N';
+	--	SELECT  @FECHAINGRESOALMACEN=ISNULL(CONVERT(VARCHAR(10),FECHAINGRESO,103),'') FROM 
+	--							TBM_DESPACHO WITH(NOLOCK) WHERE ID_SOLICITUD=@isIdSolicitud AND STOCK='N';
 
 
-	INSERT INTO #TMP_ID_DESPACHO
-	SELECT ID FROM TBM_DESPACHO WHERE  ID_SOLICITUD=@isIdSolicitud;
+	--INSERT INTO #TMP_ID_DESPACHO
+	--SELECT ID FROM TBM_DESPACHO WHERE  ID_SOLICITUD=@isIdSolicitud;
 
 
 
@@ -55,75 +55,75 @@ BEGIN
 
 
 
-	IF(@TIPOSOL IN ('TSOL02','TSOL03','TSOL04','TSOL05'))
-	BEGIN
-			IF(LEN(@NUMFACTURA) = 0 )
-				BEGIN
-						SELECT @CODIGO=0,@MSG='Logistica, no ha agregado el número de factura de la venta.'
-						SELECT @CODIGO COD ,@MSG MSG
-						RETURN
-				END
+	--IF(@TIPOSOL IN ('TSOL02','TSOL03','TSOL04','TSOL05'))
+	--BEGIN
+	--		IF(LEN(@NUMFACTURA) = 0 )
+	--			BEGIN
+	--					SELECT @CODIGO=0,@MSG='Logistica, no ha agregado el número de factura de la venta.'
+	--					SELECT @CODIGO COD ,@MSG MSG
+	--					RETURN
+	--			END
 
 
-			IF NOT EXISTS(SELECT 1 FROM TBM_DOCUMENTO WHERE ID_WORKFLOW=@ID_WORKFLOW AND COD_TIPODOC='DVT03' )
-			BEGIN
-					SELECT @CODIGO=0,@MSG='Logistica, no adjunto la factura de la venta.'
-					SELECT @CODIGO COD ,@MSG MSG
-					RETURN
-			END
+	--		IF NOT EXISTS(SELECT 1 FROM TBM_DOCUMENTO WHERE ID_WORKFLOW=@ID_WORKFLOW AND COD_TIPODOC='DVT03' )
+	--		BEGIN
+	--				SELECT @CODIGO=0,@MSG='Logistica, no adjunto la factura de la venta.'
+	--				SELECT @CODIGO COD ,@MSG MSG
+	--				RETURN
+	--		END
 
-			IF(@TIPOSOL='TSOL04')
-			BEGIN
-					IF EXISTS(SELECT 1 FROM TBM_DESPACHO WHERE ID_SOLICITUD=@isIdSolicitud AND ISNULL(NUMGUIAREM,'')='')
-					BEGIN
-						SELECT @CODIGO=0,@MSG='Logistica, no ingreso el número de guía de remisión de los materiales.'
-						SELECT @CODIGO COD ,@MSG MSG
-						RETURN
-					END
-			END
+	--		IF(@TIPOSOL='TSOL04')
+	--		BEGIN
+	--				IF EXISTS(SELECT 1 FROM TBM_DESPACHO WHERE ID_SOLICITUD=@isIdSolicitud AND ISNULL(NUMGUIAREM,'')='')
+	--				BEGIN
+	--					SELECT @CODIGO=0,@MSG='Logistica, no ingreso el número de guía de remisión de los materiales.'
+	--					SELECT @CODIGO COD ,@MSG MSG
+	--					RETURN
+	--				END
+	--		END
 
-			IF(LEN(@FECHAINGRESOALMACEN) = 0 )
-			BEGIN
-						SELECT @CODIGO=0,@MSG='Importaciones, no ingreso la fecha de ingreso de almacen de las importaciones.'
-						SELECT @CODIGO COD ,@MSG MSG
-						RETURN
-			END
+	--		IF(LEN(@FECHAINGRESOALMACEN) = 0 )
+	--		BEGIN
+	--					SELECT @CODIGO=0,@MSG='Importaciones, no ingreso la fecha de ingreso de almacen de las importaciones.'
+	--					SELECT @CODIGO COD ,@MSG MSG
+	--					RETURN
+	--		END
 
 
 
-			IF(@TIPOSOL IN('TSOL02','TSOL03','TSOL05'))
-			BEGIN
+	--		IF(@TIPOSOL IN('TSOL02','TSOL03','TSOL05'))
+	--		BEGIN
 					
-					IF((SELECT COUNT(1) FROM TBD_DESPACHO_DIST 
-								WHERE ID_DESPACHO IN (SELECT ID_DESPACHO FROM #TMP_ID_DESPACHO)
-								AND ISNULL(NUM_GUIA,'')='') > 0)
-					BEGIN
-							SELECT @CODIGO=0,@MSG='Logistica, no ha completado de ingresar el o los números de guía de remisión.'
-							SELECT @CODIGO COD ,@MSG MSG
-							RETURN
-					END
+	--				IF((SELECT COUNT(1) FROM TBD_DESPACHO_DIST 
+	--							WHERE ID_DESPACHO IN (SELECT ID_DESPACHO FROM #TMP_ID_DESPACHO)
+	--							AND ISNULL(NUM_GUIA,'')='') > 0)
+	--				BEGIN
+	--						SELECT @CODIGO=0,@MSG='Logistica, no ha completado de ingresar el o los números de guía de remisión.'
+	--						SELECT @CODIGO COD ,@MSG MSG
+	--						RETURN
+	--				END
 
-					IF((SELECT COUNT(1) FROM TBD_DESPACHO_DIST 
-								WHERE ID_DESPACHO IN (SELECT ID_DESPACHO FROM #TMP_ID_DESPACHO)
-								AND ISNULL(NUMSERIE,'')='') > 0)
-					BEGIN
-							SELECT @CODIGO=0,@MSG='Logistica, no ha completado de ingresar los N° de series o lotes.'
-							SELECT @CODIGO COD ,@MSG MSG
-							RETURN
-					END
+	--				IF((SELECT COUNT(1) FROM TBD_DESPACHO_DIST 
+	--							WHERE ID_DESPACHO IN (SELECT ID_DESPACHO FROM #TMP_ID_DESPACHO)
+	--							AND ISNULL(NUMSERIE,'')='') > 0)
+	--				BEGIN
+	--						SELECT @CODIGO=0,@MSG='Logistica, no ha completado de ingresar los N° de series o lotes.'
+	--						SELECT @CODIGO COD ,@MSG MSG
+	--						RETURN
+	--				END
 
 
-			END
+	--		END
 
-			IF NOT EXISTS(SELECT 1 FROM TBM_DOCUMENTO WHERE ID_WORKFLOW=@ID_WORKFLOW AND COD_TIPODOC='DVT08' )
-			BEGIN
-					SELECT @CODIGO=0,@MSG='Logistica, no adjunto la(s) guía(s) de remisión.'
-					SELECT @CODIGO COD ,@MSG MSG
-					RETURN
-			END
+	--		IF NOT EXISTS(SELECT 1 FROM TBM_DOCUMENTO WHERE ID_WORKFLOW=@ID_WORKFLOW AND COD_TIPODOC='DVT08' )
+	--		BEGIN
+	--				SELECT @CODIGO=0,@MSG='Logistica, no adjunto la(s) guía(s) de remisión.'
+	--				SELECT @CODIGO COD ,@MSG MSG
+	--				RETURN
+	--		END
 	
 
-	END
+	--END
 
 
 
@@ -134,28 +134,28 @@ BEGIN
 		BEGIN
 			SELECT @CODIGO=0,@MSG='No se pudo Finalizar la venta, el proceso de instalación no ha finalizado'
 
-			SELECT @ESTADO=ESTADO FROM TBM_INSTALACION WITH(NOLOCK) WHERE ID_SOLICITUD=@isIdSolicitud
+			SELECT ESTADO, NUMREQ 
+			INTO #tmpInstalaciones
+			FROM TBM_INSTALACION WITH(NOLOCK) WHERE ID_SOLICITUD=@isIdSolicitud
 
 
-			IF(@ESTADO = 'STFIN')
+			IF NOT EXISTS ( SELECT 1 FROM #tmpInstalaciones WHERE ESTADO != 'STFIN')
 			BEGIN
-
 				--CAMBIO DE ESTADO DE LA SOLICITUD: Venta Finalizada: (SFIN) 
-				UPDATE TBM_SOLICITUDVENTA 
-					SET ESTADO='SFIN'
-					WHERE ID_SOLICITUD=@isIdSolicitud;
+					UPDATE TBM_SOLICITUDVENTA 
+						SET ESTADO='SFIN'
+						WHERE ID_SOLICITUD=@isIdSolicitud;
 
-				--SE REGISTRA LOG DE CAMBIO DE ESTADO:
+					--SE REGISTRA LOG DE CAMBIO DE ESTADO:
 
-				INSERT INTO TBM_WORKFLOWLOG(ID_WORKFLOW,COD_ESTADO,CARGO,AUDIT_REG_USR,AUDIT_REG_FEC)
-				VALUES(@ID_WORKFLOW,'SFIN',@NOMPERFIL,@USRREG,GETDATE());
+					INSERT INTO TBM_WORKFLOWLOG(ID_WORKFLOW,COD_ESTADO,CARGO,AUDIT_REG_USR,AUDIT_REG_FEC)
+					VALUES(@ID_WORKFLOW,'SFIN',@NOMPERFIL,@USRREG,GETDATE());
 			
 
 
-				SET  @CODIGO = 1
-				SET @MSG ='Se realizó la finalización de la venta'
+					SET  @CODIGO = 1
+					SET @MSG ='Se realizó la finalización de la venta'
 			END
-
 		END
 		ELSE
 		BEGIN
