@@ -564,6 +564,12 @@
                 }
             },
             {
+                data: "Contrato",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>'
+                }
+            },
+            {
                 data: "Estado",
                 render : function (data, type, row) {
                     return '<center>' + data + '</center>'

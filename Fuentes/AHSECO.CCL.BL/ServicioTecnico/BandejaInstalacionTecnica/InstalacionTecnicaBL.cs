@@ -4,6 +4,7 @@ using AHSECO.CCL.BE;
 using AHSECO.CCL.BE.Mantenimiento;
 using AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica;
 using AHSECO.CCL.BE.Ventas;
+using AHSECO.CCL.BE.Ventas.Despacho;
 using AHSECO.CCL.COMUN;
 using System;
 using System.Collections.Generic;
@@ -58,11 +59,11 @@ namespace AHSECO.CCL.BL.ServicioTecnico.BandejaInstalacionTecnica
             }
         }
 
-        public ResponseDTO<IEnumerable<SolicitudDTO>> ObtenerSolicitudes(SolicitudDTO solicitudDTO)
+        public ResponseDTO<IEnumerable<SolicitudDTO>> ObtenerSolicitudes(ReqDespachoCabecera req)
         {
             try
             {
-                var result = Repository.ObtenerSolicitudes(solicitudDTO);
+                var result = Repository.ObtenerSolicitudes(req);
                 return new ResponseDTO<IEnumerable<SolicitudDTO>>(result);
             }
             catch (Exception ex)

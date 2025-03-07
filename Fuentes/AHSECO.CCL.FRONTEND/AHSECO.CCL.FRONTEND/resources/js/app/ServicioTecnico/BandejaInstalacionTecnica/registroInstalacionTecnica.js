@@ -64,7 +64,8 @@
     var $NoExisteContact = $('#NoExisteContact');
     var $rowTelefono2 = $('#rowTelefono2');
     var $tituloContacto = $('#tituloContacto');
-    
+    var $txtOrdenCompra = $('#txtOrdenCompra');
+    var $txtContrato = $('#txtContrato');
 
     var $NoExisteProductos = $('#NoExisteProductos');
     var $colProceso = $('#colProceso');
@@ -83,6 +84,7 @@
     //var $hdnCodTipVenta = $('#hdnCodTipVenta');
     var $hdnIdTecnico = $('#hdnIdTecnico');
     var $txtCodUbicacion = $('#txtCodUbicacion');
+    var $hdnNumDespacho = $('#hdnNumDespacho');
 
     //Combos
     var $cmbDepartamento = $('#cmbDepartamento');
@@ -1704,10 +1706,10 @@
             return;
         };
 
-        if (contactos.length == 0) {
-            app.message.error("Validación", "Es necesario que vincule por lo menos un contacto")
-            return;
-        };
+        //if (contactos.length == 0) {
+        //    app.message.error("Validación", "Es necesario que vincule por lo menos un contacto")
+        //    return;
+        //};
 
         //var fechaHoy = hoy();
 
@@ -1724,17 +1726,14 @@
                 TipoProceso: "I"
                 , NumReq: 0
                 , Id_Solicitud: $txtSolVenta.val()
+                , Id_Despacho: $hdnNumDespacho.val()
                 , RucEmpresa: $txtRuc.val()
                 , NomEmpresa: $txtNomEmpresa.val()
                 , Ubicacion: $txtUbigeo.val()
-                , NombreContacto: $txtNomContacto.val()
-                , TelefonoContacto: $txtTelefContacto.val()
-                , CargoContacto: $txtCargoContacto.val()
-                , EmailContacto :$txtEmailContacto.val()
-                , Establecimiento: $txtEstablecimientoCont.val()
                 , TipoVenta: $cmbTipVenta.val()
                 , CodEmpresa: $hdnCodEmpresa.val()
                 , OrdenCompra: $txtOrdCompra.val()
+                , Contrato: $txtContrato.val()
                 , NroProceso: $txtProceso.val()
                 , TipoProcesoVenta: $txtTipProceso.val()
                 , Contrato: $txtContrato.val()
@@ -1785,8 +1784,8 @@
         objBuscar = {
             IdCliente: $cmbClienteSol.val() == "" || $cmbClienteSol.val() == 0 ? 0 : $cmbClienteSol.val(),
             Id_Solicitud: $txtSolicitud.val() == "" || $txtSolicitud.val() == 0 ? 0 : $txtSolicitud.val(),
-            Estado: 'PRVT,VTPG', //Cambiar estado según lo requieran
-            Tipo_Sol: "TSOL05"
+            NumOrden: $txtOrdenCompra.val(),
+            NumContrato: $txtContrato.val()
         };
 
         objParam = JSON.stringify(objBuscar);
@@ -1813,6 +1812,10 @@
         objParam = JSON.stringify(objBuscar);
 
         var fnDoneCallBack = function (data) {
+
+            $hdnNumDespacho.val(id);
+
+
             $colProceso.css('display', 'none');
             $coltipProceso.css('display', 'none');
             $colContrato.css('display', 'none');
@@ -1906,22 +1909,23 @@
             $coltipProceso.css('display', 'block');
         }
 
-        //if (requerimiento.Contrato != "" && requerimiento.Contrato != null) {
-        //    $colContrato.css('display', 'block');
-        //};
+        if (requerimiento.Contrato != "" && requerimiento.Contrato != null) {
+            $colContrato.css('display', 'block');
+        };
 
         if (requerimiento.OrdenCompra != "" && requerimiento.OrdenCompra != null) {
             $colOrdenCompra.css('display', 'block');
         };
 
-            var numSolFormateado = ("000000" + requerimiento.Id_Solicitud.toString());
+        var numSolFormateado = ("000000" + requerimiento.Id_Solicitud.toString());
 
-            numSolFormateado = numSolFormateado.substring((numSolFormateado.length) - 6, numSolFormateado.length);
-            $hdnCodEmpresa.val(requerimiento.Cod_Empresa);
-            $txtSolVenta.val(numSolFormateado.toString()); 
-            $txtOrdCompra.val(requerimiento.OrdenCompra);
-            $cmbGarantias.val(requerimiento.Garantia).trigger('change.select2');
-            $cmbTipVenta.val(requerimiento.TipoVenta).trigger('change.select2');
+        numSolFormateado = numSolFormateado.substring((numSolFormateado.length) - 6, numSolFormateado.length);
+        $hdnCodEmpresa.val(requerimiento.Cod_Empresa);
+        $txtSolVenta.val(numSolFormateado.toString()); 
+        $txtOrdCompra.val(requerimiento.OrdenCompra);
+        $txtContrato.val(requerimiento.Contrato);
+        $cmbGarantias.val(requerimiento.Garantia).trigger('change.select2');
+        $cmbTipVenta.val(requerimiento.TipoVenta).trigger('change.select2');
 
         if ($tipoproceso.val() == "") {
             $txtRuc.val(requerimiento.RUC);
@@ -2832,6 +2836,18 @@
                 }
             },
             {
+                data: "OrdenCompra",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "Contrato",
+                render: function (data, type, row) {
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
                 data: "Id_Solicitud",
                 render: function (data, type, row) {
                     var numSolFormateado = ("000000" + data.toString());
@@ -2870,15 +2886,15 @@
                 }
             },
             {
-                data: "AsesorVenta",
+                data: "UsuarioRegistra",
                 render: function (data, type, row) {
                     return '<center>' + data + '</center>';
                 }
             },
             {
-                data: "Id_Solicitud",
+                data: "Id_SolDespacho",
                 render: function (data, type, row) {
-                    var seleccionar = '<a id="btnSeleccionar" class="btn btn-primary btn-xs" title="Seleccionar" href="javascript: registroInstalacionTec.seleccionarSolicitud(' + row.Id_Solicitud + ')"><i class="fa fa-plus" aria-hidden="true"></i> Seleccionar</a>';
+                    var seleccionar = '<a id="btnSeleccionar" class="btn btn-primary btn-xs" title="Seleccionar" href="javascript: registroInstalacionTec.seleccionarSolicitud(' + row.Id_SolDespacho + ')"><i class="fa fa-plus" aria-hidden="true"></i> Seleccionar</a>';
                     return '<center>' + seleccionar + '</center>';
                 }
             }
@@ -2896,6 +2912,12 @@
 
     function cargarDatos() {
         registroInstalacionTec.childProductos = [];
+
+        if ($tipoproceso.val() == "") {
+            $btnNuevoContacto.hide();
+            $btnSelectContacto.hide();
+        }
+
         if ($numeroReq.val() != "") {
             observaciones = [];
             registroInstalacionTec.contadorObservaciones = 0;
@@ -2908,6 +2930,7 @@
                 $btnEditarReq.hide();
             }
 
+            
             if ($tipoproceso.val() === "V") {
                 $btnAgregarDocumento.hide();
                 $btnAgregarObservacion.hide();

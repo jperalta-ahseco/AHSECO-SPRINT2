@@ -831,17 +831,17 @@
                                                         <label for="radTipDespacho">Tipo de Despacho: </label>
                                                         <div class="radio-group">
                                                             <label>
-                                                                <input type="radio" id="radTipDespacho" aria-describedby="sizing-addon3" readonly value="1" name="opcionTipoDespacho" @ViewBag.Disabled_TipoDespacho/>
+                                                                <input type="radio" id="radTipDespacho" aria-describedby="sizing-addon3" readonly value="1" name="opcionTipoDespacho" @ViewBag.Disabled_TipoDespacho />
                                                                 Total
                                                             </label>
                                                             <label>
-                                                                <input type="radio" id="radTipDespacho2" aria-describedby="sizing-addon3" readonly value="2" name="opcionTipoDespacho" @ViewBag.Disabled_TipoDespacho/>
+                                                                <input type="radio" id="radTipDespacho2" aria-describedby="sizing-addon3" readonly value="2" name="opcionTipoDespacho" @ViewBag.Disabled_TipoDespacho />
                                                                 Parcial
                                                             </label>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>                                           
+                                            </div>
                                             <div class="box-content" style="@(ViewBag.VerGestionLogistica ? "" : "display:none");">
                                                 <ul class="nav nav-tabs" style="padding-top: 5px;">
                                                     <li class="" id="tabConStock" style="@(ViewBag.VerNavConStock ? "":"display:none");">
@@ -1832,3 +1832,21 @@
     <script type="text/javascript" src="~/resources/js/app/ubigeo/ubigeo.js"></script>
     <!--<script type="text/javascript" src="~/resources/js/app/mantenimientos/cliente/bandejaCliente.js"></script>-->
 }
+
+<script>
+    const modal = document.getElementById("modalCostoItem");
+
+    modal.addEventListener("keyup", eventoEsc);
+    
+    function eventoEsc(evt) {
+        evt.preventDefault();
+        if (evt.keyCode == 27) {
+            cotvtacostos.cerrarModalCostosItem();
+        }
+        else if (evt.keyCode == 13) {
+            cotvtadet.btnGuardarCosteoClick();
+        }
+    };
+
+
+</script>

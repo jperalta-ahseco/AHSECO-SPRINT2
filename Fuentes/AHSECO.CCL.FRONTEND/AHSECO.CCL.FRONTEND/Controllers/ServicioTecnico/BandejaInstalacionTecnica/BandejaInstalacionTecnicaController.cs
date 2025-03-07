@@ -29,6 +29,7 @@ using System.Data.SqlTypes;
 using System.Xml.XPath;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
+using AHSECO.CCL.BE.Ventas.Despacho;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecnica
 {
@@ -51,10 +52,10 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
             var result = instalacionTecnicaBL.ObtenerFiltrosInstalacion();
             return Json(result);
         }
-        public JsonResult ObtenerSolicitudes(SolicitudDTO solicitudDTO)
+        public JsonResult ObtenerSolicitudes(ReqDespachoCabecera req)
         {
             var instalacionTecnicaBL = new InstalacionTecnicaBL();
-            var result = instalacionTecnicaBL.ObtenerSolicitudes(solicitudDTO);
+            var result = instalacionTecnicaBL.ObtenerSolicitudes(req);
             return Json(result);
         }
         public JsonResult ObtenerDetalleSolicitud(long id)
@@ -190,7 +191,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
                     };
                 };
 
-                foreach (var contacto in grupoInstalacionTecnicaDTO.Contactos)
+                if(grupoInstalacionTecnicaDTO.Contactos != null)
+                {
+                    foreach (var contacto in grupoInstalacionTecnicaDTO.Contactos)
                     {
                         contacto.TipIngreso = "I";
                         contacto.NumReq = mainRequerimiento.Result.Codigo;
@@ -205,8 +208,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
                             });
                         };
                     };
+                };
                 
-
                 //Registra documentos
                 if (grupoInstalacionTecnicaDTO.Adjuntos != null)
                 {

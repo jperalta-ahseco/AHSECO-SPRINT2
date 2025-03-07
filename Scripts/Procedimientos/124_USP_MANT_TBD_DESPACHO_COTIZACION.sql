@@ -30,7 +30,22 @@ BEGIN
 	IF(@IsTipoProceso = 'I')
 	BEGIN
 		
-		SET @IsVALORTOTAL = @IsCANTIDAD * @IsVALORUNITARIO
+		DECLARE @MONTOTOTALCOSTOS DECIMAL(18,9) , @IsANTVALORTOTAL DECIMAL(18,9)
+
+		--Se obtiene el monto total del costeo ya que se utilizará como base para calcular el siguiente costeo
+		SELECT @MONTOTOTALCOSTOS = SUM(MONTOTOTCOSTO) FROM [dbo].[TBD_COTIZACIONCOSTOS] WHERE ID_COTDETALLE = @IsID_COTDETALLE AND ISNULL(ELIMINADO, 0) != 1
+
+		SELECT @IsVALORUNITARIO = ((CANTIDAD * VVENTAUNI) +  @MONTOTOTALCOSTOS) / CANTIDAD FROM [dbo].[TBD_COTIZACIONVENTA] WHERE ID = @IsID_COTDETALLE
+ 
+		--El anterior valor total equivale a la suma del valor total(cantidad x ventauni) más la suma de todos los costos
+		--SET @IsANTVALORTOTAL= @IsANTVALORTOTAL + @MONTOTOTALCOSTOS
+
+		--Se calcula el nuevo valor unitario
+		--SET @IsVALORUNITARIO = @IsANTVALORTOTAL	/ (SELECT TOP 1 CANTIDAD FROM [dbo].[TBD_COTIZACIONVENTA] WHERE ID = @IsID_COTDETALLE)
+
+
+		--Se calcula el nuevo valor total 
+		SET @IsVALORTOTAL = @IsVALORUNITARIO * @IsCANTIDAD
 
 		IF(ISNULL(@IsMARGENADICIONAL, 0) > 0)
 		BEGIN

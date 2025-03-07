@@ -6,7 +6,8 @@
     var $btnAgregarDetServ = $("#btnAgregarDetServ");
     var $DS_btnGuardar = $("#DS_btnGuardar");
     var $DS_btnCerrar = $('#DS_btnCerrar');
-
+    var $btnEditarFacturaLogistica = $("#btnEditarFacturaLogistica");
+    var $btnGuardarDespacho = $('#btnGuardarDespacho');
     var $chkPrestacionPrincipal = $('#chkPrestacionPrincipal');
     var $chkPrestacionAccesoria = $('#chkPrestacionAccesoria');
     var $txtNroFianzaPA = $('#txtNroFianzaPA');
@@ -21,6 +22,7 @@
     var $cmbTipoDespacho = $('#cmbTipoDespacho');
     var $txtNumOrden = $('#txtNumOrden');
     var $txtNumContrato = $('#txtNumContrato');
+    var $btnGuardarFacturaLogistica = $("#btnGuardarFacturaLogistica");
     var $divNumOrden = $('#divNumOrden');
     var $divContrato = $('#divContrato');
     var $divFecOrden = $('#divFecOrden');
@@ -45,11 +47,16 @@
     var $tblDetalleServicios = $('#tblDetalleServicios');
     var $boxDetalleCotizacion = $('#boxDetalleCotizacion');
     var $boxDetalleServicios = $('#boxDetalleServicios');
+    var $tblCostosUbi = $('#tblCostosUbi');
+    var $bodyCostosUbi = $('#bodyCostosUbi');
+    var $NoRegCostosUbi = $('#NoRegCostosUbi');
+    var $hdnCodDetalle = $('#hdnCodDetalle');
 
     /* Modales */
     var $modalCargaDocumento = $('#modalCargaDocumento');
     var $modalObservacion = $('#modalObservacion');
     var $modalSeries = $('#modalSeries');
+    var $modalCostosUbi = $('#modalCostosUbi');
 
     /* Modales Observación */
     var $hdnObservacionId = $('#hdnObservacionId');
@@ -235,6 +242,8 @@
     var $DS_hdnIdCotDetServ = $('#DS_hdnIdCotDetServ');
     var $DS_txtTotalVenta = $('#DS_txtTotalVenta');
     var $DS_tblServiciosDetalle = $("#DS_tblServiciosDetalle");
+    var $CI_btnCerrar = $("#CI_btnCerrar");
+    var $txtNroPiso = $('#txtNroPiso');
 
     /*Mensajes*/
     var mensajes = {
@@ -349,8 +358,11 @@
         $btnCargarDocumentoGuia.click($btnCargarDocumentoGuia_click);
         $btnAprobarGestionSS.click($btnAprobarGestion_click);
         $btnRegistrar.click(RegistrarNuevo);
+        $btnEditarFacturaLogistica.click($btnEditarFacturaLogistica_click);
+        $btnGuardarFacturaLogistica.click($btnGuardarFacturaLogistica_click);
         $btnRegistrarFechaProg.click($btnRegistrarFechaProg_click);
         $btnAgregarObservacion.click($modalObservacionClick);
+        $CI_btnCerrar.click(cerrarModalCostosItem);
         $btnGuardarProg.click($btnGuardarProg_click);
         $btnGuardarImportacion.click($btnGuardarImportacion_click);
         $btnBuscarTecnicos.click(BuscarTecnicosClick);
@@ -361,7 +373,7 @@
         $btnCargarDocumento.click($btnCargarDocumento_click);
         $btnRegistrarSerie.click($btnRegistrarSerie_click);
         $btnGuardarUbigeoDespachoSel.click(seleccionarUbiDespacho);
-        $searchZonaDespacho.click(logicUbigeoDespacho);
+        $searchZonaDespacho.click(BuscarCostos)//logicUbigeoDespacho);
         $btnEnviarGestionDespacho.click($btnEnviarGestionDespacho_click);
         $btnGuardarGestionLogistica.click($btnGuardarGestionLogistica_click);
         $btnRegistrarDespacho.click($btnRegistrarDespacho_click);
@@ -384,6 +396,7 @@
         $btnBuscarTecnico.click(BuscarTecnicos);
         $btnEnviarServicio.click(btnEnviarServicioClick);
         $btnGuardarFactura.click($btnGuardarFactura_click);
+        $btnGuardarDespacho.click(GuardarDespacho);
 
         $dateFechaOrdenCompra.on('change', function () {
             if ($(this).val() != "") {
@@ -865,9 +878,12 @@
                     for (var i = 0; data.Result.DespachoDetalleConStock.length > i; i++) {
                         var html = '<div class="text-center">';
                         var sel_html = ''
-                        if (($estadoDesp.val() == "DLOG" || $estadoDesp.val() == "DFIN" || $estadoDesp.val() == "DFAC")&& $nombreRol.val() == "SGI_VENTA_LOGISTICA") {
+                        if (($estadoDesp.val() == "DREG") && $nombreRol.val() == "SGI_VENTA_ASESOR") {
+                            html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleConStock[i].Id + '" href="javascript:detalleDespacho.editarSeries(' + data.Result.DespachoDetalleConStock[i].Id + ',' + data.Result.DespachoDetalleConStock[i].Id_CotDetalle +')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';
+                        }
+                        else if (($estadoDesp.val() == "DLOG" || $estadoDesp.val() == "DFIN" || $estadoDesp.val() == "DFAC")&& $nombreRol.val() == "SGI_VENTA_LOGISTICA") {
 
-                            html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleConStock[i].Id + '" href="javascript:detalleDespacho.editarSeries(' + data.Result.DespachoDetalleConStock[i].Id + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';
+                            html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleConStock[i].Id + '" href="javascript:detalleDespacho.editarSeries(' + data.Result.DespachoDetalleConStock[i].Id + ',' + data.Result.DespachoDetalleConStock[i].Id_CotDetalle +')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';
                             /* html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleConStock[i].Id + '" data-toggle="modal" data-target="#modalSeries"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';*/
                             html += ' <a class="btn btn-default btn-xs" title="Guardar" id="Boton' + data.Result.DespachoDetalleConStock[i].Id + '" style="display:none"  href="javascript:detalleDespacho.guardarSeries(' + data.Result.DespachoDetalleConStock[i].Id + ',\'S\')"><i class="fa fa-save" aria-hidden="true"></i></a>&nbsp;';
                             sel_html = '<th><div class="text-center">';
@@ -920,9 +936,14 @@
                     for (i = 0; i < data.Result.DespachoDetalleSinStock.length; i++) {
                         var html = '<div class="text-center">';
                         var sel_html = ''
+
+                        if (($estadoDesp.val() == "DREG") && $nombreRol.val() == "SGI_VENTA_ASESOR") {
+                            html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleSinStock[i].Id + '" href="javascript:detalleDespacho.editarSeries(' + data.Result.DespachoDetalleSinStock[i].Id + ',' + data.Result.DespachoDetalleSinStock[i].Id_CotDetalle +')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';
+                        };
+
                         if ($nombreRol.val() == "SGI_VENTA_LOGISTICA" && data.Result.DespachoCabeceraSinStock.EstadoAprobacion == "IMP") {
 
-                            html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleSinStock[i].Id + '" href="javascript:detalleDespacho.editarSeries(' + data.Result.DespachoDetalleSinStock[i].Id + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';
+                            html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleSinStock[i].Id + '" href="javascript:detalleDespacho.editarSeries(' + data.Result.DespachoDetalleSinStock[i].Id + ',' + data.Result.DespachoDetalleSinStock[i].Id_CotDetalle +')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';
                             /* html += ' <a class="btn btn-default btn-xs" title="Editar" id="Edi' + data.Result.DespachoDetalleSinStock[i].Id + '" data-toggle="modal" data-target="#modalSeries"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>&nbsp;';*/
                             html += ' <a class="btn btn-default btn-xs" title="Guardar" id="Boton' + data.Result.DespachoDetalleSinStock[i].Id + '" style="display:none"  href="javascript:detalleDespacho.guardarSeries(' + data.Result.DespachoDetalleSinStock[i].Id + ',\'N\')"><i class="fa fa-save" aria-hidden="true"></i></a>&nbsp;';
                             sel_html = '<th><div class="text-center">';
@@ -2742,20 +2763,22 @@
 
     }
 
-    function editarSeries(codDetalleDespacho) {
+    function editarSeries(codDetalleDespacho, CodDetalle) {
 
         //$('#Serie' + codDetalleDespacho).removeAttr('readonly');
         //$('#Serie' + codDetalleDespacho).css('border', '1px solid ');
         //$('#Serie' + codDetalleDespacho).css('background-color', 'white');
         //$('#Boton' + codDetalleDespacho).css('display', 'inline-block');
-        //$('#Edi' + codDetalleDespacho).css('display', 'none');
-        // $('#Boton' + codDetalleDespacho).css('width', '30px');
+        //$('#Edi'   + codDetalleDespacho).css('display', 'none');
+        //$('#Boton' + codDetalleDespacho).css('width', '30px');
         //return;
+        $hdnCodDetalle.val(CodDetalle);
         $modalSeries.modal("show");
         var m = "POST";
         var url = "BandejaSolicitudesVentas/VerDetalleItemDespacho?codDetalleDespacho=" + codDetalleDespacho;
         var objParam = "";
         var fnDoneCallback = function (data) {
+
             $codDetalleDespacho.val(data.Result.Id);
             $txtCodigoProductoSerie.val(data.Result.CodigoEquipo);
             $txtMarcaSerie.val(data.Result.Marca);
@@ -2763,50 +2786,63 @@
             $txtSerie.val(data.Result.NumeroSerie);
             var codUbigeo = data.Result.CodigoUbigeo;
             $hdnIdZonaDespacho.val(codUbigeo);
-
-
-            $searchZonaDespacho.css("visibility", "visible");
-
-            if (codUbigeo != "" && codUbigeo != null && codUbigeo.length > 0) {
-                $searchZonaDespacho.css("visibility", "hidden");
-            }
-
-
             $txtZonaDepacho.val(data.Result.NombreUbigeo);
             var direccion = data.Result.Direccion;
             $txtDireccion.val(direccion);
-            $txtDireccion.prop("disabled", false);
-            if (direccion != "" && direccion != null && direccion.length > 0) {
-                $txtDireccion.prop("disabled", true);
-
-            }
             $txtGuia.val(data.Result.NumeroGuia);
-            var rutaDocumento = data.Result.RutaDocumento
-            $lblNombreArchivoDespacho.text(rutaDocumento);
-
-            if (rutaDocumento.length > 0) {
-                $("#rowTablaSeriesCargar").hide();
-                $("#rowTablaSeriesDescarga").show();
-            }
-            else {
-                $("#rowTablaSeriesCargar").show();
-                $("#rowTablaSeriesDescarga").hide();
-            }
-
             $CodigoDocumentoDespacho.val(data.Result.CodigoDocumento);
-
-            $rowTablaSeriesGuias.hide();
-            $rowSerieGuia.show();
             $TipoReg.val("U");
             $FlagCargaDocumentoDespacho.val("0");
 
-            if (data.Result.CodigoDocumento === "" || data.Result.CodigoDocumento == null || data.Result.CodigoDocumento == "0") {
-                $FlagCargaDocumentoDespacho.val("1");
+            if ($nombreRol.val() == "SGI_VENTA_ASESOR") {
+                $txtDireccion.prop("disabled", false);
+                $searchZonaDespacho.css("visibility", "visible");
+                $txtNroPiso.prop('disabled', false);
+                $btnRegistrarSerie.css('display', 'none');
+                $("#rowTablaSeriesCargar").hide();
+                $("#rowTablaSeriesDescarga").hide();
+                $("#rowTablaSeriesCargar").hide();
+                $("#rowTablaSeriesGuias").hide();
+                $("#rowTablaSeriesDescarga").hide();
+                $txtSerie.prop('disabled', true);
+                $txtGuia.prop('disabled', true);
             }
-            $txtSerie.prop("disabled", false);
-            $txtGuia.prop("disabled", false);
-            $btnCargarOtroDocumento.show();
-            $btnRegistrarSerie.show();
+            else if ($nombreRol.val() == "SGI_VENTA_LOGISTICA") {
+                $txtNroPiso.prop('disabled', true);
+                $txtDireccion.prop('disabled', true);
+                $searchZonaDespacho.css("visibility", "visible");
+                var rutaDocumento = data.Result.RutaDocumento
+                $lblNombreArchivoDespacho.text(rutaDocumento);
+                if (rutaDocumento.length > 0) {
+                    $("#rowTablaSeriesCargar").hide();
+                    $("#rowTablaSeriesDescarga").show();
+                }
+                else {
+                    $("#rowTablaSeriesCargar").show();
+                    $("#rowTablaSeriesDescarga").hide();
+                }
+
+                $rowTablaSeriesGuias.hide();
+                $rowSerieGuia.show();
+
+
+                $txtSerie.prop("disabled", false);
+                $txtGuia.prop("disabled", false);
+                $btnCargarOtroDocumento.show();
+                $btnRegistrarSerie.show();
+
+                if (data.Result.CodigoDocumento === "" || data.Result.CodigoDocumento == null || data.Result.CodigoDocumento == "0") {
+                    $FlagCargaDocumentoDespacho.val("1");
+                }
+            };
+
+            if (codUbigeo != "" && codUbigeo != null && codUbigeo.length > 0) {
+                $searchZonaDespacho.css("visibility", "hidden");
+            };
+
+            if (direccion != "" && direccion != null && direccion.length > 0) {
+                $txtDireccion.prop("disabled", true);
+            };
         };
         return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.consultaDetalleDespacho);
     }
@@ -4189,6 +4225,203 @@
         $('#modalDetalleItemServicio').modal('hide');
     }
 
+    function $btnEditarFacturaLogistica_click() {
+        // $dateEntregaPedido.prop("disabled", false);
+        // $opendateEntregaPedido.prop("disabled", false);
+        $txtNumeroFactura.prop("disabled", false);
+        $btnGuardarFacturaLogistica.show();
+        $btnEditarFacturaLogistica.hide();
+    }
+
+    function $btnGuardarFacturaLogistica_click() {
+
+        if ($txtNumeroFactura.val() === "" || $txtNumeroFactura.val() == null) {
+            app.message.error("Validacion", "Debe ingresar un N° de Factura.");
+            return;
+        }
+
+        var documento_factura = 0;
+        adjuntos.forEach(function (currentValue, index, arr) {
+            if (adjuntos[index].CodigoTipoDocumento == "DVT03") { //Factura
+                documento_factura = 1;
+            }
+        });
+
+        if (documento_factura === 0) {
+            app.message.error("Validación", "Debe adjuntar un documento de Factura.");
+            return false;
+        }
+
+
+        var fnSi = function () {
+            var m = "POST";
+            var url = "BandejaSolicitudesVentas/MantenimientoDespacho";
+            var obj = {
+                Tipo: "C",
+                CodigoSolicitud: $numeroSolicitud.val(),
+                NumeroFactura: $txtNumeroFactura.val()
+            }
+            var objParam = JSON.stringify(obj);
+            var fnDoneCallback = function (data) {
+                var fnCallback = function () {
+                    location.reload();
+                };
+                if (data.Result.Codigo > 0) {
+                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+                else {
+                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+                }
+
+            };
+            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.consultaDetalleDespacho);
+        }
+        return app.message.confirm("Ventas", "¿Está seguro que desea guardar los datos de Facturacion?", "Si;", "No", fnSi, null);
+
+    }
+
+    function BuscarCostos() {
+        var method = "POST";
+        var url = "BandejaSolicitudesVentas/ObtenerCotDetCostos";
+        var obj = {
+            IdCotizacionDetalle: $hdnCodDetalle.val(),
+            CodCosto: 'CXCD0002'
+        };
+
+        var objParam = JSON.stringify(obj);
+
+        var fnDoneCallBack = function (data) {
+            cargarTablaCostosUbi(data);
+        };
+
+        var fnFailCallBack = function () {
+            app.message.error("Error", "Se presenta errores al traer el listado de costos de instalación");
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack);
+    };
+
+    function cargarTablaCostosUbi(data) {
+        $NoRegCostosUbi.remove();
+
+        var columns = [
+            {
+                data: "DescCosto",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "DescUbigeoDestino",
+                render: function (data) {
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "CantidadCosto",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "MontoUnitarioCosto",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    else { data = app.formatearEnteroComa(parseFloat(data).toFixed(2)); }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "MontoTotalCosto",
+                render: function (data) {
+                    if (data == null) { data = ""; }
+                    else { data = app.formatearEnteroComa(parseFloat(data).toFixed(2)); }
+                    return '<center>' + data + '</center>';
+                }
+            },
+            {
+                data: "Id",
+                render: function (data) {
+                    var seleccionar = "<a id='btnSeleccionarDestino' class='btn btn-info btn-xs' title='Seleccionar'><i class='fa fa-eye' aria-hidden='true'></i> Seleccionar</a>";
+                    return '<center>' + seleccionar + '</center>'
+                }
+            }
+        ];
+
+        var columnDefs =
+        {
+            targets: [0],
+            visible: false
+        }
+
+        var rowCallback = function (row, data, index) {
+            // Asignar un ID único basado en el índice de datos o algún identificador único
+            $(row).attr('id', 'row' + index);
+        };
+
+        var filters = {}
+        filters.dataTableInfo = true;
+        filters.dataTablePageLength = 10;
+
+        InicializarBotonSeleccionarDestino();
+
+        app.llenarTabla($tblCostosUbi, data, columns, columnDefs, "#tblCostosUbi", rowCallback, null, filters);
+    };
+    function cerrarModalCostosItem() {
+        $('#modalCostoItem').modal('hide');
+    };
+
+    function GuardarDespacho() {
+        var method = "POST";
+        var url = "";
+
+        var obj = {
+
+        };
+        var objParam = JSON.stringify(obj);
+
+        var fnSi = function () {
+
+        }
+        return app.message.confirm("Confirmación","¿Desea guardar ")
+        var fnDoneCallback = function () {
+            app.message.confirm("Éxito", "Se grabó correctamente");
+        };
+
+        var fnFailCallBack = function () {
+            app.message.error("Error", "Se presentó un error al guardar, por favor revisar");
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallback, fnFailCallback);
+
+    };
+
+    function InicializarBotonSeleccionarDestino() {
+        $('#tblCostosUbi tbody').off('click', 'td #btnSeleccionarDestino');
+        $('#tblCostosUbi tbody').on('click', 'td #btnSeleccionarDestino', function () {
+
+            var tr = $(this).closest('tr');
+
+            var row = $('#tblCostosUbi').dataTable().api().row(tr);
+
+            var childTableHtml = '';
+
+            var data = row.data();
+
+            $txtZonaDepacho.val(data.DescUbigeoDestino);
+            $txtDireccion.val(data.Direccion);
+            $txtNroPiso.val(data.NroPiso);
+            $hdnIdZonaDespacho.val(data.CodUbigeoDestino);
+
+            CerrarModalSelCostos();
+        });
+    };
+
+    function CerrarModalSelCostos() {
+        $modalCostosUbi.modal('toggle');
+    };
 
     return {
         download: download,
@@ -4198,6 +4431,7 @@
         verSeries: verSeries,
         editarSeries: editarSeries,
         editarItemServ: editarItemServ,
-        DesasignarTecnico: DesasignarTecnico
+        DesasignarTecnico: DesasignarTecnico,
+        CerrarModalSelCostos: CerrarModalSelCostos
     };
 })(window.jQuery, window, document);

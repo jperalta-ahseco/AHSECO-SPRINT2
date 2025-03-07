@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Bandeja de Solicitudes";
+    ViewBag.Title = "Bandeja de Despacho";
 }
 
 <div class="modal-dialog modal-lg container-fluid" role="document">
@@ -16,17 +16,29 @@
         <div class="modal-body d-flex justify-content-center" align-items-center>
                 <form id="formSolicitudes">
                     <div class="row container-fluid">
-                        <div class="col-md-6 col-sm-12">
+                        <div class="col-md-3 col-sm-12">
                             <label for="txtSolicitud">N&uacute;mero de Solicitud: </label>
                             <div class="form-group">
                                 <input placeholder="Ingresar Solicitud" type="text" class="form-control input-sm" id="txtSolicitud" value="">
                             </div>
                         </div>
-                        <div class="col-md-6 col-sm-12">
+                        <div class="col-md-3 col-sm-12">
                             <label for="cmbClienteSol">Cliente:</label>
                             <div class="form-group">
                                 <select id="cmbClienteSol" type="text" style="width:100%" class="form-control select2 input-sm">
                                 </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-12">
+                            <label for="txtOrdenCompra">Orden de Compra: </label>
+                            <div class="form-group">
+                                <input placeholder="Orden de Compra" type="text" class="form-control input-sm" id="txtOrdenCompra" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-12">
+                            <label for="txtContrato">N&uacute;mero de Contrato: </label>
+                            <div class="form-group">
+                                <input placeholder="Contrato" type="text" class="form-control input-sm" id="txtContrato" value="">
                             </div>
                         </div>
                     </div>
@@ -41,6 +53,8 @@
                         <thead>
                             <tr>
                                 <th>Id</th>
+                                <th style="text-align: center; width:5%;">N°Orden de Compra</th>
+                                <th style="text-align: center; width:5%;">N° Contrato</th>
                                 <th style="text-align: center; width:5%;">N°Solicitud</th>
                                 <th style="text-align: center; width:10%;">Razón Social</th>
                                 <th style="text-align: center; width:10%;">Tipo de Venta</th>

@@ -40,6 +40,14 @@ namespace AHSECO.CCL.BE.Ventas
         public int CodigoSede {  get; set; }
         public string NombreSede {  get; set; }
 
+        #region Despacho
+        public string OrdenCompra { get; set; }
+        public string Contrato { get; set; }
+        public long Id_SolDespacho { get; set; }
+
+        #endregion Despacho
+
+
         //#region BandejaInstalacionTecnica
         //public string OrdenCompra { get; set; }
         //public string NumProceso { get; set; }

@@ -105,6 +105,11 @@
 
     function Finalizar() {
 
+        if (bandejaDespacho.despachos.length == 0) {
+            app.message.error("Validación", "Debe de registrar por lo menos un despacho.");
+            return;
+        };
+
         if (bandejaDespacho.despachos.some(x => x.Estado != "DFIN")) {
             app.message.error("Validación", "Todos los despachos registrados deben de encontrarse en el estado finalizado");
             return;

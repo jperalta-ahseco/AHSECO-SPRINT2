@@ -6678,22 +6678,31 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 }
                 else
                 {
+
                     Log.TraceInfo("Envio exitoso de la guia de pedidos de la solicitud N° " + datosDespachoDTO.CodigoSolicitud.ToString());
 
-                    // var datosDespachoDTO = new DatosDespachoDTO();
-                    //datosDespachoDTO.Tipo = "X";
-                    //datosDespachoDTO.UsuarioRegistro = User.ObtenerUsuario();
-                    //datosDespachoDTO.NombrePerfil = User.ObtenerPerfil();
-                    //datosDespachoDTO.Stock = "N";
+                    var rpta = new RespuestaDTO();
+                    var envio_log = new ResponseDTO<RespuestaDTO>(rpta); 
 
-                    /*Se actualiza la tabla TBM_SOLDESPACHO a estado "FINALIZADO"*/
-                    var envio_log = ventasBL.MantDespacho(new ReqDespachoCabecera
+                    if (VariableSesion.getCadena("tipoSol") == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaEquipos || VariableSesion.getCadena("tipoSol") == ConstantesDTO.SolicitudVenta.TipoSolicitud.VentaMateriales)
                     {
-                        TipoProceso = "F"
-                        , Id = datosDespachoDTO.IdDespacho
-                        , UsuarioRegistra = User.ObtenerUsuario()
-                        , Estado = ConstantesDTO.EstadosProcesos.Despacho.Finalizado
-                    });
+                        datosDespachoDTO.Tipo = "X";
+                        datosDespachoDTO.UsuarioRegistro = User.ObtenerUsuario();
+                        datosDespachoDTO.NombrePerfil = User.ObtenerPerfil();
+                        datosDespachoDTO.Stock = "N";
+                        envio_log = ventasBL.MantenimientoDespacho(datosDespachoDTO);
+                    }
+                    else
+                    {    
+                        /*Se actualiza la tabla TBM_SOLDESPACHO a estado "FINALIZADO"*/
+                        envio_log = ventasBL.MantDespacho(new ReqDespachoCabecera
+                        {
+                            TipoProceso = "F"
+                            ,Id = datosDespachoDTO.IdDespacho
+                            ,UsuarioRegistra = User.ObtenerUsuario()
+                            ,Estado = ConstantesDTO.EstadosProcesos.Despacho.Finalizado
+                        });
+                    };
 
                     if (envio_log.Result.Codigo > 0)
                     {
@@ -7929,6 +7938,18 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
 
             var detalleCotizacion = ventasBL.ObtenerCotizacionVentaDetalle(cotizaciondetDTO); // traemos todo el detalle
 
+
+
+            foreach ( var producto in detalleCotizacion.Result)
+            {
+                if (producto.TipoItem != ConstantesDTO.CotizacionVentaDetalle.TipoItem.Accesorio) { producto.EsItemPadre = true; }
+
+                if (producto.TipoItem == "ACC")
+                {
+                    producto.CodItemPadre = detalleCotizacion.Result.FirstOrDefault(x => x.NroItem == producto.NroItem && x.EsItemPadre == true).CodItem;
+                };
+            }
+
             var detalleDespacho = ventasBL.ListaDetalleDespacho(new ReqDespachoDetalle() //Traemos los detalles de las ordenes de compra
             {
                 Id_Cotizacion = cotizaciondetDTO.IdCotizacion,
@@ -7945,12 +7966,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                     };
                     producto.Cantidad = producto.Cantidad - reductor;
                     producto.VentaTotalSinIGV = producto.VentaUnitaria * producto.Cantidad; // se actualiza el vventattotal
+
                 }
-
-                //for(var i = 0; detalleCotizacion.Count() > i; i++)
-                //{
-
-                //};
             };
 
             return Json(detalleCotizacion);
@@ -9373,6 +9390,43 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         }
                     }
                 }
+                else if(cod_estado == ConstantesDTO.EstadosProcesos.Despacho.Importado)
+                {
+                    ViewBag.VerGestionLogistica = true;
+                    if (tipoSol != "TSOL01")
+                    {
+                        ViewBag.VerFacturacion = true;
+                    }
+                    if (validarDespacho.Result != null)
+                    {
+
+                        if (validarDespacho.Result.ContadorConStock > 0 && validarDespacho.Result.ContadorSinStock > 0
+                            && (tipoSol != ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio &&
+                            tipoSol != ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos))
+                        {
+                            ViewBag.VerTipoDespacho = true;
+                        }
+
+                        if (validarDespacho.Result.ContadorSinStock > 0 && tipoSol != ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio)
+                        {
+                            ViewBag.IngresoAlmacen = "";
+                            ViewBag.VerNavSinStock = true;
+                            ViewBag.SeccionImpSS = true;
+                            ViewBag.InActiveSinStock = "in active";
+
+                            //Para la fecha de ingreso de almacen:
+                            if (cod_estado == ConstantesDTO.EstadosProcesos.Despacho.Importado && validarSinStock.Result.FechaIngreso == "")
+                            {
+                                ViewBag.Btn_ActualizarImportacion = "inline-block";
+                            }
+
+                        }
+                        if (validarDespacho.Result.EnvioServicio > 0)
+                        {
+                            ViewBag.VerNavServicio = true;
+                        }
+                    }
+                }
                 else if (cod_estado == ConstantesDTO.EstadosProcesos.Despacho.Finalizado)
                 {
                     if (estadoSolicitud == ConstantesDTO.EstadosProcesos.ProcesoVenta.VentaProg)
@@ -9541,5 +9595,18 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             catch (Exception ex) { return Json(new { Status = 0, CurrentException = ex.Message }); }
 
         }
+
+        [HttpPost]
+        public JsonResult ObtenerCotDetCostos(CotDetCostoDTO cotCostoDTO)
+        {
+            var ventasBL = new VentasBL();
+            var result = ventasBL.ObtenerCotDetCostos(cotCostoDTO);
+            return Json(result);
+        }
+
+
+        [HttPost]
+        public JsonResult 
+
     }
 }

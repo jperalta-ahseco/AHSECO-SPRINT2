@@ -11,6 +11,7 @@ namespace AHSECO.CCL.BE.Ventas.Despacho
         public string TipoProceso { get; set; }
         public long? Id { get; set; }
         public long Id_Solicitud { get; set; }
+        public long IdCliente { get; set; }
         public long Id_Cotizacion {  get; set; }
         public long Id_WorkFlow {  get; set; }
         public string TipoDesp {  get; set; }

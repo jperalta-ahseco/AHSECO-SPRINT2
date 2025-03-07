@@ -153,12 +153,12 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaPreventivo
         }
 
 
-        public JsonResult ObtenerSolicitudes(SolicitudDTO solicitudDTO)
-        {
-            var instalacionTecnicaBL = new InstalacionTecnicaBL();
-            var result = instalacionTecnicaBL.ObtenerSolicitudes(solicitudDTO);
-            return Json(result);
-        }
+        //public JsonResult ObtenerSolicitudes(SolicitudDTO solicitudDTO)
+        //{
+        //    var instalacionTecnicaBL = new InstalacionTecnicaBL();
+        //    var result = instalacionTecnicaBL.ObtenerSolicitudes(solicitudDTO);
+        //    return Json(result);
+        //}
         public JsonResult ObtenerDetalleSolicitud(long id)
         {
             var instalacionTecnicaBL = new InstalacionTecnicaBL();

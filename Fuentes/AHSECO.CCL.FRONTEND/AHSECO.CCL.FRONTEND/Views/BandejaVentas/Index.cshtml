@@ -215,3 +215,20 @@
 @section scripts{
     <script type="text/javascript" src="~/resources/js/app/ventas/bandejaVentas.js"></script>
 }
+
+
+<script>
+
+    const formulario = document.getElementById("formFiltroSolicitudes");
+
+    formulario.addEventListener("keyup", presionarEnter);
+
+    function presionarEnter(evt) {
+        evt.preventDefault();
+        if (evt.keyCode == 13) {
+            bandejaVentas.BuscarSolicitudes();
+        }
+    }
+
+</script>
+

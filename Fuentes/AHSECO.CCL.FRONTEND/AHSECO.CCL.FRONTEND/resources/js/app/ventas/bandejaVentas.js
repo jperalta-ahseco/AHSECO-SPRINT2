@@ -700,6 +700,7 @@
     return {
         solicitud: solicitud,
         seleccionar: seleccionar,
+        BuscarSolicitudes: BuscarSolicitudes,
         despachar: despachar,
         finalizar: finalizar
     };

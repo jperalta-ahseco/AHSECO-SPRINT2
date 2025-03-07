@@ -797,6 +797,7 @@
     <input type="hidden" id="CodigoDocumentoDespacho" value="0" />
     <input type="hidden" id="ArchivoBase64" value="" />
     <input type="hidden" id="FlagCargaDocumentoDespacho" value="" />
+    <input type="hidden" id="hdnCodDetalle" value=""/>
 
     <div class="modal-dialog modal-lg container-fluid" role="document">
         <!-- Modal content -->
@@ -844,8 +845,8 @@
                                     <div class="input-group input-group-sm date">
                                         <input hidden id="hdnIdZonaDespacho" />
                                         <input disabled maxlength="6" type="text" class="form-control input-sm" id="txtZonaDepacho" placeholder="--Seleccionar Zona--" aria-describedby="sizing-addon3" />
-                                        <span style="cursor: pointer" class="input-group-addon input-sm" id="searchZonaDespacho" data-toggle="modal" data-target="#modalZonaTecSol">
-                                            <i class="fa fa-search"></i>
+                                        <span style="cursor: pointer" class="input-group-addon input-sm" id="searchZonaDespacho" data-toggle="modal" data-target="#modalCostosUbi">
+                                            <i class="fa fa-list"></i>
                                         </span>
                                     </div>
                                 </div>
@@ -853,10 +854,16 @@
                         </div>
                         <!--4ta fila:-->
                         <div class="row container-fluid">
-                            <div class="col-md-12 col-sm-12">
+                            <div class="col-md-8 col-sm-12">
                                 <div class="form-group">
                                     <label for="txtDireccion">Direcci&oacute;n:</label>
                                     <input placeholder="Ingresar Dirección" maxlength="150" type="text" class="form-control input-sm" id="txtDireccion" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label for="txtDireccion">N° Piso:</label>
+                                    <input disabled placeholder="Piso" type="text" class="form-control input-sm" id="txtNroPiso" value="">
                                 </div>
                             </div>
                         </div>
@@ -919,6 +926,7 @@
             <div class="modal-footer">
                 <button class="btn btn-default btn-sm pull-left" type="button" data-dismiss="modal" id="btnCerrarDetalle"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Cerrar</button>
                 <button class="btn btn-primary btn-sm" type="button" id="btnRegistrarSerie"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Registrar Despacho</button>
+                <button class="btn btn-primary btn-sm" type="button" id="btnGuardarDespacho"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Registrar Despacho</button>
             </div>
         </div>
     </div>
@@ -1015,7 +1023,6 @@
 
 
 
-
 <div class="modal fade" id="modalZonaTecSol" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
 
     @{
@@ -1025,11 +1032,11 @@
     <div class="modal-dialog modal-md container-fluid" role="document">
         <!-- Modal content -->
         <div class="modal-content">
-            <!-- Modal content header -->
+            <!-- Modal content header-->
             <div class="modal-header box-header well well-sm" style="padding-bottom: 30px;">
                 <h4 class="modal-title" id="tituloModal">@ViewBag.Title</h4>
             </div>
-            <!-- Modal content body -->
+            <!-- Modal content body-->
             <div class="modal-body d-flex justify-content-center" align-items-center>
                 <form id="formRegistro" class="d-flex flex-row">
                     <div class="row container-fluid d-flex justify-content-center">
@@ -1048,7 +1055,7 @@
                                 </div>
                             </div>
                         </div>
-                        <!---------------------------->
+                        <!------------------------->
 
                         <br />
                         <!--Provincia-->
@@ -1065,7 +1072,7 @@
                             </div>
                         </div>
                         <br />
-                        <!---------------------------->
+                        <!------------------------->
                         <!--Distrito-->
                         <div class="row container-fluid">
                             <div class="col-md-4 col-sm-12">
@@ -1080,87 +1087,137 @@
                             </div>
                         </div>
                     </div>
-
-
                     <br />
 
                 </form>
             </div>
-            <!-- Modal content footer -->
+            <!-- Modal content footer-->
             <div class="modal-footer">
                 <button class="btn btn-default btn-sm pull-left" type="button" data-dismiss="modal" id="btnCerrarUbigeoServ">Cerrar</button>
                 <button class="btn btn-primary btn-sm" type="button" id="btnGuardarUbigeoSel">Seleccionar</button>
                 <button class="btn btn-primary btn-sm" type="button" style="display:none;" id="btnGuardarUbigeoDespachoSel">Seleccionar</button>
             </div>
         </div>
+        </div>
+    </div>
+
+
+
+<div class="modal fade" id="modalCostosUbi" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    @{
+        ViewBag.Title3 = "Lista de Costeo";
+    }
+    <div class="modal-dialog modal-lg container-fluid" role="document">
+        <div class="modal-content">
+            <div class="modal-header box-header well well-sm" style="padding-bottom: 30px;">
+                <h4 class="modal-title" id="tituloModal">@ViewBag.Title3</h4>
+            </div>
+            <div class="modal-body d-flex justify-content-center" align-items-center>
+                <div class="row container-fluid">
+                    <table id="tblCostosUbi" class="table table-hover table-condensed table-striped table-bordered" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th style="text-align:center; width:15%">Tipo de Costo</th>
+                                <th style="text-align:center; width:20%">Destino</th>
+                                <th style="text-align:center; width:15%">Cantidad</th>
+                                <th style="text-align:center; width:15%">Monto Unitario</th>
+                                <th style="text-align:center; width:15%">Monto Total de Costeo</th>
+                                <th style="text-align:center; width:20%">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bodyCostosUbi">
+                            <tr id="NoRegCostosUbi">
+                                <td align="center" colspan="6">No existen registros</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="row container-fluid">
+                    <div class="text-right">
+                        <button class="btn btn-warning btn-sm pull-left" type="button" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
+    @section scripts{
+        <script type="text/javascript" src="~/resources/js/app/ventas/DetalleDespacho.js"></script>
+        <script type="text/javascript" src="~/resources/js/app/ventas/cotvtadetalle.js"></script>
 
+        <script type="text/javascript" src="~/resources/js/app/ubigeo/ubigeo.js"></script>
 
-@section scripts{
-    <script type="text/javascript" src="~/resources/js/app/ventas/DetalleDespacho.js"></script>
-    <script type="text/javascript" src="~/resources/js/app/ventas/cotvtadetalle.js"></script>
-
-    <script type="text/javascript" src="~/resources/js/app/ubigeo/ubigeo.js"></script>
-
-}
-
-
-<script>
-    function seleccionarTodoConStock() {
-        const selectAllCheckbox = document.getElementById("SelTodosCSS");
-        const itemCheckboxes = document.querySelectorAll(".chkCS");
-
-        // Función para seleccionar/deseleccionar todos los checkboxes
-        selectAllCheckbox.addEventListener("change", () => {
-            const isChecked = selectAllCheckbox.checked;
-            itemCheckboxes.forEach(checkbox => {
-                checkbox.checked = isChecked;
-            });
-        });
-
-        // Función para manejar el estado del checkbox "Seleccionar todo"
-        itemCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener("change", () => {
-                // Si algún checkbox no está seleccionado, desmarca "Seleccionar todo"
-                if ([...itemCheckboxes].some(checkbox => !checkbox.checked)) {
-                    selectAllCheckbox.checked = false;
-                } else {
-                    // Si todos están seleccionados, marca "Seleccionar todo"
-                    selectAllCheckbox.checked = true;
-                }
-            });
-        });
     }
 
-    function seleccionarTodoSinStock() {
-        const selectAllCheckbox = document.getElementById("SelTodosSSS");
-        const itemCheckboxes = document.querySelectorAll(".chkSS");
 
-        // Función para seleccionar/deseleccionar todos los checkboxes
-        selectAllCheckbox.addEventListener("change", () => {
-            const isChecked = selectAllCheckbox.checked;
+    <script>
+        const modal = document.getElementById("modalCostosUbi");
+
+        modal.addEventListener('keyup', FuncionEsc);
+
+        function FuncionEsc(evt) {
+            evt.preventDefault();
+            if (evt.keyCode == 27) {
+                detalleDespacho.CerrarModalSelCostos();
+            };
+        };
+
+
+        function seleccionarTodoConStock() {
+            const selectAllCheckbox = document.getElementById("SelTodosCSS");
+            const itemCheckboxes = document.querySelectorAll(".chkCS");
+
+            // Función para seleccionar/deseleccionar todos los checkboxes
+            selectAllCheckbox.addEventListener("change", () => {
+                const isChecked = selectAllCheckbox.checked;
+                itemCheckboxes.forEach(checkbox => {
+                    checkbox.checked = isChecked;
+                });
+            });
+
+            // Función para manejar el estado del checkbox "Seleccionar todo"
             itemCheckboxes.forEach(checkbox => {
-                checkbox.checked = isChecked;
+                checkbox.addEventListener("change", () => {
+                    // Si algún checkbox no está seleccionado, desmarca "Seleccionar todo"
+                    if ([...itemCheckboxes].some(checkbox => !checkbox.checked)) {
+                        selectAllCheckbox.checked = false;
+                    } else {
+                        // Si todos están seleccionados, marca "Seleccionar todo"
+                        selectAllCheckbox.checked = true;
+                    }
+                });
             });
-        });
+        }
 
-        // Función para manejar el estado del checkbox "Seleccionar todo"
-        itemCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener("change", () => {
-                // Si algún checkbox no está seleccionado, desmarca "Seleccionar todo"
-                if ([...itemCheckboxes].some(checkbox => !checkbox.checked)) {
-                    selectAllCheckbox.checked = false;
-                } else {
-                    // Si todos están seleccionados, marca "Seleccionar todo"
-                    selectAllCheckbox.checked = true;
-                }
+        function seleccionarTodoSinStock() {
+            const selectAllCheckbox = document.getElementById("SelTodosSSS");
+            const itemCheckboxes = document.querySelectorAll(".chkSS");
+
+            // Función para seleccionar/deseleccionar todos los checkboxes
+            selectAllCheckbox.addEventListener("change", () => {
+                const isChecked = selectAllCheckbox.checked;
+                itemCheckboxes.forEach(checkbox => {
+                    checkbox.checked = isChecked;
+                });
             });
-        });
-    }
 
-</script>
+            // Función para manejar el estado del checkbox "Seleccionar todo"
+            itemCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener("change", () => {
+                    // Si algún checkbox no está seleccionado, desmarca "Seleccionar todo"
+                    if ([...itemCheckboxes].some(checkbox => !checkbox.checked)) {
+                        selectAllCheckbox.checked = false;
+                    } else {
+                        // Si todos están seleccionados, marca "Seleccionar todo"
+                        selectAllCheckbox.checked = true;
+                    }
+                });
+            });
+        }
+
+    </script>
 
 
 

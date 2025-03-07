@@ -14,6 +14,7 @@ namespace AHSECO.CCL.BE.Ventas
         public string Marca { get; set; }
         public string NumeroSerie { get; set; }
         public long Id { get; set; }
+        public long Id_CotDetalle { get; set; }
         public long CodigoDespacho { get; set; }
 
         public string CodigoUbigeo { get; set; }

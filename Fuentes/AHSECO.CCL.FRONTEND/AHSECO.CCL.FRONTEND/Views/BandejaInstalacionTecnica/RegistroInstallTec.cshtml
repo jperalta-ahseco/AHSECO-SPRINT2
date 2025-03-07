@@ -26,6 +26,7 @@
 <input hidden id="codigoWorkflow" value="@IdWorkFlow" />
 <input hidden id="estadoReq" value="@codEstado" />
 <input hidden id="tipoproceso" value="@tipoProceso" />
+<input hidden id="hdnNumDespacho" />
 
 <div class="container-fluid">
     <h4><i class="fa fa-wrench" aria-hidden="true"></i> @ViewBag.Title</h4>
@@ -145,12 +146,12 @@
                                 <input disabled type="text" class="form-control input-sm" id="txtTipProceso" value="" />
                             </div>
                         </div>
-                        <!--<div class="col-md-4 col-sm-12" id="colContrato" style="display:none">
+                        <div class="col-md-4 col-sm-12" id="colContrato" style="display:none">
                             <label for="txtContrato">N° Contrato:</label>
                             <div class="form-group">
                                 <input disabled type="text" class="form-control input-sm" id="txtContrato" value="">
                             </div>
-                        </div>-->
+                        </div>
                         <div class="col-md-4 col-sm-12" id="colOrdenCompra" style="display:none">
                             <label for="txtOrdCompra">Orden de Compra:</label>
                             <div class="form-group">
@@ -266,8 +267,8 @@
                                             {
                                                 <div class="text-right">
                                                     <span id="hidden_fields"></span>
-                                                    <button style="display:none" class="btn btn-primary btn-sm" type="button" id="btnNuevoContacto" data-toggle="modal" data-target="#modalModificarContacto"><i class="fa fa-plus"></i> Nuevo Contacto</button>
-                                                    <button style="display:none" class="btn btn-primary btn-sm" type="button" id="btnSelectContacto" data-toggle="modal" data-target="#modalContactos"><i class="fa fa-plus"></i> Seleccionar Contacto</button>
+                                                    <button class="btn btn-primary btn-sm" type="button" id="btnNuevoContacto" data-toggle="modal" data-target="#modalModificarContacto"><i class="fa fa-plus"></i> Nuevo Contacto</button>
+                                                    <button class="btn btn-primary btn-sm" type="button" id="btnSelectContacto" data-toggle="modal" data-target="#modalContactos"><i class="fa fa-plus"></i> Seleccionar Contacto</button>
                                                 </div>
                                             }
                                             <br />

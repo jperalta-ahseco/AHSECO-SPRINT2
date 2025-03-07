@@ -228,6 +228,14 @@ var cotvtadet = (function ($, win, doc) {
     var $DA_radCompraLocal_No = $("#DA_radCompraLocal_No");
     var $DA_btnCerrar = $("#DA_btnCerrar");
     var costeoMultiple = [];
+    var $DA_txtCantidad = $('#DA_txtCantidad');
+    var $DA_txtValorUnitario = $('#DA_txtValorUnitario');
+    var $DA_radTieneStock_Si = $('#DA_radTieneStock_Si');
+    var $DA_radTieneStock_No = $('#DA_radTieneStock_No');
+    var $DA_radCompraLocal_Si = $('#DA_radCompraLocal_Si');
+    var $DA_radCompraLocal_No = $('#DA_radCompraLocal_No');
+    var $DA_btnGuardar = $('#DA_btnGuardar');
+
 
     $(Initialize);
 
@@ -2636,6 +2644,16 @@ var cotvtadet = (function ($, win, doc) {
                 $("#DA_txtValorUnitario").attr("disabled", "disabled");
             }
 
+            if ($estadoSol.val() == "CAPR" || $estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG") {
+                $DA_txtCantidad.prop('disabled', true);
+                $DA_txtValorUnitario.prop('disabled', true);
+                $DA_radTieneStock_Si.prop('disabled', true);
+                $DA_radTieneStock_No.prop('disabled', true);
+                $DA_radCompraLocal_Si.prop('disabled', true);
+                $DA_radCompraLocal_No.prop('disabled', true);
+                $DA_btnGuardar.css('display', 'none');
+            }
+
         }
         app.llamarAjax(method, url, objParam, fnDoneCallBack, null);
 
@@ -3315,14 +3333,17 @@ var cotvtadet = (function ($, win, doc) {
                             if ($TipoSolicitud.val() == "TSOL05" || $TipoSolicitud.val() == "TSOL04") {
                                 var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
                                 var editar = '';
+                                var ver = '';
                                 if (row.TipoItem == "ACC") {
                                     //editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.editarSubItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
                                     var dato2 = '"' + row.CodItemPadre + '"' + "," + '"' + row.CodItem + '","' + row.Id + '"';
                                     editar = "<a id='btnEditarItem' class='botonDetCot btn btn-info btn-xs' title='Editar' href='javascript: cotvtadet.editarSubItem(" + dato2 + ")'><i class='fa fa-pencil-square-o' aria-hidden='true'></i> Editar</a>";
+                                    ver = "<a id='btnVerItem' class='botonDetCot btn btn-info btn-xs' title='Ver' href='javascript: cotvtadet.editarSubItem(" + dato2 + ")'><i class='fa fa-eye' aria-hidden='true'></i> Ver</a>";
                                 } else if (row.TipoItem == "PRO") {
                                     editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
+                                    ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
                                 }
-                                var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
+                                
                                 var quitar = "";
                                 if ($TipoSolicitud.val() == "TSOL05" || $TipoSolicitud.val() == "TSOL04") {
                                     quitar = "<a class='botonDetCot btn btn-danger btn-xs' title='Eliminar' id=btnQuitarItem  href = 'javascript: cotvtadet.eliminarItemProducto(" + row.Id + ")'><i class='fa fa-trash-o' aria-hidden='true'></i> Quitar</a>"
@@ -5174,7 +5195,8 @@ var cotvtadet = (function ($, win, doc) {
         var url = "BandejaSolicitudesVentas/EliminarCotDet";
         var obj = {
             Id: Id,
-            TipoItem: tipoItem
+            TipoItem: tipoItem,
+            IdCotizacion: $idCotizacion.val()
         }
         var objParam = JSON.stringify(obj);
 
@@ -5405,6 +5427,7 @@ var cotvtadet = (function ($, win, doc) {
         IniciarLogicaInputs: IniciarLogicaInputs,
         IniciarLogicaHijosInputs: IniciarLogicaHijosInputs,
         eliminarItemProducto: eliminarItemProducto,
+        btnGuardarCosteoClick: btnGuardarCosteoClick,
 	    quitarCostoItemVta: quitarCostoItemVta,
         editarCostoItem: editarCostoItem,
         validar: validar
