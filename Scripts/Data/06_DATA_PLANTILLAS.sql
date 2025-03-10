@@ -85,7 +85,7 @@ VALUES('PLANATLOSS',1,'Plantilla de Atencion de Logistica Sin Stock','','','ATEN
 INSERT INTO TBM_PLANTILLAS
 VALUES('PLANSTECV',1,'Plantilla de Envio de Servicio Tecnico','serviciotecnico@ahsecoperu.com','','ATENCION DE SERVICIO TECNICO - N° SOLICITUD {NRO_SOL}',
 			   '<p>Estimado(a) {NOM_COORDINADOR},</p>
-<p>Se acordo la aprobación de la cotizacion de la solicitud N°{NRO_SOL} para el cliente {CLIENTE}.</p>
+<p>Se acordó la aprobación de la cotizacion de la solicitud N°{NRO_SOL} y se generó el despacho con {TIPO_PROCESO} para el cliente {CLIENTE}.</p>
 <p>Su apoyo con la atención de la programación de la instalación.</p>
 <p>Por favor ingrese al sistema para continuar con el flujo de venta. Ingrese al siguiente link: <a href="https://192.168.1.220/"><span data-olk-copy-source="MessageBody">https://192.168.1.220/</span></a> .</p>','SYSTEM',GETDATE(),NULL,NULL);
 

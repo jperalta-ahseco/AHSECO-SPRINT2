@@ -379,7 +379,7 @@ var cotvtadet = (function ($, win, doc) {
             };
             return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.GuardarCosto);
         }
-        return app.message.confirm("Ventas", "&iquest;Est&aacute; seguro que desea guardar el costo?", "Si;", "No", fnSi, null);
+        return app.message.confirm("Ventas", "&iquest;Est&aacute; seguro que desea guardar el costo?", "Si", "No", fnSi, null);
 
     }
 
@@ -405,7 +405,7 @@ var cotvtadet = (function ($, win, doc) {
                 Direccion: $CI_txtDireccion.val(),
                 AmbienteDestino: $CI_txtAmbDestino.val(),
                 NumeroPiso: $CI_txtNroPiso.val(),
-                MontoUnitario: app.convertirNumero($CI_txtMtoUnitarioCosto.val()),
+                MontoUnitario: parseFloat(app.convertirNumero($CI_txtMtoUnitarioCosto.val())),
                 CodigoCotizacionDetalle: $CI_hdnIdCotDet.val(),
                 IdCosto: parseInt($CI_hdnCodCosto.val())
             }
@@ -413,6 +413,8 @@ var cotvtadet = (function ($, win, doc) {
             var fnDoneCallback = function (data) {
 
                 if (data.Result.Codigo > 0) {
+                    cotvtacostos.cargarCostosItemsxTab($CI_hdnCodTipoCosto.val());
+
                     guardarValorizacion();
                     //location.reload();
                 }
@@ -423,7 +425,7 @@ var cotvtadet = (function ($, win, doc) {
             };
             return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.GuardarCosto);
         }
-        return app.message.confirm("Ventas", "&iquest;Est&aacute; seguro que desea guardar el monto unitario costo?", "Si;", "No", fnSi, null);
+        return app.message.confirm("Ventas", "&iquest;Est&aacute; seguro que desea guardar el monto unitario costo?", "Si", "No", fnSi, null);
 
     }
 
@@ -444,7 +446,7 @@ var cotvtadet = (function ($, win, doc) {
                 Tipo: "C",
                 CodigoCotizacionDetalle: parseInt(cotizacion_detalle),
                 Cantidad: parseInt($DI_txtCantidad.val()),
-                MontoUnitario: app.convertirNumero($DI_txtValorUnitario.val()),
+                MontoUnitario: parseFloat(app.convertirNumero($DI_txtValorUnitario.val())),
             };
             var objParam = JSON.stringify(objDatos);
 
@@ -2220,7 +2222,7 @@ var cotvtadet = (function ($, win, doc) {
                 Direccion: $CI_txtDireccion.val(),
                 AmbienteDestino: $CI_txtAmbDestino.val(),
                 NumeroPiso: $CI_txtNroPiso.val(),
-                MontoUnitario: app.convertirNumero($CI_txtMtoUnitarioCosto.val()),
+                MontoUnitario: parseFloat(app.convertirNumero($CI_txtMtoUnitarioCosto.val())),
                 CodigoCotizacionDetalle: $DI_hdnIdCotDet.val(),
                 IdCosto: parseInt($CI_hdnCodCosto.val())
             }
@@ -2241,7 +2243,7 @@ var cotvtadet = (function ($, win, doc) {
             };
             return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.GuardarCosto);
         }
-        return app.message.confirm("Ventas", "&iquest;Est&aacute; seguro que desea guardar el costo?", "Si;", "No", fnSi, null);
+        return app.message.confirm("Ventas", "&iquest;Est&aacute; seguro que desea guardar el costo?", "Si", "No", fnSi, null);
 
 
         
