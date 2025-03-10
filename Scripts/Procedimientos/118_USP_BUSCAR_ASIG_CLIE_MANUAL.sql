@@ -1,6 +1,7 @@
 USE [DB_AHSECO]
 GO
 
+
 CREATE OR ALTER PROCEDURE [dbo].[USP_BUSCAR_ASIG_CLIE_MANUAL]
 /*=================================================================================================
 	José A. Peralta 	16.02.25	 busca clientes asignados en la tabla TBM_ASIG_CLIE_MANUAL

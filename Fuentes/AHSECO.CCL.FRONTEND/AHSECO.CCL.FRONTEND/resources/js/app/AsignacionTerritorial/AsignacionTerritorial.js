@@ -4,6 +4,7 @@ var asignacionTerritorial = (function ($, win, doc){
     var $txtNomEmpresa = $('#txtNomEmpresa');
     var $txtRuc = $('#txtRuc');
     var $deleteCliente = $("#deleteCliente");
+    var $txtNomSede = $('#txtNomSede');
     var $txtCodCliente = $('#txtCodCliente');
     /*Combos*/
     var $cmbAsesorVenta = $('#cmbAsesorVenta');
@@ -207,7 +208,9 @@ var asignacionTerritorial = (function ($, win, doc){
         var url = "AsignacionManual/ObtenerListClientevsAsesor";
         var objConsulta = {
             Id_Cliente: $txtCodCliente.val(),
-            Id_Empleado: $cmbAsesorVenta.val() == "todos"?null : $cmbAsesorVenta.val()
+            Id_Empleado: $cmbAsesorVenta.val() == "todos" ? null : $cmbAsesorVenta.val(),
+            NumPaginas: 500,
+            Pagina: 1
         }
         var objParams = JSON.stringify(objConsulta);
         var fnDoneCallback = function (data) {
@@ -224,10 +227,11 @@ var asignacionTerritorial = (function ($, win, doc){
     }
     function btnBuscarClientesClick() {
         var method = "POST";
-        var url = "BandejaCliente/ObtenerClientes";
+        var url = "AsignacionManual/ObtenerClientes";
         var cliObj = {
-            RUC: $txtRuc.val(),
-            NomEmpresa: $txtNomEmpresa.val()
+            NumRuc: $txtRuc.val(),
+            NomEmpresa: $txtNomEmpresa.val(),
+            NomSede: $txtNomSede.val()
         }
         var objParam = JSON.stringify(cliObj);
 
@@ -302,10 +306,11 @@ var asignacionTerritorial = (function ($, win, doc){
     /*Fin Funciones Click*/
     function generarClientes() {
         var method = "POST";
-        var url = "BandejaCliente/ObtenerClientes";
+        var url = "AsignacionManual/ObtenerClientes";
         var cliObj = {
-            RUC: $txtRuc.val(),
-            NomEmpresa: $txtNomEmpresa.val()
+            NumRuc: $txtRuc.val(),
+            NomEmpresa: $txtNomEmpresa.val(),
+            NomSede: $txtNomSede.val()
         }
         var objParam = JSON.stringify(cliObj);
         var fnDoneCallback = function (data) {
@@ -419,7 +424,7 @@ var asignacionTerritorial = (function ($, win, doc){
             { data: "ID" },
             { data: "RUC" },
             { data: "NomEmpresa" },
-            { data: "Categoria" },
+            { data: "NombreSede" },
             { data: "UbigeoDepartamento.Descripcion" },
             { data: "UbigeoProvincia.Descripcion" },
             { data: "UbigeoDistrito.Descripcion" },

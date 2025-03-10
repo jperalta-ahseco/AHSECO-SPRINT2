@@ -9604,9 +9604,14 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             return Json(result);
         }
 
-
-        //[HttPost]
-        //public JsonResult 
+        [HttpPost]
+        public JsonResult ActualizarDestino(DatosActualizarSerieSTO datos)
+        {
+            var ventasBL = new VentasBL();
+            datos.UsuarioRegistra = User.ObtenerUsuario();
+            var result = ventasBL.ActualizarNumeroSerie(datos);
+            return Json(result);
+        }
 
     }
 }

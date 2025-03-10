@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using AHSECO.CCL.BE.AsignacionManual;
+using System;
 
 namespace AHSECO.CCL.BD.AsignacionManual
 {
@@ -127,6 +128,52 @@ namespace AHSECO.CCL.BD.AsignacionManual
                 return result;
             }
         }
+
+        public IEnumerable<ClienteDTO> ObtenerClientes(string NumRuc, string NomEmpresa, string NomSede)
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+            using (var connection = Factory.ConnectionFactory())
+            {
+                connection.Open();
+                var parameters = new DynamicParameters();
+
+                parameters.Add("IsRUC", NumRuc);
+                parameters.Add("IsNomEmpresa", NomEmpresa);
+                parameters.Add("IsNomSede", NomSede);
+                parameters.Add("IsNumPagina", 500);
+                parameters.Add("IsPagina", 1);
+                var result = connection.Query(
+                    sql: "USP_SEL_ASIG_CLIENTES",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure)
+                    .Select(s => s as IDictionary<string, object>)
+                    .Select(i => new ClienteDTO
+                    {
+                        ID = i.Single(d => d.Key.Equals("ID")).Value.Parse<int>(),
+                        RUC = i.Single(d => d.Key.Equals("RUCEMPRESA")).Value.Parse<string>(),
+                        NomEmpresa = i.Single(d => d.Key.Equals("NOMEMPRESA")).Value.Parse<string>(),
+                        NombreSede = i.Single(d => d.Key.Equals("NOMSEDE")).Value.Parse<string>(),
+                        UbigeoDepartamento = new UbigeoDTO
+                        {
+                            Descripcion = i.Single(d => d.Key.Equals("NOMDEPARTAMENTO")).Value.Parse<string>(),
+                        },
+                        UbigeoProvincia = new UbigeoDTO
+                        {
+                            Descripcion = i.Single(d => d.Key.Equals("NOMPROVINCIA")).Value.Parse<string>(),
+                        },
+                        UbigeoDistrito = new UbigeoDTO
+                        {
+                            Descripcion = i.Single(d => d.Key.Equals("NOMDISTRITO")).Value.Parse<string>(),
+                        },
+                        SectorCliente = i.Single(d => d.Key.Equals("SECTORCLIENTE")).Value.Parse<string>(),
+                    });
+
+                connection.Close();
+
+                return result;
+            }
+        }
+
 
     }
 }

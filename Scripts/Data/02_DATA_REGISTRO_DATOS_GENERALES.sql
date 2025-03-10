@@ -378,7 +378,6 @@ SELECT @ID=CAST(SCOPE_IDENTITY() AS INT)
 INSERT INTO [TBD_DATOS_GENERALES] VALUES (@ID,'TSED0001','TIPSEDE','Tipo Sede 1','TSED01','Establecimiento de salud con internamiento','','','','',1,'system',GETDATE(),1,1)
 
 
-
 /*
 select * from TBM_DATOS_GENERALES
 select * from TBD_DATOS_GENERALES

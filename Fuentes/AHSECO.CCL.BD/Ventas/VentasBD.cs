@@ -1986,6 +1986,7 @@ namespace AHSECO.CCL.BD.Ventas
                 parameters.Add("NUMSERIE", datos.NumeroSerie);
                 parameters.Add("CODUBIGEO", datos.CodigoUbigeo);
                 parameters.Add("DIRECCION", datos.Direccion);
+                parameters.Add("NROPISO", datos.NroPiso);
                 parameters.Add("NROGUIA", datos.NumeroGuiaRemision);
                 parameters.Add("RUTADOC", datos.RutaDocumento);
                 parameters.Add("TIPO", datos.Tipo);

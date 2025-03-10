@@ -172,7 +172,6 @@
     var $TipoReg = $('#TipoReg');
     var $FlagCargaDocumentoDespacho = $('#FlagCargaDocumentoDespacho');
     var $btnCargarOtroDocumento = $('#btnCargarOtroDocumento');
-    var $btnRegistrarSerie = $('#btnRegistrarSerie');
     var $ArchivoBase64 = $('#ArchivoBase64');
     var $ValidaBtnObservacion = $('#ValidaBtnObservacion');
     var $btnAdjuntarDocumentoDespacho = $("#btnAdjuntarDocumentoDespacho");
@@ -4374,27 +4373,58 @@
     };
 
     function GuardarDespacho() {
-        var method = "POST";
-        var url = "";
-
-        var obj = {
-
+        
+        if ($txtZonaDepacho.val() == "" || $txtZonaDepacho.val().trim().length == 0 || $txtZonaDepacho.val() == null ) {
+            app.message.error("Validación","Debe de seleccionar el lugar de despacho");
+            return;
         };
+
+        if ($txtDireccion.val() == "" || $txtDireccion.val().trim().length == 0 || $txtDireccion.val() == null) {
+            app.message.error("Validación","Debe de seleccionar el lugar de despacho");
+            return;
+        };
+
+        if ($txtNroPiso.val() == "" || $txtNroPiso.val().trim().length == 0 || $txtNroPiso.val() == null) {
+            app.message.error("Validación", "Debe de ingresar el N° Piso");
+            return;
+        };
+
+        var m = "POST";
+        var url = "BandejaSolicitudesVentas/ActualizarNumeroSerie";
+        var obj = {
+            codDetalleDespacho: $codDetalleDespacho.val(),
+            CodigoUbigeo: $hdnIdZonaDespacho.val(),
+            Direccion: $txtDireccion.val(),
+            NroPiso: $txtNroPiso.val(),
+            Tipo: 'U'
+        }
         var objParam = JSON.stringify(obj);
 
         var fnSi = function () {
+            var fnDoneCallback = function () {
 
+                var fnAceptar = function () {
+                    var lista = $('#fila' + $codDetalleDespacho.val()).children().toArray();
+                    lista.forEach(function (currentValue, index, arr) {
+                        if (index == 4) {
+                            lista[index].textContent = $txtZonaDepacho.val();
+                        };
+                    });
+
+                    $modalSeries.modal('toggle');
+                };
+
+                app.message.success("Éxito", "Se grabó correctamente","Aceptar", fnAceptar);
+            };
+
+            var fnFailCallBack = function () {
+                app.message.error("Error", "Se presentó un error al guardar, por favor revisar");
+            };
+
+            app.llamarAjax(method, url, objParam, fnDoneCallback, fnFailCallBack, null, null);
         }
-        return app.message.confirm("Confirmación","¿Desea guardar ")
-        var fnDoneCallback = function () {
-            app.message.confirm("Éxito", "Se grabó correctamente");
-        };
-
-        var fnFailCallBack = function () {
-            app.message.error("Error", "Se presentó un error al guardar, por favor revisar");
-        };
-
-        app.llamarAjax(method, url, objParam, fnDoneCallback, fnFailCallback);
+        return app.message.confirm("Confirmación", "¿Desea guardar los datos ingresados?", "Si", "No", fnSi);
+        
 
     };
 

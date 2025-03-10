@@ -12,6 +12,7 @@ using AHSECO.CCL.FRONTEND.Security;
 using AHSECO.CCL.BE.Mantenimiento;
 using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using System.Collections.Generic;
+using AHSECO.CCL.COMUN;
 
 namespace AHSECO.CCL.FRONTEND.Controllers.AsignacionManual
 {
@@ -177,6 +178,13 @@ namespace AHSECO.CCL.FRONTEND.Controllers.AsignacionManual
             outStream.Close();
             Response.End();
 
+        }
+
+        public JsonResult ObtenerClientes(string NumRuc, string NomEmpresa, string NomSede)
+        {
+            var asignacionBL = new AsignacionManualBL();
+            var result = asignacionBL.ObtenerClientes(NumRuc, NomEmpresa, NomSede);
+            return Json(result);
         }
     }
 }

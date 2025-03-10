@@ -1,5 +1,6 @@
 ﻿using AHSECO.CCL.BD.AsignacionManual;
 using AHSECO.CCL.BE.AsignacionManual;
+using AHSECO.CCL.BE.Mantenimiento;
 using AHSECO.CCL.COMUN;
 using System;
 using System.Collections.Generic;
@@ -61,5 +62,21 @@ namespace AHSECO.CCL.BL.AsignacionManual
                 return new ResponseDTO<IEnumerable<ClientevsAsesorDTO>>(ex);
             }
         }
+
+        public ResponseDTO<IEnumerable<ClienteDTO>> ObtenerClientes(string NumRuc, string NomEmpresa, string NomSede)
+        {
+            try
+            {
+                var result = Repository.ObtenerClientes(NumRuc, NomEmpresa, NomSede);
+                return new ResponseDTO<IEnumerable<ClienteDTO>>(result);
+            }
+            catch(Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<IEnumerable<ClienteDTO>>(ex);
+            }
+        }
+
+
     }
 }
