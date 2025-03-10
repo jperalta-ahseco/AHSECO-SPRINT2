@@ -1962,6 +1962,7 @@ namespace AHSECO.CCL.BD.Ventas
                         CodigoUbigeo = i.Single(d => d.Key.Equals("COD_UBIGEO")).Value.Parse<string>(),
                         NombreUbigeo = i.Single(d => d.Key.Equals("NOMUBIGEO")).Value.Parse<string>(),
                         Direccion = i.Single(d => d.Key.Equals("DIRECCION")).Value.Parse<string>(),
+                        NroPiso = i.Single(d => d.Key.Equals("NROPISO")).Value.Parse<int>(),
                         RutaDocumento = i.Single(d => d.Key.Equals("RUTA_DOCUMENTO")).Value.Parse<string>(),
                         NumeroGuia = i.Single(d => d.Key.Equals("NUM_GUIA")).Value.Parse<string>(),
                         CodigoDocumento = i.Single(d => d.Key.Equals("ID_DOCUMENTO")).Value.Parse<long>()

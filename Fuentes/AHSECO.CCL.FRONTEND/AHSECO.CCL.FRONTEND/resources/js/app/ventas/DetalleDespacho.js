@@ -256,7 +256,7 @@
     let ContSerieCS = 0;
     let NumeroSinStock = 0;
     let NumeroConStock = 0;
-
+    
     $(Initialize);
 
     function Initialize() {
@@ -265,6 +265,8 @@
         detalleDespacho.xComprar = [];
         detalleDespacho.xComprarServ = [];
         detalleDespacho.Productos = [];
+        detalleDespacho.arrDetalleSS = [];
+        detalleDespacho.arrDetalleCS = [];
         if ($NumDespacho.val() == "0") {
             CargarDatosDetalle();
         };
@@ -617,6 +619,46 @@
 
         var tipo_despacho = "T";
 
+        //var tblSeriesSS = $('#tblSeriesSS tbody tr');
+        //var tblSerieCS = $('#tblSeriesCS tbody tr');
+
+        var validador = 0;
+
+        if (detalleDespacho.arrDetalleSS.length > 0) {
+            detalleDespacho.arrDetalleSS.forEach(function (currentValue, index, array) {
+                var arrSS = []
+                arrSS = $('#tblSeriesSS').find('#fila' + currentValue).children().toArray();
+                arrSS.forEach(function (currentValue, index, array) {
+                    if (index == 4) {
+                        if (arrSS[index].textContent == "" || arrSS[index].textContent == null) {
+                            validador = 1; //Se valida si algún elemento de la tblSerieSS está vacío para la sección de "DESTINO";
+                        };
+                    };
+                });
+            });
+        };
+        
+
+        if (detalleDespacho.arrDetalleCS.length > 0) {
+            detalleDespacho.arrDetalleCS.forEach(function (currentValue, index, array) {
+                var arrCS = []
+                arrCS = $('#tblSeriesCS').find('#fila' + currentValue).children().toArray();
+                arrCS.forEach(function (currentValue, index, array) {
+                    if (index == 4) {
+                        if (arrCS[index].textContent == "" || arrCS[index].textContent == null) {
+                            validador = 1; //Se valida si algún elemento de la tblSerieCS está vacío para la sección de "DESTINO";
+                        };
+                    };
+                });
+            });
+        };
+        
+
+        
+        if (validador == 1) {
+            app.message.error("Validación", "Debe de ingresar el destino a todos los detalles de despacho");
+            return;
+        }
 
         var num_solicitud = $numeroSolicitud.val();
         var tipo = "BO";
@@ -875,6 +917,8 @@
                     }
 
                     for (var i = 0; data.Result.DespachoDetalleConStock.length > i; i++) {
+                        detalleDespacho.arrDetalleCS.push(data.Result.DespachoDetalleConStock[i].Id);
+
                         var html = '<div class="text-center">';
                         var sel_html = ''
                         if (($estadoDesp.val() == "DREG") && $nombreRol.val() == "SGI_VENTA_ASESOR") {
@@ -933,6 +977,9 @@
 
 
                     for (i = 0; i < data.Result.DespachoDetalleSinStock.length; i++) {
+
+                        detalleDespacho.arrDetalleSS.push(data.Result.DespachoDetalleSinStock[i].Id);
+
                         var html = '<div class="text-center">';
                         var sel_html = ''
 
@@ -2638,6 +2685,7 @@
 
             if (codUbigeo != "" && codUbigeo != null && codUbigeo.length > 0) {
                 $searchZonaDespacho.css("visibility", "hidden");
+                $btnGuardarDespacho.css('display', 'none');
             }
             $txtZonaDepacho.val(data.Result.NombreUbigeo);
             var direccion = data.Result.Direccion;
@@ -2648,6 +2696,12 @@
                 $txtDireccion.prop("disabled", true);
 
             }
+
+            var nroPiso = data.Result.NroPiso;
+            if (nroPiso != "" && nroPiso != null ) {
+                $txtNroPiso.prop("disabled", true);
+            };
+            $txtNroPiso.val(nroPiso);
 
             $txtGuia.val('');
             $lblNombreArchivoDespacho.text('');
@@ -2684,6 +2738,7 @@
         var objParam = "";
         var fnDoneCallback = function (data) {
             $codDetalleDespacho.val(data.Result.Id);
+            $btnGuardarDespacho.css('display', 'none');
             $txtCodigoProductoSerie.val(data.Result.CodigoEquipo);
             $txtMarcaSerie.val(data.Result.Marca);
             $txtDescripcion.val(data.Result.DescripcionEquipo);
@@ -2702,6 +2757,12 @@
             var rutaDocumento = data.Result.RutaDocumento
             $lblNombreArchivoDespacho.text(rutaDocumento);
             $("#rowTablaSeriesCargar").hide();
+
+            var nroPiso = data.Result.NroPiso;
+            if (nroPiso != "" && nroPiso != null ) {
+                $txtNroPiso.prop("disabled", true);
+            };
+            $txtNroPiso.val(nroPiso);
 
             if (data.Result.RutaDocumento.length > 0) {
                 $("#rowTablaSeriesDescarga").show();
@@ -2792,6 +2853,7 @@
             $CodigoDocumentoDespacho.val(data.Result.CodigoDocumento);
             $TipoReg.val("U");
             $FlagCargaDocumentoDespacho.val("0");
+           // $btnGuardarDespacho.css('display', 'none');
 
             if ($nombreRol.val() == "SGI_VENTA_ASESOR") {
                 $txtDireccion.prop("disabled", false);
@@ -2837,11 +2899,18 @@
 
             if (codUbigeo != "" && codUbigeo != null && codUbigeo.length > 0) {
                 $searchZonaDespacho.css("visibility", "hidden");
+                $btnGuardarDespacho.css('display', 'none');
             };
 
             if (direccion != "" && direccion != null && direccion.length > 0) {
                 $txtDireccion.prop("disabled", true);
             };
+
+            var nroPiso = data.Result.NroPiso;
+            if (nroPiso != "" && nroPiso != null ) {
+                $txtNroPiso.prop("disabled", true);
+            };
+            $txtNroPiso.val(nroPiso);
         };
         return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.consultaDetalleDespacho);
     }
@@ -4121,6 +4190,7 @@
 
             if (codUbigeo != "" && codUbigeo != null && codUbigeo.length > 0) {
                 $searchZonaDespacho.css("visibility", "hidden");
+                $btnGuardarDespacho.css('display', 'none');
             }
             $txtZonaDepacho.val(data.Result.NombreUbigeo);
             var direccion = data.Result.Direccion;
@@ -4130,10 +4200,13 @@
             $txtDireccion.prop("disabled", false);
             if (direccion != "" && direccion != null && direccion.length > 0) {
                 $txtDireccion.prop("disabled", true);
+            };
 
-            }
-
-
+            var nroPiso = data.Result.NroPiso;
+            if (nroPiso != "" && nroPiso != null ) {
+                $txtNroPiso.prop("disabled", true);
+            };
+            $txtNroPiso.val(nroPiso);
             $txtGuia.val('');
             $lblNombreArchivoDespacho.text('');
             $codigosIds.val(concatenatedCodes);

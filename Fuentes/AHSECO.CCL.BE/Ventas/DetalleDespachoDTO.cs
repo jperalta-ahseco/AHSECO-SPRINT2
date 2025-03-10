@@ -23,5 +23,6 @@ namespace AHSECO.CCL.BE.Ventas
         public string NumeroGuia { get; set; }
         public string Direccion { get; set; }
         public long CodigoDocumento { get; set; }
+        public int NroPiso { get; set; }
     }
 }
