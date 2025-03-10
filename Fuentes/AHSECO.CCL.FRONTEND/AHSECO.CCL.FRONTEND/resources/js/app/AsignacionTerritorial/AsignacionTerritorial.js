@@ -323,7 +323,9 @@ var asignacionTerritorial = (function ($, win, doc){
         var url = "AsignacionManual/ObtenerListClientevsAsesor";
         var objConsulta = {
             Id_Cliente: 0, 
-            Id_Empleado: null
+            Id_Empleado: null,
+            NumPaginas: 500, 
+            Pagina: 1
         }
         var objParams = JSON.stringify(objConsulta);
         var fnDoneCallback = function (data) {

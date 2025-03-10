@@ -18,6 +18,8 @@ namespace AHSECO.CCL.BE.AsignacionManual
         public string FechaModificacion{ get; set; }
         public UbigeoDTO Ubigeo { get; set; }
         public SedeDTO Sede { get; set; }
+        public int NumPaginas { get; set; }
+        public int Pagina { get; set; }
 
     }
 }

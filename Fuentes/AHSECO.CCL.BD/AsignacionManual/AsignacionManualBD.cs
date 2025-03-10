@@ -22,6 +22,8 @@ namespace AHSECO.CCL.BD.AsignacionManual
 
                 parameters.Add("ID_CLIENTE", clientevsAsesorDTO.Id_Cliente);
                 parameters.Add("ID_EMPLEADO", string.IsNullOrEmpty(clientevsAsesorDTO.Id_Empleado) ? null : clientevsAsesorDTO.Id_Empleado);
+                parameters.Add("NUMPAGINAS", clientevsAsesorDTO.NumPaginas);
+                parameters.Add("PAGINA", clientevsAsesorDTO.Pagina);
 
                 var result = connection.Query(
                     sql: "USP_SEL_ASIG_CLIE_MANUAL",
