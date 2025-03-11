@@ -1922,6 +1922,7 @@
         numSolFormateado = numSolFormateado.substring((numSolFormateado.length) - 6, numSolFormateado.length);
         $hdnCodEmpresa.val(requerimiento.Cod_Empresa);
         $txtSolVenta.val(numSolFormateado.toString()); 
+        $hdnNumDespacho.val(requerimiento.Id_Despacho);
         $txtOrdCompra.val(requerimiento.OrdenCompra);
         $txtContrato.val(requerimiento.Contrato);
         $cmbGarantias.val(requerimiento.Garantia).trigger('change.select2');
@@ -3733,7 +3734,8 @@
         var url = "BandejaInstalacionTecnica/CrearMantPrevent";
 
         var objSol = {
-            solicitud: $txtSolVenta.val()
+            solicitud: $txtSolVenta.val(),
+            id_despacho: $hdnNumDespacho.val()
         };
 
         var objParam = JSON.stringify(objSol);

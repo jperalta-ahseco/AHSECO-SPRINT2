@@ -883,6 +883,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
                     InstalacionTecnicaDTO instalacion = new InstalacionTecnicaDTO
                     {
                         Id_Solicitud = reader.IsDBNull(reader.GetOrdinal("ID_SOLICITUD")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_SOLICITUD"))
+                        ,Id_Despacho = reader.IsDBNull(reader.GetOrdinal("ID_DESPACHO")) ? 0 : reader.GetInt64(reader.GetOrdinal("ID_DESPACHO"))
                         ,RucEmpresa = reader.IsDBNull(reader.GetOrdinal("RUCEMPRESA")) ? "" : reader.GetString(reader.GetOrdinal("RUCEMPRESA"))
                         ,NomEmpresa = reader.IsDBNull(reader.GetOrdinal("NOMEMPRESA")) ? "" : reader.GetString(reader.GetOrdinal("NOMEMPRESA"))
                         ,Ubicacion = reader.IsDBNull(reader.GetOrdinal("UBICACION")) ? "" : reader.GetString(reader.GetOrdinal("UBICACION"))
@@ -1002,7 +1003,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
             return result;
         }
 
-        public RespuestaDTO CrearMantPrevent(long solicitud, string usuario)
+        public RespuestaDTO CrearMantPrevent(long solicitud, string usuario, long id_despacho)
         {
             Log.TraceInfo(Utilidades.GetCaller());
             using (var connection = Factory.ConnectionFactory())
@@ -1012,6 +1013,7 @@ namespace AHSECO.CCL.BD.ServicioTecnico.BandejaInstalacionTecnica
 
                 parameters.Add("isIdSolicitud", solicitud);
                 parameters.Add("UsrEjecuta", usuario);
+                parameters.Add("isIdSolDespacho", id_despacho);
 
                 var result = connection.Query(
                     sql: "USP_INS_MANT_PREV",

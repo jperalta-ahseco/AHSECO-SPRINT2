@@ -1974,7 +1974,7 @@ namespace AHSECO.CCL.BD.Ventas
 
         public RespuestaDTO ActualizarNumeroSerie(DatosActualizarSerieSTO datos)
         {
-            var rpta = new RespuestaDTO();
+                var rpta = new RespuestaDTO();
             Log.TraceInfo(Utilidades.GetCaller());
 
 

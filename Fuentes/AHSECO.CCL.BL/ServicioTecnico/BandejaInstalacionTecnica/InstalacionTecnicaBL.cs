@@ -238,11 +238,11 @@ namespace AHSECO.CCL.BL.ServicioTecnico.BandejaInstalacionTecnica
             }
         }
 
-        public ResponseDTO<RespuestaDTO> CrearMantPrevent(long solicitud, string usuario)
+        public ResponseDTO<RespuestaDTO> CrearMantPrevent(long solicitud, string usuario, long id_despacho)
         {
             try
             {
-                var result = Repository.CrearMantPrevent(solicitud, usuario);
+                var result = Repository.CrearMantPrevent(solicitud, usuario, id_despacho);
                 return new ResponseDTO<RespuestaDTO>(result);
             }
             catch(Exception ex)

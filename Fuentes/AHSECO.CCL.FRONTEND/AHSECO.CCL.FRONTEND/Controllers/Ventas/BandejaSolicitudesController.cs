@@ -8690,42 +8690,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         {
                             ViewBag.VerNavSinStock = true;
                             ViewBag.InActiveTecnico = "";
-
-                            if (validarDespacho.Result.TipoDespacho == "T")
-                            {
-                                if (validarDespacho.Result.EnvioBOSinStock > 0 &&
-                                (validarDespacho.Result.EnvioGPConStock == 0 || validarDespacho.Result.EnvioGPSinStock == 0))
-                                {
-                                    ViewBag.Btn_GuiaPedidoTotal = "";
-                                    if (validarDespacho.Result.GenerarGuiaPedidoConStock > 0 ||
-                                        validarDespacho.Result.GenerarGuiaPedidoSinStock > 0)
-                                    {
-                                        ViewBag.Btn_EnviarGuiaTotal = "";
-                                    }
-                                }
-                            }
                         }
 
                         if (validarDespacho.Result.ContadorConStock > 0)
                         {
                             ViewBag.VerNavConStock = true;
-                        }
-
-                        if (tipoSol != ConstantesDTO.SolicitudVenta.TipoSolicitud.Servicio)
-                        {
-                            if (validarDespacho.Result.EnvioGPSinStock == 0)
-                            {
-                                if (validarDespacho.Result.TipoDespacho == "P" && validarDespacho.Result.GenerarGuiaPedidoSinStock > 0)
-                                {
-                                    ViewBag.Btn_EnviarGuiaSS = "inline-block";
-                                }
-
-                                if (validarDespacho.Result.TipoDespacho == "P")
-                                {
-                                    ViewBag.Btn_GuiaPedidoSS = "inline-block";
-                                }
-
-                            }
                         }
 
                         if (tipoSol == ConstantesDTO.SolicitudVenta.TipoSolicitud.ServiciosyRepuestos)
@@ -8738,35 +8707,6 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                             }
 
                             ViewBag.InActiveTecnico = "";
-
-                            //Para respuestos sin stock:
-                            if (validarDespacho.Result.ContadorSinStock > 0 && validarDespacho.Result.ContadorConStock == 0)
-                            {
-                                if (validarDespacho.Result.EnvioBOSinStock == 1 && validarDespacho.Result.ContadorSinStock > 0
-                                    && validarDespacho.Result.EnvioGPSinStock == 0)
-                                {
-                                    ViewBag.Btn_GuiaPedidoTotal = "";
-                                    if (validarDespacho.Result.GenerarGuiaPedidoSinStock > 0)
-                                    {
-                                        ViewBag.Btn_EnviarGuiaTotal = "";
-                                    }
-                                }
-                            }
-
-                            //Para respuestos mixtos con y sin stock:
-                            if (validarDespacho.Result.ContadorSinStock > 0 && validarDespacho.Result.ContadorConStock > 0)
-                            {
-                                if (validarDespacho.Result.EnvioBOSinStock == 1 && validarDespacho.Result.ContadorSinStock > 0
-                                && (validarDespacho.Result.EnvioGPSinStock == 0 || validarDespacho.Result.EnvioGPConStock == 0))
-                                {
-                                    ViewBag.Btn_GuiaPedidoTotal = "";
-                                    if (validarDespacho.Result.GenerarGuiaPedidoConStock > 0 ||
-                                        validarDespacho.Result.GenerarGuiaPedidoSinStock > 0)
-                                    {
-                                        ViewBag.Btn_EnviarGuiaTotal = "";
-                                    }
-                                }
-                            }
                         }
 
                     }

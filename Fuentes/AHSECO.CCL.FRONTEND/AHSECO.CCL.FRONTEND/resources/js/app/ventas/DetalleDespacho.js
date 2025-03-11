@@ -51,6 +51,7 @@
     var $bodyCostosUbi = $('#bodyCostosUbi');
     var $NoRegCostosUbi = $('#NoRegCostosUbi');
     var $hdnCodDetalle = $('#hdnCodDetalle');
+    var $estadoSol = $('#estadoSol');
 
     /* Modales */
     var $modalCargaDocumento = $('#modalCargaDocumento');

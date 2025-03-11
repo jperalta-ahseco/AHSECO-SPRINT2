@@ -814,11 +814,11 @@ namespace AHSECO.CCL.FRONTEND.Controllers.ServicioTecnico.BandejaInstalacionTecn
         }
 
 
-        public JsonResult CrearMantPrevent(long solicitud)
+        public JsonResult CrearMantPrevent(long solicitud, long id_despacho)
         {
             var instalacionBL = new InstalacionTecnicaBL();
             var usuario = User.ObtenerUsuario();
-            var result = instalacionBL.CrearMantPrevent(solicitud, usuario);
+            var result = instalacionBL.CrearMantPrevent(solicitud, usuario, id_despacho);
             return Json(result);
         }
 
