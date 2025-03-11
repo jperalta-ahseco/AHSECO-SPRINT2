@@ -1478,6 +1478,8 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                         soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.CotAprob ||
                         soli.Estado == ConstantesDTO.EstadosProcesos.ProcesoVenta.Finalizado)
                     {
+                        ViewBag.AcordionCollapsedLiq = "";
+                        ViewBag.TabAcordionCollapsedLiq = "";
                         ViewBag.AcordionCollapsedGest = "";
                         ViewBag.TabAcordionCollapsedGest = "";
                     }
