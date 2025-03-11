@@ -1552,9 +1552,7 @@
             {
                 data: "Id",
                 render: function (data, type, row) {
-                    var d = "'" + row.CodItem + "','" + 2 + "'";
-                    var ver = '';
-                    ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: solicitud.editarItemServ(' + d + ')"><i class="fa fa-info-circle" aria-hidden="true"></i> Ver</a>';
+                    ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: detalleDespacho.editarItemServ(' + data + ')"><i class="fa fa-info-circle" aria-hidden="true"></i> Ver</a>';
                     return '<center>' + ver + '</center>';
                 }
             }
