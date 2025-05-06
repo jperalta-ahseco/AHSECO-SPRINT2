@@ -770,7 +770,7 @@
         var nueva_suma = parseInt(sumaCantidades) + parseInt($CX_txtCantCosteo.val());
 
         if (nueva_suma > $CX_txtCantCotDet.val()) {
-            app.message.error("Validacion", "La cantidad ha costear sobrepada la cantidad total de los productos, tiene " + restante + " cantidad(es) para costear para " + des_TipoCosto);
+            app.message.error("Validacion", "La cantidad ha costear sobrepasa la cantidad total de los productos, tiene " + restante + " cantidad(es) para costear para " + des_TipoCosto);
             return;
         }
 

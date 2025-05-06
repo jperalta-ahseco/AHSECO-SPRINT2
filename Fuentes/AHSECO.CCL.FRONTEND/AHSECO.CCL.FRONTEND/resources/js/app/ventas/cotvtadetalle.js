@@ -2014,7 +2014,7 @@ var cotvtadet = (function ($, win, doc) {
         var nueva_suma = parseInt(sumaCantidades) + parseInt($CX_txtCantCosteo.val());
 
         if (nueva_suma > $DI_txtCantidad.val()) {
-            app.message.error("Validacion", "La cantidad ha costear sobrepada la cantidad total de los productos, tiene " + restante + " cantidad(es) para costear para " + des_TipoCosto);
+            app.message.error("Validacion", "La cantidad ha costear sobrepasa la cantidad total de los productos, tiene " + restante + " cantidad(es) para costear para " + des_TipoCosto);
             return;
         }
 
@@ -2204,7 +2204,7 @@ var cotvtadet = (function ($, win, doc) {
         var des_TipoCosto = $CI_TipoCosto.val();
 
         if (nueva_suma > $CI_txtCantCotDet.val()) {
-            app.message.error("Validacion", "La cantidad ha costear sobrepada la cantidad total de los productos, tiene " + restante + " cantidad(es) para costear para " + des_TipoCosto);
+            app.message.error("Validacion", "La cantidad ha costear sobrepasa la cantidad total de los productos, tiene " + restante + " cantidad(es) para costear para " + des_TipoCosto);
             return;
         }
 

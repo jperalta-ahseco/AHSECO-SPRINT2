@@ -3,8 +3,9 @@ GO
 
 CREATE OR ALTER   PROCEDURE [dbo].[USP_CREAR_GUIA]
 /*===========================================================================================
-	NOMBRE:					FECHA:		DESCRIPCIÓN:
-	José A. Peralta		28.10.24		Se obtiene los datos para la guia de pedidos y guia de BO.
+	NOMBRE:			FECHA:		DESCRIPCIÓN:
+	José A. Peralta		28.10.24	Se obtiene los datos para la guia de pedidos y guia de BO.
+	Diego A. Bazalar	05.05.25	Se realiza ajuste para determinar el nro de orden y la fecha de orden, cambiando de tabla TBM_DESPACHO a TBM_SOLDESPACHO.	
 	EXEC USP_CREAR_GUIA 65,'GP','N'
   ===========================================================================================*/
 @CodigoSol BIGINT,
@@ -213,9 +214,9 @@ DECLARE @SUBTOT DECIMAL(18,9)
 
 		
 	SELECT TOP 1 
-	@FECHAOC=CONVERT(varchar,FECHAORDEN,103) ,
-	@NUMOC =ISNULL(NUMORDEN,'')
-	FROM TBM_DESPACHO WHERE ID_SOLICITUD= @CodigoSol;
+	@FECHAOC=CONVERT(varchar,ISNULL(FECHAORDEN,FEC_CONTRATO),103) ,
+	@NUMOC =ISNULL(NUMORDEN,NUMCONTRATO)
+	FROM TBM_SOLDESPACHO WHERE ID= @IdDespacho;  
 
 	SELECT @NUMDOCUSU=NUM_DOC FROM TBM_SEGURIDAD_USUARIO WITH(NOLOCK) WHERE RTRIM(UPPER(USUARIO))=RTRIM(@USUARIO) AND HABILITADO=1;
 
