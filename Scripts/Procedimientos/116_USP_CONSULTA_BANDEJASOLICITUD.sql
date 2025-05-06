@@ -5,7 +5,7 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_CONSULTA_BANDEJASOLICITUD]
 /*================================================================================================
 	NOMBRE:					FECHA:		DESCRIPCIÓN:
 	José A. Peralta		13.02.25		Se realiza consulta a bandeja de solicitudes
-	Diego A.Bazalar		05.05.25		Se ajusta la búsqueda por número de orden y número de contrato. 
+	Diego A.Bazalar		05.05.25		Se ajusta la búsqueda por número de orden y número de contrato, y se ajusta la búsqueda para flagCosteo.
 	EXEC USP_CONSULTA_BANDEJASOLICITUD 0,0,'01/04/2025','27/04/2025','','','','','','','','','','','','','','','','','','','','','','','',''
   ================================================================================================*/
 @CODSOL BIGINT,
@@ -248,7 +248,7 @@ BEGIN
 																					INNER JOIN TBM_COTIZACIONVENTA B WITH(NOLOCK) ON A.ID_COTIZACION=B.ID_COTIZACION
 																					INNER JOIN TBM_SOLICITUDVENTA C WITH(NOLOCK) ON B.ID_SOLICITUD=C.ID_SOLICITUD
 																					WHERE 
-																					ISNULL(A.VVENTAUNI,0)=0 AND (LEN(A.COSTOFOB) >0 OR C.TIPO_SOL IN (''TSOL02'', ''TSOL03'')) AND C.ESTADO=''CVAL''
+																					ISNULL(A.VVENTAUNI,0)=0 AND (LEN(A.COSTOFOB) >0 OR C.TIPO_SOL IN (''TSOL02'', ''TSOL03'')  OR (ISNULL(A.INDSTOCK,''N'') = ''S'') ) AND C.ESTADO=''CVAL''
 																					AND A.ELIMINADO=''N''
 																		) '
 END

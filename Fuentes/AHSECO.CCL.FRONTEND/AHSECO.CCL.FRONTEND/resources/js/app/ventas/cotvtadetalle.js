@@ -1611,6 +1611,8 @@ var cotvtadet = (function ($, win, doc) {
             app.llenarComboMultiResult($DI_cmbGarantias, data.Result.Garantias, null, " ", "-- Ninguno --", filters);
             app.llenarComboMultiResult($CX_cmbCicloPreventivo, data.Result.CicloPreventivo, null, " ", "-- Seleccione --", filters);
 
+            var tiene_stock = data.Result.CabCosteoDetalle.IndicadorStock;
+
             $DI_txtValorUnitario.prop('disabled', true);
             var tipo_venta = $cmbTipo.val();
             if (tipo_venta === "TSOL04") { //Para venta de materiales:
@@ -1674,11 +1676,13 @@ var cotvtadet = (function ($, win, doc) {
                 $DI_cmbGarantias.prop('disabled', true);
             }
 
+
+
             if ($estadoSol.val() != "SCOT" && $estadoSol.val() != "CVAL") {
                 $DI_btnGuardar.hide();
             }
 
-            if ($idRolUsuario.val() === "SGI_VENTA_COSTOS" && $estadoSol.val() === "CVAL") {
+            if ($idRolUsuario.val() === "SGI_VENTA_COSTOS" && $estadoSol.val() === "CVAL" && (tiene_stock == "S" || (tiene_stock == "N" && data.Result.CabCosteoDetalle.ExWork != "") ) ) {
                 $DI_txtValorUnitario.prop('disabled', false);
                 $DI_btnGuardar.hide();
                 $DI_btnGuardarCosteo.show();
@@ -1707,7 +1711,7 @@ var cotvtadet = (function ($, win, doc) {
                 $DI_txtMargenUtilidad.val(data.Result.CabCosteoDetalle.MargenUtilidad);
                 $DI_txtTransporte.val(data.Result.CabCosteoDetalle.NombreTransporte);
 
-                var tiene_stock = data.Result.CabCosteoDetalle.IndicadorStock;
+                
                 if (tiene_stock === "S") {
                     $DI_radTieneStock_No.prop("checked", false);
                     $DI_radTieneStock_Si.prop("checked", true);
