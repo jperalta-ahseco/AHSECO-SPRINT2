@@ -6376,7 +6376,7 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 filtros.CodigoProceso = 1;
                 filtros.CodigoPlantilla = "PLANFACTUR";
                 filtros.Usuario = User.ObtenerUsuario();
-                filtros.Codigo = Convert.ToInt32(codigoSolicitud);
+                filtros.Codigo = Convert.ToInt32(idDespacho);
 
                 var datos_correo = plantillasBL.ConsultarPlantillaCorreo(filtros).Result;
 

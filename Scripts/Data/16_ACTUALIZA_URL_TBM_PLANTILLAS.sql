@@ -4,15 +4,19 @@ GO
 BEGIN TRY
 	DECLARE @Transaction VARCHAR(40) = 'Transaction Update_plantilla'
 	BEGIN TRANSACTION @Transaction;
+	
+		IF OBJECT_ID('#tmpPlantillas_insert') IS NOT NULL DROP TABLE #tmpPlantillas_insert
+		
+		
 		DECLARE @ID INT
 		DECLARE @NEWBODY VARCHAR(MAX)
 		DECLARE @PARAM VARCHAR(200)
 		DECLARE @COUNT INT
 		DECLARE @I int
 
-		INSERT INTO  [TBM_DATOS_GENERALES] VALUES ('URLSERV','URL','Url de Servidor',1,'system',GETDATE())
+		INSERT INTO  [TBM_DATOS_GENERALES] VALUES ('URLSERV','URLS','Url de Servidor',1,'system',GETDATE())
 		SELECT @ID=CAST(SCOPE_IDENTITY() AS INT)
-		INSERT INTO [TBD_DATOS_GENERALES] VALUES (@ID,'URL0001','URLSERV','Url de servidor','URL01','https://192.168.1.220/',NULL,NULL,NULL,NULL,1,'system',GETDATE(),1,1)
+		INSERT INTO [TBD_DATOS_GENERALES] VALUES (@ID,'URLS0001','URLSERV','Url de servidor','URL01','https://192.168.1.220/',NULL,NULL,NULL,NULL,1,'system',GETDATE(),1,1)
 
 		--Construimos tabla temporal
 		SELECT 
@@ -27,7 +31,7 @@ BEGIN TRY
 				,FEC_REG
 				,USR_MOD
 				,FEC_MOD
-			INTO #tmpPlantillas
+			INTO #tmpPlantillas_insert
 			FROM TBM_PLANTILLAS
 		---
 		---Limpiamos la tabla de plantilla
@@ -36,8 +40,10 @@ BEGIN TRY
 
 		---Generamos nueva data de plantillas
 		INSERT INTO TBM_PLANTILLAS
-		SELECT * from #tmpPlantillas
+		SELECT * from #tmpPlantillas_insert
 		--
+
+		DROP TABLE #tmpPlantillas_insert
 
 	COMMIT TRANSACTION @Transaction;
 END TRY 
