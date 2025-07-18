@@ -517,9 +517,9 @@ var app = (function ($, win, doc) {
                 searching: filters != null ? (filters.dataTableSearching || defaults.dataTableSearching) : defaults.dataTableSearching,
                 info: filters != null ? filters.dataTableInfo : true,
                 ordering: defaults.dataTableOrdering,
-                select: {
-                    style: defaults.dataTableSelect.single
-                },
+                //select: {
+                //    style: defaults.dataTableSelect.single
+                //},
                 order: [],
                 columns: columns,
                 columnDefs: columnsDefs,

@@ -3096,7 +3096,7 @@ var cotvtadet = (function ($, win, doc) {
 
                         var ind = "<input type='hidden' id='hdIndStock" + row.NroItem + row.Id + "' value='" + row.IndStock + "' >"
                         var exwork = "<label id='txtExWork" + row.NroItem + row.Id + "' >" + ex_work + "</label>" + "<label id='lblExWork" + row.NroItem + row.Id + "' style='display:none;'></label><input type='text'  id='ExWork" + row.NroItem + row.Id + "' value='" + row.CostoFOB + "' style='display:none; maxlength='50'/>&nbsp;";
-                        var margenUtil = "<label id='txtMargenUtil" + row.NroItem + row.Id + "' >" + mar_utilidad + "</label><label id='lblMargenUtil" + row.NroItem + row.Id + "' style='display:none;'></label><input type='text'  id='MargenUtil" + row.NroItem + row.Id + "' value='" + row.MargenUtilidad + "' style='display:none;' maxlength='50'/>&nbsp;";
+                        var margenUtil = "<label id='txtMargenUtil" + row.NroItem + row.Id + "' >" + mar_utilidad + "</label><label id='lblMargenUtil" + row.NroItem + row.Id + "' style='display:none;'></label><input type='text'  id='MargenUtil" + row.NroItem + row.Id + "' value='" + row.MargenUtilidad + "' style='display:none; color:black' maxlength='50'/>&nbsp;";
                         var transporte = "<label id='txtTransporte" + row.NroItem + row.Id + "' >" + trans + "</label><label id='lblTransporte" + row.NroItem + row.Id + "' style='display:none;'></label><div id='divTransporte" + row.NroItem + row.Id + "' style='display:none;'><input type='hidden' id='hdTransporte" + row.NroItem + row.Id + "' value='" + row.CodigoTransporte + "' ><select id='Transporte" + row.NroItem + row.Id + "'  style='width:150px; display:none;' value='" + row.CodigoTransporte + "'/></div>";
 
                         return ind + exwork + margenUtil + transporte;
@@ -3418,6 +3418,20 @@ var cotvtadet = (function ($, win, doc) {
         var rowCallback = function (row, data, index) {
             // Asignar un ID único basado en el índice de datos o algún identificador único
             $(row).attr('id', 'row' + index);
+
+            //Asignar colores.
+            if (data.IndStock) {
+                //$(row).attr('style', '');
+                $(row).attr('style', 'color:white;background-color:#008000a1;');
+                //$(row).css('background-color', 'green');
+            }
+            else{
+                //$(row).attr('style', 'background-color:red;');
+                $(row).attr('style', 'color:white;background-color:#ff0000b8;');
+                //$(row).css('background-color', 'red');
+            }
+
+            
         };
 
         var filters = {}

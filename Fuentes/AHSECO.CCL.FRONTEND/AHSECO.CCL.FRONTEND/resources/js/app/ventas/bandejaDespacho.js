@@ -125,13 +125,17 @@
 
             var objParam = JSON.stringify(obj);
 
-            var fnDoneCallBack = function () {
-                var fnreload = function () {
-                    app.redirectTo("BandejaVentas")
-                };
+            var fnDoneCallBack = function (data) {
+                if (data.Result.Codigo > 0) {
+                    var fnreload = function () {
+                        app.redirectTo("BandejaVentas")
+                    };
 
-                app.message.success("Éxito", "La solicitud cambió de estado a 'Venta Programada'", "Aceptar", fnreload);
-
+                    app.message.success("Éxito", "La solicitud cambió de estado a 'Venta Programada'", "Aceptar", fnreload);
+                }
+                else {
+                    app.message.error("Validación", data.Result.Mensaje);
+                }
             };
 
             var fnFailCallBack = function () {

@@ -480,7 +480,15 @@
                                                                     <button style="@(ViewBag.PermitirAgregarServicios ? "" : "display:none")" class="btn btn-default btn-sm" type="button" data-target="#modalDetalleCotizacionServicio" data-toggle="modal" id="btnAgregarServicios" tabindex="14"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar / Modificar Servicios</button>
                                                                 </div>
                                                                 <div class="table-responsive" style="@(ViewBag.VerBandejaCotizacion ? "" : "display:none")">
-                                                                    <table id="tblDetCotCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                    <div>
+                                                                        Con Stock:
+                                                                        <i class="fa fa-circle" aria-hidden="true" style="color: #008000a1"></i>
+                                                                    </div>
+                                                                    <div>
+                                                                        Sin Stock:
+                                                                        <i class="fa fa-circle" aria-hidden="true" style="color: #ff0000b8"></i>
+                                                                    </div>
+                                                                    <table id="tblDetCotCostos" class="table table-condensed table-bordered" width="100%">
                                                                         <thead>
                                                                             <tr>
                                                                                 @for (var i = 0; i < @ViewBag.CabeceraCotDet.Length; i++)

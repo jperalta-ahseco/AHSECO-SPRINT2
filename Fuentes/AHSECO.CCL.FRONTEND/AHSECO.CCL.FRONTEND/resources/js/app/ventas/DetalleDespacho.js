@@ -52,6 +52,7 @@
     var $NoRegCostosUbi = $('#NoRegCostosUbi');
     var $hdnCodDetalle = $('#hdnCodDetalle');
     var $estadoSol = $('#estadoSol');
+    var $searchZonaDespacho2 = $('#searchZonaDespacho2');
 
     /* Modales */
     var $modalCargaDocumento = $('#modalCargaDocumento');
@@ -319,6 +320,13 @@
             startDate: hoy()
         });
 
+        $dateProg.datepicker({
+            viewMode: 0,
+            minViewMode: 0,
+            format: 'dd/mm/yyyy',
+            startDate: hoy()
+        });
+
         $cmbTipoDespacho.on('change', function () {
             if ($(this).val() == "DESP01") {
                 $divNumOrden.css('display', 'block');
@@ -376,6 +384,7 @@
         $btnRegistrarSerie.click($btnRegistrarSerie_click);
         $btnGuardarUbigeoDespachoSel.click(seleccionarUbiDespacho);
         $searchZonaDespacho.click(BuscarCostos)//logicUbigeoDespacho);
+        $searchZonaDespacho2.click(logicUbigeoDespacho);
         $btnEnviarGestionDespacho.click($btnEnviarGestionDespacho_click);
         $btnGuardarGestionLogistica.click($btnGuardarGestionLogistica_click);
         $btnRegistrarDespacho.click($btnRegistrarDespacho_click);
@@ -656,7 +665,7 @@
         
 
         
-        if (validador == 1) {
+        if (validador == 1 && $TipoSolicitud.val() == 'TSOL05') {
             app.message.error("Validación", "Debe de ingresar el destino a todos los detalles de despacho");
             return;
         }
@@ -1062,6 +1071,7 @@
 
                 for (i = 0; i < data.Result.TecnicosDespacho.length; i++) {
                     tecnicosAsig.push({
+                        Id: data.Result.TecnicosDespacho[i].Id,
                         Cod_Tecnico: data.Result.TecnicosDespacho[i].Cod_Tecnico,
                         TipoDoc: data.Result.TecnicosDespacho[i].Nom_TipDocumento,
                         Documento: data.Result.TecnicosDespacho[i].Documento,
@@ -1204,7 +1214,7 @@
                             var html = '';
                             html += '<div class="form-group">' + '<div class="input-group input-group-sm date">'
                                 + '<input placeholder="--Empresa--" type="text" class="form-control input-sm" id="txtNomEmpresa' + row.Cod_Tecnico + '">';
-                            html += '<a class="input-group-addon input-sm" id="saveEmpresaTecnico' + row.Cod_Tecnico + '" href="javascript:garantias.saveEmpresaTecnico(' + row.Cod_Tecnico + ')"" >' +
+                            html += '<a class="input-group-addon input-sm" id="saveEmpresaTecnico' + row.Cod_Tecnico + '" href="javascript:detalleDespacho.saveEmpresaTecnico(' + row.Cod_Tecnico + ')"" >' +
                                 '<i class="fa fa-save" aria-hidden="true"></i>' +
                                 '</a>';
                             return '<center>' + html + '</center>';
@@ -1216,7 +1226,7 @@
                 }
             },
             {
-                data: "Cod_Tecnico",
+                data: "Id",
                 render: function (data, type, row) {
                     var retirar = "";
                     if ($EnvioServicio.val() == 0 && ($nombreRol.val() === "SGI_VENTA_ASESOR" ||
@@ -2680,10 +2690,10 @@
             $ArchivoBase64.val('');
             var codUbigeo = data.Result.CodigoUbigeo;
             $hdnIdZonaDespacho.val(codUbigeo);
-            $searchZonaDespacho.css("visibility", "visible");
+            $searchZonaDespacho.css("display", "table-cell");
 
             if (codUbigeo != "" && codUbigeo != null && codUbigeo.length > 0) {
-                $searchZonaDespacho.css("visibility", "hidden");
+                $searchZonaDespacho.css("display", "none");
                 $btnGuardarDespacho.css('display', 'none');
             }
             $txtZonaDepacho.val(data.Result.NombreUbigeo);
@@ -2745,7 +2755,7 @@
             $txtSerie.prop("disabled", true);
             var codUbigeo = data.Result.CodigoUbigeo;
             $hdnIdZonaDespacho.val(codUbigeo);
-            $searchZonaDespacho.css("visibility", "hidden");
+            $searchZonaDespacho.css("display", "none");
             $txtZonaDepacho.val(data.Result.NombreUbigeo);
             var direccion = data.Result.Direccion;
             $txtDireccion.val(direccion);
@@ -2856,7 +2866,20 @@
 
             if ($nombreRol.val() == "SGI_VENTA_ASESOR") {
                 $txtDireccion.prop("disabled", false);
-                $searchZonaDespacho.css("visibility", "visible");
+                $searchZonaDespacho.css("display", "table-cell");
+                $txtNroPiso.prop('disabled', false);
+                $btnRegistrarSerie.css('display', 'none');
+                $("#rowTablaSeriesCargar").hide();
+                $("#rowTablaSeriesDescarga").hide();
+                $("#rowTablaSeriesCargar").hide();
+                $("#rowTablaSeriesGuias").hide();
+                $("#rowTablaSeriesDescarga").hide();
+                $txtSerie.prop('disabled', true);
+                $txtGuia.prop('disabled', true);
+            }
+            else if ($nombreRol.val() == "SGI_VENTA_COORDINASERV" || $nombreRol.val() == "SGI_VENTA_COORDINAATC") {
+                $txtDireccion.prop("disabled", false);
+                $searchZonaDespacho2.css("display", "table-cell");
                 $txtNroPiso.prop('disabled', false);
                 $btnRegistrarSerie.css('display', 'none');
                 $("#rowTablaSeriesCargar").hide();
@@ -2869,8 +2892,15 @@
             }
             else if ($nombreRol.val() == "SGI_VENTA_LOGISTICA") {
                 $txtNroPiso.prop('disabled', true);
-                $txtDireccion.prop('disabled', true);
-                $searchZonaDespacho.css("visibility", "visible");
+
+                if ($txtDireccion.val() != "") {
+                    $txtDireccion.prop('disabled', true);
+                }
+                else { 
+                    $txtDireccion.prop('disabled', false);
+                }
+
+                $searchZonaDespacho2.css("display", "table-cell");
                 var rutaDocumento = data.Result.RutaDocumento
                 $lblNombreArchivoDespacho.text(rutaDocumento);
                 if (rutaDocumento.length > 0) {
@@ -2897,7 +2927,7 @@
             };
 
             if (codUbigeo != "" && codUbigeo != null && codUbigeo.length > 0) {
-                $searchZonaDespacho.css("visibility", "hidden");
+                $searchZonaDespacho.css("diplay", "none");
                 $btnGuardarDespacho.css('display', 'none');
             };
 
@@ -3792,17 +3822,16 @@
         var objTecnico = {
             TipoProceso: "D",
             Id_Reclamo: $numeroSolicitud.val(),
-            Cod_Tecnico: CodAsignacion,
+            Id_Asig: CodAsignacion,
             Estado: false
         };
 
         var objParam = JSON.stringify(objTecnico);
 
-
         var fnSi = function () {
             var fnDoneCallback = function () {
                 app.message.success("Éxito", "Se realizó la desasignación del técnico.");
-                tecnicosAsig = tecnicosAsig.filter(tecnico => tecnico.Cod_Tecnico != CodAsignacion);
+                tecnicosAsig = tecnicosAsig.filter(tecnico => tecnico.Id != CodAsignacion);
                 cargarTablaMainTecnicos(tecnicosAsig);
             };
 
@@ -3817,6 +3846,53 @@
     }
 
 
+    function saveEmpresaTecnico(CodTecnico) {
+        var empresa = $('#txtNomEmpresa' + CodTecnico).val();
+
+        if (empresa == "" || empresa.trim().length == 0) {
+            app.message.error("Validación", "Debe de ingresar un nombre de empresa");
+            return;
+        };
+
+        var method = "POST";
+        var url = "BandejaSolicitudesVentas/MantTecnicosDespacho";
+        
+        var objTecnico = {
+            TipoProceso: "U",
+            Id_Asig: $NumDespacho.val(),
+            Id_Reclamo:$numeroSolicitud.val(),
+            Empresa: empresa,
+            Cod_Tecnico: CodTecnico,
+            Estado: true
+        };
+
+        var objParam = JSON.stringify(objTecnico);
+
+
+        var fnSi = function () {
+            var fnDoneCallback = function () {
+                app.message.success("Éxito", "Se grabó correctamente.");
+
+                for (var i = 0; tecnicosAsig.length > i; i++) {
+                    if (tecnicosAsig[i].Cod_Tecnico === CodTecnico) {
+                        tecnicosAsig[i].Empresa = empresa;
+                    };
+                };
+                cargarTablaMainTecnicos(tecnicosAsig);
+            };
+
+            var fnFailCallBack = function () {
+                app.message.error("Error", "Ocurrió un problema al modificar al técnico, por favor revisar.");
+            };
+
+            app.llamarAjax(method, url, objParam, fnDoneCallback, fnFailCallBack, null, null);
+        };
+
+        return app.message.confirm("Confirmación", "¿Desea grabar?", "Sí", "No", fnSi, null);
+    }
+
+
+
     function asignarTecnico(data) {
 
         var method = "POST";
@@ -3824,7 +3900,7 @@
 
         var objReclamo = {
             TipoProceso: "I",
-            Id_Asig: 0,
+            Id_Asig: $NumDespacho.val(),
             Id_Reclamo: $numeroSolicitud.val(),
             Cod_Tecnico: data.CodigoEmpleado,
             Nombres: data.NombresEmpleado,
@@ -3849,6 +3925,7 @@
                     app.message.success("Éxito", "Se realizó la asignación de manera correcta");
 
                     tecnicosAsig.push({
+                        Id: data2.Result.Codigo,
                         Cod_Tecnico: data.CodigoEmpleado,
                         TipoDoc: data.Documento.Descripcion,
                         Documento: data.NumeroDocumento,
@@ -4185,7 +4262,7 @@
             var codUbigeo = data.Result.CodigoUbigeo;
             $hdnIdZonaDespacho.val(codUbigeo);
 
-            $searchZonaDespacho.css("visibility", "visible");
+            //$searchZonaDespacho.css("display", "table-cell");
 
             if (codUbigeo != "" && codUbigeo != null && codUbigeo.length > 0) {
                 $searchZonaDespacho.css("visibility", "hidden");
@@ -4534,6 +4611,7 @@
         editarSeries: editarSeries,
         editarItemServ: editarItemServ,
         DesasignarTecnico: DesasignarTecnico,
-        CerrarModalSelCostos: CerrarModalSelCostos
+        CerrarModalSelCostos: CerrarModalSelCostos,
+        saveEmpresaTecnico: saveEmpresaTecnico
     };
 })(window.jQuery, window, document);
