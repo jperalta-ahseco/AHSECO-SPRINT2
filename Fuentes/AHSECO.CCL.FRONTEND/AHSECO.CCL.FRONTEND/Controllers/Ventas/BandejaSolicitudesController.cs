@@ -8016,7 +8016,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 var idCotizacion = VariableSesion.getCadena("idCotizacion");
                 var result = ventasBL.ObtenerCotizacionVenta(new CotizacionDTO() { IdCotizacion = long.Parse(idCotizacion), Estado = ConstantesDTO.CotizacionVenta.Estados.Activo }).Result.FirstOrDefault();
                 VariableSesion.setCadena("porcentajeDscto", result.PorcentajeDescuento.ToString());
-                VariableSesion.setCadena("vigencia", result.Vigencia.ToString());
+                VariableSesion.setCadena("plazoEntrega", result.PlazoEntrega.ToString());
+
+                //desfasado -- VariableSesion.setCadena("vigencia", result.Vigencia.ToString());
 
                 return Json(new
                 {
@@ -8038,7 +8040,9 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
         {
             VariableSesion.setCadena("numDespacho", "0");
             VariableSesion.setCadena("porcentajeDscto", "");
-            VariableSesion.setCadena("vigencia", "");
+            //desfasado -- VariableSesion.setCadena("vigencia", "");
+            VariableSesion.setCadena("plazoEntrega", "");
+
             return View();
         }
 
@@ -9588,6 +9592,16 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             var ventasBL = new VentasBL();
             datos.UsuarioRegistra = User.ObtenerUsuario();
             var result = ventasBL.ActualizarNumeroSerie(datos);
+            return Json(result);
+        }
+
+
+        [HttpPost]
+        public JsonResult ValidaStockDisponible(int IdCotizacion)
+        {
+            var ventasBL = new VentasBL();
+            var result = ventasBL.ValidaStockDisponible(IdCotizacion);
+
             return Json(result);
         }
 

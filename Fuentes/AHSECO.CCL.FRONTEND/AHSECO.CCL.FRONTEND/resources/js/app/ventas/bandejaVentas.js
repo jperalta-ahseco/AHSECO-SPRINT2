@@ -237,8 +237,8 @@
         $("#hidden_fields").empty();
         $("<input>", { type: "hidden", name: "CodigoSolicitud", value: codSolicitud == "" ? "0" : codSolicitud }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "CodigoFlujo", value: codFlujo == "" || codFlujo == null? "0" : codFlujo }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "FechaInicioSol", value: fechaIniSol == "" ? "" : fechaIniSol.toString().replace("/", "") }).appendTo("#hidden_fields");
-        $("<input>", { type: "hidden", name: "FechaFinSol", value: fechaFinSol == "" ? "" : fechaFinSol.toString().replace("/", "") }).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "FechaInicioSol", value:fechaIniSol == "" ? "" : fechaIniSol}).appendTo("#hidden_fields");
+        $("<input>", { type: "hidden", name: "FechaFinSol", value: fechaFinSol == "" ? "" : fechaFinSol}).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "CodigoTipoVenta", value: codTipoVenta == "" ? "" : codTipoVenta }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "CodigoTipoSol", value: codTipoSol == "" ? "" : codTipoSol }).appendTo("#hidden_fields");
         $("<input>", { type: "hidden", name: "RucCliente", value: rucCliente == "" ? "" : rucCliente }).appendTo("#hidden_fields");
@@ -439,8 +439,8 @@
         objBuscar = {
             CodigoSolicitud: $txtNroSol.val(),
             CodigoFlujo: $cmbFlujo.val() == null || $cmbFlujo.val() == "" ? 0 : $cmbFlujo.val(),
-            FechaInicioSol: $dateFechaIniSol.val(),
-            FechaFinSol: $dateFechaFinSol.val(),
+            FechaInicioSol: $dateFechaIniSol.val() == null ? "" : $dateFechaIniSol.val(),
+            FechaFinSol: $dateFechaFinSol.val() == null ? "" : $dateFechaFinSol.val(),
             CodigoTipoVenta: $cmbTipoVenta.val(),
             CodigoTipoSol: $cmbTipoSolicitud.val(),
             RucCliente: $txtRuc.val(),

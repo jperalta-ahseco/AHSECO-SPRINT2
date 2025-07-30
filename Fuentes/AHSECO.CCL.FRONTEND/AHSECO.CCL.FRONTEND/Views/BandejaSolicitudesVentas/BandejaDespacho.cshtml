@@ -58,7 +58,7 @@
                     <button class="btn btn-primary btn-sm" type="button" id="btnBuscar"><i class="fa fa-search"></i> Buscar</button>
                     @if (NombreRol == "SGI_VENTA_ASESOR" || NombreRol == "SGI_VENTA_COORDINASERV" || NombreRol == "SGI_VENTA_COORDINAATC")
                     {
-                        if (estadoSol != "VTPG")
+                        if (estadoSol != "VTPG" && estadoSol != "SFIN")
                         {
                             <button class="btn btn-default btn-sm" type="button" id="btnFinalizar"><i class="fa fa-check"></i> Finalizar Despacho</button>
                             <button class="btn btn-success btn-sm" type="button" id="btnNuevo"><i class="fa fa-plus"></i> Nuevo</button>

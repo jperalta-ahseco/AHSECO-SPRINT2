@@ -687,5 +687,19 @@ namespace AHSECO.CCL.BL.Ventas
             };
         }
 
+        public ResponseDTO<RespuestaDTO> ValidaStockDisponible(int IdCotizacion)
+        {
+            try
+            {
+                var result = Repository.ValidaStockDisponible(IdCotizacion);
+                return new ResponseDTO<RespuestaDTO>(result);
+            }
+            catch ( Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<RespuestaDTO>(ex);
+            }
+        }
+
     }
 }

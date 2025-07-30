@@ -3095,8 +3095,8 @@ var cotvtadet = (function ($, win, doc) {
                         }
 
                         var ind = "<input type='hidden' id='hdIndStock" + row.NroItem + row.Id + "' value='" + row.IndStock + "' >"
-                        var exwork = "<label id='txtExWork" + row.NroItem + row.Id + "' >" + ex_work + "</label>" + "<label id='lblExWork" + row.NroItem + row.Id + "' style='display:none;'></label><input type='text'  id='ExWork" + row.NroItem + row.Id + "' value='" + row.CostoFOB + "' style='display:none; maxlength='50'/>&nbsp;";
-                        var margenUtil = "<label id='txtMargenUtil" + row.NroItem + row.Id + "' >" + mar_utilidad + "</label><label id='lblMargenUtil" + row.NroItem + row.Id + "' style='display:none;'></label><input type='text'  id='MargenUtil" + row.NroItem + row.Id + "' value='" + row.MargenUtilidad + "' style='display:none; color:black' maxlength='50'/>&nbsp;";
+                        var exwork = "<label id='txtExWork" + row.NroItem + row.Id + "' >" + ex_work + "</label>" + "<label id='lblExWork" + row.NroItem + row.Id + "' style='display:none;'></label><input type='text'  id='ExWork" + row.NroItem + row.Id + "' value='" + row.CostoFOB + "' style='display:none; color:black';maxlength='50'/>&nbsp;";
+                        var margenUtil = "<label id='txtMargenUtil" + row.NroItem + row.Id + "' >" + mar_utilidad + "</label><label id='lblMargenUtil" + row.NroItem + row.Id + "' style='display:none;'></label><input type='text'  id='MargenUtil" + row.NroItem + row.Id + "' value='" + row.MargenUtilidad + "' style='display:none; color:black'; maxlength='50'/>&nbsp;";
                         var transporte = "<label id='txtTransporte" + row.NroItem + row.Id + "' >" + trans + "</label><label id='lblTransporte" + row.NroItem + row.Id + "' style='display:none;'></label><div id='divTransporte" + row.NroItem + row.Id + "' style='display:none;'><input type='hidden' id='hdTransporte" + row.NroItem + row.Id + "' value='" + row.CodigoTransporte + "' ><select id='Transporte" + row.NroItem + row.Id + "'  style='width:150px; display:none;' value='" + row.CodigoTransporte + "'/></div>";
 
                         return ind + exwork + margenUtil + transporte;
@@ -4129,6 +4129,7 @@ var cotvtadet = (function ($, win, doc) {
             "<th style='text-align:center; width:5%'><center>Modelo</center></th>" +
             "<th style='text-align:center; width:1%'><center>Cantidad</center></th>" +
             "<th style='text-align:center; width:3%'><center>Unidad de Medida</center></th>" +
+            "<th style='text-align:center; width:1%'><center>Stock</center></th>" +
             "<th style='text-align:center; width:2%'><center>Acciones</center></th>" +
                 "</tr>" +
             "</thead>";
@@ -4249,6 +4250,19 @@ var cotvtadet = (function ($, win, doc) {
                 }
             },
             {
+                data: "StockDisponible",
+                render: function (data, type, row) {
+                    var casilla = "";
+                    if (data == null) {
+                        casilla = "<input disabled type='text' placeholder='Stock' style='width: 100 %;' />";
+                    }
+                    else {
+                        casilla = "<input disabled  disabled type='text' style='width: 100 %;' placeholder='Stock' value='" + data + "' />";
+                    }
+                    return '<center>' + casilla + '</center>';
+                }
+            },
+            {
                 data: "Id",
                 render: function (data, type, row) {
                     var seleccionar = "";
@@ -4339,8 +4353,15 @@ var cotvtadet = (function ($, win, doc) {
             select = select.children[0];
             $(select).attr('id', NroItem + 'BI_cmbTipoMedida_Child' + index);
 
+
+            var input = $(row.cells[8])
+            input = input[0];
+            input = input.children[0];
+            input = input.children[0];
+            $(input).attr('id', 'BI_Stock_Child' + index);
+
             if (data.Id == null || data.Id == "") {
-                var btn = $(row.cells[8])
+                var btn = $(row.cells[9])
                 btn = btn[0];
                 btn = btn.children[0];
                 btn = btn.children[0];
@@ -4693,6 +4714,20 @@ var cotvtadet = (function ($, win, doc) {
                 }
             },
             {
+                data: "StockDisponible",
+                render: function (data, type, row) {
+                    var casilla = "";
+                    if (data == null) {
+                        if (row.Stock != null) {
+                            casilla = "<input disabled  disabled type='text' placeholder='Stock' value='" + row.Stock + "' />"
+                        } else {
+                            casilla = "<input disabled type='text' placeholder='Stock' />"
+                        }
+                    }
+                    return '<center>' + casilla + '</center>';
+                }
+            },
+            {
                 data: "Id",
                 render: function (data, type, row) {
                     var seleccionar = "";
@@ -4781,8 +4816,16 @@ var cotvtadet = (function ($, win, doc) {
             $(select).attr('id', 'BI_cmbTipoMedida' + index);
 
 
+            var input = $(row.cells[9])
+            input = input[0];
+            input = input.children[0];
+            input = input.children[0];
+            $(input).attr('id', 'BI_Stock' + index);
+
+
+
             if (data.Id == null || data.Id ==   "") {
-                var btn = $(row.cells[9])
+                var btn = $(row.cells[10])
                 btn = btn[0];
                 btn = btn.children[0];
                 btn = btn.children[0];
@@ -5048,7 +5091,9 @@ var cotvtadet = (function ($, win, doc) {
                     $('#' + index.toString() + 'BI_Modelo').prop('disabled', false);
                     $('#' + index.toString() + 'BI_CodProd').prop('disabled', false);
                     $('#BI_cmbTipoMedida' + index.toString()).prop('disabled', false);
+                    $('#BI_Stock' + index.toString()).prop('disabled', true);
                     $('#BI_cmbAlmacen' + index.toString()).val(" ").trigger('change.select2');
+                    $('#BI_Stock' + index.toString()).val("0");
                 }
                 else {
                     var codAcceso = 0
@@ -5174,13 +5219,12 @@ var cotvtadet = (function ($, win, doc) {
 
             var descripcion = $('#' + index.toString() + 'BI_DescEquipo').val();
             var codItem = $('#' + index.toString() + 'BI_CodProd').val();
-            var stock = $('#' + index.toString() + 'BI_CodProd').val();
+            var stock = $('#BI_Stock' + index.toString()).val();
             var codMoneda = $('#BI_CodMoneda' + index.toString()).val();
             var unidad = $('#BI_cmbTipoMedida' + index.toString()).val();      
             var cantidad = $('#BI_Cantidad' + index.toString()).val(); 
             var marca = $('#BI_cmbMarca' + index.toString()).val(); 
             var modelo = $('#' + index.toString() + 'BI_Modelo').val(); 
-
 
             if (descripcion == "" || descripcion == null || descripcion == undefined || descripcion.trim.length == 0) {
                 app.message.error("Validación", "El campo Descripción de la fila, debe estar completo");
@@ -5194,7 +5238,6 @@ var cotvtadet = (function ($, win, doc) {
 
             info = {
                 IdCotizacion: $idCotizacion.val(),
-                Stock: 0,
                 NroItem: (parseInt(index) + 1),
                 CodItem: codItem,
                 Descripcion: descripcion,

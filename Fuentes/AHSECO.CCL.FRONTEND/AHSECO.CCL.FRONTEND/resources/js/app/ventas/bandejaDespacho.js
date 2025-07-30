@@ -214,6 +214,12 @@
 
     
     function Nuevo() {
+        if (validaStockPendiente())
+        {
+            app.message.error("Validación", "Ya no existen equipos cotizados para despachar.");
+            return;
+        };
+        
         var method = "POST";
         var url = "BandejaSolicitudesVentas/InicializarNumDespacho";
         var obj = {
@@ -232,6 +238,39 @@
 
         app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
     };
+
+
+    function validaStockPendiente() {
+        var rpta = true;
+
+        var idCotizacion = $IdCotizacion.val();
+
+        var method = "POST";
+        var url = "BandejaSolicitudesVentas/ValidaStockDisponible?IdCotizacion=" + idCotizacion.toString();
+        var obj = {};
+
+        var objParam = JSON.stringify(obj);
+
+        var fnDoneCallBack = function (data) {
+            var resultado = data.Result;
+
+            if (resultado.Codigo === 0) {
+                rpta = true;
+                return rpta;
+            }
+            else if (resultado.Codigo === 1) {
+                rpta = false;
+                return rpta;
+            }
+        };
+
+        var fnFailCallBack = function () {
+            app.message.error("Error", "Se presentó un error al tratar de validar, por favor revisar.");
+            return rpta;
+        };
+
+        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, null);
+    }
 
     return {
         verDespacho: verDespacho

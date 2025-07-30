@@ -12,7 +12,9 @@
     var $chkPrestacionAccesoria = $('#chkPrestacionAccesoria');
     var $txtNroFianzaPA = $('#txtNroFianzaPA');
     var $txtNroFianzaPP = $('#txtNroFianzaPP');
-    var $vigencia = $('#vigencia');
+   //desfasado -- var $vigencia = $('#vigencia');
+    var $PlazoEntrega = $('#PlazoEntrega');
+
     var $estadoDespacho = $('#estadoDespacho');
     var $codigoWorkflow = $('#codigoWorkflow');
     var $perfilnombre = $('#perfilnombre');
@@ -582,7 +584,7 @@
         var fecha = `${partes[2]}/${partes[1]}/${partes[0]}`;
 
         var nuevaFecha = new Date(fecha);
-        var dias = parseInt($vigencia.val());
+        var dias = parseInt($PlazoEntrega.val());
         nuevaFecha.setDate(nuevaFecha.getDate() + dias);
 
         var dia = nuevaFecha.getDate() < 10 ? '0' + nuevaFecha.getDate() : nuevaFecha.getDate();
@@ -2242,16 +2244,15 @@
             return;
         };
 
-        if ($cmbTipoDespacho.val() == "DESP02" && ($txtNumContrato.val() == "" || $txtNumContrato.val() == null || $txtNumContrato.val().trim().length == 0))
-        {
+        if ($cmbTipoDespacho.val() == "DESP02" && ($txtNumContrato.val() == "" || $txtNumContrato.val() == null || $txtNumContrato.val().trim().length == 0)) {
             app.message.error("Validación", "Es necesario que ingrese ingrese el número de Contrato");
             return;
         }
 
         var validador = 0;
         if ($cmbTipoDespacho.val() == "DESP01") {
-            if ($dateFechaOrdenCompra.val() == "" || $dateFechaOrdenCompra.val() == undefined|| $dateFechaOrdenCompra.val().trim().length == 0) {
-                validador = 1; 
+            if ($dateFechaOrdenCompra.val() == "" || $dateFechaOrdenCompra.val() == undefined || $dateFechaOrdenCompra.val().trim().length == 0) {
+                validador = 1;
             };
         };
 
@@ -2273,7 +2274,7 @@
 
         if ($dateFechaMax.val() == "" || $dateFechaMax.val() == undefined) {
             app.message.error("Validación", "La fecha máxima está vacia, por favor revisar");
-            return; 
+            return;
         };
 
         var method = "POST";
@@ -2281,41 +2282,63 @@
 
         var ProductosxVender = [];
 
+        var validadorProdDisp = 0;
+
         if (detalleDespacho.Productos.length > 0) {
             for (var i = 0; detalleDespacho.Productos.length > i; i++) // Obtenemos solo los seleccionados con la cantidad modificada.
             {
                 if (detalleDespacho.xComprar.includes(detalleDespacho.Productos[i].Id.toString())) {
-                    detalleDespacho.Productos[i].Cantidad = $("#cantidad_" + detalleDespacho.Productos[i].Id.toString()).val() //referenciamos al input cantidad dinamico de cada ROW para obtener su valor y utilizarlo.
-                    ProductosxVender.push({
-                        IdCotDetalle: detalleDespacho.Productos[i].Id
-                        , Cantidad: detalleDespacho.Productos[i].Cantidad
-                        , ValorUnitario: detalleDespacho.Productos[i].VentaUnitaria
-                        , PorcentajeDscto: $PorcentajeDscto.val()
-                        , MargenAdicional: detalleDespacho.Productos[i].PorcentajeGanancia
-                        , IndStock: detalleDespacho.Productos[i].IndStock
-                    });
-                };
-            };
-        }
-        
-        if (detalleDespacho.Servicios.length > 0) {
-            for (var i = 0; detalleDespacho.Servicios.length > i; i++) // Obtenemos solo los seleccionados con la cantidad modificada.
-            {
-                if (detalleDespacho.xComprarServ.includes(detalleDespacho.Servicios[i].Id.toString())) {
-                    detalleDespacho.Servicios[i].Cantidad = $("#cantidad_" + detalleDespacho.Servicios[i].Id.toString()).val() //referenciamos al input cantidad dinamico de cada ROW para obtener su valor y utilizarlo.
-                    ProductosxVender.push({
-                        IdCotDetalle: detalleDespacho.Servicios[i].Id
-                        , Cantidad: detalleDespacho.Servicios[i].Cantidad
-                        , ValorUnitario: detalleDespacho.Servicios[i].VentaUnitaria
-                        , PorcentajeDscto: $PorcentajeDscto.val()
-                        , MargenAdicional: detalleDespacho.Servicios[i].PorcentajeGanancia
-                        , IndStock: detalleDespacho.Servicios[i].IndStock
-                    });
+
+                    if ($("#cantidad_" + detalleDespacho.Productos[i].Id.toString()).val() == 0) {
+                        app.message.error("Validación","Existen productos seleccionados que cuentan con cantidada igual a 0, por favor revisar.")
+                        validadorProdDisp = 1;
+                        return;
+                    }
+                    else {
+                        detalleDespacho.Productos[i].Cantidad = $("#cantidad_" + detalleDespacho.Productos[i].Id.toString()).val() //referenciamos al input cantidad dinamico de cada ROW para obtener su valor y utilizarlo.
+                        ProductosxVender.push({
+                            IdCotDetalle: detalleDespacho.Productos[i].Id
+                            , Cantidad: detalleDespacho.Productos[i].Cantidad
+                            , ValorUnitario: detalleDespacho.Productos[i].VentaUnitaria
+                            , PorcentajeDscto: $PorcentajeDscto.val()
+                            , MargenAdicional: detalleDespacho.Productos[i].PorcentajeGanancia
+                            , IndStock: detalleDespacho.Productos[i].IndStock
+                        });
+                    };
                 };
             };
         }
 
-        
+        if (detalleDespacho.Servicios.length > 0) {
+            for (var i = 0; detalleDespacho.Servicios.length > i; i++) // Obtenemos solo los seleccionados con la cantidad modificada.
+            {
+                if (detalleDespacho.xComprarServ.includes(detalleDespacho.Servicios[i].Id.toString())) {
+
+                    if ($("#cantidad_" + detalleDespacho.Servicios[i].Id.toString()).val() == 0) {
+                        app.message.error("Validación", "Existen servicios seleccionados que cuentan con cantidada igual a 0, por favor revisar.")
+                        validadorProdDisp = 2;
+                        return;
+                    }
+                    else {
+                        detalleDespacho.Servicios[i].Cantidad = $("#cantidad_" + detalleDespacho.Servicios[i].Id.toString()).val() //referenciamos al input cantidad dinamico de cada ROW para obtener su valor y utilizarlo.
+                        ProductosxVender.push({
+                            IdCotDetalle: detalleDespacho.Servicios[i].Id
+                            , Cantidad: detalleDespacho.Servicios[i].Cantidad
+                            , ValorUnitario: detalleDespacho.Servicios[i].VentaUnitaria
+                            , PorcentajeDscto: $PorcentajeDscto.val()
+                            , MargenAdicional: detalleDespacho.Servicios[i].PorcentajeGanancia
+                            , IndStock: detalleDespacho.Servicios[i].IndStock
+                        });
+                    };
+                };
+            };
+        }
+
+
+        if (validadorProdDisp != 0) { //Que se caiga si cuenta con equipos seleccionados cuya cantidad sea 0.
+            return;
+        }
+
 
         if (ProductosxVender.length == 0) {
             app.message.error("Validación", "Debe de seleccionar por lo menos un producto");
