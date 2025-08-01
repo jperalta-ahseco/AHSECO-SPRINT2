@@ -4430,7 +4430,8 @@
             var obj = {
                 Tipo: "C",
                 CodigoSolicitud: $numeroSolicitud.val(),
-                NumeroFactura: $txtNumeroFactura.val()
+                NumeroFactura: $txtNumeroFactura.val(),
+                IdDespacho: $NumDespacho.val()
             }
             var objParam = JSON.stringify(obj);
             var fnDoneCallback = function (data) {
