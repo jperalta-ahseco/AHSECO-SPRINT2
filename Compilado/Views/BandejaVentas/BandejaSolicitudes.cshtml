@@ -1,0 +1,58 @@
+﻿@model AHSECO.CCL.BE.Mantenimiento.ClienteDTO
+
+@{
+    ViewBag.Title = "Solicitudes de Venta";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<input type="hidden" id="nomEmpresa" value="@Model.NomEmpresa"/>
+<input type="hidden" id="idCliente" value="@Model.ID"/>
+<input type="hidden" id="txtRUC" value="@Model.RUC" />
+<input type="hidden" id="Asesor" value="@Model.Empleado.NombresCompletosEmpleado" />
+
+
+<div class="container-fluid" style="margin-right: 15px;">
+    <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
+    <div class="box-inner">
+        <div class="box-header well" data-original-title="">
+            <h2><i class="fa fa-user-circle-o" aria-hidden="true"></i> Cliente: @Model.NomEmpresa</h2>
+        </div>
+        <div class="box-content">
+            <form id="formMantCliente">
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtRuc">N&uacute;mero de Solicitud: </label>
+                        <div class="form-group">
+                            <input placeholder="Ingresar Solicitud" type="text" class="form-control input-sm" id="txtSolicitud" value="">
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <button class="btn btn-primary btn-sm" type="button" id="btnBuscar"><i class="fa fa-search"></i> Buscar</button>
+                        <button class="btn btn-success btn-sm" type="button" id="btnNuevo"><i class="fa fa-plus"></i> Nuevo</button>
+                        <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegresar" tabindex="14"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Regresar</button>
+                    </div>
+                </div>
+            </form>
+            <br />
+            <div class="table-responsive">
+                <table id="tblSolicitudes" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th style="text-align: center; width:20%;">N°Solicitud</th>
+                            <th style="text-align: center; width:20%;">Flujo</th>
+                            <th style="text-align: center; width:20%;">Fecha de Solicitud</th>
+                            <th style="text-align: center; width:50px;">Tipo de Solicitud</th>
+                            <th style="text-align: center; width: 20%;">Estado</th>
+                            <th style="text-align: center;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script type="text/javascript" src="~/resources/js/app/ventas/bandejaSolicitudes.js"></script>
+}

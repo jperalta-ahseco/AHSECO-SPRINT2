@@ -1,0 +1,137 @@
+﻿﻿
+@{
+    ViewBag.Title = "Bandeja de Garantías";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" style="margin-right: 15px;">
+    <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
+    <div class="box-inner">
+        <div class="box-header well" data-original-title="">
+            <h2><i class="glyphicon glyphicon-list"></i> Bandeja de Garant&iacute;as</h2>
+        </div>
+        <div class="box-content">
+            <form id="formReclamos">
+                <div class="row container-fluid" style="margin-bottom: 10px;">
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtFecRecIni">Fecha Reclamo Inicio:</label>
+                        <div class="input-group date">
+                            <input type="text" class="form-control input-sm" id="dateFecRecIni" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
+                            <span class="input-group-addon input-sm" id="openRegFecRecIni">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtFecRecFin">Fecha Reclamo Final:</label>
+                        <div class="input-group date">
+                            <input type="text" class="form-control input-sm" id="dateFecRecFin" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
+                            <span class="input-group-addon input-sm" id="openRegFecRecFin">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtNumReq">N° Reclamo:</label>
+                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                            <input class="form-control input-sm" type="text" id="txtNumRec" placeholder="Ingresar el número de Reclamo" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <label for="cmbCliente">Cliente:</label>
+                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                            <select aria-hide="false" id="cmbCliente" type="text" class="input form-control input-sm">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtUbicacion">Ubicación Destino:</label>
+                        <div class="form-group">
+                            <div class="input-group input-group-sm date">
+                                <input disabled maxlength="6" placeholder="Ingresar Ubicación" type="text" class="form-control input-sm" id="txtUbicacion" value="" aria-describedby="sizing-addon3" />
+                                <span style="cursor:pointer" class="input-group-addon input-sm" id="searchUbigeo" data-toggle="modal" data-target="#modalUbigeo">
+                                    <i class="fa fa-search"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtTipDoc">Estado:</label>
+                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                            <select aria-hide="false" id="cmbEstado" type="text" class="input form-control input-sm">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtNumFianza">N° Serie:</label>
+                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                            <input class="form-control input-sm" type="text" id="txtNumSerie" placeholder="Ingresar el número de serie" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtNomEquipo">Nombre de Equipo:</label>
+                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                            <input class="form-control input-sm" type="text" id="txtNomEquipo" placeholder="Ingresar el nombre del equipo" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtModelo">Modelo:</label>
+                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                            <input class="form-control input-sm" type="text" id="txtModelo" placeholder="Ingresar el modelo" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtMarca">Marca:</label>
+                        <div class="input-group col-sm-12 col-md-12 col-lg-12">
+                            <input class="form-control input-sm" type="text" id="txtMarca" placeholder="Ingresar la marca" />
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="text-right">
+                    <button class="btn btn-primary btn-sm" type="button" id="btnBuscar"><i class="fa fa-search"></i> Buscar</button>
+                    <span id="hidden_fields"></span>
+                    <a class="btn btn-info btn-sm" type="button" id="btnExportar" href="BandejaGarantia/GenerarReporte"><i class="fa fa-table"></i> Exportar</a>
+                    <button class="btn btn-success btn-sm" type="button" id="btnNuevo"><i class="fa fa-plus"></i> Nuevo Reclamo</button>
+                </div>
+            </form>
+
+            <br />
+            <div class="table-responsive">
+                <table id="tblReclamos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                    <thead>
+                        <tr>
+                            <th style="text-align: center; width:10%;">N° Reclamo</th>
+                            <th style="text-align: center; width:25%;">Nombre Cliente</th>
+                            <th style="text-align: center; width:10%;">N° Serie</th>
+                            <th style="text-align: center; width:10%;">Nombre Equipo</th>
+                            <th style="text-align: center; width:10%;">Marca</th>
+                            <th style="text-align: center; width:10%;">Modelo</th>
+                            <th style="text-align: center; width:10%;">Fecha Reclamo</th>
+                            <th style="text-align: center; width:10%;">Urgencia</th>
+                            <th style="text-align: center; width:10%;">Fecha Programación</th>
+                            <th style="text-align: center; width:15%;">T&eacute;cnico Asignado</th>
+                            <th style="text-align: center; width:10%;">Estado</th>
+                            <th style="text-align: center; width:10%;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalUbigeo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_Ubigeo");
+    }
+</div>
+@section scripts{
+    <script type="text/javascript" src="~/resources/js/app/ServicioTecnico/BandejaGarantia/bandejaGarantia.js"></script>
+} 

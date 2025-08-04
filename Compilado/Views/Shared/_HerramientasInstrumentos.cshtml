@@ -1,0 +1,48 @@
+﻿@using AHSECO.CCL.BE;
+@using AHSECO.CCL.FRONTEND.Core;
+@using AHSECO.CCL.FRONTEND.Controllers;
+@using Newtonsoft.Json;
+
+@{
+    string tipoProceso = VariableSesion.getCadena("tipoProceso");
+
+    var esconder = false;
+    if (tipoProceso == "V")
+    {
+        esconder = true;
+    }
+
+}
+
+<div class="box-inner">
+    <div class="box-header well">
+        <h2>Herramientas e Instrumentos</h2>
+    </div>
+    <div class="box-content">
+        <div class="row container-fluid">
+            <div class="col-md-12 col-sm-12">
+                <label for="txtInstrumentos">Instrumentos:</label>
+                <div class="form-group">
+                    <textarea @(esconder ? "disabled" : "") placeholder="Ingrese Instrumentos" type="text" class="form-control input-sm" id="txtInstrumentos" value=""></textarea>
+                </div>
+            </div>
+        </div>
+        <div class=" row container-fluid">
+            <div class="col-md-12 col-sm-12">
+                <label for="txtHerramientas">Herramientas Comunes:</label>
+                <div class="form-group">
+                   <textarea @(esconder ? "disabled" : "") placeholder="Ingrese Herramientas Comunes" type="text" class="form-control input-sm" id="txtHerramientas" value=""></textarea>
+                </div>
+            </div>
+        </div>
+        <div class=" row container-fluid">
+            <div class="col-md-12 col-sm-12">
+                <label for="txtHerramientasComunes">Herramientas Especiales:</label>
+                <div class="form-group">
+                    <textarea @(esconder ? "disabled" : "") placeholder="Ingrese Herramientas Especiales" type="text" class="form-control input-sm" id="txtHerramientasEspeciales" value=""></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

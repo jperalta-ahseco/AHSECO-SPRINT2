@@ -1,0 +1,1860 @@
+﻿@using AHSECO.CCL.FRONTEND.Core;
+@using AHSECO.CCL.BE.Mantenimiento;
+@using AHSECO.CCL.BE;
+@using AHSECO.CCL.COMUN;
+@using Newtonsoft.Json;
+@{
+    ViewBag.Title = "Solicitud de Venta";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var NombreRol = VariableSesion.getCadena("VENTA_NOMBRE_ROL");
+    var RolVenta_Asesor = ConstantesDTO.WorkflowRol.Venta.Asesor;
+    var RolVenta_Jefe = ConstantesDTO.WorkflowRol.Venta.Jefe;
+    var RolVenta_CoordVta = ConstantesDTO.WorkflowRol.Venta.CoordVta;
+    var RolVenta_ServTecnico = ConstantesDTO.WorkflowRol.Venta.ServTecnico;
+    var RolVenta_Gerente = ConstantesDTO.WorkflowRol.Venta.Gerente;
+    var RolVenta_Importacion = ConstantesDTO.WorkflowRol.Venta.Importacion;
+    var RolVenta_Costos = ConstantesDTO.WorkflowRol.Venta.Costos;
+    var RolVenta_Logistica = ConstantesDTO.WorkflowRol.Venta.Logistica;
+    var RolVenta_CoordServ = ConstantesDTO.WorkflowRol.Venta.CoordServ;
+    var RolVenta_CoordAtc = ConstantesDTO.WorkflowRol.Venta.CoordAtc;
+    var RolVenta_Facturador = ConstantesDTO.WorkflowRol.Venta.Facturador;
+    var cliente = VariableSesion.getObject("VENTA_CLIENTE") as ClienteDTO;
+    if(cliente == null)
+    {
+        var new_cliente = new ClienteDTO();
+        new_cliente.NomEmpresa = "";
+        new_cliente.ID = 0;
+        new_cliente.RUC = "";
+        cliente = new_cliente;
+    }
+    var empleado = VariableSesion.getObject("VENTA_EMPLEADO") as EmpleadoDTO;
+    var numSol = VariableSesion.getCadena("numSol");
+    var estadoSol = VariableSesion.getCadena("estadoSol");
+    var estadoAbrev = VariableSesion.getCadena("estadoAbrev");
+    if (estadoAbrev != null) { estadoAbrev = estadoAbrev.ToUpper(); }
+    var tipoSol = VariableSesion.getCadena("tipoSol");
+    var idflujo = VariableSesion.getCadena("idFlujo");
+    var idWorkFlow = VariableSesion.getCadena("idWorkFlow");
+    var idCotizacion = ViewBag.IdCotizacion;
+    var TipoSol_Servicio = ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.Servicio;
+    var TipoSol_RepOComes = ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.RepuestosOComestibles;
+    var TipoSol_ServYRep = ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.ServiciosYRepuestos;
+    var TipoSol_VentaMat = ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.VentaMateriales;
+    var TipoSol_VentaEqu = ConstantesDTO.DatosGenerales.TipoSolicitud.Valor1.VentaEquipos;
+    ViewBag.disabled = false; //
+    if (NombreRol != "SGI_VENTA_ASESOR" && NombreRol != "SGI_VENTA_COORDINASERV" && NombreRol != "SGI_VENTA_COORDINAATC") //habilitado solo cuando es nuevo y con  los perfiles de vendedores
+    {
+        ViewBag.disabled = true;
+    }
+    else
+    {
+        if (numSol != null)
+        { ViewBag.disabled = true; }
+    }
+    var strPermitirEditarCotDetItem = "N";
+    if (ViewBag.PermitirEditarCotDetItem == true) { strPermitirEditarCotDetItem = "S"; }
+    var strPermitirEditarValorizacion = "N";
+    if (ViewBag.PermitirEditarValorizacion == true) { strPermitirEditarValorizacion = "S"; }
+    var strEsCotizacionValorizada = "N";
+    if (ViewBag.EsCotizacionValorizada == true) { strEsCotizacionValorizada = "S"; }
+    var strEsCotizacionCosteada = "N";
+    if (ViewBag.EsCotizacionCosteada == true) { strEsCotizacionCosteada = "S"; }
+    var strPermitirEditarGanancia = "N";
+    if (ViewBag.PermitirEditarGanancia == true) { strPermitirEditarGanancia = "S"; }
+    var strDsctoRequiereAprobacion = "N";
+    if (ViewBag.DsctoRequiereAprobacion != null) { if (ViewBag.DsctoRequiereAprobacion == true) { strDsctoRequiereAprobacion = "S"; } }
+    var strDsctoAprobado = "";
+    if (ViewBag.DsctoAprobado != null) { if (ViewBag.DsctoAprobado == true) { strDsctoAprobado = "S"; } else { strDsctoAprobado = "N"; } }
+    var strDsctoRespondido = "N";
+    if (ViewBag.DsctoRespondido == true) { strDsctoRespondido = "S"; }
+    var strPermitirAprobarDscto = "N";
+    if (ViewBag.PermitirAprobarDscto == true) { strPermitirAprobarDscto = "S"; }
+    var strPermitirEnvioCotizacion = "N";
+    if (ViewBag.PermitirEnvioCotizacion != null) { if (ViewBag.PermitirEnvioCotizacion == true) { strPermitirEnvioCotizacion = "S"; } }
+}
+
+<input type="hidden" id="idFlujo" value="@idflujo" />
+<input type="hidden" id="codEmpleado" value="@empleado.CodigoEmpleado"/>
+<input type="hidden" id="nomEmpresa" value="@cliente.NomEmpresa" />
+<input type="hidden" id="codigoWorkflow" value="@idWorkFlow" />
+<input type="hidden" id="idCliente" value="@cliente.ID" />
+<input type="hidden" id="hdnRUC" value="@cliente.RUC" />
+<input type="hidden" id="Asesor" value="@empleado.NombresCompletosEmpleado" />
+<input type="hidden" id="numeroSolicitud" value="@numSol" />
+<input type="hidden" id="estadoSol" value="@estadoSol" />
+<input type="hidden" id="tipoVenta" value="@ViewBag.TipoVenta"/>
+<input type="hidden" id="idWorkFlow" value="@idWorkFlow" />
+<input type="hidden" id="idCotizacion" value="@idCotizacion" />
+<input type="hidden" id="idRolUsuario" value="@NombreRol" />
+<input type="hidden" id="RolVenta_Asesor" value="@RolVenta_Asesor" />
+<input type="hidden" id="RolVenta_Jefe" value="@RolVenta_Jefe" />
+<input type="hidden" id="RolVenta_CoordVta" value="@RolVenta_CoordVta" />
+<input type="hidden" id="RolVenta_ServTecnico" value="@RolVenta_ServTecnico" />
+<input type="hidden" id="RolVenta_Gerente" value="@RolVenta_Gerente" />
+<input type="hidden" id="RolVenta_Importacion" value="@RolVenta_Importacion" />
+<input type="hidden" id="RolVenta_Costos" value="@RolVenta_Costos" />
+<input type="hidden" id="RolVenta_Logistica" value="@RolVenta_Logistica" />
+<input type="hidden" id="RolVenta_CoordServ" value="@RolVenta_CoordServ" />
+<input type="hidden" id="RolVenta_CoordAtc" value="@RolVenta_CoordAtc" />
+<input type="hidden" id="RolVenta_Facturador" value="@RolVenta_Facturador" />
+<input type="hidden" id="ContadorSeriesCS" value="@ViewBag.ContadorSeriesConStock" />
+<input type="hidden" id="TotalSeriesCS" value="@ViewBag.TotalSeriesConStock" />
+<input type="hidden" id="ContadorSeriesSS" value="@ViewBag.ContadorSeriesSinStock" />
+<input type="hidden" id="TotalSeriesSS" value="@ViewBag.TotalSeriesSinStock" />
+<input type="hidden" id="ValidaBtnObservacion" value="0" />
+<input type="hidden" id="CodStock" value="@ViewBag.CodStock" />
+<input type="hidden" id="hdnPorcentajeDscto" value="@ViewBag.PorcentajeDscto">
+<input type="hidden" id="DsctoRequiereAprobacion" value="@strDsctoRequiereAprobacion" />
+<input type="hidden" id="DsctoAprobado" value="@strDsctoAprobado" />
+<input type="hidden" id="DsctoRespondido" value="@strDsctoRespondido" />
+<input type="hidden" id="PermitirAprobarDscto" value="@strPermitirAprobarDscto" />
+<input type="hidden" id="TipoSol_Servicio" value="@TipoSol_Servicio" />
+<input type="hidden" id="TipoSol_RepOComes" value="@TipoSol_RepOComes" />
+<input type="hidden" id="TipoSol_ServYRep" value="@TipoSol_ServYRep" />
+<input type="hidden" id="TipoSol_VentaMat" value="@TipoSol_VentaMat" />
+<input type="hidden" id="TipoSol_VentaEqu" value="@TipoSol_VentaEqu" />
+<input type="hidden" id="TipoSolicitud" value="@tipoSol" />
+<input type="hidden" id="PermitirEditarCotDetItem" value="@strPermitirEditarCotDetItem" />
+<input type="hidden" id="PermitirEditarValorizacion" value="@strPermitirEditarValorizacion" />
+<input type="hidden" id="EsCotizacionValorizada" value="@strEsCotizacionValorizada" />
+<input type="hidden" id="EsCotizacionCosteada" value="@strEsCotizacionCosteada" />
+<input type="hidden" id="PermitirEditarGanancia" value="@strPermitirEditarGanancia" />
+<input type="hidden" id="PermitirEnvioCotizacion" value="@strPermitirEnvioCotizacion" />
+<input type="hidden" id="EnvioServicio" value="@ViewBag.EnvioServicio" />
+<input type="hidden" id="FlagStock" value="" />
+<input type="hidden" id="ContadorDetalleHistorial" value="0" />
+<input type="hidden" id="CodigoSede" value="0" />
+
+<div class="container-fluid">
+    <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
+    <div class="box-inner">
+        <div class="box-header well" data-original-title="">
+            <div style="display: flex;justify-content: space-between;">
+                @if (cliente.NomEmpresa == "") { ViewBag.Titulo = "Nuevo Registro";  } else { ViewBag.Titulo = "Cliente: " + cliente.NomEmpresa; }
+                <h2 id="txtTituloClie"><i class="fa fa-user-circle-o" aria-hidden="true"></i> @ViewBag.Titulo</h2>
+                @if (numSol != null)
+                {
+                    var numSolFormateado = ("000000" + numSol);
+                    numSolFormateado = numSolFormateado.Substring((numSolFormateado.Length) - 6, numSolFormateado.Length - ((numSolFormateado.Length) - 6));
+                    <h2>N&uacute;mero de Solicitud: @numSolFormateado</h2> <!--- Aquí tendremos que controlar-->
+                }
+            </div>
+        </div>
+        <div class="box-content">
+            <div class="container-fluid" style="margin-right: 15px;">
+                <form id="formRegistroSolicitud">
+                    <input type="hidden" id="contador" value="0" />
+                    <input type="hidden" id="contadordoc" value="0" />
+                    @if (numSol != null)
+                    {
+                        <div class="row container-fluid">
+                            <div class="text-right">
+                                <!--- Aquí tendremos que controlar-->
+                                <label>ESTADO: <span id="spanEstadoSol">@estadoAbrev</span></label>
+                            </div>
+                        </div>
+                    }
+                    <div class="row container-fluid">
+                        <div class="col-md-4 col-sm-7 col-xs-12">
+                            <label for="cmbFlujo">&Aacute;rea: </label>
+                            <div class="form-group">
+                                <select disabled class="form-control select2 input-sm" style="width:100%;" id="cmbFlujo" data-selected="">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-7 col-xs-12">
+                            <label for="cmbTipoVenta">Tipo de Venta: </label>
+                            <div class="form-group">
+                                <select @(ViewBag.disabled ? "disabled" : "") class="form-control select2 input-sm" style="width:100%;" id="cmbTipoVenta" data-selected="">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-7 col-xs-12">
+                            <label for="cmbTipo">Tipo: </label>
+                            <div class="form-group">
+                                <select @(ViewBag.disabled ? "disabled" : "") class="form-control select2 input-sm" style="width:100%;" id="cmbTipo" data-selected="">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row container-fluid" style="background-color: #00aeef0f; border-radius: 10px;">
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtRucCliente">R.U.C:</label>
+                            <div class="form-group">
+                                <div class="input-group input-group-sm date">
+                                    <input hidden id="hdnIdCliente" value="@cliente.ID" />
+                                    <input disabled type="text" class="form-control input-sm" id="txtRucCliente" value="@cliente.RUC">
+                                    <span style="cursor: pointer" class="input-group-addon input-sm" id="openBuscadorCliente" data-toggle="modal" data-target="#modalBusquedaClientes" @(ViewBag.disabled ? "disabled" : "")>
+                                        <i class="fa fa-search"></i>
+                                    </span>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtNomEmpresaCliente">Empresa Cliente:</label>
+                            <div class="form-group">
+                                <input disabled type="text" class="form-control input-sm" id="txtNomEmpresaCliente" value="@cliente.NomEmpresa">
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtSede">Sede:</label>
+                            <div class="form-group">
+                                <input disabled type="text" class="form-control input-sm" id="txtSede" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="col-md-4 col-sm-12">
+                            <label for="dateSolicitud">Fecha de Solicitud: </label>
+                            <div class="input-group date">
+                                <input disabled type="text" class="form-control input-sm" id="dateSolicitud" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
+                                <span class="input-group-addon input-sm" id="openRegdateSolicitud">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <label for="cmbempresa">Empresa Emisora:</label>
+                                <select @(ViewBag.disabled ? "disabled" : "") class="form-control select2 input-sm" style="width:100%;" id="cmbempresa" data-selected="">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-xs-12">
+                            <label for="cmbMedioContacto">Medio de Contacto: </label>
+                            <div class="form-group">
+                                <select @(ViewBag.disabled ? "disabled" : "") class="form-control select2 input-sm" style="width:100%;" id="cmbMedioContacto" data-selected="">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row container-fluid" id="divDatosLicitacion" style="display:none;">
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtNroProceso">N° de Proceso:</label>
+                            <div class="form-group">
+                                <input @(ViewBag.disabled ? "disabled" : "") type="text" class="form-control input-sm" id="txtNroProceso" placeholder="Ingresar N° de Proceso" maxlength="50">
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtTipoProceso">Tipo de Proceso:</label>
+                            <div class="form-group">
+                                <input @(ViewBag.disabled ? "disabled" : "") type="text" class="form-control input-sm" id="txtTipoProceso" placeholder="Ingresar Tipo de Proceso" maxlength="200">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row container-fluid">
+                        <div class="col-md-4 col-sm-12">
+                            <label for="txtAsesor">Representante de Ventas:</label>
+                            <div class="form-group">
+                                <input disabled type="text" class="form-control input-sm" id="txtAsesor" value="@empleado.NombresCompletosEmpleado">
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row container-fluid">
+                        <div class="text-right">
+                            @if (NombreRol == RolVenta_Asesor || NombreRol == "SGI_VENTA_COORDINASERV" || NombreRol == "SGI_VENTA_COORDINAATC")
+                            {
+                                if (numSol != null)
+                                {
+                                    <button style="@(ViewBag.PermitirCancelarCot ? "" : "display:none")" class="btn btn-danger btn-sm" type="button" data-dismiss="modal" id="btnEliminarSol" tabindex="14"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;Cancelar Solicitud</button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnRegistrar" tabindex="14"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Registrar</button>
+                                }
+                            }
+                            <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegresar" tabindex="14"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Regresar</button>
+                        </div>
+                    </div>
+                </form>
+                <ul class="nav nav-tabs" style="padding-top: 5px;">
+                    @if (numSol != null)
+                    {
+                        <li class="" id="tabDetalleSolicitud">
+                            <a href="#navDetalleSolicitud" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-info-circle" aria-hidden="true"></i> Detalle</a>
+                        </li>
+                        <li class="" id="tabAdjuntos">
+                            <a href="#navDocumentos" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-file-text" aria-hidden="true"></i> Adjunto de Documentos</a>
+                        </li>
+                        <li class="" id="tabObservaciones">
+                            <a href="#navObservaciones" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-exclamation" aria-hidden="true"></i> Observaciones</a>
+                        </li>
+                        <li class="" id="tabSeguimiento">
+                            <a href="#navSeguimiento" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-code-fork" aria-hidden="true"></i>  Seguimiento</a>
+                        </li>
+                    }
+                </ul>
+                <div class="tab-content" style="padding-top: 5px;">
+                    @if (numSol != null)
+                    {
+                        <div id="navDetalleSolicitud" class="tab-pane fade in active">
+                            <div class="panel-group" id="accordion7401210" role="tablist" aria-multiselectable="false">
+                                <div class="panel panel-default">
+                                    <div id="collapse8122873" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading8122873">
+                                    </div>
+                                </div>
+                                <div class="panel panel-default" style="border-color: #ef8f00;">
+                                    <div class="panel-heading" role="tab" id="heading411391" style="background-color: #ef8f000f;">
+                                        <h5 class="panel-title">
+                                            <a role="button" data-toggle="collapse" class="accordion-arrow-toggle @ViewBag.AcordionCollapsedLiq" href="#Cotizacion_Body" aria-expanded="false" aria-controls="Cotizacion_Body"><i class="fa fa-briefcase" aria-hidden="true"></i> LIQUIDACI&Oacute;N DE COSTOS</a>
+                                        </h5>
+                                    </div>
+                                    <div id="Cotizacion_Body" class="panel-collapse @ViewBag.TabAcordionCollapsedLiq" role="tabpanel" aria-labelledby="heading411391">
+                                        <form id="formRegistraCotizacion">
+                                            <div class="box-content">
+                                                <div style="display: flex;">
+                                                    <div class="container-fluid" style="width: 35%; background-color: #ef8f000f; border-radius: 10px;">
+                                                        <div class="container-fluid">
+                                                            <div class="col-md-12 col-sm-12">
+                                                                <label for="nombreContacto">Contacto: </label>
+                                                                <div class="form-group">
+                                                                    <div class="@(ViewBag.PermitirEditarCotizacion_Sec ? "input-group" : "") input-group-sm date">
+                                                                        <input @(ViewBag.PermitirEditarCotizacion_Sec ? "readonly" : "disabled") type="text" class="form-group form-control input-sm col-md-10" id="nombreContacto" value="@ViewBag.NombreContacto" placeholder="--Ingrese Nombre de Contacto--" aria-describedby="sizing-addon3" />
+                                                                        <span style="cursor: pointer@(ViewBag.PermitirEditarCotizacion_Sec ? "" : ";display: none")" class="input-group-addon input-sm" id="searchContacto" title="Buscar Contacto" data-toggle="modal" data-target="#modalContactos">
+                                                                            <i class="fa fa-search"></i>
+                                                                        </span>
+                                                                        <span style="cursor: pointer@(ViewBag.PermitirEditarCotizacion_Sec ? "" : ";display: none")" class="input-group-addon input-sm" id="agregarContacto" title="Agregar Contacto" data-toggle="modal">
+                                                                            <i class="fa fa-plus"></i>
+                                                                        </span>
+                                                                        <input type="hidden" id="txtCodContacto" value="@ViewBag.IdContacto" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-12 col-sm-12">
+                                                                <label for="txtAreaContacto">&Aacute;rea: </label>
+                                                                <div class="form-group">
+                                                                    <input disabled placeholder="Ingresar Área" type="text" class="form-control input-sm" id="txtAreaContacto" maxlength="100" value="@ViewBag.AreaContacto">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-12 col-sm-12">
+                                                                <label for="txtTelefono">Tel&eacute;fono: </label>
+                                                                <div class="form-group">
+                                                                    <input disabled placeholder="Ingresar número de télefono" type="text" class="form-control input-sm" id="txtTelefono" value="@ViewBag.TelefonoContacto">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-12 col-sm-12">
+                                                                <label for="txtCorreo">Correo: </label>
+                                                                <div class="form-group">
+                                                                    <input disabled placeholder="Ingresar Correo" type="text" class="form-control input-sm" id="txtCorreo" value="@ViewBag.CorreoContacto" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="container-fluid" style="width: 65%;">
+                                                        <div class="row container-fluid">
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <label for="dateCotizacion">Fecha Cotizaci&oacute;n: </label>
+                                                                <div class="input-group date">
+                                                                    <input @(ViewBag.PermitirEditarCotizacion_Sec ? "" : "disabled") type="text" class="form-control input-sm" id="dateCotizacion" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10" value="@ViewBag.FechaCotizacion">
+                                                                    <span class="input-group-addon input-sm" id="openRegdateCotizacion">
+                                                                        <i class="fa fa-calendar"></i>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6 col-sm-7 col-xs-12">
+                                                                <label for="txtVigencia">Vigencia Cotizaci&oacute;n (d&iacute;as): </label>
+                                                                <div class="form-group">
+                                                                    <input @(ViewBag.PermitirEditarCotizacion_Sec ? "" : "disabled") placeholder="Ingresar número de días" type="text" class="form-control input-sm" id="txtVigencia" value="@ViewBag.Vigencia">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row container-fluid">
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <label for="txtPlazoEntrega">Plazo Entrega (d&iacute;as): </label>
+                                                                <div class="form-group">
+                                                                    <input @(ViewBag.PermitirEditarCotizacion_Sec ? "" : "disabled") placeholder="Ingresar número de días" type="text" class="form-control input-sm" id="txtPlazoEntrega" maxlength="8" value="@ViewBag.PlazoEntrega">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <label for="cmbGarantia">Garant&iacute;a: </label>
+                                                                <div class="form-group">
+                                                                    <select @(ViewBag.PermitirEditarCotizacion_Pri ? "" : "disabled") class="form-control select2 input-sm" style="width:100%;" id="cmbGarantia" data-selected="@ViewBag.Garantia">
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row container-fluid">
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <label for="cmbTipoPago">Forma de Pago: </label>
+                                                                <div class="form-group">
+                                                                    <select @(ViewBag.PermitirEditarCotizacion_Sec ? "" : "disabled") class="form-control select2 input-sm" style="width:100%;" id="cmbTipoPago" data-selected="@ViewBag.FormaPago">
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <label for="txtObs">Observaci&oacute;n: </label>
+                                                                <div class="form-group">
+                                                                    <input @(ViewBag.PermitirEditarCotizacion_Sec ? "" : "disabled") placeholder="Ingresar observación" type="text" class="form-control input-sm" id="txtObs" maxlength="200" value="@ViewBag.Observacion">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row container-fluid">
+                                                            <div class="col-md-6 col-sm-12">
+                                                                <label for="cmbTipMoneda">Moneda: </label>
+                                                                <div class="form-group">
+                                                                    <select @(ViewBag.PermitirEditarCotizacion_Pri ? "" : "disabled") class="form-control select2 input-sm" style="width:100%;" id="cmbTipMoneda" data-selected="@ViewBag.Moneda">
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            @if (ViewBag.PermitirVerDscto)
+                                                            {
+                                                                <div class="col-md-6 col-sm-12">
+                                                                    <label for="txtObs">Porcentaje de Descuento (%): </label>
+                                                                    <div class="col-md-12">
+                                                                        <div class="form-group">
+                                                                            <input disabled placeholder="<Optional>" type="number" min="0" max="100" class="form-control input-sm" id="txtPorcentajeDscto" maxlength="6" value="@ViewBag.PorcentajeDscto" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if (parseFloat(this.value) > 100) { this.value = this.value.slice(0, 2); }">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                        <div class="row container-fluid">
+                                                            <div class="text-right">
+                                                                <button style="@(ViewBag.PermitirVerSolicitarDscto ? "" : "display:none")" class="btn btn-danger btn-sm" type="button" id="btnSolicitarDscto"><i class="fa fa-percent" aria-hidden="true"></i> Solicitar Descuento</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <br />
+                                                <div class="row container-fluid">
+                                                    <div class="text-right">
+                                                        <button class="btn btn-danger btn-sm" type="button" data-target="#modalBandejaHistorialCotizacion" data-toggle="modal" id="btnHistorial" style="display:none;" tabindex="14"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Ver Historial</button>
+                                                        @if (ViewBag.IdCotizacion != 0)
+                                                        {
+                                                            <button style="@(ViewBag.PermitirExportarLiquidacion ? "" : "display:none")" class="btn btn-info btn-sm" type="button" id="btnExportarLiquidacion"><i class="fa fa-table" aria-hidden="true"></i>&nbsp;Exportar Liquidaci&oacute;n</button>
+                                                            <button style="@(ViewBag.PermitirImprimirCotizacion ? "" : "display:none")" class="btn btn-primary btn-sm" type="button" id="btnImprimirCotizacion"><i class="fa fa-print" aria-hidden="true"></i>&nbsp;Imprimir Cotizaci&oacute;n</button>
+                                                            <button style="@(ViewBag.DsctoRequiereAprobacion && ViewBag.DsctoRespondido == false && ViewBag.PermitirAprobarDscto == true ? "" : "display:none")" data-target="#modalAprobDscto" data-toggle="modal" class="btn btn-warning btn-sm" type="button" data-dismiss="modal" id="btnAprobarDscto" tabindex="14"><i class="fa fa-percent" aria-hidden="true"></i>&nbsp;Aprobar Descuento</button>
+                                                            <button style="display:none" class="btn btn-warning btn-sm" type="button" data-dismiss="modal" id="btnVerComentarioDscto" tabindex="14"><i class="fa fa-percent" aria-hidden="true"></i>&nbsp;Aprobación de Descuento</button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnRegistrarCotizacion" tabindex="14"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Registrar</button>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <br />
+                                                <div class="box-inner" style="@(ViewBag.MostrarCotizacionDetalle ? "" : "display:none")">
+                                                    <div class="box-header well" data-original-title="">
+                                                        <div style="display: flex;justify-content: space-between;">
+                                                            <h2><i class="fa fa-list" aria-hidden="true"></i> Detalle</h2>
+                                                        </div>
+                                                    </div>
+                                                    <div class="box-content">
+                                                        <br />
+                                                        <ul class="nav nav-tabs" style="padding-top: 5px;" id="det_nav_tabs">
+                                                            <li class="" id="tabDetCot" style="@(ViewBag.PermitirTabDetCot ? "" : "display:none")">
+                                                                <a href="#navCotDet" data-toggle="tab" style="font-weight:bold; color:black;" tabindex="20"><i class="fa fa-cubes" aria-hidden="true"></i> Detalle de Productos / Servicios</a>
+                                                            </li>
+                                                            <li class="" id="tabInsta" style="@(ViewBag.PermitirTabInsta ? "" : "display:none")">
+                                                                <a href="#navInsta" onclick="javascript:cotvtacostos.setTab_Instalacion()" data-toggle="tab" style="font-weight: bold; color: black; " tabindex="20"><i class="fa fa-gears" aria-hidden="true"></i> Instalaci&oacute;n</a>
+                                                            </li>
+                                                            <li class="" id="tabCapa" style="@(ViewBag.PermitirTabCapa ? "" : "display:none")">
+                                                                <a href="#navCapa" onclick="javascript:cotvtacostos.setTab_Capacitacion()" data-toggle="tab" style="font-weight: bold; color: black; " tabindex="20"><i class="fa fa-gears" aria-hidden="true"></i> Capacitaci&oacute;n</a>
+                                                            </li>
+                                                            <li class="" id="tabMantPrevent" style="@(ViewBag.PermitirTabMantPrevent ? "" : "display:none")">
+                                                                <a href="#navMantPrevent" onclick="javascript:cotvtacostos.setTab_MantPrevent()" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-male" aria-hidden="true"></i> Mant. Preventivo</a>
+                                                            </li>
+                                                            <li class="" id="tabLLaveMano" style="@(ViewBag.PermitirTabLLaveMano ? "" : "display:none")">
+                                                                <a href="#navLLaveMano" onclick="javascript:cotvtacostos.setTab_LLaveMano()" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-wrench" aria-hidden="true"></i> LLave en mano</a>
+                                                            </li>
+                                                            <li class="" id="tabManuales" style="@(ViewBag.PermitirTabManuales ? "" : "display:none")">
+                                                                <a href="#navManuales" onclick="javascript:cotvtacostos.setTab_Manuales()" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-wrench" aria-hidden="true"></i> Manuales</a>
+                                                            </li>
+                                                            <li class="" id="tabVideos" style="@(ViewBag.PermitirTabVideos ? "" : "display:none")">
+                                                                <a href="#navVideos" onclick="javascript:cotvtacostos.setTab_Videos()" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-wrench" aria-hidden="true"></i> Videos</a>
+                                                            </li>
+                                                            <li class="" id="tabCalib" style="@(ViewBag.PermitirTabCalib ? "" : "display:none")">
+                                                                <a href="#navCalib" onclick="javascript:cotvtacostos.setTab_Calibra()" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-wrench" aria-hidden="true"></i> Calibraci&oacute;n</a>
+                                                            </li>
+                                                            <li class="" id="tabFlete" style="@(ViewBag.PermitirTabFlete ? "" : "display:none")">
+                                                                <a href="#navFlete" onclick="javascript:cotvtacostos.setTab_Flete()" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-truck" aria-hidden="true"></i>  Flete</a>
+                                                            </li>
+                                                        </ul>
+                                                        <div class="tab-content">
+                                                            <div id="navCotDet" class="tab-pane fade in active">
+                                                                <div class="text-right" style="padding-top: 10px; padding-bottom: 10px">
+                                                                    <button style="@(ViewBag.PermitirAgregarProductos ? "" : "display:none")" class="btn btn-default btn-sm" type="button" data-target="#modalDetalleCotizacion" data-toggle="modal" id="btnAgregarDetalle" tabindex="14"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar / Modificar Productos</button>
+                                                                    <button style="@(ViewBag.PermitirAgregarServicios ? "" : "display:none")" class="btn btn-default btn-sm" type="button" data-target="#modalDetalleCotizacionServicio" data-toggle="modal" id="btnAgregarServicios" tabindex="14"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Agregar / Modificar Servicios</button>
+                                                                </div>
+                                                                <div class="table-responsive" style="@(ViewBag.VerBandejaCotizacion ? "" : "display:none")">
+                                                                    <div>
+                                                                        Con Stock:
+                                                                        <i class="fa fa-circle" aria-hidden="true" style="color: #008000a1"></i>
+                                                                    </div>
+                                                                    <div>
+                                                                        Sin Stock:
+                                                                        <i class="fa fa-circle" aria-hidden="true" style="color: #ff0000b8"></i>
+                                                                    </div>
+                                                                    <table id="tblDetCotCostos" class="table table-condensed table-bordered" width="100%">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                @for (var i = 0; i < @ViewBag.CabeceraCotDet.Length; i++)
+                                                                                {
+                                                                                    <th style="text-align:center">@ViewBag.CabeceraCotDet[i]</th>
+                                                                                }
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                                <div class="table-responsive" style="@(ViewBag.VerBandejaServiciosCotizacion ? "" : "display:none")">
+                                                                    <table id="tblDetCotServicios" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th style="text-align: center; width: 7%;">Nro. Item</th>
+                                                                                <th style="text-align: center; width: 10%;">C&oacute;digo Servicio</th>
+                                                                                <th style="text-align: center; width: 48%;">Descripci&oacute;n</th>
+                                                                                <th style="text-align: center; width: 5%;">Cantidad</th>
+                                                                                <th style="text-align: center; width: 10%;">Precio</th>
+                                                                                <th style="text-align: center; width: 10%;">Valor Venta</th>
+                                                                                <th style="text-align: center; width: 15%;">Acci&oacute;n</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                                <div class="row container-fluid">
+                                                                    <div class="text-right">
+                                                                        <button style="@(ViewBag.PermitirEnvioCotizacion ? "" : "display:none")" class="btn btn-default btn-sm" type="button" id="btnEnviarCotizacion"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Enviar Cotizaci&oacute;n</button>
+                                                                        <button style="@(ViewBag.PermitirGuardarCotizacion ? "" : "display:none")" class="btn btn-default btn-sm" type="button" id="btnGuardarCotizacion"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Guardar Cotizaci&oacute;n</button>
+                                                                        <button style="@(ViewBag.PermitirReCotizacion ? "" : "display:none")" class="btn btn-warning btn-sm" type="button" id="btnRecotizacion"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Volver a Cotizar</button>
+                                                                        <button style="@(ViewBag.PermitirGuardarValorizacion ? "" : "display:none")" class="btn btn-default btn-sm" type="button" id="btnGuardarValorizacion"><i class="fa fa-save" aria-hidden="true"></i>&nbsp;Guardar Cotización</button>
+                                                                        <button style="@(ViewBag.PermitirAprobarCotizacion ? "" : "display:none")" class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnAprobarCotizacion" tabindex="14"><i class="fa fa-check-circle" aria-hidden="true"></i>&nbsp;Aprobar Cotización</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div id="navInsta" class="tab-pane fade">
+                                                                <div class="table-responsive">
+                                                                    <table id="tblInstaCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th style="text-align:center; width:5%">Código</th>
+                                                                                <th style="text-align:center; width:5%">Producto</th>
+                                                                                <th style="text-align:center; width:5%">Unidad Medida</th>
+                                                                                <th style="text-align:center; width:5%">Cantidad</th>
+                                                                                <th style="text-align:center; width:5%">Costo Unitario</th>
+                                                                                <th style="text-align:center; width:5%">Costo Total</th>
+                                                                                <th style="text-align:center; width:5%">Acción</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                            <div id="navCapa" class="tab-pane fade">
+                                                                <div class="table-responsive">
+                                                                    <table id="tblCapaCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th style="text-align:center; width:5%">Código</th>
+                                                                                <th style="text-align:center; width:5%">Producto</th>
+                                                                                <th style="text-align:center; width:5%">Unidad Medida</th>
+                                                                                <th style="text-align:center; width:5%">Cantidad</th>
+                                                                                <th style="text-align:center; width:5%">Costo Unitario</th>
+                                                                                <th style="text-align:center; width:5%">Costo Total</th>
+                                                                                <th style="text-align:center; width:5%">Acción</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                            <div id="navMantPrevent" class="tab-pane fade">
+                                                                <div class="table-responsive">
+                                                                    <table id="tblMantPreventCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th style="text-align:center; width:5%">Código</th>
+                                                                                <th style="text-align:center; width:5%">Producto</th>
+                                                                                <th style="text-align:center; width:5%">Unidad Medida</th>
+                                                                                <th style="text-align:center; width:5%">Cantidad</th>
+                                                                                <th style="text-align:center; width:5%">Costo Unitario</th>
+                                                                                <th style="text-align:center; width:5%">Costo Total</th>
+                                                                                <th style="text-align:center; width:5%">Acción</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                            <div id="navLLaveMano" class="tab-pane fade">
+                                                                <div class="table-responsive">
+                                                                    <table id="tblLLaveManoCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th style="text-align:center; width:5%">Código</th>
+                                                                                <th style="text-align:center; width:5%">Producto</th>
+                                                                                <th style="text-align:center; width:5%">Unidad Medida</th>
+                                                                                <th style="text-align:center; width:5%">Cantidad</th>
+                                                                                <th style="text-align:center; width:5%">Costo Unitario</th>
+                                                                                <th style="text-align:center; width:5%">Costo Total</th>
+                                                                                <th style="text-align:center; width:5%">Acción</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                            <div id="navManuales" class="tab-pane fade">
+                                                                <div class="table-responsive">
+                                                                    <table id="tblManualesCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th style="text-align:center; width:5%">Código</th>
+                                                                                <th style="text-align:center; width:5%">Producto</th>
+                                                                                <th style="text-align:center; width:5%">Unidad Medida</th>
+                                                                                <th style="text-align:center; width:5%">Cantidad</th>
+                                                                                <th style="text-align:center; width:5%">Costo Unitario</th>
+                                                                                <th style="text-align:center; width:5%">Costo Total</th>
+                                                                                <th style="text-align:center; width:5%">Acción</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                            <div id="navVideos" class="tab-pane fade">
+                                                                <div class="table-responsive">
+                                                                    <table id="tblVideosCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th style="text-align:center; width:5%">Código</th>
+                                                                                <th style="text-align:center; width:5%">Producto</th>
+                                                                                <th style="text-align:center; width:5%">Unidad Medida</th>
+                                                                                <th style="text-align:center; width:5%">Cantidad</th>
+                                                                                <th style="text-align:center; width:5%">Costo Unitario</th>
+                                                                                <th style="text-align:center; width:5%">Costo Total</th>
+                                                                                <th style="text-align:center; width:5%">Acción</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                            <div id="navCalib" class="tab-pane fade">
+                                                                <div class="table-responsive">
+                                                                    <table id="tblCalibCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th style="text-align:center; width:5%">Código</th>
+                                                                                <th style="text-align:center; width:5%">Producto</th>
+                                                                                <th style="text-align:center; width:5%">Unidad Medida</th>
+                                                                                <th style="text-align:center; width:5%">Cantidad</th>
+                                                                                <th style="text-align:center; width:5%">Costo Unitario</th>
+                                                                                <th style="text-align:center; width:5%">Costo Total</th>
+                                                                                <th style="text-align:center; width:5%">Acción</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                            <div id="navFlete" class="tab-pane fade">
+                                                                <div class="table-responsive">
+                                                                    <table id="tblFleteCostos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th style="text-align:center; width:5%">Código</th>
+                                                                                <th style="text-align:center; width:5%">Producto</th>
+                                                                                <th style="text-align:center; width:5%">Unidad Medida</th>
+                                                                                <th style="text-align:center; width:5%">Cantidad</th>
+                                                                                <th style="text-align:center; width:5%">Costo Unitario</th>
+                                                                                <th style="text-align:center; width:5%">Costo Total</th>
+                                                                                <th style="text-align:center; width:5%">Acción</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <!--
+                                <div class="panel panel-default" style="@(ViewBag.VerGestionVenta ? "" : "display:none");border-color: #07bc58;">
+                                    <div class="panel-heading" role="tab" id="heading2183316" style="background-color: #07bc5833;">
+                                        <h5 class="panel-title">
+                                            <a role="button" data-toggle="collapse" class="accordion-arrow-toggle @ViewBag.AcordionCollapsedGest" href="#collapse2183316" aria-expanded="true" aria-controls="collapse2183316"><i class="fa fa-money" aria-hidden="true"></i> GESTI&Oacute;N DE VENTA</a>
+                                        </h5>
+                                    </div>
+                                    <div id="collapse2183316" class="panel-collapse @ViewBag.TabAcordionCollapsedGest" role="tabpanel" aria-labelledby="heading2183316">
+                                        <form id="formGestionVenta">
+                                            <div class="box-content">
+                                                <div class="row container-fluid">
+                                                    <div class="col-md-4 col-sm-12">
+                                                        <label for="txtNroOrdenCompra">N° Orden de Compra: </label>
+                                                        <div class="form-group">
+                                                            <input placeholder="Ingresar número de orden de compra" type="text" class="form-control input-sm" maxlength="50" id="txtNroOrdenCompra" @ViewBag.TxtOrdenCompra>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 col-sm-12">
+                                                        <label for="dateOrdenCompra">Fecha Orden de Compra: </label>
+                                                        <div class="input-group date">
+                                                            <input type="text" class="form-control input-sm" id="dateOrdenCompra" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" readonly maxlength="10" @ViewBag.TxtFecOrdenCompra>
+                                                            <span class="input-group-addon input-sm" id="openRegdateOrdenCompra" @ViewBag.TxtFecOrdenCompra>
+                                                                <i class="fa fa-calendar"></i>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 col-sm-12">
+                                                        <label for="txtFechaEntregaMax">Fecha Entrega M&aacute;xima: </label>
+                                                        <div class="form-group">
+                                                            <input type="text" class="form-control input-sm" id="txtFechaEntregaMax" disabled>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row container-fluid" style="@(ViewBag.VerContrato ? "" : "display:none");">
+                                                    <div class="col-md-4 col-sm-12">
+                                                        <label for="txtNroContrato">N° de Contrato: </label>
+                                                        <div class="form-group">
+                                                            <input placeholder="Ingresar Número de Contrato" type="text" class="form-control input-sm" maxlength="50" id="txtNroContrato" @ViewBag.TxtNroContrato>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 col-sm-12">
+                                                        <label for="dateFechaContrato">Fecha de Contrato: </label>
+                                                        <div class="input-group date">
+                                                            <input type="text" class="form-control input-sm" id="dateFechaContrato" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" readonly maxlength="10" @ViewBag.FechaContrato>
+                                                            <span class="input-group-addon input-sm" id="openRegdateFechaContrato" @ViewBag.FechaContrato>
+                                                                <i class="fa fa-calendar"></i>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 col-sm-12">
+                                                        <label for="radCalculo">C&aacute;lculo por: </label>
+                                                        <div class="radio-group">
+                                                            <label>
+                                                                <input type="radio" id="radCalculo" aria-describedby="sizing-addon3" readonly value="1" name="opcion" @ViewBag.ControlCalculoFechaMaxima />
+                                                                Por Orden de Compra
+                                                            </label>
+                                                            <label>
+                                                                <input type="radio" id="radCalculo2" aria-describedby="sizing-addon3" readonly value="2" name="opcion" @ViewBag.ControlCalculoFechaMaxima />
+                                                                Por Contrato
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row container-fluid form-group" style="@(ViewBag.VerContrato ? "" : "display:none");">
+                                                    <div class="col-md-4 col-sm-12">
+                                                        <label for="radFianza">Fianza: </label>
+                                                        <div class="radio-group">
+                                                            <label>
+                                                                <input type="radio" id="radFianza" aria-describedby="sizing-addon3" readonly value="1" name="opcionFianza" />
+                                                                Si
+                                                            </label>
+                                                            <label>
+                                                                <input type="radio" id="radFianza2" aria-describedby="sizing-addon3" readonly value="2" name="opcionFianza" />
+                                                                No
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 col-sm-12">
+                                                        <div class="form-group">
+                                                            <label>
+                                                                <input type="checkbox" name="opciones" id="chkPrestacionPrincipal" value="1" disabled>
+                                                                Prestaci&oacute;n Principal:
+                                                            </label>
+                                                            <div class="form-group">
+                                                                <input placeholder="Ingresar N° Fianza" type="text" class="form-control input-sm" maxlength="50" id="txtNroFianzaPP" disabled>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 col-sm-12">
+                                                        <label>
+                                                            <input type="checkbox" name="opciones" id="chkPrestacionAccesoria" value="2" disabled>
+                                                            Prestaci&oacute;n Accesoria:
+                                                        </label>
+                                                        <div class="form-group">
+                                                            <input placeholder="Ingresar N° Fianza" type="text" class="form-control input-sm" maxlength="50" id="txtNroFianzaPA" disabled>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row container-fluid" style="@(ViewBag.VerFacturacion ? "" : "display:none");">
+                                                    <div class="col-md-4 col-sm-12">
+                                                        <label for="txtNumeroFactura">N° de Factura: </label>
+                                                        <div class="form-group">
+                                                            <input type="text" class="form-control input-sm" maxlength="100" id="txtNumeroFactura" placeholder="Ingresar Número de Factura" @ViewBag.TxtNumFactura>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 col-sm-12">
+                                                        <label for="dateEntregaPedido">Fecha de Entrega de Pedido: </label>
+                                                        <div class="input-group date">
+                                                            <input type="text" class="form-control input-sm" id="dateEntregaPedido" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" readonly maxlength="10" @ViewBag.FecEntregaPedido>
+                                                            <span class="input-group-addon input-sm" id="opendateEntregaPedido" @ViewBag.FecEntregaPedido>
+                                                                <i class="fa fa-calendar"></i>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row container-fluid" style="@(ViewBag.VerObservacionGerencia ? "" : "display:none");">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label for="txtObservacion">Observaci&oacute;n de Gerencia:</label>
+                                                            <textarea class="form-control" rows="4" maxlength="1000" id="txtObservacionGerente" disabled>@ViewBag.ObservacionGerencia</textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row container-fluid">
+                                                    <div class="text-right">
+                                                        <button class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnGuiaManuscritaTotal" style="display:@ViewBag.Btn_GuiaManuscritaTotal"><i class="fa fa-file" aria-hidden="true" tabindex="110"></i>&nbsp;Generar Gu&iacute;a Manuscrita</button>
+                                                        <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnEnviarServicio" style="display:@ViewBag.Btn_EnviarServicio"><i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar a Facturaci&oacute;n</button>
+
+                                                        <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnAprobarGestionSS" tabindex="114" style="display:@ViewBag.Btn_Aprobar"><i class="fa fa-handshake-o" aria-hidden="true"></i>&nbsp;Aprobar</button>
+                                                        <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnObservarGestionSS" tabindex="115" style="display:@ViewBag.Btn_Observar"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Observar</button>
+                                                        <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnGuardarGestion" tabindex="116" style="display:@ViewBag.Btn_GuardarDespacho"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar</button>
+
+                                                        <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnEditarGestion" tabindex="118" style="display:@ViewBag.Btn_EditarDespacho"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Editar</button>
+                                                        <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnActualizarGestion" tabindex="119" style="display:none"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar</button>
+
+                                                        <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnEnviarGuiaTotal" style="display:@ViewBag.Btn_EnviarGuiaTotal"><i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar Guia de Pedido</button>
+                                                        <button class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnGuiaPedidoTotal" style="display:@ViewBag.Btn_GuiaPedidoTotal"><i class="fa fa-file" aria-hidden="true" tabindex="113"></i>&nbsp;Generar Gu&iacute;a de Pedido</button>
+                                                        <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnEnviarGuiaBOTotal" style="display:@ViewBag.Btn_EnviarGuiaBOTotal"><i class="fa fa-envelope" aria-hidden="true" tabindex="111"></i>&nbsp;Enviar Guia de BO</button>
+                                                        <button class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnGuiaBOTotal" style="display:@ViewBag.Btn_GuiaBOTotal"><i class="fa fa-file" aria-hidden="true" tabindex="112"></i>&nbsp;Generar Gu&iacute;a de BO</button>
+
+
+                                                        <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnFinalizarVenta" tabindex="120" style="display:@ViewBag.Btn_FinalizarVenta"><i class="fa fa-window-close" aria-hidden="true"></i>&nbsp;Finalizar Venta</button>
+                                                        <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnEditarFacturaLogistica" tabindex="123" style="display:@ViewBag.Btn_EditarFacturaLogistica"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Editar Factura</button>
+                                                        <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnGuardarFacturaLogistica" tabindex="123" style="display:@ViewBag.Btn_GuardarFacturaLogistica"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar Factura</button>
+                                                    </div>
+                                                </div>
+                                                <div class="row container-fluid" style="@(ViewBag.VerTipoDespacho ? "" : "display:none");">
+                                                    <div class="col-md-4 col-sm-12">
+                                                        <label for="radTipDespacho">Tipo de Despacho: </label>
+                                                        <div class="radio-group">
+                                                            <label>
+                                                                <input type="radio" id="radTipDespacho" aria-describedby="sizing-addon3" readonly value="1" name="opcionTipoDespacho" @ViewBag.Disabled_TipoDespacho />
+                                                                Total
+                                                            </label>
+                                                            <label>
+                                                                <input type="radio" id="radTipDespacho2" aria-describedby="sizing-addon3" readonly value="2" name="opcionTipoDespacho" @ViewBag.Disabled_TipoDespacho />
+                                                                Parcial
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="box-content" style="@(ViewBag.VerGestionLogistica ? "" : "display:none");">
+                                                <ul class="nav nav-tabs" style="padding-top: 5px;">
+                                                    <li class="" id="tabConStock" style="@(ViewBag.VerNavConStock ? "":"display:none");">
+                                                        <a href="#navConStock" data-toggle="tab" style="font-weight:bold; color:black;" tabindex="221"><i class="fa fa-cubes" aria-hidden="true"></i> Con Stock</a>
+                                                    </li>
+                                                    <li class="" id="tabSinStock" style="@(ViewBag.VerNavSinStock ? "":"display:none");">
+                                                        <a href="#navSinStock" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="222"><i class="fa fa-wrench" aria-hidden="true"></i> Sin Stock</a>
+                                                    </li>
+                                                    @if (tipoSol == "TSOL01" || tipoSol == "TSOL03")
+                                                    {
+                                                        <li class="" id="tabServ" style="@(ViewBag.VerNavServicio ? "":"display:none");">
+                                                            <a href="#navServicio" data-toggle="tab" style="font-weight:bold; color:black;" tabindex="220"><i class="fa fa-user" aria-hidden="true"></i> Servicio</a>
+                                                        </li>
+                                                        <li class="" id="tabTecnicos">
+                                                            <a href="#navTecnicos" data-toggle="tab" style="font-weight: bold; color: #158304;" tabindex="223"><i class="fa fa-users" aria-hidden="true"></i><i class="fa fa-wrench" aria-hidden="true"></i> Tecnicos</a>
+                                                        </li>
+                                                    }
+
+                                                </ul>
+                                                <div class="tab-content">
+
+                                                    <div id="navConStock" class="tab-pane fade in active" style="@(ViewBag.VerNavConStock ? "":"display:none");">
+                                                        <div class="row container-fluid">
+                                                            &nbsp;
+                                                        </div>
+                                                        <div class="row container-fluid">
+                                                            <div class="text-right">
+                                                                <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnEnviarGuiaCS" style="display:@ViewBag.Btn_EnviarGuiaCS"><i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar Guia de Pedido</button>
+                                                                <button class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnGuiaPedidoCS" style="display:@ViewBag.Btn_GuiaPedidoCS"><i class="fa fa-file" aria-hidden="true" tabindex="113"></i>&nbsp;Generar Gu&iacute;a de Pedido</button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row container-fluid">
+                                                            &nbsp;
+                                                        </div>
+                                                        <div class="row container-fluid" id="SeccionLogCS" style="@(ViewBag.SeccionLogCS ? "":"display:none");">
+
+                                                            @if (tipoSol == "TSOL04")
+                                                            {
+                                                                <div class="col-md-4 col-sm-12">
+                                                                    <label for="txtNumeroGuiaRemisionCE">N° de Gu&iacute;a de Remisi&oacute;n: </label>
+                                                                    <div class="form-group">
+                                                                        <input type="text" class="form-control input-sm" id="txtNumeroGuiaRemisionCE" maxlength="100" placeholder="Ingresar N° Guia de Remisión" @ViewBag.TxtNumeroGuiaRemisionCE>
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                        </div>
+
+                                                        <div class="row container-fluid">
+                                                            <div class="text-right">
+                                                                <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnEditarGestionLogistica" tabindex="120" style="display:@ViewBag.Btn_EditarGestionLogistica"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Editar&nbsp;</button>&nbsp;
+                                                                <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnGuardarGestionLogistica" tabindex="121" style="display:@ViewBag.Btn_GuardarGestionLogistica"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar&nbsp;</button>&nbsp;
+                                                                @if (tipoSol == "TSOL02" || tipoSol == "TSOL03" || tipoSol == "TSOL05")
+                                                                {
+                                                                    <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegistrarDespacho" tabindex="121" style="display:@ViewBag.Btn_RegistrarDespacho"><i class="fa fa-truck" aria-hidden="true"></i>&nbsp;Despacho Multiple&nbsp;</button>
+                                                                }&nbsp;
+
+                                                                <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnEnviarGestionDespacho" tabindex="122" style="display:@ViewBag.Btn_EnviarGestionDespacho"><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;Enviar a Gesti&oacute;n&nbsp;</button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row container-fluid">
+                                                            &nbsp;
+                                                        </div>
+                                                        @if (tipoSol == "TSOL02" || tipoSol == "TSOL03" || tipoSol == "TSOL05")
+                                                        {
+                                                            <div class="row container-fluid">
+                                                                <div class="table-responsive">
+                                                                    <table id="tblSeriesCS" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                @if (NombreRol == "SGI_VENTA_LOGISTICA" && (estadoSol == "PRVT" || estadoSol == "VTPG"))
+                                                                                {
+                                                                                    <th style="text-align:center; width:5%; color:white; background-color:cornflowerblue"><input type="checkbox" id="SelTodosCSS" onclick="javascript:seleccionarTodoConStock();" /></th>
+                                                                                }
+                                                                                <th style="text-align:center; width:5%; color:white; background-color:cornflowerblue">N°</th>
+                                                                                <th style="text-align: center; width: 10%; color:white; background-color: cornflowerblue">C&oacute;digo</th>
+                                                                                <th style="text-align: center; width: 20%; color: white; background-color: cornflowerblue">Descripci&oacute;n Equipo</th>
+                                                                                <th style="text-align: center; width: 10%; color: white; background-color: cornflowerblue">Marca</th>
+                                                                                <th style="text-align: center; width: 10%; color: white; background-color: cornflowerblue">Destino</th>
+                                                                                <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">N° Guia Remision</th>
+                                                                                <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">N° Serie / N° Lote</th>
+                                                                                <th style="text-align: center; width: 10%; color: white; background-color: cornflowerblue">Acciones</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <tr id="NoRegSeries">
+                                                                                <td align="center" colspan="8">No existen registros</td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        }
+
+
+                                                    </div>
+                                                    <div id="navSinStock" class="tab-pane fade @ViewBag.InActiveSinStock" style="@(ViewBag.VerNavSinStock ? "":"display:none");">
+                                                        <div class="row container-fluid">
+                                                            &nbsp;
+                                                        </div>
+                                                        <div class="row container-fluid">
+                                                            <div class="text-right">
+                                                                <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnEnviarGuiaSS" style="display:@ViewBag.Btn_EnviarGuiaSS"><i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar Guia de Pedido</button>
+                                                                <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnEnviarGuiaBOSS" style="display:@ViewBag.Btn_EnviarGuiaBO"><i class="fa fa-envelope" aria-hidden="true" tabindex="111"></i>&nbsp;Enviar Guia de BO</button>
+                                                                <button class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnGuiaBOSS" style="display:@ViewBag.Btn_GuiaBO"><i class="fa fa-file" aria-hidden="true" tabindex="112"></i>&nbsp;Generar Gu&iacute;a de BO</button>
+                                                                <button class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnGuiaPedidoSS" style="display:@ViewBag.Btn_GuiaPedidoSS"><i class="fa fa-file" aria-hidden="true" tabindex="113"></i>&nbsp;Generar Gu&iacute;a de Pedido</button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row container-fluid">
+                                                            &nbsp;
+                                                        </div>
+                                                        <div class="row container-fluid" id="SeccionImpSS" style="@(ViewBag.SeccionImpSS ? "":"display:none");">
+                                                            <div class="col-md-4 col-sm-12">
+                                                                <label for="txtCodigoPedidoSE">C&oacute;digo de Pedido: </label>
+                                                                <div class="form-group">
+                                                                    <input type="text" class="form-control input-sm" id="txtCodigoPedidoSE" placeholder="Ingresar Código de Pedido" @ViewBag.TxtCodigoPedido>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4 col-sm-12">
+                                                                <label for="dateIngresoAlmacenSE">Fecha de Ingreso de Almacen: </label>
+                                                                <div class="input-group date">
+                                                                    <input type="text" class="form-control input-sm" id="dateIngresoAlmacenSE" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" readonly maxlength="10" @ViewBag.IngresoAlmacen>
+                                                                    <span class="input-group-addon input-sm" id="opendateIngresoAlmacenSE" @ViewBag.IngresoAlmacen>
+                                                                        <i class="fa fa-calendar"></i>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row container-fluid" id="SeccionLogSS" style="@(ViewBag.SeccionLogSS ? "":"display:none");">
+
+                                                            @if (tipoSol == "TSOL04")
+                                                            {
+                                                                <div class="col-md-4 col-sm-12">
+                                                                    <label for="txtNumeroGuiaRemisionSE">N° de Gu&iacute;a de Remisi&oacute;n: </label>
+                                                                    <div class="form-group">
+                                                                        <input type="text" class="form-control input-sm" id="txtNumeroGuiaRemisionSE" maxlength="100" placeholder="Ingresar N° Guia de Remisión" @ViewBag.TxtNumeroGuiaRemisionSE>
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                        <div class="row container-fluid">
+                                                            <div class="text-right">
+                                                                <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnActualizarImportacion" tabindex="126" style="display:@ViewBag.Btn_ActualizarImportacion"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Actualizar Importaci&oacute;n</button>
+                                                                <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnGuardarFechaIngresoImportacion" tabindex="126" style="display:@ViewBag.Btn_GuardarFechaIngreso"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar</button>
+                                                                <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnGuardarImportacion" tabindex="126" style="display:@ViewBag.Btn_GuardarImportacion"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar Importaci&oacute;n</button>
+                                                                <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnEditarGestionLogisticaSE" tabindex="127" style="display:@ViewBag.Btn_EditarGestionLogisticaSE"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Editar&nbsp;</button>&nbsp;
+                                                                <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnGuardarGestionLogisticaSE" tabindex="128" style="display:@ViewBag.Btn_GuardarGestionLogisticaSE"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar&nbsp;</button>&nbsp;
+                                                                @if (tipoSol == "TSOL02" || tipoSol == "TSOL03" || tipoSol == "TSOL05")
+                                                                {
+                                                                    <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegistrarDespachoSE" tabindex="121" style="display:@ViewBag.Btn_RegistrarDespachoSinStock"><i class="fa fa-truck" aria-hidden="true"></i>&nbsp;Despacho Multiple&nbsp;</button>
+                                                                }
+                                                                &nbsp;
+                                                                <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnEnviarGestionDespachoSE" tabindex="129" style="display:@ViewBag.Btn_EnviarGestionDespachoSE"><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;Enviar a Gesti&oacute;n&nbsp;</button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row container-fluid">
+                                                            &nbsp;
+                                                        </div>
+                                                        @if (tipoSol == "TSOL02" || tipoSol == "TSOL03" || tipoSol == "TSOL05")
+                                                        {
+                                                            <div class="row container-fluid">
+                                                                <div class="table-responsive">
+                                                                    <table id="tblSeriesSS" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                @if (NombreRol == "SGI_VENTA_LOGISTICA" && (estadoSol == "PRVT" || estadoSol == "VTPG"))
+                                                                                {
+                                                                                    <th style="text-align:center; width:5%; color:white; background-color:cornflowerblue"><input type="checkbox" id="SelTodosSSS" onclick="javascript:seleccionarTodoSinStock();" /></th>
+                                                                                }
+                                                                                <th style="text-align:center; width:5%; color:white; background-color:cornflowerblue">N°</th>
+                                                                                <th style="text-align: center; width: 10%; color:white; background-color: cornflowerblue">C&oacute;digo</th>
+                                                                                <th style="text-align: center; width: 20%; color: white; background-color: cornflowerblue">Descripci&oacute;n Equipo</th>
+                                                                                <th style="text-align: center; width: 10%; color: white; background-color: cornflowerblue">Marca</th>
+                                                                                <th style="text-align: center; width: 10%; color: white; background-color: cornflowerblue">Destino</th>
+                                                                                <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">N° Guia Remision</th>
+                                                                                <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">N° Serie / N° Lote</th>
+                                                                                <th style="text-align: center; width: 10%; color: white; background-color: cornflowerblue">Acciones</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <tr id="NoRegSeriesSS">
+                                                                                <td align="center" colspan="8">No existen registros</td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        }
+
+
+                                                    </div>
+                                                    <div id="navServicio" class="tab-pane fade @ViewBag.InActiveServicio" style="@(ViewBag.VerNavServicio ? "":"display:none");">
+                                                        <div class="row container-fluid">
+                                                            &nbsp;
+                                                        </div>
+
+                                                        <div class="row container-fluid">
+                                                            <div class="col-md-4 col-sm-12">
+                                                                <label for="dateFactura">Fecha de Factura: </label>
+                                                                <div class="input-group date">
+                                                                    <input type="text" class="form-control input-sm" id="dateFactura" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" readonly maxlength="10" @ViewBag.FechaFactura>
+                                                                    <span class="input-group-addon input-sm" id="opendateFactura" @ViewBag.FechaFactura>
+                                                                        <i class="fa fa-calendar"></i>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4 col-sm-12">
+                                                                <label for="txtNumeroFacturaServ">N° de Factura: </label>
+                                                                <div class="form-group">
+                                                                    <input type="text" class="form-control input-sm" id="txtNumeroFacturaServ" placeholder="Ingresar Número de Factura" @ViewBag.TxtNumeroFacturaServ>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4 col-sm-12">
+                                                                &nbsp;
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row container-fluid">
+                                                            <div class="text-right">
+                                                                <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnGuardarFactura" tabindex="121" style="display:@ViewBag.Btn_GuardarFactura"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar Factura&nbsp;</button>&nbsp;
+                                                            </div>
+                                                        </div>
+                                                        <div class="row container-fluid">
+                                                            &nbsp;
+                                                        </div>
+
+                                                    </div>
+                                                    <div id="navTecnicos" class="tab-pane fade @ViewBag.InActiveTecnico">
+                                                        <br />
+                                                        <form id="formRegistroTecnico" class="d-flex flex-row">
+                                                            <div class="row container-fluid d-flex justify-content-center">
+                                                                <div class="text-right">
+                                                                    <button class="btn btn-default btn-sm" type="button" style="display:none;" id="btnBuscarTecnicos" data-target="#modalBusquedaTecnico" data-toggle="modal"><i class="fa fa-search"></i> Buscar Técnicos</button>
+                                                                    <span id="hidden_fields"></span>
+                                                                    <button class="btn btn-primary btn-sm" type="button" style="display:none;" id="btnAñadirTecnico" data-toggle="modal" data-target="#añadirTecnico"><i class="fa fa-plus"></i> Crear Técnico Externo</button> &nbsp;
+                                                                    <button class="btn btn-primary btn-sm" type="button" style="display:none;" id="btnGuardarProg" data-toggle="modal" data-target="#añadirFecProg"><i class="fa fa-table"></i> Programar Fecha</button>
+                                                                </div>
+                                                                <br />
+                                                                <div class="row container-fluid">
+                                                                    <div class="col-md-6 col-sm-12">
+                                                                        <label for="dateProgramacionServ">Fecha de Programaci&oacute;n: </label>
+                                                                        <div class="input-group date">
+                                                                            <input type="text" class="form-control input-sm" id="dateProgramacionServ" aria-describedby="sizing-addon3" disabled maxlength="10">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <br />
+                                                                <div class="table-responsive">
+                                                                    <table id="tblMainTecnicos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th>Id</th>
+                                                                                <th style="text-align: center; width:10%">Tip. de Doc.</th>
+                                                                                <th style="text-align: center; width:10%">N&uacute;m. de Doc.</th>
+                                                                                <th style="text-align: center; width:20%">Nombres y Apellidos</th>
+                                                                                <th style="text-align: center; width:15%">Tel&eacute;fono</th>
+                                                                                <th style="text-align: center; width:15%;">Correo</th>
+                                                                                <th style="text-align: center; width:15%;">Empresa</th>
+                                                                                <th style="text-align: center; width:50%;"><center>Acciones</center></th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody id="tbodyTecnicos">
+                                                                        </tbody>
+                                                                        <tr id="NoExisteTec"><td colspan="11" style="text-align:center"> No se han añadido técnicos</td></tr>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                            <br />
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+                                -->
+                            </div>
+                        </div>
+
+                        <div id="navDocumentos" class="tab-pane fade">
+                            @{
+                                Html.RenderPartial("~/Views/Modelos/_Documentos.cshtml");
+                            }
+                        </div>
+                        <div id="navObservaciones" class="tab-pane fade">
+                            @{
+                                Html.RenderPartial("~/Views/Modelos/_Observaciones.cshtml");
+                            }
+                        </div>
+                        <div id="navSeguimiento" class="tab-pane fade">
+                            @{
+                                Html.RenderPartial("~/Views/Modelos/_Seguimiento.cshtml");
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@{
+    Html.RenderPartial("~/Views/Modelos/_Modales.cshtml");
+}
+
+<style>
+    .radio-group {
+        display: flex; /* Alineación en fila */
+        gap: 15px; /* Espaciado entre los botones */
+    }
+
+    .fixed-column {
+        position: sticky;
+        left: 0;
+        z-index: 10;
+        background: white;
+    }
+
+    .fixed-last-column {
+        position: sticky;
+        right: 0;
+        z-index: 10;
+        background: white;
+    }
+
+    /* plus glyph for showing collapsible panels */
+    .panel-heading .accordion-plus-toggle:before {
+        font-family: FontAwesome;
+        content: "\f068";
+        float: right;
+        color: silver;
+    }
+
+    .panel-heading .accordion-plus-toggle.collapsed:before {
+        content: "\f067";
+        color: silver;
+    }
+
+    /* arrow glyph for showing collapsible panels */
+    .panel-heading .accordion-arrow-toggle:before {
+        font-family: FontAwesome;
+        content: "\f078";
+        float: right;
+        color: silver;
+    }
+
+    .panel-heading .accordion-arrow-toggle.collapsed:before {
+        content: "\f054";
+        color: silver;
+    }
+
+    /* sets the link to the width of the entire panel title */
+    .panel-title > a {
+        display: block;
+    }
+
+    .shown {
+        background-color: #f9f9f9; /* Color de fondo para filas mostradas */
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        $('#txtGanancia').on('input', function () {
+            let value = $(this).val();
+            // Eliminar cualquier carácter que no sea un número
+            value = value.replace(/[^0-9]/g, '');
+
+            // Convertir a número
+            let numberValue = parseInt(value, 10);
+
+            // Limitar el valor entre 0 y 100
+            if (numberValue < 0) {
+                $(this).val(0);
+            } else if (numberValue > 100) {
+                $(this).val(100);
+            } else {
+                $(this).val(numberValue);
+            }
+        });
+    });
+
+    $('#txtNroOrdenCompra').keyup(function (event) {
+        // Captura el valor actual del campo de texto
+        const valor = $(this).val();
+
+        if (valor == "" && $('#cmbTipoVenta').val() == "TVEN02") {
+            $('input[name="opcion"][value="1"]').prop('checked', false);
+            $('#dateOrdenCompra').val('');
+            $('#txtFechaEntregaMax').val('');
+            $('#dateOrdenCompra').prop('disabled', true);
+        }
+        else {
+            $('#dateOrdenCompra').prop('disabled', false);
+        }
+    });
+
+    $('#txtNroContrato').keyup(function (event) {
+        // Captura el valor actual del campo de texto
+        const valor = $(this).val();
+
+        if (valor == "" && $('#cmbTipoVenta').val() == "TVEN02") {
+            $('input[name="opcion"][value="2"]').prop('checked', false);
+            $('#dateFechaContrato').val('');
+            $('#txtFechaEntregaMax').val('');
+            $('#dateFechaContrato').prop('disabled', true);
+        }
+        else {
+            $('#dateFechaContrato').prop('disabled', false);
+        }
+    });
+
+    $('#txtVigencia').keypress(function (event) {
+        // Permitir solo teclas numéricas y algunas teclas especiales como Backspace, Tab, etc.
+        var charCode = event.which ? event.which : event.keyCode;
+        if (charCode < 48 || charCode > 57) {
+            event.preventDefault(); // Evitar la entrada de caracteres no numéricos
+        }
+    });
+
+    $('#txtPlazoEntrega').keypress(function (event) {
+        // Permitir solo teclas numéricas y algunas teclas especiales como Backspace, Tab, etc.
+        var charCode = event.which ? event.which : event.keyCode;
+        if (charCode < 48 || charCode > 57) {
+            event.preventDefault(); // Evitar la entrada de caracteres no numéricos
+        }
+    });
+
+    function seleccionarTodoConStock() {
+        const selectAllCheckbox = document.getElementById("SelTodosCSS");
+        const itemCheckboxes = document.querySelectorAll(".chkCS");
+
+        // Función para seleccionar/deseleccionar todos los checkboxes
+        selectAllCheckbox.addEventListener("change", () => {
+            const isChecked = selectAllCheckbox.checked;
+            itemCheckboxes.forEach(checkbox => {
+                checkbox.checked = isChecked;
+            });
+        });
+
+        // Función para manejar el estado del checkbox "Seleccionar todo"
+        itemCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener("change", () => {
+                // Si algún checkbox no está seleccionado, desmarca "Seleccionar todo"
+                if ([...itemCheckboxes].some(checkbox => !checkbox.checked)) {
+                    selectAllCheckbox.checked = false;
+                } else {
+                    // Si todos están seleccionados, marca "Seleccionar todo"
+                    selectAllCheckbox.checked = true;
+                }
+            });
+        });
+
+      
+    }
+
+    function seleccionarTodoSinStock() {
+        const selectAllCheckbox = document.getElementById("SelTodosSSS");
+        const itemCheckboxes = document.querySelectorAll(".chkSS");
+
+        // Función para seleccionar/deseleccionar todos los checkboxes
+        selectAllCheckbox.addEventListener("change", () => {
+            const isChecked = selectAllCheckbox.checked;
+            itemCheckboxes.forEach(checkbox => {
+                checkbox.checked = isChecked;
+            });
+        });
+
+        // Función para manejar el estado del checkbox "Seleccionar todo"
+        itemCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener("change", () => {
+                // Si algún checkbox no está seleccionado, desmarca "Seleccionar todo"
+                if ([...itemCheckboxes].some(checkbox => !checkbox.checked)) {
+                    selectAllCheckbox.checked = false;
+                } else {
+                    // Si todos están seleccionados, marca "Seleccionar todo"
+                    selectAllCheckbox.checked = true;
+                }
+            });
+        });
+    }
+
+</script>
+<!--Modal-->
+<!--No se debe poner un MODAL dentro de otro MODAL-->
+@{
+    Html.RenderPartial("_Contactos");
+}
+
+<div class="modal fade" id="modalDetalleCotizacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_SolicitudDetCot");
+    }
+</div>
+
+<div class="modal fade" id="modalDetalleCotizacionServicio" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_SolicitudDetServicio");
+    }
+</div>
+
+<div class="modal fade" id="modalDetalleItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_SolicitudDetItemProducto");
+    }
+</div>
+<div class="modal fade" id="modalDetalleItemAccesorio" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_SolicitudDetItemAccesorio");
+    }
+</div>
+
+
+
+<div class="modal fade" id="modalDetalleItemServicio" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_SolicitudDetItemServicio");
+    }
+</div>
+
+<div class="modal fade" id="modalBandejaHistorialCotizacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_BandejaHistorialCotizacion");
+    }
+</div>
+
+<div class="modal fade" id="modalVerHistorialCotizacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_VerHistorialCotizacion");
+    }
+</div>
+
+<div data-backdrop="static" data-keyboard="false" class="modal fade" id="modalUbigeo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    @{
+        Html.RenderPartial("_Ubigeo");
+    }
+</div>
+
+<div class="modal fade" id="modalCostoItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_SolicitudCostoItem");
+    }
+</div>
+
+<div class="modal fade" id="modalCostoItemMultiple" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_SolicitudCostoItemMultiple");
+    }
+</div>
+
+<div class="modal fade" id="modalAprobDscto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_SolicitudAprobDscto");
+    }
+</div>
+
+<div class="modal fade" id="modalDetalleServicio" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_DetalleServicio");
+    }
+</div>
+
+<div class="modal fade" id="modalBusquedaTecnico" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_BuscarTecnico");
+    }
+</div>
+<div class="modal fade" id="modalBusquedaClientes" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    @{
+        Html.RenderPartial("_BusquedaClientes");
+    }
+</div>
+
+<div class="modal fade" id="añadirTecnico" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    @{
+        ViewBag.Title = "Creación de Técnicos de Externos";
+    }
+
+    <div class="modal-dialog modal-lg container-fluid" role="document">
+        <!-- Modal content -->
+        <div class="modal-content" id="modalContent">
+            <!-- Modal content header -->
+            <div class="modal-header box-header well well-sm" style="padding-bottom: 30px;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="tituloModal"><i class="fa fa-handshake-o" aria-hidden="true"></i> @ViewBag.Title</h4>
+            </div>
+            <!-- Modal content body -->
+            <div class="modal-body d-flex justify-content-center" align-items-center>
+                <form id="formRegistro" class="d-flex flex-row">
+                    <div class="row container-fluid d-flex justify-content-center">
+                        <div class="text-right">
+                            <button class="btn btn-primary btn-sm" type="button" id="btnRegistrarTecnicoExterno"><i class="fa fa-handshake-o"></i> Agregar</button>
+                        </div>
+                        <div class="row container-fluid">
+                            <div class="col-md-4 col-sm-12">
+                                <label for="txtNombreTecnico">Nombre: </label>
+                                <div class="form-group">
+                                    <input placeholder="--Ingresar Apellido Paterno---" type="text" class="form-control input-sm" id="txtNombreTecnico" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <label for="txtApellidoPaternoTec">Apellido Paterno: </label>
+                                <div class="form-group">
+                                    <input placeholder="--Ingresar Apellido Paterno---" type="text" class="form-control input-sm" id="txtApellidoPaternoTec" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <label for="txtApellidoMaternoTec">Apellido Materno: </label>
+                                <div class="form-group">
+                                    <input placeholder="--Ingresar Apellido Materno---" type="text" class="form-control input-sm" id="txtApellidoMaternoTec" value="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row container-fluid">
+                            <div class="col-md-4 col-sm-12">
+                                <label for="txtTipoTecnico">Tipo de T&eacute;cnico: </label>
+                                <div class="form-group">
+                                    <input hidden id="hdnTipoEmpleado" />
+                                    <input type="text" class="form-control input-sm" id="txtTipoTecnico" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <label for="cmbTipoCredencial">Tipo de Documento: </label>
+                                <div class="form-group">
+                                    <select class="form-control select2 input-sm" style="width:100%;" id="cmbTipoCredencial"></select>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <label for="txtNumDocumento">N° Documento: </label>
+                                <input hidden id="hdnTipoDoc" />
+                                <div class="form-group">
+                                    <input placeholder="--Ingresar número de Documento---" type="text" class="form-control input-sm" id="txtNumDocumento" value="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row container-fluid">
+                            <div class="col-md-4 col-sm-12">
+                                <label for="txtTelefonoServ">Tel&eacute;fono:</label>
+                                <div class="form-group">
+                                    <input placeholder="--Ingresar Teléfono---" type="text" class="form-control input-sm" id="txtTelefonoServ" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <label for="txtCorreoServ">Correo: </label>
+                                <div class="form-group">
+                                    <input placeholder="--Ingresar Correo---" type="text" class="form-control input-sm" id="txtCorreoServ" value="">
+                                </div>
+                            </div>
+                            <input type="hidden" id="txtCodUbicacionServ" value="" />
+                            <div class="col-md-4 col-sm-12" id="colEmpresa" style="display:none">
+                                <label for="txtEmpresa">Empresa: </label>
+                                <div class="form-group">
+                                    <input placeholder="--Ingresar Empresa---" type="text" class="form-control input-sm" id="txtEmpresaTecExterno" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <label for="txtZona">Zona:</label>
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm date">
+                                        <input hidden id="hdnIdZona" />
+                                        <input disabled maxlength="6" type="text" class="form-control input-sm" id="txtZona" placeholder="--Seleccionar Zona--" aria-describedby="sizing-addon3" />
+                                        <span style="cursor: pointer" class="input-group-addon input-sm" id="searchZona" data-toggle="modal" data-target="#modalZonaTecSol">
+                                            <i class="fa fa-search"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalZonaTecSol" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+
+    @{
+        ViewBag.Title = "Ubigeo";
+    }
+
+    <div class="modal-dialog modal-md container-fluid" role="document">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <!-- Modal content header -->
+            <div class="modal-header box-header well well-sm" style="padding-bottom: 30px;">
+                <h4 class="modal-title" id="tituloModal">@ViewBag.Title</h4>
+            </div>
+            <!-- Modal content body -->
+            <div class="modal-body d-flex justify-content-center" align-items-center>
+                <form id="formRegistro" class="d-flex flex-row">
+                    <div class="row container-fluid d-flex justify-content-center">
+
+
+                        <!--Departamento-->
+                        <div class="row container-fluid">
+                            <div class="col-md-4 col-sm-12">
+                                <div class="form-group col-sm-12">
+                                    <label for="cmbDepartamentoServ">Departamento:</label>
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-sm-12">
+                                <div class="form-group col-sm-12">
+                                    <select class="form-control select2 input-sm " style="width:100%;" id="cmbDepartamentoServ" data-selected="" tabindex="-1" aria-hidden="true"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <!---------------------------->
+
+                        <br />
+                        <!--Provincia-->
+                        <div class="row container-fluid">
+                            <div class="col-md-4 col-sm-12">
+                                <div class="form-group col-sm-12">
+                                    <label for="cmbProvinciaServ">Provincia:</label>
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-sm-12">
+                                <div class="form-group">
+                                    <select class="form-control select2 input-sm " style="width:100%;" id="cmbProvinciaServ" data-selected="" tabindex="-1" aria-hidden="true"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <!---------------------------->
+                        <!--Distrito-->
+                        <div class="row container-fluid">
+                            <div class="col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label for="cmbDistritoServ">Distrito:</label>
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-sm-12">
+                                <div class="form-group">
+                                    <select class="form-control select2 input-sm " style="width:100%;" id="cmbDistritoServ" data-selected="" tabindex="-1" aria-hidden="true"></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <br />
+
+                </form>
+            </div>
+            <!-- Modal content footer -->
+            <div class="modal-footer">
+                <button class="btn btn-default btn-sm pull-left" type="button" data-dismiss="modal" id="btnCerrarUbigeoServ">Cerrar</button>
+                <button class="btn btn-primary btn-sm" type="button" id="btnGuardarUbigeoSel">Seleccionar</button>
+                <button class="btn btn-primary btn-sm" type="button" style="display:none;" id="btnGuardarUbigeoDespachoSel">Seleccionar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="añadirFecProg" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-sm container-fluid" role="document">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <!-- Modal content header -->
+            <div class="modal-header box-header well well-large">
+                <h5 class="modal-title" id="tituloModal"><b>Fecha de Programaci&oacute;n:</b></h5>
+            </div>
+            <!-- Modal content body -->
+            <div class="modal-body d-flex justify-content-center" align-items-center>
+                <form id="formRegistroFecProg" class="d-flex flex-row">
+                    <div class="row container-fluid d-flex justify-content-center">
+
+
+                        <!--1ra fila:-->
+                        <div class="row container-fluid">
+                            <div class="col-md-12 col-sm-12">
+                                <div class="input-group date">
+                                    <input type="text" class="form-control input-sm" id="dateProg" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" readonly maxlength="10">
+                                    <span class="input-group-addon input-sm" id="opendateProg">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <!-- Modal content footer -->
+            <div class="modal-footer">
+                <button class="btn btn-default btn-sm pull-left" type="button" data-dismiss="modal" id="btnCerrarDetalle"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Cerrar</button>
+                <button class="btn btn-primary btn-sm" type="button" id="btnRegistrarFechaProg"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalSeries" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <input type="hidden" id="codDetalleDespacho" value="0" />
+    <input type="hidden" id="codigosIds" value="" />
+    <input type="hidden" id="ListaSeries" value="" />
+    <input type="hidden" id="ListaGuias" value="" />
+    <input type="hidden" id="TipoReg" value="" />
+    <input type="hidden" id="RegStock" value="" />
+    <input type="hidden" id="CodigoDocumentoDespacho" value="0" />
+    <input type="hidden" id="ArchivoBase64" value="" />
+    <input type="hidden" id="FlagCargaDocumentoDespacho" value="" />
+
+    <div class="modal-dialog modal-lg container-fluid" role="document">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <!-- Modal content header -->
+            <div class="modal-header box-header well well-large">
+                <h5 class="modal-title" id="tituloModal"><b>Detalle del Despacho:</b></h5>
+            </div>
+            <!-- Modal content body -->
+            <div class="modal-body d-flex justify-content-center" align-items-center>
+                <form id="formRegistroDetalleViatico" class="d-flex flex-row">
+                    <div class="row container-fluid d-flex justify-content-center">
+
+
+                        <!--1ra fila:-->
+                        <div class="row container-fluid">
+                            <div class="col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label for="txtTipo">C&oacute;digo de Producto:</label>
+                                    <input type="text" class="form-control input-sm" id="txtCodigoProductoSerie" value="" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label for="txtTipo">Marca:</label>
+                                    <input type="text" class="form-control input-sm" id="txtMarcaSerie" value="" disabled>
+                                </div>
+                            </div>
+
+                        </div>
+                        <!--2da fila:-->
+                        <div class="row container-fluid">
+                            <div class="col-md-12 col-sm-12">
+                                <div class="form-group">
+                                    <label for="txtTipo">Descripci&oacute;n:</label>
+                                    <input type="text" class="form-control input-sm" id="txtDescripcion" value="" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <!--3ra fila:-->
+                        <div class="row container-fluid">
+                            <div class="col-md-12 col-sm-12">
+                                <label for="txtZonaDepacho">Zona:</label>
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm date">
+                                        <input hidden id="hdnIdZonaDespacho" />
+                                        <input disabled maxlength="6" type="text" class="form-control input-sm" id="txtZonaDepacho" placeholder="--Seleccionar Zona--" aria-describedby="sizing-addon3" />
+                                        <span style="cursor: pointer" class="input-group-addon input-sm" id="searchZonaDespacho" data-toggle="modal" data-target="#modalZonaTecSol">
+                                            <i class="fa fa-search"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--4ta fila:-->
+                        <div class="row container-fluid">
+                            <div class="col-md-12 col-sm-12">
+                                <div class="form-group">
+                                    <label for="txtDireccion">Direcci&oacute;n:</label>
+                                    <input placeholder="Ingresar Dirección" maxlength="150" type="text" class="form-control input-sm" id="txtDireccion" value="">
+                                </div>
+                            </div>
+                        </div>
+                        <!--5ta fila:-->
+                        <div class="row container-fluid" id="rowSerieGuia">
+                            <div class="col-md-6 col-sm-12">
+                                <label for="txtSerie">N° de Serie o Lote:</label>
+                                <div class="form-group">
+                                    <input placeholder="Ingresar N° de Serie o Lote" maxlength="50" type="text" class="form-control input-sm" id="txtSerie" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                <label for="txtGuia">N° de Guia de Remisi&oacute;n:</label>
+                                <div class="form-group">
+                                    <input placeholder="Ingresar N° de Guia de Remisión" maxlength="50" type="text" class="form-control input-sm" id="txtGuia" value="">
+                                </div>
+                            </div>
+                        </div>
+                        <!--6ta fila:-->
+                        <div class="row container-fluid" id="rowTablaSeriesGuias">
+                            <div class="col-md-12 col-sm-12">
+                                <div class="form-group">
+                                    <table id="tblSeriesGuia" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align: center; width: 6%; color: white; background-color: cornflowerblue">N°</th>
+                                                <th style="text-align: center; width: 47%; color: white; background-color: cornflowerblue">N° Serie / N° Lote</th>
+                                                <th style="text-align: center; width: 47%; color: white; background-color: cornflowerblue">N° Guia Remision</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr id="NoRegSeriesGuia">
+                                                <td align="center" colspan="2">No existen registros</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!--7ma fila:-->
+                        <div class="row container-fluid" id="rowTablaSeriesCargar">
+                            <div class="col-md-6 col-sm-12">
+                                <button class="btn btn-danger btn-sm" type="button" id="btnAdjuntarDocumentoDespacho"><i class="fa fa-folder" aria-hidden="true"></i>&nbsp;Cargar Archivo</button>
+                                <b><label id="lblNombreArchivoDespacho" value=""></label></b>
+                                <input type="file" class="btn btn-danger btn-sm" id="fileCargaDocumentoSustentoDespacho" value="Cargar Adjunto" style="display:none;"><br />
+                                <span id="tipoDocAdjuntosDespacho" style="font-size:10px;color:gray">Archivos permitidos: .xls,.xlsx,.pdf,.doc,.docx,.zip,.rar,.ppt,.pptx</span>
+                            </div>
+                        </div>
+                        <!--8va fila:-->
+                        <div class="row container-fluid" id="rowTablaSeriesDescarga">
+                            <div class="col-md-6 col-sm-12">
+                                <button class="btn btn-danger btn-sm" type="button" id="btnDescargarGuiaRemision"><i class="fa fa-download" aria-hidden="true"></i>&nbsp;Descargar Archivo</button>
+                                <button class="btn btn-default btn-sm" type="button" id="btnCargarOtroDocumento"><i class="fa fa-file" aria-hidden="true"></i>&nbsp;Cargar Otro Archivo</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- Modal content footer -->
+            <div class="modal-footer">
+                <button class="btn btn-default btn-sm pull-left" type="button" data-dismiss="modal" id="btnCerrarDetalle"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Cerrar</button>
+                <button class="btn btn-primary btn-sm" type="button" id="btnRegistrarSerie"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Registrar Despacho</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalCargaDocumentoGuia" tabindex="-1" role="dialog" aria-labelledby="titleModal"
+     aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Cargar documento</h4>
+            </div>
+            <div class="modal-body">
+                <form id="formDocumento">
+                    <div class="row container-fluid">
+                        <div class="col-md-6" style="display: block;">
+                            <div class="form-group">
+                                <input type="hidden" id="hdnDocumentoCargadoIdGuia" />
+                                <label for="cmbTipoDocumentoCargaGuia">Tipo de documento</label>
+                                <select class="form-control select2 input-sm" style="width:100%;" id="cmbTipoDocumentoCargaGuia"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-6" style="display: none;">
+                            <div class="form-group">
+                                <label for="cmbDocumentoCargaGuia">Documento</label>
+                                <select class="form-control select2 input-sm" style="width:100%;" id="cmbDocumentoCargaGuia"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-12" style="display: none;">
+                            <div class="form-group">
+                                <label for="txtDescripcionDocumentoCargaGuia">Descripci&oacute;n</label>
+                                <input type="text" class="form-control" placeholder="Descripción del documento" maxlength="100" id="txtDescripcionDocumentoCargaGuia" />
+                            </div>
+                        </div>
+                        <div class=" col-md-12">
+                            @*<div id="objCargaArchivo">Cargar Archivo</div>*@
+                            <button class="btn btn-danger btn-sm" type="button" id="btnAdjuntarDocumentoGuia"><i class="fa fa-folder" aria-hidden="true"></i>&nbsp;Cargar Archivo</button>
+                            <b><label id="lblNombreArchivoGuia" value=""></label></b>
+                            <input type="file" class="btn btn-danger btn-sm" id="fileCargaDocumentoSustentoGuia" value="Cargar Adjunto" style="display:none;"><br />
+                            <span id="tipoDocAdjuntosGuia" style="font-size:10px;color:gray">Archivos permitidos: .xls,.xlsx,.pdf,.doc,.docx,.zip,.rar,.ppt,.pptx</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-warning btn-sm pull-left" type="button" data-dismiss="modal">Cerrar</button>
+                <button class="btn btn-danger btn-sm" type="button" id="btnCargarDocumentoGuia">Cargar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript" src="~/resources/js/app/ventas/solicitud.js"></script>
+    <script type="text/javascript" src="~/resources/js/app/ventas/cotvtadetalle.js"></script>
+    <script type="text/javascript" src="~/resources/js/app/ventas/cotvtacostos.js"></script>
+    <script type="text/javascript" src="~/resources/js/app/ubigeo/ubigeo.js"></script>
+    <!--<script type="text/javascript" src="~/resources/js/app/mantenimientos/cliente/bandejaCliente.js"></script>-->
+}
+
+<script>
+    const modal = document.getElementById("modalCostoItem");
+
+    modal.addEventListener("keyup", eventoEsc);
+    
+    function eventoEsc(evt) {
+        evt.preventDefault();
+        if (evt.keyCode == 27) {
+            cotvtacostos.cerrarModalCostosItem();
+        }
+        else if (evt.keyCode == 13) {
+            cotvtadet.btnGuardarCosteoClick();
+        }
+    };
+
+
+</script>

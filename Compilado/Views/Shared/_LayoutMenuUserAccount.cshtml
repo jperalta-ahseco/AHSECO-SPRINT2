@@ -1,0 +1,42 @@
+﻿@using Microsoft.AspNet.Identity
+@using AHSECO.CCL.FRONTEND.Identity;
+
+@if (User.Identity.IsAuthenticated)
+{
+
+    <div class="pull-right" style="width: 25%; height: auto;">
+
+        <div class="dropdown">
+
+            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" style="width:100%;text-align:right">
+                @User.ObtenerNombresCompletos().ToUpper()
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right ccl-user-menu" style="width:100%">
+                <li>
+                    <p>
+                        <strong style="font-size:11px;">@User.ObtenerNombresCompletos().ToUpper()</strong><br />
+                        <span style="font-size:10px;">@User.ObtenerPerfil().ToUpper()</span><br />
+                        <input type="hidden" id="nombreusuario" value="@User.ObtenerNombresCompletos().ToUpper()" />
+                        <input type="hidden" id="perfilnombre" value="@User.ObtenerPerfil().ToUpper()" />
+                        <input type="hidden" id="usr_seg_perfil" value="@User.ObtenerIdPerfil()" />
+                        <input type="hidden" id="usr_seg_id" value="@User.ObtenerIdUsuario()" />
+                        <input type="hidden" id="usr_seg_usuario" value="@User.ObtenerUsuario().ToUpper()" />
+                        <small>&Uacute;ltima Sesion: @User.ObtenerFechaUltimaSesion().ToUpper()</small><br />
+                        <small>@User.ObtenerEmail()</small>
+                    </p>
+                </li>
+                <li>
+                    <div>
+                        @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <a href="~/Account/ChangePassword" class="btn btn-default btn-xs pull-left">Cambiar Password</a>
+                            <a href="javascript:document.getElementById('logoutForm').submit()" class="btn btn-default btn-xs pull-right">Cerrar sesi&oacute;n</a>
+                        }
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+}

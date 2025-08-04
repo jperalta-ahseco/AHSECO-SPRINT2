@@ -1,0 +1,82 @@
+﻿
+
+
+@{
+    ViewBag.Title = "Ubigeo";
+}
+
+<div class="modal-dialog modal-md container-fluid" role="document">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <!-- Modal content header -->
+        <div class="modal-header box-header well well-sm" style="padding-bottom: 30px;">
+            <h4 class="modal-title" id="tituloModal">@ViewBag.Title</h4>
+        </div>
+        <!-- Modal content body -->
+        <div class="modal-body d-flex justify-content-center" align-items-center>
+            <form id="formRegistro" class="d-flex flex-row">
+                <div class="row container-fluid d-flex justify-content-center">
+
+
+                    <!--Departamento-->
+                    <div class="row container-fluid">
+                        <div class="col-md-4 col-sm-12">
+                            <div class="form-group col-sm-12">
+                                <label for="cmbDepartamento">Departamento:</label>
+                            </div>
+                        </div>
+                        <div class="col-md-8 col-sm-12">
+                            <div class="form-group col-sm-12">
+                                <select class="form-control select2 input-sm " style="width:100%;" id="cmbDepartamento" data-selected="" tabindex="-1" aria-hidden="true"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <!---------------------------->
+
+                    <br />
+                    <!--Provincia-->
+                    <div class="row container-fluid">
+                        <div class="col-md-4 col-sm-12">
+                            <div class="form-group col-sm-12">
+                                <label for="cmbProvincia">Provincia:</label>
+                            </div>
+                        </div>
+                        <div class="col-md-8 col-sm-12">
+                            <div class="form-group">
+                                <select class="form-control select2 input-sm " style="width:100%;" id="cmbProvincia" data-selected="" tabindex="-1" aria-hidden="true"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <!---------------------------->
+                    <!--Distrito-->
+                    <div class="row container-fluid">
+                        <div class="col-md-4 col-sm-12">
+                            <div class="form-group">
+                                <label for="cmbDistrito">Distrito:</label>
+                            </div>
+                        </div>
+                        <div class="col-md-8 col-sm-12">
+                            <div class="form-group">
+                                <select class="form-control select2 input-sm " style="width:100%;" id="cmbDistrito" data-selected="" tabindex="-1" aria-hidden="true"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <br />
+               
+            </form>
+        </div>
+        <!-- Modal content footer -->
+        <div class="modal-footer">
+            <button class="btn btn-default btn-sm pull-left" type="button" data-dismiss="modal" id="btnCerrarUbigeo">Cerrar</button>
+            <button class="btn btn-primary btn-sm" type="button" id="btnGuardarUbigeo">Seleccionar</button>
+        </div>
+    </div>
+</div>
+
+@*@section scripts{
+    <script type="text/javascript" src="~/resources/js/app/ubigeo/ubigeo.js"></script>
+}*@

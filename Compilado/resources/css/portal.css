@@ -1,0 +1,114 @@
+﻿/* File Created: febrero 22, 2018 */
+
+header {
+    width: 100%;
+    z-index: 999;
+    height: 70px;
+    background-color: #00aeef;
+    font-size: 14px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+.user {
+    margin-left: 55px;
+    float: right;
+    margin-right: 50px;
+    margin-top: 25px;
+    color: #fff;
+    display: inline-flex;
+}
+
+header p {
+    font-size: 14px;
+    line-height: 22.4px;
+    color: #6c7279;
+}
+
+
+.sidebar-nav-portal {
+    min-height: 0;
+    box-shadow: 0 0 10px #BDBDBD;
+    border-radius: 5px;
+    margin-bottom: 0;
+    padding-bottom: 0;
+    max-height: none;
+}
+
+.sidebar-nav-portal > ul > li:not(.nav-header) {
+    margin-right: -2px;
+    margin-left: -2px;
+}
+
+
+.nav-sm-portal {
+    display: none;
+}
+
+.accordion-portal > ul {
+    display: none;
+    margin-left: 10px;
+}
+
+.main-menu-portal > li > a {
+    border: 1px solid rgba(221, 221, 221, 0.46);
+}
+
+.main-menu-portal > li {
+    margin-top: 0 !important;
+}
+
+ul.main-menu-portal li:hover {
+    /*margin-left: 8px;*/
+}
+
+ul.main-menu-portal li.active {
+    /*margin-left: 8px;*/
+}
+
+ul.main-menu-portal li.nav-header:hover {
+    margin-left: 0;
+}
+
+ul.main-menu-portal li:not(.nav-header) {
+    -webkit-transition: .3s;
+    -moz-transition: .3s;
+    -ms-transition: .3s;
+    -o-transition: .3s;
+    transition: .3s;
+}
+
+.main-menu-portal .nav>li>a 
+{
+    border-bottom: 1px solid lightgrey;
+    line-height: 1.0;
+}
+.sidebar-nav-portal .nav>li:not(.active)>a {
+color:#333333;
+}
+
+.navbar-inner-portal {
+    background-color: #0c85af;
+    line-height: 30px;
+    height: 42px;
+}
+
+.navbar-brand-portal {
+    font-family: 'Shojumaru', cursive, Arial, serif;
+    letter-spacing: 2px;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+    width: 183px;
+    font-size: 17px;
+}
+
+.navbar-brand-portal span {
+    float: left;
+}
+
+.header-usname 
+{
+float:right; margin-top: 10px; margin-right: 10px; font-family: Roman;    
+}
+
+.main-menu-portal .nav>li>a:hover, .main-menu-portal .nav>li>a:focus{
+	background-color: #bec0c1
+}

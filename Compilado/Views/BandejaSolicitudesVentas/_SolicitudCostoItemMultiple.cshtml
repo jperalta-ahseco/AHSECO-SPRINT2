@@ -1,0 +1,189 @@
+﻿@using AHSECO.CCL.FRONTEND.Core;
+@using AHSECO.CCL.COMUN;
+@{
+    ViewBag.Title = "Costo de Item";
+}
+<div style="display:none">
+    <input type="hidden" id="CX_hdnIdCotDetCosto" value="" />
+    <input type="hidden" id="CX_hdnCodCosto" value="" />
+    <input type="hidden" id="CX_CodCosto_LLaveMano" value="@ConstantesDTO.CotizacionDetalleCostos.Costos.LLaveMano" />
+    <input type="hidden" id="CX_CodCosto_Instalacion" value="@ConstantesDTO.CotizacionDetalleCostos.Costos.Instalacion" />
+    <input type="hidden" id="CX_CodCosto_Capacitacion" value="@ConstantesDTO.CotizacionDetalleCostos.Costos.Capacitacion" />
+    <input type="hidden" id="CX_CodCosto_Manuales" value="@ConstantesDTO.CotizacionDetalleCostos.Costos.Manuales" />
+    <input type="hidden" id="CX_CodCosto_Videos" value="@ConstantesDTO.CotizacionDetalleCostos.Costos.Videos" />
+    <input type="hidden" id="CX_CodCosto_MantPrevent" value="@ConstantesDTO.CotizacionDetalleCostos.Costos.MantPrevent" />
+    <input type="hidden" id="CX_CodCosto_Calibra" value="@ConstantesDTO.CotizacionDetalleCostos.Costos.Calibra" />
+    <input type="hidden" id="CX_CodCosto_Flete" value="@ConstantesDTO.CotizacionDetalleCostos.Costos.Flete" />
+    <input type="hidden" id="CX_opcGrilla" value="" />
+</div>
+<div style="width:100%" class="modal-dialog modal-lg container-fluid" role="document">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <!-- Modal content header -->
+        <div class="modal-header box-header well well-sm" style="padding-bottom: 30px;">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="tituloModal"><i class="fa fa-cubes"></i>Costo de Despacho de Producto</h4>
+        </div>
+        <!-- Modal content body -->
+        <div class="modal-body d-flex justify-content-center" align-items-center>
+            <form id="formItem" class="d-flex flex-row">
+                <div class="row d-flex justify-content-center">
+                    <div id="CI_pnlInfoGeneral" class="container-fluid">
+                        <fieldset class="form-group">
+                            <legend><b>Informaci&oacute;n General:</b></legend>
+                            <div class="row container-fluid form-group">
+                                <div class="col-md-12 col-content-bottomleft">
+                                    <div class="col-md-2">
+                                        <label for="CI_cmbCDItem">Producto / Servicio: </label>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <select class="form-control select2 input-sm" style="width:100%;" id="CX_cmbCDItem" data-selected="" disabled="disabled">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row container-fluid form-group">
+                                <div class="col-md-12 col-content-bottomleft">
+                                    <div class="col-md-2">
+                                        <label for="CX_txtUnidadMedida">Unidad Medida: </label>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input disabled placeholder="Unidad Medida" type="text" class="form-control input-sm" id="CX_txtUnidadMedida" value="">
+                                    </div>
+                                    <div class="col-md-2 col-right">
+                                        <label for="CX_txtCantCotDet">Cantidad Cotizada: </label>&nbsp;&nbsp;
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input disabled placeholder="Cantidad" type="number" maxlength="3" style="text-align:center" class="form-control input-sm" id="CX_txtCantCotDet" value="" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                    </div>
+                                    <div class="col-md-2 col-right">
+                                        <label for="CX_txtCantCosteo">Cantidad a Costear: </label>&nbsp;&nbsp;
+                                    </div>
+                                    <div class="col-md-2 ">
+                                        <input placeholder="Cant." type="number" min="0" maxlength="3" class="form-control input-sm" style="text-align:center" id="CX_txtCantCosteo" value="" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="row container-fluid form-group" id="SeccionCalibracion">
+                                <div class="col-md-12 col-content-bottomleft">
+                                    <div class="col-md-8 col-right">
+                                        &nbsp;
+                                    </div>
+                                    <div class="col-md-2 col-right">
+                                        <label for="CX_txtMtoUnitarioCosto">Monto Unitario de Costo: </label>&nbsp;&nbsp;
+                                    </div>
+                                    <div class="col-md-2 ">
+                                        <input placeholder="Monto de Costo" type="text" maxlength="8" class="form-control input-sm" style="text-align:center" id="CX_txtMtoUnitarioCosto" value="" oninput="javascript:app.soloNumeroDecimal_onInput(this)" onfocus="this.value = app.formatearEnteroSinComa(this.value);" onblur="this.value = app.formatearEnteroComa(parseFloat(this.value).toFixed(2));">
+                                    </div>
+                                </div>
+                            </div>
+                            <legend id="leyInfoDestino"><b>Información del Destino:</b></legend>
+                            <div class="row container-fluid form-group" id="SeccionDestino">
+                                <div class="col-md-12 col-content-bottomleft">
+                                    <div class="col-md-2">
+                                        <label for="CX_txtUbicacion">Ubigeo Destino :</label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="input-group">
+                                            <input type="hidden" id="CX_hdnUbicacion" value="" />
+                                            <input readonly placeholder="Seleccione Ubigeo Destino" maxlength="6" type="text" class="form-control input-sm" id="CX_txtUbicacion" value="" aria-describedby="sizing-addon3" style="cursor:pointer" data-toggle="modal" data-target="#modalUbigeo" />
+                                            <span style="cursor:pointer" class="input-group-addon input-sm" id="searchUbigeo" data-toggle="modal" data-target="#modalUbigeo">
+                                                <i class="fa fa-search"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-right">
+                                        <label for="CX_txtAmbDestino">Local a envíar: </label>&nbsp;&nbsp;
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input placeholder="Ingresar Ambiente Destino" type="text" maxlength="200" class="form-control input-sm" id="CX_txtAmbDestino" value="">
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="row container-fluid form-group" id="SeccionDireccion">
+                                <div class="col-md-12 col-content-bottomleft">
+                                    <div class="col-md-2">
+                                        <label for="CX_txtDireccion">Direcci&oacute;n :</label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input placeholder="Ingresar Dirección" type="text" maxlength="150" class="form-control input-sm" id="CX_txtDireccion" value="">
+                                    </div>
+                                    <div class="col-md-2 col-right">
+                                        <label for="CX_txtNroPiso">Piso: </label>&nbsp;&nbsp;
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input placeholder="Nro." type="number" min="0" maxlength="2" class="form-control input-sm" id="CX_txtNroPiso" value="" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                    </div>
+                                </div>
+                            </div>
+                            <legend id="LeyPreventivo"><b>Información de Preventivos:</b></legend>
+                            <div class="row container-fluid form-group" id="SeccionPreventivo">
+                                <div class="col-md-12 col-content-bottomleft">
+                                    <div class="col-md-2">
+                                        <label for="CX_txtCantPrevent">Cantidad de Preventivo: </label>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input placeholder="Cant." type="number" min="0" maxlength="3" class="form-control input-sm" style="text-align:center" id="CX_txtCantPrevent" value="" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                    </div>
+                                    <div class="col-md-2 col-right">
+                                        <label for="CX_cmbCicloPreventivo">Ciclo de Preventivo: </label>&nbsp;&nbsp;
+                                    </div>
+                                    <div class="col-md-2">
+                                        <select class="form-control select2 input-sm" style="width:100%;" id="CX_cmbCicloPreventivo" data-selected="">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <legend><b>Detalle de Costeo:</b></legend>
+                            <div class="row container-fluid form-group">
+                                <div class="col-md-12 col-content-bottomleft">
+                                    <div class="col-md-2">
+                                        <label for="CX_cmbTipoCosto">Tipo de Costo: </label>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <select class="form-control select2 input-sm" style="width:100%;" id="CX_cmbTipoCosto" data-selected="">
+                                        </select>
+                                    </div>
+                                    <div class="col-md-8 text-right">
+                                        <button class="btn btn-success btn-sm" type="button" id="btnAñadirCosteo" tabindex="114"><i class="fa fa-plus-square" aria-hidden="true"></i>&nbsp;Agregar</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row container-fluid form-group">
+                                <div class="table-responsive">
+                                    <table id="tblCostosUnitarios" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align:center; width:5%; color:white; background-color:cornflowerblue">N°</th>
+                                                <th style="text-align: center; width: 15%; color:white; background-color: cornflowerblue">Tipo de Costeo</th>
+                                                <th style="text-align: center; width: 25%; color: white; background-color: cornflowerblue">Ubigeo Destino</th>
+                                                <th style="text-align: center; width: 10%; color: white; background-color: cornflowerblue">Cantidad Costeada</th>
+                                                <th style="text-align: center; width: 10%; color: white; background-color: cornflowerblue">Cantidad Preventivos</th>
+                                                <th style="text-align: center; width: 10%; color: white; background-color: cornflowerblue">Periodicidad</th>
+                                                <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">Monto Unitario</th>
+                                                <th style="text-align: center; width: 10%; color: white; background-color: cornflowerblue">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr id="NoRegCostoMultiple">
+                                                <td align="center" colspan="8">No existen registros</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="text-center">
+                        <button class="btn btn-default btn-sm" type="button" id="CX_btnGuardar"><i class="fa fa-save" aria-hidden="true"></i> Guardar</button>
+                        <button class="btn btn-danger btn-sm" type="button" id="CX_btnCerrar"><i class="fa fa-plus" aria-hidden="true"></i> Salir</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

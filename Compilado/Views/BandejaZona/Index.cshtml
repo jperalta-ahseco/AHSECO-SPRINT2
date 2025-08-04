@@ -1,0 +1,67 @@
+﻿
+@{
+    ViewBag.Title = "Zonas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
+    <div class="box-inner">
+        <div class="box-header well well-sm" data-original-title="">
+            <h2><i class="glyphicon glyphicon-cog"></i> Mantenimiento Zonas</h2>
+        </div>
+        <div class="box-content">
+            <form id="formMantenimientoZonas">
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <label for="nombreZona">Zona:</label>
+                        <div class="form-group">
+                            <input placeholder="Ingresar Zona" type="text" class="form-control input-sm" id="nombreZona" value="">
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="cmbestado">Estado:</label>
+                            <select class="form-control select2 input-sm" style="width:100%;" id="cmbestado">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#modalZonas" id="btnNuevo"><i class="fa fa-plus"></i> Nuevo</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="btnBuscar"><i class="fa fa-search"></i> Buscar</button>
+                    <span id="hidden_fields"></span>
+                    <a class="btn btn-info btn-sm" type="button" id="btnExportar" href="BandejaZona/GenerarReportesZonas"><i class="fa fa-table"></i> Exportar</a>
+                </div>
+            </form>
+            <br />
+            <div class="table-responsive">
+                <table id="tblZonas" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th style="text-align: center; width:20%">Descripci&oacute;n</th>
+                            <th style="text-align: center; width:10%">Estado</th>
+                            <th style="text-align: center; width:10%">Usuario Registra</th>
+                            <th style="text-align: center; width:10%">Fecha de Creación</th>
+                            <th style="text-align: center; width:20%">Fecha de Modificación</th>
+                            <th style="text-align: center; width:5%">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalZonas" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+     @{ 
+         @Html.Partial("_Zonas")
+     }
+</div>
+
+@section scripts{
+    <script type="text/javascript" src="~/resources/js/app/mantenimientos/mantenimientoZonas/zonas.js"></script>
+    }
+

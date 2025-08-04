@@ -1,0 +1,92 @@
+﻿@using AHSECO.CCL.FRONTEND.Core;
+
+@{
+    var numSol = VariableSesion.getCadena("numSol");
+    var idCotizacion = VariableSesion.getCadena("idCotizacion");
+    var NombreRol = VariableSesion.getCadena("VENTA_NOMBRE_ROL");
+    var estadoSol = VariableSesion.getCadena("estadoSol");
+
+    ViewBag.Title = "Bandeja de Despachos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<input hidden id="NumSol" value="@numSol" />
+<input hidden id="IdCotizacion" value="@idCotizacion" />
+<input hidden id="nombreRol" value="@NombreRol" />
+<input hidden id="estadoSol" value="@estadoSol" />
+
+
+<div class="container-fluid" style="margin-right: 15px;">
+    <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
+    <div class="box-inner">
+        <div class="box-header well" data-original-title="">
+            <h2><i class="fa fa-circle-o" aria-hidden="true"></i> N° de Solicitud: @numSol </h2>
+        </div>
+        <div class="box-content">
+            <form id="formDespacho">
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <label for="cmbTipoDespacho">Tipo Despacho: </label>
+                        <div class="form-group">
+                            <select class="form-control select2 input-sm" style="width:100%;" id="cmbTipoDespacho" data-selected="">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="cmbEstadoDespacho">Estado: </label>
+                        <div class="form-group">
+                            <select class="form-control select2 input-sm" style="width:100%;" id="cmbEstadoDespacho" data-selected="">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtOrdenCompra">N&uacute;mero de Orden de Compra: </label>
+                        <div class="form-group">
+                            <input placeholder="Ingresar Orden" type="text" class="form-control input-sm" id="txtOrdenCompra" value="">
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtNumContrato">N&uacute;mero de Contrato: </label>
+                        <div class="form-group">
+                            <input placeholder="Ingresar Contrato" type="text" class="form-control input-sm" id="txtNumContrato" value="">
+                        </div>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <button class="btn btn-primary btn-sm" type="button" id="btnBuscar"><i class="fa fa-search"></i> Buscar</button>
+                    @if (NombreRol == "SGI_VENTA_ASESOR" || NombreRol == "SGI_VENTA_COORDINASERV" || NombreRol == "SGI_VENTA_COORDINAATC")
+                    {
+                        if (estadoSol != "VTPG" && estadoSol != "SFIN")
+                        {
+                            <button class="btn btn-default btn-sm" type="button" id="btnFinalizar"><i class="fa fa-check"></i> Finalizar Despacho</button>
+                            <button class="btn btn-success btn-sm" type="button" id="btnNuevo"><i class="fa fa-plus"></i> Nuevo</button>
+                        }
+                    }
+                    <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegresar" tabindex="14"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Regresar</button>
+                </div>
+            </form>
+            <br />
+            <div class="table-responsive">
+                <table id="tblDespacho" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                    <thead>
+                        <tr>
+                            <th style="text-align: center; width:20%;">N°Solicitud</th>
+                            <th style="text-align: center; width:20%;">Tipo Despacho</th>
+                            <th style="text-align: center; width:20%;">N° Orden Pago / N° Contrato</th>
+                            <th style="text-align: center; width:20%;">Fecha Orden Pago / Fecha Contrato</th>
+                            <th style="text-align: center; width:20%;">Fecha Maxima</th>
+                            <th style="text-align: center; width:20%;">Estado</th>
+                            <th style="text-align: center;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script type="text/javascript" src="~/resources/js/app/ventas/bandejaDespacho.js"></script>
+}

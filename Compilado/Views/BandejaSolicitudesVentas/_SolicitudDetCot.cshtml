@@ -1,0 +1,173 @@
+﻿@using AHSECO.CCL.FRONTEND.Core;
+
+@{
+    ViewBag.Title = "Detalle de Cotización";
+    var tipoSol = VariableSesion.getCadena("tipoSol");
+}
+<input type="hidden" id="hdnCostosAgregados" />
+<div style="width:100%" class="modal-dialog modal-lg container-fluid" role="document">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <!-- Modal content header -->
+        <div class="modal-header box-header well well-sm" style="padding-bottom: 30px;">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="tituloModal"><i class="fa fa-cubes"></i> @ViewBag.Title</h4>
+        </div>
+        <!-- Modal content body -->
+        <div class="modal-body d-flex justify-content-center" align-items-center>
+            <form id="formRegistro" class="d-flex flex-row">
+                <div class="row container-fluid d-flex justify-content-center">
+                    @if (tipoSol == "TSOL05" || tipoSol == "TSOL04")
+                    {
+                        <div style="overflow-x:auto; padding-left:15px">
+                            <table id="tblProductos" class="table table-condensed table-striped table-bordered" width="100%">
+                                <thead style="background-color: #00aeef;color: white;">
+                                    <tr>
+                                        <th style="text-align:center; width:1%"><i class="fa fa-code-fork" aria-hidden="true"></i></th>
+                                        <th style="text-align:center; width:2%">Cod.Producto</th>
+                                        <th style="text-align:center; width:20%">Familia</th>
+                                        <th style="text-align:center; width:5%">Almacén</th>
+                                        <th style="text-align:center; width:5%">Descripción</th>
+                                        <th style="text-align:center; width:5%">Marca</th>
+                                        <th style="text-align:center; width:5%">Modelo</th>
+                                        <th style="text-align:center; width:1%">Cantidad</th>
+                                        <th style="text-align:center; width:3%">Unidad de Medida</th>
+                                        <th style="text-align:center; width:1%">Stock</th>
+                                        <th style="text-align:center; width:3%">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bodyProducts">
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row container-fluid">
+                            <div class="col-md-3">
+                                <label for="cmbFamilia">Familia Producto: </label>
+                                <div class="form-group">
+                                    <select class="form-control select2 input-sm" style="width:100%;" id="BI_cmbFamilia" data-selected="">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="BI_txtNomProducto">Nombre de Producto: </label>
+                                <div class="form-group">
+                                    <input placeholder="Ingresar nombre de producto" type="text" maxlength="100" class="form-control input-sm" id="BI_txtNomProducto" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="BI_txtCodProducto">C&oacute;digo Producto: </label>
+                                <div class="form-group">
+                                    <input placeholder="Ingresar código de producto" type="text" class="form-control input-sm" id="BI_txtCodProducto" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="BI_cmbTipoMedida">Tipo de Medida: </label>
+                                <div class="form-group">
+                                    <select class="form-control select2 input-sm" style="width:100%;" id="BI_cmbTipoMedida" data-selected="">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="BI_cmbMarca">Marca: </label>
+                                <div class="form-group">
+                                    <select class="form-control select2 input-sm" style="width:100%;" id="BI_cmbMarca" data-selected="">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row container-fluid">
+                            <div class="col-md-2">
+                                <label for="BI_cmbMarca">Almacén: </label>
+                                <div class="form-group">
+                                    <select class="form-control select2 input-sm" style="width:100%;" id="BI_cmbAlmacen" data-selected="">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="BI_txtModelo">Modelo: </label>
+                                <div class="form-group">
+                                    <input placeholder="Ingresar Modelo" type="text" class="form-control input-sm" id="BI_txtModelo" value="">
+                                    <ul id="suggestions" class="list-group" style="display:block; position: absolute; width: 100%;"></ul>
+                                </div>
+                            </div>
+                            <div class="col-md-14">
+                                <br />
+                                <div class="text-right">
+                                    <button class="btn btn-primary btn-sm" type="button" id="btnBuscarItems"><i class="fa fa-search" aria-hidden="true"></i>  Buscar</button>
+                                    <span id="hidden_fields"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <label>Productos de Almac&eacute;n: </label>
+                        <div class="table-responsive">
+                            <table id="tblItems" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align:center; width:5%">Cod.Producto</th>
+                                        <th style="text-align:center; width:10%">Familia</th>
+                                        <th style="text-align:center; width:20%">Descripción</th>
+                                        <th style="text-align:center; width:20%">Almacén</th>
+                                        <th style="text-align:center; width:3%">Stock</th>
+                                        <th style="text-align:center; width:5%">Precio Ref.</th>
+                                        <th style="text-align:center; width:5%">Moneda</th>
+                                        <th style="text-align:center; width:5%">Und. Med.</th>
+                                        <th style="text-align:center; width:5%">Marca</th>
+                                        <th style="text-align:center; width:5%">Modelo</th>
+                                        <th style="text-align:center; width:3%">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <label>Productos Agregados: </label>
+                        <div class="table-responsive" style="white-space: nowrap">
+                            <table id="tblCotDet" class="table table-hover table-condensed table-striped table-bordered" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        @if (tipoSol == "TSOL05")
+                                        {
+                                            <th style="text-align:center; width:5%">Sel.</th>
+                                            <th style="text-align:center; width:5%">Ver Accesorios</th>
+                                        }
+                                        <th style="text-align:center; width:10%">Cod. Producto</th>
+                                        <th style="text-align:center; width:20%">Descripción</th>
+                                        <th style="text-align:center; width:5%">Cant.</th>
+                                        <th style="text-align:center; width:15%">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div>
+
+                        </div>
+                        <div class="text-right">
+                            <button class="btn btn-default btn-sm" type="button" id="DC_btnGuardar"><i class="fa fa-save" aria-hidden="true"></i> Guardar</button>
+                            <button class="btn btn-danger btn-sm" type="button" id="DC_btnCerrar"><i class="fa fa-plus" aria-hidden="true"></i> Salir</button>
+                        </div>
+                    }
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<style>
+    .ui-autocomplete {
+        position: absolute !important; /* Asegura que el autocompletado no esté dentro del contenedor de la tabla */
+        z-index: 9999; /* Para asegurarnos de que esté por encima de otros elementos */
+        max-height: 200px; /* Para controlar el tamaño de la lista */
+        overflow-y: auto; /* Añadir scroll si hay muchas opciones */
+    }
+
+    /* Ajustes para la tabla, si necesitas más personalización 
+    table.dataTable {
+        width: 100% !important;
+    }*/
+</style>

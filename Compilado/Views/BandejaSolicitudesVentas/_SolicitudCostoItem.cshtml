@@ -1,0 +1,223 @@
+﻿@using AHSECO.CCL.FRONTEND.Core;
+@using AHSECO.CCL.COMUN;
+@{
+    ViewBag.Title = "Costo de Item";
+}
+<div style="display:none">
+    <input type="hidden" id="CI_hdnIdCotDetCosto" value="" />
+    <input type="hidden" id="CI_hdnCodCosto" value="" />
+    <input type="hidden" id="CI_hdnCodTipoCosto" value="" />
+    <input type="hidden" id="CI_hdnCantidadCostearAnt" value="" />
+    <input type="hidden" id="CI_CodCosto_LLaveMano" value="@ConstantesDTO.CotizacionDetalleCostos.Costos.LLaveMano" />
+    <input type="hidden" id="CI_CodCosto_Instalacion" value="@ConstantesDTO.CotizacionDetalleCostos.Costos.Instalacion" />
+    <input type="hidden" id="CI_CodCosto_Capacitacion" value="@ConstantesDTO.CotizacionDetalleCostos.Costos.Capacitacion" />
+    <input type="hidden" id="CI_CodCosto_Manuales" value="@ConstantesDTO.CotizacionDetalleCostos.Costos.Manuales" />
+    <input type="hidden" id="CI_CodCosto_Videos" value="@ConstantesDTO.CotizacionDetalleCostos.Costos.Videos" />
+    <input type="hidden" id="CI_CodCosto_MantPrevent" value="@ConstantesDTO.CotizacionDetalleCostos.Costos.MantPrevent" />
+    <input type="hidden" id="CI_CodCosto_Calibra" value="@ConstantesDTO.CotizacionDetalleCostos.Costos.Calibra" />
+    <input type="hidden" id="CI_CodCosto_Flete" value="@ConstantesDTO.CotizacionDetalleCostos.Costos.Flete" />
+    <input type="hidden" id="CI_opcGrilla" value="" />
+    <input type="hidden" id="CI_hdnIdCotDet" value=""/>
+</div>
+<div style="width:50%" class="modal-dialog modal-lg container-fluid" role="document">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <!-- Modal content header -->
+        <div class="modal-header box-header well well-sm" style="padding-bottom: 30px;">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="tituloModal"><i class="fa fa-cubes"></i>Costo de Despacho de Producto</h4>
+        </div>
+        <!-- Modal content body -->
+        <div class="modal-body d-flex justify-content-center" align-items-center>
+            <form id="formItem" class="d-flex flex-row">
+                <div class="row d-flex justify-content-center">
+                    <div id="CI_pnlInfoGeneral" class="container-fluid">
+                        <fieldset class="form-group">
+                            <legend><b>Informaci&oacute;n General</b></legend>
+                            <div class="row container-fluid form-group">
+                                <div class="col-md-12 col-content-bottomleft">
+                                    <div class="col-md-3">
+                                        <label for="CI_Item">C&oacute;digo Item: </label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <input disabled type="text" class="form-control input-sm" id="CI_Item" value="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row container-fluid form-group">
+                                <div class="col-md-12 col-content-bottomleft">
+                                    <div class="col-md-3">
+                                        <label for="CI_Descripcion">Descripci&oacute;n: </label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <textarea disabled type="text" rows="2" class="form-control input-sm" id="CI_Descripcion" value=""></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row container-fluid form-group">
+                                <div class="col-md-6 col-content-bottomleft">
+                                    <div class="col-md-6">
+                                        <label for="CI_txtCantCotDet">Cantidad Cotizada: </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input disabled placeholder="Cantidad" type="number" maxlength="3" style="text-align:center" class="form-control input-sm" id="CI_txtCantCotDet" value="" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-content-bottomleft">
+                                    <div class="col-md-6 col-right">
+                                        <label for="CI_txtUnidadMedida">Unidad Medida:&nbsp; </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input disabled placeholder="Unidad Medida" type="text" class="form-control input-sm" id="CI_txtUnidadMedida" value="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row container-fluid form-group" id="divDimensionItemCosto">
+                                <div class="col-md-12 col-content-bottomleft">
+                                    <div class="col-md-3">
+                                        <label for="CI_Dimensiones">Dimensiones: </label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <input disabled type="text" class="form-control input-sm" id="CI_Dimensiones" value="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row container-fluid form-group">
+                                <div class="col-md-12 col-content-bottomleft">
+                                    <div class="col-md-3">
+                                        <label for="CI_TipoCosto">Tipo Costo: </label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <input disabled type="text" class="form-control input-sm" id="CI_TipoCosto" value="">
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div id="CI_pnlInfoDestino" class="container-fluid">
+                        <fieldset class="form-group">
+                            <legend><b>Información del Destino</b></legend>
+                            <div class="row container-fluid form-group col-content-middleleft">
+                                <div class="col-md-12 col-content-middleleft">
+                                    <div class="col-md-3">
+                                        <label for="CI_txtUbicacion">Ubigeo Destino :</label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="input-group">
+                                            <input type="hidden" id="CI_hdnUbicacion" value="" />
+                                            <input readonly placeholder="Seleccione Ubigeo Destino" maxlength="6" type="text" class="form-control input-sm" id="CI_txtUbicacion" value="" aria-describedby="sizing-addon3" style="cursor:pointer" data-toggle="modal" data-target="#modalUbigeo" />
+                                            <span style="cursor:pointer" class="input-group-addon input-sm" id="searchUbigeo" data-toggle="modal" data-target="#modalUbigeo">
+                                                <i class="fa fa-search"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row container-fluid form-group col-content-middleleft">
+                                <div class="col-md-12 col-content-middleleft">
+                                    <div class="col-md-3">
+                                        <label for="CI_txtDireccion">Direcci&oacute;n :</label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <input type="text" maxlength="150" class="form-control input-sm" id="CI_txtDireccion" value="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row container-fluid col-content-middleleft">
+                                <div class="col-md-9 col-content-middleleft">
+                                    <div class="col-md-4">
+                                        <label for="CI_txtAmbDestino">Local a envíar: </label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input type="text" maxlength="200" class="form-control input-sm" id="CI_txtAmbDestino" value="">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-content-bottomcenter">
+                                    <div class="col-md-6 col-content-bottomcenter">
+                                        <label for="CI_txtNroPiso">Piso: </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input placeholder="Nro." type="number" min="0" maxlength="2" class="form-control input-sm" id="CI_txtNroPiso" value="" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div id="CI_pnlInfoPreventivos" class="container-fluid">
+                        <fieldset class="form-group">
+                            <legend><b>Información de Preventivos</b></legend>
+                            <div class="row container-fluid">
+                                <div class="col-md-6 col-content-middleleft">
+                                    <div class="col-md-6">
+                                        <label for="CI_txtCantPrevent">Cantidad de Preventivo: </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input placeholder="Cant." type="number" min="0" maxlength="3" class="form-control input-sm" style="text-align:center" id="CI_txtCantPrevent" value="" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-content-middleleft">
+                                    <div class="col-md-6 col-right">
+                                        <label for="CI_cmbCicloPreventivo">Ciclo de Preventivo:&nbsp; </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <select class="form-control select2 input-sm" style="width:100%;" id="CI_cmbCicloPreventivo" data-selected="">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div id="CI_pnlInfoCostos" class="container-fluid">
+                        <fieldset class="form-group">
+                            <legend><b>Informaci&oacute;n de Costos</b></legend>
+                            <div class="row container-fluid col-content-bottomleft">
+                                <div class="col-md-12 col-content-middleleft">
+                                    <div class="col-md-6">
+                                        <label for="CI_txtCantCosteo">Cantidad a Costear: </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input placeholder="Cant." type="number" min="0" maxlength="3" class="form-control input-sm" style="text-align:center" id="CI_txtCantCosteo" value="" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-content-middleleft">
+                                    <div class="col-md-6 col-right">
+                                        <label for="CI_txtMoneda">Moneda:&nbsp;</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" disabled class="form-control input-sm" style="text-align:center" id="CI_txtMoneda" value="">
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="row container-fluid col-content-bottomleft">
+                                <div id="CI_pnlInfoCostos_MtoUnitario" class="col-md-12 col-content-middleleft">
+                                    <div class="col-md-6">
+                                        <label for="CI_txtMtoUnitarioCosto">Monto Unitario de Costo: </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" maxlength="8" class="form-control input-sm" style="text-align:center" id="CI_txtMtoUnitarioCosto" value="" oninput="javascript:app.soloNumeroDecimal_onInput(this)" onfocus="this.value = app.formatearEnteroSinComa(this.value);" onblur="this.value = app.formatearEnteroComa(parseFloat(this.value).toFixed(2));">
+                                    </div>
+                                </div>
+                                <div id="CI_pnlInfoCostos_MtoTotal" class="col-md-12 col-content-middleleft">
+                                    <div class="col-md-6 col-right">
+                                        <label for="CI_txtMtoTotalCosto">Monto Total de Costo:&nbsp; </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" disabled class="form-control input-sm" style="text-align:center" id="CI_txtMtoTotalCosto" value="" oninput="javascript:app.soloNumeroDecimal_onInput(this)" onfocus="this.value = app.formatearEnteroSinComa(this.value);" onblur="this.value = app.formatearEnteroComa(parseFloat(this.value).toFixed(2));">
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="text-center">
+                        <button class="btn btn-default btn-sm" type="button" id="CI_btnGuardarCosteo" style="display:none;"><i class="fa fa-save" aria-hidden="true"></i> Guardar Costeo</button>
+                        <button class="btn btn-default btn-sm" type="button" id="CI_btnGuardar"><i class="fa fa-save" aria-hidden="true"></i> Guardar</button>
+                        <button class="btn btn-danger btn-sm" type="button" id="CI_btnCerrar"><i class="fa fa-plus" aria-hidden="true"></i> Salir</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

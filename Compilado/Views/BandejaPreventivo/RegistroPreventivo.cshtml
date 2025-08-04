@@ -1,0 +1,399 @@
+﻿@using AHSECO.CCL.FRONTEND.Core;
+
+@{
+    ViewBag.Title = "Registro de Mantenimientos Preventivos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var numMant = VariableSesion.getCadena("NumMant");
+    var tipoProceso = VariableSesion.getCadena("TipoTarea");
+    var IndMigracion = VariableSesion.getCadena("Migracion");
+
+    var visualizar = false;
+
+    if (tipoProceso != "")
+    {
+        visualizar = true;
+    };
+
+}
+<input hidden id="numMant" value="@numMant" />
+<input hidden id="tipoproceso" value="@tipoProceso" />
+<input hidden id="indMigracion" value="@IndMigracion"/>
+
+<div class="container-fluid">
+    @if (numMant == "")
+    {
+        <h4><i class="fa fa-comment" aria-hidden="true"></i> @ViewBag.Title</h4>
+    }
+    else
+    {
+        <h4><i class="fa fa-wrench" aria-hidden="true"></i> Mantenimiento</h4>
+    }
+
+    <div class="box-inner">
+        <div class="box-header well" data-original-title="">
+            <div style="display: flex;justify-content: space-between;">
+                @if (numMant != "")
+                {
+                    var numReqFormateado = ("000000" + numMant);
+
+                    numReqFormateado = numReqFormateado.Substring((numReqFormateado.Length) - 6, numReqFormateado.Length - ((numReqFormateado.Length) - 6));
+
+                    <h2>N&uacute;mero de Mantenimiento: @numReqFormateado</h2> <!--- Aquí tendremos que controlar-->
+                }
+
+            </div>
+        </div>
+        <div class="box-content">
+            <div class="container-fluid" style="margin-right: 15px;">
+                <div class="box-inner" id="">
+                    <div class="box-header well" data-original-title="" style="background-color: #0080ff7a;">
+                        <div>
+                            <p id="titleCoti"><i class="fa fa-user" aria-hidden="true" style="color:yellow"></i> Cliente:</p>
+                        </div>
+                    </div>
+                    <div class="box-content">
+                        <div class="row container-fluid">
+                            <div class="col-md-4 col-sm-12">
+                                <label for="txtRuc">R.U.C:</label>
+                                <div class="form-group">
+                                    <input @ViewBag.PermiteEditar placeholder="--R.U.C--" type="text" class="form-control input-sm" id="txtRuc" value="" tabindex="1" maxlength="12">
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <label for="txtNomEmpresa">Razón Social(Cliente):</label>
+                                <div class="form-group">
+                                    <input @ViewBag.PermiteEditar placeholder="--Razón Social--" type="text" class="form-control input-sm" id="txtNomEmpresa" value="" tabindex="2">
+                                </div>
+                            </div>
+                            @if (IndMigracion == "1")
+                            {
+                                <div class="col-md-4 col-sm-12">
+                                    <label for="txtAsesor">Representante de Ventas:</label>
+                                    <div class="form-group">
+                                        <input @ViewBag.PermiteEditar placeholder="--Representante de Ventas--" type="text" class="form-control input-sm" id="txtAsesor" value="" tabindex="3">
+                                    </div>
+                                </div>
+                            }
+                            else if(IndMigracion == "2") 
+                            {
+                                <div class="col-md-4 col-sm-12">
+                                    <label for="txtNumProceso">N° Proceso:</label>
+                                    <div class="form-group">
+                                        <input @ViewBag.PermiteEditar placeholder="--N° de Proceso--" type="text" class="form-control input-sm" id="txtNumProceso" value="" tabindex="4">
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <div class="row container-fluid">
+
+                            @if (IndMigracion == "1")
+                            {
+                                <div class="col-md-4 col-sm-12">
+                                    <label for="txtNumProceso">N° Proceso:</label>
+                                    <div class="form-group">
+                                        <input @ViewBag.PermiteEditar placeholder="--N° de Proceso--" type="text" class="form-control input-sm" id="txtNumProceso" value="" tabindex="4">
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-12">
+                                    <label for="txtTipoProceso">Tipo de Proceso:</label>
+                                    <div class="form-group">
+                                        <input @ViewBag.PermiteEditar placeholder="--Tipo de Proceso--" type="text" class="form-control input-sm" id="txtTipoProceso" value="" tabindex="5">
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-12">
+                                    <label for="txtOrden">Orden de Compra:</label>
+                                    <div class="form-group">
+                                        <input @ViewBag.PermiteEditar placeholder="--Orden de Compra--" type="text" class="form-control input-sm" id="txtOrden" value="" tabindex="6">
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="box-inner" id="boxReclamo">
+                    <div class="box-header well" data-original-title="" style="background-color: beige;">
+                        <div>
+                            <p id="titleNomProducto"><i class="fa fa-cube" aria-hidden="true" style="color:brown"></i> Equipo</p>
+                        </div>
+                    </div>
+                    <div class="box-content" style="background-color: #f5f5dc30;">
+                        <div class="container-fluid">
+                            <div class="row container-fluid">
+                                <div class="col-md-4 col-sm-12">
+                                    <label for="txtCodEquipo">Código Equipo:</label>
+                                    <div class="form-group">
+                                        <input @ViewBag.PermiteEditar placeholder="--Código Equipo--" type="text" class="form-control input-sm" id="txtCodEquipo" value="" tabindex="7" maxlength="36">
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-12">
+                                    <label for="txtDescEquipo">Descripción Equipo:</label>
+                                    <div class="form-group">
+                                        <input @ViewBag.PermiteEditar placeholder="--Descripción Equipo--" type="text" class="form-control input-sm" id="txtDescEquipo" value="" tabindex="8">
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-12">
+                                    <label for="txtMarcaEquipo">Marca:</label>
+                                    <div class="form-group">
+                                        <input @ViewBag.PermiteEditar placeholder="--Marca--" type="text" class="form-control input-sm" id="txtMarcaEquipo" value="" tabindex="9">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row container-fluid">
+                                <div class="col-md-4 col-sm-12">
+                                    <label for="txtFechaInstall">Fecha Instalaci&oacute;n:</label>
+                                    <div class="input-group date">
+                                        <input @ViewBag.PermiteEditar type="text" class="form-control input-sm" id="txtFechaInstall" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
+                                        <span class="input-group-addon input-sm" id="openRegdateMant">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-12">
+                                    <label for="txtModeloEquipo">Modelo:</label>
+                                    <div class="form-group">
+                                        <input @ViewBag.PermiteEditar placeholder="--Modelo--" type="text" class="form-control input-sm" id="txtModeloEquipo" value="" tabindex="11">
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-12">
+                                    <label for="txtNumSerie">Serie:</label>
+                                    <div class="form-group">
+                                        <input @ViewBag.PermiteEditar placeholder="--Serie--" type="text" class="form-control input-sm" id="txtNumSerie" value="" tabindex="12">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row container-fluid">
+                                @if (IndMigracion == "1")
+                                {
+                                    <div class="col-md-6 col-sm-12">
+                                        <label for="txtDirecInstall">Dirección de Instalación:</label>
+                                        <div class="form-group">
+                                            <input @ViewBag.PermiteEditar placeholder="--Dirección de Instalación--" type="text" class="form-control input-sm" id="txtDirecInstall" value="" tabindex="13">
+                                        </div>
+                                    </div>
+                                }
+
+                                <div class="col-md-6 col-sm-12">
+                                    <input hidden id="hdnCodUbigeo" value="" />
+                                    <label for="txtUbiDestino">Localidad de Instalación:</label>
+                                    <div class="form-group">
+                                        <div class="form-group">
+                                            <input @ViewBag.PermiteEditar placeholder="--Ubicación de Instalación--" type="text" class="form-control input-sm" id="txtUbiDestino" value="" tabindex="14">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @if (IndMigracion == "1")
+                            {
+                                <div class="row container-fluid">
+                                    <div class="col-md-6 col-sm-12">
+                                        <label for="txtNumFianzaPP">Fianza - Prestación Principal:</label>
+                                        <div class="form-group">
+                                            <div class="form-group">
+                                                <input @ViewBag.PermiteEditar placeholder="--Prestación Principal--" type="text" class="form-control input-sm" id="txtNumFianzaPP" value="" tabindex="15">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12">
+                                        <label for="txtNumFianzaPA">Fianza - Prestación Accesoria:</label>
+                                        <div class="form-group">
+                                            <div class="form-group">
+                                                <input @ViewBag.PermiteEditar placeholder="--Prestación Accesoria--" type="text" class="form-control input-sm" id="txtNumFianzaPA" value="" tabindex="16">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div style="display: flex;justify-content: space-between;">
+                    <div class="panel panel-default" style="width: 49%">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-wrench" aria-hidden="true"></i>  Detalle de Mant. Preventivos</h3>
+                        </div>
+                        <div class="panel-body">
+                            @if (IndMigracion == "1")
+                            {
+                                <div class="panel panel-default" style="width: 50%">
+                                    <div class="panel-body" style="padding:5px">
+                                        <label id="txtPeriodicidad">Periodicidad: </label>
+                                    </div>
+                                </div>
+                                <div class="row container-fluid">
+                                    <!--<button class="btn btn-default" type="button" style="width: 50%;pointer-events: none;">-->
+                                    Total de Mantenimientos:<span class="badge" style="background-color: blue; margin-left: 31px" id="MantTotales"></span>
+                                    <!--</button>-->
+                                </div>
+                                <br />
+                                <div class="row container-fluid">
+                                    <!--<button class="btn btn-default" type="button" style="width: 50%;pointer-events: none;background-color:#38b44a">-->
+                                    Mantenimientos Completados:<span class="badge" style="background-color: #38b44a;" id="MantCompletados"></span>
+                                    <!--</button>-->
+                                </div>
+                                <br />
+                                <div class="row container-fluid">
+                                    <!--<button class="btn btn-primary" type="button" style="width: 50%; pointer-events: none; background-color: #df382c">-->
+                                    Mantenimientos Pendientes:<span class="badge" style="background-color: #df382c;margin-left:10px" id="MantPendientes"></span>
+                                    <!--</button>-->
+                                </div>
+                                <br />
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-success" id="barraCompletado">
+                                    </div>
+                                    <div class="progress-bar progress-bar-danger" id="barraPendientes">
+                                    </div>
+                                </div>
+                            }
+                            else if (IndMigracion == "2")
+                            { 
+                            <div class="row container-fluid">
+                                <div class="col-md-6 col-sm-12" style="height: 60px">
+                                    <div class="input-group input-group-sm">
+                                        <label for="cmbPeriodo">Periodicidad: </label>
+                                        <select  @ViewBag.PermiteEditar class="form-control select2 input-sm" style="width:100%;" id="cmbPeriodo" tabindex="17"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row container-fluid">
+                                <div class="col-md-6 col-sm-12" style="height: 60px">
+                                    <div class="input-group input-group-sm">
+                                        <label for="txtNumContrato">Total de Preventivos: </label>
+                                        <input @ViewBag.PermiteEditar type="number" class="form-control" id="MantTotales" placeholder="Total" tabindex="18" aria-describedby="sizing-addon1" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row container-fluid">
+                                <div class="col-md-6 col-sm-12" style="height: 60px">
+                                    <div class="input-group input-group-sm">
+                                        <label for="MantCompletados">Mantenimientos Completados: </label>
+                                        <input @ViewBag.PermiteEditar type="number" class="form-control" id="MantCompletados" placeholder="Mant. Completados" tabindex="19" aria-describedby="sizing-addon1" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row container-fluid" style="height: 60px">
+                                <div class="col-md-6 col-sm-12">
+                                    <div class="input-group input-group-sm">
+                                        <label for="MantPendientes">Mantenimientos Pendientes: </label>
+                                        <input disabled type="number" class="form-control" id="MantPendientes" placeholder="Mant. Pendientes" tabindex="20" aria-describedby="sizing-addon1" />
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-success" id="barraCompletado">
+                                </div>
+                                <div class="progress-bar progress-bar-danger" id="barraPendientes">
+                                </div>
+                            </div>
+                            }
+                        </div>
+                        </div>
+                        <div style="width: 2%"></div>
+                        <div class="panel panel-default" style="width: 49%">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-wrench" aria-hidden="true"></i>  Detalle de Garantía</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row container-fluid">
+                                    @if (IndMigracion == "1")
+                                    {
+                                        <label>Fecha de Vencimiento de Garantía</label>
+                                        <p id="fechaVencGar"></p>
+                                    }
+                                    else
+                                    {
+                                        <div class="col-md-6 col-sm-12">
+                                            <label for="dateVencGarantia">Fecha de Vencimiento de Garantía:</label>
+                                            <div class="input-group date">
+                                                <input disabled type="text" class="form-control input-sm" id="dateVencGarantia" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
+                                                <span class="input-group-addon input-sm" id="openRegdateVencGarantia">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                                @if (IndMigracion == "1")
+                                {
+                                    <div class="row container-fluid">
+                                        <label>Días Transcurridos</label>
+                                        <p id="diasTransc"></p>
+                                    </div>
+                                    <div class="row container-fluid">
+                                        <label>Días Vigentes</label>
+                                        <p id="diasVig"></p>
+                                    </div>
+                                }
+                                else
+                                {
+                                 <br />
+                                    <div class="row container-fluid">
+                                        <div class="col-md-6 col-sm-12">
+                                            <div class="input-group input-group-sm">
+                                                <label for="cmbGarantia">Garantía: </label>
+                                                <select @ViewBag.PermiteEditar class="form-control select2 input-sm" style="width:100%;" id="cmbGarantia" tabindex="17"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br />
+                                }
+
+                                <div class="progress" style="margin-top: 8px;">
+                                    <div class="progress-bar" id="barraGarantia" role="progressbar" style="width: 60%; background-color: blue;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @if(IndMigracion == "2")
+                    {
+                       <div class="row container-fluid" id="row_txtArea" style="display:none">
+                           <div class="col-md-6 col-sm-12">
+                                <label for="cmbGarantia">Observaciones Migradas: </label>
+                               <div class="input-group input-group-sm">
+                                   <textarea name="textarea" rows="3" cols="70" disabled id="txtObservacion"></textarea>
+                               </div>
+                           </div>
+                       </div>
+                    }
+                    <br />
+                    <br />
+                    <div class="row container-fluid">
+                        <div class="text-right">
+                            <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegresar" tabindex="14"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Regresar</button>
+                            @if (IndMigracion == "2" && tipoProceso == "U")
+                            {
+                                <button class="btn btn-default btn-sm" type="button" data-dismiss="modal" id="btnGenCronograma" tabindex="14"><i class="fa fa-table" aria-hidden="true"></i>&nbsp; Generar Cronograma</button>
+                                <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnGuardarPrev" tabindex="15"><i class="fa fa-save" aria-hidden="true"></i>&nbsp; Guardar Cambios</button>
+                            }
+
+                        </div>
+                    </div>
+                    <br />
+                    <div class="table-responsive">
+                        <table id="tblMantenimientos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center; width: 5%">N° Preventivo</th>
+                                    <th style="text-align:center; width: 10%">Fecha de Mantenimiento</th>
+                                    <th style="text-align:center; width: 10%">Estado</th>
+                                    <th style="text-align:center; width: 5%">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyMantenimientos">
+                                <tr id="NoExisteMant">
+                                    <td colspan="4"><center>No hay data que mostrar</center></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @section scripts{
+        <script type="text/javascript" src="~/resources/js/app/ServicioTecnico/BandejaPreventivo/registroPreventivo.js"></script>
+    }

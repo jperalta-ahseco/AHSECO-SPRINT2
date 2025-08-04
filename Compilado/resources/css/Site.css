@@ -1,0 +1,148 @@
+﻿html,
+body {
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none;
+}
+
+textarea {
+    resize: none;
+}
+
+.modal {
+    overflow: auto;
+}
+
+.modal-dialog {
+    margin: 2% auto;
+}
+
+.modal-dialog .modal-header {
+    padding: 15px 20px;
+}
+
+.modal-dialog .modal-body {
+    padding: 10px 20px;
+}
+
+.modal-dialog .modal-footer {
+    padding: 15px 20px;
+}
+
+.app-loading {
+    margin: 20% auto;
+    color: White;
+    font-weight: bold;
+    text-align: center;
+}
+/*** Messages ***/
+.app-modal-default {
+    background: #f4f4f4;
+    color: #999999;
+    border-radius: 4px 4px 0 0;
+}
+
+.app-modal-info {
+    background: #00a7d0;
+    color: #fff;
+    border-radius: 4px 4px 0 0;
+}
+
+.app-modal-success {
+    background: #008d4c;
+    color: #fff;
+    border-radius: 4px 4px 0 0;
+}
+
+.app-modal-warning {
+    background: #db8b0b;
+    color: #fff;
+    border-radius: 4px 4px 0 0;
+}
+
+.app-modal-danger {
+    background: #d33724;
+    color: #fff;
+    border-radius: 4px 4px 0 0;
+}
+
+::-ms-clear {
+    display: none;
+}
+
+.col-center {
+    text-align: center;
+}
+
+.col-left {
+    text-align: left;
+}
+
+.col-right {
+    text-align: right;
+}
+
+.ajax-file-upload-container {
+    margin: auto;
+}
+
+.ajax-file-upload-statusbar {
+    border: none;
+    margin: auto;
+    padding: initial;
+    width: auto;
+}
+
+.ajax-file-upload-filename {
+    margin-top: 10px;
+    float: left;
+    width: auto;
+}
+
+.ajax-file-upload-cancel {
+    float: right;
+}
+
+.input-money {
+    text-align: right;
+}
+
+.input-entero {
+    text-align: right;
+}
+
+.input-entero-left {
+    text-align: left;
+}
+
+label.no-bold {
+    font-weight: normal;
+    height: auto;
+    border-style: dotted;
+}
+
+.form-horizontal .control-label-center {
+    font-weight: bold;
+    text-align: center;
+}
+
+.main-header {
+    height: 50px;
+    background-color: #00aeef;
+}
+
+.ccl-user-menu {
+    padding: 5px;
+    text-align: center;
+}
+
+.sidebar-toggle:hover {
+  color: #f6f6f6;
+  background: rgba(0, 0, 0, 0.1);
+}
+.sidebar-toggle {
+  color: #0c85af;
+}
+.sidebar-toggle:hover {
+  background-color: #0c85af;
+}

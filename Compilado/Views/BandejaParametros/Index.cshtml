@@ -1,0 +1,222 @@
+@{
+    ViewBag.Title = "Mantenimiento Parámetros Generales";
+
+}
+<div class="container-fluid" style="margin-right: 15px;">
+    <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
+    <div class="box-inner">
+        <div class="box-header well" data-original-title="">
+            <h2><i class="glyphicon glyphicon-list"></i> Par&aacute;metros Generales</h2>
+        </div>
+        <div class="box-content">
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="cmbCabecera">Seleccione el Cat&aacute;logo:&nbsp;</label>
+                    <div class="col-md-7">
+                        <select class="form-control select2 input-sm" style="width:100%;" id="cmbCabecera" data-selected=""></select>
+                    </div>
+                </div>
+                <button class="btn btn-primary btn-sm" type="button" id="btnBuscarDetalles"><i class="fa fa-search"></i> Buscar Par&aacute;metros</button>
+                <button class="btn btn-primary btn-sm" type="button" id="btnNuevoDetalle"><i class="fa fa-plus"></i> Nuevo Par&aacute;metro</button>
+                <button class="btn btn-primary btn-sm" type="button" id="btnEditarCabecera"><i class="fa fa-square-o"></i> Editar Cat&aacute;logo</button>
+                <button class="btn btn-primary btn-sm" type="button" id="btnNuevoCatalogo"><i class="fa fa-plus"></i> Nuevo Cat&aacute;logo</button>
+            </form>
+            <br />
+            <div class="table-responsive">
+                <table id="tblDetalleCabecera" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                    <thead>
+                        <tr>
+                            <th style="text-align: center;" width="0">Id</th>
+                            <th style="text-align: center;" width="100px">Par&aacute;metro</th>
+                            <th style="text-align: center;">Descripci&oacute;n</th>
+                            <th style="text-align: center;" width="30px">Estado</th>
+                            <th style="text-align: center;" width="30px">Habilitado</th>
+                            <th style="text-align: center;" width="30px">Editable</th>
+                            <th style="text-align: center;" width="20px"></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Cabecera -->
+<div class="modal fade" id="modalCabecera" tabindex="-1" role="dialog" aria-labelledby="titleModal"
+     aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <!-- Modal dialog -->
+    <div class="modal-dialog" role="document">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <!-- Modal content header -->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="left">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="tituloModalCabecera">Editar Cat&aacute;logo</h4>
+            </div>
+            <!-- Modal content body -->
+            <div class="modal-body">
+                <form id="formRegistroCabecera">
+                    <div class="form-group">
+                        <input type="hidden" id="hdnIdCabecera" />
+                        <label for="lblDominio">Dominio</label>
+                        <label class="form-control" id="lblDominio" disabled></label>
+                    </div>
+                    <div class="form-group">
+                        <label for="lblPrefijo">Prefijo</label>
+                        <label class="form-control" id="lblPrefijo" disabled></label>
+                    </div>
+                    <div class="form-group">
+                        <label for="txtDescripcionCabecera">Descripci&oacute;n</label>
+                        <input type="text" class="form-control" id="txtDescripcionCabecera" maxlength="50" />
+                    </div>
+                    <div class="form-group">
+                        <label for="chkEditable">Permite Crecer:</label>
+                        <input type="checkbox" class="checkbox bs-checkbox" id="chkPermiteCrecerCabecera" />
+                    </div>
+                </form>
+            </div>
+            <!-- Modal content footer -->
+            <div class="modal-footer">
+                <button class="btn btn-default btn-sm pull-left" type="button" data-dismiss="modal" id="btnCerrarCabecera" data-toggle="tooltip" data-placement="bottom" ><i class="fa fa-times"></i> Cerrar</button>
+                <button class="btn btn-primary btn-sm" type="button" id="btnGuardarCabecera"  data-toggle="tooltip" data-placement="bottom" ><i class="fa fa-square-o"></i> Editar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Detalle Cabecera -->
+<div class="modal fade" id="modalDetalleCabecera" tabindex="-1" role="dialog" aria-labelledby="titleModal"
+     aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <!-- Modal dialog -->
+    <div class="modal-dialog" role="document">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <!-- Modal content header -->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"  data-toggle="tooltip" data-placement="left">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="tituloModalDetalle">Editar Detalle</h4>
+            </div>
+            <!-- Modal content body -->
+            <div class="modal-body">
+                <form id="formRegistroDetalle" class="container-fluid">
+                    <div class="row">
+                        <div class="form-group col-sm-12">
+                            <div class="col-md-6">
+                                <input type="hidden" id="hdnIdDetalleCabecera" />
+                                <input type="hidden" id="hdnIdCabecera2" />
+                                <label for="lblParametro" id="lblTitleModalNuevo">Dominio:</label>
+                                <label class="form-control" id="lblDominioModalDetalle" disabled></label>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="control-label">Par&aacute;metro:</label>
+                                <label class="form-control" id="txtParametro" disabled></label>
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            <label for="txtDescripcionDetalle">Descripci&oacute;n:</label>
+                            <textarea rows="3" class="form-control" id="txtDescripcionDetalle" maxlength="140" tabindex="1"></textarea>
+                        </div>
+
+                        <div class="form-group col-sm-12">
+                            <div class="form-group col-sm-6">
+                                <label for="txtCodigoValor1">Código Valor 1:</label>
+                                <input type="text" class="form-control" id="txtCodigoValor1" maxlength="10" tabindex="2" />
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <label for="txtValor1">Valor 1:</label>
+                                <input type="text" class="form-control" id="txtValor1" maxlength="100" tabindex="3"/>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-12">
+                            <div class="form-group col-sm-6">
+                                <label for="txtCodigoValor2">Código Valor 2:</label>
+                                <input type="text" class="form-control" id="txtCodigoValor2" maxlength="10"  tabindex="4"/>
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <label for="txtValor2">Valor 2:</label>
+                                <input type="text" class="form-control" id="txtValor2" maxlength="100" tabindex="5"/>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-12">
+                            <div class="form-group col-sm-6">
+                                <label for="txtCodigoValor3">Código Valor 3:</label>
+                                <input type="text" class="form-control" id="txtCodigoValor3" maxlength="10" tabindex="6" />
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <label for="txtValor3">Valor 3:</label>
+                                <input type="text" class="form-control" id="txtValor3" maxlength="100" tabindex="7"/>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group col-sm-12">
+                            <label class="col-sm-4" id="txtLabelEstado">Estado <input type="checkbox" value="1" id="chkEstado" tabindex="8"> </label>
+                            <label class="col-sm-4" id="txtLabelEditable">Editable <input type="checkbox" value="1" id="chkEditable" tabindex="9"> </label>
+                            <label class="col-sm-4" id="txtLabelHabilitado">Habilitado <input type="checkbox" value="1" id="chkHabilitado" tabindex="10"> </label>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- Modal content footer -->
+            <div class="modal-footer">
+                <button class="btn btn-default btn-sm pull-left" type="button" data-dismiss="modal" id="btnCerrarDetalles"  data-toggle="tooltip" data-placement="left" ><i class="fa fa-times"></i> Cerrar</button>
+                <button class="btn btn-primary btn-sm" type="button" id="btnGuardarDetalle" data-toggle="tooltip" data-placement="left"><i class="fa fa-plus"></i> Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Nuevo Catálogo-->
+<div class="modal fade" id="modalNuevoCatalogo" tabindex="-1" role="dialog" aria-labelledby="titleModal"
+     aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <!-- Modal dialog -->
+    <div class="modal-dialog" role="document">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <!-- Modal content header -->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="left">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="tituloModalCatalogo">Nuevo Cat&aacute;logo</h4>
+            </div>
+            <!-- Modal content body -->
+            <div class="modal-body">
+                <form id="formRegistroCatalogo">
+                    <div class="form-group">
+                        <label for="txtDescripcion">Descripci&oacute;n:</label>
+                        <input type="text" class="form-control" name="descripcion" id="txtDescripcion" maxlength="50" placeholder="Ingrese la Descripción" tabindex="1" />
+                    </div>
+                    <div class="form-group">
+                        <label for="txtDominio">Dominio:</label>
+                        <input type="text" name="dominio" class="form-control" id="txtDominio" maxlength="20" placeholder="Ingrese el Nombre del Dominio" tabindex="2" />
+                    </div>
+                    <div class="form-group">
+                        <label for="txtPrefijo">Prefijo:</label>
+                        <input type="text" name="prefijo" class="form-control" id="txtPrefijo" maxlength="4" placeholder="Ingrese el Nombre del Prefijo" tabindex="3" />
+                    </div>
+                    <div class="form-group">
+                        <label for="chkCrecer" class="control-label">Permite Crecer:</label>
+                        <input type="checkbox" name="Permite Crecer" class="checkbox bs-checkbox" id="chkCrecer" />
+                    </div>
+
+                </form>
+            </div>
+            <!-- Modal content footer -->
+            <div class="modal-footer">
+                <button class="btn btn-default btn-sm pull-left" type="button" data-dismiss="modal" id="btnCerrarCatalogo" data-toggle="tooltip" data-placement="left" >Cerrar</button>
+                <button class="btn btn-primary btn-sm" type="button" id="btnGuardarCatalogo" data-toggle="tooltip" data-placement="left">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script type="text/javascript" src="~/resources/js/app/mantenimientos/parametros/bandejaParametros.js"></script>
+}

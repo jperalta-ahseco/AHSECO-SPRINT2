@@ -1,0 +1,196 @@
+﻿
+@{
+    ViewBag.Title = "Mantenimiento de Empleados";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" style="margin-right: 15px;">
+    <h4><i class="glyphicon glyphicon-cog"></i> @ViewBag.Title</h4>
+    <div class="box-inner">
+        <div class="box-header well" data-original-title="">
+            <h2><i class="glyphicon glyphicon-list"></i> <span id="txtTitleEmpleados">Registro de Empleados</span> </h2>
+        </div>
+        <div class="box-content">
+            <form id="formRegistroEmpleado">
+                <!--Primera Fila-->
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtNombre">Nombres:</label>
+                        <div class="form-group ">
+                            <input placeholder="Ingresar Nombre Empleado" maxlength="100" type="text" class="form-control input-sm" id="txtNombre" value="" tabindex="1">
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtApePat">Apellido Paterno:</label>
+                        <div class="form-group">
+                            <input placeholder="Ingresar Apellido Paterno" maxlength="100" type="text" class="form-control input-sm" id="txtApePat" value="" tabindex="2">
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtApeMat">Apellido Materno:</label>
+                        <div class="form-group">
+                            <input placeholder="Ingresar Apellido Materno" maxlength="100" type="text" class="form-control input-sm" id="txtApeMat" value="" tabindex="3">
+                        </div>
+                    </div>
+                </div>
+                <!--Segunda Fila-->
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="cmbArea">&Aacute;rea:</label>
+                            <select class="form-control select2 input-sm" style="width:100%;" id="cmbArea" tabindex="3"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="cmbCargo">Cargo:</label>
+                            <select class="form-control select2 input-sm" style="width:100%;" id="cmbCargo" tabindex="4"></select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="txtLugarLaboral">Lugar Laboral:</label>
+                            <div class="input-group input-group-sm date">
+                                <input type="text" class="form-control input-sm" id="txtLugarLaboral" value="" placeholder="--Seleccione Lugar Laboral--" aria-describedby="sizing-addon3" disabled="disabled" tabindex="5"/>
+                                <span style="cursor:pointer" class="input-group-addon input-sm" id="searchUbigeo" data-toggle="modal" data-target="#modalUbigeo">
+                                    <i class="fa fa-search"></i>
+                                </span>
+                                <span style="cursor:pointer" class="input-group-addon input-sm" id="deleteUbigeo" data-toggle="modal">
+                                    <i class="fa fa-trash"></i>
+                                </span>
+                                <input type="hidden" id="txtCodUbigeo" value="" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Tercera Fila-->
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <label for="dateFecNac">Fecha Nacimiento:</label>
+                        <div class="input-group date">
+                            <input type="text" class="form-control input-sm" id="dateFecNac" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10" tabindex="6">
+                            <span class="input-group-addon input-sm" id="openRegFecFin">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtTelefono">Teléfono:</label>
+                        <div class="form-group">
+                            <input placeholder="Ingresar Teléfono" maxlength="11" type="text" class="form-control input-sm" id="txtTelefono" value="" tabindex="7" onkeypress="if (isNaN(String.fromCharCode(event.keyCode))) return false;">
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtCorreo">Correo:</label>
+                        <div class="form-group">
+                            <input placeholder="Ingresar Correo" maxlength="100" type="text" class="form-control input-sm" id="txtCorreo" value="" tabindex="8">
+                        </div>
+                    </div>
+                </div>
+                <!--Cuarta Fila-->
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="cmbTipDoc">Tipo Documento:</label>
+                            <select class="form-control select2 input-sm" style="width:100%;" id="cmbTipDoc" tabindex="9"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <label for="txtNumDoc">N&uacute;mero Documento:</label>
+                        <div class="form-group">
+                            <input placeholder="Ingresar Teléfono" maxlength="12" pattern="/^\d{8}$/" type="text" class="form-control input-sm" id="txtNumDoc" value="" tabindex="9">
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="cmbSexo">Sexo Empleado:</label>
+                            <select class="form-control select2 input-sm" style="width:100%;" id="cmbSexo" tabindex="10"></select>
+                        </div>
+                    </div>
+                </div>
+                <!--Quinta Fila-->
+                <div class="row container-fluid">
+                    <div class="col-md-8 col-sm-12">
+                        <label for="txtDireccion">Direcci&oacute;n:</label>
+                        <div class="form-group">
+                            <input placeholder="Ingresar Dirección" maxlength="100" type="text" class="form-control input-sm" id="txtDireccion" value="" tabindex="11">
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="cmbEmpresa">Empresa:</label>
+                            <select class="form-control select2 input-sm" style="width:100%;" id="cmbEmpresa" tabindex="12"></select>
+                        </div>
+                    </div>
+                </div>
+                <!--Sexta Fila-->
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <label for="dateFecIng">Fecha Ingreso:</label>
+                        <div class="input-group date">
+                            <input type="text" class="form-control input-sm" id="dateFecIng" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10" tabindex="12">
+                            <span class="input-group-addon input-sm" id="openRegFecFin">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="cmbTipo">Tipo:</label>
+                            <select class="form-control select2 input-sm" style="width:100%;" id="cmbTipo" tabindex="13"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="txtJefe">Jefe:</label>
+                            <div class="input-group input-group-sm date">
+                                <input type="text" class="form-control input-sm" id="txtJefe" value="" placeholder="--Seleccione Jefe--" aria-describedby="sizing-addon3" disabled="disabled" tabindex="14"/>
+                                <span style="cursor:pointer" class="input-group-addon input-sm" id="searchJefe" data-toggle="modal" data-target="#modalJefe">
+                                    <i class="fa fa-search"></i>
+                                </span>
+                                <span style="cursor:pointer" class="input-group-addon input-sm" id="deleteJefe" data-toggle="modal">
+                                    <i class="fa fa-trash"></i>
+                                </span>
+                                <input type="hidden" id="txtCodigoJefe" value="" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               <!--Septima Fila-->
+                <div class="container-fluid row">
+                    <div class="col-md-4 col-sm-12">
+                        <div class="form-group">
+                            <label for="cmbEstado">Estado:</label>
+                            <select class="form-control select2 input-sm" style="width:100%;" id="cmbEstado" tabindex="14"></select>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="text-right">
+                    <button class="btn btn-success btn-sm " type="button" id="btnRegistrar"><i class="fa fa-plus" aria-hidden="true"></i> Registrar</button>
+                    <button class="btn btn-primary btn-sm" type="button" id="btnCancelar"><i class="fa fa-times" aria-hidden="true"></i> Cancelar</button>
+                </div>
+            </form>
+
+
+
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalUbigeo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_Ubigeo");
+    }
+</div>
+<div class="modal fade" id="modalJefe" tabindex="-2" role="dialog" aria-labelledby="jefeModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_Jefe");
+    }
+</div>
+<!--Modal Ubigeo-->
+
+@section scripts{
+    <script src="~/resources/js/app/mantenimientos/bandejaEmpledos/manipularEmpleado.js"></script>
+}

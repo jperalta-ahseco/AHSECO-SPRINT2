@@ -1,0 +1,1245 @@
+﻿@using AHSECO.CCL.FRONTEND.Core;
+
+@{
+    ViewBag.Title = "Detalle del Despacho";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var numSol = VariableSesion.getCadena("numSol");
+    var idCotizacion = VariableSesion.getCadena("idCotizacion");
+    var tipoSol = VariableSesion.getCadena("tipoSol");
+    var NombreRol = VariableSesion.getCadena("VENTA_NOMBRE_ROL");
+    var estadoDesp = VariableSesion.getCadena("estadoDesp");
+    var numDespacho = VariableSesion.getCadena("numDespacho");
+    var porcentajeDscto = VariableSesion.getCadena("porcentajeDscto");
+    //desfasado -- var vigencia = VariableSesion.getCadena("vigencia");
+    var plazoEntrega = VariableSesion.getCadena("plazoEntrega");
+
+
+
+
+    var NombreEstadoDesp = VariableSesion.getCadena("NomestadoDesp");
+    var CodigoWorkFlowDesp = VariableSesion.getCadena("CodigoWorkFlowDesp");
+    var estadoSol = VariableSesion.getCadena("estadoSol");
+    var idFlujo = VariableSesion.getCadena("idFlujo");
+}
+
+<!--
+Desfasado
+input hidden id="vigencia" value="vigencia" />
+    -->
+<input hidden id="PlazoEntrega" value="@plazoEntrega" />
+<input hidden id="IdCotizacion" value="@idCotizacion" />
+<input hidden id="NumSol" value="@numSol" />
+<input hidden id="NumDespacho" value="@numDespacho" />
+<input hidden id="ValidaBtnObservacion" value="0" />
+<input hidden id="codigoWorkflow" value="@CodigoWorkFlowDesp" />
+<input hidden id="estadoDesp" value="@estadoDesp" />
+<input hidden id="numeroSolicitud" value="@numSol" />
+<input hidden id="TipoSolicitud" value="@tipoSol" />
+<input hidden id="FlagStock" value="" />
+<input hidden id="idFlujo" value="@idFlujo" />
+<input type="hidden" id="EnvioServicio" value="@ViewBag.EnvioServicio" />
+<input type="hidden" id="ContadorSeriesCS" value="@ViewBag.ContadorSeriesConStock" />
+<input type="hidden" id="TotalSeriesCS" value="@ViewBag.TotalSeriesConStock" />
+<input type="hidden" id="ContadorSeriesSS" value="@ViewBag.ContadorSeriesSinStock" />
+<input type="hidden" id="TotalSeriesSS" value="@ViewBag.TotalSeriesSinStock" />
+
+
+
+<input type="hidden" id="contadordoc" value="0" />
+<input hidden id="nombreRol" value="@NombreRol" />
+<input hidden id="PorcentajeDscto" value="@porcentajeDscto" />
+<input hidden id="txtEstado" />
+<div class="container-fluid">
+    <h4><i class="fa fa-comment" aria-hidden="true"></i> @ViewBag.Title</h4>
+
+    <div class="box-inner">
+        <div class="box-header well" data-original-title="">
+            <div style="display: flex;justify-content: space-between;">
+                <h2>Detalle del Despacho </h2> <!--- Aquí tendremos que controlar-->
+                <h2>N° de Solicitud: @numSol</h2>
+            </div>
+        </div>
+        <div class="box-content">
+            @if (numDespacho != "0")
+            {
+                <div class="row container-fluid">
+                    <div class="text-right">
+                        <!--- Aquí tendremos que controlar-->
+                        <label>ESTADO: <span id="spanEstadoSol" style="color:red">@NombreEstadoDesp</span></label>
+                    </div>
+                </div>
+
+            }
+            <div class="container-fluid" style="margin-right: 15px;">
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-7 col-xs-12">
+                        <label for="cmbTipoDespacho">Tipo Despacho: </label>
+                        <div class="form-group">
+                            <select @(ViewBag.PermiteEditarTipDespacho ? "" : "disabled") class="form-control select2 input-sm" style="width:100%;" id="cmbTipoDespacho" data-selected="">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12" id="divNumOrden">
+                        <label for="txtNumOrden">N° Orden:</label>
+                        <div class="form-group">
+                            <input @(ViewBag.PermiteEditarCabecera ? "" : "disabled") placeholder="Número Orden" type="text" class="form-control input-sm" id="txtNumOrden" value="">
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12" id="divContrato" style=" display:none">
+                        <label for="txtNumContrato">N° Contrato:</label>
+                        <div class="form-group">
+                            <input @(ViewBag.PermiteEditarCabecera ? "" : "disabled") placeholder="Número Contrato" type="text" class="form-control input-sm" id="txtNumContrato" value="">
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12" id="divFecOrden">
+                        <label for="dateFechaOrdenCompra">Fecha Orden de Compra: </label>
+                        <div class="input-group date">
+                            <input @(ViewBag.PermiteEditarCabecera ? "" : "disabled") type="text" readonly class="form-control input-sm" id="dateFechaOrdenCompra" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
+                            <span class="input-group-addon input-sm" id="openRegdateOrdenCompra">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                            <span class="input-group-addon input-sm" id="LimpiardateOrdenCompra">
+                                <i class="fa fa-trash"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12" id="divFecContrato" style=" display:none">
+                        <label for="dateFechaContrato">Fecha de Contrato: </label>
+                        <div class="input-group date">
+                            <input @(ViewBag.PermiteEditarCabecera ? "" : "disabled") type="text" readonly class="form-control input-sm" id="dateFechaContrato" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" maxlength="10">
+                            <span class="input-group-addon input-sm" id="openRegdateContrato">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                            <span class="input-group-addon input-sm" id="LimpiardateFechaContrato">
+                                <i class="fa fa-trash"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row container-fluid">
+                    <div class="col-md-4 col-sm-12">
+                        <label for="dateFechaMax">Fecha Máxima:</label>
+                        <div class="form-group">
+                            <input disabled type="text" class="form-control input-sm" id="dateFechaMax" value="">
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-12" style=" @(ViewBag.PermiteVerFianza ? "" : "display:none" )">
+                        <label for="radFianza">Fianza: </label>
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" id="radFianza" aria-describedby="sizing-addon3" readonly value="1" name="opcionFianza" />
+                                Si
+                            </label>
+                            <label>
+                                <input type="radio" id="radFianza2" aria-describedby="sizing-addon3" readonly value="2" name="opcionFianza" />
+                                No
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-12" style=" @(ViewBag.PermiteVerFianza ? "" : "display:none" )">
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" name="opciones" id="chkPrestacionPrincipal" value="1" disabled>
+                                Prestaci&oacute;n Principal:
+                            </label>
+                            <div class="form-group">
+                                <input placeholder="Ingresar N° Fianza" type="text" class="form-control input-sm" maxlength="50" id="txtNroFianzaPP" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-12" style=" @(ViewBag.PermiteVerFianza ? "" : "display:none" )">
+                        <label>
+                            <input type="checkbox" name="opciones" id="chkPrestacionAccesoria" value="2" disabled>
+                            Prestaci&oacute;n Accesoria:
+                        </label>
+                        <div class="form-group">
+                            <input placeholder="Ingresar N° Fianza" type="text" class="form-control input-sm" maxlength="50" id="txtNroFianzaPA" disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="row container-fluid">
+                    <div class="text-right">
+                        @if (numDespacho != "0")
+                        {
+                            <button class="btn btn-success btn-sm" type="button" id="btnGuardarCabecera" style="display:@ViewBag.Btn_EditarDespacho"><i class="fa fa-save"></i> Guardar</button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-success btn-sm" type="button" id="btnRegistrar"><i class="fa fa-plus"></i> Registrar</button>
+                        }
+                        <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegresar" tabindex="14"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Regresar</button>
+                    </div>
+                </div>
+                <br />
+
+                <ul class="nav nav-tabs" style="padding-top: 5px;">
+                    <li class="" id="tabDetalle">
+                        <a href="#navDetalle" data-toggle="tab" style="font-weight:bold; color: black;" tabindex="22"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Detalle</a>
+                    </li>
+                    @if (numDespacho != "0")
+                    {
+                        <li class="" id="tabSeguimiento">
+                            <a href="#navSeguimiento" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-code-fork" aria-hidden="true"></i>  Seguimiento</a>
+                        </li>
+                    }
+                    <li class="" id="tabObservaciones">
+                        <a href="#navObservaciones" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="21"><i class="fa fa-exclamation" aria-hidden="true"></i> Observaciones</a>
+                    </li>
+                    <li class="" id="tabAdjuntos">
+                        <a href="#navDocumentos" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="20"><i class="fa fa-file-text" aria-hidden="true"></i> Adjunto de Documentos</a>
+                    </li>
+                </ul>
+                <div class="tab-content" style="padding-top: 5px;">
+                    <div id="navSeguimiento" class="tab-pane fade">
+                        @{
+                            Html.RenderPartial("~/Views/Modelos/_Seguimiento.cshtml");
+                        }
+                    </div>
+                    <div id="navDocumentos" class="tab-pane fade">
+                        @{
+                            Html.RenderPartial("~/Views/Modelos/_Documentos.cshtml");
+                        }
+                    </div>
+                    <div id="navObservaciones" class="tab-pane fade">
+                        @{
+                            Html.RenderPartial("~/Views/Modelos/_Observaciones.cshtml");
+
+
+                        }
+                    </div>
+                    <div id="navDetalle" class="tab-pane fade in active">
+                        <div class="panel-group" id="accordion7401210" role="tablist" aria-multiselectable="false">
+                            <div class="box-inner" id="boxDetalleCotizacion" style="display:none">
+                                <div class="box-header well" data-original-title="" style="background-color: beige;">
+                                    <div>
+                                        <p id="titleNomProducto"><i class="fa fa-list" aria-hidden="true"></i> Lista Productos</p>
+                                    </div>
+                                </div>
+                                <div class="box-content" style="background-color: #f5f5dc30; ">
+                                    <div class="container-fluid">
+                                        <div class="table-responsive">
+                                            <table id="tblDetalleCotizacion" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                <thead>
+                                                    <tr>
+                                                        @if (numDespacho == "0")
+                                                        {
+                                                            <th style="text-align: center; width: 5%;">Todos: <input class="form-check-input" type="checkbox" value="" id="checkSeleccionarTodos"></th>
+                                                        }
+                                                        @for (var i = 0; ViewBag.Columnas.Length > i; i++)
+                                                        {
+                                                            <th style="text-align: center;">@ViewBag.Columnas[i]</th>
+                                                        }
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tbodyDetalleCot">
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="box-inner" id="boxDetalleServicios" style="display:none">
+                                <div class="box-header well" data-original-title="" style="background-color: #68a9ffc4;">
+                                    <div>
+                                        <p id="titleServicios"><i class="fa fa-cogs" aria-hidden="true"></i></i> Lista Servicios</p>
+                                    </div>
+                                </div>
+                                <div class="box-content" style="background-color: #f5f5dc30; ">
+                                    <div class="container-fluid">
+                                        <div class="table-responsive">
+                                            <table id="tblDetalleServicios" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                <thead>
+                                                    <tr>
+                                                        @if (numDespacho == "0")
+                                                        {
+                                                            <th style="text-align: center; width: 5%;">Todos: <input class="form-check-input" type="checkbox" value="" id="checkSeleccionarTodosServ"></th>
+                                                        }
+                                                        @for (var i = 0; ViewBag.ColumnasServicios.Length > i; i++)
+                                                        {
+                                                            <th style="text-align: center;">@ViewBag.ColumnasServicios[i]</th>
+                                                        }
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tbodyDetalleCot">
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+                            @if (numDespacho != "0")
+                            {
+                                <div class="box-inner" id="boxDespacho" style="@(ViewBag.VerDespacho ? "" : "display:none");">
+                                    <div class="box-header well" data-original-title="" style="background-color: beige;">
+                                        <div>
+                                            <p id="titleNomProducto"><i class="fa fa-cube" aria-hidden="true" style="color:brown"></i> Despacho</p>
+                                        </div>
+                                    </div>
+                                    <div class="box-content" style="background-color: #f5f5dc30;">
+                                        <div class="row container-fluid" style="@(ViewBag.VerFacturacion ? "" : "display:none");">
+                                            <div class="col-md-4 col-sm-12">
+                                                <label for="txtNumeroFactura">N° de Factura: </label>
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control input-sm" maxlength="100" id="txtNumeroFactura" placeholder="Ingresar Número de Factura" @ViewBag.TxtNumFactura>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 col-sm-12">
+                                                <label for="dateEntregaPedido">Fecha de Entrega de Pedido: </label>
+                                                <div class="input-group date">
+                                                    <input type="text" class="form-control input-sm" id="dateEntregaPedido" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" readonly maxlength="10" @ViewBag.FecEntregaPedido>
+                                                    <span class="input-group-addon input-sm" id="opendateEntregaPedido" @ViewBag.FecEntregaPedido>
+                                                        <i class="fa fa-calendar"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row container-fluid" style="@(ViewBag.VerObservacionGerencia ? "" : "display:none")">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="txtObservacion">Observaci&oacute;n de Gerencia:</label>
+                                                    <textarea class="form-control" rows="4" maxlength="1000" id="txtObservacionGerente" disabled>@ViewBag.ObservacionGerencia</textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row container-fluid">
+                                            <div class="text-right">
+
+                                                <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnEnviarGuiaTotal" style="display:@ViewBag.Btn_EnviarGuiaTotal"><i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar Guia de Pedido</button>
+                                                <button class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnGuiaPedidoTotal" style="display:@ViewBag.Btn_GuiaPedidoTotal"><i class="fa fa-file" aria-hidden="true" tabindex="113"></i>&nbsp;Generar Gu&iacute;a de Pedido</button>
+
+                                                <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnAprobarGestionSS" tabindex="114" style="display:@ViewBag.Btn_Aprobar"><i class="fa fa-handshake-o" aria-hidden="true"></i>&nbsp;Aprobar</button>
+                                                <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnObservarGestionSS" tabindex="115" style="display:@ViewBag.Btn_Observar"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Observar</button>
+
+                                                <button class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnGuiaManuscritaTotal" style="display:@ViewBag.Btn_GuiaManuscritaTotal"><i class="fa fa-file" aria-hidden="true" tabindex="110"></i>&nbsp;Generar Gu&iacute;a Manuscrita</button>
+                                                <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnEnviarServicio" style="display:@ViewBag.Btn_EnviarServicio"><i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar a Facturaci&oacute;n</button>
+
+                                                <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnActualizarGestion" tabindex="119" style="display:none"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar</button>
+
+                                                <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnEnviarGuiaBOTotal" style="display:@ViewBag.Btn_EnviarGuiaBOTotal"><i class="fa fa-envelope" aria-hidden="true" tabindex="111"></i>&nbsp;Enviar Guia de BO</button>
+                                                <button class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnGuiaBOTotal" style="display:@ViewBag.Btn_GuiaBOTotal"><i class="fa fa-file" aria-hidden="true" tabindex="112"></i>&nbsp;Generar Gu&iacute;a de BO</button>
+
+
+                                                <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnEditarFacturaLogistica" tabindex="123" style="display:@ViewBag.Btn_EditarFacturaLogistica"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Editar Factura</button>
+                                                <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnGuardarFacturaLogistica" tabindex="123" style="display:@ViewBag.Btn_GuardarFacturaLogistica"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar Factura</button>
+                                            </div>
+                                        </div>
+                                        <div class="box-content" style="@(ViewBag.VerGestionLogistica ? "" : "display:none");">
+                                            <ul class="nav nav-tabs" style="padding-top: 5px;">
+                                                <li class="" id="tabConStock" style="@(ViewBag.VerNavConStock ? "":"display:none");">
+                                                    <a href="#navConStock" data-toggle="tab" style="font-weight:bold; color:black;" tabindex="221"><i class="fa fa-cubes" aria-hidden="true"></i> Con Stock</a>
+                                                </li>
+                                                <li class="" id="tabSinStock" style="@(ViewBag.VerNavSinStock ? "":"display:none");">
+                                                    <a href="#navSinStock" data-toggle="tab" style="font-weight: bold; color: black;" tabindex="222"><i class="fa fa-wrench" aria-hidden="true"></i> Sin Stock</a>
+                                                </li>
+                                                @if (tipoSol == "TSOL01" || tipoSol == "TSOL03")
+                                                {
+                                                    <li class="" id="tabServ" style="@(ViewBag.VerNavServicio ? "":"display:none");">
+                                                        <a href="#navServicio" data-toggle="tab" style="font-weight:bold; color:black;" tabindex="220"><i class="fa fa-user" aria-hidden="true"></i> Servicio</a>
+                                                    </li>
+                                                    <li class="" id="tabTecnicos">
+                                                        <a href="#navTecnicos" data-toggle="tab" style="font-weight: bold; color: #158304;" tabindex="223"><i class="fa fa-users" aria-hidden="true"></i><i class="fa fa-wrench" aria-hidden="true"></i> Tecnicos</a>
+                                                    </li>
+                                                }
+
+                                            </ul>
+                                            <div class="tab-content">
+
+                                                <div id="navConStock" class="tab-pane fade" style="@(ViewBag.VerNavConStock ? "":"display:none");">
+                                                    <div class="row container-fluid">
+                                                        &nbsp;
+                                                    </div>
+                                                    <div class="row container-fluid">
+                                                        <div class="text-right">
+                                                            <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnEnviarGuiaCS" style="display:@ViewBag.Btn_EnviarGuiaCS"><i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar Guia de Pedido</button>
+                                                            <button class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnGuiaPedidoCS" style="display:@ViewBag.Btn_GuiaPedidoCS"><i class="fa fa-file" aria-hidden="true" tabindex="113"></i>&nbsp;Generar Gu&iacute;a de Pedido</button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row container-fluid">
+                                                        &nbsp;
+                                                    </div>
+                                                    <div class="row container-fluid" id="SeccionLogCS" style="@(ViewBag.SeccionLogCS ? "":"display:none");">
+
+                                                        @if (tipoSol == "TSOL04" && ViewBag.TxtNumeroGuiaRemisionCE == "")
+                                                        {
+                                                            <div class="col-md-4 col-sm-12">
+                                                                <label for="txtNumeroGuiaRemisionCE">N° de Gu&iacute;a de Remisi&oacute;n: </label>
+                                                                <div class="form-group">
+                                                                    <input type="text" class="form-control input-sm" id="txtNumeroGuiaRemisionCE" maxlength="100" placeholder="Ingresar N° Guia de Remisión" style="display:@ViewBag.TxtNumeroGuiaRemisionCE">
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    </div>
+
+                                                    <div class="row container-fluid">
+                                                        <div class="text-right">
+                                                            <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnEditarGestionLogistica" tabindex="120" style="display:@ViewBag.Btn_EditarGestionLogistica"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Editar&nbsp;</button>&nbsp;
+                                                            <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnGuardarGestionLogistica" tabindex="121" style="display:@ViewBag.Btn_GuardarGestionLogistica"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar&nbsp;</button>&nbsp;
+                                                            @if (tipoSol == "TSOL02" || tipoSol == "TSOL03" || tipoSol == "TSOL05")
+                                                            {
+                                                                <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegistrarDespacho" tabindex="121" style="display:@ViewBag.Btn_RegistrarDespacho"><i class="fa fa-truck" aria-hidden="true"></i>&nbsp;Despacho Multiple&nbsp;</button>
+                                                            }&nbsp;
+
+                                                            <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnEnviarGestionDespacho" tabindex="122" style="display:@ViewBag.Btn_EnviarGestionDespacho"><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;Enviar a Gesti&oacute;n&nbsp;</button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row container-fluid">
+                                                        &nbsp;
+                                                    </div>
+                                                    @if (tipoSol == "TSOL02" || tipoSol == "TSOL03" || tipoSol == "TSOL05")
+                                                    {
+                                                        <div class="row container-fluid">
+                                                            <div class="table-responsive">
+                                                                <table id="tblSeriesCS" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            @if (NombreRol == "SGI_VENTA_LOGISTICA" && (estadoSol == "PRVT" || estadoSol == "VTPG"))
+                                                                            {
+                                                                                <th style="text-align:center; width:5%; color:white; background-color:cornflowerblue"><input type="checkbox" id="SelTodosCSS" onclick="javascript:seleccionarTodoConStock();" /></th>
+                                                                            }
+                                                                            <th style="text-align:center; width:5%; color:white; background-color:cornflowerblue">N°</th>
+                                                                            <th style="text-align: center; width: 10%; color:white; background-color: cornflowerblue">C&oacute;digo</th>
+                                                                            <th style="text-align: center; width: 20%; color: white; background-color: cornflowerblue">Descripci&oacute;n Equipo</th>
+                                                                            <th style="text-align: center; width: 10%; color: white; background-color: cornflowerblue">Marca</th>
+                                                                            <th style="text-align: center; width: 10%; color: white; background-color: cornflowerblue">Destino</th>
+                                                                            <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">N° Guia Remision</th>
+                                                                            <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">N° Serie / N° Lote</th>
+                                                                            <th style="text-align: center; width: 10%; color: white; background-color: cornflowerblue">Acciones</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr id="NoRegSeries">
+                                                                            <td align="center" colspan="8">No existen registros</td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    }
+
+
+                                                </div>
+                                                <div id="navSinStock" class="tab-pane fade" style="@(ViewBag.VerNavSinStock ? "":"display:none");">
+                                                    <!--
+                                                    <div id="navSinStock" class="tab-pane fade @ViewBag.InActiveSinStock" style="@(ViewBag.VerNavSinStock ? "":"display:none");">
+                                                    -->
+                                                    <div class="row container-fluid">
+                                                        &nbsp;
+                                                    </div>
+                                                    <div class="row container-fluid">
+                                                        <div class="text-right">
+                                                            <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnEnviarGuiaSS" style="display:@ViewBag.Btn_EnviarGuiaSS"><i class="fa fa-envelope" aria-hidden="true" tabindex="110"></i>&nbsp;Enviar Guia de Pedido</button>
+                                                            <button class="btn btn-success btn-sm" type="button" data-dismiss="modal" id="btnEnviarGuiaBOSS" style="display:@ViewBag.Btn_EnviarGuiaBO"><i class="fa fa-envelope" aria-hidden="true" tabindex="111"></i>&nbsp;Enviar Guia de BO</button>
+                                                            <button class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnGuiaBOSS" style="display:@ViewBag.Btn_GuiaBO"><i class="fa fa-file" aria-hidden="true" tabindex="112"></i>&nbsp;Generar Gu&iacute;a de BO</button>
+                                                            <button class="btn btn-primary btn-sm" type="button" data-dismiss="modal" id="btnGuiaPedidoSS" style="display:@ViewBag.Btn_GuiaPedidoSS"><i class="fa fa-file" aria-hidden="true" tabindex="113"></i>&nbsp;Generar Gu&iacute;a de Pedido</button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row container-fluid">
+                                                        &nbsp;
+                                                    </div>
+                                                    <div class="row container-fluid" id="SeccionImpSS" style="@(ViewBag.SeccionImpSS ? "":"display:none");">
+                                                        <div class="col-md-4 col-sm-12">
+                                                            <label for="txtCodigoPedidoSE">C&oacute;digo de Pedido: </label>
+                                                            <div class="form-group">
+                                                                <input type="text" class="form-control input-sm" id="txtCodigoPedidoSE" placeholder="Ingresar Código de Pedido" @ViewBag.TxtCodigoPedido>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4 col-sm-12">
+                                                            <label for="dateIngresoAlmacenSE">Fecha de Ingreso de Almacen: </label>
+                                                            <div class="input-group date">
+                                                                <input type="text" class="form-control input-sm" id="dateIngresoAlmacenSE" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" readonly maxlength="10" @ViewBag.IngresoAlmacen>
+                                                                <span class="input-group-addon input-sm" id="opendateIngresoAlmacenSE" @ViewBag.IngresoAlmacen>
+                                                                    <i class="fa fa-calendar"></i>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row container-fluid" id="SeccionLogSS" style="@(ViewBag.SeccionLogSS ? "":"display:none");">
+
+                                                        @if (tipoSol == "TSOL04")
+                                                        {
+                                                            <div class="col-md-4 col-sm-12">
+                                                                <label for="txtNumeroGuiaRemisionSE">N° de Gu&iacute;a de Remisi&oacute;n: </label>
+                                                                <div class="form-group">
+                                                                    <input type="text" class="form-control input-sm" id="txtNumeroGuiaRemisionSE" maxlength="100" placeholder="Ingresar N° Guia de Remisión" @ViewBag.TxtNumeroGuiaRemisionSE>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                    <div class="row container-fluid">
+                                                        <div class="text-right">
+                                                            <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnActualizarImportacion" tabindex="126" style="display:@ViewBag.Btn_ActualizarImportacion"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Actualizar Importaci&oacute;n</button>
+                                                            <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnGuardarFechaIngresoImportacion" tabindex="126" style="display:@ViewBag.Btn_GuardarFechaIngreso"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar</button>
+                                                            <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnGuardarImportacion" tabindex="126" style="display:@ViewBag.Btn_GuardarImportacion"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar Importaci&oacute;n</button>
+                                                            <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnEditarGestionLogisticaSE" tabindex="127" style="display:@ViewBag.Btn_EditarGestionLogisticaSE"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Editar&nbsp;</button>&nbsp;
+                                                            <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnGuardarGestionLogisticaSE" tabindex="128" style="display:@ViewBag.Btn_GuardarGestionLogisticaSE"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar&nbsp;</button>&nbsp;
+                                                            @if (tipoSol == "TSOL02" || tipoSol == "TSOL03" || tipoSol == "TSOL05")
+                                                            {
+                                                                <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnRegistrarDespachoSE" tabindex="121" style="display:@ViewBag.Btn_RegistrarDespachoSinStock"><i class="fa fa-truck" aria-hidden="true"></i>&nbsp;Despacho Multiple&nbsp;</button>
+                                                            }
+                                                            &nbsp;
+                                                            <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnEnviarGestionDespachoSE" tabindex="129" style="display:@ViewBag.Btn_EnviarGestionDespachoSE"><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;Enviar a Gesti&oacute;n&nbsp;</button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row container-fluid">
+                                                        &nbsp;
+                                                    </div>
+                                                    @if (tipoSol == "TSOL02" || tipoSol == "TSOL03" || tipoSol == "TSOL05")
+                                                    {
+                                                        <div class="row container-fluid">
+                                                            <div class="table-responsive">
+                                                                <table id="tblSeriesSS" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            @if (NombreRol == "SGI_VENTA_LOGISTICA" && (estadoSol == "PRVT" || estadoSol == "VTPG"))
+                                                                            {
+                                                                                <th style="text-align:center; width:5%; color:white; background-color:cornflowerblue"><input type="checkbox" id="SelTodosSSS" onclick="javascript:seleccionarTodoSinStock();" /></th>
+                                                                            }
+                                                                            <th style="text-align:center; width:5%; color:white; background-color:cornflowerblue">N°</th>
+                                                                            <th style="text-align: center; width: 10%; color:white; background-color: cornflowerblue">C&oacute;digo</th>
+                                                                            <th style="text-align: center; width: 20%; color: white; background-color: cornflowerblue">Descripci&oacute;n Equipo</th>
+                                                                            <th style="text-align: center; width: 10%; color: white; background-color: cornflowerblue">Marca</th>
+                                                                            <th style="text-align: center; width: 10%; color: white; background-color: cornflowerblue">Destino</th>
+                                                                            <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">N° Guia Remision</th>
+                                                                            <th style="text-align: center; width: 15%; color: white; background-color: cornflowerblue">N° Serie / N° Lote</th>
+                                                                            <th style="text-align: center; width: 10%; color: white; background-color: cornflowerblue">Acciones</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr id="NoRegSeriesSS">
+                                                                            <td align="center" colspan="8">No existen registros</td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    }
+
+
+                                                </div>
+                                                <div id="navServicio" class="tab-pane fade" style="@(ViewBag.VerNavServicio ? "":"display:none");">
+                                                    <!--
+                                                    <div id="navServicio" class="tab-pane fade @ViewBag.InActiveServicio" style="@(ViewBag.VerNavServicio ? "":"display:none");">
+                                                    -->
+                                                    <div class="row container-fluid">
+                                                        &nbsp;
+                                                    </div>
+
+                                                    <div class="row container-fluid">
+                                                        <div class="col-md-4 col-sm-12">
+                                                            <label for="dateFactura">Fecha de Factura: </label>
+                                                            <div class="input-group date">
+                                                                <input type="text" class="form-control input-sm" id="dateFactura" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" readonly maxlength="10" @ViewBag.FechaFactura>
+                                                                <span class="input-group-addon input-sm" id="opendateFactura" @ViewBag.FechaFactura>
+                                                                    <i class="fa fa-calendar"></i>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4 col-sm-12">
+                                                            <label for="txtNumeroFacturaServ">N° de Factura: </label>
+                                                            <div class="form-group">
+                                                                <input type="text" class="form-control input-sm" id="txtNumeroFacturaServ" placeholder="Ingresar Número de Factura" @ViewBag.TxtNumeroFacturaServ>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4 col-sm-12">
+                                                            &nbsp;
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row container-fluid">
+                                                        <div class="text-right">
+                                                            <button class="btn btn-info btn-sm" type="button" data-dismiss="modal" id="btnGuardarFactura" tabindex="121" style="display:@ViewBag.Btn_GuardarFactura"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar Factura&nbsp;</button>&nbsp;
+                                                        </div>
+                                                    </div>
+                                                    <div class="row container-fluid">
+                                                        &nbsp;
+                                                    </div>
+
+                                                </div>
+                                                <!--
+                                                <div id="navTecnicos" class="tab-pane fade @ViewBag.InActiveTecnico">
+                                                    -->
+                                                <div id="navTecnicos" class="tab-pane fade">
+                                                    <br />
+                                                    <form id="formRegistroTecnico" class="d-flex flex-row">
+                                                        <div class="row container-fluid d-flex justify-content-center">
+                                                            <div class="text-right">
+                                                                <button class="btn btn-default btn-sm" type="button" style="display:none;" id="btnBuscarTecnicos" data-target="#modalBusquedaTecnico" data-toggle="modal"><i class="fa fa-search"></i> Buscar Técnicos</button>
+                                                                <span id="hidden_fields"></span>
+                                                                <button class="btn btn-primary btn-sm" type="button" style="display:none;" id="btnAñadirTecnico" data-toggle="modal" data-target="#añadirTecnico"><i class="fa fa-plus"></i> Crear Técnico Externo</button> &nbsp;
+                                                                <button class="btn btn-primary btn-sm" type="button" style="display:none;" id="btnGuardarProg" data-toggle="modal" data-target="#añadirFecProg"><i class="fa fa-table"></i> Programar Fecha</button>
+                                                            </div>
+                                                            <br />
+                                                            <div class="row container-fluid">
+                                                                <div class="col-md-6 col-sm-12">
+                                                                    <label for="dateProgramacionServ">Fecha de Programaci&oacute;n: </label>
+                                                                    <div class="input-group date">
+                                                                        <input type="text" class="form-control input-sm" id="dateProgramacionServ" aria-describedby="sizing-addon3" disabled maxlength="10">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <br />
+                                                            <div class="table-responsive">
+                                                                <table id="tblMainTecnicos" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Id</th>
+                                                                            <th style="text-align: center; width:10%">Tip. de Doc.</th>
+                                                                            <th style="text-align: center; width:10%">N&uacute;m. de Doc.</th>
+                                                                            <th style="text-align: center; width:20%">Nombres y Apellidos</th>
+                                                                            <th style="text-align: center; width:15%">Tel&eacute;fono</th>
+                                                                            <th style="text-align: center; width:15%;">Correo</th>
+                                                                            <th style="text-align: center; width:15%;">Empresa</th>
+                                                                            <th style="text-align: center; width:50%;"><center>Acciones</center></th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="tbodyTecnicos">
+                                                                    </tbody>
+                                                                    <tr id="NoExisteTec"><td colspan="11" style="text-align:center"> No se han añadido técnicos</td></tr>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                        <br />
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@{
+    Html.RenderPartial("~/Views/Modelos/_Modales.cshtml");
+}
+
+
+<div class="modal fade" id="modalCostoItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_SolicitudCostoItem");
+    }
+</div>
+<div class="modal fade" id="modalDetalleItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_SolicitudDetItemProducto");
+    }
+</div>
+
+<div class="modal fade" id="modalBusquedaTecnico" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_BuscarTecnico");
+    }
+</div>
+
+
+<div class="modal fade" id="modalDetalleItemServicio" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" data-backdrop="static" data-keyboard="false">
+    @{
+        Html.RenderPartial("_SolicitudDetItemServicio");
+    }
+</div>
+
+<div class="modal fade" id="añadirTecnico" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    @{
+        ViewBag.Title = "Creación de Técnicos de Externos";
+    }
+
+    <div class="modal-dialog modal-lg container-fluid" role="document">
+        <!-- Modal content -->
+        <div class="modal-content" id="modalContent">
+            <!-- Modal content header -->
+            <div class="modal-header box-header well well-sm" style="padding-bottom: 30px;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="tituloModal"><i class="fa fa-handshake-o" aria-hidden="true"></i> @ViewBag.Title</h4>
+            </div>
+            <!-- Modal content body -->
+            <div class="modal-body d-flex justify-content-center" align-items-center>
+                <form id="formRegistro" class="d-flex flex-row">
+                    <div class="row container-fluid d-flex justify-content-center">
+                        <div class="text-right">
+                            <button class="btn btn-primary btn-sm" type="button" id="btnRegistrarTecnicoExterno"><i class="fa fa-handshake-o"></i> Agregar</button>
+                        </div>
+                        <div class="row container-fluid">
+                            <div class="col-md-4 col-sm-12">
+                                <label for="txtNombreTecnico">Nombre: </label>
+                                <div class="form-group">
+                                    <input placeholder="--Ingresar Apellido Paterno---" type="text" class="form-control input-sm" id="txtNombreTecnico" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <label for="txtApellidoPaternoTec">Apellido Paterno: </label>
+                                <div class="form-group">
+                                    <input placeholder="--Ingresar Apellido Paterno---" type="text" class="form-control input-sm" id="txtApellidoPaternoTec" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <label for="txtApellidoMaternoTec">Apellido Materno: </label>
+                                <div class="form-group">
+                                    <input placeholder="--Ingresar Apellido Materno---" type="text" class="form-control input-sm" id="txtApellidoMaternoTec" value="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row container-fluid">
+                            <div class="col-md-4 col-sm-12">
+                                <label for="txtTipoTecnico">Tipo de T&eacute;cnico: </label>
+                                <div class="form-group">
+                                    <input hidden id="hdnTipoEmpleado" />
+                                    <input type="text" class="form-control input-sm" id="txtTipoTecnico" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <label for="cmbTipoCredencial">Tipo de Documento: </label>
+                                <div class="form-group">
+                                    <select class="form-control select2 input-sm" style="width:100%;" id="cmbTipoCredencial"></select>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <label for="txtNumDocumento">N° Documento: </label>
+                                <input hidden id="hdnTipoDoc" />
+                                <div class="form-group">
+                                    <input placeholder="--Ingresar número de Documento---" type="text" class="form-control input-sm" id="txtNumDocumento" value="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row container-fluid">
+                            <div class="col-md-4 col-sm-12">
+                                <label for="txtTelefonoServ">Tel&eacute;fono:</label>
+                                <div class="form-group">
+                                    <input placeholder="--Ingresar Teléfono---" type="text" class="form-control input-sm" id="txtTelefonoServ" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <label for="txtCorreoServ">Correo: </label>
+                                <div class="form-group">
+                                    <input placeholder="--Ingresar Correo---" type="text" class="form-control input-sm" id="txtCorreoServ" value="">
+                                </div>
+                            </div>
+                            <input type="hidden" id="txtCodUbicacionServ" value="" />
+                            <div class="col-md-4 col-sm-12" id="colEmpresa" style="display:none">
+                                <label for="txtEmpresa">Empresa: </label>
+                                <div class="form-group">
+                                    <input placeholder="--Ingresar Empresa---" type="text" class="form-control input-sm" id="txtEmpresaTecExterno" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <label for="txtZona">Zona:</label>
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm date">
+                                        <input hidden id="hdnIdZona" />
+                                        <input disabled maxlength="6" type="text" class="form-control input-sm" id="txtZona" placeholder="--Seleccionar Zona--" aria-describedby="sizing-addon3" />
+                                        <span style="cursor: pointer" class="input-group-addon input-sm" id="searchZona" data-toggle="modal" data-target="#modalZonaTecSol">
+                                            <i class="fa fa-search"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="modalCargaDocumentoGuia" tabindex="-1" role="dialog" aria-labelledby="titleModal"
+     aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Cargar documento</h4>
+            </div>
+            <div class="modal-body">
+                <form id="formDocumento">
+                    <div class="row container-fluid">
+                        <div class="col-md-6" style="display: block;">
+                            <div class="form-group">
+                                <input type="hidden" id="hdnDocumentoCargadoIdGuia" />
+                                <label for="cmbTipoDocumentoCargaGuia">Tipo de documento</label>
+                                <select class="form-control select2 input-sm" style="width:100%;" id="cmbTipoDocumentoCargaGuia"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-6" style="display: none;">
+                            <div class="form-group">
+                                <label for="cmbDocumentoCargaGuia">Documento</label>
+                                <select class="form-control select2 input-sm" style="width:100%;" id="cmbDocumentoCargaGuia"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-12" style="display: none;">
+                            <div class="form-group">
+                                <label for="txtDescripcionDocumentoCargaGuia">Descripci&oacute;n</label>
+                                <input type="text" class="form-control" placeholder="Descripción del documento" maxlength="100" id="txtDescripcionDocumentoCargaGuia" />
+                            </div>
+                        </div>
+                        <div class=" col-md-12">
+                            @*<div id="objCargaArchivo">Cargar Archivo</div>*@
+                            <button class="btn btn-danger btn-sm" type="button" id="btnAdjuntarDocumentoGuia"><i class="fa fa-folder" aria-hidden="true"></i>&nbsp;Cargar Archivo</button>
+                            <b><label id="lblNombreArchivoGuia" value=""></label></b>
+                            <input type="file" class="btn btn-danger btn-sm" id="fileCargaDocumentoSustentoGuia" value="Cargar Adjunto" style="display:none;"><br />
+                            <span id="tipoDocAdjuntosGuia" style="font-size:10px;color:gray">Archivos permitidos: .xls,.xlsx,.pdf,.doc,.docx,.zip,.rar,.ppt,.pptx</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-warning btn-sm pull-left" type="button" data-dismiss="modal">Cerrar</button>
+                <button class="btn btn-danger btn-sm" type="button" id="btnCargarDocumentoGuia">Cargar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalSeries" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <input type="hidden" id="codDetalleDespacho" value="0" />
+    <input type="hidden" id="codigosIds" value="" />
+    <input type="hidden" id="ListaSeries" value="" />
+    <input type="hidden" id="ListaGuias" value="" />
+    <input type="hidden" id="TipoReg" value="" />
+    <input type="hidden" id="RegStock" value="" />
+    <input type="hidden" id="CodigoDocumentoDespacho" value="0" />
+    <input type="hidden" id="ArchivoBase64" value="" />
+    <input type="hidden" id="FlagCargaDocumentoDespacho" value="" />
+    <input type="hidden" id="hdnCodDetalle" value="" />
+
+    <div class="modal-dialog modal-lg container-fluid" role="document">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <!-- Modal content header -->
+            <div class="modal-header box-header well well-large">
+                <h5 class="modal-title" id="tituloModal"><b>Detalle del Despacho:</b></h5>
+            </div>
+            <!-- Modal content body -->
+            <div class="modal-body d-flex justify-content-center" align-items-center>
+                <form id="formRegistroDetalleViatico" class="d-flex flex-row">
+                    <div class="row container-fluid d-flex justify-content-center">
+
+
+                        <!--1ra fila:-->
+                        <div class="row container-fluid">
+                            <div class="col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label for="txtTipo">C&oacute;digo de Producto:</label>
+                                    <input type="text" class="form-control input-sm" id="txtCodigoProductoSerie" value="" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label for="txtTipo">Marca:</label>
+                                    <input type="text" class="form-control input-sm" id="txtMarcaSerie" value="" disabled>
+                                </div>
+                            </div>
+
+                        </div>
+                        <!--2da fila:-->
+                        <div class="row container-fluid">
+                            <div class="col-md-12 col-sm-12">
+                                <div class="form-group">
+                                    <label for="txtTipo">Descripci&oacute;n:</label>
+                                    <input type="text" class="form-control input-sm" id="txtDescripcion" value="" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <!--3ra fila:-->
+                        <div class="row container-fluid">
+                            <div class="col-md-12 col-sm-12">
+                                <label for="txtZonaDepacho">Zona:</label>
+                                <div class="form-group">
+                                    <div class="input-group input-group-sm date">
+                                        <input hidden id="hdnIdZonaDespacho" />
+                                        <input disabled maxlength="6" type="text" class="form-control input-sm" id="txtZonaDepacho" placeholder="--Seleccionar Zona--" aria-describedby="sizing-addon3" />
+                                        <span style="cursor: pointer; display:none" class="input-group-addon input-sm" id="searchZonaDespacho" data-toggle="modal" data-target="#modalCostosUbi">
+                                            <i class="fa fa-list"></i>
+                                        </span>
+                                        <span style="cursor: pointer; display:none" class="input-group-addon input-sm" id="searchZonaDespacho2" data-toggle="modal" data-target="#modalZonaTecSol">
+                                            <i class="fa fa-search" aria-hidden="true"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--4ta fila:-->
+                        <div class="row container-fluid">
+                            <div class="col-md-8 col-sm-12">
+                                <div class="form-group">
+                                    <label for="txtDireccion">Direcci&oacute;n:</label>
+                                    <input placeholder="Ingresar Dirección" maxlength="150" type="text" class="form-control input-sm" id="txtDireccion" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label for="txtDireccion">N° Piso:</label>
+                                    <input disabled placeholder="Piso" type="text" class="form-control input-sm" id="txtNroPiso" value="">
+                                </div>
+                            </div>
+                        </div>
+                        <!--5ta fila:-->
+                        <div class="row container-fluid" id="rowSerieGuia">
+                            <div class="col-md-6 col-sm-12">
+                                <label for="txtSerie">N° de Serie o Lote:</label>
+                                <div class="form-group">
+                                    <input placeholder="Ingresar N° de Serie o Lote" maxlength="50" type="text" class="form-control input-sm" id="txtSerie" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                <label for="txtGuia">N° de Guia de Remisi&oacute;n:</label>
+                                <div class="form-group">
+                                    <input placeholder="Ingresar N° de Guia de Remisión" maxlength="50" type="text" class="form-control input-sm" id="txtGuia" value="">
+                                </div>
+                            </div>
+                        </div>
+                        <!--6ta fila:-->
+                        <div class="row container-fluid" id="rowTablaSeriesGuias">
+                            <div class="col-md-12 col-sm-12">
+                                <div class="form-group">
+                                    <table id="tblSeriesGuia" class="table table-hover table-condensed table-striped table-bordered" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align: center; width: 6%; color: white; background-color: cornflowerblue">N°</th>
+                                                <th style="text-align: center; width: 47%; color: white; background-color: cornflowerblue">N° Serie / N° Lote</th>
+                                                <th style="text-align: center; width: 47%; color: white; background-color: cornflowerblue">N° Guia Remision</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr id="NoRegSeriesGuia">
+                                                <td align="center" colspan="2">No existen registros</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!--7ma fila:-->
+                        <div class="row container-fluid" id="rowTablaSeriesCargar">
+                            <div class="col-md-6 col-sm-12">
+                                <button class="btn btn-danger btn-sm" type="button" id="btnAdjuntarDocumentoDespacho"><i class="fa fa-folder" aria-hidden="true"></i>&nbsp;Cargar Archivo</button>
+                                <b><label id="lblNombreArchivoDespacho" value=""></label></b>
+                                <input type="file" class="btn btn-danger btn-sm" id="fileCargaDocumentoSustentoDespacho" value="Cargar Adjunto" style="display:none;"><br />
+                                <span id="tipoDocAdjuntosDespacho" style="font-size:10px;color:gray">Archivos permitidos: .xls,.xlsx,.pdf,.doc,.docx,.zip,.rar,.ppt,.pptx</span>
+                            </div>
+                        </div>
+                        <!--8va fila:-->
+                        <div class="row container-fluid" id="rowTablaSeriesDescarga">
+                            <div class="col-md-6 col-sm-12">
+                                <button class="btn btn-danger btn-sm" type="button" id="btnDescargarGuiaRemision"><i class="fa fa-download" aria-hidden="true"></i>&nbsp;Descargar Archivo</button>
+                                <button class="btn btn-default btn-sm" type="button" id="btnCargarOtroDocumento"><i class="fa fa-file" aria-hidden="true"></i>&nbsp;Cargar Otro Archivo</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- Modal content footer -->
+            <div class="modal-footer">
+                <button class="btn btn-default btn-sm pull-left" type="button" data-dismiss="modal" id="btnCerrarDetalle"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Cerrar</button>
+                <button class="btn btn-primary btn-sm" type="button" id="btnRegistrarSerie"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Registrar Series</button>
+                <button class="btn btn-primary btn-sm" type="button" id="btnGuardarDespacho"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Actualizar Despacho</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalCargaDocumentoGuia" tabindex="-1" role="dialog" aria-labelledby="titleModal"
+     aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Cargar documento</h4>
+            </div>
+            <div class="modal-body">
+                <form id="formDocumento">
+                    <div class="row container-fluid">
+                        <div class="col-md-6" style="display: block;">
+                            <div class="form-group">
+                                <input type="hidden" id="hdnDocumentoCargadoIdGuia" />
+                                <label for="cmbTipoDocumentoCargaGuia">Tipo de documento</label>
+                                <select class="form-control select2 input-sm" style="width:100%;" id="cmbTipoDocumentoCargaGuia"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-6" style="display: none;">
+                            <div class="form-group">
+                                <label for="cmbDocumentoCargaGuia">Documento</label>
+                                <select class="form-control select2 input-sm" style="width:100%;" id="cmbDocumentoCargaGuia"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-12" style="display: none;">
+                            <div class="form-group">
+                                <label for="txtDescripcionDocumentoCargaGuia">Descripci&oacute;n</label>
+                                <input type="text" class="form-control" placeholder="Descripción del documento" maxlength="100" id="txtDescripcionDocumentoCargaGuia" />
+                            </div>
+                        </div>
+                        <div class=" col-md-12">
+                            @*<div id="objCargaArchivo">Cargar Archivo</div>*@
+                            <button class="btn btn-danger btn-sm" type="button" id="btnAdjuntarDocumentoGuia"><i class="fa fa-folder" aria-hidden="true"></i>&nbsp;Cargar Archivo</button>
+                            <b><label id="lblNombreArchivoGuia" value=""></label></b>
+                            <input type="file" class="btn btn-danger btn-sm" id="fileCargaDocumentoSustentoGuia" value="Cargar Adjunto" style="display:none;"><br />
+                            <span id="tipoDocAdjuntosGuia" style="font-size:10px;color:gray">Archivos permitidos: .xls,.xlsx,.pdf,.doc,.docx,.zip,.rar,.ppt,.pptx</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-warning btn-sm pull-left" type="button" data-dismiss="modal">Cerrar</button>
+                <button class="btn btn-danger btn-sm" type="button" id="btnCargarDocumentoGuia">Cargar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="añadirFecProg" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-sm container-fluid" role="document">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <!-- Modal content header -->
+            <div class="modal-header box-header well well-large">
+                <h5 class="modal-title" id="tituloModal"><b>Fecha de Programaci&oacute;n:</b></h5>
+            </div>
+            <!-- Modal content body -->
+            <div class="modal-body d-flex justify-content-center" align-items-center>
+                <form id="formRegistroFecProg" class="d-flex flex-row">
+                    <div class="row container-fluid d-flex justify-content-center">
+
+
+                        <!--1ra fila:-->
+                        <div class="row container-fluid">
+                            <div class="col-md-12 col-sm-12">
+                                <div class="input-group date">
+                                    <input type="text" class="form-control input-sm" id="dateProg" aria-describedby="sizing-addon3" placeholder="dd/mm/aaaa" readonly maxlength="10">
+                                    <span class="input-group-addon input-sm" id="opendateProg">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <!-- Modal content footer -->
+            <div class="modal-footer">
+                <button class="btn btn-default btn-sm pull-left" type="button" data-dismiss="modal" id="btnCerrarDetalle"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp;Cerrar</button>
+                <button class="btn btn-primary btn-sm" type="button" id="btnRegistrarFechaProg"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="modalZonaTecSol" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+
+    @{
+        ViewBag.Title = "Ubigeo";
+    }
+
+    <div class="modal-dialog modal-md container-fluid" role="document">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <!-- Modal content header-->
+            <div class="modal-header box-header well well-sm" style="padding-bottom: 30px;">
+                <h4 class="modal-title" id="tituloModal">@ViewBag.Title</h4>
+            </div>
+            <!-- Modal content body-->
+            <div class="modal-body d-flex justify-content-center" align-items-center>
+                <form id="formRegistro" class="d-flex flex-row">
+                    <div class="row container-fluid d-flex justify-content-center">
+
+
+                        <!--Departamento-->
+                        <div class="row container-fluid">
+                            <div class="col-md-4 col-sm-12">
+                                <div class="form-group col-sm-12">
+                                    <label for="cmbDepartamentoServ">Departamento:</label>
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-sm-12">
+                                <div class="form-group col-sm-12">
+                                    <select class="form-control select2 input-sm " style="width:100%;" id="cmbDepartamentoServ" data-selected="" tabindex="-1" aria-hidden="true"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <!------------------------->
+
+                        <br />
+                        <!--Provincia-->
+                        <div class="row container-fluid">
+                            <div class="col-md-4 col-sm-12">
+                                <div class="form-group col-sm-12">
+                                    <label for="cmbProvinciaServ">Provincia:</label>
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-sm-12">
+                                <div class="form-group">
+                                    <select class="form-control select2 input-sm " style="width:100%;" id="cmbProvinciaServ" data-selected="" tabindex="-1" aria-hidden="true"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <!------------------------->
+                        <!--Distrito-->
+                        <div class="row container-fluid">
+                            <div class="col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label for="cmbDistritoServ">Distrito:</label>
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-sm-12">
+                                <div class="form-group">
+                                    <select class="form-control select2 input-sm " style="width:100%;" id="cmbDistritoServ" data-selected="" tabindex="-1" aria-hidden="true"></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+
+                </form>
+            </div>
+            <!-- Modal content footer-->
+            <div class="modal-footer">
+                <button class="btn btn-default btn-sm pull-left" type="button" data-dismiss="modal" id="btnCerrarUbigeoServ">Cerrar</button>
+                <button class="btn btn-primary btn-sm" type="button" id="btnGuardarUbigeoSel">Seleccionar</button>
+                <button class="btn btn-primary btn-sm" type="button" style="display:none;" id="btnGuardarUbigeoDespachoSel">Seleccionar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="modalCostosUbi" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    @{
+        ViewBag.Title3 = "Lista de Costeo";
+    }
+    <div class="modal-dialog modal-lg container-fluid" role="document">
+        <div class="modal-content">
+            <div class="modal-header box-header well well-sm" style="padding-bottom: 30px;">
+                <h4 class="modal-title" id="tituloModal">@ViewBag.Title3</h4>
+            </div>
+            <div class="modal-body d-flex justify-content-center" align-items-center>
+                <div class="row container-fluid">
+                    <table id="tblCostosUbi" class="table table-hover table-condensed table-striped table-bordered" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th style="text-align:center; width:15%">Tipo de Costo</th>
+                                <th style="text-align:center; width:20%">Destino</th>
+                                <th style="text-align:center; width:15%">Cantidad</th>
+                                <th style="text-align:center; width:15%">Monto Unitario</th>
+                                <th style="text-align:center; width:15%">Monto Total de Costeo</th>
+                                <th style="text-align:center; width:20%">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bodyCostosUbi">
+                            <tr id="NoRegCostosUbi">
+                                <td align="center" colspan="6">No existen registros</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="row container-fluid">
+                    <div class="text-right">
+                        <button class="btn btn-warning btn-sm pull-left" type="button" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript" src="~/resources/js/app/ventas/DetalleDespacho.js"></script>
+    <script type="text/javascript" src="~/resources/js/app/ventas/cotvtadetalle.js"></script>
+
+    <script type="text/javascript" src="~/resources/js/app/ubigeo/ubigeo.js"></script>
+
+}
+
+
+<script>
+    const modal = document.getElementById("modalCostosUbi");
+
+    modal.addEventListener('keyup', FuncionEsc);
+
+    function FuncionEsc(evt) {
+        evt.preventDefault();
+        if (evt.keyCode == 27) {
+            detalleDespacho.CerrarModalSelCostos();
+        };
+    };
+
+
+    function seleccionarTodoConStock() {
+        const selectAllCheckbox = document.getElementById("SelTodosCSS");
+        const itemCheckboxes = document.querySelectorAll(".chkCS");
+
+        // Función para seleccionar/deseleccionar todos los checkboxes
+        selectAllCheckbox.addEventListener("change", () => {
+            const isChecked = selectAllCheckbox.checked;
+            itemCheckboxes.forEach(checkbox => {
+                checkbox.checked = isChecked;
+            });
+        });
+
+        // Función para manejar el estado del checkbox "Seleccionar todo"
+        itemCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener("change", () => {
+                // Si algún checkbox no está seleccionado, desmarca "Seleccionar todo"
+                if ([...itemCheckboxes].some(checkbox => !checkbox.checked)) {
+                    selectAllCheckbox.checked = false;
+                } else {
+                    // Si todos están seleccionados, marca "Seleccionar todo"
+                    selectAllCheckbox.checked = true;
+                }
+            });
+        });
+    }
+
+    function seleccionarTodoSinStock() {
+        const selectAllCheckbox = document.getElementById("SelTodosSSS");
+        const itemCheckboxes = document.querySelectorAll(".chkSS");
+
+        // Función para seleccionar/deseleccionar todos los checkboxes
+        selectAllCheckbox.addEventListener("change", () => {
+            const isChecked = selectAllCheckbox.checked;
+            itemCheckboxes.forEach(checkbox => {
+                checkbox.checked = isChecked;
+            });
+        });
+
+        // Función para manejar el estado del checkbox "Seleccionar todo"
+        itemCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener("change", () => {
+                // Si algún checkbox no está seleccionado, desmarca "Seleccionar todo"
+                if ([...itemCheckboxes].some(checkbox => !checkbox.checked)) {
+                    selectAllCheckbox.checked = false;
+                } else {
+                    // Si todos están seleccionados, marca "Seleccionar todo"
+                    selectAllCheckbox.checked = true;
+                }
+            });
+        });
+    }
+
+</script>
+
+
+
