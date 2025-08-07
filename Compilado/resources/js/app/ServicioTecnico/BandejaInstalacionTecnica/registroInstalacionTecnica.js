@@ -1802,19 +1802,21 @@
 
     function seleccionarSolicitud(id) {
         productos = [];
-
+        var idDespacho = id;
         method = "POST";
         url = "BandejaInstalacionTecnica/ObtenerDetalleSolicitud"
         objBuscar = {
-            id: id
+            id: idDespacho
         };
 
         objParam = JSON.stringify(objBuscar);
 
         var fnDoneCallBack = function (data) {
 
-            $hdnNumDespacho.val(id);
+            //$hdnNumDespacho.val(idDespacho);
 
+
+            //data.Result.Solicitud.Id_Despacho = idDespacho;
 
             $colProceso.css('display', 'none');
             $coltipProceso.css('display', 'none');

@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -698,6 +699,20 @@ namespace AHSECO.CCL.BL.Ventas
             {
                 Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
                 return new ResponseDTO<RespuestaDTO>(ex);
+            }
+        }
+
+        public ResponseDTO<List<UnidadDeMedidaDTO>> GetListUnidadMedida()
+        {
+            try
+            {
+                var result = Repository.GetListUnidadMedida();
+                return new ResponseDTO<List<UnidadDeMedidaDTO>>(result);
+            }
+            catch (Exception ex)
+            {
+                Log.TraceError(Utilidades.GetCaller() + "::" + ex.Message);
+                return new ResponseDTO<List<UnidadDeMedidaDTO>>(ex);
             }
         }
 

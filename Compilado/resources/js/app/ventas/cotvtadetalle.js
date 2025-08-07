@@ -282,8 +282,8 @@ var cotvtadet = (function ($, win, doc) {
         $DA_radCompraLocal_Si.click(validarcompraLocalClick);
         $DA_radCompraLocal_No.click(validarcompraLocalClick);
         $DA_btnCerrar.click(DAbtnCerrarClick);
-        //$DI_radTieneStock_Si.click(configurarTieneStock);
-        //$DI_radTieneStock_No.click(configurarTieneStock);
+        $DI_radTieneStock_Si.click(configurarTieneStock);
+        $DI_radTieneStock_No.click(configurarTieneStock);
         //if ($TipoSolicitud.val() == "TSOL05") {
         //    ConsultaItemDetalle();
         //} else { 
@@ -415,8 +415,10 @@ var cotvtadet = (function ($, win, doc) {
                 if (data.Result.Codigo > 0) {
                     cotvtacostos.cargarCostosItemsxTab($CI_hdnCodTipoCosto.val());
 
-                    guardarValorizacion();
+                    //guardarValorizacion();
                     //location.reload();
+
+                    $('#modalCostoItem').modal('hide');
                 }
                 else {
                     app.message.error("Grabar", data.Result.Mensaje, "Aceptar", null);
@@ -868,29 +870,43 @@ var cotvtadet = (function ($, win, doc) {
 
     function configurarTieneStock() {
 
-        if ($DI_radTieneStock_Si.is(':checked')) {
-            $DI_txtCostoFOB.attr("disabled", "disabled");
-        }
+        if ($estadoSol.val() === "SCOT") { //Se configura solo para "En Cotización"
+            if ($DI_radTieneStock_Si.is(':checked')) {
+                $DI_radCompraLocal_Si.prop("checked", false);
+                $DI_radCompraLocal_No.prop("checked", true);
 
-        if ($DI_radTieneStock_No.is(':checked')) {
-            $DI_txtCostoFOB.val("");
-            //$DI_txtCostoFOB.removeAttr("disabled");
-        }
+                $DI_radCompraLocal_Si.prop("disabled", true);
+                $DI_radCompraLocal_No.prop("disabled", true);
+            }
 
-        //Si no es para VALORIZACION se deshabilitará
-        if ($PermitirEditarValorizacion.val() != "S") {
-            $DI_txtCostoFOB.attr("disabled", "disabled");
-        }
-
-        //Para las solicitudes de tipo REPUESTOS no usan FOB
-        if ($PermitirEditarValorizacion.val() == "S") {
-            if ($cmbTipo.val() == $TipoSol_RepOComes.val() || $cmbTipo.val() == $TipoSol_ServYRep.val()) {
-                $DI_txtCostoFOB.attr("disabled", "disabled");
+            if ($DI_radTieneStock_No.is(':checked')) {
+                $DI_radCompraLocal_Si.prop("disabled", false);
+                $DI_radCompraLocal_No.prop("disabled", false);
             }
         }
+        else
+        {
+            if ($DI_radTieneStock_Si.is(':checked')) {
+                $DI_txtCostoFOB.attr("disabled", "disabled");
+            }
 
+            if ($DI_radTieneStock_No.is(':checked')) {
+                $DI_txtCostoFOB.val("");
+                //$DI_txtCostoFOB.removeAttr("disabled");
+            }
 
+            //Si no es para VALORIZACION se deshabilitará
+            if ($PermitirEditarValorizacion.val() != "S") {
+                $DI_txtCostoFOB.attr("disabled", "disabled");
+            }
 
+            //Para las solicitudes de tipo REPUESTOS no usan FOB
+            if ($PermitirEditarValorizacion.val() == "S") {
+                if ($cmbTipo.val() == $TipoSol_RepOComes.val() || $cmbTipo.val() == $TipoSol_ServYRep.val()) {
+                    $DI_txtCostoFOB.attr("disabled", "disabled");
+                }
+            }
+        }
     }
 
     function LimpiarModalDetItem() {
@@ -1715,10 +1731,22 @@ var cotvtadet = (function ($, win, doc) {
                 if (tiene_stock === "S") {
                     $DI_radTieneStock_No.prop("checked", false);
                     $DI_radTieneStock_Si.prop("checked", true);
+                    if ($estadoSol.val() === "SCOT") {
+                        $DI_radCompraLocal_Si.prop("checked", false);
+                        $DI_radCompraLocal_No.prop("checked", true);
+
+                        $DI_radCompraLocal_Si.prop("disabled", true);
+                        $DI_radCompraLocal_No.prop("disabled", true);
+                    }
                 }
                 else {
                     $DI_radTieneStock_No.prop("checked", true);
                     $DI_radTieneStock_Si.prop("checked", false);
+
+                    if ($estadoSol.val() === "SCOT") {
+                        $DI_radCompraLocal_Si.prop("disabled", false);
+                        $DI_radCompraLocal_No.prop("disabled", false);
+                    }
                 }
 
 
@@ -2017,7 +2045,7 @@ var cotvtadet = (function ($, win, doc) {
         var restante = parseInt($DI_txtCantidad.val()) - parseInt(sumaCantidades);
         var nueva_suma = parseInt(sumaCantidades) + parseInt($CX_txtCantCosteo.val());
 
-        if (nueva_suma > $DI_txtCantidad.val()) {
+        if (nueva_suma > $DI_txtCantidad.val() && !($CX_cmbTipoCosto.val() === "CXCD0004" || $CX_cmbTipoCosto.val() === "CXCD0005") ) {
             app.message.error("Validacion", "La cantidad ha costear sobrepasa la cantidad total de los productos, tiene " + restante + " cantidad(es) para costear para " + des_TipoCosto);
             return;
         }
@@ -2334,9 +2362,17 @@ var cotvtadet = (function ($, win, doc) {
             }
 
             if (estado != "SCOT") {
+                //var formItem = document.getElementById("formItem");
+                $("#formItem #CI_pnlInfoDestino #searchUbigeo").prop('disabled', true);
 
+
+
+                //var searchUbigeo = formItem.searchUbigeoCostoItem;
+
+                //searchUbigeo.disabled = true;
                 $("#searchUbigeo").prop("disabled", true);
                 $('#searchUbigeo').removeAttr('data-target');
+                $('#searchUbigeo').css('pointer-events', 'none');
                 $CI_txtUbicacion.prop("disabled", true);
                 $CI_txtDireccion.prop("disabled", true);
                 $CI_txtAmbDestino.prop("disabled", true);
@@ -2365,7 +2401,10 @@ var cotvtadet = (function ($, win, doc) {
 
 
             if ($estadoSol.val() == "CVAL" && ($idRolUsuario.val() === "SGI_VENTA_LOGISTICA" || $idRolUsuario.val() === "SGI_VENTA_SERVICIOTECNICO")) {
+                $("#formItem #CI_pnlInfoDestino #searchUbigeo").prop('disabled', true);
+                
                 $("#searchUbigeo").css("disabled", true);
+                $('#searchUbigeo').css('pointer-events', 'none');
                 $('#searchUbigeo').removeAttr('data-target');
                 $CI_btnGuardarCosteo.show();
                 $CI_txtMtoUnitarioCosto.prop("disabled", false);
@@ -3166,7 +3205,8 @@ var cotvtadet = (function ($, win, doc) {
                             if (arrProp[a].Nombre == "CodItem") { strCodItem = arrProp[a].Valor; }
                         }
 
-                        if ($TipoSolicitud.val() == "TSOL05" || $TipoSolicitud.val() == "TSOL04") {
+                        if ($TipoSolicitud.val() == "TSOL05" || $TipoSolicitud.val() == "TSOL04") { //materiales y equipos
+
                             var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
                             var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
                             var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
@@ -3180,17 +3220,21 @@ var cotvtadet = (function ($, win, doc) {
 
                                 var fob = "";
                                 var guardar_fob = "";
+                                
                                 if ($estadoSol.val() === "CVAL" && $idRolUsuario.val() === "SGI_VENTA_GERENTE") {
                                     fob = String.fromCharCode(32) + "<br><br>" + editar_FOB;
                                     guardar_fob = guardar_FOB;
                                     editar = ver;
+
+                                    if (row.CotizacionDespacho.IndCompraLocal) {
+                                        guardar_fob = '';
+                                        fob = "";
+                                    };
                                 }
                                 else if (!oFeatures.IsEnabled) { editar = ver; }
                                 else {
                                     editar = ver;
-                                }
-
-
+                                } 
                                 return '<center>' + hidden + editar + fob + guardar_fob + '</center>';
                             }
                         }
@@ -3764,9 +3808,11 @@ var cotvtadet = (function ($, win, doc) {
                 const fila = $(this).closest('tr');
                 let item = $(this).find("td:eq(0)").text();
                 const id_boton = fila.find("a[name='BtnExWord']").attr('id');
-                let id = id_boton.replace("btnEditarFOBItem", "");
-                let margen_util = $("#MargenUtil" + item + id).val();
-                fobs.push(margen_util.trim());
+                if (id_boton != null) {
+                    let id = id_boton.replace("btnEditarFOBItem", "");
+                    let margen_util = $("#MargenUtil" + item + id).val();
+                    fobs.push(margen_util.trim());
+                };
             });
 
             // Usando .filter() para eliminar duplicados
@@ -3931,72 +3977,73 @@ var cotvtadet = (function ($, win, doc) {
 
       
 
-        var fnSi = function () {
+       // var fnSi = function () {
 
-            var m = "POST";
-            var url = "BandejaSolicitudesVentas/MantenimientoDespacho";
-            var obj = {
-                Tipo: "W",
-                CodigoSolicitud: id,
-                NumeroOrden: text_exwork,
-                NumeroContrato: margenUtilidad,
-                NumeroGuiaRemision: transporte,
-                EstadoAprobacion: $estadoSol.val(),
-                CodigoWorkFlow: $idWorkFlow.val()
-            }
-            var objParam = JSON.stringify(obj);
-            var fnDoneCallback = function (data) {
-                var fnCallback = function () {
-                    //location.reload();
+        var m = "POST";
+        var url = "BandejaSolicitudesVentas/MantenimientoDespacho";
+        var obj = {
+            Tipo: "W",
+            CodigoSolicitud: id,
+            NumeroOrden: text_exwork,
+            NumeroContrato: margenUtilidad,
+            NumeroGuiaRemision: transporte,
+            EstadoAprobacion: $estadoSol.val(),
+            CodigoWorkFlow: $idWorkFlow.val()
+        }
+        var objParam = JSON.stringify(obj);
+        var fnDoneCallback = function (data) {
+            //var fnCallback = function () {
+                //location.reload();
 
-                    var text_transporte = $('#Transporte' + NroItem + id + ' option:selected').text();
+                var text_transporte = $('#Transporte' + NroItem + id + ' option:selected').text();
 
-                    if (!indStock) {
-                        $('#txtExWork' + NroItem + id).show();
-                        $('#txtExWork' + NroItem + id).text('Ex-Work: ' + text_exwork);
-                        $('#ExWork' + NroItem + id).css('display', 'none');
-                        $('#lblExWork' + NroItem + id).css('display', 'none');
+                if (!indStock) {
+                    $('#txtExWork' + NroItem + id).show();
+                    $('#txtExWork' + NroItem + id).text('Ex-Work: ' + text_exwork);
+                    $('#ExWork' + NroItem + id).css('display', 'none');
+                    $('#lblExWork' + NroItem + id).css('display', 'none');
 
-                        $('#txtTransporte' + NroItem + id).show();
-                        $('#txtTransporte' + NroItem + id).text('Transporte: ' + text_transporte);
-                        $('#divTransporte' + NroItem + id).css('display', 'none');
-                        $('#Transporte' + NroItem + id).css('display', 'none');
-                        $('#lblTransporte' + NroItem + id).css('display', 'none');
-                        $('#hdTransporte' + NroItem + id).val($('#Transporte' + NroItem + id).val());
-                    }
+                    $('#txtTransporte' + NroItem + id).show();
+                    $('#txtTransporte' + NroItem + id).text('Transporte: ' + text_transporte);
+                    $('#divTransporte' + NroItem + id).css('display', 'none');
+                    $('#Transporte' + NroItem + id).css('display', 'none');
+                    $('#lblTransporte' + NroItem + id).css('display', 'none');
+                    $('#hdTransporte' + NroItem + id).val($('#Transporte' + NroItem + id).val());
+                }
 
 
-                    $('#txtMargenUtil' + NroItem + id).show();
-                    $('#txtMargenUtil' + NroItem + id).text('Margen Util: ' + margenUtilidad);
-                    $('#MargenUtil' + NroItem + id).css('display', 'none');
-                    $('#lblMargenUtil' + NroItem + id).css('display', 'none');
+                $('#txtMargenUtil' + NroItem + id).show();
+                $('#txtMargenUtil' + NroItem + id).text('Margen Util: ' + margenUtilidad);
+                $('#MargenUtil' + NroItem + id).css('display', 'none');
+                $('#lblMargenUtil' + NroItem + id).css('display', 'none');
 
                    
 
                     
 
 
-                    $("#btnGuardarValorizacion").prop("disabled", false);
-                   // $(".BtnExWord").prop("disabled", false);
-                    $("a[name='BtnExWord']").css({
-                        "pointer-events": "auto",
-                        "cursor": "pointer",
-                        "color": ""
-                    });
-                    $('#btnEditarFOBItem' + id).show();
-                    $('#btnGuardarFOBItem' + id).hide();
-                };
-                if (data.Result.Codigo > 0) {
-                    app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
-                }
-                else {
-                    app.message.error("Grabar", data.Result.Mensaje, "Aceptar", null);
-                }
-
-            };
-            return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.RegistrarGestionVenta);
-        }
-        return app.message.confirm("Ventas", "Esta seguro que desea guardar los datos?", "Si", "No", fnSi, null);
+                $("#btnGuardarValorizacion").prop("disabled", false);
+                // $(".BtnExWord").prop("disabled", false);
+                $("a[name='BtnExWord']").css({
+                    "pointer-events": "auto",
+                    "cursor": "pointer",
+                    "color": ""
+                });
+                $('#btnEditarFOBItem' + id).show();
+                $('#btnGuardarFOBItem' + id).hide();
+            //};
+            /*
+            if (data.Result.Codigo > 0) {
+                app.message.success("Grabar", data.Result.Mensaje, "Aceptar", fnCallback);
+            }
+            else {
+                app.message.error("Grabar", data.Result.Mensaje, "Aceptar", null);
+            }
+            */
+        };
+        return app.llamarAjax(m, url, objParam, fnDoneCallback, null, null, mensajes.RegistrarGestionVenta);
+        //}
+        //return app.message.confirm("Ventas", "Esta seguro que desea guardar los datos?", "Si", "No", fnSi, null);
     };
 
 

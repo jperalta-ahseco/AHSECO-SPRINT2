@@ -3529,5 +3529,33 @@ namespace AHSECO.CCL.BD.Ventas
             }
         }
 
+        public List<UnidadDeMedidaDTO> GetListUnidadMedida ()
+        {
+            Log.TraceInfo(Utilidades.GetCaller());
+
+            using (var connection = Factory.ConnectionFactory()) 
+            {
+                connection.Open();
+                var parameters = new DynamicParameters();
+
+                var result = connection.Query
+                (
+                    sql: "USP_SEL_UNIDADMEDIDAS",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure
+                ).Select(s => s as IDictionary<string, object>)
+                .Select(i => new UnidadDeMedidaDTO()
+                {
+                    Tg_Ccod = i.Single(d => d.Key.Equals("TG_CCOD")).Value.Parse<int>(),
+                    Tg_Cclave = i.Single(d => d.Key.Equals("TG_CCLAVE")).Value.Parse<string>(),
+                    Tg_CDescri = i.Single(d => d.Key.Equals("TG_CDESCRI")).Value.Parse<string>()
+                }).ToList();
+
+                return result;
+            }
+
+        }
+
+
     }
 }

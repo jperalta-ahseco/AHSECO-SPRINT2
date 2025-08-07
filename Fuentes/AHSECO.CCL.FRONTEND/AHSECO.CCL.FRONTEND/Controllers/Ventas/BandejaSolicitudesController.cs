@@ -7804,7 +7804,28 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
                 {
                     var resArticulos = ventasBL.ObtenerArticulosxFiltro(new FiltroArticuloDTO() { CodsArticulo = list[i].CodItem });
                     var oArticulo = resArticulos.Result.FirstOrDefault();
-                    if (oArticulo != null) { list[i].DescUnidad = oArticulo.DescUnidad; }
+                    if (oArticulo != null) 
+                    {
+                        if (!oArticulo.DescUnidad.IsNullOrEmpty())
+                        {
+                            list[i].DescUnidad = oArticulo.DescUnidad;
+                        };
+                        
+                    }
+                    else //Para productos/Accesorios que no se encuentren el almacén y que el asesor de ventas haya ingresaro directamente en la bandeja.
+                    {
+                        //Obtenemos las unidades de medida. 
+
+                        List<UnidadDeMedidaDTO> ListUnidadMedida = ventasBL.GetListUnidadMedida().Result;
+
+                        for (int j = 0; ListUnidadMedida.Count() > j; j++)
+                        {
+                            if (ListUnidadMedida[j].Tg_Cclave == list[i].CodUnidad)
+                            {
+                                list[i].DescUnidad = ListUnidadMedida[j].Tg_CDescri;
+                            };
+                        };
+                    };
                 };
 
                 result.Result = list.AsEnumerable<CotizacionDetalleDTO>();

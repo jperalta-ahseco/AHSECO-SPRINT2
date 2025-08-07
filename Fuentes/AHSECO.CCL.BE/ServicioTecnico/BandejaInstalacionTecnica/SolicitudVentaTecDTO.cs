@@ -12,6 +12,7 @@ namespace AHSECO.CCL.BE.ServicioTecnico.BandejaInstalacionTecnica
     {
         public long Id_Solicitud { get; set; }
         public long Id_WorkFlow { get; set; }
+        public long Id_Despacho { get; set; }
         public string Cod_Empresa { get; set; }
         public  string Nom_Empresa { get; set; }
         public int IdCliente { get; set; }

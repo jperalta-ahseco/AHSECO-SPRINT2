@@ -634,6 +634,27 @@
         //var tblSeriesSS = $('#tblSeriesSS tbody tr');
         //var tblSerieCS = $('#tblSeriesCS tbody tr');
 
+
+        var fnSi = function () {
+            var num_solicitud = $numeroSolicitud.val();
+            var tipo = "BO";
+            var method = 'POST';
+            var url = 'BandejaHistorialCotizacion/ExportarDocumentosVentas?tipo=' + tipo + "&codSolicitud=" + num_solicitud + "&stock=N" + "&tipoDespacho=" + tipo_despacho + "&idDespacho=" + $NumDespacho.val();
+            var objParam = '';
+
+            var fnDoneCallBack = function (data) {
+                app.abrirVentana("BandejaHistorialCotizacion/ExportarFileGuiaBO?nombreDoc=" + data.Archivo);
+                app.message.success("Ventas", "Se generó la guía de BO correctamente.");
+                $btnEnviarGuiaBOTotal.show();
+            };
+            var fnFailCallBack = function () {
+
+            };
+
+            app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, mensajes.GenerarBO);
+        };
+
+
         var validador = 0;
 
         if (detalleDespacho.arrDetalleSS.length > 0) {
@@ -665,29 +686,16 @@
             });
         };
         
-
-        
         if (validador == 1 && $TipoSolicitud.val() == 'TSOL05') {
-            app.message.error("Validación", "Debe de ingresar el destino a todos los detalles de despacho");
+            app.message.confirm("Advertencia", "Existen equipos que no cuentan con dirección de destino, ¿Desea continuar?", "Si", "No", fnSi);
             return;
         }
-
-        var num_solicitud = $numeroSolicitud.val();
-        var tipo = "BO";
-        var method = 'POST';
-        var url = 'BandejaHistorialCotizacion/ExportarDocumentosVentas?tipo=' + tipo + "&codSolicitud=" + num_solicitud + "&stock=N" + "&tipoDespacho=" + tipo_despacho + "&idDespacho=" + $NumDespacho.val();
-        var objParam = '';
-
-        var fnDoneCallBack = function (data) {
-            app.abrirVentana("BandejaHistorialCotizacion/ExportarFileGuiaBO?nombreDoc=" + data.Archivo);
-            app.message.success("Ventas", "Se generó la guía de BO correctamente.");
-            $btnEnviarGuiaBOTotal.show();
-        };
-        var fnFailCallBack = function () {
-
+        else if ($TipoSolicitud.val() != 'TSOL05') {
+            fnSi();
         };
 
-        app.llamarAjax(method, url, objParam, fnDoneCallBack, fnFailCallBack, null, mensajes.GenerarBO);
+        
+        
     }
 
     function GuardarCabecera() {

@@ -400,7 +400,12 @@ var asignacionTerritorial = (function ($, win, doc){
                 visible: false
             }
         ];
-        app.llenarTabla($tblAsignacion, data, columns, columnsDefs, "#tblAsignacion")
+
+        var filters = {}
+        filters.dataTableInfo = true;
+        filters.dataTablePageLength = 10;
+
+        app.llenarTabla($tblAsignacion, data, columns, columnsDefs, "#tblAsignacion", null, null, filters);
     }
 
     function ejecutaEliminar(clientes) {

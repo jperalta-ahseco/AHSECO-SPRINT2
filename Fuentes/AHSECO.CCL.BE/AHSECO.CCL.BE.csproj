@@ -142,6 +142,7 @@
     <Compile Include="Ventas\ReqSugerenciaVentas.cs" />
     <Compile Include="Ventas\SolicitudDTO.cs" />
     <Compile Include="Ventas\SolicitudVentaGrupoDTO.cs" />
+    <Compile Include="Ventas\UnidadDeMedidaDTO.cs" />
     <Compile Include="ViaticosGrupalDTO.cs" />
     <Compile Include="ViaticosDetalleDTO.cs" />
     <Compile Include="WorkFlowRolDTO.cs" />
