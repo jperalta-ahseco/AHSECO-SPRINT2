@@ -1202,10 +1202,12 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(8, 8, 9, 10));
             sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(8, 8, 11, 15));
 
-            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(9, 9, 0, 15));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(9, 9, 0, 1));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(9, 9, 2, 8));
 
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(10, 10, 0, 9));
             //detalle: cabecera
-            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(10, 10, 5, 11));
+            sh.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(11, 11, 5, 11));
 
             int rownum = 0;
             int cellnum = 0;
@@ -1434,11 +1436,22 @@ namespace AHSECO.CCL.FRONTEND.Controllers.Ventas
             cell = row.CreateCell(9);
             cell.CellStyle = style;
             cell.SetCellValue("REGISTRO N°");
+
+            row = sh.CreateRow(rownum++);
+            
+            cell = row.CreateCell(0);
+            cell.CellStyle = style;
+            cell.SetCellValue("SOLICITUD N°");
+
+            cell = row.CreateCell(2);
+            cell.CellStyle = style3;
+            cell.SetCellValue(codSolicitud);
+
             #endregion
 
             //detalle:
             #region Cabecera Detalle
-            int rownum2 = 10;
+            int rownum2 = 11;
             row = sh.CreateRow(rownum2++);
 
             cell = row.CreateCell(0);
