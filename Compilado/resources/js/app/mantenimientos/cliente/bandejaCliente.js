@@ -45,7 +45,7 @@
         cargarCategorias();
         cargarAsesoresVenta();
 
-        $dateFecIni.val(firstDayMonth());
+        //$dateFecIni.val(firstDayMonth());
 
         $dateFecIni.datepicker({
             viewMode: 0,
@@ -62,7 +62,7 @@
 
         $dateFecIni.datepicker().on("changeDate", changeDateFechaInicialRegFecIni);
 
-        $dateFecFin.val(hoy());
+        //$dateFecFin.val(hoy());
 
         cargarTablaClientes();
         $btnSeleccionar.click(seleccionar);

@@ -279,11 +279,19 @@ var cotvtadet = (function ($, win, doc) {
         $CI_btnGuardar.click(guardarEditarCosteo);
         $CI_btnGuardarCosteo.click(btnGuardarCosteoClick);
         $DA_btnGuardar.click(btnGuardarCosteoAccesorioClick);
+
+        $DI_radCompraLocal_Si.click(validarcompraLocalEquipoClick);
+        $DI_radCompraLocal_No.click(validarcompraLocalEquipoClick);
         $DA_radCompraLocal_Si.click(validarcompraLocalClick);
         $DA_radCompraLocal_No.click(validarcompraLocalClick);
+
         $DA_btnCerrar.click(DAbtnCerrarClick);
+
         $DI_radTieneStock_Si.click(configurarTieneStock);
         $DI_radTieneStock_No.click(configurarTieneStock);
+
+
+
         //if ($TipoSolicitud.val() == "TSOL05") {
         //    ConsultaItemDetalle();
         //} else { 
@@ -299,10 +307,42 @@ var cotvtadet = (function ($, win, doc) {
         $('#modalDetalleItemAccesorio').modal('hide');
     }
 
+    function validarcompraLocalEquipoClick() {
+
+        var valorAnterior = $DI_txtValorUnitario.val();
+
+        if ($DI_radCompraLocal_Si.is(':checked')) {
+            $("#DI_txtValorUnitario").removeAttr("disabled");
+
+            if (parseFloat(valorAnterior) != 0) {
+                $("#DI_txtValorUnitario").val(valorAnterior);
+            }
+            else {
+                $("#DI_txtValorUnitario").val("0.00");
+            }
+
+        }
+        else {
+            $("#DI_txtValorUnitario").attr("disabled", "disabled");
+            $("#DI_txtValorUnitario").val("0.00");
+        }
+    }
+
     function validarcompraLocalClick() {
+
+        var valorAnterior = $DA_txtValorUnitario.val();
+
         if ($DA_radCompraLocal_Si.is(':checked')) {
             $("#DA_txtValorUnitario").removeAttr("disabled");
-            $("#DA_txtValorUnitario").val("0.00");
+
+            if (parseFloat(valorAnterior) != 0) {
+                $("#DI_txtValorUnitario").val(valorAnterior);
+            }
+            else {
+                $("#DA_txtValorUnitario").val("0.00");
+            }
+
+
         }
         else {
             $("#DA_txtValorUnitario").attr("disabled", "disabled");
@@ -1317,6 +1357,18 @@ var cotvtadet = (function ($, win, doc) {
 
     }
 
+    function cargarLogicaEquipos_Stock() {
+        if ($DI_radTieneStock_Si.attr("disabled") != "disabled" && $DI_radTieneStock_Si.attr("readonly") != "disabled" &&
+            $DI_radTieneStock_No.attr("disabled") != "disabled" && $DI_radTieneStock_No.attr("readonly") != "disabled") {
+            if ($DI_radTieneStock_Si.is(':checked') || $DI_radTieneStock_No.is(':checked')) {
+                $DI_radCompraLocal_Si.prop("checked", false);
+                $DI_radCompraLocal_No.prop("checked", true);
+                $DI_txtValorUnitario.attr("disabled", "disabled");
+                $DI_txtValorUnitario.val("");
+            }
+        }
+    }
+
     function cargarLogicaAccesorios_Stock() {
 
         if ($DI_radTieneStock_Si.attr("disabled") != "disabled" && $DI_radTieneStock_Si.attr("readonly") != "disabled" &&
@@ -1329,6 +1381,27 @@ var cotvtadet = (function ($, win, doc) {
             }
         }
 
+    }
+
+    function cargarLogicaEquipos_CompraLocal() {
+        if ($DI_radCompraLocal_Si.attr("disabled") != "disabled" && $DI_radCompraLocal_Si.attr("readonly") != "disabled") {
+            if ($DI_radCompraLocal_Si.is(':checked')) {
+                $DI_txtValorUnitario.removeAttr("disabled");
+                $DI_radTieneStock_Si.attr("disabled", "disabled");
+                $DI_radTieneStock_No.attr("disabled", "disabled");
+                $DI_radTieneStock_Si.prop("checked", false);
+                $DI_radTieneStock_No.prop("checked", false);
+            }
+        }
+
+        if ($DI_radCompraLocal_No.attr("disabled") != "disabled" && $DI_radCompraLocal_No.attr("readonly") != "disabled") {
+            if ($DI_radCompraLocal_No.is(':checked')) {
+                $DI_txtValorUnitario.attr("disabled", "disabled");
+                $DI_txtValorUnitario.val("");
+                $DI_radTieneStock_Si.removeAttr("disabled");
+                $DI_radTieneStock_No.removeAttr("disabled");
+            }
+        }
     }
 
     function cargarLogicaAccesorios_CompraLocal() {
@@ -1396,7 +1469,15 @@ var cotvtadet = (function ($, win, doc) {
                 $DI_radCompraLocal_Si.click(cargarLogicaAccesorios_CompraLocal);
                 $DI_radCompraLocal_No.click(cargarLogicaAccesorios_CompraLocal);
             }
-            else {
+            else if (strTipoItem == $DI_hdnTipoItem_PRO.val()) {
+              
+                $DI_radTieneStock_Si.click(cargarLogicaEquipos_Stock);
+                $DI_radTieneStock_No.click(cargarLogicaAccesorios_Stock);
+                $DI_radCompraLocal_Si.click(cargarLogicaEquipos_CompraLocal);
+                $DI_radCompraLocal_No.click(cargarLogicaEquipos_CompraLocal);
+
+            }
+            else{
                 $DI_radTieneStock_Si.click(null);
                 $DI_radTieneStock_No.click(null);
                 $DI_radCompraLocal_Si.click(null);
@@ -1754,10 +1835,19 @@ var cotvtadet = (function ($, win, doc) {
                 if (es_compralocal === "S") {
                     $DI_radCompraLocal_Si.prop("checked", true);
                     $DI_radCompraLocal_No.prop("checked", false);
+                    if ($estadoSol.val() === "SCOT") {
+                        $("#DI_txtValorUnitario").removeAttr("disabled");
+                    }
+                
                 }
                 else {
                     $DI_radCompraLocal_Si.prop("checked", false);
                     $DI_radCompraLocal_No.prop("checked", true);
+                    if ($estadoSol.val() === "SCOT") {
+                        $("#DI_txtValorUnitario").prop("disabled", true);
+                    }
+
+                    
                 }
 
                 var es_requiereplaca = data.Result.CabCosteoDetalle.IndicadorRequierePlaca;
@@ -2689,7 +2779,7 @@ var cotvtadet = (function ($, win, doc) {
                 $("#DA_txtValorUnitario").attr("disabled", "disabled");
             }
 
-            if ($estadoSol.val() == "CAPR" || $estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG") {
+            if ($estadoSol.val() == "CAPR" || $estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG" || $estadoSol.val() =="CVAL") {
                 $DA_txtCantidad.prop('disabled', true);
                 $DA_txtValorUnitario.prop('disabled', true);
                 $DA_radTieneStock_Si.prop('disabled', true);
@@ -2764,6 +2854,13 @@ var cotvtadet = (function ($, win, doc) {
         if ($DI_txtCantidad.val() === null || $DI_txtCantidad.val() === "" || $DI_txtCantidad.val() === "0" || $DI_txtCantidad.val() < 0) {
             app.message.error("Validacion", "Ingresar la cantidad del producto.");
             return;
+        }
+
+        if ($TipoSolicitud.val() == "TSOL05") {
+            if ($DI_radCompraLocal_Si.is(':checked') && parseFloat($DI_txtValorUnitario.val()) == 0.00) {
+                app.message.error("Validaci&oacute;n", "Si ha seleccionado 'Compra Local = Si' debe de ingresar el precio en el campo 'Valor Venta Unitario.'");
+                return;
+            }
         }
 
         if ($TipoSolicitud.val() == "TSOL02" || $TipoSolicitud.val() == "TSOL03") {
@@ -3210,8 +3307,8 @@ var cotvtadet = (function ($, win, doc) {
                             var hidden = '<input type="hidden" id="hdnCodItem_' + $.trim(strCodItem) + '" value=' + String.fromCharCode(39) + strCodItem + String.fromCharCode(39) + '>';
                             var editar = '<a id="btnEditarItem" class="botonDetCot btn btn-info btn-xs" title="Editar" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Editar</a>';
                             var ver = '<a id="btnVerItem" class="botonDetCot btn btn-info btn-xs" title="Ver" href="javascript: cotvtadet.EditarCotDetItem(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ')"><i class="fa fa-eye" aria-hidden="true"></i> Ver</a>';
-                            var editar_FOB = '<a id="btnEditarFOBItem' + strID + '" value="' + strID + '" name="BtnExWord" class="botonDetCot btn btn-info btn-xs" title="Editar Ex-Work" href="javascript: cotvtadet.editarExWork(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',' + String.fromCharCode(39) + row.NroItem + String.fromCharCode(39) + ',' + String.fromCharCode(39) + row.CodigoTransporte + String.fromCharCode(39) + ',' + row.IndStock + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Editar</a>';
-                            var guardar_FOB = '<a id="btnGuardarFOBItem' + strID + '" class="botonDetCot btn btn-info btn-xs" title="Guardar Ex-Work" href="javascript: cotvtadet.guardarExWork(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',' + String.fromCharCode(39) + row.NroItem + String.fromCharCode(39) + ',' + row.IndStock + ')" style=' + String.fromCharCode(39) + 'display:none' + String.fromCharCode(39) + '><i class="fa fa-pencil-save" aria-hidden="true"></i>Guardar</a>';
+                            var editar_FOB = '<a id="btnEditarFOBItem' + strID + '" value="' + strID + '" name="BtnExWord" class="botonDetCot btn btn-info btn-xs" title="Editar Ex-Work" href="javascript: cotvtadet.editarExWork(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',' + String.fromCharCode(39) + row.NroItem + String.fromCharCode(39) + ',' + String.fromCharCode(39) + row.CodigoTransporte + String.fromCharCode(39) + ',' + row.IndStock + ',' + row.CotizacionDespacho.IndCompraLocal + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Editar</a>';
+                            var guardar_FOB = '<a id="btnGuardarFOBItem' + strID + '" class="botonDetCot btn btn-info btn-xs" title="Guardar Ex-Work" href="javascript: cotvtadet.guardarExWork(' + String.fromCharCode(39) + strID + String.fromCharCode(39) + ',' + String.fromCharCode(39) + row.NroItem + String.fromCharCode(39) + ',' + row.IndStock + ',' + row.CotizacionDespacho.IndCompraLocal + ')" style=' + String.fromCharCode(39) + 'display:none' + String.fromCharCode(39) + '><i class="fa fa-pencil-save" aria-hidden="true"></i>Guardar</a>';
 
                             if ($estadoSol.val() == "CAPR" || $estadoSol.val() == "PRVT" || $estadoSol.val() == "VTPG") {
                                 return '<center>' + ver + '</center>';
@@ -3226,10 +3323,10 @@ var cotvtadet = (function ($, win, doc) {
                                     guardar_fob = guardar_FOB;
                                     editar = ver;
 
-                                    if (row.CotizacionDespacho.IndCompraLocal) {
-                                        guardar_fob = '';
-                                        fob = "";
-                                    };
+                                    //if (row.CotizacionDespacho.IndCompraLocal) {
+                                    //    guardar_fob = '';
+                                    //    fob = "";
+                                    //};
                                 }
                                 else if (!oFeatures.IsEnabled) { editar = ver; }
                                 else {
@@ -3880,13 +3977,13 @@ var cotvtadet = (function ($, win, doc) {
         return app.message.confirm("Confirmaci&oacute;n", "Desea guardar la valoraci&oacute;n?", "S&iacute;", "No", fnSi);
     }
 
-    function editarExWork(id, NroItem, CodTransporte, indStock) {
+    function editarExWork(id, NroItem, CodTransporte, indStock, indCompraLocal) {
         $('#btnEditarFOBItem' + id).hide();
         $('#btnGuardarFOBItem' + id).show();
 
 
         //Si es detalle sin stock
-        if (!indStock) {
+        if (!indStock && !indCompraLocal) {
             //Para casilla Ex-Work:
             $('#txtExWork' + NroItem + id).hide();
             $('#ExWork' + NroItem + id).css('display', 'block');
@@ -3949,11 +4046,11 @@ var cotvtadet = (function ($, win, doc) {
         });
     }
 
-    function guardarExWork(id, NroItem, indStock) {
+    function guardarExWork(id, NroItem, indStock, indCompraLocal) {
 
         var margenUtilidad = $('#MargenUtil' + NroItem + id).val();
         var transporte = $('#Transporte' + NroItem + id).val();
-        if (!indStock) {
+        if (!indStock && !indCompraLocal) {
             var text_exwork = $('#ExWork' + NroItem + id).val();
             if (text_exwork === "" || text_exwork === null) {
                 $('#ExWork' + NroItem + id).focus();
@@ -3997,7 +4094,7 @@ var cotvtadet = (function ($, win, doc) {
 
                 var text_transporte = $('#Transporte' + NroItem + id + ' option:selected').text();
 
-                if (!indStock) {
+                if (!indStock && !indCompraLocal) {
                     $('#txtExWork' + NroItem + id).show();
                     $('#txtExWork' + NroItem + id).text('Ex-Work: ' + text_exwork);
                     $('#ExWork' + NroItem + id).css('display', 'none');
@@ -4138,14 +4235,14 @@ var cotvtadet = (function ($, win, doc) {
             }
             table.rows.add(data.Result);
         } else {
-            var result = GeneraTabla2();
+            var result = GeneraTablaVacia();
             table.rows.add(result);
         };
 
         table.draw();
     }
 
-    function GeneraTabla2() {
+    function GeneraTablaVacia() {
         var table = [];
         table.push({
             CodItem: null,
@@ -4164,8 +4261,8 @@ var cotvtadet = (function ($, win, doc) {
     };
 
     function GeneraTabla(NroItem) {
-        var td = "<td colspan='10'><center>Accesorios</center></td>"
-        var table = "<center><table  class='table table-condensed table-striped table-bordered dataTable no-footer' style='width:90%'  id=tblAccesorios" + NroItem + " >contenido</table></center>";
+        var div = "<div style='position:absolute;'></div>"
+        var table = div+ "<center><table  class='table table-condensed table-striped table-bordered dataTable no-footer' style='width:95%'  id=tblAccesorios" + NroItem + " >contenido</table></center>";
         var thead = "<thead style='background-color: #ef000096; color:white' >" +
                 "<tr>" +
             "<th style='text-align:center; width:2%'><center>Cod.Producto</center></th>" +
@@ -4672,10 +4769,10 @@ var cotvtadet = (function ($, win, doc) {
                 render: function (data, type, row) {
                     var casilla = "";
                     if (data == null) {
-                        casilla = "<select class='form-control select2 input-sm' style='width: 100 %;' data-selected=''></select>"
+                        casilla = "<select class='form-control select2 input-sm' style='width: 150px;' data-selected=''></select>"
                     }
                     else {
-                        casilla = "<select disabled class='form-control select2 input-sm' style='width: 100 %;' data-selected='" + data + "'></select>"
+                        casilla = "<select disabled class='form-control select2 input-sm' style='width: 150px;' data-selected='" + data + "'></select>"
                     }
                     return '<center>' + casilla + '</center>';
                 }
@@ -4698,11 +4795,11 @@ var cotvtadet = (function ($, win, doc) {
                 render: function (data, type, row) {
                     var casilla = "";
                     if (data == null) {
-                        casilla = "<input placeholder='Nombre Equipo' type='text' onblur='javascript: cotvtadet.IniciarLogicaInputs(event,this, this.value)' />";
+                        casilla = "<input placeholder='Nombre Equipo'  style='width: 450px;' type='text' onblur='javascript: cotvtadet.IniciarLogicaInputs(event,this, this.value)' />";
                         //casilla = "<input placeholder='Nombre Equipo' type='text'/>";
                     }
                     else {
-                        casilla = "<input disabled placeholder='Nombre Equipo' type='text' value='"+ data +"' disabled />";
+                        casilla = "<input disabled placeholder='Nombre Equipo' style='width: 450px;' type='text' value='"+ data +"' disabled />";
                     }
                     return '<center>' + casilla + '</center>';
                 }
@@ -4766,9 +4863,9 @@ var cotvtadet = (function ($, win, doc) {
                     var casilla = "";
                     if (data == null) {
                         if (row.Stock != null) {
-                            casilla = "<input disabled  disabled type='text' placeholder='Stock' value='" + row.Stock + "' />"
+                            casilla = "<input disabled  disabled type='text' style='width: 50px;' placeholder='Stock' value='" + row.Stock + "' />"
                         } else {
-                            casilla = "<input disabled type='text' placeholder='Stock' />"
+                            casilla = "<input disabled type='text' style='width: 50px;'  placeholder='Stock' />"
                         }
                     }
                     return '<center>' + casilla + '</center>';

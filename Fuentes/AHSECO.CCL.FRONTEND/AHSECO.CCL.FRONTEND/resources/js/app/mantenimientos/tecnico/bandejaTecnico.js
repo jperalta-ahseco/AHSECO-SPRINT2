@@ -27,8 +27,8 @@
         $openRegFecIni.click(openRegFecIni_click);
         $openRegFecFin.click(openRegFecFin_click);
 
-        $dateFecIni.val(firstDayMonth());
-        $dateFecFin.val(hoy());
+        //$dateFecIni.val(firstDayMonth());
+        //$dateFecFin.val(hoy());
         $dateFecIni.datepicker({
             viewMode: 0,
             minViewMode: 0,
@@ -279,7 +279,8 @@
         ];
         var filters = {
             dataTableSearching: false,
-            dataTablePageLength: 10
+            dataTablePageLength: 10,
+            dataTableInfo : true
         };
         app.llenarTabla($tblTecnico, data, columns, columnDefs, "#tblTecnico", null, null, filters);
     }

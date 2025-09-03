@@ -115,7 +115,8 @@
         var filters =
         {
             dataTableSearching: false,
-            dataTablePageLength: 15
+            dataTablePageLength: 15,
+            dataTableInfo: true
         }
         app.llenarTabla($tblServicio, data, columns, columnDefs, "#tblServicio", null, null, filters);
     }

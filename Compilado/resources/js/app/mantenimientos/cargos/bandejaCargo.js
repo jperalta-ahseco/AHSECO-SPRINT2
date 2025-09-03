@@ -229,7 +229,8 @@
         ]
         var filters = {
             dataTableSearching: false,
-            dataTablePageLength: 10
+            dataTablePageLength: 10,
+            dataTableInfo: true
         };
         app.llenarTabla($tblCargo, data, columns, columnsDefs, "#tblCargo", null, null, filters);
     }
